@@ -1,0 +1,6 @@
+{
+ "categories":{
+     "music_service":{"spotify":{"version":"1.0", "url":"","licence":""}},
+     "miscellanea": {"myPlugin":{"version":"1.0", "url":"","licence":""}}
+ }
+}
