@@ -1,0 +1,16 @@
+*.log
+npm-debug.log*
+node_modules
+npm-debug.log
+
+
+# Bundled npm package
+*.tgz
+
+# Only keep microsoft-graph-tests.ts in the repo
+microsoft-graph-tests.js
+
+spec/secrets.*
+spec/*.js.map
+spec/*.js
+spec/*.d.ts
