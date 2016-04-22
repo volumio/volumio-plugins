@@ -1,4 +1,8 @@
 {
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
   "username": {
       "type": "string",
       "value": ""

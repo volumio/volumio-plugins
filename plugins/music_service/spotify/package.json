@@ -18,6 +18,7 @@
     "level": "^1.4.0",
     "net": "^1.0.2",
     "nodetools": "^1.0.0",
-    "spotify-web-api-node": "^2.3.0"
+    "spotify-web-api-node": "^2.3.0",
+    "v-conf": "^0.10.0"
   }
 }

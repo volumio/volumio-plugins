@@ -5,6 +5,7 @@ var libNet = require('net');
 var libFast = require('fast.js');
 var libLevel = require('level');
 var fs=require('fs-extra');
+var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 
 // Define the ControllerSpop class
@@ -13,8 +14,10 @@ function ControllerSpop(context) {
 	// This fixed variable will let us refer to 'this' object at deeper scopes
 	var self = this;
 
-	self.context=context;
-	self.commandRouter = self.context.coreCommand;
+	this.context = context;
+	this.commandRouter = this.context.coreCommand;
+	this.logger = this.context.logger;
+	this.configManager = this.context.configManager;
 }
 
 
@@ -35,6 +38,9 @@ ControllerSpop.prototype.onVolumioStart = function() {
 	// TODO use names from the package.json instead
 	self.servicename = 'spop';
 	self.displayname = 'Spotify';
+
+	var configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context, 'config.json');
+	config.loadFile(configFile);
 
 
 	// Each core gets its own set of Spop sockets connected
@@ -176,7 +182,17 @@ ControllerSpop.prototype.onUninstall = function() {
 ControllerSpop.prototype.getUIConfig = function() {
 	var self = this;
 
-	return {success:true,plugin:"spop"};
+	var defer = libQ.defer();
+
+	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+
+
+	uiconf.sections[0].content[0].value = config.get('username');
+	uiconf.sections[0].content[1].value = config.get('password');
+	uiconf.sections[0].content[2].value = config.get('bitrate');
+
+
+	return uiconf;
 };
 
 ControllerSpop.prototype.setUIConfig = function(data) {
@@ -541,6 +557,7 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 
     var defer=libQ.defer();
 
+
     try {
 
         fs.readFile(__dirname + "/spop.conf.tmpl", 'utf8', function (err, data) {
@@ -548,11 +565,15 @@ ControllerSpop.prototype.createSPOPDFile = function () {
                 defer.reject(new Error(err));
                 return console.log(err);
             }
+			var  bitrate = config.get('bitrate');
+			var bitratevalue = 'true';
+			if (bitrate == false ) {
+				bitratevalue = 'false';
+			}
 
-
-            var conf1 = data.replace("${username}", self.config.get('username'));
-            var conf2 = conf1.replace("${password}", self.config.get('password'));
-            var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
+            var conf1 = data.replace("${username}", config.get('username'));
+            var conf2 = conf1.replace("${password}", config.get('password'));
+            var conf3 = conf2.replace("${bitrate}", config.get('bitrate'));
 
             fs.writeFile("/etc/spopd.conf", conf3, 'utf8', function (err) {
                 if (err)
@@ -563,11 +584,11 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 
         });
 
-        callback();
+
     }
     catch (err) {
 
-        callback(err);
+
     }
 
     return defer.promise;
@@ -579,8 +600,9 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 
     var defer = libQ.defer();
 
-    self.config.set('username', data['username']);
-    self.config.set('password', data['password']);
+    config.set('username', data['username']);
+    config.set('password', data['password']);
+	config.set('bitrate', data['bitrate']);
 
     self.rebuildSPOPDAndRestartDaemon()
         .then(function(e){
@@ -597,27 +619,6 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 
 };
 
-ControllerSpop.prototype.saveMiscellanea = function (data) {
-    var self = this;
-
-    var defer = libQ.defer();
-
-    self.config.set('bitrate', data['bitrate']);
-
-    self.rebuildSPOPDAndRestartDaemon()
-        .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-            defer.resolve({});
-        })
-        .fail(function(e)
-        {
-            defer.reject(new Error());
-        })
-
-
-    return defer.promise;
-
-};
 
 ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
     var self=this;
