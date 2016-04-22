@@ -1,6 +1,0 @@
-{
- "categories":{
-     "music_service":{"spotify":{"version":"1.0", "url":"http://volumio.github.io/volumio-plugins/plugins/music_service/spotify/spotify.zip","licence":"GPLv3"}},
-     "miscellanea": {"myPlugin":{"version":"1.0", "url":"","licence":""}}
- }
-}

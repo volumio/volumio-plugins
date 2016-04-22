@@ -1,0 +1,21 @@
+{
+  "name": "rss_podcasts",
+  "version": "1.0.0",
+  "description": "Allows for subscribing to RSS podcasts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Elmar Jansen",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "RSS Podcasts",
+    "icon": "fa-lightbulb-o",
+    "plugin_type": "music_service"
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^1.4.0"
+  }
+}
