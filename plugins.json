@@ -1,6 +1,61 @@
-{
- "categories":{
-     "music_service":{"spotify":{"version":"1.0", "url":"http://volumio.github.io/volumio-plugins/plugins/music_service/spotify/spotify.zip","licence":"GPLv3"}},
-     "miscellanea": {"myPlugin":{"version":"1.0", "url":"","licence":""}}
- }
+{"categories": [
+  {
+    "name": "Music Services ",
+    "id": "cat1",
+    "description": "Plugins for Adding Music Sources to Volumio",
+    "plugins": [
+      {
+        "name": "Spotify",
+        "version": "1.0",
+        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "license": "Free for non commercial USE",
+        "description": "plugin 1 desc",
+        "author": "Volumio Team",
+        "screenshots": [{"image": "", "thumb": ""}],
+        "updated": "23-04-2016"
+      },
+      {
+        "name": "Another WebRadio Plugin",
+        "version": "1.0",
+        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "license": "gpl-v3",
+        "description": "Adding other WebRadios",
+        "author": "Volumio Team",
+        "updated": "23-04-2016"
+      }
+    ]
+  },
+  {
+    "name": "Miscelleanea",
+    "id": "cat2",
+    "description": "Things that cannot go in other categories",
+    "plugins": [
+      {
+        "name": "Random thing",
+        "version": "1.0",
+        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "license": "gpl-v3",
+        "description": "Something Random",
+        "author": "Volumio Team",
+        "updated": "23-04-2016"
+      }
+    ]
+  },
+  {
+    "name": "System Tools",
+    "id": "cat3",
+    "description": "Volumio System Tools",
+    "plugins": [
+      {
+        "name": "Touchscreen display",
+        "version": "1.0",
+        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "license": "gpl-v3",
+        "description": "Use the 7 inches pi display",
+        "author": "Volumio Team",
+        "updated": "23-04-2016"
+      }
+    ]
+  }
+]
 }
