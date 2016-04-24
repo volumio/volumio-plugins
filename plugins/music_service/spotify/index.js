@@ -7,6 +7,8 @@ var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
+var SpotifyWebApi = require('spotify-web-api-node');
+var nodetools = require('nodetools');
 
 // Define the ControllerSpop class
 module.exports = ControllerSpop;
@@ -28,19 +30,47 @@ ControllerSpop.prototype.getConfigurationFiles = function()
 	return ['config.json'];
 }
 
+ControllerSpop.prototype.addToBrowseSources = function () {
+	var self = this;
+	var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
+	self.commandRouter.volumioAddToBrowseSources(data);
+};
+
 // Plugin methods -----------------------------------------------------------------------------
 ControllerSpop.prototype.onVolumioStart = function() {
 	var self = this;
 
-	//var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-	//config.loadFile(configFile);
+	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
+
+	self.startSpopDaemon();
+	setTimeout(function () {
+	self.spopDaemonConnect();
+	}, 5000);
+
+
+
+};
+
+ControllerSpop.prototype.startSpopDaemon = function() {
+	var self = this;
+	exec("spopd -c /etc/spopd.conf", function (error, stdout, stderr) {
+		if (error !== null) {
+			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
+		}
+		else {
+			self.commandRouter.pushConsoleMessage('SpopD Daemon Started');
+		}
+	});
+};
+
+ControllerSpop.prototype.spopDaemonConnect = function() {
+	var self = this;
 
 	// TODO use names from the package.json instead
 	self.servicename = 'spop';
 	self.displayname = 'Spotify';
-
-	var configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context, 'config.json');
-	config.loadFile(configFile);
 
 
 	// Each core gets its own set of Spop sockets connected
@@ -116,6 +146,9 @@ ControllerSpop.prototype.onVolumioStart = function() {
 				var sStatus = self.sStatusBuffer;
 
 				self.logStart('Spop announces state update')
+					/*.then(function(){
+					 return self.getState.call(self);
+					 })*/
 					.then(function() {
 						return self.parseState.call(self, sStatus);
 					})
@@ -142,26 +175,178 @@ ControllerSpop.prototype.onVolumioStart = function() {
 	// Attempt to load tracklist from database on disk
 	// TODO make this a relative path
 	self.sTracklistPath = __dirname + '/db/tracklist';
-	self.loadTracklistFromDB()
-		.fail(libFast.bind(self.pushError, self));
 
 
+	self.addToBrowseSources();
 
-	exec("spopd -c /etc/spopd.conf", function (error, stdout, stderr) {
-		if (error !== null) {
-			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
-		}
-		else {
-			self.commandRouter.pushConsoleMessage('SpopD Daemon Started');
-		}
+
+	self.spotifyApi= new SpotifyWebApi({
+		clientId : self.config.get('spotify_api_client_id'),
+		clientSecret : self.config.get('spotify_api_client_secret')
 	});
+
+
 };
+
 
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
 	exec("killall spopd", function (error, stdout, stderr) {
 
 	});
+};
+
+ControllerSpop.prototype.handleBrowseUri=function(curUri)
+{
+	var self=this;
+
+	//self.commandRouter.logger.info(curUri);
+	var response;
+
+	if (curUri.startsWith('spotify')) {
+		if(curUri=='spotify')
+		{
+			response=libQ.resolve({
+				navigation: {
+					prev: {
+						uri: 'spotify'
+					},
+					list: [{
+						service: 'spop',
+						type: 'folder',
+						title: 'Playlists',
+						artist: '',
+						album: '',
+						icon: 'fa fa-folder-open-o',
+						uri: 'spotify/playlists'
+					}
+
+					]
+				}
+			});
+		}
+		else if(curUri.startsWith('spotify/playlists'))
+		{
+			if(curUri=='spotify/playlists')
+				response=self.listPlaylists();
+			else
+			{
+				response=self.listPlaylist(curUri);
+			}
+		}
+	}
+
+	return response;
+};
+
+ControllerSpop.prototype.listPlaylists=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+	var commandDefer=self.sendSpopCommand('ls',[]);
+	commandDefer.then(function(results){
+			var resJson=JSON.parse(results);
+
+			self.commandRouter.logger.info(resJson);
+			var response={
+				navigation: {
+					prev: {
+						uri: 'spotify'
+					},
+					list: []
+				}
+			};
+
+			for(var i in resJson.playlists)
+			{
+				if(resJson.playlists[i].name!=='')
+				{
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: resJson.playlists[i].name,
+						icon: 'fa fa-folder-open-o',
+						uri: 'spotify/playlists/'+resJson.playlists[i].index
+					});
+				}
+			}
+
+			defer.resolve(response);
+
+		})
+		.fail(function()
+		{
+			defer.fail(new Error('An error occurred while listing playlists'));
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listPlaylist=function(curUri)
+{
+	var self=this;
+
+	var uriSplitted=curUri.split('/');
+
+	var defer=libQ.defer();
+	var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
+	commandDefer.then(function(results){
+			var resJson=JSON.parse(results);
+
+			var response={
+				navigation: {
+					prev: {
+						uri: 'spotify/playlists'
+					},
+					list: []
+				}
+			};
+
+			for(var i in resJson.tracks)
+			{
+				response.navigation.list.push({
+					service: 'spop',
+					type: 'song',
+					title: resJson.tracks[i].title,
+					artist:resJson.tracks[i].artist,
+					album: resJson.tracks[i].album,
+					icon: 'fa fa-list-ol',
+					uri: resJson.tracks[i].uri
+				});
+			}
+
+			defer.resolve(response);
+		})
+		.fail(function()
+		{
+			defer.fail(new Error('An error occurred while listing playlists'));
+		});
+
+	return defer.promise;
+};
+
+
+
+
+ControllerSpop.prototype.onStop = function() {
+	var self = this;
+	exec("killall spopd", function (error, stdout, stderr) {
+
+	});
+};
+
+
+
+
+
+
+// Spop stop
+ControllerSpop.prototype.stop = function() {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::stop');
+
+	return self.sendSpopCommand('stop', []);
 };
 
 ControllerSpop.prototype.onRestart = function() {
@@ -439,7 +624,10 @@ ControllerSpop.prototype.parseState = function(sState) {
 		duration: nDuration,
 		samplerate: null, // Pull these values from somwhere else since they are not provided in the Spop state
 		bitdepth: null,
-		channels: null
+		channels: null,
+		artist: objState.artist,
+		title: objState.title,
+		album: objState.album
 	});
 };
 
@@ -536,6 +724,89 @@ ControllerSpop.prototype.rebuildTracklistFromSpopPlaylists = function(objInput, 
 	});
 
 	return promisedActions;
+};
+
+
+ControllerSpop.prototype.explodeUri = function(uri) {
+	var self = this;
+
+	var defer=libQ.defer();
+
+	var splitted=uri.split(':');
+
+	self.spotifyApi.getTrack(splitted[2])
+		.then(function(data) {
+			self.commandRouter.logger.info(JSON.stringify(data));
+
+
+			var artist='';
+			var album='';
+			var title='';
+
+			if(data.body.artists.length>0)
+				artist=data.body.artists[0].name;
+
+			if(data.body.album!==undefined)
+				album=data.body.album.name;
+
+			var albumart=self.getAlbumArt({artist:artist,album:album},"");
+
+			defer.resolve({
+				uri: uri,
+				service: 'spop',
+				name: data.body.name,
+				artist: artist,
+				album: album,
+				type: 'track',
+				duration: parseInt(data.body.duration_ms/1000),
+				tracknumber: data.body.track_number,
+				albumart: albumart,
+				samplerate: '128',
+				bitdepth: 16,
+				trackType: 'Spotify'
+
+			});
+
+		});
+
+
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getAlbumArt = function (data, path) {
+
+	var artist, album;
+
+	if (data != undefined && data.path != undefined) {
+		path = data.path;
+	}
+
+	var web;
+
+	if (data != undefined && data.artist != undefined) {
+		artist = data.artist;
+		if (data.album != undefined)
+			album = data.album;
+		else album = data.artist;
+
+		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
+	}
+
+	var url = '/albumart';
+
+	if (web != undefined)
+		url = url + web;
+
+	if (web != undefined && path != undefined)
+		url = url + '&';
+	else if (path != undefined)
+		url = url + '?';
+
+	if (path != undefined)
+		url = url + 'path=' + nodetools.urlEncode(path);
+
+	return url;
 };
 
 ControllerSpop.prototype.logDone = function(timeStart) {
