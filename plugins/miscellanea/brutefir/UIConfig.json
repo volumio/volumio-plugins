@@ -1,0 +1,39 @@
+{
+  "page": {
+    "label": "Miscellanea"
+  },
+  "sections": [ 
+   {
+      "id": "brutefir_setting",
+      "element": "section",
+      "label": "Brutefir setting",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/brutefir", "method":"saveBrutefirplugsetting"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "leftfilter",
+          "right filter"
+          ]
+      },
+      "content": [
+        {
+          "id": "leftfilter",
+          "type":"text",
+          "element": "input",
+          "doc": "Path to left filter file",
+          "label": "leftfilter",
+          "value": "dirac pulse"
+        },
+        {
+          "id": "rightfilter",
+          "type":"text",
+          "element": "input",
+          "doc": "Path to right filter file",
+          "label": "Password",
+          "value": "dirac pulse"
+        }
+        ]
+   }
+  ]
+}

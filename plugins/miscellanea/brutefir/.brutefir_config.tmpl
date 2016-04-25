@@ -1,0 +1,73 @@
+[brutefirplug]
+
+    sampling_rate: 44100;
+    filter_length: 4096,16;
+    overflow_warnings: true;
+    float_bits: 32;
+    convolver_config: "~/.brutefir_convolver"; # location of convolver config file
+#    logic: "cli" { port: 3009;
+logic:
+ "cli" { port: 3002;},
+"eq"  {
+	debug_dump_filter: "/tmp/rendered-%d";
+	{
+                coeff: "equalizer";
+                bands: "ISO octave";
+                magnitude:  63/0.0, 125/0.0, 250/0.0, 500/0.0, 1000/0.0, 2000/0.0, 4000/0.0, 8000/0.0, 16000/0.0;
+        };
+};
+#${leftfilter}
+#${rightfilter}
+coeff "equalizer" {
+        filename: "dirac pulse";
+        shared_mem: true;
+        blocks: 4;
+};
+
+
+# coeff "left" {
+#          filename: "/home/volumio/lr.pcm"; #filterl
+#           filename: "dirac pulse";
+#            format: "FLOAT_LE";     
+#            attenuation: 0.0;
+#    };
+
+#    coeff "right" {
+#             filename:"/home/volumio/lr.pcm"; #filterr
+#             filename: "dirac pulse";
+#            format: "FLOAT_LE";     
+#            attenuation: 0.0;
+#     };
+    input "l_in", "r_in" {
+            device: "alsa" {device: "hw:Loopback,1";};
+            sample: "S32_LE";   # sample format
+            channels: 2;            # number of open channels / which to use
+    };
+
+    output "l_out", "r_out" {
+            device: "alsa" {device: "hw:2,0";};
+#           device: "file" {path: "/dev/stdout";};
+            sample: "S32_LE";   # sample format
+            channels: 2;        # number of open channels / which to use
+    };
+
+
+
+# Add equalizer
+filter "eq_l" {
+from_inputs: "l_in";
+to_outputs: "l_out";
+process: -1; # process index to run in (-1 means auto)
+coeff: "equalizer";
+delay: 0; # predelay, in blocks
+crossfade: false; # crossfade when coefficient is changed
+};
+
+filter "eq_r" {
+from_inputs: "r_in";
+to_outputs: "r_out";
+process: -1; # process index to run in (-1 means auto)
+coeff: "equalizer";
+delay: 0; # predelay, in blocks
+crossfade: false; # crossfade when coefficient is changed
+}; 

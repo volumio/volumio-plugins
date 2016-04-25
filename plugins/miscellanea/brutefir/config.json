@@ -1,0 +1,14 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "leftfilter": {
+      "type": "string",
+      "value": ""
+  },
+  "rightfilter": {
+    "type": "string",
+    "value": ""
+  }
+}
