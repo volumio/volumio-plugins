@@ -1,7 +1,7 @@
 {"categories": [
   {
     "prettyName": "Music Services",
-    "name": "music_services",
+    "name": "music_service",
     "id": "cat1",
     "description": "Plugins for Adding Music Sources to Volumio",
     "plugins": [
