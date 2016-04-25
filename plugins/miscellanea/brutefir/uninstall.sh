@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Unistalling Spop dependencies"
+echo "Unistalling Brutefir dependencies"
 
-echo "Removing Spop"
+echo "Removing Brutefir"
 
 echo "Done"
