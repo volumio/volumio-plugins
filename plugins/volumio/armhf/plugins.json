@@ -12,6 +12,7 @@
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "Free for non commercial USE",
         "description": "plugin 1 desc",
+        "details":"<h2>This are spotify's plugin details</h2>",
         "author": "Volumio Team",
         "screenshots": [{"image": "", "thumb": ""}],
         "updated": "23-04-2016"
