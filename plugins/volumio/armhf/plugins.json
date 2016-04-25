@@ -1,11 +1,13 @@
 {"categories": [
   {
-    "name": "Music Services ",
+    "prettyName": "Music Services",
+    "name": "music_services",
     "id": "cat1",
     "description": "Plugins for Adding Music Sources to Volumio",
     "plugins": [
       {
-        "name": "Spotify",
+        "prettyName": "Spotify",
+        "name": "spop",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "Free for non commercial USE",
@@ -15,7 +17,8 @@
         "updated": "23-04-2016"
       },
       {
-        "name": "Another WebRadio Plugin",
+        "prettyName": "Another WebRadio Plugin",
+        "name": "webradio",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
@@ -26,12 +29,14 @@
     ]
   },
   {
-    "name": "Miscelleanea",
+    "prettyName":"Miscelleanea",
+    "name": "miscelleanea",
     "id": "cat2",
     "description": "Things that cannot go in other categories",
     "plugins": [
       {
-        "name": "Random thing",
+        "prettyName":"Random thing",
+        "name": "random",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
@@ -42,12 +47,14 @@
     ]
   },
   {
-    "name": "System Tools",
+    "prettyName":"System Tools",
+    "name": "system_controller",
     "id": "cat3",
     "description": "Volumio System Tools",
     "plugins": [
       {
-        "name": "Touchscreen display",
+        "prettyName":"Touchscreen display",
+        "name": "touchscreen_display",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
