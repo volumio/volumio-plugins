@@ -7,7 +7,7 @@
       {
         "name": "Spotify",
         "version": "1.0",
-        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "Free for non commercial USE",
         "description": "plugin 1 desc",
         "author": "Volumio Team",
@@ -17,7 +17,7 @@
       {
         "name": "Another WebRadio Plugin",
         "version": "1.0",
-        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
         "description": "Adding other WebRadios",
         "author": "Volumio Team",
@@ -33,7 +33,7 @@
       {
         "name": "Random thing",
         "version": "1.0",
-        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
         "description": "Something Random",
         "author": "Volumio Team",
@@ -49,7 +49,7 @@
       {
         "name": "Touchscreen display",
         "version": "1.0",
-        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "gpl-v3",
         "description": "Use the 7 inches pi display",
         "author": "Volumio Team",
