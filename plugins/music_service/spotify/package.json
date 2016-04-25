@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "volumio_info": {
+    "prettyName": "Spotify",
     "plugin_type": "music_service"
   },
   "dependencies": {
