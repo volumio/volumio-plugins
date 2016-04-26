@@ -16,8 +16,7 @@ logic:
                 magnitude:  63/0.0, 125/0.0, 250/0.0, 500/0.0, 1000/0.0, 2000/0.0, 4000/0.0, 8000/0.0, 16000/0.0;
         };
 };
-#${leftfilter}
-#${rightfilter}
+#
 coeff "equalizer" {
         filename: "dirac pulse";
         shared_mem: true;
@@ -26,14 +25,14 @@ coeff "equalizer" {
 
 
 # coeff "left" {
-#          filename: "/home/volumio/lr.pcm"; #filterl
+#          filename: "${leftfilter}"; #leftfilterl
 #           filename: "dirac pulse";
 #            format: "FLOAT_LE";     
 #            attenuation: 0.0;
 #    };
 
 #    coeff "right" {
-#             filename:"/home/volumio/lr.pcm"; #filterr
+#             filename:"${rightfilter}"; #filterr
 #             filename: "dirac pulse";
 #            format: "FLOAT_LE";     
 #            attenuation: 0.0;
