@@ -207,7 +207,7 @@ ControllerBrutefirplug.prototype.getUIConfig = function() {
 	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
 
-	uiconf.sections[0].content[0].value = config.get('leftfiler');
+	uiconf.sections[0].content[0].value = config.get('leftfilter');
 	uiconf.sections[0].content[1].value = config.get('rightfilter');
 	uiconf.sections[0].content[2].value = config.get('magnitude');
 	uiconf.sections[1].content[0].value = config.get('coef31.5');
@@ -250,7 +250,7 @@ ControllerBrutefirplug.prototype.setConf = function(varName, varValue) {
 // Internal methods ---------------------------------------------------------------------------
 // These are 'this' aware, and may or may not return a promise
 
-// Send command to Spop
+// Send command to Brutefir
 ControllerBrutefirplug.prototype.sendBrutefirplugCommand = function(sCommand, arrayParameters) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefirplug::sendBrutefirplugCommand');
@@ -283,7 +283,6 @@ ControllerBrutefirplug.prototype.getState = function() {
 };
 
 
-// Announce updated Spop state
 
 // Pass the error if we don't want to handle it
 

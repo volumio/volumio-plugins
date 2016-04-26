@@ -10,5 +10,57 @@
   "rightfilter": {
     "type": "string",
     "value": ""
-  }
+  },
+  "nHost":{
+    "type": "string",
+    "value": "localhost"
+  },
+  "nPort":{
+    "type": "number",
+    "value": "3002"
+  },
+  "coef31.5":{
+    "type": "number",
+    "value": "0"
+  },
+  "coef31.5":{
+    "type": "number",
+    "value": "0"
+  },
+ "coef63.5":{
+    "type": "number",
+    "value": "0"
+  },
+  "coef125.5":{
+    "type": "number",
+    "value": "0"
+  },
+ "coef250":{
+    "type": "number",
+    "value": "0"
+  },
+  "coef500":{
+    "type": "number",
+    "value": "0"
+  },
+ "coef1000":{
+    "type": "number",
+    "value": "0"
+  },
+  "coef2000":{
+    "type": "number",
+    "value": "0"
+  },
+ "coef4000":{
+    "type": "number",
+    "value": "0"
+  },
+  "coef8000":{
+    "type": "number",
+    "value": "0"
+  },
+ "coef16000":{
+    "type": "number",
+    "value": "0"
+   },
 }
