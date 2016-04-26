@@ -75,7 +75,7 @@ ControllerBrutefirplug.prototype.BrutefirplugDaemonConnect = function() {
 	// Each core gets its own set of Brutefir sockets connected
 	var nHost='localhost';
 	var nPort=3002;
-	self.connBrutefirplugCommand = libNet.createConnection(nPort, nHost); // Socket to send commands and receive track listings
+	self.connBrutefirplugCommand = libNet.createConnection(nPort, nHost); // Socket to send commands
 	self.connBrutefirplugStatus = libNet.createConnection(nPort, nHost); // Socket to listen for status changes
 
 	// Start a listener for receiving errors
@@ -210,6 +210,16 @@ ControllerBrutefirplug.prototype.getUIConfig = function() {
 	uiconf.sections[0].content[0].value = config.get('leftfiler');
 	uiconf.sections[0].content[1].value = config.get('rightfilter');
 	uiconf.sections[0].content[2].value = config.get('magnitude');
+	uiconf.sections[1].content[0].value = config.get('coef31.5');
+	uiconf.sections[1].content[1].value = config.get('coef63.0');
+	uiconf.sections[1].content[2].value = config.get('coef125');
+	uiconf.sections[1].content[3].value = config.get('coef250');
+	uiconf.sections[1].content[4].value = config.get('coef500');
+	uiconf.sections[1].content[5].value = config.get('coef1000');
+	uiconf.sections[1].content[6].value = config.get('coef2000');
+	uiconf.sections[1].content[7].value = config.get('coef4000');
+	uiconf.sections[1].content[8].value = config.get('coef8000');
+	uiconf.sections[1].content[9].value = config.get('coef16000');
 
 
 	return uiconf;
