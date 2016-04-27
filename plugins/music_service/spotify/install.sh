@@ -7,7 +7,7 @@ sudo apt-get -y install libao-dev libglib2.0-dev libjson-glib-1.0-0 libjson-glib
 echo "Installing Spop and libspotify"
 cd / 
 wget http://repo.volumio.org/Packages/Spop/spop.tar.gz
-tar xf /spop.tar.gz
+sudo tar xf /spop.tar.gz
 rm /spop.tar.gz
 
 echo "Done"
