@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "Installing brutefir dependencies"
-apt-get update
-apt-get -y install brutefir
+sudo apt-get update
+sudo apt-get -y install brutefir
 echo "Installing brutefir plugin"
 cd / 
 wget http://repo.volumio.org/Packages/Brutefir/brutefirplug.tar.gz
