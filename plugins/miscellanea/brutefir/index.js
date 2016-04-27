@@ -8,6 +8,8 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var nodetools = require('nodetools');
+var telnet = require('telnet-client');
+var connection = new telnet();
 
 // Define the ControllerBrutefirplug class
 module.exports = ControllerBrutefirplug;
@@ -64,106 +66,36 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 	});
 };
 
-ControllerBrutefirplug.prototype.BrutefirplugDaemonConnect = function() {
-	var self = this;
 
-	// TODO use names from the package.json instead
-	self.servicename = 'Brutefirplug';
-	self.displayname = 'Brutefir';
+	// Here we send the command to brutfir via telnet
+	var setting = self.config.get('coef31.5','coef63.5','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000'),
 
+	var params = {
+	host: 'localhost',
+	port: 3002,
+	shellPrompt: '/ # ',
+	timeout: 1500,
+	// removeEcho: 4
+	};
 
-	// Each core gets its own set of Brutefir sockets connected
-	var nHost='localhost';
-	var nPort=3002;
-	self.connBrutefirplugCommand = libNet.createConnection(nPort, nHost); // Socket to send commands
-	self.connBrutefirplugStatus = libNet.createConnection(nPort, nHost); // Socket to listen for status changes
+	//here we compose the eq cmd
+	var cmd = 'lmc eq 0 mag 31.5/'+coef31\.5 +',63.5/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000;
 
-	// Start a listener for receiving errors
-	self.connBrutefirplugCommand.on('error', function(err) {
-		console.error('Brutefir command error:');
-		console.error(err);
+	//here we send the cmd via telnet
+	connection.on('ready', function(prompt) {
+	connection.exec(cmd, function(err, response) {
+	console.log(response);
 	});
-	self.connBrutefirplugStatus.on('error', function(err) {
-		console.error('Brutefir status error:');
-		console.error(err);
 	});
 
-	// Init some command socket variables
-	self.bBrutefirplugCommandGotFirstMessage = false;
-	self.BrutefirplugCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events (basically when it emits 'spop 0.0.1').
-	self.BrutefirplugCommandReady = self.BrutefirplugCommandReadyDeferred.promise;
-	self.arrayResponseStack = [];
-	self.sResponseBuffer = '';
-
-	// Start a listener for command socket messages (command responses)
-	self.connBrutefirplugCommand.on('data', function(data) {
-		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
-
-		// If the last character in the data chunk is a newline, this is the end of the response
-		if (data.slice(data.length - 1).toString() === '\n') {
-			// If this is the first message, then the connection is open
-			if (!self.bBrutefirplugCommandGotFirstMessage) {
-				self.bBrutefirplugCommandGotFirstMessage = true;
-				try {
-					self.BrutefirplugCommandReadyDeferred.resolve();
-				} catch (error) {
-					self.pushError(error);
-				}
-				// Else this is a command response
-			} else {
-				try {
-					self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
-				} catch (error) {
-					self.pushError(error);
-				}
-			}
-
-			// Reset the response buffer
-			self.sResponseBuffer = '';
-		}
+	connection.on('timeout', function() {
+	console.log('socket timeout!')
+	connection.end();
 	});
 
-	// Init some status socket variables
-	self.bBrutefirplugStatusGotFirstMessage = false;
-	self.sStatusBuffer = '';
-
-	// Start a listener for status socket messages
-	self.connBrutefirStatus.on('data', function(data) {
-		self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
-
-		// If the last character in the data chunk is a newline, this is the end of the status update
-		if (data.slice(data.length - 1).toString() === '\n') {
-			// Put socket back into monitoring mode
-			self.connBrutefirplugStatus.write('idle\n');
-
-			// If this is the first message, then the connection is open
-			if (!self.bBrutefirplugStatusGotFirstMessage) {
-				self.bBrutefirplugStatusGotFirstMessage = true;
-				// Else this is a state update announcement
-			} else {
-				var timeStart = Date.now();
-				var sStatus = self.sStatusBuffer;
-
-				self.logStart('Brutefir announces state update')
-					/*.then(function(){
-					 return self.getState.call(self);
-					 })*/
-					.then(function() {
-						return self.parseState.call(self, sStatus);
-					})
-					.then(libFast.bind(self.pushState, self))
-					.fail(libFast.bind(self.pushError, self))
-					.done(function() {
-						return self.logDone(timeStart);
-					});
-			}
-
-			// Reset the status buffer
-			self.sStatusBuffer = '';
-		}
+	connection.on('close', function() {
+	console.log('connection closed');
 	});
-
-
 };
 
 
@@ -251,40 +183,9 @@ ControllerBrutefirplug.prototype.setConf = function(varName, varValue) {
 // These are 'this' aware, and may or may not return a promise
 
 // Send command to Brutefir
-ControllerBrutefirplug.prototype.sendBrutefirplugCommand = function(sCommand, arrayParameters) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefirplug::sendBrutefirplugCommand');
-
-	// Convert the array of parameters to a string
-	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
-		return sCollected + ' ' + sCurrent;
-	}, '');
-
-	// Pass the command to Brutefir when the command socket is ready
-	self.BrutefirplugCommandReady
-	.then(function() {
-		return libQ.nfcall(libFast.bind(self.connBrutefirplugCommand.write, self.connBrutefirplugCommand), sCommand + sParameters + '\n', 'utf-8');
-	});
-
-	var BrutefirplugResponseDeferred = libQ.defer();
-	var BrutefirplugResponse = BrutefirplugResponseDeferred.promise;
-	self.arrayResponseStack.push(BrutefirplugResponseDeferred);
-
-	// Return a promise for the command response
-	return BrutefirplugResponse;
-};
-
-// Brutefir get state
-ControllerBrutefirplug.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefirplug::getState');
-
-	return self.sendBrutefirplugCommand('status', []);
-};
 
 
-
-// Pass the error if we don't want to handle it
+// Here we write parameter in brutefir config file
 
 
 ControllerBrutefirplug.prototype.createBrutefirplugFile = function () {
