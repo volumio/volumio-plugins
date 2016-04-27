@@ -11,10 +11,10 @@ A multiband equalizer
 	with gain for each band
 	with phase setting for each band
 
-Path for filters (left and right) will be set trough webUI and stored in a file.
+Path for filters (left and right) will be set through webUI and stored in a file.
 They will be used each time brutefir start
 
-Setting of equalizer will be set trough webUI and store in a file
+Setting of equalizer will be set through webUI and store in a file
 They will be used each time brutefir start and change in setting in webUI will send a command to brutefir to apply the change in "live".
 This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
