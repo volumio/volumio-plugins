@@ -33,7 +33,7 @@ ControllerBrutefirplug.prototype.getConfigurationFiles = function()
 
 ControllerBrutefirplug.prototype.addToBrowseSources = function () {
 	var self = this;
-	var data = {name: 'Brutefir', uri: 'Brutefir',plugin_type:'miscellanea',plugin_name:'brutefirplug'};
+	var data = {name: 'Brutefir', uri: 'Brutefir',plugin_type:'miscellanea',plugin_name:'brutefir'};
 	self.commandRouter.volumioAddToBrowseSources(data);
 };
 
@@ -68,7 +68,7 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 
 
 	// Here we send the command to brutfir via telnet
-	var setting = self.config.get('coef31.5','coef63.5','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000'),
+	var setting = self.config.get('coef315','coef63.5','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000');
 
 	var params = {
 	host: 'localhost',
@@ -79,7 +79,8 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 	};
 
 	//here we compose the eq cmd
-	var cmd = 'lmc eq 0 mag 31.5/'+coef31\.5 +',63.5/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000;
+	var cmd = 'lmc eq 0 mag 31.5/'+coef315;
+//+',63.5/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
 
 	//here we send the cmd via telnet
 	connection.on('ready', function(prompt) {
@@ -96,7 +97,9 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 	connection.on('close', function() {
 	console.log('connection closed');
 	});
-};
+	connection.connect(params);
+	});
+
 
 
 ControllerBrutefirplug.prototype.onStop = function() {
@@ -106,7 +109,7 @@ ControllerBrutefirplug.prototype.onStop = function() {
 	});
 };
 
-};
+
 
 // Brutefirplug stop
 ControllerBrutefirplug.prototype.stop = function() {
@@ -275,4 +278,4 @@ ControllerBrutefirplug.prototype.rebuildBRUTEFIRPLUGAndRestartDaemon = function 
         })
 
     return defer.promise;
-}
+};
