@@ -5,15 +5,15 @@
     overflow_warnings: true;
     float_bits: 32;
     convolver_config: "~/.brutefir_convolver"; # location of convolver config file
-#    logic: "cli" { port: 3009;
 logic:
  "cli" { port: 3002;},
 "eq"  {
 	debug_dump_filter: "/tmp/rendered-%d";
 	{
                 coeff: "equalizer";
-                bands: "ISO octave";
-                magnitude:  31/0.0, 63/0.0, 125/0.0, 250/0.0, 500/0.0, 1000/0.0, 2000/0.0, 4000/0.0, 8000/0.0, 16000/0.0;
+                #bands: "ISO octave";
+		bands: 31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000;
+                magnitude:  31/0.0, 63/0.0, 125/0.0, 250/0.0, 500/0.0, 1000/0.0$
         };
 };
 #

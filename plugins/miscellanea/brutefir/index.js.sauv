@@ -1,34 +1,65 @@
 'use strict';
+
 var libQ = require('kew');
 var libNet = require('net');
+//var libFast = require('fast.js');
+//var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
+//var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
 
-// Define the Brutefir class
-module.exports = Brutefir;
-function Brutefir(context) {
+// Define the ControllerBrutefir class
+module.exports = ControllerBrutefir;
+function ControllerBrutefir(context) {
+	// This fixed variable will let us refer to 'this' object at deeper scopes
 	var self = this;
+
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;	
+	this.configManager = this.context.configManager;
 }
 
 
-/*
- * This method can be defined by every plugin which needs to be informed of the startup of Volumio.
- * The Core controller checks if the method is defined and executes it on startup if it exists.
- */
-Brutefir.prototype.onVolumioStart = function () {
+//ControllerBrutefir.prototype.getConfigurationFiles = function()
+//{
+//	var self = this;
+
+//	return ['config.json'];
+//}
+
+//ControllerBrutefir.prototype.addToBrowseSources = function () {
+//	var self = this;
+//	var data = {name: 'Brutefir', uri: 'brutefir',plugin_type:'miscellanea',plugin_name:'brutefir'};
+//	self.commandRouter.volumioAddToBrowseSources(data);
+//};
+
+// Plugin methods -----------------------------------------------------------------------------
+ControllerBrutefir.prototype.onVolumioStart = function() {
 	var self = this;
+
+//	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+//	self.config = new (require('v-conf'))();
+//	self.config.loadFile(configFile);
+
+//	self.startBrutefirDaemon();
+//	setTimeout(function () {
+//	self.BrutefirDaemonConnect();
+//	}, 5000);
 };
-Brutefir.prototype.onStart = function() {
+
+ControllerBrutefir.prototype.onStart = function() {
 	var self = this;
 	//Perform startup tasks here
-	//Perform startup tasks here
+};
+
+//};
+
+ControllerBrutefir.prototype.startBrutefirDaemon = function() {
+	var self = this;
 	exec("brutefir", function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
@@ -37,6 +68,10 @@ Brutefir.prototype.onStart = function() {
 			self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
 		}
 	});
+//};
+
+
+	// Here we send the command to brutfir via telnet
 	var setting = self.config.get('coef31');
 	var nHost = self.config.get('nHost');
 	var nPort = self.confug.get('nPort');
@@ -74,29 +109,43 @@ Brutefir.prototype.onStart = function() {
 	}
 
 
-
-Brutefir.prototype.onStop = function () {
+ControllerBrutefir.prototype.onStop = function() {
 	var self = this;
-	//Perform startup tasks here
+//	exec("killall brutefir", function (error, stdout, stderr) {
+//
+//	});
 };
 
-Brutefir.prototype.onRestart = function () {
+
+
+// Brutefir stop
+//ControllerBrutefir.prototype.stop = function() {
+//	var self = this;
+//	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::stop');
+
+//	return self.sendBrutefirCommand('stop', []);
+//};
+
+ControllerBrutefir.prototype.onRestart = function() {
 	var self = this;
-	//Perform startup tasks here
+	//
 };
 
-Brutefir.prototype.onInstall = function () {
+ControllerBrutefir.prototype.onInstall = function() {
+	var self = this;
+//	//Perform your installation tasks here
+};
+
+ControllerBrutefir.prototype.onUninstall = function() {
 	var self = this;
 	//Perform your installation tasks here
 };
 
-Brutefir.prototype.onUninstall = function () {
+ControllerBrutefir.prototype.getUIConfig = function() {
 	var self = this;
-	//Perform your installation tasks here
-};
 
-Brutefir.prototype.getUIConfig = function () {
-	var self = this;
+//	var defer = libQ.defer();
+
 	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 	var value;
 
@@ -119,21 +168,31 @@ Brutefir.prototype.getUIConfig = function () {
 	return uiconf;
 };
 
-Brutefir.prototype.setUIConfig = function (data) {
+ControllerBrutefir.prototype.setUIConfig = function(data) {
 	var self = this;
 	var uiconf=fs.readJsonSync(__dirname+'/UIConfig.json');
 	//Perform your installation tasks here
 };
 
-Brutefir.prototype.getConf = function (varName) {
+ControllerBrutefir.prototype.applyConf = function(conf) {
+	var self = this;
+};
+
+ControllerBrutefir.prototype.getConf = function(varName) {
 	var self = this;
 	//Perform your installation tasks here
 };
 
-Brutefir.prototype.setConf = function (varName, varValue) {
+
+ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 	var self = this;
-	
-	Brutefir.prototype.createBrutefirFile = function () {
+	//Perform your installation tasks here
+};
+
+// Public Methods ---------------------------------------------------------------------------------------
+
+
+ControllerBrutefir.prototype.createBrutefirFile = function () {
     var self = this;
 
     var defer=libQ.defer();
@@ -170,7 +229,7 @@ Brutefir.prototype.setConf = function (varName, varValue) {
 
 };
 
-	Brutefir.prototype.saveBrutefirconfig = function (data) {
+ControllerBrutefir.prototype.saveBrutefirconfig = function (data) {
     var self = this;
 
     var defer = libQ.defer();
@@ -202,26 +261,33 @@ Brutefir.prototype.setConf = function (varName, varValue) {
     return defer.promise;
 
 };
-	//Perform your installation tasks here
-};
 
-//Optional functions exposed for making development easier and more clear
-Brutefir.prototype.getSystemConf = function (pluginName, varName) {
-	var self = this;
-	//Perform your installation tasks here
-};
 
-Brutefir.prototype.setSystemConf = function (pluginName, varName) {
-	var self = this;
-	//Perform your installation tasks here
+ControllerBrutefir.prototype.rebuildBrutefirAndRestartDaemon = function () {
+    var self=this;
+    var defer=libQ.defer();
+
+    self.createBrutefirFile()
+        .then(function(e)
+        {
+            var edefer=libQ.defer();
+           exec("killall brutefir", function (error, stdout, stderr) {
+                edefer.resolve();
+            }); 
+            return edefer.promise;
+        })
+        .then(function(e){
+            self.onVolumioStart();
+            return libQ.resolve();
+        })
+        .then(function(e)
+        {
+            defer.resolve();
+        })
+        .fail(function(e){
+            defer.reject(new Error());
+        })
+
+    return defer.promise;
 }
 
-Brutefir.prototype.getAdditionalConf = function () {
-	var self = this;
-	//Perform your installation tasks here
-}
-
-Brutefir.prototype.setAdditionalConf = function () {
-	var self = this;
-	//Perform your installation tasks here
-}
