@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "volumio_info": {
-    "prettyName": "Brutefirplug",
+    "prettyName": "brutefir",
     "plugin_type": "miscellanea"
   },
   "dependencies": {

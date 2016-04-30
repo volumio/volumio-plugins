@@ -1,25 +1,5 @@
 {
-  "enabled": {
-    "type": "boolean",
-    "value": false
-  },
-  "leftfilter": {
-      "type": "string",
-      "value": ""
-  },
-  "rightfilter": {
-    "type": "string",
-    "value": ""
-  },
-  "nHost":{
-    "type": "string",
-    "value": "localhost"
-  },
-  "nPort":{
-    "type": "number",
-    "value": "3002"
-  },
-  "coef31":{
+   "coef31":{
     "type": "number",
     "value": "0"
   },
