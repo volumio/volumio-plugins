@@ -11,59 +11,43 @@
       "saveButton": {
         "label": "Save",
         "data": [
-          "leftfilter",
-          "rightfilter"
+            "rightfilter"
           ]
       },
-      "content": [
-        {
-          "id": "leftfilter",
-          "type":"text",
-          "element": "input",
-          "doc": "Path to left filter file",
-          "label": "leftfilter",
-          "value": "dirac pulse"
-        },
-        {
-          "id": "rightfilter",
-          "type":"text",
-          "element": "input",
-          "doc": "Path to right filter file",
-          "label": "rightfilter",
-          "value": "dirac pulse"
-        }
-        ]
-   },
- 
+      "value":  {
+        "value": "0",
+        "label": "Unknown"
+	},
+   "content": [
    {
       "id": "coef31",
       "element": "select",
       "label": "31Hz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -72,30 +56,30 @@
       "element": "select",
       "label": "63Hz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -104,30 +88,30 @@
       "element": "select",
       "label": "125Hz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -136,30 +120,30 @@
       "element": "select",
       "label": "250Hz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -168,30 +152,30 @@
       "element": "select",
       "label": "500Hz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -200,62 +184,62 @@
       "element": "select",
       "label": "1KHz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
       {
-      "id": "coef20000",
+      "id": "coef2000",
       "element": "select",
       "label": "2KHz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -264,30 +248,30 @@
       "element": "select",
       "label": "4KHz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -296,30 +280,30 @@
       "element": "select",
       "label": "8KHz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
+            }
    	
            ]
        },
@@ -328,31 +312,32 @@
       "element": "select",
       "label": "16KHz",
       "value": {
-          "value":"0",
+          "value":0,
 	  "label": "0"
       },
       "options": [
             {
-              "value":"-10",
+              "value":-10,
               "label": "-10"
             },
             {
-              "value":"-5",
+              "value":-5,
               "label": "-5"
             },
             {
-              "value":"0",
+              "value":0,
               "label": "0"
             },
             {
-              "value":"5",
+              "value":5,
               "label": "5"
             },
             {
-              "value":"10",
+              "value":10,
               "label": "10"
-            },
-   	
-           ]
-       },
+            }
+
+	]
+      
+     
 }
