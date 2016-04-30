@@ -68,7 +68,7 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 
 
 	// Here we send the command to brutfir via telnet
-	var setting = self.config.get('coef315','coef63.5','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000');
+	var setting = self.config.get('coef31','coef63','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000');
 
 	var params = {
 	host: 'localhost',
@@ -79,7 +79,7 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 	};
 
 	//here we compose the eq cmd
-	var cmd = 'lmc eq 0 mag 31.5/'+coef315;
+	var cmd = 'lmc eq 0 mag 31/'+coef31;
 //+',63.5/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
 
 	//here we send the cmd via telnet
@@ -145,8 +145,8 @@ ControllerBrutefirplug.prototype.getUIConfig = function() {
 	uiconf.sections[0].content[0].value = config.get('leftfilter');
 	uiconf.sections[0].content[1].value = config.get('rightfilter');
 	uiconf.sections[0].content[2].value = config.get('magnitude');
-	uiconf.sections[1].content[0].value = config.get('coef31.5');
-	uiconf.sections[1].content[1].value = config.get('coef63.0');
+	uiconf.sections[1].content[0].value = config.get('coef31');
+	uiconf.sections[1].content[1].value = config.get('coef63');
 	uiconf.sections[1].content[2].value = config.get('coef125');
 	uiconf.sections[1].content[3].value = config.get('coef250');
 	uiconf.sections[1].content[4].value = config.get('coef500');
