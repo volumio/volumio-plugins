@@ -33,28 +33,28 @@ ControllerBrutefirplug.prototype.getConfigurationFiles = function()
 
 ControllerBrutefirplug.prototype.addToBrowseSources = function () {
 	var self = this;
-	var data = {name: 'Brutefir', uri: 'Brutefir',plugin_type:'miscellanea',plugin_name:'brutefir'};
+	var data = {name: 'Brutefir', uri: 'brutefir',plugin_type:'miscellanea',plugin_name:'brutefir'};
 	self.commandRouter.volumioAddToBrowseSources(data);
 };
 
 // Plugin methods -----------------------------------------------------------------------------
-ControllerBrutefireplug.prototype.onVolumioStart = function() {
+ControllerBrutefirplug.prototype.onVolumioStart = function() {
 	var self = this;
 
 	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
 	self.config = new (require('v-conf'))();
 	self.config.loadFile(configFile);
 
-	self.startBrutefireplugDaemon();
+	self.startBrutefirplugDaemon();
 	setTimeout(function () {
-	self.BrutefireplugDaemonConnect();
+	self.BrutefirplugDaemonConnect();
 	}, 5000);
 
 
 
 };
 
-ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
+ControllerBrutefirplug.prototype.startBrutefirplugDaemon = function() {
 	var self = this;
 	exec("brutefir", function (error, stdout, stderr) {
 		if (error !== null) {
@@ -80,7 +80,7 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 
 	//here we compose the eq cmd
 	var cmd = 'lmc eq 0 mag 31/'+coef31;
-//+',63.5/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
+//+',63/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
 
 	//here we send the cmd via telnet
 	connection.on('ready', function(prompt) {
@@ -98,41 +98,41 @@ ControllerBrutefireplug.prototype.startBrutefireplugDaemon = function() {
 	console.log('connection closed');
 	});
 	connection.connect(params);
-	});
+	
+	}
 
 
-
-ControllerBrutefirplug.prototype.onStop = function() {
-	var self = this;
-	exec("killall brutefir", function (error, stdout, stderr) {
-
-	});
-};
+//ControllerBrutefirplug.prototype.onStop = function() {
+//	var self = this;
+//	exec("killall brutefir", function (error, stdout, stderr) {
+//
+//	});
+//};
 
 
 
 // Brutefirplug stop
-ControllerBrutefirplug.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefirplug::stop');
+//ControllerBrutefirplug.prototype.stop = function() {
+//	var self = this;
+//	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefirplug::stop');
 
-	return self.sendBrutefirplugCommand('stop', []);
-};
+//	return self.sendBrutefirplugCommand('stop', []);
+//};
 
-ControllerBrutefirplug.prototype.onRestart = function() {
-	var self = this;
+//ControllerBrutefirplug.prototype.onRestart = function() {
+//	var self = this;
 	//
-};
+//};
 
-ControllerBrutefirplug.prototype.onInstall = function() {
-	var self = this;
-	//Perform your installation tasks here
-};
+//ControllerBrutefirplug.prototype.onInstall = function() {
+//	var self = this;
+//	//Perform your installation tasks here
+//};
 
-ControllerBrutefirplug.prototype.onUninstall = function() {
-	var self = this;
+//ControllerBrutefirplug.prototype.onUninstall = function() {
+//	var self = this;
 	//Perform your installation tasks here
-};
+//};
 
 ControllerBrutefirplug.prototype.getUIConfig = function() {
 	var self = this;
@@ -252,30 +252,30 @@ ControllerBrutefirplug.prototype.saveBrutefirconfig = function (data) {
 };
 
 
-ControllerBrutefirplug.prototype.rebuildBRUTEFIRPLUGAndRestartDaemon = function () {
-    var self=this;
-    var defer=libQ.defer();
+//ControllerBrutefirplug.prototype.rebuildBRUTEFIRPLUGAndRestartDaemon = function () {
+//    var self=this;
+//    var defer=libQ.defer();
 
-    self.createBRUTEFIRPLUGFile()
-        .then(function(e)
-        {
-            var edefer=libQ.defer();
-            exec("killall brutefir", function (error, stdout, stderr) {
-                edefer.resolve();
-            });
-            return edefer.promise;
-        })
-        .then(function(e){
-            self.onVolumioStart();
-            return libQ.resolve();
-        })
-        .then(function(e)
-        {
-            defer.resolve();
-        })
-        .fail(function(e){
-            defer.reject(new Error());
-        })
+//    self.createBRUTEFIRPLUGFile()
+//        .then(function(e)
+//        {
+//            var edefer=libQ.defer();
+//           exec("killall brutefir", function (error, stdout, stderr) {
+//                edefer.resolve();
+            
+//            return edefer.promise;
+//        })
+//        .then(function(e){
+//            self.onVolumioStart();
+//            return libQ.resolve();
+//        })
+//        .then(function(e)
+//        {
+//            defer.resolve();
+//        })
+//        .fail(function(e){
+//            defer.reject(new Error());
+//        })
 
-    return defer.promise;
-};
+//    return defer.promise;
+//}
