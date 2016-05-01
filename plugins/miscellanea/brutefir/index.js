@@ -54,6 +54,10 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 //};
 
 // Plugin methods -----------------------------------------------------------------------------
+ControllerBrutefir.prototype.onStart = function() {
+	var self = this;
+};
+
 ControllerBrutefir.prototype.onVolumioStart = function() {
 	var self = this;
 
@@ -65,19 +69,8 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
 //	setTimeout(function () {
 //	self.BrutefirDaemonConnect();
 //	}, 5000);
-};
-
-ControllerBrutefir.prototype.onStart = function() {
-	var self = this;
-
-	//Perform startup tasks here
-};
-
-//};
-
-ControllerBrutefir.prototype.startBrutefirDaemon = function() {
-	var self = this;
-	exec("brutefir", function (error, stdout, stderr) {
+	
+exec("/usr/bin/brutefir", function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
 		}
@@ -85,8 +78,8 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
 			self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
 		}
 	});
-//};
 };
+
 ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
 	var self = this;
 	var n = options.length;
