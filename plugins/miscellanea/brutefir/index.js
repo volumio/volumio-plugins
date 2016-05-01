@@ -2,7 +2,7 @@
 
 var libQ = require('kew');
 var libNet = require('net');
-//var libFast = require('fast.js');
+var libFast = require('fast.js');
 //var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
@@ -23,7 +23,10 @@ function ControllerBrutefir(context) {
 	this.configManager = this.context.configManager;
 }
 
-
+ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
+	var self = this;
+	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+};
 //ControllerBrutefir.prototype.getConfigurationFiles = function()
 //{
 //	var self = this;
@@ -144,25 +147,30 @@ ControllerBrutefir.prototype.onUninstall = function() {
 ControllerBrutefir.prototype.getUIConfig = function() {
 	var self = this;
 
-//	var defer = libQ.defer();
+	var defer = libQ.defer();
 
-	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+	var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
 	var value;
+//	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+//	var value;
 
+value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
 
-	uiconf.sections[0].content[0].value = config.get('leftfilter');
-	uiconf.sections[0].content[1].value = config.get('rightfilter');
+//	uiconf.sections[0].content[0].value = config.get('leftfilter');
+//	uiconf.sections[0].content[1].value = config.get('rightfilter');
 //	uiconf.sections[0].content[2].value = config.get('magnitude');
-	uiconf.sections[1].content[0].value = config.get('coef31');
-	uiconf.sections[1].content[1].value = config.get('coef63');
-	uiconf.sections[1].content[2].value = config.get('coef125');
-	uiconf.sections[1].content[3].value = config.get('coef250');
-	uiconf.sections[1].content[4].value = config.get('coef500');
-	uiconf.sections[1].content[5].value = config.get('coef1000');
-	uiconf.sections[1].content[6].value = config.get('coef2000');
-	uiconf.sections[1].content[7].value= config.get('coef4000');
-	uiconf.sections[1].content[8].value = config.get('coef8000');
-	uiconf.sections[1].content[9].value = config.get('coef16000');
+//	uiconf.sections[1].content[0].value = config.get('coef31');
+//	uiconf.sections[1].content[1].value = config.get('coef63');
+//	uiconf.sections[1].content[2].value = config.get('coef125');
+//	uiconf.sections[1].content[3].value = config.get('coef250');
+//	uiconf.sections[1].content[4].value = config.get('coef500');
+//	uiconf.sections[1].content[5].value = config.get('coef1000');
+//	uiconf.sections[1].content[6].value = config.get('coef2000');
+//	uiconf.sections[1].content[7].value= config.get('coef4000');
+//	uiconf.sections[1].content[8].value = config.get('coef8000');
+//	uiconf.sections[1].content[9].value = config.get('coef16000');
 
 
 	return uiconf;
