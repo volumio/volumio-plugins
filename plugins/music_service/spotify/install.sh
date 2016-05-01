@@ -10,4 +10,8 @@ wget http://repo.volumio.org/Packages/Spop/spop.tar.gz
 sudo tar xf /spop.tar.gz
 rm /spop.tar.gz
 
-echo "Done"
+
+sudo chmod 777 /etc/spopd.conf
+
+#requred to end the plugin install
+echo "plugininstallend"
