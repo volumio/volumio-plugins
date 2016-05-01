@@ -6,10 +6,18 @@ var libFast = require('fast.js');
 //var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
-var exec = require('child_process').exec;
+
 //var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
+var libFsExtra = require('fs-extra');
+var io = require('socket.io-client');
+
+var exec = require('child_process').exec;
+var execSync = require('child_process').execSync;
+
+
+var spawn = require('child_process').spawn;
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
@@ -21,8 +29,13 @@ function ControllerBrutefir(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-}
+};
 
+
+ControllerBrutefir.prototype.getConfigParam = function (key) {
+	//var self = this;
+	return this.config.get(key);
+};
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
 	var self = this;
 	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
@@ -56,6 +69,7 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
 
 ControllerBrutefir.prototype.onStart = function() {
 	var self = this;
+
 	//Perform startup tasks here
 };
 
@@ -72,24 +86,42 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
 		}
 	});
 //};
+};
+ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+	var self = this;
+	var n = options.length;
+	for (var i = 0; i < n; i++) {
+		if (options[i].value == key)
+			return options[i].label;
+	}
 
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+};
 
+ControllerBrutefir.prototype.sendcommand = function (options, key) {
+	var self = this ;
 	// Here we send the command to brutfir via telnet
-	var setting = self.config.get('coef31');
-	var nHost = self.config.get('nHost');
-	var nPort = self.confug.get('nPort');
-//,'coef63','coef125','coef250','coef500','coef1000','coef2000','coef4000','coef8000','coef16000');
-
+	var coef31 = self.config.get('coef31');
+	var coef63 = self.config.get('coef63');
+	var coef125 = self.config.get('coef125');
+	var coef250 = self.config.get('coef250');
+	var coef500 = self.config.get('coef500');
+	var coef1000 = self.config.get('coef1000');
+	var coef2000 = self.config.get('coef2000');
+	var coef4000 = self.config.get('coef4000');
+	var coef8000 = self.config.get('coef8000');
+	var coef16000 = self.config.get('coef16000');
+	
 	var params = {
-	host: 'nHost',
-	port: 'nPort',
+	host: 'localhost',
+	port: '3002',
 	shellPrompt: '/ # ',
 	timeout: 30000,
 	// removeEcho: 4
 	};
 
 	//here we compose the eq cmd
-	var cmd = 'lmc eq 0 mag 31/'+ setting;
+	var cmd = 'lmc eq 0 mag 31/'+ coef31;
 //+',63/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
 
 	//here we send the cmd via telnet
@@ -109,15 +141,14 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
 	});
 	connection.connect(params);
 	
-	}
+};
 
-
-ControllerBrutefir.prototype.onStop = function() {
-	var self = this;
+//ControllerBrutefir.prototype.onStop = function() {
+//	var self = this;
 //	exec("killall brutefir", function (error, stdout, stderr) {
 //
 //	});
-};
+//};
 
 
 
@@ -146,7 +177,7 @@ ControllerBrutefir.prototype.onUninstall = function() {
 
 ControllerBrutefir.prototype.getUIConfig = function() {
 	var self = this;
-
+	//var coef31 = self.config.get('coef31');
 	var defer = libQ.defer();
 
 	var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
@@ -155,8 +186,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 //	var value;
 
 value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+
 
 //	uiconf.sections[0].content[0].value = config.get('leftfilter');
 //	uiconf.sections[0].content[1].value = config.get('rightfilter');

@@ -10,7 +10,7 @@ The use of custom filter - for DRC digital room correction
 A multiband equalizer
 	with gain for each band
 	with phase setting for each band
-
+And later additionnals settings ( filter length, partition)
 Path for filters (left and right) will be set through webUI and stored in a file.
 They will be used each time brutefir start
 
@@ -19,5 +19,5 @@ They will be used each time brutefir start and change in setting in webUI will s
 This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
-Plugin check if brutefir is still alive as sometimes it hangs (don't know why)
+Plugin checks if brutefir is still alive as sometimes it hangs (don't know why)
 
