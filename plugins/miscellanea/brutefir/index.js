@@ -32,10 +32,10 @@ function ControllerBrutefir(context) {
 };
 
 
-ControllerBrutefir.prototype.getConfigParam = function (key) {
+//ControllerBrutefir.prototype.getConfigParam = function (key) {
 	//var self = this;
-	return this.config.get(key);
-};
+//	return this.config.get(key);
+//};
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
 	var self = this;
 	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
@@ -77,22 +77,11 @@ exec("/usr/bin/brutefir", function (error, stdout, stderr) {
 		else {
 			self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
 		}
-	});
-};
+	//});
+});
 
-ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+ControllerBrutefir.prototype.command = function() {
 	var self = this;
-	var n = options.length;
-	for (var i = 0; i < n; i++) {
-		if (options[i].value == key)
-			return options[i].label;
-	}
-
-	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
-};
-
-ControllerBrutefir.prototype.sendcommand = function (options, key) {
-	var self = this ;
 	// Here we send the command to brutfir via telnet
 	var coef31 = self.config.get('coef31');
 	var coef63 = self.config.get('coef63');
@@ -109,12 +98,12 @@ ControllerBrutefir.prototype.sendcommand = function (options, key) {
 	host: 'localhost',
 	port: '3002',
 	shellPrompt: '/ # ',
-	timeout: 30000,
+	timeout: 1500,
 	// removeEcho: 4
 	};
 
 	//here we compose the eq cmd
-	var cmd = 'lmc eq 0 mag 31/'+ coef31;
+	var cmd = 'lmc eq 0 mag 2000/15'//+ coef31;
 //+',63/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
 
 	//here we send the cmd via telnet
@@ -134,7 +123,20 @@ ControllerBrutefir.prototype.sendcommand = function (options, key) {
 	});
 	connection.connect(params);
 	
+	};
 };
+
+ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+	var self = this;
+	var n = options.length;
+	for (var i = 0; i < n; i++) {
+		if (options[i].value == key)
+			return options[i].label;
+	}
+
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+};
+
 
 //ControllerBrutefir.prototype.onStop = function() {
 //	var self = this;

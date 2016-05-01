@@ -8,16 +8,10 @@
             "element": "section",
             "label": "Brutefir setting",
             "icon": "fa-plug",
-            "onSave": {
-                "type": "controller",
-                "endpoint": "miscellanea/brutefir",
-                "method": "saveBrutefirsetting"
-            },
+            "onSave": {"type": "controller", "endpoint": "miscellanea/brutefir", "method": "saveBrutefirsetting" },
             "saveButton": {
                 "label": "Save",
                 "data": [
-                    "leftfliter",
-                    "rightfilter",
                     "coef31",
                     "coef63",
                     "coef125",
@@ -61,11 +55,10 @@
                             "label": "10"
                         }
                     ]
-                }
-            ]
-        },
+                
+          },
         {
-            "id": "coef63",
+	    "id": "coef63",
             "element": "select",
             "label": "63Hz",
             "value": {
@@ -94,7 +87,8 @@
                     "label": "10"
                 }
             ]
-        },
+	   
+         },
         {
             "id": "coef125",
             "element": "select",
@@ -124,7 +118,8 @@
                     "value": 10,
                     "label": "10"
                 }
-            ]
+              ]
+	    
         },
         {
             "id": "coef250",
@@ -155,7 +150,8 @@
                     "value": 10,
                     "label": "10"
                 }
-            ]
+              ]
+          
         },
         {
             "id": "coef500",
@@ -187,6 +183,7 @@
                     "label": "10"
                 }
             ]
+          
         },
         {
             "id": "coef1000",
@@ -218,6 +215,7 @@
                     "label": "10"
                 }
             ]
+
         },
         {
             "id": "coef2000",
@@ -248,7 +246,8 @@
                     "value": 10,
                     "label": "10"
                 }
-            ]
+            
+             ]
         },
         {
             "id": "coef4000",
@@ -280,6 +279,7 @@
                     "label": "10"
                 }
             ]
+           
         },
         {
             "id": "coef8000",
@@ -311,7 +311,8 @@
                     "label": "10"
                 }
             ]
-        },
+             
+       },
         {
             "id": "coef16000",
             "element": "select",
@@ -343,5 +344,6 @@
                 }
             ]
         }
-    ]
+}
+
 }
