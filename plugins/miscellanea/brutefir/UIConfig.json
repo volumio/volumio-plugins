@@ -1,13 +1,13 @@
 {
     "page": {
-        "label": "miscellanea"
+        "label": "Brutefir settings"
     },
     "sections": [
         {
-            "id": "brutefir_setting",
+            "id": "equalizer",
             "element": "section",
-            "label": "Brutefir setting",
-            "icon": "fa-plug",
+            "label": "Equalizer setting",
+            "icon": "fa-sliders",
             "onSave": {
                 "type": "controller",
                 "endpoint": "miscellanea/brutefir",
@@ -338,6 +338,42 @@
                             "label": "10"
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "id": "advanced",
+            "element": "section",
+            "label": "Advanced settings",
+            "icon": "fa-sliders",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "miscellanea/brutefir",
+                "method": "saveBrutefirconfig"
+            },
+            "saveButton": {
+                "label": "Save",
+                "data": [
+                    "leftfilter",
+                    "rightfilter"
+                ]
+            },
+            "content": [
+                {
+                    "id": "leftfilter",
+                    "type": "text",
+                    "element": "input",
+                    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
+                    "label": "leftfilter",
+                    "value": ""
+                },
+                {
+                    "id": "rightfilter",
+                    "type": "text",
+                    "element": "input",
+                    "doc": "Right filter file (path/name) if none dirac pulse is used",
+                    "label": "rightfilter",
+                    "value": ""
                 }
             ]
         }
