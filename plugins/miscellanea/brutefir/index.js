@@ -6,17 +6,13 @@ var libFast = require('fast.js');
 //var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
-
 //var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
 var libFsExtra = require('fs-extra');
 var io = require('socket.io-client');
-
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-
-
 var spawn = require('child_process').spawn;
 
 // Define the ControllerBrutefir class
@@ -29,17 +25,28 @@ function ControllerBrutefir(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
+}
+
+ControllerBrutefir.prototype.getConfigurationFiles = function()
+{
+	var self = this;
+
+	return ['config.json'];
+}
+
+ControllerBrutefir.prototype.addToBrowseSources = function () {
+	var self = this;
+	var data = {name: 'Brutefir', uri: 'brutefir',plugin_type:'miscellanea',plugin_name:'brutefir'};
+	self.commandRouter.volumioAddToBrowseSources(data);
 };
-
-
 //ControllerBrutefir.prototype.getConfigParam = function (key) {
 	//var self = this;
 //	return this.config.get(key);
 //};
-ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
-	var self = this;
-	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-};
+//ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
+//	var self = this;
+//	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+//};
 //ControllerBrutefir.prototype.getConfigurationFiles = function()
 //{
 //	var self = this;
@@ -61,28 +68,33 @@ ControllerBrutefir.prototype.onStart = function() {
 ControllerBrutefir.prototype.onVolumioStart = function() {
 	var self = this;
 
-//	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-//	self.config = new (require('v-conf'))();
-//	self.config.loadFile(configFile);
+	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 
-//	self.startBrutefirDaemon();
-//	setTimeout(function () {
-//	self.BrutefirDaemonConnect();
-//	}, 5000);
-	
-exec("/usr/bin/brutefir", function (error, stdout, stderr) {
+	self.startBrutefirDaemon();
+	setTimeout(function () {
+	self.brutefirDaemonConnect();
+	}, 5000);
+};
+
+ControllerBrutefir.prototype.startBrutefirDaemon = function() {
+	var self = this;	
+	exec("/usr/bin/brutefir", function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
 		}
 		else {
 			self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
 		}
-	//});
-});
+	});
+};
 
-ControllerBrutefir.prototype.command = function() {
+ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 	var self = this;
 	// Here we send the command to brutfir via telnet
+	self.servicename = 'brutefir';
+	self.displayname = 'Brutefir';
 	var coef31 = self.config.get('coef31');
 	var coef63 = self.config.get('coef63');
 	var coef125 = self.config.get('coef125');
@@ -96,15 +108,14 @@ ControllerBrutefir.prototype.command = function() {
 	
 	var params = {
 	host: 'localhost',
-	port: '3002',
-	shellPrompt: '/ # ',
-	timeout: 1500,
+	port: 3002,
+	//shellPrompt: '/ # ',
+	timeout: 35000,
 	// removeEcho: 4
 	};
 
 	//here we compose the eq cmd
-	var cmd = 'lmc eq 0 mag 2000/15'//+ coef31;
-//+',63/'+coef63\.5+ ',125/'+coef125+ ',250/'+coef250+ ',500/'+coef500 + ',1000/'+coef1000 + ',2000/'+coef2000 + ',4000/'+coef4000 + ',8000/'+coef8000 + ',16000/'+coef16000);
+	var cmd = 'lmc eq 0 mag 31/'+ coef31+', 63/'+coef63 + ', 125/'+coef125 + ', 250/'+coef250+ ', 500/'+coef500 + ', 1000/'+coef1000 + ', 2000/'+coef2000 + ', 4000/'+coef4000 + ', 8000/'+coef8000 + ', 16000/'+coef16000;
 
 	//here we send the cmd via telnet
 	connection.on('ready', function(prompt) {
@@ -123,37 +134,16 @@ ControllerBrutefir.prototype.command = function() {
 	});
 	connection.connect(params);
 	
-	};
+	//};
 };
 
-ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+
+ControllerBrutefir.prototype.onStop = function() {
 	var self = this;
-	var n = options.length;
-	for (var i = 0; i < n; i++) {
-		if (options[i].value == key)
-			return options[i].label;
-	}
+	exec("killall brutefir", function (error, stdout, stderr) {
 
-	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+	});
 };
-
-
-//ControllerBrutefir.prototype.onStop = function() {
-//	var self = this;
-//	exec("killall brutefir", function (error, stdout, stderr) {
-//
-//	});
-//};
-
-
-
-// Brutefir stop
-//ControllerBrutefir.prototype.stop = function() {
-//	var self = this;
-//	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::stop');
-
-//	return self.sendBrutefirCommand('stop', []);
-//};
 
 ControllerBrutefir.prototype.onRestart = function() {
 	var self = this;
@@ -172,44 +162,31 @@ ControllerBrutefir.prototype.onUninstall = function() {
 
 ControllerBrutefir.prototype.getUIConfig = function() {
 	var self = this;
-	//var coef31 = self.config.get('coef31');
+	var coef31 = self.config.get('coef31');
 	var defer = libQ.defer();
 
-	var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
-	var value;
-//	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
-//	var value;
+var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
-value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
-
-
-//	uiconf.sections[0].content[0].value = config.get('leftfilter');
-//	uiconf.sections[0].content[1].value = config.get('rightfilter');
+	
 //	uiconf.sections[0].content[2].value = config.get('magnitude');
-//	uiconf.sections[1].content[0].value = config.get('coef31');
-//	uiconf.sections[1].content[1].value = config.get('coef63');
-//	uiconf.sections[1].content[2].value = config.get('coef125');
-//	uiconf.sections[1].content[3].value = config.get('coef250');
-//	uiconf.sections[1].content[4].value = config.get('coef500');
-//	uiconf.sections[1].content[5].value = config.get('coef1000');
-//	uiconf.sections[1].content[6].value = config.get('coef2000');
-//	uiconf.sections[1].content[7].value= config.get('coef4000');
-//	uiconf.sections[1].content[8].value = config.get('coef8000');
-//	uiconf.sections[1].content[9].value = config.get('coef16000');
+	uiconf.sections[0].content[0].value = config.get('coef31');
+	uiconf.sections[0].content[1].value = config.get('coef63');
+	uiconf.sections[0].content[2].value = config.get('coef125');
+	uiconf.sections[0].content[3].value = config.get('coef250');
+	uiconf.sections[0].content[4].value = config.get('coef500');
+	uiconf.sections[0].content[5].value = config.get('coef1000');
+	uiconf.sections[0].content[6].value = config.get('coef2000');
+	uiconf.sections[0].content[7].value= config.get('coef4000');
+	uiconf.sections[0].content[8].value = config.get('coef8000');
+	uiconf.sections[0].content[9].value = config.get('coef16000');
+	uiconf.sections[1].content[0].value = config.get('leftfilter');
+	uiconf.sections[1].content[1].value = config.get('rightfilter');
 
 
 	return uiconf;
 };
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
-	var self = this;
-	var uiconf=fs.readJsonSync(__dirname+'/UIConfig.json');
-	//Perform your installation tasks here
-};
-
-ControllerBrutefir.prototype.applyConf = function(conf) {
 	var self = this;
 };
 
@@ -241,8 +218,8 @@ ControllerBrutefir.prototype.createBrutefirFile = function () {
                 return console.log(err);
             }
 		
-            var conf1 = data.replace("${leftfilter}", config.get('leftfilter'));
-            var conf2 = data.replace("${rightfilter}", config.get('rightfilter'));
+		var leftfilter = data.replace("${leftfilter}", config.get('leftfilter'));
+            	var rightfilter = data.replace("${rightfilter}", config.get('rightfilter'));
 
             fs.writeFile("/home/volumio/.brutefir_config_essai", conf2, 'utf8', function (err) {
                 if (err)
@@ -264,13 +241,11 @@ ControllerBrutefir.prototype.createBrutefirFile = function () {
 
 };
 
-ControllerBrutefir.prototype.saveBrutefirconfig = function (data) {
+ControllerBrutefir.prototype.saveBrutefirconfigAccount = function (data) {
     var self = this;
 
     var defer = libQ.defer();
 
-    self.config.set('leftfilter', data['leftfilter']);
-    self.config.set('rightfilter', data['rightfilter']);
     self.config.set('coef31', data['coef31']);
     self.config.set('coef63', data['coef63']);
     self.config.set('coef125', data['coef125']);
@@ -281,7 +256,8 @@ ControllerBrutefir.prototype.saveBrutefirconfig = function (data) {
     self.config.set('coef4000', data['coef4000']);
     self.config.set('coef8000', data['coef8000']);
     self.config.set('coef16000', data['coef16000']);
-
+    self.config.set('leftfilter', data['leftfilter']);
+    self.config.set('rightfilter', data['rightfilter']);
     self.rebuildBrutefirAndRestartDaemon()
         .then(function(e){
             self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
