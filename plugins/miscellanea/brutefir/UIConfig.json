@@ -11,7 +11,7 @@
             "onSave": {
                 "type": "controller",
                 "endpoint": "miscellanea/brutefir",
-                "method": "saveBrutefirconfig"
+                "method": "saveBrutefirconfigAccount"
             },
             "saveButton": {
                 "label": "Save",
@@ -349,7 +349,7 @@
             "onSave": {
                 "type": "controller",
                 "endpoint": "miscellanea/brutefir",
-                "method": "saveBrutefirconfig"
+                "method": "saveBrutefirconfigAccount"
             },
             "saveButton": {
                 "label": "Save",

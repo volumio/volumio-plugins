@@ -38,5 +38,13 @@
  "coef16000":{
     "type": "number",
     "value": "0"
-   }
+ },
+ "leftfilter":{
+    "type": "input",
+    "value": "dirac pulse"
+  },
+ "rightfilter":{
+    "type": "input" ,
+    "value": "dirac pulse"
+	}
 }

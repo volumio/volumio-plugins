@@ -218,10 +218,10 @@ ControllerBrutefir.prototype.createBrutefirFile = function () {
                 return console.log(err);
             }
 		
-		var leftfilter = data.replace("${leftfilter}", config.get('leftfilter'));
-            	var rightfilter = data.replace("${rightfilter}", config.get('rightfilter'));
+		var conf1 = data.replace("${leftfilter}", config.get('leftfilter'));
+            	var conf2 = conf1.replace("${rightfilter}", config.get('rightfilter'));
 
-            fs.writeFile("/home/volumio/.brutefir_config_essai", conf2, 'utf8', function (err) {
+            fs.writeFile("/home/volumio/brutefir_config_essai", conf2, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -246,19 +246,20 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount = function (data) {
 
     var defer = libQ.defer();
 
-    self.config.set('coef31', data['coef31']);
-    self.config.set('coef63', data['coef63']);
-    self.config.set('coef125', data['coef125']);
-    self.config.set('coef250', data['coef250']);
-    self.config.set('coef500', data['coef500']);
-    self.config.set('coef1000', data['coef1000']);
-    self.config.set('coef2000', data['coef2000']);
-    self.config.set('coef4000', data['coef4000']);
-    self.config.set('coef8000', data['coef8000']);
-    self.config.set('coef16000', data['coef16000']);
-    self.config.set('leftfilter', data['leftfilter']);
-    self.config.set('rightfilter', data['rightfilter']);
-    self.rebuildBrutefirAndRestartDaemon()
+    config.set('coef31', data['coef31']);
+    config.set('coef63', data['coef63']);
+    config.set('coef125', data['coef125']);
+    config.set('coef250', data['coef250']);
+    config.set('coef500', data['coef500']);
+    config.set('coef1000', data['coef1000']);
+    config.set('coef2000', data['coef2000']);
+    config.set('coef4000', data['coef4000']);
+    config.set('coef8000', data['coef8000']);
+    config.set('coef16000', data['coef16000']);
+    config.set('leftfilter', data['leftfilter']);
+    config.set('rightfilter', data['rightfilter']);
+    
+self.rebuildBRUTEFIRAndRestartDaemon()
         .then(function(e){
             self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
             defer.resolve({});
@@ -274,7 +275,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount = function (data) {
 };
 
 
-ControllerBrutefir.prototype.rebuildBrutefirAndRestartDaemon = function () {
+ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
 
