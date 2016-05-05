@@ -32,7 +32,7 @@ ControllerBrutefir.prototype.getConfigurationFiles = function()
 	var self = this;
 
 	return ['config.json'];
-}
+};
 
 ControllerBrutefir.prototype.addToBrowseSources = function () {
 	var self = this;
@@ -162,32 +162,46 @@ ControllerBrutefir.prototype.onUninstall = function() {
 
 ControllerBrutefir.prototype.getUIConfig = function() {
 	var self = this;
-	var coef31 = self.config.get('coef31');
+	//var coef31 = self.config.get('coef31');
 	var defer = libQ.defer();
 
 var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
 	
 //	uiconf.sections[0].content[2].value = config.get('magnitude');
-	uiconf.sections[0].content[0].value = config.get('coef31');
-	uiconf.sections[0].content[1].value = config.get('coef63');
-	uiconf.sections[0].content[2].value = config.get('coef125');
-	uiconf.sections[0].content[3].value = config.get('coef250');
-	uiconf.sections[0].content[4].value = config.get('coef500');
-	uiconf.sections[0].content[5].value = config.get('coef1000');
-	uiconf.sections[0].content[6].value = config.get('coef2000');
-	uiconf.sections[0].content[7].value= config.get('coef4000');
-	uiconf.sections[0].content[8].value = config.get('coef8000');
-	uiconf.sections[0].content[9].value = config.get('coef16000');
-	uiconf.sections[1].content[0].value = config.get('leftfilter');
-	uiconf.sections[1].content[1].value = config.get('rightfilter');
-
+//	uiconf.sections[0].content[0].value = config.get('coef31');
+//	uiconf.sections[0].content[1].value = config.get('coef63');
+//	uiconf.sections[0].content[2].value = config.get('coef125');
+//	uiconf.sections[0].content[3].value = config.get('coef250');
+//	uiconf.sections[0].content[4].value = config.get('coef500');
+//	uiconf.sections[0].content[5].value = config.get('coef1000');
+//	uiconf.sections[0].content[6].value = config.get('coef2000');
+//	uiconf.sections[0].content[7].value= config.get('coef4000');
+//	uiconf.sections[0].content[8].value = config.get('coef8000');
+//	uiconf.sections[0].content[9].value = config.get('coef16000');
+//	uiconf.sections[1].content[0].value = config.get('leftfilter');
+//	uiconf.sections[1].content[1].value = config.get('rightfilter');
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[1].value',self.config.get('coef31'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[2].value',self.config.get('coef63'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[3].value',self.config.get('coef63'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[4].value',self.config.get('coef125'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[5].value',self.config.get('coef250'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[6].value',self.config.get('coef500'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[7].value',self.config.get('coef1000'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[8].value',self.config.get('coef2000'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[9].value',self.config.get('coef4000'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[10].value',self.config.get('coef8000'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[11].value',self.config.get('coef16000'));
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[12].value',self.config.get('leftfilter'))
+self.configManager.setUIConfigParam(uiconf,'sections[0].content[13].value',self.config.get('rightfilter'))
 
 	return uiconf;
 };
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
 	var self = this;
+	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+
 };
 
 ControllerBrutefir.prototype.getConf = function(varName) {
@@ -241,21 +255,99 @@ ControllerBrutefir.prototype.createBrutefirFile = function () {
 
 };
 
-ControllerBrutefir.prototype.saveBrutefirconfigAccount = function (data) {
+ControllerBrutefir.prototype.setConfigParam = function (data) {
+	this.config.set(data.key, data.value);
+};
+
+ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function (data) {
+    var self = this;
+
+    var defer = libQ.defer();
+	self.setConfigParam({key: 'coef31', value: data.coef31.value});
+	self.setConfigParam({key: 'coef63', value: data.coef63.value});
+	self.setConfigParam({key: 'coef125', value: data.coef125.value});
+	self.setConfigParam({key: 'coef250', value: data.coef250.value});
+	self.setConfigParam({key: 'coef500', value: data.coef500.value});
+	self.setConfigParam({key: 'coef1000', value: data.coef1000.value});
+	self.setConfigParam({key: 'coef2000', value: data.coef2000.value});
+	self.setConfigParam({key: 'coef4000', value: data.coef4000.value});
+	self.setConfigParam({key: 'coef8000', value: data.coef8000.value});
+	self.setConfigParam({key: 'coef16000', value: data.coef16000.value});
+	self.setConfigParam({key: 'leftfilter', value: data.leftfilter.value});
+	self.setConfigParam({key: 'rightfilter', value: data.rightfilter.value});
+//    config.set('coef31', data['coef31']);
+//    config.set('coef63', data['coef63']);
+//    config.set('coef125', data['coef125']);
+//    config.set('coef250', data['coef250']);
+//    config.set('coef500', data['coef500']);
+//    config.set('coef1000', data['coef1000']);
+//    config.set('coef2000', data['coef2000']);
+//    config.set('coef4000', data['coef4000']);
+//    config.set('coef8000', data['coef8000']);
+//    config.set('coef16000', data['coef16000']);
+//    config.set('leftfilter', data['leftfilter']);
+//    config.set('rightfilter', data['rightfilter']);
+    
+//self.rebuildBRUTEFIRAndRestartDaemon()
+//        .then(function(e){
+//            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+//            defer.resolve({});
+//        })
+//        .fail(function(e)
+//        {
+//            defer.reject(new Error());
+//        })
+self.logger.info('Equalizer configurations have been set');
+
+
+	self.commandRouter.pushToastMessage('success', "Configuration update", 'Equalizer configuration has been successfully updated');
+
+	defer.resolve({});
+	this.updateEqualizersettings();
+
+
+
+    return defer.promise;
+
+};
+
+ControllerBrutefir.prototype.updateEqualizerSettings  = function () {
+	var self = this;
+
+
+	var valcoef31 = self.config.get('coef31');
+	var valcoef63 = self.config.get('coef63');
+	var valcoef125 = self.config.get('coef125');
+	var valcoef250 = self.config.get('coef250');
+	var valcoef500 = self.config.get('coef500');
+	var valcoef1000 = self.config.get('coef1000');
+	var valcoef2000 = self.config.get('coef2000');
+	var valcoef4000 = self.config.get('coef4000');
+	var valcoef8000 = self.config.get('coef8000');
+	var valcoef16000 = self.config.get('coef16000');
+	var settings = {
+		coef31 : valcoef31,
+		coef63 : valcoef63,	
+		coef125 : valcoef125,	
+		coef250 : valcoef250,	
+		coef500 : valcoef500,	
+		coef1000 : valcoef1000,	
+		coef2000 : valcoef2000,	
+		coef4000 : valcoef4000,	
+		coef8000 : valcoef8000,
+		coef16000 : valcoef16000		
+	
+	}
+
+	return self.commandRouter.BrutefirUpdateEqualizerSettings(settings)
+};
+
+
+ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
     var self = this;
 
     var defer = libQ.defer();
 
-    config.set('coef31', data['coef31']);
-    config.set('coef63', data['coef63']);
-    config.set('coef125', data['coef125']);
-    config.set('coef250', data['coef250']);
-    config.set('coef500', data['coef500']);
-    config.set('coef1000', data['coef1000']);
-    config.set('coef2000', data['coef2000']);
-    config.set('coef4000', data['coef4000']);
-    config.set('coef8000', data['coef8000']);
-    config.set('coef16000', data['coef16000']);
     config.set('leftfilter', data['leftfilter']);
     config.set('rightfilter', data['rightfilter']);
     
