@@ -7,11 +7,11 @@
             "id": "equalizer",
             "element": "section",
             "label": "Equalizer setting",
-            "icon": "fa-sliders",
+            "icon": "fa-sliders fa-rotate-90",
             "onSave": {
                 "type": "controller",
                 "endpoint": "miscellanea/brutefir",
-                "method": "saveBrutefirconfigAccount"
+                "method": "saveBrutefirconfigAccount1"
             },
             "saveButton": {
                 "label": "Save",
@@ -345,11 +345,11 @@
             "id": "advanced",
             "element": "section",
             "label": "Advanced settings",
-            "icon": "fa-sliders",
+            "icon": "fa-cogs",
             "onSave": {
                 "type": "controller",
                 "endpoint": "miscellanea/brutefir",
-                "method": "saveBrutefirconfigAccount"
+                "method": "saveBrutefirconfigAccount2"
             },
             "saveButton": {
                 "label": "Save",
@@ -361,11 +361,10 @@
             "content": [
                 {
                     "id": "leftfilter",
-                    "type": "text",
                     "element": "input",
-                    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
+		    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "leftfilter",
-                    "value": ""
+                    "value": "dirac pulse"
                 },
                 {
                     "id": "rightfilter",
@@ -373,7 +372,7 @@
                     "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "rightfilter",
-                    "value": ""
+                    "value": "dirac pulse"
                 }
             ]
         }
