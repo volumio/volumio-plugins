@@ -362,7 +362,7 @@
                 {
                     "id": "leftfilter",
                     "element": "input",
-		    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
+                    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "leftfilter",
                     "value": "dirac pulse"
                 },
@@ -373,6 +373,43 @@
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "rightfilter",
                     "value": "dirac pulse"
+                },
+		{
+                    "id": "filter_size",
+                    "type": "number",
+                    "element": "input",
+                    "doc": "size of filter",
+                    "label": "filter size",
+                    "value": "8192"
+                },
+		{
+                    "id": "numb_part",
+                    "type": "number",
+                    "element": "input",
+                    "doc": "number of filter partion",
+                    "label": "number of partition",
+                    "value": "8"
+                },
+                {
+                    "id": "float_bits",
+                    "type": "number",
+                    "element": "select",
+                    "doc": "floating point internal resolusion",
+                    "label": "float_bits",
+                    "value": {
+                        "value": 64,
+                        "label": "64"
+                    },
+                    "options": [
+                        {
+                            "value": 32,
+                            "label": "32"
+                        },
+                        {
+                            "value": 64,
+                            "label": "64"
+                        }
+                    ]
                 }
             ]
         }
