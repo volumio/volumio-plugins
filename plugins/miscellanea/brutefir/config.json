@@ -46,5 +46,17 @@
  "rightfilter":{
     "type": "input" ,
     "value": "dirac pulse"
-	}
+  },
+  "filter_size":{
+    "type": "number" ,
+    "value": "4096"
+  },
+  "numb_part":{
+    "type": "number" ,
+    "value": "4096"
+  },
+  "float_bits":{
+    "type": "number" ,
+    "value": "64"
+  }
 }
