@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Installing "
-echo "Installing unmutedigiamp"
+echo "Installing gpiobuttons"
 
 
 #requred to end the plugin install
