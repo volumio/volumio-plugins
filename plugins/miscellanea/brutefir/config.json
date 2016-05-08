@@ -1,4 +1,8 @@
 {
+    "gain":{
+    "type": "number",
+    "value": "0"
+  },
    "coef31":{
     "type": "number",
     "value": "0"

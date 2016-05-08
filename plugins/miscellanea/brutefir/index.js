@@ -118,6 +118,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 // change in UI must be send in "live" 
  self.servicename = 'brutefir';
  self.displayname = 'Brutefir';
+ var gain = self.config.get('gain');
  var coef31 = self.config.get('coef31');
  var coef63 = self.config.get('coef63');
  var coef125 = self.config.get('coef125');
@@ -191,40 +192,40 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  var value;
  //var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
  var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
- var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+// var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
+ value = self.getAdditionalConf('miscellanea', 'brutefir', 'gain');
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
  self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
  self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef63');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef125');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef250');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef500');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef1000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef2000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[7].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef4000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[8].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef8000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[9].options'), value));
  value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef16000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', value);
+ self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[10].options'), value));
  //	uiconf.sections[0].content[2].value = config.get('magnitude');
  //	uiconf.sections[0].content[0].value = config.get('coef31');
  //	uiconf.sections[0].content[1].value = config.get('coef63');
@@ -319,6 +320,10 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 // it is suppose to save the settings and it works! 
  var self = this;
  var defer = libQ.defer();
+  self.setConfigParam({
+  key: 'gain',
+  value: data.gain.value
+ });
  self.setConfigParam({
   key: 'coef31',
   value: data.coef31.value
@@ -405,7 +410,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 ControllerBrutefir.prototype.updateEqualizerSettings = function() {
  var self = this;
 
-
+  var gain = self.config.get('gain');
  var coef31 = self.config.get('coef31');
  var coef63 = self.config.get('coef63');
  var coef125 = self.config.get('coef125');
@@ -417,6 +422,7 @@ ControllerBrutefir.prototype.updateEqualizerSettings = function() {
  var coef8000 = self.config.get('coef8000');
  var coef16000 = self.config.get('coef16000');
  var settings = {
+  gain : gain,
   coef31: coef31,
   coef63: coef63,
   coef125: coef125,

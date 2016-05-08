@@ -16,6 +16,7 @@
             "saveButton": {
                 "label": "Save",
                 "data": [
+		    "gain",
                     "coef31",
                     "coef63",
                     "coef125",
@@ -30,6 +31,37 @@
             },
             "content": [
                 {
+		     "id": "gain",
+                    "element": "select",
+                    "label": "gain",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+		    "options": [
+                        {
+                            "value": -8,
+                            "label": "-8"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 8,
+                            "label": "8"
+                        }
+                    ]
+		},
+		{
                     "id": "coef31",
                     "element": "select",
                     "label": "31Hz",
