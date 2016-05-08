@@ -289,11 +289,13 @@ ControllerBrutefir.prototype.createBrutefirFile = function() {
     defer.reject(new Error(err));
     return console.log(err);
    }
-
-   var conf1 = data.replace("${leftfilter}", config.get('leftfilter'));
-   var conf2 = conf1.replace("${rightfilter}", config.get('rightfilter'));
-
-   fs.writeFile("/home/volumio/brutefir_config_essai", conf2, 'utf8', function(err) {
+   
+   var conf1 = data.replace("${fliter_size}", config.get('filter_size'));
+   var conf2 = conf1.replace("${num_part}", config.get('num_part'));
+   var conf3 = data.replace("${float_bits}", config.get('float_bits'));
+   var conf4 = conf2.replace("${leftfilter}", config.get('leftfilter'));
+   var conf5 = conf3.replace("${rightfilter}", config.get('rightfilter'));
+   fs.writeFile("/home/volumio/brutefir_config_essai", conf5, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -451,7 +453,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
  config.set('leftfilter', data['leftfilter']);
  config.set('rightfilter', data['rightfilter']);
-
+  config.set('filter_size', data['filter_size']);
+ config.set('num_part', data['num_part']);
+ config.set('float_bits', data['float_bits']);
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
