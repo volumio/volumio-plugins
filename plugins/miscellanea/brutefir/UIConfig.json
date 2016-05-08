@@ -33,7 +33,7 @@
                 {
 		     "id": "gain",
                     "element": "select",
-			"type" : "number",
+			"type" : "text",
                     "label": "gain",
                     "value": {
                         "value": 0,
@@ -397,14 +397,13 @@
             "content": [
                 {
                     "id": "leftfilter",
-                    "element": "input",
+		    "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "leftfilter",
                     "value": "dirac pulse"
                 },
                 {
                     "id": "rightfilter",
-                    "type": "text",
                     "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "rightfilter",
@@ -412,22 +411,22 @@
                 },
 		{
                     "id": "filter_size",
-                    "element": "input",
+		    "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
-                    "value": "8192"
+                    "value": 8192
                 },
 		{
                     "id": "numb_part",
-                    "element": "input",
+		    "element": "input",
                     "doc": "number of filter partion",
                     "label": "number of partition",
-                    "value": "8"
+                    "value": 8
                 },
                 {
                     "id": "float_bits",
                     "element": "select",
-                    "doc": "floating point internal resolusion",
+		    "doc": "floating point internal resolusion",
                     "label": "float_bits",
                     "value": {
                         "value": 64,

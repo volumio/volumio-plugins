@@ -52,15 +52,15 @@
     "value": "dirac pulse"
   },
   "filter_size":{
-    "type": "number" ,
+    "type": "text" ,
     "value": "4096"
   },
   "numb_part":{
     "type": "number" ,
-    "value": "4096"
+    "value": "8"
   },
   "float_bits":{
-    "type": "number" ,
+    "type": "text" ,
     "value": "64"
   }
 }
