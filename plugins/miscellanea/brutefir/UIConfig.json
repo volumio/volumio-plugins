@@ -388,7 +388,10 @@
                 "label": "Save",
                 "data": [
                     "leftfilter",
-                    "rightfilter"
+                    "rightfilter",
+		    "filter_size",
+		    "numb_part",
+		    "float_bits"
                 ]
             },
             "content": [
@@ -409,7 +412,6 @@
                 },
 		{
                     "id": "filter_size",
-                    "type": "number",
                     "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
@@ -417,7 +419,6 @@
                 },
 		{
                     "id": "numb_part",
-                    "type": "number",
                     "element": "input",
                     "doc": "number of filter partion",
                     "label": "number of partition",
@@ -425,7 +426,6 @@
                 },
                 {
                     "id": "float_bits",
-                    "type": "number",
                     "element": "select",
                     "doc": "floating point internal resolusion",
                     "label": "float_bits",
