@@ -33,6 +33,7 @@
                 {
 		     "id": "gain",
                     "element": "select",
+			"type" : "number",
                     "label": "gain",
                     "value": {
                         "value": 0,

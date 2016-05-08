@@ -28,6 +28,9 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
+ var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+    self.config = new (require('v-conf'))();
+    self.config.loadFile(configFile);
 }
 
 ControllerBrutefir.prototype.getConfigurationFiles = function() {
@@ -37,45 +40,45 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
 };
 
 ControllerBrutefir.prototype.addToBrowseSources = function() {
- var self = this;
+ //var self = this;
  var data = {
   name: 'Brutefir',
   uri: 'brutefir',
   plugin_type: 'miscellanea',
   plugin_name: 'brutefir'
  };
- self.commandRouter.volumioAddToBrowseSources(data);
+ this.commandRouter.volumioAddToBrowseSources(data);
 };
-ControllerBrutefir.prototype.getConfigParam = function(key) {
+//ControllerBrutefir.prototype.getConfigParam = function(key) {
  //var self = this;
- return this.config.get(key);
-};
-ControllerBrutefir.prototype.getAdditionalConf = function(type, controller, data) {
- var self = this;
- return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-};
+// return this.config.get(key);
+//};
+//ControllerBrutefir.prototype.getAdditionalConf = function(type, controller, data) {
+// var self = this;
+// return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+//};
 
-ControllerBrutefir.prototype.setAdditionalConf = function(type, controller, data) {
- var self = this;
- return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
-};
+//ControllerBrutefir.prototype.setAdditionalConf = function(type, controller, data) {
+// var self = this;
+// return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
+//};
 
-ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
- var n = options.length;
- for (var i = 0; i < n; i++) {
-  if (options[i].value == key)
-   return options[i].label;
- }
+//ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
+// var n = options.length;
+// for (var i = 0; i < n; i++) {
+//  if (options[i].value == key)
+//   return options[i].label;
+// }
 
- return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
-};
+// return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+//};
 
 
-ControllerBrutefir.prototype.getConfigurationFiles = function() {
- var self = this;
+//ControllerBrutefir.prototype.getConfigurationFiles = function() {
+// var self = this;
 
- return ['config.json'];
-};
+// return ['config.json'];
+//};
 
 //ControllerBrutefir.prototype.addToBrowseSources = function () {
 //	var self = this;
@@ -84,20 +87,16 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
 //};
 
 // Plugin methods -----------------------------------------------------------------------------
-ControllerBrutefir.prototype.onStart = function() {
- var self = this;
-};
+//ControllerBrutefir.prototype.onStart = function() {
+// var self = this;
+//};
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var self = this;
 
- var configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context, 'config.json');
- self.config = new(require('v-conf'))();
- self.config.loadFile(configFile);
-
  self.startBrutefirDaemon();
  setTimeout(function() {
-  self.brutefirDaemonConnect();
+     self.brutefirDaemonConnect();
  }, 5000);
 };
 
@@ -188,57 +187,60 @@ ControllerBrutefir.prototype.onInstall = function() {
 ControllerBrutefir.prototype.getUIConfig = function() {
  var self = this;
  //var coef31 = self.config.get('coef31');
- var defer = libQ.defer();
- var value;
+ //var defer = libQ.defer();
+ //var value;
  //var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
- var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
+ var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 // var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'gain');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef63');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef125');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef250');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef500');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef1000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef2000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[7].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef4000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[8].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef8000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[9].options'), value));
- value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef16000');
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', value);
- self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[10].options'), value));
- //	uiconf.sections[0].content[2].value = config.get('magnitude');
- //	uiconf.sections[0].content[0].value = config.get('coef31');
- //	uiconf.sections[0].content[1].value = config.get('coef63');
- //	uiconf.sections[0].content[2].value = config.get('coef125');
- //	uiconf.sections[0].content[3].value = config.get('coef250');
- //	uiconf.sections[0].content[4].value = config.get('coef500');
- //	uiconf.sections[0].content[5].value = config.get('coef1000');
- //	uiconf.sections[0].content[6].value = config.get('coef2000');
- //	uiconf.sections[0].content[7].value= config.get('coef4000');
- //	uiconf.sections[0].content[8].value = config.get('coef8000');
- //	uiconf.sections[0].content[9].value = config.get('coef16000');
- //	uiconf.sections[1].content[0].value = config.get('leftfilter');
- //	uiconf.sections[1].content[1].value = config.get('rightfilter');
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'gain');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef31');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef63');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef125');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef250');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef500');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef1000');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef2000');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[7].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef4000');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[8].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef8000');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[9].options'), value));
+// value = self.getAdditionalConf('miscellanea', 'brutefir', 'coef16000');
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', value);
+// self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[10].options'), value));
+ 	uiconf.sections[0].content[0].value = self.config.get('gain');
+ 	uiconf.sections[0].content[1].value = self.config.get('coef31');
+ 	uiconf.sections[0].content[2].value = self.config.get('coef63');
+ 	uiconf.sections[0].content[3].value = self.config.get('coef125');
+ 	uiconf.sections[0].content[4].value = self.config.get('coef250');
+ 	uiconf.sections[0].content[5].value = self.config.get('coef500');
+ 	uiconf.sections[0].content[6].value = self.config.get('coef1000');
+ 	uiconf.sections[0].content[7].value = self.config.get('coef2000');
+ 	uiconf.sections[0].content[8].value= self.config.get('coef4000');
+ 	uiconf.sections[0].content[9].value = self.config.get('coef8000');
+ 	uiconf.sections[0].content[10].value = self.config.get('coef16000');
+ 	uiconf.sections[1].content[0].value = self.config.get('leftfilter');
+ 	uiconf.sections[1].content[1].value = self.config.get('rightfilter');
+	uiconf.sections[1].content[2].value = self.config.get('filter_size');
+ 	uiconf.sections[1].content[3].value = self.config.get('numb_part');
+ 	uiconf.sections[1].content[4].value = self.config.get('float_bits');
  //self.configManager.setUIConfigParam(uiconf,'sections[0].content[1].value',self.config.get('coef31'));
  //self.configManager.setUIConfigParam(uiconf,'sections[0].content[2].value',self.config.get('coef63'));
  //self.configManager.setUIConfigParam(uiconf,'sections[0].content[3].value',self.config.get('coef63'));
@@ -258,7 +260,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
  var self = this;
- var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+ //var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
 };
 
@@ -290,11 +292,11 @@ ControllerBrutefir.prototype.createBrutefirFile = function() {
     return console.log(err);
    }
    
-   var conf1 = data.replace("${fliter_size}", config.get('filter_size'));
-   var conf2 = conf1.replace("${num_part}", config.get('num_part'));
-   var conf3 = data.replace("${float_bits}", config.get('float_bits'));
-   var conf4 = conf2.replace("${leftfilter}", config.get('leftfilter'));
-   var conf5 = conf3.replace("${rightfilter}", config.get('rightfilter'));
+   var conf1 = data.replace("${fliter_size}", self.config.get('filter_size'));
+   var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
+   var conf3 = data.replace("${float_bits}", self.config.get('float_bits'));
+   var conf4 = conf2.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf5 = conf3.replace("${rightfilter}", self.config.get('rightfilter'));
    fs.writeFile("/home/volumio/brutefir_config_essai", conf5, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
@@ -322,64 +324,68 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 // it is suppose to save the settings and it works! 
  var self = this;
  var defer = libQ.defer();
-  self.setConfigParam({
-  key: 'gain',
-  value: data.gain.value
- });
- self.setConfigParam({
-  key: 'coef31',
-  value: data.coef31.value
- });
- self.setConfigParam({
-  key: 'coef63',
-  value: data.coef63.value
- });
- self.setConfigParam({
-  key: 'coef125',
-  value: data.coef125.value
- });
- self.setConfigParam({
-  key: 'coef250',
-  value: data.coef250.value
- });
- self.setConfigParam({
-  key: 'coef500',
-  value: data.coef500.value
- });
- self.setConfigParam({
-  key: 'coef1000',
-  value: data.coef1000.value
- });
- self.setConfigParam({
-  key: 'coef2000',
-  value: data.coef2000.value
- });
- self.setConfigParam({
-  key: 'coef4000',
-  value: data.coef4000.value
- });
- self.setConfigParam({
-  key: 'coef8000',
-  value: data.coef8000.value
- });
- self.setConfigParam({
-  key: 'coef16000',
-  value: data.coef16000.value
- });
+//  self.setConfigParam({
+//  key: 'gain',
+//  value: data.gain.value
+// });
+// self.setConfigParam({
+//  key: 'coef31',
+//  value: data.coef31.value
+// });
+// self.setConfigParam({
+//  key: 'coef63',
+//  value: data.coef63.value
+// });
+// self.setConfigParam({
+//  key: 'coef125',
+//  value: data.coef125.value
+// });
+// self.setConfigParam({
+//  key: 'coef250',
+//  value: data.coef250.value
+// });
+// self.setConfigParam({
+//  key: 'coef500',
+//  value: data.coef500.value
+// });
+// self.setConfigParam({
+//  key: 'coef1000',
+//  value: data.coef1000.value
+// });
+// self.setConfigParam({
+//  key: 'coef2000',
+//  value: data.coef2000.value
+// });
+// self.setConfigParam({
+//  key: 'coef4000',
+//  value: data.coef4000.value
+// });
+// self.setConfigParam({
+//  key: 'coef8000',
+//  value: data.coef8000.value
+// });
+// self.setConfigParam({//
+//  key: 'coef16000',
+//  value: data.coef16000.value
+// });
  //self.setConfigParam({key: 'leftfilter', value: data.leftfilter.value});
  //self.setConfigParam({key: 'rightfilter', value: data.rightfilter.value});
- //    config.set('coef31', data['coef31']);
- //    config.set('coef63', data['coef63']);
- //    config.set('coef125', data['coef125']);
- //    config.set('coef250', data['coef250']);
- //    config.set('coef500', data['coef500']);
- //    config.set('coef1000', data['coef1000']);
- //    config.set('coef2000', data['coef2000']);
- //    config.set('coef4000', data['coef4000']);
- //    config.set('coef8000', data['coef8000']);
- //    config.set('coef16000', data['coef16000']);
- //    config.set('leftfilter', data['leftfilter']);
- //    config.set('rightfilter', data['rightfilter']);
+    self.config.set('gain', data['gain']);
+    self.config.set('coef31', data['coef31']);
+    self.config.set('coef63', data['coef63']);
+    self.config.set('coef125', data['coef125']);
+    self.config.set('coef250', data['coef250']);
+    self.config.set('coef500', data['coef500']);
+    self.config.set('coef1000', data['coef1000']);
+    self.config.set('coef2000', data['coef2000']);
+    self.config.set('coef4000', data['coef4000']);
+    self.config.set('coef8000', data['coef8000']);
+    self.config.set('coef16000', data['coef16000']);
+    self.config.set('leftfilter', data['leftfilter']);
+    self.config.set('rightfilter', data['rightfilter']);
+    self.config.set('filter_size', data['filter_size']);
+    self.config.set('numb_part', data['numb_part']);
+    self.config.set('float_bits', data['float_bits']);
 
  //self.rebuildBRUTEFIRAndRestartDaemon()
  //        .then(function(e){
@@ -451,11 +457,11 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
  var defer = libQ.defer();
 
- config.set('leftfilter', data['leftfilter']);
- config.set('rightfilter', data['rightfilter']);
-  config.set('filter_size', data['filter_size']);
- config.set('num_part', data['num_part']);
- config.set('float_bits', data['float_bits']);
+ self.config.set('leftfilter', data['leftfilter']);
+ self.config.set('rightfilter', data['rightfilter']);
+  self.config.set('filter_size', data['filter_size']);
+ self.config.set('numb_part', data['numb_part']);
+ self.config.set('float_bits', data['float_bits']);
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
@@ -470,6 +476,13 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
 };
 
+ControllerBrutefir.prototype.pushError = function(sReason) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::pushError(' + sReason + ')');
+
+	// Return a resolved empty promise to represent completion
+	return libQ.resolve();
+};
 
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
