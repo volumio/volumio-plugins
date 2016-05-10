@@ -74,8 +74,8 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
  var self = this;
  // Here we send the command to brutfir via telnet
 // change in UI must be send in "live" 
- self.servicename = 'brutefir';
- self.displayname = 'Brutefir';
+// self.servicename = 'brutefir';
+// self.displayname = 'Brutefir';
  var gain = self.config.get('gain');
  var coef31 = self.config.get('coef31');
  var coef63 = self.config.get('coef63');
@@ -117,7 +117,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
  });
  connection.connect(params);
 
- //};
+
 };
 
 
@@ -130,7 +130,8 @@ ControllerBrutefir.prototype.onStop = function() {
 
 ControllerBrutefir.prototype.onRestart = function() {
  var self = this;
- //
+ exec("killall mpd",function(error, stdout, stderr) {
+});
 };
 
 ControllerBrutefir.prototype.onInstall = function() {
@@ -252,7 +253,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
     self.config.set('numb_part', data['numb_part']);
     self.config.set('float_bits', data['float_bits']);
 
- self.rebuildBRUTEFIRAndRestartDaemon()
+ //self.rebuildBRUTEFIRAndRestartDaemon()
 };
 
 ControllerBrutefir.prototype.updateEqualizerSettings = function() {
