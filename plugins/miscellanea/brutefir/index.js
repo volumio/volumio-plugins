@@ -28,6 +28,7 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
+
  var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
     self.config = new (require('v-conf'))();
     self.config.loadFile(configFile);
@@ -37,9 +38,8 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
  //	var self = this;
 
  return ['config.json'];
-};
-
-/*ControllerBrutefir.prototype.addToBrowseSources = function() {
+}
+ControllerBrutefir.prototype.addToBrowseSources = function() {
  //var self = this;
  var data = {
   name: 'Brutefir',
@@ -49,7 +49,7 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
  };
  this.commandRouter.volumioAddToBrowseSources(data);
 };
-*/
+// Plugin methods -----------------------------------------------------------------------------
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var self = this;
 
@@ -76,7 +76,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 // change in UI must be send in "live" 
 // self.servicename = 'brutefir';
 // self.displayname = 'Brutefir';
- var gain = self.config.get('gain');
+/*var gain = self.config.get('gain');
  var coef31 = self.config.get('coef31');
  var coef63 = self.config.get('coef63');
  var coef125 = self.config.get('coef125');
@@ -87,7 +87,18 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
  var coef4000 = self.config.get('coef4000');
  var coef8000 = self.config.get('coef8000');
  var coef16000 = self.config.get('coef16000');
-
+*/
+var gain = 'gain';
+ var coef31 = 'coef31';
+ var coef63 = 'coef63';
+ var coef125 = 'coef125';
+ var coef250 = 'coef250';
+ var coef500 = 'coef500';
+ var coef1000 = 'coef1000';
+ var coef2000 = 'coef2000';
+ var coef4000 = 'coef4000';
+ var coef8000 = 'coef8000';
+ var coef16000 = 'coef16000';
  var params = {
   host: 'localhost',
   port: 3002,
@@ -130,8 +141,7 @@ ControllerBrutefir.prototype.onStop = function() {
 
 ControllerBrutefir.prototype.onRestart = function() {
  var self = this;
- exec("killall mpd",function(error, stdout, stderr) {
-});
+
 };
 
 ControllerBrutefir.prototype.onInstall = function() {
@@ -139,10 +149,10 @@ ControllerBrutefir.prototype.onInstall = function() {
  //	//Perform your installation tasks here
 };
 
-//ControllerBrutefir.prototype.onUninstall = function() {
-//	var self = this;
+ControllerBrutefir.prototype.onUninstall = function() {
+	var self = this;
 //Perform your installation tasks here
-//};
+};
 
 ControllerBrutefir.prototype.getUIConfig = function() {
  var self = this;
@@ -226,16 +236,12 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 
 };
 
-/*ControllerBrutefir.prototype.setConfigParam = function(data) {
- this.config.set(data.key, data.value);
-};
-*/
+
 ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 // it is suppose to save the settings and it works! 
  var self = this;
  var defer = libQ.defer();
- //self.setConfigParam({key: 'leftfilter', value: data.leftfilter.value});
- //self.setConfigParam({key: 'rightfilter', value: data.rightfilter.value});
+
     self.config.set('gain', data['gain']);
     self.config.set('coef31', data['coef31']);
     self.config.set('coef63', data['coef63']);
@@ -253,9 +259,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
     self.config.set('numb_part', data['numb_part']);
     self.config.set('float_bits', data['float_bits']);
 
- //self.rebuildBRUTEFIRAndRestartDaemon()
 };
-
+/*
 ControllerBrutefir.prototype.updateEqualizerSettings = function() {
  var self = this;
 
@@ -287,11 +292,11 @@ ControllerBrutefir.prototype.updateEqualizerSettings = function() {
 
  return self.commandRouter.UpdateEqualizerSettings(settings)
 };
-
-ControllerBrutefir.prototype.BrutefirUpdateEqualizerSettings = function() {
+*/
+/*ControllerBrutefir.prototype.BrutefirUpdateEqualizerSettings = function() {
  var self = this;
 };
-
+*/
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
@@ -319,14 +324,14 @@ self.rebuildBRUTEFIRAndRestartDaemon()
 
 };
 
-ControllerBrutefir.prototype.pushError = function(sReason) {
+/*ControllerBrutefir.prototype.pushError = function(sReason) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::pushError(' + sReason + ')');
 
 	// Return a resolved empty promise to represent completion
 	return libQ.resolve();
 };
-
+*/
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
  var defer = libQ.defer();
