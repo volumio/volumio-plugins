@@ -408,7 +408,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
     self.config.set('numb_part', data['numb_part']);
     self.config.set('float_bits', data['float_bits']);
     
-    self.rebuildsaveBRUTEFIRnoRestartDaemon()
+    self.saveBRUTEFIRnoRestartDaemon()
         .then(function(e){
             self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
             defer.resolve({});
