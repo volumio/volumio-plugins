@@ -239,11 +239,22 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 // burtefir command
 ControllerBrutefir.prototype.sendequalizer = function() {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 1000/10');
-/*eq 0 mag 31/' + coef31 + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000; ');
+ self.config.set('coef31', data['coef31']);
+    self.config.set('coef63', data['coef63']);
+    self.config.set('coef125', data['coef125']);
+    self.config.set('coef250', data['coef250']);
+    self.config.set('coef500', data['coef500']);
+    self.config.set('coef1000', data['coef1000']);
+    self.config.set('coef2000', data['coef2000']);
+    self.config.set('coef4000', data['coef4000']);
+    self.config.set('coef8000', data['coef8000']);
+    self.config.set('coef16000', data['coef16000']);
+
+/*	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc ');
+eq 0 mag 31/' + coef31 + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000; ');
 */
 	// TODO don't send 'toggle' if already paused
-	return self.sendBrutefirCommand('lmc eq 0 mag 1000/10', []);
+	return self.sendBrutefirCommand('lmc eq 0 mag 1000/'[coef1000]);
 };
 
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
@@ -396,7 +407,47 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
     self.config.set('filter_size', data['filter_size']);
     self.config.set('numb_part', data['numb_part']);
     self.config.set('float_bits', data['float_bits']);
+    
+    self.rebuildsaveBRUTEFIRnoRestartDaemon()
+        .then(function(e){
+            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+            defer.resolve({});
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        })
 
+
+    return defer.promise;
+};
+
+ControllerBrutefir.prototype.saveBrutefirnoRestartDaemon = function () {
+    var self=this;
+    var defer=libQ.defer();
+
+    self.createBrutefirDFile()
+        .then(function(e)
+        {
+            var edefer=libQ.defer();
+            exec("killall Brutefir", function (error, stdout, stderr) {
+                edefer.resolve();
+            });
+            return edefer.promise;
+        })
+        .then(function(e){
+            self.onVolumioStart();
+            return libQ.resolve();
+        })
+        .then(function(e)
+        {
+            defer.resolve();
+        })
+        .fail(function(e){
+            defer.reject(new Error());
+        })
+
+    return defer.promise;
 };
 /*
 ControllerBrutefir.prototype.updateEqualizerSettings = function() {

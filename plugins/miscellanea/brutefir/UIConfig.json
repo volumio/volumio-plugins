@@ -33,31 +33,30 @@
                 {
 		     "id": "gain",
                     "element": "select",
-			"type" : "text",
-                    "label": "gain",
+		    "label": "gain",
                     "value": {
-                        "value": 0,
+                        "value":0,
                         "label": "0"
                     },
 		    "options": [
                         {
-                            "value": -8,
+                            "value":-8,
                             "label": "-8"
                         },
                         {
-                            "value": -5,
+                            "value":-5,
                             "label": "-5"
                         },
                         {
-                            "value": 0,
+                            "value":0,
                             "label": "0"
                         },
                         {
-                            "value": 5,
+                            "value":5,
                             "label": "5"
                         },
                         {
-                            "value": 8,
+                            "value":8,
                             "label": "8"
                         }
                     ]
@@ -102,7 +101,7 @@
                         "label": "0"
                     },
                     "options": [
-                        {
+                         {
                             "value": -10,
                             "label": "-10"
                         },
@@ -133,7 +132,7 @@
                         "label": "0"
                     },
                     "options": [
-                        {
+                          {
                             "value": -10,
                             "label": "-10"
                         },
@@ -152,7 +151,7 @@
                         {
                             "value": 10,
                             "label": "10"
-                        }
+                        } 
                     ]
                 },
                 {
@@ -164,7 +163,7 @@
                         "label": "0"
                     },
                     "options": [
-                        {
+                         {
                             "value": -10,
                             "label": "-10"
                         },
@@ -288,7 +287,7 @@
                         "label": "0"
                     },
                     "options": [
-                        {
+                       {
                             "value": -10,
                             "label": "-10"
                         },
@@ -350,7 +349,7 @@
                         "label": "0"
                     },
                     "options": [
-                        {
+                       {
                             "value": -10,
                             "label": "-10"
                         },
@@ -400,28 +399,49 @@
 		    "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "leftfilter",
-                    "value": "dirac pulse"
+                    "value": {
+			"value":"dirac pulse",	
+			"label": ""
                 },
+		"options": [
+			]
+		},
                 {
                     "id": "rightfilter",
                     "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "rightfilter",
-                    "value": "dirac pulse"
+		    "value": {
+			"value":"dirac pulse",	
+			"label": ""
+                },
+		"options": [
+			]
                 },
 		{
                     "id": "filter_size",
+			"type" : "number",
 		    "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
-                    "value": 8192
+                    "value": {
+			"value":8192,	
+			"label": "8192"
+                },
+		"options": [
+			]
                 },
 		{
                     "id": "numb_part",
 		    "element": "input",
                     "doc": "number of filter partion",
-                    "label": "number of partition",
-                    "value": 8
+                    "label": "number of partitions",
+		    "value": {
+			"value":8,	
+			"label": "8"
+                },
+		"options": [
+			]
                 },
                 {
                     "id": "float_bits",
