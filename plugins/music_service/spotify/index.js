@@ -49,7 +49,7 @@ ControllerSpop.prototype.onVolumioStart = function() {
 
 ControllerSpop.prototype.startSpopDaemon = function() {
 	var self = this;
-	exec("spopd -c /etc/spopd.conf", function (error, stdout, stderr) {
+	exec("LD_LIBRARY_PATH=/usr/local/lib /usr/bin/spopd -c /etc/spopd.conf", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
 		}
