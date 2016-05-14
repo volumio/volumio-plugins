@@ -3,7 +3,8 @@
 var fs = require('fs-extra');
 var exec = require('child_process').exec;
 var os = require('os');
-
+var spawn = require('child_process').spawn; 
+var execSync = require('child_process').execSync;
 // Define the UnmuteDigiamp class
 module.exports = UnmuteDigiamp;
 
@@ -19,12 +20,32 @@ function UnmuteDigiamp(context) {
 
 UnmuteDigiamp.prototype.onVolumioStart = function () {
 	var self = this;
-	exec('/usr/bin/sudo sh -c "echo 22 > /sys/class/gpio/export"', function (error, stdout, stderr) {
+	exec('/usr/bin/sudo "echo 22 > /sys/class/gpio/export"' ,{uid:1000,gid:1000}, function (error, stdout, stderr) {
+		
+	if (error !== null) {
+			self.commandRouter.pushConsoleMessage('The following error occurred while accessing gpio: ' + error);
+		}
+		else {
+			self.commandRouter.pushConsoleMessage('Gpio access ok');
+		}
 		});
-	exec('/usr/bin/sudo sh -c "echo out >/sys/class/gpio/gpio22/direction"' , function (error, stdout, stderr) {
+	exec('/usr/bin/sudo "echo out >/sys/class/gpio/gpio22/direction"' ,{uid:1000,gid:1000}, function (error, stdout, stderr) {
+	if (error !== null) {
+			self.commandRouter.pushConsoleMessage('The following error occurred while starting gpio direction: ' + error);
+		}
+		else {
+			self.commandRouter.pushConsoleMessage('gpio direction ok');
+		}
 		});
-	exec('/usr/bin/sudo sh -c "echo 1 >/sys/class/gpio/gpio22/value"' , function (error, stdout, stderr) {
-		})
+	exec('/usr/bin/sudo "echo 1 >/sys/class/gpio/gpio22/value"',{uid:1000,gid:1000}, function (error, stdout, stderr) {
+		if (error !== null) {	
+	
+			self.commandRouter.pushConsoleMessage('The following error occurred while starting unmuting Pi-amp+: ' + error);
+		}
+		else {
+			self.commandRouter.pushConsoleMessage('Pi-amp unmuted');
+		}
+		});
 	
 };
 
