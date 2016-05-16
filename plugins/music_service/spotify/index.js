@@ -38,30 +38,30 @@ ControllerSpop.prototype.addToBrowseSources = function () {
 };
 
 // Plugin methods -----------------------------------------------------------------------------
-ControllerSpop.prototype.onVolumioStart = function() {
-	var self = this;
-
-	self.startSpopDaemon();
-	setTimeout(function () {
-	    self.spopDaemonConnect();
-	}, 5000);
-};
 
 ControllerSpop.prototype.startSpopDaemon = function() {
 	var self = this;
+
+    var defer=libQ.defer();
+
 	exec("LD_LIBRARY_PATH=/usr/local/lib /usr/bin/spopd -c /etc/spopd.conf", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
+            defer.reject();
 		}
 		else {
 			self.commandRouter.pushConsoleMessage('SpopD Daemon Started');
+            defer.resolve();
 		}
 	});
+
+    return defer.promise;
 };
 
-ControllerSpop.prototype.spopDaemonConnect = function() {
+ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	var self = this;
 
+    self.logger.info("OOOOOOOOOOOOOOOOOOOOOOOOOO");
 	// TODO use names from the package.json instead
 	self.servicename = 'spop';
 	self.displayname = 'Spotify';
@@ -75,12 +75,23 @@ ControllerSpop.prototype.spopDaemonConnect = function() {
 
 	// Start a listener for receiving errors
 	self.connSpopCommand.on('error', function(err) {
-		console.error('SPOP command error:');
-		console.error(err);
+		self.logger.info('SPOP command error:');
+        self.logger.info(err);
+
+        try
+        {
+            defer.reject();
+        } catch(ecc) {}
+
 	});
 	self.connSpopStatus.on('error', function(err) {
-		console.error('SPOP status error:');
-		console.error(err);
+        self.logger.info('SPOP status error:');
+        self.logger.info(err);
+
+        try
+        {
+            defer.reject();
+        } catch(ecc) {}
 	});
 
 	// Init some command socket variables
@@ -188,6 +199,28 @@ ControllerSpop.prototype.onStop = function() {
 	exec("killall spopd", function (error, stdout, stderr) {
 
 	});
+};
+
+ControllerSpop.prototype.onStart = function() {
+    var self = this;
+
+    var defer=libQ.defer();
+
+    self.startSpopDaemon()
+        .then(function(e)
+        {
+            setTimeout(function () {
+                self.logger.info("Connecting to daemon");
+                self.spopDaemonConnect(defer);
+            }, 5000);
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        });
+
+
+    return defer.promise;
 };
 
 ControllerSpop.prototype.handleBrowseUri=function(curUri)
