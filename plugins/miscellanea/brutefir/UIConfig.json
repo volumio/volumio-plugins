@@ -1,0 +1,469 @@
+{
+    "page": {
+        "label": "Brutefir settings"
+    },
+    "sections": [
+        {
+            "id": "equalizer",
+            "element": "section",
+            "label": "Equalizer setting",
+            "icon": "fa-sliders fa-rotate-90",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "miscellanea/brutefir",
+                "method": "saveBrutefirconfigAccount1"
+            },
+            "saveButton": {
+                "label": "Save",
+                "data": [
+		    "gain",
+                    "coef31",
+                    "coef63",
+                    "coef125",
+                    "coef250",
+                    "coef500",
+                    "coef1000",
+                    "coef2000",
+                    "coef4000",
+                    "coef8000",
+                    "coef16000"
+                ]
+            },
+            "content": [
+                {
+		     "id": "gain",
+                    "element": "select",
+		    "label": "gain",
+                    "value": {
+                        "value":0,
+                        "label": "0"
+                    },
+		    "options": [
+                        {
+                            "value":-8,
+                            "label": "-8"
+                        },
+                        {
+                            "value":-5,
+                            "label": "-5"
+                        },
+                        {
+                            "value":0,
+                            "label": "0"
+                        },
+                        {
+                            "value":5,
+                            "label": "5"
+                        },
+                        {
+                            "value":8,
+                            "label": "8"
+                        }
+                    ]
+		},
+		{
+                    "id": "coef31",
+                    "element": "select",
+                    "label": "31Hz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                        {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef63",
+                    "element": "select",
+                    "label": "63Hz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                         {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef125",
+                    "element": "select",
+                    "label": "125Hz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                          {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        } 
+                    ]
+                },
+                {
+                    "id": "coef250",
+                    "element": "select",
+                    "label": "250Hz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                         {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef500",
+                    "element": "select",
+                    "label": "500Hz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                        {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef1000",
+                    "element": "select",
+                    "label": "1KHz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                        {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef2000",
+                    "element": "select",
+                    "label": "2KHz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                        {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef4000",
+                    "element": "select",
+                    "label": "4KHz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                       {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef8000",
+                    "element": "select",
+                    "label": "8KHz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                        {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                },
+                {
+                    "id": "coef16000",
+                    "element": "select",
+                    "label": "16KHz",
+                    "value": {
+                        "value": 0,
+                        "label": "0"
+                    },
+                    "options": [
+                       {
+                            "value": -10,
+                            "label": "-10"
+                        },
+                        {
+                            "value": -5,
+                            "label": "-5"
+                        },
+                        {
+                            "value": 0,
+                            "label": "0"
+                        },
+                        {
+                            "value": 5,
+                            "label": "5"
+                        },
+                        {
+                            "value": 10,
+                            "label": "10"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "advanced",
+            "element": "section",
+            "label": "Advanced settings",
+            "icon": "fa-cogs",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "miscellanea/brutefir",
+                "method": "saveBrutefirconfigAccount2"
+            },
+            "saveButton": {
+                "label": "Save",
+                "data": [
+                    "leftfilter",
+                    "rightfilter",
+		    "filter_size",
+		    "numb_part",
+		    "float_bits"
+                ]
+            },
+            "content": [
+                {
+                    "id": "leftfilter",
+		    "element": "input",
+                    "doc": "Leftfilter file (path/name) if none dirac pulse is used",
+                    "label": "leftfilter",
+                    "value": {
+			"value":"dirac pulse",	
+			"label": ""
+                },
+		"options": [
+			]
+		},
+                {
+                    "id": "rightfilter",
+                    "element": "input",
+                    "doc": "Right filter file (path/name) if none dirac pulse is used",
+                    "label": "rightfilter",
+		    "value": {
+			"value":"dirac pulse",	
+			"label": ""
+                },
+		"options": [
+			]
+                },
+		{
+                    "id": "filter_size",
+			"type" : "number",
+		    "element": "input",
+                    "doc": "size of filter",
+                    "label": "filter size",
+                    "value": {
+			"value":8192,	
+			"label": "8192"
+                },
+		"options": [
+			]
+                },
+		{
+                    "id": "numb_part",
+		    "element": "input",
+                    "doc": "number of filter partion",
+                    "label": "number of partitions",
+		    "value": {
+			"value":8,	
+			"label": "8"
+                },
+		"options": [
+			]
+                },
+                {
+                    "id": "float_bits",
+                    "element": "select",
+		    "doc": "floating point internal resolusion",
+                    "label": "float_bits",
+                    "value": {
+                        "value": 64,
+                        "label": "64"
+                    },
+                    "options": [
+                        {
+                            "value": 32,
+                            "label": "32"
+                        },
+                        {
+                            "value": 64,
+                            "label": "64"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
