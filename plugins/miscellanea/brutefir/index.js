@@ -1,511 +1,550 @@
 'use strict';
-
+// This file is surely full of error. I have to say that I try to understand how it works by copying / modifying code from other plugins.
+// as result plenty of line should be removed or added...
+// not sure all var are required....
 var libQ = require('kew');
+var libNet = require('net');
 var libFast = require('fast.js');
 var fs = require('fs-extra');
+var config = new(require('v-conf'))();
+//var nodetools = require('nodetools');
+var telnet = require('telnet-client');
+var connection = new telnet();
+var libFsExtra = require('fs-extra');
+var io = require('socket.io-client');
 var exec = require('child_process').exec;
-var winston = require('winston');
-var vconf = require('v-conf');
+//var execSync = require('child_process').execSync;
+//var spawn = require('child_process').spawn;
 
-// Define the CoreCommandRouter class
-module.exports = CoreCommandRouter;
-function CoreCommandRouter(server) {
+// Define the ControllerBrutefir class
+module.exports = ControllerBrutefir;
 
-	fs.ensureFileSync('/var/log/volumio.log');
-	this.logger = new (winston.Logger)({
-		transports: [
-			new (winston.transports.Console)(),
-			new (winston.transports.File)({
-				filename: '/var/log/volumio.log',
-				json: false
-			})
-		]
-	});
+function ControllerBrutefir(context) {
+ // This fixed variable will let us refer to 'this' object at deeper scopes
+ var self = this;
 
-	this.callbacks = [];
-	this.sharedVars = new vconf();
+ this.context = context;
+ this.commandRouter = this.context.coreCommand;
+ this.logger = this.context.logger;
+ this.configManager = this.context.configManager;
 
-	this.logger.info("-------------------------------------------");
-	this.logger.info("-----            Volumio2              ----");
-	this.logger.info("-------------------------------------------");
-	this.logger.info("-----          System startup          ----");
-	this.logger.info("-------------------------------------------");
-
-	// Start the music library
-	this.musicLibrary = new (require('./musiclibrary.js'))(this);
-
-	// Start plugins
-	this.pluginManager = new (require(__dirname + '/pluginmanager.js'))(this, server);
-	this.pluginManager.loadPlugins();
-	//self.pluginManager.onVolumioStart();
-	//self.pluginManager.startPlugins();
-
-	// Start the state machine
-	this.stateMachine = new (require('./statemachine.js'))(this);
-
-
-	// Start the volume controller
-	this.volumeControl = new (require('./volumecontrol.js'))(this);
-
-	// Start the playListManager.playPlaylistlist FS
-	//self.playlistFS = new (require('./playlistfs.js'))(self);
-
-	this.playListManager = new (require('./playlistManager.js'))(this);
-
-	this.platformspecific = new (require(__dirname + '/platformSpecific.js'))(this);
-
-	this.pushConsoleMessage('BOOT COMPLETED');
-
-	this.startupSound();
-
-
-
+ var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+    self.config = new (require('v-conf'))();
+    self.config.loadFile(configFile);
 }
 
-// Methods usually called by the Client Interfaces ----------------------------------------------------------------------------
+ControllerBrutefir.prototype.getConfigurationFiles = function() {
+ //	var self = this;
 
-// Volumio Play
-CoreCommandRouter.prototype.volumioPlay = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioPlay');
-	return this.stateMachine.play();
+ return ['config.json'];
+}
+ControllerBrutefir.prototype.addToBrowseSources = function() {
+ //var self = this;
+ var data = {
+  name: 'Brutefir',
+  uri: 'brutefir',
+  plugin_type: 'miscellanea',
+  plugin_name: 'brutefir'
+ };
+ this.commandRouter.volumioAddToBrowseSources(data);
+};
+// Plugin methods -----------------------------------------------------------------------------
+ControllerBrutefir.prototype.onVolumioStart = function() {
+ var self = this;
+
+ self.startBrutefirDaemon();
+ setTimeout(function() {
+     self.brutefirDaemonConnect();
+ }, 5000);
 };
 
-// Volumio Pause
-CoreCommandRouter.prototype.volumioPause = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioPause');
-	return this.stateMachine.pause();
+ControllerBrutefir.prototype.startBrutefirDaemon = function() {
+ var self = this;
+ exec("/usr/bin/brutefir", function(error, stdout, stderr) {
+  if (error !== null) {
+   self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
+  } else {
+   self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
+  }
+ });
 };
 
-// Volumio Stop
-CoreCommandRouter.prototype.volumioStop = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioStop');
-	return this.stateMachine.stop();
+/*ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
+ var self = this;
+ // Here we send the command to brutfir via telnet
+// change in UI must be send in "live" 
+// self.servicename = 'brutefir';
+// self.displayname = 'Brutefir';
+/*var gain = self.config.get('gain');
+ var coef31 = self.config.get('coef31');
+ var coef63 = self.config.get('coef63');
+ var coef125 = self.config.get('coef125');
+ var coef250 = self.config.get('coef250');
+ var coef500 = self.config.get('coef500');
+ var coef1000 = self.config.get('coef1000');
+ var coef2000 = self.config.get('coef2000');
+ var coef4000 = self.config.get('coef4000');
+ var coef8000 = self.config.get('coef8000');
+ var coef16000 = self.config.get('coef16000');
+/*
+var gain = 'gain';
+ var coef31 = 'coef31';
+ var coef63 = 'coef63';
+ var coef125 = 'coef125';
+ var coef250 = 'coef250';
+ var coef500 = 'coef500';
+ var coef1000 = 'coef1000';
+ var coef2000 = 'coef2000';
+ var coef4000 = 'coef4000';
+ var coef8000 = 'coef8000';
+ var coef16000 = 'coef16000';
+ var params = {
+  host: 'localhost',
+  port: 3002,
+  //shellPrompt: '/ # ',
+  timeout: 5500,// got a message "socket timeout" " connection closed"
+  // removeEcho: 4
+ };
+
+ //here we compose the eq cmd - not sure of the syntax to send several parameters with js. 
+// from brutefir doc : "An example: lmc eq 0 mag 20/-10, 4000/10 will set the magnitude to -10 dB at 20 Hz and +10 dB at 4000 Hz for equaliser for coeffient 0"
+ var cmd = 'lmc eq 0 mag 31/' + coef31 + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000;
+
+ //here we send the cmd via telnet
+ connection.on('ready', function(prompt) {
+  connection.exec(cmd, function(err, response) {
+   console.log(response);
+  });
+ });
+
+ connection.on('timeout', function() {
+  console.log('socket timeout!')
+  connection.end();
+ });
+
+ connection.on('close', function() {
+  console.log('connection closed');
+ });
+ connection.connect(params);
+
+
 };
-
-// Volumio Previous
-CoreCommandRouter.prototype.volumioPrevious = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioPrevious');
-	return this.stateMachine.previous();
-};
-
-// Volumio Next
-CoreCommandRouter.prototype.volumioNext = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioNext');
-	return this.stateMachine.next();
-};
-
-// Volumio Get State
-CoreCommandRouter.prototype.volumioGetState = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetState');
-	return this.stateMachine.getState();
-};
-
-// Volumio Get Queue
-CoreCommandRouter.prototype.volumioGetQueue = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetQueue');
-	return this.stateMachine.getQueue();
-};
-
-// Volumio Remove Queue Item
-CoreCommandRouter.prototype.volumioRemoveQueueItem = function (nIndex) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioRemoveQueueItem');
-	return this.stateMachine.removeQueueItem(nIndex);
-};
-
-// Volumio Clear Queue Item
-CoreCommandRouter.prototype.volumioClearQueue = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioClearQueue');
-	return this.stateMachine.clearQueue();
-};
-
-// Volumio Set Volume
-CoreCommandRouter.prototype.volumiosetvolume = function (VolumeInteger) {
-	this.callCallback("volumiosetvolume", VolumeInteger);
-	return this.volumeControl.alsavolume(VolumeInteger);
-};
-
-// Volumio Update Volume
-CoreCommandRouter.prototype.volumioupdatevolume = function (vol) {
-	this.callCallback("volumioupdatevolume", vol);
-	return this.stateMachine.updateVolume(vol);
-};
-
-// Volumio Retrieve Volume
-CoreCommandRouter.prototype.volumioretrievevolume = function (vol) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioRetrievevolume');
-	return this.volumeControl.retrievevolume();
-};
-
-
-CoreCommandRouter.prototype.volumioUpdateVolumeSettings = function (vol) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioUpdateVolumeSettings');
-	if (this.volumeControl){
-	return this.volumeControl.updateVolumeSettings(vol);
-	} 
-};
-
-CoreCommandRouter.prototype.addCallback = function (name, callback) {
-	if (this.callbacks[name] == undefined) {
-		this.callbacks[name] = [];
-	}
-	this.callbacks[name].push(callback);
-	//this.logger.debug("Total " + callbacks[name].length + " callbacks for " + name);
-};
-
-CoreCommandRouter.prototype.callCallback = function (name, data) {
+*/
+ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 	var self = this;
-	var calls = this.callbacks[name];
-	if (calls != undefined) {
-		var nCalls = calls.length;
-		for (var i = 0; i < nCalls; i++) {
-			var func = this.callbacks[name][i];
-			try {
-				func(data);
-			} catch (e) {
-				self.logger.error("Help! Some callbacks for " + name + " are crashing!");
-				self.logger.error(e);
+
+	// TODO use names from the package.json instead
+	self.servicename = 'brutefir';
+	self.displayname = 'Brutefir';
+
+
+	// Each core gets its own set of Brutefir sockets connected
+	var nHost='localhost';
+	var nPort=3002;
+	self.connBrutefirCommand = libNet.createConnection(nPort, nHost); // Socket to send commands and receive track listings
+	self.connBrutefirStatus = libNet.createConnection(nPort, nHost); // Socket to listen for status changes
+
+	// Start a listener for receiving errors
+	self.connBrutefirCommand.on('error', function(err) {
+		console.error('BRUTEFIR command error:');
+		console.error(err);
+	});
+	self.connBrutefirStatus.on('error', function(err) {
+		console.error('BRUTEFIR status error:');
+		console.error(err);
+	});
+
+	// Init some command socket variables
+	self.bBrutefirCommandGotFirstMessage = false;
+	self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events (basically when it emits 'brutefir 0.0.1').
+	self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
+	self.arrayResponseStack = [];
+	self.sResponseBuffer = '';
+
+	// Start a listener for command socket messages (command responses)
+	self.connBrutefirCommand.on('data', function(data) {
+		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
+
+		// If the last character in the data chunk is a newline, this is the end of the response
+		if (data.slice(data.length - 1).toString() === '\n') {
+			// If this is the first message, then the connection is open
+			if (!self.bBrutefirCommandGotFirstMessage) {
+				self.bBrutefirCommandGotFirstMessage = true;
+				try {
+					self.brutefirCommandReadyDeferred.resolve();
+				} catch (error) {
+					self.pushError(error);
+				}
+				// Else this is a command response
+			} else {
+				try {
+					self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
+				} catch (error) {
+					self.pushError(error);
+				}
 			}
+
+			// Reset the response buffer
+			self.sResponseBuffer = '';
 		}
-	} else {
-		self.logger.debug("No callbacks for " + name);
-	}
+	});
+
+	// Init some status socket variables
+	self.bBrutefirStatusGotFirstMessage = false;
+	self.sStatusBuffer = '';
+// Init some status socket variables
+	self.bBrutefirStatusGotFirstMessage = false;
+	self.sStatusBuffer = '';
+
+	// Start a listener for status socket messages
+	self.connBrutefirStatus.on('data', function(data) {
+		self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
+
+		// If the last character in the data chunk is a newline, this is the end of the status update
+		if (data.slice(data.length - 1).toString() === '\n') {
+			// Put socket back into monitoring mode
+			self.connBrutefirStatus.write('idle\n');
+
+			// If this is the first message, then the connection is open
+			if (!self.bBrutefirStatusGotFirstMessage) {
+				self.bBrutefirStatusGotFirstMessage = true;
+				// Else this is a state update announcement
+			} else {
+				var timeStart = Date.now();
+				var sStatus = self.sStatusBuffer;
+
+				self.logStart('Brutefir announces state update')
+					/*.then(function(){
+					 return self.getState.call(self);
+					 })*/
+					.then(function() {
+						return self.parseState.call(self, sStatus);
+					})
+					.then(libFast.bind(self.pushState, self))
+					.fail(libFast.bind(self.pushError, self))
+					.done(function() {
+						return self.logDone(timeStart);
+					});
+			}
+
+			// Reset the status buffer
+			self.sStatusBuffer = '';
+		}
+	});
+
+	
+
 };
 
-// Volumio Add Queue Uids
-CoreCommandRouter.prototype.volumioAddQueueUids = function (arrayUids) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioAddQueueUids');
-	return this.musicLibrary.addQueueUids(arrayUids);
+// burtefir command
+ControllerBrutefir.prototype.sendequalizer = function() {
+	var self = this;
+ self.config.set('coef31', data['coef31']);
+    self.config.set('coef63', data['coef63']);
+    self.config.set('coef125', data['coef125']);
+    self.config.set('coef250', data['coef250']);
+    self.config.set('coef500', data['coef500']);
+    self.config.set('coef1000', data['coef1000']);
+    self.config.set('coef2000', data['coef2000']);
+    self.config.set('coef4000', data['coef4000']);
+    self.config.set('coef8000', data['coef8000']);
+    self.config.set('coef16000', data['coef16000']);
+
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/'+coef31,', 63/'+coef63,', 125/'+coef125,', 250/'+coef250,', 500/'+coef500,', 1000/'+coef1000,', 2000/'+coef2000,', 4000/'+coef4000,', 8000/'+coef8000,', 16000/'+coef16000);
+/*;
+eq 0 mag 31/' + [coef31] + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000; ');
+*/
+	// brutefir cmd
+	return self.sendBrutefirCommand('lmc eq 0 mag 31/'+coef31,', 63/'+coef63,', 125/'+coef125,', 250/'+coef250,', 500/'+coef500,', 1000/'+coef1000,', 2000/'+coef2000,', 4000/'+coef4000,', 8000/'+coef8000,', 16000/'+coef16000);
+/*('lmc eq 0 mag 31/'+coef31', 63/'+coef63', 125/'+coef125', 250/'+coef250', 500/'+coef500', 1000/'+coef1000', 2000/'+coef2000', 4000/'+coef4000', 8000/'+coef8000', 16000/'+coef16000);*/
+};
+
+ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
+
+	// Convert the array of parameters to a string
+	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
+		return sCollected + ' ' + sCurrent;
+	}, '');
+
+	// Pass the command to Brutefir when the command socket is ready
+	self.brutefirCommandReady
+	.then(function() {
+		return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
+	});
+
+	var brutefirResponseDeferred = libQ.defer();
+	var brutefirResponse = brutefirResponseDeferred.promise;
+	self.arrayResponseStack.push(brutefirResponseDeferred);
+
+	// Return a promise for the command response
+	return brutefirResponse;
+};
+
+
+ControllerBrutefir.prototype.onStop = function() {
+ var self = this;
+ exec("killall brutefir", function(error, stdout, stderr) {
+
+ });
+};
+
+ControllerBrutefir.prototype.onRestart = function() {
+ var self = this;
+
+};
+
+ControllerBrutefir.prototype.onInstall = function() {
+ var self = this;
+ //	//Perform your installation tasks here
+};
+
+ControllerBrutefir.prototype.onUninstall = function() {
+	var self = this;
+//Perform your installation tasks here
+};
+
+ControllerBrutefir.prototype.getUIConfig = function() {
+ var self = this;
+ var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+ 	uiconf.sections[0].content[0].value = self.config.get('gain');
+ 	uiconf.sections[0].content[1].value = self.config.get('coef31');
+ 	uiconf.sections[0].content[2].value = self.config.get('coef63');
+ 	uiconf.sections[0].content[3].value = self.config.get('coef125');
+ 	uiconf.sections[0].content[4].value = self.config.get('coef250');
+ 	uiconf.sections[0].content[5].value = self.config.get('coef500');
+ 	uiconf.sections[0].content[6].value = self.config.get('coef1000');
+ 	uiconf.sections[0].content[7].value = self.config.get('coef2000');
+ 	uiconf.sections[0].content[8].value= self.config.get('coef4000');
+ 	uiconf.sections[0].content[9].value = self.config.get('coef8000');
+ 	uiconf.sections[0].content[10].value = self.config.get('coef16000');
+ 	uiconf.sections[1].content[0].value = self.config.get('leftfilter');
+ 	uiconf.sections[1].content[1].value = self.config.get('rightfilter');
+	uiconf.sections[1].content[2].value = self.config.get('filter_size');
+ 	uiconf.sections[1].content[3].value = self.config.get('numb_part');
+ 	uiconf.sections[1].content[4].value = self.config.get('float_bits');
+
+ return uiconf;
+};
+
+ControllerBrutefir.prototype.setUIConfig = function(data) {
+ var self = this;
+ //var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+
+};
+
+ControllerBrutefir.prototype.getConf = function(varName) {
+ var self = this;
+ //Perform your installation tasks here
+};
+
+
+ControllerBrutefir.prototype.setConf = function(varName, varValue) {
+ var self = this;
+ //Perform your installation tasks here
+};
+
+// Public Methods ---------------------------------------------------------------------------------------
+
+// file is copied but field are filled with "undefined" instead of the value from UI
+ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
+ var self = this;
+
+ var defer = libQ.defer();
+
+
+ try {
+
+  fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function(err, data) {
+   if (err) {
+    defer.reject(new Error(err));
+    return console.log(err);
+   }
+   
+   var conf1 = data.replace("${fliter_size}", self.config.get('filter_size'));
+   var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
+   var conf3 = conf2.replace("${float_bits}", self.config.get('float_bits'));
+   var conf4 = conf3.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
+
+   fs.writeFile("/home/volumio/brutefir_config_essai", conf5, 'utf8', function(err) {
+    if (err)
+     defer.reject(new Error(err));
+    else defer.resolve();
+   });
+
+
+  });
+
+
+ } catch (err) {
+
+
+ }
+
+ return defer.promise;
+
+};
+
+
+ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
+// it is suppose to save the settings and it works! 
+ var self = this;
+ var defer = libQ.defer();
+
+    self.config.set('gain', data['gain']);
+    self.config.set('coef31', data['coef31']);
+    self.config.set('coef63', data['coef63']);
+    self.config.set('coef125', data['coef125']);
+    self.config.set('coef250', data['coef250']);
+    self.config.set('coef500', data['coef500']);
+    self.config.set('coef1000', data['coef1000']);
+    self.config.set('coef2000', data['coef2000']);
+    self.config.set('coef4000', data['coef4000']);
+    self.config.set('coef8000', data['coef8000']);
+    self.config.set('coef16000', data['coef16000']);
+    self.config.set('leftfilter', data['leftfilter']);
+    self.config.set('rightfilter', data['rightfilter']);
+    self.config.set('filter_size', data['filter_size']);
+    self.config.set('numb_part', data['numb_part']);
+    self.config.set('float_bits', data['float_bits']);
+    
+    self.saveBRUTEFIRnoRestartDaemon()
+        .then(function(e){
+            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+            defer.resolve({});
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        })
+
+
+    return defer.promise;
+};
+
+ControllerBrutefir.prototype.saveBrutefirnoRestartDaemon = function () {
+    var self=this;
+    var defer=libQ.defer();
+
+    self.createBrutefirDFile()
+        .then(function(e)
+        {
+            var edefer=libQ.defer();
+            exec("killall Brutefir", function (error, stdout, stderr) {
+                edefer.resolve();
+            });
+            return edefer.promise;
+        })
+        .then(function(e){
+            self.onVolumioStart();
+            return libQ.resolve();
+        })
+        .then(function(e)
+        {
+            defer.resolve();
+        })
+        .fail(function(e){
+            defer.reject(new Error());
+        })
+
+    return defer.promise;
 };
 /*
-
- TODO: This should become the default entry point for adding music to any service
- // Volumio Add Queue Uri
- CoreCommandRouter.prototype.volumioAddQueueUri = function(data) {
+ControllerBrutefir.prototype.updateEqualizerSettings = function() {
  var self = this;
- self.pushConsoleMessage( 'CoreCommandRouter::volumioAddQueueUri');
- var service = data.service;
- var uri = data.uri;
- return self.executeOnPlugin('music_service', 'mpd', 'add', uri);
+
+  var gain = self.config.get('gain');
+ var coef31 = self.config.get('coef31');
+ var coef63 = self.config.get('coef63');
+ var coef125 = self.config.get('coef125');
+ var coef250 = self.config.get('coef250');
+ var coef500 = self.config.get('coef500');
+ var coef1000 = self.config.get('coef1000');
+ var coef2000 = self.config.get('coef2000');
+ var coef4000 = self.config.get('coef4000');
+ var coef8000 = self.config.get('coef8000');
+ var coef16000 = self.config.get('coef16000');
+ var settings = {
+  gain : gain,
+  coef31: coef31,
+  coef63: coef63,
+  coef125: coef125,
+  coef250: coef250,
+  coef500: coef500,
+  coef1000: coef1000,
+  coef2000: coef2000,
+  coef4000: coef4000,
+  coef8000: coef8000,
+  coef16000: coef16000
+
  }
- */
-// Volumio Rebuild Library
-CoreCommandRouter.prototype.volumioRebuildLibrary = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioRebuildLibrary');
-	return this.musicLibrary.buildLibrary();
+
+ return self.commandRouter.UpdateEqualizerSettings(settings)
 };
-
-// Volumio Get Library Index
-CoreCommandRouter.prototype.volumioGetLibraryFilters = function (sUid) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetLibraryFilters');
-	return this.musicLibrary.getIndex(sUid);
+*/
+/*ControllerBrutefir.prototype.BrutefirUpdateEqualizerSettings = function() {
+ var self = this;
 };
+*/
 
-// Volumio Browse Library
-CoreCommandRouter.prototype.volumioGetLibraryListing = function (sUid, objOptions) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetLibraryListing');
-	return this.musicLibrary.getListing(sUid, objOptions);
-};
+ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
+ var self = this;
 
-// Volumio Browse Sources
-CoreCommandRouter.prototype.volumioGetBrowseSources = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetBrowseSources');
-	return this.musicLibrary.getBrowseSources();
-};
+ var defer = libQ.defer();
 
-CoreCommandRouter.prototype.volumioAddToBrowseSources = function (data) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioAddToBrowseSources' + data);
-	return this.musicLibrary.addToBrowseSources(data);
-};
-
-CoreCommandRouter.prototype.volumioRemoveToBrowseSources = function (data) {
-    this.pushConsoleMessage('CoreCommandRouter::volumioRemoveToBrowseSources' + data);
-    return this.musicLibrary.removeBrowseSource(data);
-};
-
-CoreCommandRouter.prototype.volumioUpdateToBrowseSources = function (name,data) {
-    this.pushConsoleMessage('CoreCommandRouter::volumioUpdateToBrowseSources' + data);
-    return this.musicLibrary.updateBrowseSources(name,data);
-};
-// Volumio Get Playlist Index
-CoreCommandRouter.prototype.volumioGetPlaylistIndex = function (sUid) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioGetPlaylistIndex');
-	return this.playlistFS.getIndex(sUid);
-};
-
-// Service Update Tracklist
-CoreCommandRouter.prototype.serviceUpdateTracklist = function (sService) {
-	this.pushConsoleMessage('CoreCommandRouter::serviceUpdateTracklist');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.rebuildTracklist();
-};
-
-// Start WirelessScan
-CoreCommandRouter.prototype.volumiowirelessscan = function () {
-	this.pushConsoleMessage('CoreCommandRouter::StartWirelessScan');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.scanWirelessNetworks();
-};
-
-// Push WirelessScan Results (TODO SEND VIA WS)
-CoreCommandRouter.prototype.volumiopushwirelessnetworks = function (results) {
-	this.pushConsoleMessage(results);
-};
-
-// Volumio Import Playlists
-CoreCommandRouter.prototype.volumioImportServicePlaylists = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioImportServicePlaylists');
-	return this.playlistFS.importServicePlaylists();
-};
-
-// Methods usually called by the State Machine --------------------------------------------------------------------
-
-CoreCommandRouter.prototype.volumioPushState = function (state) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioPushState');
-	this.executeOnPlugin('system_controller', 'volumiodiscovery', 'saveDeviceInfo', state);
-	// Announce new player state to each client interface
-	var self = this;
-	var res = libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			return thisInterface.pushState(state);
-		})
-	);
-	self.callCallback("volumioPushState", state);
-	return res;
-};
-
-CoreCommandRouter.prototype.volumioResetState = function () {
-	this.pushConsoleMessage('CoreCommandRouter::volumioResetState');
-	return this.stateMachine.resetVolumioState();
-};
-
-CoreCommandRouter.prototype.volumioPushQueue = function (queue) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioPushQueue');
-
-	// Announce new player queue to each client interface
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			return thisInterface.pushQueue(queue);
-		})
-	);
-};
-
-// MPD Clear-Add-Play
-CoreCommandRouter.prototype.serviceClearAddPlayTracks = function (arrayTrackIds, sService) {
-	this.pushConsoleMessage('CoreCommandRouter::serviceClearAddPlayTracks');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.clearAddPlayTracks(arrayTrackIds);
-};
-
-// MPD Stop
-CoreCommandRouter.prototype.serviceStop = function (sService) {
-	this.pushConsoleMessage('CoreCommandRouter::serviceStop');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.stop();
-};
-
-// MPD Pause
-CoreCommandRouter.prototype.servicePause = function (sService) {
-	this.pushConsoleMessage('CoreCommandRouter::servicePause');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.pause();
-};
-
-// MPD Resume
-CoreCommandRouter.prototype.serviceResume = function (sService) {
-	this.pushConsoleMessage('CoreCommandRouter::serviceResume');
-	var thisPlugin = this.pluginManager.getPlugin('music_service', sService);
-	return thisPlugin.resume();
-};
-
-// Methods usually called by the service controllers --------------------------------------------------------------
-
-CoreCommandRouter.prototype.servicePushState = function (state, sService) {
-	this.pushConsoleMessage('CoreCommandRouter::servicePushState');
-	return this.stateMachine.syncState(state, sService);
-};
-
-// Methods usually called by the music library ---------------------------------------------------------------------
-
-// Get tracklists from all services and return them as an array
-CoreCommandRouter.prototype.getAllTracklists = function () {
-	this.pushConsoleMessage('CoreCommandRouter::getAllTracklists');
-
-	// This is the synchronous way to get libraries, which waits for each controller to return its tracklist before continuing
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('music_service'), function (sService) {
-			var thisService = self.pluginManager.getPlugin('music_service', sService);
-			return thisService.getTracklist();
-		})
-	);
-};
-
-// Volumio Add Queue Items
-CoreCommandRouter.prototype.addQueueItems = function (arrayItems) {
-	this.pushConsoleMessage('CoreCommandRouter::volumioAddQueueItems');
-	return this.stateMachine.addQueueItems(arrayItems);
-};
-
-// Volumio Check Favourites
-CoreCommandRouter.prototype.checkFavourites = function (data) {
-	var self = this;
-	//self.pushConsoleMessage('CoreCommandRouter::volumioAddQueueItems');
-
-	return self.stateMachine.checkFavourites(data);
-};
-
-// Volumio Emit Favourites
-CoreCommandRouter.prototype.emitFavourites = function (msg) {
-	var plugin = this.pluginManager.getPlugin('user_interface', 'websocket');
-	plugin.emitFavourites(msg);
-};
-
-// Volumio Play Playlist
-CoreCommandRouter.prototype.playPlaylist = function (data) {
-	var self = this;
-	return self.playListManager.playPlaylist(data);
-};
-
-// Utility functions ---------------------------------------------------------------------------------------------
-
-CoreCommandRouter.prototype.executeOnPlugin = function (type, name, method, data) {
-	this.pushConsoleMessage('CoreCommandRouter::executeOnPlugin: ' + name + ' , ' + method);
-
-	var thisPlugin = this.pluginManager.getPlugin(type, name);
-
-	if (thisPlugin != undefined)
-		if (thisPlugin[method]) {
-			return thisPlugin[method](data);
-		} else {
-			this.pushConsoleMessage('Error : CoreCommandRouter::executeOnPlugin: No method [' + method + '] in plugin ' + name);
-		}
-	else return undefined;
-};
-
-CoreCommandRouter.prototype.getUIConfigOnPlugin = function (type, name, data) {
-	this.pushConsoleMessage('CoreCommandRouter::getUIConfigOnPlugin');
-	var thisPlugin = this.pluginManager.getPlugin(type, name);
-	return thisPlugin.getUIConfig(data);
-};
-
-/* what is this?
- CoreCommandRouter.prototype.getConfiguration=function(componentCode)
+ self.config.set('leftfilter', data['leftfilter']);
+ self.config.set('rightfilter', data['rightfilter']);
+  self.config.set('filter_size', data['filter_size']);
+ self.config.set('numb_part', data['numb_part']);
+ self.config.set('float_bits', data['float_bits']);
+ 
+self.rebuildBRUTEFIRAndRestartDaemon()
+  .then(function(e) {
+   self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+   defer.resolve({});
+  })
+  .fail(function(e)
  {
- console.log("_________ "+componentCode);
- }
- */
+   defer.reject(new Error());
+  })
 
-CoreCommandRouter.prototype.pushConsoleMessage = function (sMessage) {
-	this.logger.info(sMessage);
-	/*
-	 var self = this;
-	 return libQ.all(
-	 libFast.map(self.pluginManager.getPluginNames.call(self.pluginManager, 'user_interface'), function(sInterface) {
-	 var thisInterface = self.pluginManager.getPlugin.call(self.pluginManager, 'user_interface', sInterface);
-	 if( typeof thisInterface.printConsoleMessage === "function")
-	 return thisInterface.printConsoleMessage.call(thisInterface, sMessage);
-	 })
-	 );
-	 */
+
+ return defer.promise;
+
 };
 
-CoreCommandRouter.prototype.pushToastMessage = function (type, title, message) {
+/*ControllerBrutefir.prototype.pushError = function(sReason) {
 	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.printToastMessage === "function")
-				return thisInterface.printToastMessage(type, title, message);
-		})
-	);
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::pushError(' + sReason + ')');
+
+	// Return a resolved empty promise to represent completion
+	return libQ.resolve();
 };
+*/
+ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
+ var self = this;
+ var defer = libQ.defer();
 
-CoreCommandRouter.prototype.broadcastToastMessage = function (type, title, message) {
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.broadcastToastMessage === "function")
-				return thisInterface.broadcastToastMessage(type, title, message);
-		})
-	);
-};
+ self.createBRUTEFIRFile()
+  .then(function(e) {
+   var edefer = libQ.defer();
+   exec("killall brutefir", function(error, stdout, stderr) {
+    edefer.resolve();
+   });
+   return edefer.promise;
+  })
+  .then(function(e) {
+   self.onVolumioStart();
+   return libQ.resolve();
+  })
+  .then(function(e) {
+   defer.resolve();
+  })
+  .fail(function(e) {
+   defer.reject(new Error());
+  })
 
-CoreCommandRouter.prototype.broadcastMessage = function (msg, value) {
-	var self = this;
-	this.pushConsoleMessage('CoreCommandRouter::BroadCastMessage '+msg);
-
-	return libQ.all(
-
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var emit = {msg:msg,value:value};
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.broadcastMessage === "function")
-				return thisInterface.broadcastMessage(emit);
-		})
-	);
-};
-
-CoreCommandRouter.prototype.pushMultiroomDevices = function (data) {
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.pushMultiroomDevices === "function")
-				return thisInterface.pushMultiroomDevices(data);
-		})
-	);
-};
-
-CoreCommandRouter.prototype.pushMultiroom = function (data) {
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.pushMultiroom === "function")
-				return thisInterface.pushMultiroom(data);
-		})
-	);
-};
-
-
-CoreCommandRouter.prototype.pushAirplay = function (data) {
-	var self = this;
-	return libQ.all(
-		libFast.map(this.pluginManager.getPluginNames('user_interface'), function (sInterface) {
-			var thisInterface = self.pluginManager.getPlugin('user_interface', sInterface);
-			if (typeof thisInterface.pushAirplay === "function")
-				return thisInterface.pushAirplay(data);
-		})
-	);
-};
-
-
-// Platform specific & Hardware related options, they can be found in platformSpecific.js
-// This allows to change system commands across different devices\environments
-CoreCommandRouter.prototype.shutdown = function () {
-	this.platformspecific.shutdown();
-};
-
-CoreCommandRouter.prototype.reboot = function () {
-	this.platformspecific.reboot();
-};
-
-CoreCommandRouter.prototype.networkRestart = function () {
-	this.platformspecific.networkRestart();
-};
-
-CoreCommandRouter.prototype.wirelessRestart = function () {
-	this.platformspecific.wirelessRestart();
-};
-
-CoreCommandRouter.prototype.startupSound = function () {
-	this.platformspecific.startupSound();
-};
-
-CoreCommandRouter.prototype.fileUpdate = function () {
-	this.platformspecific.fileUpdate();
-};
+ return defer.promise;
+}
