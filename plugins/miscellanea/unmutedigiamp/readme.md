@@ -19,3 +19,6 @@ in the section "miscellanea"
 And probably you have to delete /data/configuration/plugins.json
 and restart volumio from /volumio
 "killall volumio"
+
+19 may 2016
+New version using onoff lib
