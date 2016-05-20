@@ -10,6 +10,7 @@
   "license": "",
   "volumio_info":{
     "plugin_type": "miscellanea",
-	 "prettyName": "unmutedigiamp"
+	 "prettyName": "unmutedigiamp",
+	 "boot_priority":9
      }
 }
