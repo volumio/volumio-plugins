@@ -926,10 +926,6 @@ ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
             });
             return edefer.promise;
         })
-        .then(function(e){
-            self.onVolumioStart();
-            return libQ.resolve();
-        })
         .then(function(e)
         {
             defer.resolve();
