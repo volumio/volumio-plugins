@@ -61,7 +61,6 @@ ControllerSpop.prototype.startSpopDaemon = function() {
 ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	var self = this;
 
-    self.logger.info("OOOOOOOOOOOOOOOOOOOOOOOOOO");
 	// TODO use names from the package.json instead
 	self.servicename = 'spop';
 	self.displayname = 'Spotify';
