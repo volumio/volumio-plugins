@@ -1,0 +1,15 @@
+{
+  "name": "gpiobuttons",
+  "version": "1.0.0",
+  "description": "provide gpio buttons",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balbuze",
+  "license": "",
+  "volumio_info":{
+    "plugin_type": "miscellanea",
+	 "prettyName": "gpiobuttons"
+     }
+}
