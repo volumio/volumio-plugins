@@ -1,10 +1,13 @@
 'use strict';
 
 //var fs = require('fs-extra');
-var exec = require('child_process').exec;
-var os = require('os');
+//var exec = require('child_process').exec;
+//var os = require('os');
 //var spawn = require('child_process').spawn; 
 //var execSync = require('child_process').execSync;
+var Gpio = require('onoff').Gpio,
+assert = require('assert'),
+ output = new Gpio(22, 'out');
 
 
 
@@ -23,14 +26,42 @@ function UnmuteDigiamp(context) {
 }
 
 UnmuteDigiamp.prototype.onVolumioStart = function () {
-var self = this;
-	exec('gpio mode 3 out' , function (error, stdout, stderr) {
-		
-			});
-	exec('gpio write 3 1' , function (error, stdout, stderr) {
-		
-			});	
+/*	var self = this;
+	var outgpio22;
+	var value;
+	outgpio22 = new Gpio(22, 'out');
 
+	outgpio22.writeSync(value);
+*/		
+	 
+assert(output.direction() === 'out');
+
+output.writeSync(1);
+assert(output.readSync() === 1);
+
+output.writeSync(0);
+assert(output.readSync() === 0);
+
+output.write(1, function (err) {
+  if (err) {
+    throw err;
+  }
+
+  output.read(function (err, value) {
+    if (err) {
+      throw err;
+    }
+
+    assert(value === 1);
+
+    output.writeSync(0);
+    assert(output.readSync() === 0);
+
+    output.unexport();
+
+    console.log('ok - ' + __filename);
+  });	
+});
 };
 UnmuteDigiamp.prototype.onStart = function () {
 	var self = this;
