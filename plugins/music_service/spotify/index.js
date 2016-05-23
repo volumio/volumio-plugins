@@ -21,11 +21,16 @@ function ControllerSpop(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 
-    var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-    self.config = new (require('v-conf'))();
-    self.config.loadFile(configFile);
 }
 
+
+
+ControllerSpop.prototype.onVolumioStart = function()
+{
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
+}
 
 ControllerSpop.prototype.getConfigurationFiles = function()
 {
@@ -44,7 +49,7 @@ ControllerSpop.prototype.startSpopDaemon = function() {
 
     var defer=libQ.defer();
 
-	exec("/bin/systemctl start spop.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+	exec("/usr/bin/sudo /bin/systemctl start spop.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
             defer.reject();
@@ -195,9 +200,13 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
+
+    self.logger.info("Killing SpopD daemon");
 	exec("killall spopd", function (error, stdout, stderr) {
 
 	});
+
+    return libQ.defer();
 };
 
 ControllerSpop.prototype.onStart = function() {
