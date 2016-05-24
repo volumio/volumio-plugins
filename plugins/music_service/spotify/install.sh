@@ -2,8 +2,7 @@
 
 echo "Installing Spop Dependencies"
 sudo apt-get update
-sudo apt-get -y install libao-dev libglib2.0-dev libjson-glib-1.0-0 libjson-glib-dev libao-common libasound2-dev libreadline-dev libsox-dev libsoup2.4-dev libsoup2.4-1
-
+sudo apt-get -y install libao-dev libglib2.0-dev libjson-glib-1.0-0 libjson-glib-dev libao-common libasound2-dev libreadline-dev libsox-dev libsoup2.4-dev libsoup2.4-1 libdbus-glib-1-dev libnotify-dev --no-install-recommends
 echo "Installing Spop and libspotify"
 cd / 
 wget http://repo.volumio.org/Packages/Spop/spop.tar.gz
