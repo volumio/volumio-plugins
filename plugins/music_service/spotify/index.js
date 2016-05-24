@@ -523,24 +523,13 @@ ControllerSpop.prototype.rebuildTracklist = function() {
 };
 
 // Define a method to clear, add, and play an array of tracks
-ControllerSpop.prototype.clearAddPlayTracks = function(arrayTrackUris) {
+ControllerSpop.prototype.clearAddPlayTrack = function(track) {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::clearAddPlayTracks');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::clearAddPlayTrack');
 
-	// Clear the queue, add the first track, and start playback
-	var firstTrack = arrayTrackUris.shift();
-	var promisedActions = self.sendSpopCommand('uplay', [firstTrack]);
+    self.commandRouter.logger.info(JSON.stringify(track));
 
-	// If there are more tracks in the array, add those also
-	if (arrayTrackUris.length > 0) {
-		promisedActions = libFast.reduce(arrayTrackUris, function(previousPromise, curTrackUri) {
-			return previousPromise
-			.then(function() {
-				return self.sendSpopCommand('uadd', [curTrackUri]);
-			});
-		}, promisedActions);
-	}
-	return promisedActions;
+    return self.sendSpopCommand('uplay', [track.uri]);
 };
 
 // Spop stop
