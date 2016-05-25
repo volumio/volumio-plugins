@@ -155,9 +155,9 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 				var sStatus = self.sStatusBuffer;
 
 				self.logStart('Spop announces state update')
-					/*.then(function(){
+					.then(function(){
 					 return self.getState.call(self);
-					 })*/
+					 })
 					.then(function() {
 						return self.parseState.call(self, sStatus);
 					})
@@ -752,44 +752,82 @@ ControllerSpop.prototype.explodeUri = function(uri) {
 
 	var defer=libQ.defer();
 
-	var splitted=uri.split(':');
+    if (uri.startsWith('spotify/playlists')) {
+                var uriSplitted=uri.split('/');
 
-	self.spotifyApi.getTrack(splitted[2])
-		.then(function(data) {
-			self.commandRouter.logger.info(JSON.stringify(data));
+                var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
+                commandDefer.then(function(results){
+                    var resJson=JSON.parse(results);
+
+                    var response=[];
+                    for(var i in resJson.tracks)
+                    {
+                        var albumart=self.getAlbumArt({artist:resJson.tracks[i].artist,album:resJson.tracks[i].album},"");
+
+                        var item={
+                            uri: resJson.tracks[i].uri,
+                            service: 'spop',
+                            type: 'song',
+                            name: resJson.tracks[i].title,
+                            title: resJson.tracks[i].title,
+                            artist:resJson.tracks[i].artist,
+                            album: resJson.tracks[i].album,
+                            duration: resJson.tracks[i].duration/1000,
+                            albumart: albumart,
+                            samplerate: '128',
+                            bitdepth: 16,
+                            trackType: 'Spotify'
+
+                        };
+
+                        response.push(item);
+                    }
+                    defer.resolve(response);
+                })
+                    .fail(function()
+                    {
+                        defer.fail(new Error('An error occurred while listing playlists'));
+                    });
+    }
+    else
+    {
+        var splitted=uri.split(':');
+
+        self.spotifyApi.getTrack(splitted[2])
+            .then(function(data) {
+                self.commandRouter.logger.info(JSON.stringify(data));
 
 
-			var artist='';
-			var album='';
-			var title='';
+                var artist='';
+                var album='';
+                var title='';
 
-			if(data.body.artists.length>0)
-				artist=data.body.artists[0].name;
+                if(data.body.artists.length>0)
+                    artist=data.body.artists[0].name;
 
-			if(data.body.album!==undefined)
-				album=data.body.album.name;
+                if(data.body.album!==undefined)
+                    album=data.body.album.name;
 
-			var albumart=self.getAlbumArt({artist:artist,album:album},"");
+                var albumart=self.getAlbumArt({artist:artist,album:album},"");
 
-			defer.resolve({
-				uri: uri,
-				service: 'spop',
-				name: data.body.name,
-				artist: artist,
-				album: album,
-				type: 'track',
-				duration: parseInt(data.body.duration_ms/1000),
-				tracknumber: data.body.track_number,
-				albumart: albumart,
-				samplerate: '128',
-				bitdepth: 16,
-				trackType: 'Spotify'
+                defer.resolve({
+                    uri: uri,
+                    service: 'spop',
+                    name: data.body.name,
+                    artist: artist,
+                    album: album,
+                    type: 'track',
+                    duration: parseInt(data.body.duration_ms/1000),
+                    tracknumber: data.body.track_number,
+                    albumart: albumart,
+                    samplerate: '128',
+                    bitdepth: 16,
+                    trackType: 'Spotify'
 
-			});
+                });
 
-		});
-
-
+            });
+    }
 
 	return defer.promise;
 };
@@ -924,13 +962,14 @@ ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
             });
             return edefer.promise;
         })
+        .then(self.startSpopDaemon.bind(self))
         .then(function(e)
         {
-            defer.resolve();
-        })
-        .fail(function(e){
-            defer.reject(new Error());
-        })
+            setTimeout(function () {
+                self.logger.info("Connecting to daemon");
+                self.spopDaemonConnect(defer);
+            }, 5000);
+        });
 
     return defer.promise;
 }
