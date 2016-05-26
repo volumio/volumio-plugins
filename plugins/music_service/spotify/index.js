@@ -75,7 +75,10 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	var nHost='localhost';
 	var nPort=6602;
 	self.connSpopCommand = libNet.createConnection(nPort, nHost); // Socket to send commands and receive track listings
-	self.connSpopStatus = libNet.createConnection(nPort, nHost); // Socket to listen for status changes
+	self.connSpopStatus = libNet.createConnection(nPort, nHost, function(){
+        self.addToBrowseSources();
+        defer.resolve();
+    }); // Socket to listen for status changes
 
 	// Start a listener for receiving errors
 	self.connSpopCommand.on('error', function(err) {
@@ -139,7 +142,7 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 
 	// Start a listener for status socket messages
 	self.connSpopStatus.on('data', function(data) {
-		self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
+        self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
 
 		// If the last character in the data chunk is a newline, this is the end of the status update
 		if (data.slice(data.length - 1).toString() === '\n') {
@@ -185,11 +188,7 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	// TODO make this a relative path
 	self.sTracklistPath = __dirname + '/db/tracklist';
 
-
-	self.addToBrowseSources();
-
-
-	self.spotifyApi= new SpotifyWebApi({
+    self.spotifyApi= new SpotifyWebApi({
 		clientId : self.config.get('spotify_api_client_id'),
 		clientSecret : self.config.get('spotify_api_client_secret')
 	});
@@ -282,6 +281,7 @@ ControllerSpop.prototype.listPlaylists=function()
 	var commandDefer=self.sendSpopCommand('ls',[]);
 	commandDefer.then(function(results){
 			var resJson=JSON.parse(results);
+            self.logger.info(JSON.stringify(resJson));
 
 			self.commandRouter.logger.info(resJson);
 			var response={
