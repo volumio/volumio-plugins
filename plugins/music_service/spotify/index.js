@@ -637,12 +637,18 @@ ControllerSpop.prototype.parseState = function(sState) {
 		nPosition = objState.current_track - 1;
 	}
 
-	return libQ.resolve({
+    var rate;
+
+    if(self.config.get('bitrate')==true)
+        rate='320';
+    else rate='128';
+
+    return libQ.resolve({
 		status: sStatus,
 		position: nPosition,
 		seek: nSeek,
 		duration: nDuration,
-		samplerate: null, // Pull these values from somwhere else since they are not provided in the Spop state
+		samplerate: rate, // Pull these values from somwhere else since they are not provided in the Spop state
 		bitdepth: null,
 		channels: null,
 		artist: objState.artist,
@@ -759,6 +765,11 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                 commandDefer.then(function(results){
                     var resJson=JSON.parse(results);
 
+                    var rate;
+                    if(self.config.get('bitrate')===true)
+                        rate="320";
+                    else rate="128";
+
                     var response=[];
                     for(var i in resJson.tracks)
                     {
@@ -774,7 +785,7 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                             album: resJson.tracks[i].album,
                             duration: resJson.tracks[i].duration/1000,
                             albumart: albumart,
-                            samplerate: '128',
+                            samplerate: rate,
                             bitdepth: 16,
                             trackType: 'Spotify'
 
@@ -973,3 +984,8 @@ ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
 
     return defer.promise;
 }
+
+ControllerSpop.prototype.seek = function (timepos) {
+    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::seek to ' + timepos);
+    return this.sendSpopCommand('seek '+timepos, []);
+};
