@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get -y install brutefir
 echo "Installing brutefir plugin"
 
-sudo echo "snd_aloop" > /etc/modules
 
+echo 'snd_aloop' | sudo tee --append /etc/modules > /dev/null
 #requred to end the plugin install
 echo "plugininstallend"
