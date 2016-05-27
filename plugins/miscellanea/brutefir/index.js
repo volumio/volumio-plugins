@@ -141,9 +141,14 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 	// Each core gets its own set of Brutefir sockets connected
 	var nHost='localhost';
 	var nPort=3002;
-	self.connBrutefirCommand = libNet.createConnection(nPort, nHost); // Socket to send commands and receive track listings
-	self.connBrutefirStatus = libNet.createConnection(nPort, nHost); // Socket to listen for status changes
-
+	self.connBrutefirCommand = libNet.createConnection(nPort, nHost); 
+	
+	self.connBrutefirStatus = libNet.createConnection(nPort, nHost, function(){
++        self.addToBrowseSources();
++        defer.resolve();
++    }); // Socket to listen for status changes
+// 
+	
 	// Start a listener for receiving errors
 	self.connBrutefirCommand.on('error', function(err) {
 		console.error('BRUTEFIR command error:');
