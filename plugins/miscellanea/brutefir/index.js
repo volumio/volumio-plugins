@@ -18,7 +18,6 @@ var exec = require('child_process').exec;
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
-
 function ControllerBrutefir(context) {
  // This fixed variable will let us refer to 'this' object at deeper scopes
  var self = this;
@@ -27,29 +26,28 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
+ 
+}
 
- var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-    self.config = new (require('v-conf'))();
-    self.config.loadFile(configFile);
+ControllerBrutefir.prototype.onVolumioStart = function()
+{
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
 }
 
 ControllerBrutefir.prototype.getConfigurationFiles = function() {
- //	var self = this;
 
  return ['config.json'];
 }
+
 ControllerBrutefir.prototype.addToBrowseSources = function() {
  //var self = this;
- var data = {
-  name: 'Brutefir',
-  uri: 'brutefir',
-  plugin_type: 'miscellanea',
-  plugin_name: 'brutefir'
- };
+ var data = { name: 'Brutefir', uri: 'brutefir', plugin_type: 'miscellanea', plugin_name: 'brutefir'};
  this.commandRouter.volumioAddToBrowseSources(data);
 };
 // Plugin methods -----------------------------------------------------------------------------
-ControllerBrutefir.prototype.onVolumioStart = function() {
+/*ControllerBrutefir.prototype.onVolumioStart = function() {
  var self = this;
 
  self.startBrutefirDaemon();
@@ -57,80 +55,24 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
      self.brutefirDaemonConnect();
  }, 5000);
 };
-
+*/
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
+ var defer=libQ.defer();
  exec("/usr/bin/brutefir", function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
-  } else {
+ defer.reject();
+ } 
+	else {
    self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
+	defer.reject();
   }
  });
+ return defer.promise;
 };
 
-/*ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
- var self = this;
- // Here we send the command to brutfir via telnet
-// change in UI must be send in "live" 
-// self.servicename = 'brutefir';
-// self.displayname = 'Brutefir';
-/*var gain = self.config.get('gain');
- var coef31 = self.config.get('coef31');
- var coef63 = self.config.get('coef63');
- var coef125 = self.config.get('coef125');
- var coef250 = self.config.get('coef250');
- var coef500 = self.config.get('coef500');
- var coef1000 = self.config.get('coef1000');
- var coef2000 = self.config.get('coef2000');
- var coef4000 = self.config.get('coef4000');
- var coef8000 = self.config.get('coef8000');
- var coef16000 = self.config.get('coef16000');
-/*
-var gain = 'gain';
- var coef31 = 'coef31';
- var coef63 = 'coef63';
- var coef125 = 'coef125';
- var coef250 = 'coef250';
- var coef500 = 'coef500';
- var coef1000 = 'coef1000';
- var coef2000 = 'coef2000';
- var coef4000 = 'coef4000';
- var coef8000 = 'coef8000';
- var coef16000 = 'coef16000';
- var params = {
-  host: 'localhost',
-  port: 3002,
-  //shellPrompt: '/ # ',
-  timeout: 5500,// got a message "socket timeout" " connection closed"
-  // removeEcho: 4
- };
-
- //here we compose the eq cmd - not sure of the syntax to send several parameters with js. 
-// from brutefir doc : "An example: lmc eq 0 mag 20/-10, 4000/10 will set the magnitude to -10 dB at 20 Hz and +10 dB at 4000 Hz for equaliser for coeffient 0"
- var cmd = 'lmc eq 0 mag 31/' + coef31 + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000;
-
- //here we send the cmd via telnet
- connection.on('ready', function(prompt) {
-  connection.exec(cmd, function(err, response) {
-   console.log(response);
-  });
- });
-
- connection.on('timeout', function() {
-  console.log('socket timeout!')
-  connection.end();
- });
-
- connection.on('close', function() {
-  console.log('connection closed');
- });
- connection.connect(params);
-
-
-};
-*/
-ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
+ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 	var self = this;
 
 	// TODO use names from the package.json instead
@@ -142,26 +84,35 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 	var nHost='localhost';
 	var nPort=3002;
 	self.connBrutefirCommand = libNet.createConnection(nPort, nHost); 
-	
 	self.connBrutefirStatus = libNet.createConnection(nPort, nHost, function(){
-+        self.addToBrowseSources();
-+        defer.resolve();
-+    }); // Socket to listen for status changes
-// 
+        self.addToBrowseSources();
+        defer.resolve();
+    }); // Socket to listen for status changes
 	
 	// Start a listener for receiving errors
 	self.connBrutefirCommand.on('error', function(err) {
-		console.error('BRUTEFIR command error:');
-		console.error(err);
-	});
+		self.logger.info('BRUTEFIR command error:');
+		self.logger.info(err);
+	try
+        {
+            defer.reject();
+        } catch(ecc) {}
+
+		});
 	self.connBrutefirStatus.on('error', function(err) {
-		console.error('BRUTEFIR status error:');
-		console.error(err);
+		self.logger.info('BRUTEFIR status error:');
+		self.logger.info(err);
+	try
+        {
+            defer.reject();
+        } catch(ecc) {}
+
+
 	});
 
 	// Init some command socket variables
 	self.bBrutefirCommandGotFirstMessage = false;
-	self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events (basically when it emits 'brutefir 0.0.1').
+	self.brutefirCommandReadyDeferred = libQ.defer(); 
 	self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
 	self.arrayResponseStack = [];
 	self.sResponseBuffer = '';
@@ -195,9 +146,6 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function() {
 	});
 
 	// Init some status socket variables
-	self.bBrutefirStatusGotFirstMessage = false;
-	self.sStatusBuffer = '';
-// Init some status socket variables
 	self.bBrutefirStatusGotFirstMessage = false;
 	self.sStatusBuffer = '';
 
@@ -267,12 +215,12 @@ eq 0 mag 31/' + [coef31] + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + co
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
-
+/*
 	// Convert the array of parameters to a string
 	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
 		return sCollected + ' ' + sCurrent;
 	}, '');
-
+*/
 	// Pass the command to Brutefir when the command socket is ready
 	self.brutefirCommandReady
 	.then(function() {
@@ -287,12 +235,96 @@ ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParam
 	return brutefirResponse;
 };
 
-
 ControllerBrutefir.prototype.onStop = function() {
+	var self = this;
+	exec("killall brutefir", function (error, stdout, stderr) {
+
+	});
+		 return libQ.defer();
+};
+
+
+ControllerBrutefir.prototype.stop = function() {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::stop');
+
+	return self.sendBrutefir('stop', []);
+};
+/*
+ControllerBrutefir.prototype.stop = function() {
  var self = this;
+  self.logger.info("Killing Brutefir daemon");
  exec("killall brutefir", function(error, stdout, stderr) {
 
  });
+	 return libQ.defer();
+};
+*/
+
+
+ControllerBrutefir.prototype.onStart = function() {
+    var self = this;
+
+    var defer=libQ.defer();
+
+    self.startBrutefirDaemon()
+        .then(function(e)
+        {
+            setTimeout(function () {
+                self.logger.info("Connecting to daemon");
+                self.brutefirDaemonConnect(defer);
+            }, 5000);
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        });
+
+
+    return defer.promise;
+};
+
+ControllerBrutefir.prototype.handleBrowseUri=function(curUri)
+{
+	var self=this;
+
+	//self.commandRouter.logger.info(curUri);
+	var response;
+
+	if (curUri.startsWith('brutefir')) {
+		if(curUri=='brutefir')
+		{
+			response=libQ.resolve({
+				navigation: {
+					prev: {
+						uri: 'brutefir'
+					},
+					list: [{
+						service: 'brutefir',
+						type: 'folder',
+						/*title: 'Playlists',
+						artist: '',
+						album: '',*/
+						icon: 'fa fa-folder-open-o',
+						uri: 'brutefir'
+					}
+
+					]
+				}
+			});
+		}
+		else if(curUri.startsWith('brutefir'))
+		{
+			if(curUri=='brutefir')
+				response=self.listPlaylists();
+			else
+			{
+				response=self.listPlaylist(curUri);
+			}
+		}
+	}
+
+	return response;
 };
 
 ControllerBrutefir.prototype.onRestart = function() {
@@ -328,7 +360,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  	uiconf.sections[1].content[1].value = self.config.get('rightfilter');
 	uiconf.sections[1].content[2].value = self.config.get('filter_size');
  	uiconf.sections[1].content[3].value = self.config.get('numb_part');
- 	uiconf.sections[1].content[4].value = self.config.get('float_bits');
+ 	uiconf.sections[1].content[4].value = self.config.get('fl_bits');
 
  return uiconf;
 };
@@ -369,7 +401,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    
    var conf1 = data.replace("${fliter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
-   var conf3 = conf2.replace("${float_bits}", self.config.get('float_bits'));
+   var conf3 = conf2.replace("${fl_bits}", self.config.get('fl_bits'));
    var conf4 = conf3.replace("${leftfilter}", self.config.get('leftfilter'));
    var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
 
@@ -393,8 +425,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 };
 
 
-ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
-// it is suppose to save the settings and it works! 
+ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function (data) {
  var self = this;
  var defer = libQ.defer();
 
@@ -413,11 +444,11 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
     self.config.set('rightfilter', data['rightfilter']);
     self.config.set('filter_size', data['filter_size']);
     self.config.set('numb_part', data['numb_part']);
-    self.config.set('float_bits', data['float_bits']);
+    self.config.set('fl_bits', data['fl_bits']);
     
-    self.saveBRUTEFIRnoRestartDaemon()
+  self.saveBRUTEFIRnoRestartDaemon()
         .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+           self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
             defer.resolve({});
         })
         .fail(function(e)
@@ -426,22 +457,22 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
         })
 
 
-    return defer.promise;
+    return defer.promise; 
 };
 
-ControllerBrutefir.prototype.saveBrutefirnoRestartDaemon = function () {
+ControllerBrutefir.prototype.saveBRUTEFIRnoRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
 
-    self.createBrutefirDFile()
+    self.createBRUTEFIRFile()
         .then(function(e)
         {
-            var edefer=libQ.defer();
-            exec("killall Brutefir", function (error, stdout, stderr) {
+         var edefer=libQ.defer();
+            exec("echo toto", function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;
-        })
+        }) 
         .then(function(e){
             self.onVolumioStart();
             return libQ.resolve();
@@ -456,6 +487,7 @@ ControllerBrutefir.prototype.saveBrutefirnoRestartDaemon = function () {
 
     return defer.promise;
 };
+
 /*
 ControllerBrutefir.prototype.updateEqualizerSettings = function() {
  var self = this;
@@ -503,7 +535,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('rightfilter', data['rightfilter']);
   self.config.set('filter_size', data['filter_size']);
  self.config.set('numb_part', data['numb_part']);
- self.config.set('float_bits', data['float_bits']);
+// self.config.set('fl_bits', data['fl_bits']);
  
 self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
