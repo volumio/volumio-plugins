@@ -30,6 +30,7 @@ ControllerSpop.prototype.onVolumioStart = function()
     var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
+
 }
 
 ControllerSpop.prototype.getConfigurationFiles = function()
@@ -240,7 +241,7 @@ ControllerSpop.prototype.onStart = function() {
         {
             defer.reject(new Error());
         });
-
+	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildSPOPDAndRestartDaemon.bind(this));
 
     return defer.promise;
 };
@@ -934,6 +935,8 @@ ControllerSpop.prototype.createSPOPDFile = function () {
                 defer.reject(new Error(err));
                 return console.log(err);
             }
+			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			var hwdev = 'hw:' + outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
 			if (bitrate == false ) {
@@ -943,8 +946,9 @@ ControllerSpop.prototype.createSPOPDFile = function () {
             var conf1 = data.replace("${username}", self.config.get('username'));
             var conf2 = conf1.replace("${password}", self.config.get('password'));
             var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
+			var conf4 = conf3.replace("${outdev}", hwdev);
 
-            fs.writeFile("/etc/spopd.conf", conf3, 'utf8', function (err) {
+            fs.writeFile("/etc/spopd.conf", conf4, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
