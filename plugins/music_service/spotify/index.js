@@ -112,9 +112,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	self.connSpopCommand.on('data', function(data) {
 		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
 
-		// If the last character in the data chunk is a newline, this is the end of the response
+        self.commandRouter.logger.info("DATA: "+self.sResponseBuffer);
+
+        // If the last character in the data chunk is a newline, this is the end of the response
 		if (data.slice(data.length - 1).toString() === '\n') {
-			// If this is the first message, then the connection is open
+
+            self.commandRouter.logger.info("FIRST BRANCH");
+
+            // If this is the first message, then the connection is open
 			if (!self.bSpopCommandGotFirstMessage) {
 				self.bSpopCommandGotFirstMessage = true;
 				try {
@@ -125,8 +130,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 				// Else this is a command response
 			} else {
 				try {
-					self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
-				} catch (error) {
+                    self.commandRouter.logger.info("BEFORE: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+
+                    if(self.arrayResponseStack!==undefined && self.arrayResponseStack.length>0)
+					    self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
+
+                    self.commandRouter.logger.info("AFTER: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+
+                } catch (error) {
 					self.pushError(error);
 				}
 			}
@@ -149,7 +160,7 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 			// Put socket back into monitoring mode
 			self.connSpopStatus.write('idle\n');
 
-			// If this is the first message, then the connection is open
+            // If this is the first message, then the connection is open
 			if (!self.bSpopStatusGotFirstMessage) {
 				self.bSpopStatusGotFirstMessage = true;
 				// Else this is a state update announcement
@@ -157,10 +168,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 				var timeStart = Date.now();
 				var sStatus = self.sStatusBuffer;
 
-				self.logStart('Spop announces state update')
-					.then(function(){
-					 return self.getState.call(self);
-					 })
+                self.commandRouter.logger.info("STATUS");
+
+                self.commandRouter.logger.info(sStatus);
+
+                self.logStart('Spop announces state update')
+					//.then(function(){
+					// return self.getState.call(self);
+					// })
 					.then(function() {
 						return self.parseState.call(self, sStatus);
 					})
@@ -582,16 +597,30 @@ ControllerSpop.prototype.sendSpopCommand = function(sCommand, arrayParameters) {
 		return sCollected + ' ' + sCurrent;
 	}, '');
 
+
+    var spopResponseDeferred = libQ.defer();
 	// Pass the command to Spop when the command socket is ready
 	self.spopCommandReady
 	.then(function() {
-		return libQ.nfcall(libFast.bind(self.connSpopCommand.write, self.connSpopCommand), sCommand + sParameters + '\n', 'utf-8');
+		return libQ.nfcall(libFast.bind(self.connSpopCommand.write, self.connSpopCommand), sCommand + sParameters + '\n', 'utf-8')
+            /*.then(function()
+            {
+                spopResponseDeferred.resolve();
+            })
+            .fail(function(err)
+            {
+                spopResponseDeferred.reject(new Error(err));
+            })*/;
 	});
 
-	var spopResponseDeferred = libQ.defer();
-	var spopResponse = spopResponseDeferred.promise;
-	self.arrayResponseStack.push(spopResponseDeferred);
 
+	var spopResponse = spopResponseDeferred.promise;
+
+    if(sCommand!=='status')
+    {
+        self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
+        self.arrayResponseStack.push(spopResponseDeferred);
+    }
 	// Return a promise for the command response
 	return spopResponse;
 };
