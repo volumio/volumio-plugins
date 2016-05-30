@@ -32,6 +32,7 @@
             "content": [
                 {
 		     "id": "gain",
+		    "type":"text", 
                     "element": "select",
 		    "label": "gain",
                     "value": {
@@ -63,6 +64,7 @@
 		},
 		{
                     "id": "coef31",
+			"type":"text",
                     "element": "select",
                     "label": "31Hz",
                     "value": {
@@ -94,6 +96,7 @@
                 },
                 {
                     "id": "coef63",
+			"type":"text",
                     "element": "select",
                     "label": "63Hz",
                     "value": {
@@ -125,6 +128,7 @@
                 },
                 {
                     "id": "coef125",
+			"type":"text",
                     "element": "select",
                     "label": "125Hz",
                     "value": {
@@ -156,6 +160,7 @@
                 },
                 {
                     "id": "coef250",
+			"type":"text",
                     "element": "select",
                     "label": "250Hz",
                     "value": {
@@ -187,6 +192,7 @@
                 },
                 {
                     "id": "coef500",
+			"type":"text",
                     "element": "select",
                     "label": "500Hz",
                     "value": {
@@ -218,6 +224,7 @@
                 },
                 {
                     "id": "coef1000",
+			"type":"text",
                     "element": "select",
                     "label": "1KHz",
                    "value": {
@@ -249,6 +256,7 @@
                 },
                 {
                     "id": "coef2000",
+			"type":"text",
                     "element": "select",
                     "label": "2KHz",
                    "value": {
@@ -280,6 +288,7 @@
                 },
                 {
                     "id": "coef4000",
+			"type":"text",
                     "element": "select",
                     "label": "4KHz",
                   "value": {
@@ -311,6 +320,7 @@
                 },
                 {
                     "id": "coef8000",
+			"type":"text",
                     "element": "select",
                     "label": "8KHz",
                     "value": {
@@ -342,7 +352,9 @@
                 },
                 {
                     "id": "coef16000",
+			"type":"text",
                     "element": "select",
+			"label": "16Khz",
                    "value": {
                         "value": "0",
                         "label": "0"
@@ -395,6 +407,7 @@
             "content": [
                 {
                     "id": "leftfilter",
+			"type":"text",
 		    "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "leftfilter",
@@ -407,6 +420,7 @@
 		},
                 {
                     "id": "rightfilter",
+			"type":"text",
                     "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "rightfilter",
@@ -419,6 +433,7 @@
                 },
 		{
                     "id": "filter_size",
+			"type":"text",
 		    "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
@@ -431,6 +446,7 @@
                 },
 		{
                     "id": "numb_part",
+			"type":"text",
 		    "element": "input",
                     "doc": "string of filter partion",
                     "label": "string of partitions",
@@ -443,6 +459,7 @@
                 },
                 {
                     "id": "float_bits",
+			"type":"text",
                     "element": "select",
 		    "doc": "floating point internal resolusion",
                     "label": "fl_bits",

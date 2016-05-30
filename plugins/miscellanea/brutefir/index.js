@@ -398,12 +398,20 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     defer.reject(new Error(err));
     return console.log(err);
    }
+			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			var hwdev = 'hw:' + outdev;
+			var  bitrate = self.config.get('bitrate');
+			var bitratevalue = 'true';
+			if (bitrate == false ) {
+				bitratevalue = 'false';
+			}
    
    var conf1 = data.replace("${fliter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
    var conf3 = conf2.replace("${fl_bits}", self.config.get('fl_bits'));
    var conf4 = conf3.replace("${leftfilter}", self.config.get('leftfilter'));
    var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf6 = conf5.replace("${outdev}", hwdev);
 
    fs.writeFile("/home/volumio/brutefir_config_essai", conf5, 'utf8', function(err) {
     if (err)
