@@ -10,7 +10,7 @@ var config = new(require('v-conf'))();
 //var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
-var libFsExtra = require('fs-extra');
+//var libFsExtra = require('fs-extra');
 var io = require('socket.io-client');
 var exec = require('child_process').exec;
 //var execSync = require('child_process').execSync;
@@ -406,14 +406,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 				bitratevalue = 'false';
 			}
    
-   var conf1 = data.replace("${fliter_size}", self.config.get('filter_size'));
+   var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
    var conf3 = conf2.replace("${fl_bits}", self.config.get('fl_bits'));
    var conf4 = conf3.replace("${leftfilter}", self.config.get('leftfilter'));
    var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
    var conf6 = conf5.replace("${outdev}", hwdev);
 
-   fs.writeFile("/home/volumio/brutefir_config_essai", conf5, 'utf8', function(err) {
+   fs.writeFile("/home/volumio/brutefir_config_essai", conf6, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -543,7 +543,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('rightfilter', data['rightfilter']);
   self.config.set('filter_size', data['filter_size']);
  self.config.set('numb_part', data['numb_part']);
-// self.config.set('fl_bits', data['fl_bits']);
+ self.config.set('fl_bits', data['fl_bits']);
  
 self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
@@ -580,16 +580,14 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
    });
    return edefer.promise;
   })
-  .then(function(e) {
-   self.onVolumioStart();
-   return libQ.resolve();
-  })
-  .then(function(e) {
-   defer.resolve();
-  })
-  .fail(function(e) {
-   defer.reject(new Error());
-  })
+  .then(self.startBrutefirDaemon.bind(self))
+        .then(function(e)
+        {
+            setTimeout(function () {
+                self.logger.info("Connecting to daemon");
+                self.brutefirDaemonConnect(defer);
+            }, 5000);
+        });
 
  return defer.promise;
 }

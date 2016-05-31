@@ -448,8 +448,8 @@
                     "id": "numb_part",
 			"type":"text",
 		    "element": "input",
-                    "doc": "string of filter partion",
-                    "label": "string of partitions",
+                    "doc": "number of filter partion",
+                    "label": "number of partitions",
 		    "value": {
 			"value":"8",	
 			"label": "8"

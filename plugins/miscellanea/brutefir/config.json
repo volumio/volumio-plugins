@@ -1,66 +1,66 @@
 {
     "gain":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
    "coef31":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
    "coef63":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
   "coef125":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
  "coef250":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
   "coef500":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
  "coef1000":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
   "coef2000":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
  "coef4000":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
   "coef8000":{
-    "type": "string",
+    "type": "text",
     "value": "0"
   },
  "coef16000":{
-    "type": "string",
+    "type": "text",
     "value": "0"
  },
  "leftfilter":{
-    "type": "string",
+    "type": "text",
     "value": "dirac pulse"
   },
  "rightfilter":{
-    "type": "string" ,
+    "type": "text" ,
     "value": "dirac pulse"
   },
   "filter_size":{
-    "type": "string",
+    "type": "text",
     "value": 4096
   },
   "numb_part":{
-    "type": "string" ,
+    "type": "text" ,
     "value": 8
   },
   "fl_bits":{
-    "type": "string" ,
+    "type": "text" ,
     "value": 64
      }
 }
