@@ -7,14 +7,10 @@ var libNet = require('net');
 var libFast = require('fast.js');
 var fs = require('fs-extra');
 var config = new(require('v-conf'))();
-//var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
-//var libFsExtra = require('fs-extra');
 var io = require('socket.io-client');
 var exec = require('child_process').exec;
-//var execSync = require('child_process').execSync;
-//var spawn = require('child_process').spawn;
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
@@ -47,19 +43,11 @@ ControllerBrutefir.prototype.addToBrowseSources = function() {
  this.commandRouter.volumioAddToBrowseSources(data);
 };
 // Plugin methods -----------------------------------------------------------------------------
-/*ControllerBrutefir.prototype.onVolumioStart = function() {
- var self = this;
 
- self.startBrutefirDaemon();
- setTimeout(function() {
-     self.brutefirDaemonConnect();
- }, 5000);
-};
-*/
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
  var defer=libQ.defer();
- exec("/usr/bin/brutefir", function(error, stdout, stderr) {
+ exec("/usr/bin/brutefir -nodefault /data/configuration/miscellanea/brutefir/volumio-brutefir-config", function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
  defer.reject();
@@ -90,15 +78,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
     }); // Socket to listen for status changes
 	
 	// Start a listener for receiving errors
-	self.connBrutefirCommand.on('error', function(err) {
-		self.logger.info('BRUTEFIR command error:');
-		self.logger.info(err);
-	try
-        {
-            defer.reject();
-        } catch(ecc) {}
-
-		});
+	
 	self.connBrutefirStatus.on('error', function(err) {
 		self.logger.info('BRUTEFIR status error:');
 		self.logger.info(err);
@@ -109,14 +89,14 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 
 	});
-
+/*
 	// Init some command socket variables
 	self.bBrutefirCommandGotFirstMessage = false;
 	self.brutefirCommandReadyDeferred = libQ.defer(); 
 	self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
 	self.arrayResponseStack = [];
 	self.sResponseBuffer = '';
-
+*/
 	// Start a listener for command socket messages (command responses)
 	self.connBrutefirCommand.on('data', function(data) {
 		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
@@ -192,7 +172,8 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 // burtefir command
 ControllerBrutefir.prototype.sendequalizer = function() {
 	var self = this;
- self.config.set('coef31', data['coef31']);
+   	 self.config.set('gain', data['gain']);
+	 self.config.set('coef31', data['coef31']);
     self.config.set('coef63', data['coef63']);
     self.config.set('coef125', data['coef125']);
     self.config.set('coef250', data['coef250']);
@@ -204,23 +185,34 @@ ControllerBrutefir.prototype.sendequalizer = function() {
     self.config.set('coef16000', data['coef16000']);
 
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/'+coef31,', 63/'+coef63,', 125/'+coef125,', 250/'+coef250,', 500/'+coef500,', 1000/'+coef1000,', 2000/'+coef2000,', 4000/'+coef4000,', 8000/'+coef8000,', 16000/'+coef16000);
-/*;
-eq 0 mag 31/' + [coef31] + ', 63/' + coef63 + ', 125/' + coef125 + ', 250/' + coef250 + ', 500/' + coef500 + ', 1000/' + coef1000 + ', 2000/' + coef2000 + ', 4000/' + coef4000 + ', 8000/' + coef8000 + ', 16000/' + coef16000; ');
-*/
+
 	// brutefir cmd
 	return self.sendBrutefirCommand('lmc eq 0 mag 31/'+coef31,', 63/'+coef63,', 125/'+coef125,', 250/'+coef250,', 500/'+coef500,', 1000/'+coef1000,', 2000/'+coef2000,', 4000/'+coef4000,', 8000/'+coef8000,', 16000/'+coef16000);
-/*('lmc eq 0 mag 31/'+coef31', 63/'+coef63', 125/'+coef125', 250/'+coef250', 500/'+coef500', 1000/'+coef1000', 2000/'+coef2000', 4000/'+coef4000', 8000/'+coef8000', 16000/'+coef16000);*/
 };
+/*  var BrutefirResponseDeferred = libQ.defer();
+	// Pass the command to Spop when the command socket is ready
+	self.spopCommandReady
+	.then(function() {
+		return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
+	});
+
+
+	var brutefirResponse = brutefirResponseDeferred.promise;
+
+    if(sCommand!=='status')
+    {
+        self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
+        self.arrayResponseStack.push(brutefirResponseDeferred);
+    }
+	// Return a promise for the command response
+	return brutefirResponse;
+*/
+
 
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
-/*
-	// Convert the array of parameters to a string
-	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
-		return sCollected + ' ' + sCurrent;
-	}, '');
-*/
+
 	// Pass the command to Brutefir when the command socket is ready
 	self.brutefirCommandReady
 	.then(function() {
@@ -237,29 +229,23 @@ ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParam
 
 ControllerBrutefir.prototype.onStop = function() {
 	var self = this;
-	exec("killall brutefir", function (error, stdout, stderr) {
+	exec("killall brutefir.real", function (error, stdout, stderr) {
 
 	});
 		 return libQ.defer();
 };
 
 
-ControllerBrutefir.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::stop');
 
-	return self.sendBrutefir('stop', []);
-};
-/*
+
 ControllerBrutefir.prototype.stop = function() {
  var self = this;
   self.logger.info("Killing Brutefir daemon");
- exec("killall brutefir", function(error, stdout, stderr) {
+ exec("killall brutefir.real", function(error, stdout, stderr) {
 
  });
 	 return libQ.defer();
 };
-*/
 
 
 ControllerBrutefir.prototype.onStart = function() {
@@ -302,9 +288,6 @@ ControllerBrutefir.prototype.handleBrowseUri=function(curUri)
 					list: [{
 						service: 'brutefir',
 						type: 'folder',
-						/*title: 'Playlists',
-						artist: '',
-						album: '',*/
 						icon: 'fa fa-folder-open-o',
 						uri: 'brutefir'
 					}
@@ -313,7 +296,7 @@ ControllerBrutefir.prototype.handleBrowseUri=function(curUri)
 				}
 			});
 		}
-		else if(curUri.startsWith('brutefir'))
+		/*else if(curUri.startsWith('brutefir'))
 		{
 			if(curUri=='brutefir')
 				response=self.listPlaylists();
@@ -321,7 +304,7 @@ ControllerBrutefir.prototype.handleBrowseUri=function(curUri)
 			{
 				response=self.listPlaylist(curUri);
 			}
-		}
+		}*/
 	}
 
 	return response;
@@ -367,7 +350,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
  var self = this;
- //var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+// var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
 };
 
@@ -400,11 +383,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    }
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 			var hwdev = 'hw:' + outdev;
-			var  bitrate = self.config.get('bitrate');
-			var bitratevalue = 'true';
-			if (bitrate == false ) {
-				bitratevalue = 'false';
-			}
+			
    
    var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
@@ -413,7 +392,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
    var conf6 = conf5.replace("${outdev}", hwdev);
 
-   fs.writeFile("/home/volumio/brutefir_config_essai", conf6, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf6, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -496,43 +475,6 @@ ControllerBrutefir.prototype.saveBRUTEFIRnoRestartDaemon = function () {
     return defer.promise;
 };
 
-/*
-ControllerBrutefir.prototype.updateEqualizerSettings = function() {
- var self = this;
-
-  var gain = self.config.get('gain');
- var coef31 = self.config.get('coef31');
- var coef63 = self.config.get('coef63');
- var coef125 = self.config.get('coef125');
- var coef250 = self.config.get('coef250');
- var coef500 = self.config.get('coef500');
- var coef1000 = self.config.get('coef1000');
- var coef2000 = self.config.get('coef2000');
- var coef4000 = self.config.get('coef4000');
- var coef8000 = self.config.get('coef8000');
- var coef16000 = self.config.get('coef16000');
- var settings = {
-  gain : gain,
-  coef31: coef31,
-  coef63: coef63,
-  coef125: coef125,
-  coef250: coef250,
-  coef500: coef500,
-  coef1000: coef1000,
-  coef2000: coef2000,
-  coef4000: coef4000,
-  coef8000: coef8000,
-  coef16000: coef16000
-
- }
-
- return self.commandRouter.UpdateEqualizerSettings(settings)
-};
-*/
-/*ControllerBrutefir.prototype.BrutefirUpdateEqualizerSettings = function() {
- var self = this;
-};
-*/
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
@@ -560,14 +502,7 @@ self.rebuildBRUTEFIRAndRestartDaemon()
 
 };
 
-/*ControllerBrutefir.prototype.pushError = function(sReason) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::pushError(' + sReason + ')');
 
-	// Return a resolved empty promise to represent completion
-	return libQ.resolve();
-};
-*/
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
  var defer = libQ.defer();

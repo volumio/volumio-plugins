@@ -1,66 +1,80 @@
 {
     "gain":{
     "type": "text",
-    "value": "0"
+    "value": "-8",
+
   },
    "coef31":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
    "coef63":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
   "coef125":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
  "coef250":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
   "coef500":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+	
   },
  "coef1000":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
   "coef2000":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
  "coef4000":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
   "coef8000":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
   },
  "coef16000":{
     "type": "text",
-    "value": "0"
+    "value": "0",
+
  },
  "leftfilter":{
     "type": "text",
-    "value": "dirac pulse"
+    "value": "dirac pulse",
+
   },
  "rightfilter":{
-    "type": "text" ,
-    "value": "dirac pulse"
+    "type": "text",
+    "value": "dirac pulse",
+
   },
   "filter_size":{
     "type": "text",
-    "value": 4096
+    "value": "4096",
+
   },
   "numb_part":{
-    "type": "text" ,
-    "value": 8
+    "type": "text",
+    "value": "8",
   },
   "fl_bits":{
-    "type": "text" ,
-    "value": 64
+    "type": "text",
+    "value": "64",
      }
 }

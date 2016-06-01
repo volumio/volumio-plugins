@@ -6,7 +6,7 @@
         {
             "id": "equalizer",
             "element": "section",
-            "label": "Equalizer setting",
+            "label": "Equalizer settings",
             "icon": "fa-sliders fa-rotate-90",
             "onSave": {
                 "type": "controller",
@@ -32,8 +32,7 @@
             "content": [
                 {
 		     "id": "gain",
-		    "type":"text", 
-                    "element": "select",
+		    "element": "select",
 		    "label": "gain",
                     "value": {
                         "value":"0",
@@ -64,7 +63,7 @@
 		},
 		{
                     "id": "coef31",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "31Hz",
                     "value": {
@@ -96,7 +95,7 @@
                 },
                 {
                     "id": "coef63",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "63Hz",
                     "value": {
@@ -128,7 +127,7 @@
                 },
                 {
                     "id": "coef125",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "125Hz",
                     "value": {
@@ -160,7 +159,7 @@
                 },
                 {
                     "id": "coef250",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "250Hz",
                     "value": {
@@ -192,7 +191,7 @@
                 },
                 {
                     "id": "coef500",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "500Hz",
                     "value": {
@@ -224,7 +223,7 @@
                 },
                 {
                     "id": "coef1000",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "1KHz",
                    "value": {
@@ -256,7 +255,7 @@
                 },
                 {
                     "id": "coef2000",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "2KHz",
                    "value": {
@@ -288,7 +287,7 @@
                 },
                 {
                     "id": "coef4000",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "4KHz",
                   "value": {
@@ -320,7 +319,7 @@
                 },
                 {
                     "id": "coef8000",
-			"type":"text",
+			 
                     "element": "select",
                     "label": "8KHz",
                     "value": {
@@ -352,7 +351,7 @@
                 },
                 {
                     "id": "coef16000",
-			"type":"text",
+			 
                     "element": "select",
 			"label": "16Khz",
                    "value": {
@@ -407,34 +406,31 @@
             "content": [
                 {
                     "id": "leftfilter",
-			"type":"text",
-		    "element": "input",
+		  "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
-                    "label": "leftfilter",
+                    "label": "left filter",
                     "value": {
 			"value":"dirac pulse",	
-			"label": ""
+			"label": "dirac pulse"
                 },
 		"options": [
 			]
 		},
                 {
                     "id": "rightfilter",
-			"type":"text",
-                    "element": "input",
+		   "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
-                    "label": "rightfilter",
+                    "label": "right filter",
 		    "value": {
 			"value":"dirac pulse",	
-			"label": ""
+			"label": "dirac pulse"
                 },
 		"options": [
 			]
                 },
 		{
                     "id": "filter_size",
-			"type":"text",
-		    "element": "input",
+	            "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
                     "value": {
@@ -446,8 +442,7 @@
                 },
 		{
                     "id": "numb_part",
-			"type":"text",
-		    "element": "input",
+	            "element": "input",
                     "doc": "number of filter partion",
                     "label": "number of partitions",
 		    "value": {
@@ -458,11 +453,10 @@
 			]
                 },
                 {
-                    "id": "float_bits",
-			"type":"text",
-                    "element": "select",
+                    "id": "fl_bits",
+		    "element": "select",
 		    "doc": "floating point internal resolusion",
-                    "label": "fl_bits",
+                    "label": "internal_resolution_bits",
                     "value": {
                         "value": "64",
                         "label": "64"
