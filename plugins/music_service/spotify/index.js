@@ -3,7 +3,6 @@
 var libQ = require('kew');
 var libNet = require('net');
 var libFast = require('fast.js');
-var libLevel = require('level');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
@@ -202,7 +201,7 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 
 	// Attempt to load tracklist from database on disk
 	// TODO make this a relative path
-	self.sTracklistPath = __dirname + '/db/tracklist';
+
 
     self.spotifyApi= new SpotifyWebApi({
 		clientId : self.config.get('spotify_api_client_id'),
@@ -445,98 +444,10 @@ ControllerSpop.prototype.setConf = function(varName, varValue) {
 // Public Methods ---------------------------------------------------------------------------------------
 // These are 'this' aware, and return a promise
 
-// Load the tracklist from database on disk
-ControllerSpop.prototype.loadTracklistFromDB = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::loadTracklistFromDB');
-	self.commandRouter.pushConsoleMessage('Loading Spop tracklist from DB...');
 
-	self.tracklist = [];
-
-	self.tracklistReadyDeferred = libQ.defer();
-	self.tracklistReady = self.tracklistReadyDeferred.promise;
-
-	var dbTracklist = libLevel(self.sTracklistPath, {'valueEncoding': 'json', 'createIfMissing': true});
-
-	return libQ.resolve()
-	.then(function() {
-		return libQ.nfcall(libFast.bind(dbTracklist.get, dbTracklist), 'tracklist');
-	})
-	.then(function(result) {
-		self.tracklist = result;
-
-		self.commandRouter.pushConsoleMessage('Spop tracklist loaded from DB.');
-
-		try {
-			self.tracklistReadyDeferred.resolve();
-		} catch (error) {
-			self.pushError('Unable to resolve tracklist promise: ' + error);
-		}
-
-		return libQ.resolve();
-	})
-	.fail(function(sError) {
-		try {
-			self.tracklistReadyDeferred.reject(sError);
-		} catch (error) {
-			self.pushError('Unable to reject tracklist promise: ' + error);
-		}
-
-		throw new Error('Error reading DB: ' + sError);
-	})
-	.fin(libFast.bind(dbTracklist.close, dbTracklist));
-};
 
 // Rebuild a library of user's playlisted Spotify tracks
-ControllerSpop.prototype.rebuildTracklist = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::rebuildTracklist');
 
-	self.tracklist = [];
-	self.tracklistReadyDeferred = libQ.defer();
-	self.tracklistReady = self.tracklistReadyDeferred.promise;
-
-	var dbTracklist = libLevel(self.sTracklistPath, {'valueEncoding': 'json', 'createIfMissing': true});
-
-	self.commandRouter.pushConsoleMessage('Populating Spop tracklist...');
-
-	// Scan the user's Spotify playlists and populate the tracklist
-	return self.sendSpopCommand('ls', [])
-	.then(JSON.parse)
-	.then(function(objPlaylists) {
-		return self.rebuildTracklistFromSpopPlaylists(objPlaylists, [self.displayname]);
-	})
-	.then(function() {
-		self.commandRouter.pushConsoleMessage('Storing Spop tracklist in db...');
-
-		var ops = [
-			{type: 'put', key: 'tracklist', value: self.tracklist}
-		];
-
-		return libQ.nfcall(libFast.bind(dbTracklist.batch, dbTracklist), ops);
-	})
-	.then(function() {
-		self.commandRouter.pushConsoleMessage('Spop tracklist rebuild complete.');
-
-		try {
-			self.tracklistReadyDeferred.resolve();
-		} catch (error) {
-			self.pushError('Unable to resolve tracklist promise: ' + error);
-		}
-
-		return libQ.resolve();
-	})
-	.fail(function(sError) {
-		try {
-			self.tracklistReadyDeferred.reject(sError);
-		} catch (error) {
-			self.pushError('Unable to reject tracklist promise: ' + error);
-		}
-
-		throw new Error('Tracklist Rebuild Error: ' + sError);
-	})
-	.fin(libFast.bind(dbTracklist.close, dbTracklist));
-};
 
 // Define a method to clear, add, and play an array of tracks
 ControllerSpop.prototype.clearAddPlayTrack = function(track) {
