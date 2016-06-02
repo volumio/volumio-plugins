@@ -57,7 +57,7 @@
   },
   "numb_part":{
     "type": "string",
-    "value": "8"
+    "value": "16"
   },
   "fl_bits":{
     "type": "string",
