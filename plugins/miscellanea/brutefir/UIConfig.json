@@ -35,8 +35,8 @@
 		    "element": "select",
 		    "label": "gain",
                     "value": {
-                        "value":"0",
-                        "label": "0"
+                        "value":"-8",
+                        "label": "-8"
                     },
 		    "options": [
                         {
@@ -63,7 +63,6 @@
 		},
 		{
                     "id": "coef31",
-			 
                     "element": "select",
                     "label": "31Hz",
                     "value": {
@@ -95,7 +94,6 @@
                 },
                 {
                     "id": "coef63",
-			 
                     "element": "select",
                     "label": "63Hz",
                     "value": {
@@ -127,7 +125,6 @@
                 },
                 {
                     "id": "coef125",
-			 
                     "element": "select",
                     "label": "125Hz",
                     "value": {
@@ -159,8 +156,7 @@
                 },
                 {
                     "id": "coef250",
-			 
-                    "element": "select",
+	            "element": "select",
                     "label": "250Hz",
                     "value": {
                         "value": "0",
@@ -191,7 +187,6 @@
                 },
                 {
                     "id": "coef500",
-			 
                     "element": "select",
                     "label": "500Hz",
                     "value": {
@@ -223,7 +218,6 @@
                 },
                 {
                     "id": "coef1000",
-			 
                     "element": "select",
                     "label": "1KHz",
                    "value": {
@@ -255,7 +249,6 @@
                 },
                 {
                     "id": "coef2000",
-			 
                     "element": "select",
                     "label": "2KHz",
                    "value": {
@@ -287,7 +280,6 @@
                 },
                 {
                     "id": "coef4000",
-			 
                     "element": "select",
                     "label": "4KHz",
                   "value": {
@@ -319,12 +311,11 @@
                 },
                 {
                     "id": "coef8000",
-			 
-                    "element": "select",
+                     "element": "select",
                     "label": "8KHz",
                     "value": {
-                        "value": "0",
-                        "label": "0"
+                        "value": "",
+                        "label": ""
                     },
                     "options": [
                         {
@@ -454,7 +445,7 @@
                 },
                 {
                     "id": "fl_bits",
-		    "element": "select",
+		    "element": "input",
 		    "doc": "floating point internal resolusion",
                     "label": "internal_resolution_bits",
                     "value": {

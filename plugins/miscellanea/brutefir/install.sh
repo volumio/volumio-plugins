@@ -1,5 +1,6 @@
 #!/bin/bash
-echo 'snd_aloop' | sudo tee --append /etc/modules > /dev/null
+sudo modprobe snd_aloop
+echo 'snd_aloop' | sudo tee --append /etc/modules
 echo "Installing brutefir dependencies"
 sudo apt-get update
 sudo apt-get -y install brutefir

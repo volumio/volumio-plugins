@@ -47,7 +47,7 @@ ControllerBrutefir.prototype.addToBrowseSources = function() {
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
  var defer=libQ.defer();
- exec("/usr/bin/brutefir -nodefault /data/configuration/miscellanea/brutefir/volumio-brutefir-config", function(error, stdout, stderr) {
+ exec("/usr/bin/brutefir -daemon /data/configuration/miscellanea/brutefir/volumio-brutefir-config", function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
  defer.reject();
@@ -510,7 +510,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  self.createBRUTEFIRFile()
   .then(function(e) {
    var edefer = libQ.defer();
-   exec("killall brutefir", function(error, stdout, stderr) {
+   exec("killall brutefir.real", function(error, stdout, stderr) {
     edefer.resolve();
    });
    return edefer.promise;
