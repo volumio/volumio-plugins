@@ -41,7 +41,7 @@
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/brutefir/brutefir.zip",
         "license": "none",
-        "description": "Something Random",
+        "description": "An handy equalizer made with brutefir utility",
         "author": "Balbuze",
         "updated": "03-06-2016"
       }
