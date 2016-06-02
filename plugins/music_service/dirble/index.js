@@ -43,7 +43,7 @@ ControllerDirble.prototype.getConfigurationFiles = function () {
 //Registering into Browse Sources
 ControllerDirble.prototype.addToBrowseSources = function () {
 	var self = this;
-	var data = {name: 'WebRadio', uri: 'radio',plugin_type:'music_service',plugin_name:'dirble'};
+	var data = {name: 'Dirble', uri: 'radio',plugin_type:'music_service',plugin_name:'dirble'};
 
 	self.commandRouter.volumioAddToBrowseSources(data);
 };
