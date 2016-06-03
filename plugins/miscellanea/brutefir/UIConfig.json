@@ -397,6 +397,7 @@
             "content": [
                 {
                     "id": "leftfilter",
+			"type":"text",
 		  "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "left filter",
@@ -409,6 +410,7 @@
 		},
                 {
                     "id": "rightfilter",
+			"type":"text",
 		   "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "right filter",
@@ -421,6 +423,7 @@
                 },
 		{
                     "id": "filter_size",
+			"type": "text",
 	            "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
@@ -446,6 +449,7 @@
                 {
                     "id": "fl_bits",
 		    "element": "input",
+			"type":"text",
 		    "doc": "floating point internal resolusion",
                     "label": "internal_resolution_bits",
                     "value": {
