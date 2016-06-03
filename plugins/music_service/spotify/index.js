@@ -316,7 +316,7 @@ ControllerSpop.prototype.listPlaylists=function()
 						service: 'spop',
 						type: 'folder',
 						title: resJson.playlists[i].name,
-						icon: 'fa fa-folder-open-o',
+						icon: 'fa fa-list-ol',
 						uri: 'spotify/playlists/'+resJson.playlists[i].index
 					});
 				}
@@ -361,7 +361,7 @@ ControllerSpop.prototype.listPlaylist=function(curUri)
 					title: resJson.tracks[i].title,
 					artist:resJson.tracks[i].artist,
 					album: resJson.tracks[i].album,
-					icon: 'fa fa-list-ol',
+					icon: 'fa fa-spotify',
 					uri: resJson.tracks[i].uri
 				});
 			}
