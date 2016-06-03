@@ -17,7 +17,8 @@
     "fs-extra": "^0.28.0",
     "kew": "^0.7.0",
     "net": "^1.0.2",
-    "v-conf": "^0.10.0",
-    "telnet-client": "0.9.1"
+    "socket.io-client": "^1.4.6",
+    "telnet-client": "0.9.1",
+    "v-conf": "^0.10.0"
   }
 }
