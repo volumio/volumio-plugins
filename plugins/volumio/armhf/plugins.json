@@ -39,7 +39,7 @@
         "prettyName":"Brutefir equalizer",
         "name": "brutefir",
         "version": "1.0",
-        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/brutefir/brutefir.zip",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/bbrutefir.zip",
         "license": "none",
         "description": "An handy equalizer made with brutefir utility",
         "author": "Balbuze",
