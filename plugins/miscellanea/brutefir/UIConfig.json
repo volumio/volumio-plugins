@@ -1,5 +1,4 @@
-{
-    "page": {
+{  "page": {
         "label": "Brutefir settings"
     },
     "sections": [
@@ -29,6 +28,10 @@
                     "coef16000"
                 ]
             },
+		"value":  {
+        "value": "0",
+        "label": "Unknown"
+         },
             "content": [
                 {
 		     "id": "gain",
@@ -342,7 +345,6 @@
                 },
                 {
                     "id": "coef16000",
-			 
                     "element": "select",
 			"label": "16Khz",
                    "value": {
@@ -397,7 +399,6 @@
             "content": [
                 {
                     "id": "leftfilter",
-			"type":"text",
 		  "element": "input",
                     "doc": "Leftfilter file (path/name) if none dirac pulse is used",
                     "label": "left filter",
@@ -410,7 +411,6 @@
 		},
                 {
                     "id": "rightfilter",
-			"type":"text",
 		   "element": "input",
                     "doc": "Right filter file (path/name) if none dirac pulse is used",
                     "label": "right filter",
@@ -423,7 +423,6 @@
                 },
 		{
                     "id": "filter_size",
-			"type": "text",
 	            "element": "input",
                     "doc": "size of filter",
                     "label": "filter size",
@@ -449,7 +448,6 @@
                 {
                     "id": "fl_bits",
 		    "element": "input",
-			"type":"text",
 		    "doc": "floating point internal resolusion",
                     "label": "internal_resolution_bits",
                     "value": {
@@ -457,15 +455,7 @@
                         "label": "64"
                     },
                     "options": [
-                        {
-                            "value": "32",
-                            "label": "32"
-                        },
-                        {
-                            "value": "64",
-                            "label": "64"
-                        }
-                    ]
+                      ]
                 }
             ]
         }
