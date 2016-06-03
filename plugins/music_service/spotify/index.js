@@ -112,7 +112,7 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	self.connSpopCommand.on('data', function(data) {
 		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
 
-        self.commandRouter.logger.info("DATA: "+self.sResponseBuffer);
+        //self.commandRouter.logger.info("DATA: "+self.sResponseBuffer);
 
         // If the last character in the data chunk is a newline, this is the end of the response
 		if (data.slice(data.length - 1).toString() === '\n') {
@@ -296,7 +296,7 @@ ControllerSpop.prototype.listPlaylists=function()
 	var commandDefer=self.sendSpopCommand('ls',[]);
 	commandDefer.then(function(results){
 			var resJson=JSON.parse(results);
-            self.logger.info(JSON.stringify(resJson));
+            //self.logger.info(JSON.stringify(resJson));
 
 			self.commandRouter.logger.info(resJson);
 			var response={
@@ -932,4 +932,37 @@ ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
 ControllerSpop.prototype.seek = function (timepos) {
     this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::seek to ' + timepos);
     return this.sendSpopCommand('seek '+timepos, []);
+};
+
+ControllerSpop.prototype.search = function (query) {
+	var self = this;
+
+	var defer = libQ.defer();
+	var list = [];
+	var commandDefer=self.sendSpopCommand('search', [query.value]);
+	commandDefer.then(function(results){
+		var resJson=JSON.parse(results);
+		//console.log(resJson.tracks);
+
+		for(var i in resJson.tracks) {
+			list.push({
+				service: 'spop',
+				type: 'song',
+				title: resJson.tracks[i].title,
+				artist:resJson.tracks[i].artist,
+				album: resJson.tracks[i].album,
+				icon: 'fa fa-spotify',
+				uri: resJson.tracks[i].uri
+			});
+		}
+
+		defer.resolve(list);
+		//console.log(list);
+	})
+		.fail(function()
+		{
+			defer.fail(new Error('An error occurred while listing playlists'));
+		});
+
+	return defer.promise;
 };
