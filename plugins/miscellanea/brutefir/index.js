@@ -47,6 +47,7 @@ ControllerBrutefir.prototype.addToBrowseSources = function() {
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
  var defer=libQ.defer();
+ exec("/usr/bin/sudo /sbin/modprobe snd_aloop");
  exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
@@ -172,6 +173,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 // burtefir command
 ControllerBrutefir.prototype.sendequalizer = function() {
 	var self = this;
+		var defer=libQ.defer();
    	 self.config.set('gain', data['gain']);
 	 self.config.set('coef31', data['coef31']);
     self.config.set('coef63', data['coef63']);
@@ -188,6 +190,7 @@ ControllerBrutefir.prototype.sendequalizer = function() {
 
 	// brutefir cmd
 	return self.sendBrutefirCommand('lmc eq 0 mag 31/'+coef31,', 63/'+coef63,', 125/'+coef125,', 250/'+coef250,', 500/'+coef500,', 1000/'+coef1000,', 2000/'+coef2000,', 4000/'+coef4000,', 8000/'+coef8000,', 16000/'+coef16000);
+	
 };
 /*  var BrutefirResponseDeferred = libQ.defer();
 	// Pass the command to Spop when the command socket is ready
@@ -266,7 +269,7 @@ ControllerBrutefir.prototype.onStart = function() {
             defer.reject(new Error());
         });
 
-
+       	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
     return defer.promise;
 };
 
@@ -296,15 +299,6 @@ ControllerBrutefir.prototype.handleBrowseUri=function(curUri)
 				}
 			});
 		}
-		/*else if(curUri.startsWith('brutefir'))
-		{
-			if(curUri=='brutefir')
-				response=self.listPlaylists();
-			else
-			{
-				response=self.listPlaylist(curUri);
-			}
-		}*/
 	}
 
 	return response;

@@ -28,11 +28,7 @@
                     "coef16000"
                 ]
             },
-		"value":  {
-        "value": "0",
-        "label": "Unknown"
-         },
-            "content": [
+	     "content": [
                 {
 		     "id": "gain",
 		    "element": "select",
