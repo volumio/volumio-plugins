@@ -48,7 +48,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
  var defer=libQ.defer();
  exec("/usr/bin/sudo /sbin/modprobe snd_aloop");
- exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
+ exec("/usr/bin/sudo /bin/systemctl --user start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
  defer.reject();
