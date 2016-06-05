@@ -28,7 +28,7 @@ blocks: 4;
 };
 
 input "l_in", "r_in" {
-            device: "alsa" {device: "hw:Loopback,1";};
+            device: "alsa" {device: "hw:${bindev}";};
             sample: "S32_LE";   # sample format
             channels: 2;            # number of open channels / which to use
     };
@@ -80,7 +80,7 @@ process: -1;
 };
 
    output "l_out", "r_out" {
-            device: "alsa" {device: "${outdev},0";};
+            device: "alsa" {device: "${boutdev}";};
 #         device: "file" {path: "/dev/stdout";};
             sample: "S32_LE";   # sample format
             channels: 2;        # number of open channels / which to use

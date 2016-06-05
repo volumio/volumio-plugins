@@ -7,8 +7,8 @@ var libNet = require('net');
 var libFast = require('fast.js');
 var fs = require('fs-extra');
 var config = new(require('v-conf'))();
-var telnet = require('telnet-client');
-var connection = new telnet();
+//var telnet = require('telnet-client');
+//var connection = new telnet();
 var io = require('socket.io-client');
 var exec = require('child_process').exec;
 
@@ -46,9 +46,19 @@ ControllerBrutefir.prototype.addToBrowseSources = function() {
 
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
+
  var defer=libQ.defer();
- exec("/usr/bin/sudo /sbin/modprobe snd_aloop");
- exec("/usr/bin/sudo /bin/systemctl --user start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
+//modprobe seems to be not supported as usable command. Don't know how to load a module - install.sh does not allows it
+//do a modprobe snd_aloop by hand to make the plugin works
+ exec("/usr/bin/sudo /sbin/modprobe snd_aloop",{uid:1000,gid:1000}, function(error, stdout, stderr) { if (error !== null) {
+   self.commandRouter.pushConsoleMessage('loading snd_aloop module');
+ defer.reject();
+}
+});
+//following could work IF we find how to connect dbus in user mode with systemctl... 
+ //exec("/usr/bin/sudo /bin/systemctl --user start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
+// by waiting a solution, we use global systemctl but requires to manually copy brutefir.service to /etc/systemd/system - not possible a install time
+ exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
  defer.reject();
@@ -70,6 +80,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 
 	// Each core gets its own set of Brutefir sockets connected
+// conncection is no more working....have to investigate
 	var nHost='localhost';
 	var nPort=3002;
 	self.connBrutefirCommand = libNet.createConnection(nPort, nHost); 
@@ -80,7 +91,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 	
 	// Start a listener for receiving errors
 	
-	self.connBrutefirStatus.on('error', function(err) {
+	self.connBrutefirCommand.on('error', function(err) {
 		self.logger.info('BRUTEFIR status error:');
 		self.logger.info(err);
 	try
@@ -90,20 +101,30 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 
 	});
-/*
+	self.connBrutefirStatus.on('error', function(err) {
+        self.logger.info('Brutefir status error:');
+        self.logger.info(err);
+
+        try
+        {
+            defer.reject();
+        } catch(ecc) {}
+	});
 	// Init some command socket variables
 	self.bBrutefirCommandGotFirstMessage = false;
-	self.brutefirCommandReadyDeferred = libQ.defer(); 
+	self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events (basically when it emits 'spop 0.0.1').
 	self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
 	self.arrayResponseStack = [];
 	self.sResponseBuffer = '';
-*/
+
 	// Start a listener for command socket messages (command responses)
 	self.connBrutefirCommand.on('data', function(data) {
 		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
 
 		// If the last character in the data chunk is a newline, this is the end of the response
 		if (data.slice(data.length - 1).toString() === '\n') {
+
+		 self.commandRouter.logger.info("FIRST BRANCH");
 			// If this is the first message, then the connection is open
 			if (!self.bBrutefirCommandGotFirstMessage) {
 				self.bBrutefirCommandGotFirstMessage = true;
@@ -115,14 +136,20 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 				// Else this is a command response
 			} else {
 				try {
-					self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
-				} catch (error) {
+			self.commandRouter.logger.info("BEFORE: BRUTEFIR HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+
+                    if(self.arrayResponseStack!==undefined && self.arrayResponseStack.length>0)
+					    self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
+
+                    self.commandRouter.logger.info("AFTER: BRUTEFIR HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+
+                } catch (error) {
 					self.pushError(error);
 				}
 			}
 
 			// Reset the response buffer
-			self.sResponseBuffer = '';
+			self.sResponseBuffer = '';		
 		}
 	});
 
@@ -147,7 +174,11 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 				var timeStart = Date.now();
 				var sStatus = self.sStatusBuffer;
 
-				self.logStart('Brutefir announces state update')
+			 self.commandRouter.logger.info("STATUS");
+
+            	         self.commandRouter.logger.info(sStatus);
+
+       			self.logStart('Brutefir announces state update')
 					/*.then(function(){
 					 return self.getState.call(self);
 					 })*/
@@ -174,8 +205,8 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 ControllerBrutefir.prototype.sendequalizer = function() {
 	var self = this;
 		var defer=libQ.defer();
-   	 self.config.set('gain', data['gain']);
-	 self.config.set('coef31', data['coef31']);
+    self.config.set('gain', data['gain']);
+    self.config.set('coef31', data['coef31']);
     self.config.set('coef63', data['coef63']);
     self.config.set('coef125', data['coef125']);
     self.config.set('coef250', data['coef250']);
@@ -359,9 +390,8 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
  //Perform your installation tasks here
 };
 
-// Public Methods ---------------------------------------------------------------------------------------
+// Internal Methods ---------------------------------------------------------------------------------------
 
-// file is copied but field are filled with "undefined" instead of the value from UI
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
 
@@ -375,18 +405,27 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     defer.reject(new Error(err));
     return console.log(err);
    }
-			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-			var hwdev = 'hw:' + outdev;
-			
-   
+/* input for brutefir config is the output set in playback
+and output in brutefir config is hardware in use
+*/			
+			var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+/* the right device is not prperly selected - have to remove 1 - need investigation
+*/
+			var inter = indev - 1;
+			var bindev = 'Loopback,' + inter ;
+/*brutefir output dev - don't know how to detect- so set manually
+*/
+			var boutdev = 'hw:2';
+   			
    var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
    var conf3 = conf2.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf4 = conf3.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf5 = conf4.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf6 = conf5.replace("${outdev}", hwdev);
+   var conf4 = conf3.replace("${bindev}", bindev);
+   var conf5 = conf4.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf6 = conf5.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf7 = conf6.replace("${boutdev}", boutdev);
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf6, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf7, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -426,8 +465,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function (data) {
     self.config.set('filter_size', data['filter_size']);
     self.config.set('numb_part', data['numb_part']);
     self.config.set('fl_bits', data['fl_bits']);
-    
-  self.saveBRUTEFIRnoRestartDaemon()
+   
+  self.rebuildBRUTEFIRnoRestartDaemon()
         .then(function(e){
            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
             defer.resolve({});
@@ -441,43 +480,16 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function (data) {
     return defer.promise; 
 };
 
-ControllerBrutefir.prototype.saveBRUTEFIRnoRestartDaemon = function () {
-    var self=this;
-    var defer=libQ.defer();
-
-    self.createBRUTEFIRFile()
-        .then(function(e)
-        {
-         var edefer=libQ.defer();
-            exec("echo toto", function (error, stdout, stderr) {
-                edefer.resolve();
-            });
-            return edefer.promise;
-        }) 
-        .then(function(e){
-            self.onVolumioStart();
-            return libQ.resolve();
-        })
-        .then(function(e)
-        {
-            defer.resolve();
-        })
-        .fail(function(e){
-            defer.reject(new Error());
-        })
-
-    return defer.promise;
-};
 
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
-
+ self.config.set('gain', data['gain']);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
-  self.config.set('filter_size', data['filter_size']);
+ self.config.set('filter_size', data['filter_size']);
  self.config.set('numb_part', data['numb_part']);
  self.config.set('fl_bits', data['fl_bits']);
  
@@ -496,7 +508,15 @@ self.rebuildBRUTEFIRAndRestartDaemon()
 
 };
 
+ControllerBrutefir.prototype.rebuildBRUTEFIRnoRestartDaemon = function () {
+    var self=this;
+    var defer=libQ.defer();
+    self.createBRUTEFIRFile()
+ 
+        
+    return defer.promise;
 
+};
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
  var defer = libQ.defer();
