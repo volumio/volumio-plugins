@@ -1,5 +1,5 @@
 {
-"gain":{"value":"-8","type":"string"},
+"gain":{"type":"string","value":"-8"},
 "coef31":{"type": "string","value": "0"},
 "coef63":{"type": "string","value": "0"},
 "coef125":{"type": "string","value": "0"},
