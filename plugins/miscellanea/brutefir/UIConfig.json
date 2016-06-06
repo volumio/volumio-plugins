@@ -30,7 +30,7 @@
             },
 	     "content": [
                 {
-		     "id": "gaine",
+		     "id": "gain",
 		    "element": "input",
 		    "label": "gain",
                     "value": {
