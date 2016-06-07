@@ -55,18 +55,21 @@ ControllerShoutcast.prototype.handleBrowseUri=function(curUri)
         if (curUri == 'shoutcast')
             response = self.listRoot(curUri);
         else {
-            if (curUri.startsWith('shoutcast/myWebRadio')) {
-                response = self.listMyWebRadio(curUri);
-            }
-            else if (curUri.startsWith('shoutcast/favourites'))
-                response = self.listRadioFavourites(curUri);
-            else if (curUri.startsWith('shoutcast/byGenre')) {
+            if (curUri.startsWith('shoutcast/byGenre')) {
                 if (curUri == 'shoutcast/byGenre')
                     response = self.listRadioGenres(curUri);
                 else
                     response = self.listRadioForGenres(curUri);
-
             }
+            else if (curUri==='shoutcast/top500') {
+                    response = self.listTop500Radios(curUri);
+            }
+
+
+
+
+
+
         }
     }
 
@@ -84,20 +87,11 @@ ControllerShoutcast.prototype.listRoot=function()
             list: [{
                     service: 'shoutcast',
                     type: 'mywebradio-category',
-                    title: 'My Web Radios',
+                    title: 'Top 500 Radios',
                     artist: '',
                     album: '',
                     icon: 'fa fa-heartbeat',
-                    uri: 'shoutcast/myWebRadio'
-                },
-                {
-                    service: 'shoutcast',
-                    type: 'radio-favourites',
-                    title: 'Favourite Radios',
-                    artist: '',
-                    album: '',
-                    icon: 'fa fa-heart',
-                    uri: 'shoutcast/favourites'
+                    uri: 'shoutcast/top500'
                 },
                 {
                     service: 'shoutcast',
@@ -177,6 +171,64 @@ ControllerShoutcast.prototype.listRadioForGenres = function (curUri) {
     };
 
     unirest.get('http://api.shoutcast.com/legacy/genresearch?k=vKgHQrwysboWzMwH&genre='+genre)
+        .end(function (xml) {
+            if(xml.ok)
+            {
+                var xmlDoc = libxmljs.parseXml(xml.body);
+
+                var children = xmlDoc.root().childNodes();
+                var base;
+
+                for(var i in children)
+                {
+                    if(children[i].name()==='tunein')
+                    {
+                        base=children[i].attr('base').value();
+                    }
+                    else if(children[i].name()==='station')
+                    {
+                        var name=children[i].attr('name').value();
+                        var id=children[i].attr('id').value();
+
+                        var category = {
+                            service: 'shoutcast',
+                            type: 'webradio',
+                            title: name,
+                            artist: '',
+                            album: '',
+                            icon: 'fa fa-microphone',
+                            uri: 'http://yp.shoutcast.com' + base+'?id='+id
+                        };
+
+                        response.navigation.list.push(category);
+                    }
+
+                }
+
+                defer.resolve(response);
+            }
+            else defer.reject(new Error('An error occurred while querying SHOUTCAST'));
+        });
+
+
+    return defer.promise;
+};
+
+ControllerShoutcast.prototype.listTop500Radios = function (curUri) {
+    var self = this;
+
+    var defer = libQ.defer();
+
+    var response = {
+        navigation: {
+            prev: {
+                uri: 'shoutcast'
+            },
+            list: []
+        }
+    };
+
+    unirest.get('http://api.shoutcast.com/legacy/Top500?k=vKgHQrwysboWzMwH')
         .end(function (xml) {
             if(xml.ok)
             {
