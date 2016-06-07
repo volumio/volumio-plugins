@@ -3,6 +3,8 @@
 var libQ = require('kew');
 var libxmljs = require("libxmljs");
 var unirest = require('unirest');
+var cachemanager=require('cache-manager');
+var memoryCache = cachemanager.caching({store: 'memory', max: 100, ttl: 10*60/*seconds*/});
 
 // Define the ControllerShoutcast class
 module.exports = ControllerShoutcast;
@@ -122,32 +124,53 @@ ControllerShoutcast.prototype.listRadioGenres = function () {
         }
     };
 
-    unirest.get('http://api.shoutcast.com/legacy/genrelist?k=vKgHQrwysboWzMwH')
-    .end(function (xml) {
-        if(xml.ok)
-        {
-            var xmlDoc = libxmljs.parseXml(xml.body);
 
-            var children = xmlDoc.root().childNodes();
+    var uri='http://api.shoutcast.com/legacy/genrelist?k=vKgHQrwysboWzMwH';
 
-            for(var i in children)
+    memoryCache.wrap(uri, function (cacheCallback) {
+        var promise=libQ.defer();
+
+        unirest.get(uri)
+            .end(function(xml)
             {
-                var name=children[i].attr('name').value();
-                var category = {
-                    type: 'radio-category',
-                    title: name,
-                    icon: 'fa fa-folder-open-o',
-                    uri: 'shoutcast/byGenre/' + name
-                };
+                self.logger.info("READ");
+                if(xml.ok)
+                {
+                    memoryCache.set(uri,xml);
+                    promise.resolve(xml);
+                }
+                else promise.reject(new Error());
+            });
 
-                response.navigation.list.push(category);
+
+        return promise;
+        })
+        .then( function (xml) {
+            self.logger.info("THEN");
+
+            if(xml.ok)
+            {
+                var xmlDoc = libxmljs.parseXml(xml.body);
+
+                var children = xmlDoc.root().childNodes();
+
+                for(var i in children)
+                {
+                    var name=children[i].attr('name').value();
+                    var category = {
+                        type: 'radio-category',
+                        title: name,
+                        icon: 'fa fa-folder-open-o',
+                        uri: 'shoutcast/byGenre/' + name
+                    };
+
+                    response.navigation.list.push(category);
+                }
+
+                defer.resolve(response);
             }
-
-            defer.resolve(response);
-        }
-        else defer.reject(new Error('An error occurred while querying SHOUTCAST'));
-    });
-
+            else defer.reject(new Error('An error occurred while querying SHOUTCAST'));
+        });
 
     return defer.promise;
 };
@@ -170,8 +193,29 @@ ControllerShoutcast.prototype.listRadioForGenres = function (curUri) {
         }
     };
 
-    unirest.get('http://api.shoutcast.com/legacy/genresearch?k=vKgHQrwysboWzMwH&genre='+genre)
-        .end(function (xml) {
+    var uri='http://api.shoutcast.com/legacy/genresearch?k=vKgHQrwysboWzMwH&genre='+genre;
+
+    memoryCache.wrap(uri, function (cacheCallback) {
+        var promise=libQ.defer();
+
+        unirest.get(uri)
+            .end(function(xml)
+            {
+                self.logger.info("READ");
+                if(xml.ok)
+                {
+                    memoryCache.set(uri,xml);
+                    promise.resolve(xml);
+                }
+                else promise.reject(new Error());
+            });
+
+
+        return promise;
+    })
+        .then( function (xml) {
+            self.logger.info("THEN");
+
             if(xml.ok)
             {
                 var xmlDoc = libxmljs.parseXml(xml.body);
@@ -210,7 +254,6 @@ ControllerShoutcast.prototype.listRadioForGenres = function (curUri) {
             else defer.reject(new Error('An error occurred while querying SHOUTCAST'));
         });
 
-
     return defer.promise;
 };
 
@@ -228,8 +271,29 @@ ControllerShoutcast.prototype.listTop500Radios = function (curUri) {
         }
     };
 
-    unirest.get('http://api.shoutcast.com/legacy/Top500?k=vKgHQrwysboWzMwH')
-        .end(function (xml) {
+    var uri='http://api.shoutcast.com/legacy/Top500?k=vKgHQrwysboWzMwH';
+
+    memoryCache.wrap(uri, function (cacheCallback) {
+        var promise=libQ.defer();
+
+        unirest.get(uri)
+            .end(function(xml)
+            {
+                self.logger.info("READ");
+                if(xml.ok)
+                {
+                    memoryCache.set(uri,xml);
+                    promise.resolve(xml);
+                }
+                else promise.reject(new Error());
+            });
+
+
+        return promise;
+    })
+        .then( function (xml) {
+            self.logger.info("THEN");
+
             if(xml.ok)
             {
                 var xmlDoc = libxmljs.parseXml(xml.body);
