@@ -14,7 +14,6 @@ var exec = require('child_process').exec;
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
-
 function ControllerBrutefir(context) {
  // This fixed variable will let us refer to 'this' object at deeper scopes
  var self = this;
@@ -210,57 +209,6 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 };
 
-// burtefir command - until now send nothing....
-ControllerBrutefir.prototype.sendequalizer = function() {
- var self = this;
- var defer = libQ.defer();
- self.config.set('gain', data['gain']);
- self.config.set('coef31', data['coef31']);
- self.config.set('coef63', data['coef63']);
- self.config.set('coef125', data['coef125']);
- self.config.set('coef250', data['coef250']);
- self.config.set('coef500', data['coef500']);
- self.config.set('coef1000', data['coef1000']);
- self.config.set('coef2000', data['coef2000']);
- self.config.set('coef4000', data['coef4000']);
- self.config.set('coef8000', data['coef8000']);
- self.config.set('coef16000', data['coef16000']);
-
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
-
- // brutefir cmd
- return self.sendBrutefirCommand('lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
-
-};
-
-ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
- var self = this;
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
-
- // Pass the command to Brutefir when the command socket is ready
- self.brutefirCommandReady
-  .then(function() {
-   return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
-  });
-
- var brutefirResponseDeferred = libQ.defer();
- var brutefirResponse = brutefirResponseDeferred.promise;
- self.arrayResponseStack.push(brutefirResponseDeferred);
-
- // Return a promise for the command response
- return brutefirResponse;
-};
-
-ControllerBrutefir.prototype.onStop = function() {
- var self = this;
- exec("killall brutefir.real", function(error, stdout, stderr) {
-
- });
- return libQ.defer();
-};
-
-
-
 
 ControllerBrutefir.prototype.stop = function() {
  var self = this;
@@ -375,8 +323,65 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
  var self = this;
  //Perform your installation tasks here
 };
+// Public methods ---------------------------------------------------------------
 
 // Internal Methods ---------------------------------------------------------------------------------------
+
+// burtefir command - until now send nothing....
+ControllerBrutefir.prototype.sendequalizer = function() {
+ var self = this;
+ var defer = libQ.defer();
+ self.config.set('gain', data['gain']);
+ self.config.set('coef31', data['coef31']);
+ self.config.set('coef63', data['coef63']);
+ self.config.set('coef125', data['coef125']);
+ self.config.set('coef250', data['coef250']);
+ self.config.set('coef500', data['coef500']);
+ self.config.set('coef1000', data['coef1000']);
+ self.config.set('coef2000', data['coef2000']);
+ self.config.set('coef4000', data['coef4000']);
+ self.config.set('coef8000', data['coef8000']);
+ self.config.set('coef16000', data['coef16000']);
+
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
+
+ // brutefir cmd
+ return self.sendBrutefirCommand('lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
+
+};
+
+ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
+
+var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
+		return sCollected + ' ' + sCurrent;
+	}, '');
+
+ // Pass the command to Brutefir when the command socket is ready
+ self.brutefirCommandReady
+  .then(function() {
+   return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
+  });
+
+ var brutefirResponse = brutefirResponseDeferred.promise;
+	 if(sCommand!=='status')
+    {
+        self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
+        self.arrayResponseStack.push(brutefirResponseDeferred);
+    }
+
+ // Return a promise for the command response
+ return brutefirResponse;
+};
+
+ControllerBrutefir.prototype.onStop = function() {
+ var self = this;
+ exec("killall brutefir.real", function(error, stdout, stderr) {
+
+ });
+ return libQ.defer();
+};
 
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
@@ -397,11 +402,13 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    /* the right device is not prperly selected - have to remove 1 - need investigation
     */
-   var inter = indev - 1;
+   var inter = indev -1;
    var bindev = 'Loopback,' + inter;
    /*brutefir output dev - don't know how to detect- so set manually
     */
-   var boutdev = 'hw:2';
+   var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+   var intero = outdev +1;
+   var boutdev = 'hw:' + intero;
 
    var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
    var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
