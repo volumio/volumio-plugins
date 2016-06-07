@@ -7,7 +7,6 @@ var libNet = require('net');
 var libFast = require('fast.js');
 var fs = require('fs-extra');
 var config = new(require('v-conf'))();
-//var nodetools = require('nodetools');
 var telnet = require('telnet-client');
 var connection = new telnet();
 var libFsExtra = require('fs-extra');
@@ -38,16 +37,7 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
 
  return ['config.json'];
 }
-ControllerBrutefir.prototype.addToBrowseSources = function() {
- //var self = this;
- var data = {
-  name: 'Brutefir',
-  uri: 'brutefir',
-  plugin_type: 'miscellanea',
-  plugin_name: 'brutefir'
- };
- this.commandRouter.volumioAddToBrowseSources(data);
-};
+
 // Plugin methods -----------------------------------------------------------------------------
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var self = this;
@@ -60,6 +50,9 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
 
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
+
+ //We should create a systemctl script to start brutefir and then use systemctl start brutefir.service
+    //if not this will crash after some time
  exec("/usr/bin/brutefir", function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
