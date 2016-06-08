@@ -224,7 +224,7 @@ ControllerBrutefir.prototype.onStart = function() {
  var self = this;
 
  var defer = libQ.defer();
-
+self.writemodules();
  self.startBrutefirDaemon()
   .then(function(e) {
    setTimeout(function() {
@@ -276,6 +276,7 @@ ControllerBrutefir.prototype.onRestart = function() {
 
 ControllerBrutefir.prototype.onInstall = function() {
  var self = this;
+	
  //	//Perform your installation tasks here
 };
 
@@ -407,7 +408,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    /*brutefir output dev - don't know how to detect- so set manually
     */
    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   var intero = outdev +1;
+   var intero = 2;
    var boutdev = 'hw:' + intero;
 
    var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
@@ -459,7 +460,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  self.config.set('numb_part', data['numb_part']);
  self.config.set('fl_bits', data['fl_bits']);
 
- self.rebuildBRUTEFIRnoRestartDaemon()
+ /*self.rebuildBRUTEFIRnoRestartDaemon()
   .then(function(e) {
    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
    defer.resolve({});
@@ -467,7 +468,13 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
   .fail(function(e) {
    defer.reject(new Error());
   })
+*/
+self.logger.info('Configurations have been set');
 
+
+	self.commandRouter.pushToastMessage('success', "Configuration update", 'Configuration has been successfully updated');
+
+	defer.resolve({});
 
  return defer.promise;
 };
@@ -496,15 +503,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
  return defer.promise;
 
-};
-
-ControllerBrutefir.prototype.rebuildBRUTEFIRnoRestartDaemon = function() {
- var self = this;
- var defer = libQ.defer();
- self.createBRUTEFIRFile()
-
-
- return defer.promise;
 
 };
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
@@ -528,4 +526,18 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   });
 
  return defer.promise;
+};
+
+ControllerBrutefir.prototype.writemodules = function (data) {
+	var self = this;
+
+	var modulestring = 'snd_aloop';
+
+	fs.writeFile('/etc/modules', modulestring, function (err) {
+		if (err) {
+			self.logger.error('Cannot write /etc/modules file: ');
+		}
+
+	});
+
 }
