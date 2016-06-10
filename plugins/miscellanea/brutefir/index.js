@@ -454,12 +454,12 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  self.config.set('coef4000', data['coef4000']);
  self.config.set('coef8000', data['coef8000']);
  self.config.set('coef16000', data['coef16000']);
- self.config.set('leftfilter', data['leftfilter']);
+ /*self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
  self.config.set('filter_size', data['filter_size']);
  self.config.set('numb_part', data['numb_part']);
  self.config.set('fl_bits', data['fl_bits']);
-
+*/
  /*self.rebuildBRUTEFIRnoRestartDaemon()
   .then(function(e) {
    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
