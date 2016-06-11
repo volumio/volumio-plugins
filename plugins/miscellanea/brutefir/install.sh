@@ -7,6 +7,7 @@ echo "adding brutefir service"
 # following is to create brutefir.service in user mode
 # but can't launch it because can't connect to dbus in this mode
 #we have to find a workaround to do this
+mkdir /home/volumio/.config
 mkdir /home/volumio/.config/systemd
 mkdir /home/volumio/.config/systemd/user
 cp /data/plugins/miscellanea/brutefir/brutefir.service /home/volumio/.config/systemd/user/
