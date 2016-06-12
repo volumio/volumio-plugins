@@ -726,9 +726,9 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                             album: resJson.tracks[i].album,
                             duration: resJson.tracks[i].duration/1000,
                             albumart: albumart,
-                            samplerate: rate,
-                            bitdepth: 16,
-                            trackType: 'Spotify'
+                            samplerate: '44.1 KHz',
+                            bitdepth: '16 bit',
+                            trackType: 'spotify'
 
                         };
 
@@ -772,9 +772,9 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                     duration: parseInt(data.body.duration_ms/1000),
                     tracknumber: data.body.track_number,
                     albumart: albumart,
-                    samplerate: '128',
-                    bitdepth: 16,
-                    trackType: 'Spotify'
+					samplerate: '44.1 KHz',
+					bitdepth: '16 bit',
+					trackType: 'spotify'
 
                 });
 
