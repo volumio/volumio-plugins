@@ -16,16 +16,6 @@
         "author": "Volumio Team",
         "screenshots": [{"image": "", "thumb": ""}],
         "updated": "03-06-2016"
-      },
-      {
-        "prettyName": "Another WebRadio Plugin",
-        "name": "webradio",
-        "version": "1.0",
-        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
-        "license": "gpl-v3",
-        "description": "Adding other WebRadios",
-        "author": "Volumio Team",
-        "updated": "23-04-2016"
       }
     ]
   },
