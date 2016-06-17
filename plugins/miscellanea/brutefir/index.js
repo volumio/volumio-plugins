@@ -54,10 +54,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var defer = libQ.defer();
  //modprobe seems to be not supported as usable command. Don't know how to load a module - install.sh does not allows it
  //do a modprobe snd_aloop by hand to make the plugin works
- exec("/usr/bin/sudo /sbin/modprobe snd_aloop", {
-  uid: 1000,
-  gid: 1000
- }, function(error, stdout, stderr) {
+ exec("/usr/bin/sudo /sbin/modprobe snd_aloop", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('loading snd_aloop module');
    defer.reject();
@@ -66,16 +63,13 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  //following could work IF we find how to connect dbus in user mode with systemctl... 
  //exec("/usr/bin/sudo /bin/systemctl --user start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
  // by waiting a solution, we use global systemctl but requires to manually copy brutefir.service to /etc/systemd/system - not possible a install time
- exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {
-  uid: 1000,
-  gid: 1000
- }, function(error, stdout, stderr) {
+ exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
    defer.reject();
   } else {
    self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
-   defer.reject();
+   defer.resolve();
   }
  });
  return defer.promise;
@@ -210,7 +204,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 };
 
 
-ControllerBrutefir.prototype.stop = function() {
+ControllerBrutefir.prototype.onStop = function() {
  var self = this;
  self.logger.info("Killing Brutefir daemon");
  exec("killall brutefir.real", function(error, stdout, stderr) {
@@ -224,9 +218,9 @@ ControllerBrutefir.prototype.onStart = function() {
  var self = this;
 
  var defer = libQ.defer();
-self.writemodules();
  self.startBrutefirDaemon()
-  .then(function(e) {
+  .then(function(e) 
+	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon");
     self.brutefirDaemonConnect(defer);
@@ -247,7 +241,8 @@ ControllerBrutefir.prototype.handleBrowseUri = function(curUri) {
  var response;
 
  if (curUri.startsWith('brutefir')) {
-  if (curUri == 'brutefir') {
+  if (curUri == 'brutefir') 
+	{
    response = libQ.resolve({
     navigation: {
      prev: {
@@ -331,7 +326,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 // burtefir command - until now send nothing....
 ControllerBrutefir.prototype.sendequalizer = function() {
  var self = this;
- var defer = libQ.defer();
+// var defer = libQ.defer();
  self.config.set('gain', data['gain']);
  self.config.set('coef31', data['coef31']);
  self.config.set('coef63', data['coef63']);
@@ -355,12 +350,14 @@ ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParam
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
 
-var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
+/*var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
 		return sCollected + ' ' + sCurrent;
 	}, '');
-
+*/
  // Pass the command to Brutefir when the command socket is ready
- self.brutefirCommandReady
+ 
+var brutefirResponseDeferred= lobQ.defer();
+self.brutefirCommandReady
   .then(function() {
    return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
   });
@@ -375,7 +372,7 @@ var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent)
  // Return a promise for the command response
  return brutefirResponse;
 };
-
+/*
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
  exec("killall brutefir.real", function(error, stdout, stderr) {
@@ -383,7 +380,7 @@ ControllerBrutefir.prototype.onStop = function() {
  });
  return libQ.defer();
 };
-
+*/
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
 
@@ -526,18 +523,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   });
 
  return defer.promise;
-};
-
-ControllerBrutefir.prototype.writemodules = function (data) {
-	var self = this;
-
-	var modulestring = 'snd_aloop';
-
-	fs.writeFile('/etc/modules', modulestring, function (err) {
-		if (err) {
-			self.logger.error('Cannot write /etc/modules file: ');
-		}
-
-	});
-
 }
+
+
+
