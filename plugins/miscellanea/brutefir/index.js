@@ -84,7 +84,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 
  // Each core gets its own set of Brutefir sockets connected
- // connection is no more working....Since we rewrotte it the same way as Spotify plugin. Not clear for me.have to investigate
+
  var nHost = 'localhost';
  var nPort = 3002;
  self.connBrutefirCommand = libNet.createConnection(nPort, nHost);
