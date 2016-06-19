@@ -34,8 +34,8 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
 ControllerBrutefir.prototype.getConfigurationFiles = function() {
 
  return ['config.json'];
-}
-
+};
+/*
 ControllerBrutefir.prototype.addToBrowseSources = function() {
  //var self = this;
  var data = {
@@ -46,6 +46,7 @@ ControllerBrutefir.prototype.addToBrowseSources = function() {
  };
  this.commandRouter.volumioAddToBrowseSources(data);
 };
+*/
 // Plugin methods -----------------------------------------------------------------------------
 
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
@@ -89,7 +90,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var nPort = 3002;
  self.connBrutefirCommand = libNet.createConnection(nPort, nHost);
  self.connBrutefirStatus = libNet.createConnection(nPort, nHost, function() {
-  self.addToBrowseSources();
+//  self.addToBrowseSources();
   defer.resolve();
  }); // Socket to listen for status changes
 
@@ -400,12 +401,12 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    /* the right device is not prperly selected - have to remove 1 - need investigation
     */
-   var inter = indev -1;
+   var inter = indev;
    var bindev = 'Loopback,' + inter;
    /*brutefir output dev - don't know how to detect- so set manually
     */
    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   var intero = 2;
+   var intero = 1;
    var boutdev = 'hw:' + intero;
 
    var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));

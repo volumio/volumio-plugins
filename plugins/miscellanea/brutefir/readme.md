@@ -1,4 +1,4 @@
-05 JUNE 2016
+19 JUNE 2016
 	BRUTEFIR PLUGIN
 
 brutefir plugin
@@ -23,16 +23,16 @@ This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
 What is working :
-Installation 
+Installation even if it never end...
 
 Access to webUI and save configuration
-
+The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
 What is not working :
 Can't automate "modprobe snd_aloop" (at installation time or plugin start)
 Can't automate the copy of brutefir.service in /etc/systemd/system (at installation time or plugin start)
-Changing value does nothing...
-Since I rewrite a big part of index.js the plugin seems to be not connected to brutefir via telnet.(works if done from a terminal when service is started)
-....
+And BIGGEST problem : I get no sound even if in preliminary test (before the plugin) I made brutefir working with a similar configuration.
+There is something wrong with input / output
+
 
 And next step is to provide a webUI with sliders to set equalizer, and a file selector to choose filter (as it has been done to select background).
 To be continued ;-)
