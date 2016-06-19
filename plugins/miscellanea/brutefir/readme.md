@@ -22,12 +22,12 @@ They will be used each time brutefir start and change in setting in webUI will s
 This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
-What is working :
+-What is working :
 Installation even if it never end...
-
+Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
 Access to webUI and save configuration
 The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
-What is not working :
+-What is not working :
 Can't automate "modprobe snd_aloop" (at installation time or plugin start)
 Can't automate the copy of brutefir.service in /etc/systemd/system (at installation time or plugin start)
 And BIGGEST problem : I get no sound even if in preliminary test (before the plugin) I made brutefir working with a similar configuration.

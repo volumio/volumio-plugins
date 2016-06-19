@@ -1,5 +1,5 @@
 #brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
-    sampling_rate: 44100;
+    sampling_rate: 48000;
     filter_length: ${filter_size},${numb_part};
     overflow_warnings: true;
     float_bits: ${fl_bits};
@@ -28,8 +28,8 @@ blocks: 4;
 };
 
 input "l_in", "r_in" {
-            device: "alsa" {device: "hw:${bindev}";};
-            sample: "S32_LE";   # sample format
+            device: "alsa" {device: "${bindev}";};
+            sample: "S16_LE";   # sample format
             channels: 2;            # number of open channels / which to use
     };
 

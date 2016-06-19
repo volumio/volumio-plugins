@@ -2,15 +2,18 @@
 // This file is surely full of error. I have to say that I try to understand how it works by copying / modifying code from other plugins.
 // as result plenty of line should be removed or added...
 // not sure all var are required....
+var io = require('socket.io-client');
+var fs = require('fs-extra');
+var libFsExtra = require('fs-extra');
+var exec = require('child_process').exec;
 var libQ = require('kew');
 var libNet = require('net');
-var libFast = require('fast.js');
-var fs = require('fs-extra');
+//var libFast = require('fast.js');
 var config = new(require('v-conf'))();
 //var telnet = require('telnet-client');
 //var connection = new telnet();
-var io = require('socket.io-client');
-var exec = require('child_process').exec;
+
+
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
@@ -32,7 +35,7 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
 }
 
 ControllerBrutefir.prototype.getConfigurationFiles = function() {
-
+		var self = this;
  return ['config.json'];
 };
 /*
@@ -282,7 +285,18 @@ ControllerBrutefir.prototype.onUninstall = function() {
 };
 
 ControllerBrutefir.prototype.getUIConfig = function() {
- var self = this;
+ 	var self = this;
+	var defer = libQ.defer();
+
+	var lang_code = this.commandRouter.sharedVars.get('language_code');
+	 //var language_code = config.get('language_code');
+	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+		__dirname+'/i18n/strings_en.json',
+		__dirname + '/UIConfig.json')
+		.then(function(uiconf)
+		{
+	
+//{		
  var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
  uiconf.sections[0].content[0].value = self.config.get('gain');
  uiconf.sections[0].content[1].value = self.config.get('coef31');
@@ -301,7 +315,15 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[1].content[3].value = self.config.get('numb_part');
  uiconf.sections[1].content[4].value = self.config.get('fl_bits');
 
- return uiconf;
+// return uiconf;
+//}
+	defer.resolve(uiconf);
+		})
+		.fail(function()
+		{
+			defer.reject(new Error());
+		})
+	return defer.promise
 };
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
@@ -399,10 +421,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    and output in brutefir config is hardware in use
    */
    var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   /* the right device is not prperly selected - have to remove 1 - need investigation
+   /* the right device is not properly selected - have to remove 1 - need investigation
     */
-   var inter = indev;
-   var bindev = 'Loopback,' + inter;
+  // var inter = indev;
+   var bindev = 'hw:Loopback,1';
    /*brutefir output dev - don't know how to detect- so set manually
     */
    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
@@ -524,6 +546,17 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   });
 
  return defer.promise;
+};
+
+ControllerBrutefir.prototype.loadI18NStrings = function (code) {
+    this.logger.info('BRUTEFIR-CONTROLLER I18N LOAD FOR LOCALE '+code);
+
+    this.i18nString=libFsExtra.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
+}
+
+
+ControllerBrutefir.prototype.getI18NString = function (key) {
+    return this.i18nString[key];
 }
 
 
