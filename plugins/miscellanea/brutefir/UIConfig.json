@@ -389,7 +389,8 @@
                     "rightfilter",
 		    "filter_size",
 		    "numb_part",
-		    "fl_bits"
+		    "fl_bits",
+		    "smpl_rate"
                 ]
             },
             "content": [
@@ -452,7 +453,20 @@
                     },
                     "options": [
                       ]
+                },
+		 {
+                    "id": "smpl_rate",
+		    "element": "input",
+		    "doc": "sample rate",
+                    "label": "sample rate",
+                    "value": {
+                        "value": "44100",
+                        "label": "44100"
+                    },
+                    "options": [
+                      ]
                 }
+
             ]
         }
     ]

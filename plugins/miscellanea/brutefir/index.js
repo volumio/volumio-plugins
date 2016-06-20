@@ -314,7 +314,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[1].content[2].value = self.config.get('filter_size');
  uiconf.sections[1].content[3].value = self.config.get('numb_part');
  uiconf.sections[1].content[4].value = self.config.get('fl_bits');
-
+ uiconf.sections[1].content[5].value = self.config.get('smpl_rate');
 // return uiconf;
 //}
 	defer.resolve(uiconf);
@@ -430,16 +430,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    var intero = 1;
    var boutdev = 'hw:' + intero;
+   var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
+   var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
+   var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
+   var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
+   var conf5 = conf4.replace("${bindev}", bindev);
+   var conf6 = conf5.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf7 = conf6.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf8 = conf7.replace("${boutdev}", boutdev);
 
-   var conf1 = data.replace("${filter_size}", self.config.get('filter_size'));
-   var conf2 = conf1.replace("${numb_part}", self.config.get('numb_part'));
-   var conf3 = conf2.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf4 = conf3.replace("${bindev}", bindev);
-   var conf5 = conf4.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf6 = conf5.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf7 = conf6.replace("${boutdev}", boutdev);
-
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf7, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf8, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -505,6 +505,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
+  self.config.set('smpl_rate', data['smpl_rate']);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
  self.config.set('filter_size', data['filter_size']);

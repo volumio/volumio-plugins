@@ -10,6 +10,7 @@
 "coef4000":{"type": "string","value": "0"},
 "coef8000":{"type": "string","value": "0"},
 "coef16000":{"type": "string","value": "0"},
+"smpl_rate":{"type": "string","value": "44100"},
 "leftfilter":{"type": "string","value": "dirac pulse"},
 "rightfilter":{"type": "string","value": "dirac pulse"},
 "filter_size":{"type": "string","value": "4096"},
