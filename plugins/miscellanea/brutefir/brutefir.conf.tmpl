@@ -1,9 +1,9 @@
 #brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
-    sampling_rate: 48000;
+    sampling_rate: 44100;
     filter_length: ${filter_size},${numb_part};
     overflow_warnings: true;
     float_bits: ${fl_bits};
-    convolver_config: "~/.brutefir_convolver"; # location of convolver config file
+    convolver_config: "/data/configuration/miscellanea/brutefir/brutefir_convolver"; # location of convolver config file
 logic:
  "cli" { port: 3002;},
 "eq"  {
@@ -82,6 +82,6 @@ process: -1;
    output "l_out", "r_out" {
             device: "alsa" {device: "${boutdev}";};
 #         device: "file" {path: "/dev/stdout";};
-            sample: "S32_LE";   # sample format
+            sample: "S16_LE";   # sample format
             channels: 2;        # number of open channels / which to use
     };
