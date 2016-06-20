@@ -28,7 +28,7 @@
         },
         {
           "id": "password",
-          "type":"text",
+          "type":"password",
           "element": "input",
           "doc": "This is the password of your Spotify account",
           "label": "Password",
