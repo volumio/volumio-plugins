@@ -309,12 +309,12 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[0].content[8].value = self.config.get('coef4000');
  uiconf.sections[0].content[9].value = self.config.get('coef8000');
  uiconf.sections[0].content[10].value = self.config.get('coef16000');
- uiconf.sections[1].content[0].value = self.config.get('leftfilter');
- uiconf.sections[1].content[1].value = self.config.get('rightfilter');
- uiconf.sections[1].content[2].value = self.config.get('filter_size');
- uiconf.sections[1].content[3].value = self.config.get('numb_part');
- uiconf.sections[1].content[4].value = self.config.get('fl_bits');
- uiconf.sections[1].content[5].value = self.config.get('smpl_rate');
+ uiconf.sections[1].content[1].value = self.config.get('leftfilter');
+ uiconf.sections[1].content[2].value = self.config.get('rightfilter');
+ uiconf.sections[1].content[3].value = self.config.get('filter_size');
+ uiconf.sections[1].content[4].value = self.config.get('numb_part');
+ uiconf.sections[1].content[5].value = self.config.get('fl_bits');
+ uiconf.sections[1].content[6].value = self.config.get('smpl_rate');
 // return uiconf;
 //}
 	defer.resolve(uiconf);

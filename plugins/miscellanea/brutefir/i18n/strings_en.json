@@ -1,3 +1,12 @@
 {
-  
+ "button_save":"save",
+ "Brutefir_settings":"Brutefir settings",
+ "equalizer":"equalizer",
+ "Equalizer_settings":"Equalizer settings",
+ "Advanced_settings":"Advanced settings",
+ "left_filter":"left filter",
+ "right_filter":"right filter",
+ "filter_size":"filter size",
+ "number_of_partition":"number of partition",
+ "sample_rate":"sample rate"
 }
