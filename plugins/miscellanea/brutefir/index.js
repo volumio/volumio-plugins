@@ -56,18 +56,8 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
 
  var defer = libQ.defer();
- //modprobe seems to be not supported as usable command. Don't know how to load a module - install.sh does not allows it
- //do a modprobe snd_aloop by hand to make the plugin works
- exec("/usr/bin/sudo /sbin/modprobe snd_aloop", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
-  if (error !== null) {
-   self.commandRouter.pushConsoleMessage('loading snd_aloop module');
-   defer.reject();
-  }
- });
- //following could work IF we find how to connect dbus in user mode with systemctl... 
- //exec("/usr/bin/sudo /bin/systemctl --user start brutefir.service", {uid:1000,gid:1000}, function(error, stdout, stderr) {
- // by waiting a solution, we use global systemctl but requires to manually copy brutefir.service to /etc/systemd/system - not possible a install time
- exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
+
+  exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
   if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
    defer.reject();

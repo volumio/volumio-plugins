@@ -398,7 +398,7 @@
           "id": "enabled",
           "element": "switch",
           "label": "Advanced settings",
-          "value": true
+          "value": false
         },
                 {
                     "id": "leftfilter",

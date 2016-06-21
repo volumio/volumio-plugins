@@ -13,7 +13,7 @@
                 "method": "saveBrutefirconfigAccount1"
             },
             "saveButton": {
-                "label": "translate.common.button_save",
+                "label": "translate.common.save",
                 "data": [
 		    "gain",
                     "coef31",
