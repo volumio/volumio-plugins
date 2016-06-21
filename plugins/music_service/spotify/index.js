@@ -420,24 +420,24 @@ ControllerSpop.prototype.getUIConfig = function() {
 
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-			self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-					__dirname+'/i18n/strings_en.json',
-					__dirname + '/UIConfig.json')
-			.then(function(uiconf)
-			{
+        self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+                __dirname+'/i18n/strings_en.json',
+                __dirname + '/UIConfig.json')
+        .then(function(uiconf)
+        {
 
-    uiconf.sections[0].content[0].value = self.config.get('username');
-	uiconf.sections[0].content[1].value = self.config.get('password');
-	uiconf.sections[0].content[2].value = self.config.get('bitrate');
+uiconf.sections[0].content[0].value = self.config.get('username');
+uiconf.sections[0].content[1].value = self.config.get('password');
+uiconf.sections[0].content[2].value = self.config.get('bitrate');
 
-				defer.resolve(uiconf);
-				})
-					.fail(function()
-				{
-					defer.reject(new Error());
-			})
+            defer.resolve(uiconf);
+            })
+                .fail(function()
+            {
+                defer.reject(new Error());
+        });
 
-			return defer.promise
+        return defer.promise;
 };
 
 ControllerSpop.prototype.setUIConfig = function(data) {
@@ -958,19 +958,57 @@ ControllerSpop.prototype.search = function (query) {
 		var resJson=JSON.parse(results);
 		//console.log(resJson.tracks);
 
-		for(var i in resJson.tracks) {
-			list.push({
-				service: 'spop',
-				type: 'song',
-				title: resJson.tracks[i].title,
-				artist:resJson.tracks[i].artist,
-				album: resJson.tracks[i].album,
-				icon: 'fa fa-spotify',
-				uri: resJson.tracks[i].uri
-			});
-		}
 
-		defer.resolve(list);
+        if(resJson.artists.length>0)
+        {
+            list.push({type:'title',title:self.getI18NString('SEARCH_ARTISTS_SECTION')});
+
+            for(var i in resJson.tracks) {
+                list.push({
+                    service: 'spop',
+                    type: 'song',
+                    title: resJson.artists[i].artist,
+                    icon: 'fa fa-spotify',
+                    uri: resJson.artists[i].uri
+                });
+            }
+        }
+
+        if(resJson.albums.length>0)
+        {
+            list.push({type:'title',title:self.getI18NString('SEARCH_ALBUMS_SECTION')});
+
+            for(var i in resJson.tracks) {
+                list.push({
+                    service: 'spop',
+                    type: 'song',
+                    title: resJson.albums[i].title,
+                    artist:resJson.albums[i].artist,
+                    album:'',
+                    icon: 'fa fa-spotify',
+                    uri: resJson.albums[i].uri
+                });
+            }
+        }
+
+        if(resJson.tracks.length>0)
+        {
+            list.push({type:'title',title:self.getI18NString('SEARCH_SONGS_SECTION')});
+
+            for(var i in resJson.tracks) {
+                list.push({
+                    service: 'spop',
+                    type: 'song',
+                    title: resJson.tracks[i].title,
+                    artist:resJson.tracks[i].artist,
+                    album: resJson.tracks[i].album,
+                    icon: 'fa fa-spotify',
+                    uri: resJson.tracks[i].uri
+                });
+            }
+        }
+
+        defer.resolve(list);
 		//console.log(list);
 	})
 		.fail(function()
@@ -980,3 +1018,14 @@ ControllerSpop.prototype.search = function (query) {
 
 	return defer.promise;
 };
+
+ControllerSpop.prototype.loadI18NStrings = function (code) {
+    this.logger.info('MPD I18N LOAD FOR LOCALE '+code);
+
+    this.i18nString=fs.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
+}
+
+
+ControllerSpop.prototype.getI18NString = function (key) {
+    return this.i18nString[key];
+}

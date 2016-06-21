@@ -5,5 +5,9 @@
   "search_results":"Number of results",
   "plugins":"Last.fm",
   "last_fm_username":"Last.fm username",
-  "last_fm_password":"Last.fm password"
+  "last_fm_password":"Last.fm password",
+  "SEARCH_SONGS_SECTION":"Spotify songs",
+  "SEARCH_ALBUMS_SECTION":"Spotity albums",
+  "SEARCH_ARTISTS_SECTION":"Spotify artists"
+
 }
