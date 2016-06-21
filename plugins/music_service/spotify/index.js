@@ -415,15 +415,29 @@ ControllerSpop.prototype.onUninstall = function() {
 };
 
 ControllerSpop.prototype.getUIConfig = function() {
+	var defer = libQ.defer();
 	var self = this;
 
-	var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+	var lang_code = this.commandRouter.sharedVars.get('language_code');
+
+			self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+					__dirname+'/i18n/strings_en.json',
+					__dirname + '/UIConfig.json')
+			.then(function(uiconf)
+			{
 
     uiconf.sections[0].content[0].value = self.config.get('username');
 	uiconf.sections[0].content[1].value = self.config.get('password');
 	uiconf.sections[0].content[2].value = self.config.get('bitrate');
 
-    return uiconf;
+				defer.resolve(uiconf);
+				})
+					.fail(function()
+				{
+					defer.reject(new Error());
+			})
+
+			return defer.promise
 };
 
 ControllerSpop.prototype.setUIConfig = function(data) {
