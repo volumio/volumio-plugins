@@ -10,6 +10,7 @@
   "license": "ISC",
   "volumio_info": {
     "prettyName": "Spotify",
+    "icon": "fa-spotify",
     "plugin_type": "music_service"
   },
   "dependencies": {
