@@ -7,6 +7,7 @@
     "plugins": [
       {
         "prettyName": "Spotify",
+        "icon": "fa-spotify",
         "name": "spop",
         "version": "1.1",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
@@ -27,6 +28,7 @@
     "plugins": [
       {
         "prettyName":"Brutefir equalizer",
+        "icon": "fa-sliders",
         "name": "brutefir",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/bbrutefir.zip",
@@ -45,6 +47,7 @@
     "plugins": [
       {
         "prettyName":"Touchscreen display",
+        "icon": "fa-hand-pointer-o",
         "name": "touchscreen_display",
         "version": "1.0",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
