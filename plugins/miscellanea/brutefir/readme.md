@@ -36,3 +36,11 @@ Autolsection of inut output device is not automatic
 
 And next step is to provide a webUI with sliders to set equalizer, and a file selector to choose filter (as it has been done to select background).
 To be continued ;-)
+
+To do list (not exhaustive and not in order)
+- auto detection input output device
+- file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
+- Several profil for equalizer (pre-set or user pre-set) with naming like rock classical, jazz etc...
+- a switch to set the gain OR phase for each band
+- fix brutefir hangs ( maybe new parameter attenuation will help)
+- ....
