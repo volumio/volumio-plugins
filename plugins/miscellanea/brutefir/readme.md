@@ -28,7 +28,9 @@ Sound if I/O is in brutefir config is correctly set. (could work by saving advan
 Access to webUI and save configuration
 The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
 - What is not working :
-
+No change in sound when setting equalizer
+Sometimes brutefir hangs dueto a buffer overflow
+Autolsection of inut output device is not automatic
 
 
 
