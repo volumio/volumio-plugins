@@ -288,25 +288,26 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 	
 //{		
  var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
- uiconf.sections[0].content[0].value = self.config.get('gain');
- uiconf.sections[0].content[1].value = self.config.get('coef31');
- uiconf.sections[0].content[2].value = self.config.get('coef63');
- uiconf.sections[0].content[3].value = self.config.get('coef125');
- uiconf.sections[0].content[4].value = self.config.get('coef250');
- uiconf.sections[0].content[5].value = self.config.get('coef500');
- uiconf.sections[0].content[6].value = self.config.get('coef1000');
- uiconf.sections[0].content[7].value = self.config.get('coef2000');
- uiconf.sections[0].content[8].value = self.config.get('coef4000');
- uiconf.sections[0].content[9].value = self.config.get('coef8000');
- uiconf.sections[0].content[10].value = self.config.get('coef16000');
- uiconf.sections[1].content[1].value = self.config.get('leftfilter');
- uiconf.sections[1].content[2].value = self.config.get('rightfilter');
- uiconf.sections[1].content[3].value = self.config.get('filter_size');
- uiconf.sections[1].content[4].value = self.config.get('numb_part');
- uiconf.sections[1].content[5].value = self.config.get('fl_bits');
- uiconf.sections[1].content[6].value = self.config.get('smpl_rate');
-  uiconf.sections[1].content[7].value = self.config.get('input_format');
-  uiconf.sections[1].content[8].value = self.config.get('output_format');
+
+ uiconf.sections[0].content[0].value = self.config.get('coef31');
+ uiconf.sections[0].content[1].value = self.config.get('coef63');
+ uiconf.sections[0].content[2].value = self.config.get('coef125');
+ uiconf.sections[0].content[3].value = self.config.get('coef250');
+ uiconf.sections[0].content[4].value = self.config.get('coef500');
+ uiconf.sections[0].content[5].value = self.config.get('coef1000');
+ uiconf.sections[0].content[6].value = self.config.get('coef2000');
+ uiconf.sections[0].content[7].value = self.config.get('coef4000');
+ uiconf.sections[0].content[8].value = self.config.get('coef8000');
+ uiconf.sections[0].content[9].value = self.config.get('coef16000');
+ uiconf.sections[1].content[1].value = self.config.get('attenuation');
+ uiconf.sections[1].content[2].value = self.config.get('leftfilter');
+ uiconf.sections[1].content[3].value = self.config.get('rightfilter');
+ uiconf.sections[1].content[4].value = self.config.get('filter_size');
+ uiconf.sections[1].content[5].value = self.config.get('numb_part');
+ uiconf.sections[1].content[6].value = self.config.get('fl_bits');
+ uiconf.sections[1].content[7].value = self.config.get('smpl_rate');
+  uiconf.sections[1].content[8].value = self.config.get('input_format');
+  uiconf.sections[1].content[9].value = self.config.get('output_format');
 // return uiconf;
 //}
 	defer.resolve(uiconf);
@@ -342,7 +343,6 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 ControllerBrutefir.prototype.sendequalizer = function() {
  var self = this;
 // var defer = libQ.defer();
- self.config.set('gain', data['gain']);
  self.config.set('coef31', data['coef31']);
  self.config.set('coef63', data['coef63']);
  self.config.set('coef125', data['coef125']);
@@ -426,14 +426,15 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
    var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf5 = conf4.replace("${bindev}", bindev);
-   var conf6 = conf5.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf7 = conf6.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf8 = conf7.replace("${boutdev}", boutdev);
-   var conf9 = conf8.replace("${input_format}", self.config.get('input_format'));
-   var conf10 = conf9.replace("${output_format}", self.config.get('output_format'));
+   var conf5 = conf4.replace("${attenuation}", self.config.get('attenuation'));
+   var conf6 = conf5.replace("${bindev}", bindev);
+   var conf7 = conf6.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf8 = conf7.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf9 = conf8.replace("${boutdev}", boutdev);
+   var conf10 = conf9.replace("${input_format}", self.config.get('input_format'));
+   var conf11 = conf10.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf10, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf11, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -457,7 +458,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  var self = this;
  var defer = libQ.defer();
 
- self.config.set('gain', data['gain']);
  self.config.set('coef31', data['coef31']);
  self.config.set('coef63', data['coef63']);
  self.config.set('coef125', data['coef125']);
@@ -485,6 +485,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
+  self.config.set('attenuation', data['attenuation']);
  self.config.set('smpl_rate', data['smpl_rate']);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
@@ -493,6 +494,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('fl_bits', data['fl_bits']);
  self.config.set('input_format', data['input_format']);
  self.config.set('output_format', data['output_format']);
+
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {

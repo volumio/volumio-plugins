@@ -19,17 +19,19 @@ coeff "equalizer" {
         filename: "dirac pulse";
         shared_mem: true;
         blocks: 4;
+	
 };
 
 coeff "dblbuf" {
 filename: "dirac pulse";
 shared_mem: true;
 blocks: 4;
+attenuation: ${attenuation};
 };
 
 input "l_in", "r_in" {
             device: "alsa" {device: "${bindev}";};
-            sample: "S16_LE";   # sample format
+            sample: "${input_format}";   # sample format
             channels: 2;            # number of open channels / which to use
     };
 
@@ -82,6 +84,6 @@ process: -1;
    output "l_out", "r_out" {
             device: "alsa" {device: "${boutdev}";};
 #         device: "file" {path: "/dev/stdout";};
-            sample: "S16_LE";   # sample format
+            sample: "${output_format}";   # sample format
             channels: 2;        # number of open channels / which to use
     };

@@ -15,8 +15,7 @@
             "saveButton": {
                 "label": "save",
                 "data": [
-		    "gain",
-                    "coef31",
+		    "coef31",
                     "coef63",
                     "coef125",
                     "coef250",
@@ -29,37 +28,7 @@
                 ]
             },
 	     "content": [
-                {
-		     "id": "gain",
-		    "element": "input",
-		    "label": "gain",
-                    "value": {
-                        "value":"-8",
-                        "label": "-8"
-                    },
-		    "options": [
-                        {
-                            "value":"-8",
-                            "label": "-8"
-                        },
-                        {
-                            "value":"-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value":"0",
-                            "label": "0"
-                        },
-                        {
-                            "value":"5",
-                            "label": "5"
-                        },
-                        {
-                            "value":"8",
-                            "label": "8"
-                        }
-                    ]
-		},
+                
 		{
                     "id": "coef31",
                     "element": "input",
@@ -385,7 +354,8 @@
             "saveButton": {
                 "label": "save",
                 "data": [
-                    "leftfilter",
+                    "attenuation",
+		    "leftfilter",
                     "rightfilter",
 		    "filter_size",
 		    "numb_part",
@@ -402,6 +372,41 @@
           "label": "Advanced settings",
           "value": false
         },
+	{
+		     "id": "attenuation",
+		    "element": "input",
+		    "label": "Global attenuation",
+                    "value": {
+                        "value":"10",
+                        "label": "10"
+                    },
+		    "options": [
+                        {
+                            "value":"2",
+                            "label": "2"
+                        },
+                        {
+                            "value":"4",
+                            "label": "4"
+                        },
+                        {
+                            "value":"6",
+                            "label": "6"
+                        },
+                        {
+                            "value":"8",
+                            "label": "8"
+                        },
+                        {
+                            "value":"10",
+                            "label": "10"
+                        }
+                    ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+	},
                 {
                     "id": "leftfilter",
 		  "element": "input",
@@ -445,6 +450,23 @@
 			"label": "8192"
                 },
 		"options": [
+			 {
+                            "value":"1024",
+                            "label": "1024"
+                        },
+                        {
+                            "value":"2048",
+                            "label": "2048"
+                        },
+                        {
+                            "value":"4096",
+                            "label": "4096"
+                        },
+                        {
+                            "value":"8192",
+                            "label": "8192"
+                        }
+                       
 			],
           "visibleIf": {
             "field": "enabled",
@@ -461,6 +483,23 @@
 			"label": "8"
                 },
 		"options": [
+		 {
+                            "value":"2",
+                            "label": "2"
+                        },
+                        {
+                            "value":"4",
+                            "label": "4"
+                        },
+                        {
+                            "value":"8",
+                            "label": "8"
+                        },
+                        {
+                            "value":"16",
+                            "label": "16"
+                        }
+                        
 			],
           "visibleIf": {
             "field": "enabled",
@@ -471,12 +510,20 @@
                     "id": "fl_bits",
 		    "element": "input",
 		    "doc": "floating point internal resolusion",
-                    "label": "internal_resolution_bits",
+                    "label": "internal resolution bits",
                     "value": {
                         "value": "64",
                         "label": "64"
                     },
                     "options": [
+			                        {
+                            "value":"32",
+                            "label": "32"
+                        },
+                        {
+                            "value":"64",
+                            "label": "64"
+                        }
                       ],
           "visibleIf": {
             "field": "enabled",
@@ -502,8 +549,8 @@
 		{
                     "id": "input_format",
 		    "element": "input",
-		    "doc": "input_format",
-                    "label": "input_format",
+		    "doc": "input format",
+                    "label": "input format",
                     "value": {
                         "value": "S16_LE",
                         "label": "S16_LE"
@@ -518,8 +565,8 @@
 		{
                     "id": "output_format",
 		    "element": "input",
-		    "doc": "output_format",
-                    "label": "output_format",
+		    "doc": "output format",
+                    "label": "output format",
                     "value": {
                         "value": "S16_LE",
                         "label": "S16_LE"
