@@ -305,6 +305,8 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[1].content[4].value = self.config.get('numb_part');
  uiconf.sections[1].content[5].value = self.config.get('fl_bits');
  uiconf.sections[1].content[6].value = self.config.get('smpl_rate');
+  uiconf.sections[1].content[7].value = self.config.get('input_format');
+  uiconf.sections[1].content[8].value = self.config.get('output_format');
 // return uiconf;
 //}
 	defer.resolve(uiconf);
@@ -428,8 +430,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf6 = conf5.replace("${leftfilter}", self.config.get('leftfilter'));
    var conf7 = conf6.replace("${rightfilter}", self.config.get('rightfilter'));
    var conf8 = conf7.replace("${boutdev}", boutdev);
+   var conf9 = conf8.replace("${input_format}", self.config.get('input_format'));
+   var conf10 = conf9.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf8, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf10, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -464,21 +468,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  self.config.set('coef4000', data['coef4000']);
  self.config.set('coef8000', data['coef8000']);
  self.config.set('coef16000', data['coef16000']);
- /*self.config.set('leftfilter', data['leftfilter']);
- self.config.set('rightfilter', data['rightfilter']);
- self.config.set('filter_size', data['filter_size']);
- self.config.set('numb_part', data['numb_part']);
- self.config.set('fl_bits', data['fl_bits']);
-*/
- /*self.rebuildBRUTEFIRnoRestartDaemon()
-  .then(function(e) {
-   self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-   defer.resolve({});
-  })
-  .fail(function(e) {
-   defer.reject(new Error());
-  })
-*/
+
 self.logger.info('Configurations have been set');
 
 
@@ -495,12 +485,14 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
-  self.config.set('smpl_rate', data['smpl_rate']);
+ self.config.set('smpl_rate', data['smpl_rate']);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
  self.config.set('filter_size', data['filter_size']);
  self.config.set('numb_part', data['numb_part']);
  self.config.set('fl_bits', data['fl_bits']);
+ self.config.set('input_format', data['input_format']);
+ self.config.set('output_format', data['output_format']);
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {

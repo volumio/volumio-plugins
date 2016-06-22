@@ -390,7 +390,9 @@
 		    "filter_size",
 		    "numb_part",
 		    "fl_bits",
-		    "smpl_rate"
+		    "smpl_rate",
+		    "input_format",
+		    "output_format"
                 ]
             },
             "content": [
@@ -489,6 +491,38 @@
                     "value": {
                         "value": "44100",
                         "label": "44100"
+                    },
+                    "options": [
+                      ],
+          "visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+                },
+		{
+                    "id": "input_format",
+		    "element": "input",
+		    "doc": "input_format",
+                    "label": "input_format",
+                    "value": {
+                        "value": "S16_LE",
+                        "label": "S16_LE"
+                    },
+                    "options": [
+                      ],
+          "visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+                },
+		{
+                    "id": "output_format",
+		    "element": "input",
+		    "doc": "output_format",
+                    "label": "output_format",
+                    "value": {
+                        "value": "S16_LE",
+                        "label": "S16_LE"
                     },
                     "options": [
                       ],
