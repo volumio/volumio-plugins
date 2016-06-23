@@ -9,14 +9,14 @@
         "prettyName": "Spotify",
         "icon": "fa-spotify",
         "name": "spop",
-        "version": "1.1",
+        "version": "1.2",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "Free for non commercial USE",
         "description": "Spotify Plugin for Volumio: Browse, Play and discover Spotify Music",
         "details":"<h4>Spotify Plugin for Volumio</h4><br>Adds Spotify Playback capabilites to Volumio<br>Features:<br><ul><li>Playlists</li></ul>",
         "author": "Volumio Team",
         "screenshots": [{"image": "", "thumb": ""}],
-        "updated": "03-06-2016"
+        "updated": "23-06-2016"
       }
     ]
   },
