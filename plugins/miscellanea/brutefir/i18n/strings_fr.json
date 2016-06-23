@@ -1,3 +1,14 @@
 {
-  
+ "button_save":"sauver",
+ "brutefir_settings":"Réglage de Brutefir",
+ "equalizer":"Egaliseur",
+ "Equalizer_settings":"Réglages de l'égaliseur",
+ "Advanced_settings":"Réglages avancés",
+ "left_filter":"Filtre gauche",
+ "right_filter":"Filtre droit",
+ "filter_size":"Taille du filtre",
+ "number_of_partition":"Nombre de partitions",
+ "sample_rate":"Taux d'échantillonage",
+ "input_format":"Format d'entrée",
+ "output_format":"Format de sortie"
 }

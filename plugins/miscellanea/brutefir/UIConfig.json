@@ -5,7 +5,7 @@
         {
             "id": "equalizer",
             "element": "section",
-            "label": "Equalizer settings",
+            "label": "Equalizer_settings",
             "icon": "fa-sliders fa-rotate-90",
             "onSave": {
                 "type": "controller",

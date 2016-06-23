@@ -10,8 +10,6 @@ var libQ = require('kew');
 var libNet = require('net');
 //var libFast = require('fast.js');
 var config = new(require('v-conf'))();
-//var telnet = require('telnet-client');
-//var connection = new telnet();
 
 
 
@@ -38,18 +36,7 @@ ControllerBrutefir.prototype.getConfigurationFiles = function() {
 		var self = this;
  return ['config.json'];
 };
-/*
-ControllerBrutefir.prototype.addToBrowseSources = function() {
- //var self = this;
- var data = {
-  name: 'Brutefir',
-  uri: 'brutefir',
-  plugin_type: 'miscellanea',
-  plugin_name: 'brutefir'
- };
- this.commandRouter.volumioAddToBrowseSources(data);
-};
-*/
+
 // Plugin methods -----------------------------------------------------------------------------
 
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
@@ -216,7 +203,7 @@ ControllerBrutefir.prototype.onStart = function() {
   .then(function(e) 
 	{
    setTimeout(function() {
-    self.logger.info("Connecting to daemon");
+    self.logger.info("Connecting to daemon brutefir");
     self.brutefirDaemonConnect(defer);
    }, 5000);
   })
