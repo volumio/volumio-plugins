@@ -724,18 +724,17 @@ ControllerSpop.prototype.explodeAlbumUri = function(id) {
 
 
 
-ControllerSpop.prototype.getAlbumTracks = function(id,offset) {
+ControllerSpop.prototype.getAlbumTracks = function(id,offset,album) {
     var self=this;
     var defer=libQ.defer();
 
-    console.log("OFFSET "+offset);
+    var offsetStep=10;
 
-    self.spotifyApi.getAlbumTracks(id,{limit:10,offset:offset})
+    self.spotifyApi.getAlbums([id],{limit:offsetStep,offset:offset})
         .then(function (result) {
+            console.log(JSON.stringify(result.body.albums[0]));
 
-
-            console.log(JSON.stringify(result));
-            var resJson = result.body;
+            var resJson = result.body.albums[0];
 
             var rate;
             if (self.config.get('bitrate') === true)
@@ -743,15 +742,18 @@ ControllerSpop.prototype.getAlbumTracks = function(id,offset) {
             else rate = "128";
 
             var moreDefer = libQ.defer();
-            if (resJson.total > offset) {
-                moreDefer = self.getAlbumTracks(id, offset + 10);
+            if (resJson.total > offset+offsetStep) {
+                moreDefer = self.getAlbumTracks(id, offset + offsetStep);
             }
             else moreDefer.resolve();
 
             moreDefer.then(function (result) {
+                console.log("RESULT:         "+JSON.stringify(result));
+
+                var response=[];
+
                 for (var i in resJson.items) {
                     var artist = resJson.items[i].artists[0].name;
-                    var album = "succhiamelo";
 
                     var albumart = self.getAlbumArt({
                         artist: artist,
@@ -777,7 +779,7 @@ ControllerSpop.prototype.getAlbumTracks = function(id,offset) {
                     response.push(item);
                 }
 
-                response.concat(result);
+                response=response.concat(result).filter(function(v){return !!(v)==true;});
                 defer.resolve(response);
             }).fail(function (err) {
                 defer.reject(new Error(err));
@@ -887,14 +889,61 @@ ControllerSpop.prototype.explodeUri = function(uri) {
         var splitted=uri.split(':');
         var id=splitted[2];
 
-        var searchDefer=self.getAlbumTracks(id,0);
-        searchDefer.then(function(values)
-        {
-            defer.resolve(values);
-        }).
-        fail(function(err){
-            defer.reject(new error(err));
-        })
+        self.spotifyApi.getAlbums([id])
+            .then(function (result) {
+                var resJson = result.body.albums[0];
+                var album=resJson.name;
+                var albumart;
+
+                if(resJson.images!==undefined && resJson.images.length>0)
+                {
+                    console.log(resJson.images[0]);
+                    albumart=resJson.images[0].url;
+                }
+
+                var rate;
+                if(self.config.get('bitrate')===true)
+                    rate="320";
+                else rate="128";
+
+                var response=[];
+                for(var i in resJson.tracks.items) {
+                    var track=resJson.tracks.items[i];
+
+                    var artist = track.name;
+
+                    if(albumart===undefined) {
+                        albumart = self.getAlbumArt({
+                            artist: artist,
+                            album: album
+                        }, "");
+                    }
+
+                    var item = {
+                        uri: track.uri,
+                        service: 'spop',
+                        type: 'song',
+                        name: track.name,
+                        title: track.name,
+                        artist: artist,
+                        album: album,
+                        duration: Math.trunc(track.duration_ms / 1000),
+                        albumart: albumart,
+                        samplerate: '44.1 KHz',
+                        bitdepth: '16 bit',
+                        trackType: 'spotify'
+
+                    };
+
+                    console.log(JSON.stringify(item));
+
+                    response.push(item);
+                }
+
+                defer.resolve(response);
+
+            });
+
     }
     else
     {
