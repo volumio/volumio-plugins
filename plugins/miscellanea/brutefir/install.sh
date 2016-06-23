@@ -8,7 +8,7 @@ sudo apt-get update
 sudo apt-get -y install brutefir
 echo "adding brutefir service"
 cp brutefir.service.gz /
-sudo tar xvf brutefir.service.gz
+sudo tar -xvf brutefir.service.gz
 rm /brutefir.service.gz
 echo "Installing brutefir plugin"
 
