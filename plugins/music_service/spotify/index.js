@@ -870,7 +870,7 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                         title: resJson.tracks[i].name,
                         artist:artist,
                         album: album,
-                        duration: resJson.tracks[i].duration_ms/1000,
+                        duration: Math.trunc(resJson.tracks[i].duration_ms/1000),
                         albumart: albumart,
                         samplerate: '44.1 KHz',
                         bitdepth: '16 bit',
