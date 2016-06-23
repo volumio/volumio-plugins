@@ -707,6 +707,88 @@ ControllerSpop.prototype.rebuildTracklistFromSpopPlaylists = function(objInput, 
 	return promisedActions;
 };
 
+ControllerSpop.prototype.explodeAlbumUri = function(id) {
+    var self=this;
+    var defer=libQ.defer();
+
+    self.spotifyApi.getAlbum(id, 'GB')
+        .then(function(result)
+        {
+            self.commandRouter.logger.info(result);
+            defer.resolve();
+        });
+
+
+    return defer.promise;
+}
+
+
+
+ControllerSpop.prototype.getAlbumTracks = function(id,offset) {
+    var self=this;
+    var defer=libQ.defer();
+
+    console.log("OFFSET "+offset);
+
+    self.spotifyApi.getAlbumTracks(id,{limit:10,offset:offset})
+        .then(function (result) {
+
+
+            console.log(JSON.stringify(result));
+            var resJson = result.body;
+
+            var rate;
+            if (self.config.get('bitrate') === true)
+                rate = "320";
+            else rate = "128";
+
+            var moreDefer = libQ.defer();
+            if (resJson.total > offset) {
+                moreDefer = self.getAlbumTracks(id, offset + 10);
+            }
+            else moreDefer.resolve();
+
+            moreDefer.then(function (result) {
+                for (var i in resJson.items) {
+                    var artist = resJson.items[i].artists[0].name;
+                    var album = "succhiamelo";
+
+                    var albumart = self.getAlbumArt({
+                        artist: artist,
+                        album: album
+                    }, "");
+
+                    var item = {
+                        uri: resJson.items[i].uri,
+                        service: 'spop',
+                        type: 'song',
+                        name: resJson.items[i].name,
+                        title: resJson.items[i].name,
+                        artist: artist,
+                        album: album,
+                        duration: resJson.items[i].duration_ms / 1000,
+                        albumart: albumart,
+                        samplerate: '44.1 KHz',
+                        bitdepth: '16 bit',
+                        trackType: 'spotify'
+
+                    };
+
+                    response.push(item);
+                }
+
+                response.concat(result);
+                defer.resolve(response);
+            }).fail(function (err) {
+                defer.reject(new Error(err));
+            })
+        });
+
+    return defer.promise;
+}
+
+
+
 
 ControllerSpop.prototype.explodeUri = function(uri) {
 	var self = this;
@@ -754,6 +836,65 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                     {
                         defer.fail(new Error('An error occurred while listing playlists'));
                     });
+    }
+    else if(uri.startsWith('spotify:artist:'))
+    {
+        var splitted=uri.split(':');
+
+        self.spotifyApi.getArtistTopTracks(splitted[2], 'GB')
+            .then(function(result)
+            {
+                var resJson=result.body;
+
+                var rate;
+                if(self.config.get('bitrate')===true)
+                    rate="320";
+                else rate="128";
+
+                var response=[];
+                for(var i in resJson.tracks)
+                {
+                    var artist=resJson.tracks[i].artists[0].name;
+                    var album=resJson.tracks[i].album.name;
+
+                    var albumart=self.getAlbumArt({artist:artist,
+                        album:album},"");
+
+                    var item={
+                        uri: resJson.tracks[i].uri,
+                        service: 'spop',
+                        type: 'song',
+                        name: resJson.tracks[i].name,
+                        title: resJson.tracks[i].name,
+                        artist:artist,
+                        album: album,
+                        duration: resJson.tracks[i].duration_ms/1000,
+                        albumart: albumart,
+                        samplerate: '44.1 KHz',
+                        bitdepth: '16 bit',
+                        trackType: 'spotify'
+
+                    };
+
+                    response.push(item);
+                }
+                defer.resolve(response);
+            });
+
+    }
+    else if(uri.startsWith('spotify:album:'))
+    {
+        var splitted=uri.split(':');
+        var id=splitted[2];
+
+        var searchDefer=self.getAlbumTracks(id,0);
+        searchDefer.then(function(values)
+        {
+            defer.resolve(values);
+        }).
+        fail(function(err){
+            defer.reject(new error(err));
+        })
     }
     else
     {
@@ -1013,7 +1154,7 @@ ControllerSpop.prototype.search = function (query) {
 	})
 		.fail(function()
 		{
-			defer.fail(new Error('An error occurred while listing playlists'));
+            defer.resolve();
 		});
 
 	return defer.promise;
