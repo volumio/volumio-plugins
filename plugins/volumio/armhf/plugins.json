@@ -26,17 +26,7 @@
     "id": "cat2",
     "description": "Things that cannot go in other categories",
     "plugins": [
-      {
-        "prettyName":"Brutefir equalizer",
-        "icon": "fa-sliders",
-        "name": "brutefir",
-        "version": "1.0",
-        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/bbrutefir.zip",
-        "license": "none",
-        "description": "An handy equalizer made with brutefir utility",
-        "author": "Balbuze",
-        "updated": "03-06-2016"
-      }
+    
     ]
   },
   {
@@ -45,17 +35,7 @@
     "id": "cat3",
     "description": "Volumio System Tools",
     "plugins": [
-      {
-        "prettyName":"Touchscreen display",
-        "icon": "fa-hand-pointer-o",
-        "name": "touchscreen_display",
-        "version": "1.0",
-        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
-        "license": "gpl-v3",
-        "description": "Use the 7 inches pi display",
-        "author": "Volumio Team",
-        "updated": "23-04-2016"
-      }
+      
     ]
   }
 ]
