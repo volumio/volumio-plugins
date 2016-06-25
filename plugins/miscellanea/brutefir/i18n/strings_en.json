@@ -1,9 +1,9 @@
 {
- "button_save":"save",
  "brutefir_settings":"Brutefir settings",
  "equalizer":"equalizer",
  "Equalizer_settings":"Equalizer settings",
  "Advanced_settings":"Advanced settings",
+ "Input_attenuation":"Input attenuation",
  "left_filter":"left filter",
  "right_filter":"right filter",
  "filter_size":"filter size",

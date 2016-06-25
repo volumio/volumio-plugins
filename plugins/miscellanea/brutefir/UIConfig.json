@@ -375,13 +375,17 @@
 	{
 		     "id": "attenuation",
 		    "element": "select",
-		    "label": "Global attenuation",
+		    "label": "Input attenuation",
                     "value": {
                         "value":"10",
                         "label": "10"
                     },
 		    "options": [
                         {
+                            "value":"0",
+                            "label": "0"
+                        },
+			{
                             "value":"2",
                             "label": "2"
                         },

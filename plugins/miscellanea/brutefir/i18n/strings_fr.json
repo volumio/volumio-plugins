@@ -4,6 +4,7 @@
  "equalizer":"Egaliseur",
  "Equalizer_settings":"Réglages de l'égaliseur",
  "Advanced_settings":"Réglages avancés",
+ "Input_attenuation":"Attenuation de l'entrée",
  "left_filter":"Filtre gauche",
  "right_filter":"Filtre droit",
  "filter_size":"Taille du filtre",

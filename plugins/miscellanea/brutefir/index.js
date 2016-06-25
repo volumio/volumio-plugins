@@ -457,15 +457,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
    var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf5 = conf4.replace("${attenuation}", self.config.get('attenuation'));
-   var conf6 = conf5.replace("${bindev}", bindev);
-   var conf7 = conf6.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf8 = conf7.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf9 = conf8.replace("${boutdev}", boutdev);
-   var conf10 = conf9.replace("${input_format}", self.config.get('input_format'));
-   var conf11 = conf10.replace("${output_format}", self.config.get('output_format'));
+   var conf5 = conf4.replace("${bindev}", bindev);
+   var conf6 = conf5.replace("${attenuation1}", self.config.get('attenuation'));
+   var conf7 = conf6.replace("${attenuation2}", self.config.get('attenuation'));
+   var conf8 = conf7.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf9 = conf8.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf10 = conf9.replace("${boutdev}", boutdev);
+   var conf11 = conf10.replace("${input_format}", self.config.get('input_format'));
+   var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf11, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();

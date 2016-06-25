@@ -26,7 +26,7 @@ coeff "dblbuf" {
 filename: "dirac pulse";
 shared_mem: true;
 blocks: 4;
-attenuation: ${attenuation};
+#attenuation: ${attenuation};
 };
 
 input "l_in", "r_in" {
@@ -38,7 +38,7 @@ input "l_in", "r_in" {
 
 # Add equalizer
 filter "eq_l" {
-from_inputs: "l_in";
+from_inputs: "l_in"/${attenuation1};
 #to_outputs: "l_drc";
 to_filters: "l_drc";
 process: -1; # process index to run in (-1 means auto)
@@ -48,7 +48,7 @@ crossfade: false; # crossfade when coefficient is changed
 };
 
 filter "eq_r" {
-from_inputs: "r_in";
+from_inputs: "r_in"/${attenuation2};
 #to_outputs: "r_drc";
 to_filters: "r_drc";
 process: -1; # process index to run in (-1 means auto)
