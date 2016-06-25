@@ -19,6 +19,7 @@
     "net": "^1.0.2",
     "socket.io-client": "^1.4.6",
     "telnet-client": "0.9.1",
-    "v-conf": "^0.10.0"
+    "v-conf": "^0.10.0",
+    "child_process":""
   }
 }

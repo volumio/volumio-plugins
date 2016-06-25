@@ -451,7 +451,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    /*brutefir output dev - don't know how to detect- so set manually
     */
    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   var intero = 2;
+   var intero = 1;
    var boutdev = 'hw:' + intero;
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
