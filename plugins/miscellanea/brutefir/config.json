@@ -13,7 +13,7 @@
 "smpl_rate":{"type": "string","value": "44100"},
 "leftfilter":{"type": "string","value": "dirac pulse"},
 "rightfilter":{"type": "string","value": "dirac pulse"},
-"filter_size":{"type": "string","value": "4096"},
+"filter_size":{"type": "string","value": "16384"},
 "numb_part":{"type": "string","value": "8"},
 "fl_bits":{"type": "string","value": "64"},
 "input_format":{"type": "string","value": "S16_LE"},

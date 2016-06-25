@@ -295,6 +295,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[1].content[7].value = self.config.get('smpl_rate');
   uiconf.sections[1].content[8].value = self.config.get('input_format');
   uiconf.sections[1].content[9].value = self.config.get('output_format');
+//self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].id', 'output_format');
 // return uiconf;
 //}
 	defer.resolve(uiconf);
