@@ -374,7 +374,7 @@
         },
 	{
 		     "id": "attenuation",
-		    "element": "input",
+		    "element": "select",
 		    "label": "Global attenuation",
                     "value": {
                         "value":"10",
@@ -442,7 +442,7 @@
                 },
 		{
                     "id": "filter_size",
-	            "element": "input",
+	            "element": "select",
                     "doc": "size of filter",
                     "label": "filter size",
                     "value": {
@@ -483,7 +483,7 @@
                 },
 		{
                     "id": "numb_part",
-	            "element": "input",
+	            "element": "select",
                     "doc": "number of filter partion",
                     "label": "number of partitions",
 		    "value": {
@@ -516,7 +516,7 @@
                 },
                 {
                     "id": "fl_bits",
-		    "element": "input",
+		    "element": "select",
 		    "doc": "floating point internal resolusion",
                     "label": "internal resolution bits",
                     "value": {
@@ -540,7 +540,7 @@
                 },
 		 {
                     "id": "smpl_rate",
-		    "element": "input",
+		    "element": "select",
 		    "doc": "sample rate",
                     "label": "sample rate",
                     "value": {
@@ -548,6 +548,19 @@
                         "label": "44100"
                     },
                     "options": [
+			{
+                            "value": "44100",
+                            "label": "44100"
+                        },
+			{
+                            "value": "48000",
+                            "label": "48000"
+                        },
+			{
+                            "value": "96000",
+                            "label": "96000"
+                        }
+			
                       ],
           "visibleIf": {
             "field": "enabled",
@@ -556,7 +569,7 @@
                 },
 		{
                     "id": "input_format",
-		    "element": "input",
+		    "element": "select",
 		    "doc": "input format",
                     "label": "input format",
                     "value": {
@@ -637,7 +650,7 @@
                 },
 		{
                     "id": "output_format",
-		    "element": "input",
+		    "element": "select",
 		    "doc": "output format",
                     "label": "output format",
                     "value": {

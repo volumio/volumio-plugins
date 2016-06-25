@@ -272,7 +272,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-	
+
+//var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
+var value;	
 //{		
  var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
@@ -286,15 +288,42 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[0].content[7].value = self.config.get('coef4000');
  uiconf.sections[0].content[8].value = self.config.get('coef8000');
  uiconf.sections[0].content[9].value = self.config.get('coef16000');
- uiconf.sections[1].content[1].value = self.config.get('attenuation');
- uiconf.sections[1].content[2].value = self.config.get('leftfilter');
+  uiconf.sections[1].content[2].value = self.config.get('leftfilter');
  uiconf.sections[1].content[3].value = self.config.get('rightfilter');
- uiconf.sections[1].content[4].value = self.config.get('filter_size');
- uiconf.sections[1].content[5].value = self.config.get('numb_part');
- uiconf.sections[1].content[6].value = self.config.get('fl_bits');
- uiconf.sections[1].content[7].value = self.config.get('smpl_rate');
-  uiconf.sections[1].content[8].value = self.config.get('input_format');
-  uiconf.sections[1].content[9].value = self.config.get('output_format');
+
+value = self.config.get('attenuation');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[1].options'), value));
+
+// uiconf.sections[1].content[1].value = self.config.get('attenuation');
+value = self.config.get('filter_size');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[4].options'), value));
+
+// uiconf.sections[1].content[4].value = self.config.get('filter_size');
+ 
+value = self.config.get('numb_part');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[5].options'), value));
+//uiconf.sections[1].content[5].value = self.config.get('numb_part');
+value = self.config.get('fl_bits');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[6].options'), value));
+// uiconf.sections[1].content[6].value = self.config.get('fl_bits');
+value = self.config.get('smpl_rate');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[7].options'), value));
+// uiconf.sections[1].content[7].value = self.config.get('smpl_rate');
+value = self.config.get('input_format');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[8].options'), value));
+//  uiconf.sections[1].content[8].value = self.config.get('input_format');
+value = self.config.get('output_format');
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[9].options'), value));
+// uiconf.sections[1].content[9].value = self.config.get('output_format')
+
+
 //self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].id', 'output_format');
 // return uiconf;
 //}
@@ -305,7 +334,21 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 			defer.reject(new Error());
 		})
 	return defer.promise
+
+//return uiconf;
+
 };
+
+ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+	var n = options.length;
+	for (var i = 0; i < n; i++) {
+		if (options[i].value == key)
+			return options[i].label;
+	}
+
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+};
+
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
  var self = this;
@@ -473,15 +516,15 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
-  self.config.set('attenuation', data['attenuation']);
- self.config.set('smpl_rate', data['smpl_rate']);
+  self.config.set('attenuation', data['attenuation'].value);
+ self.config.set('smpl_rate', data['smpl_rate'].value);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
- self.config.set('filter_size', data['filter_size']);
- self.config.set('numb_part', data['numb_part']);
- self.config.set('fl_bits', data['fl_bits']);
- self.config.set('input_format', data['input_format']);
- self.config.set('output_format', data['output_format']);
+ self.config.set('filter_size', data['filter_size'].value);
+ self.config.set('numb_part', data['numb_part'].value);
+ self.config.set('fl_bits', data['fl_bits'].value);
+ self.config.set('input_format', data['input_format'].value);
+ self.config.set('output_format', data['output_format'].value);
 
 
  self.rebuildBRUTEFIRAndRestartDaemon()
@@ -519,10 +562,10 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   });
 
  return defer.promise;
-};
-
+}
+/*
 ControllerBrutefir.prototype.loadI18NStrings = function (code) {
-    this.logger.info('BRUTEFIR-CONTROLLER I18N LOAD FOR LOCALE '+code);
+    this.logger.info('BRUTEFIR I18N LOAD FOR LOCALE '+code);
 
     this.i18nString=libFsExtra.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
 }
@@ -531,6 +574,6 @@ ControllerBrutefir.prototype.loadI18NStrings = function (code) {
 ControllerBrutefir.prototype.getI18NString = function (key) {
     return this.i18nString[key];
 }
-
+*/
 
 
