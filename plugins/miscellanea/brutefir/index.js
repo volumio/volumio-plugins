@@ -288,9 +288,9 @@ var value;
  uiconf.sections[0].content[7].value = self.config.get('coef4000');
  uiconf.sections[0].content[8].value = self.config.get('coef8000');
  uiconf.sections[0].content[9].value = self.config.get('coef16000');
-  uiconf.sections[1].content[2].value = self.config.get('leftfilter');
+ uiconf.sections[1].content[2].value = self.config.get('leftfilter');
  uiconf.sections[1].content[3].value = self.config.get('rightfilter');
-
+ 
 value = self.config.get('attenuation');
 	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[1].options'), value));
@@ -322,7 +322,9 @@ value = self.config.get('output_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[9].options'), value));
 // uiconf.sections[1].content[9].value = self.config.get('output_format')
-
+var value;	
+ uiconf.sections[1].content[10].value = self.config.get('input_device');
+ uiconf.sections[1].content[11].value = self.config.get('output_device');
 
 //self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].id', 'output_format');
 // return uiconf;
@@ -374,16 +376,27 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 ControllerBrutefir.prototype.sendequalizer = function() {
  var self = this;
 // var defer = libQ.defer();
- self.config.set('coef31', data['coef31']);
- self.config.set('coef63', data['coef63']);
- self.config.set('coef125', data['coef125']);
- self.config.set('coef250', data['coef250']);
- self.config.set('coef500', data['coef500']);
- self.config.set('coef1000', data['coef1000']);
- self.config.set('coef2000', data['coef2000']);
- self.config.set('coef4000', data['coef4000']);
- self.config.set('coef8000', data['coef8000']);
- self.config.set('coef16000', data['coef16000']);
+/* self.config.get('coef31', data['coef31']);
+ self.config.get('coef63', data['coef63']);
+ self.config.get('coef125', data['coef125']);
+ self.config.get('coef250', data['coef250']);
+ self.config.get('coef500', data['coef500']);
+ self.config.get('coef1000', data['coef1000']);
+ self.config.get('coef2000', data['coef2000']);
+ self.config.get('coef4000', data['coef4000']);
+ self.config.get('coef8000', data['coef8000']);
+ self.config.get('coef16000', data['coef16000']);
+*/
+uiconf.sections[0].content[0].value = self.config.get('coef31');
+ uiconf.sections[0].content[1].value = self.config.get('coef63');
+ uiconf.sections[0].content[2].value = self.config.get('coef125');
+ uiconf.sections[0].content[3].value = self.config.get('coef250');
+ uiconf.sections[0].content[4].value = self.config.get('coef500');
+ uiconf.sections[0].content[5].value = self.config.get('coef1000');
+ uiconf.sections[0].content[6].value = self.config.get('coef2000');
+ uiconf.sections[0].content[7].value = self.config.get('coef4000');
+ uiconf.sections[0].content[8].value = self.config.get('coef8000');
+ uiconf.sections[0].content[9].value = self.config.get('coef16000');
 
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
 
@@ -443,27 +456,27 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    /* input for brutefir config is the output set in playback
    and output in brutefir config is hardware in use
    */
-   var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+ //  var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    /* the right device is not properly selected - have to remove 1 - need investigation
     */
   // var inter = indev;
-   var bindev = 'hw:Loopback,1';
+   //var bindev = 'hw:Loopback,1';
    /*brutefir output dev - don't know how to detect- so set manually
     */
-   var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   var intero = 1;
-   var boutdev = 'hw:' + intero;
+   //var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+   //var intero = 1;
+   //var boutdev = 'hw:' + intero;
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
    var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf5 = conf4.replace("${bindev}", bindev);
-   var conf6 = conf5.replace("${attenuation1}", self.config.get('attenuation'));
-   var conf7 = conf6.replace("${attenuation2}", self.config.get('attenuation'));
-   var conf8 = conf7.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf9 = conf8.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf10 = conf9.replace("${boutdev}", boutdev);
-   var conf11 = conf10.replace("${input_format}", self.config.get('input_format'));
+   var conf5 = conf4.replace("${input_device}", self.config.get('input_device'));
+   var conf6 = conf5.replace("${input_format}", self.config.get('input_format'));
+   var conf7 = conf6.replace("${attenuation1}", self.config.get('attenuation'));
+   var conf8 = conf7.replace("${attenuation2}", self.config.get('attenuation'));
+   var conf9 = conf8.replace("${leftfilter}", self.config.get('leftfilter'));
+   var conf10 = conf9.replace("${rightfilter}", self.config.get('rightfilter'));
+   var conf11 = conf10.replace("${output_device}", self.config.get('output_device'));
    var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
 
    fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
@@ -517,15 +530,18 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
 
  var defer = libQ.defer();
-  self.config.set('attenuation', data['attenuation'].value);
+ self.config.set('attenuation', data['attenuation'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
  self.config.set('filter_size', data['filter_size'].value);
  self.config.set('numb_part', data['numb_part'].value);
  self.config.set('fl_bits', data['fl_bits'].value);
+ self.config.set('input_device', data['input_device']);
  self.config.set('input_format', data['input_format'].value);
+ self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
+
 
 
  self.rebuildBRUTEFIRAndRestartDaemon()

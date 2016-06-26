@@ -30,7 +30,7 @@ blocks: 4;
 };
 
 input "l_in", "r_in" {
-            device: "alsa" {device: "${bindev}";};
+            device: "alsa" {device: "${input_device}";};
             sample: "${input_format}";   # sample format
             channels: 2;            # number of open channels / which to use
     };
@@ -82,7 +82,7 @@ process: -1;
 };
 
    output "l_out", "r_out" {
-            device: "alsa" {device: "${boutdev}"; ignore_xrun: true; };
+            device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
 #         device: "file" {path: "/dev/stdout";};
             sample: "${output_format}";   # sample format
             channels: 2;        # number of open channels / which to use

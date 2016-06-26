@@ -362,7 +362,9 @@
 		    "fl_bits",
 		    "smpl_rate",
 		    "input_format",
-		    "output_format"
+		    "output_format",
+		    "input_device",
+		    "output_device"
                 ]
             },
             "content": [
@@ -732,8 +734,41 @@
             "field": "enabled",
             "value": true
           }
-                }
+                },
+		  {
+                    "id": "input_device",
+		  "element": "input",
+                    "doc": "input device - should be the output sets in playback options",
+                    "label": "input device",
+                    "value": {
+			"value":"hw:Loopback,1",	
+			"label": "hw:Loopback,1"
+                },
+		"options": [
+			],
+          "visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
 
+		},
+		 {
+                    "id": "output_device",
+		  "element": "input",
+                    "doc": "output device - device used for the output",
+                    "label": "output device",
+                    "value": {
+			"value":"hw:1",	
+			"label": "hw:1"
+                },
+		"options": [
+			],
+          "visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+
+		}
             ]
         }
     ]

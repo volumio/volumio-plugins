@@ -2,8 +2,7 @@
 
 echo "Installing brutefir dependencies"
 echo "adding snd_aloop to /etc/module"
-echo 'snd_aloop' | sudo tee --append /etc/modules
-echo "loading snd_aloop module"
+echo 'snd_aloop' | tee --append /etc/modules
 sudo apt-get update
 sudo apt-get -y install brutefir
 echo "adding brutefir service"
