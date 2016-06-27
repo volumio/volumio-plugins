@@ -1209,13 +1209,3 @@ ControllerSpop.prototype.search = function (query) {
 	return defer.promise;
 };
 
-ControllerSpop.prototype.loadI18NStrings = function (code) {
-    this.logger.info('MPD I18N LOAD FOR LOCALE '+code);
-
-    this.i18nString=fs.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
-}
-
-
-ControllerSpop.prototype.getI18NString = function (key) {
-    return this.i18nString[key];
-}
