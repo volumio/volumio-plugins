@@ -278,16 +278,26 @@ var value;
 //{		
  var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
- uiconf.sections[0].content[0].value = self.config.get('coef31');
- uiconf.sections[0].content[1].value = self.config.get('coef63');
- uiconf.sections[0].content[2].value = self.config.get('coef125');
- uiconf.sections[0].content[3].value = self.config.get('coef250');
- uiconf.sections[0].content[4].value = self.config.get('coef500');
- uiconf.sections[0].content[5].value = self.config.get('coef1000');
- uiconf.sections[0].content[6].value = self.config.get('coef2000');
- uiconf.sections[0].content[7].value = self.config.get('coef4000');
- uiconf.sections[0].content[8].value = self.config.get('coef8000');
- uiconf.sections[0].content[9].value = self.config.get('coef16000');
+ uiconf.sections[0].content[1].value = self.config.get('coef31');
+ uiconf.sections[0].content[2].value = self.config.get('coef63');
+ uiconf.sections[0].content[3].value = self.config.get('coef125');
+ uiconf.sections[0].content[4].value = self.config.get('coef250');
+ uiconf.sections[0].content[5].value = self.config.get('coef500');
+ uiconf.sections[0].content[6].value = self.config.get('coef1000');
+ uiconf.sections[0].content[7].value = self.config.get('coef2000');
+ uiconf.sections[0].content[8].value = self.config.get('coef4000');
+ uiconf.sections[0].content[9].value = self.config.get('coef8000');
+ uiconf.sections[0].content[10].value = self.config.get('coef16000');
+ uiconf.sections[0].content[1].value = self.config.get('phas31');
+ uiconf.sections[0].content[2].value = self.config.get('phas63');
+ uiconf.sections[0].content[3].value = self.config.get('phas125');
+ uiconf.sections[0].content[4].value = self.config.get('phas250');
+ uiconf.sections[0].content[5].value = self.config.get('phas500');
+ uiconf.sections[0].content[6].value = self.config.get('phas1000');
+ uiconf.sections[0].content[7].value = self.config.get('phas2000');
+ uiconf.sections[0].content[8].value = self.config.get('phas4000');
+ uiconf.sections[0].content[9].value = self.config.get('phas8000');
+ uiconf.sections[0].content[10].value = self.config.get('phas16000');
  uiconf.sections[1].content[2].value = self.config.get('leftfilter');
  uiconf.sections[1].content[3].value = self.config.get('rightfilter');
  
@@ -387,16 +397,27 @@ ControllerBrutefir.prototype.sendequalizer = function() {
  self.config.get('coef8000', data['coef8000']);
  self.config.get('coef16000', data['coef16000']);
 */
-uiconf.sections[0].content[0].value = self.config.get('coef31');
- uiconf.sections[0].content[1].value = self.config.get('coef63');
- uiconf.sections[0].content[2].value = self.config.get('coef125');
- uiconf.sections[0].content[3].value = self.config.get('coef250');
- uiconf.sections[0].content[4].value = self.config.get('coef500');
- uiconf.sections[0].content[5].value = self.config.get('coef1000');
- uiconf.sections[0].content[6].value = self.config.get('coef2000');
- uiconf.sections[0].content[7].value = self.config.get('coef4000');
- uiconf.sections[0].content[8].value = self.config.get('coef8000');
- uiconf.sections[0].content[9].value = self.config.get('coef16000');
+uiconf.sections[0].content[1].value = self.config.get('coef31');
+ uiconf.sections[0].content[2].value = self.config.get('coef63');
+ uiconf.sections[0].content[3].value = self.config.get('coef125');
+ uiconf.sections[0].content[4].value = self.config.get('coef250');
+ uiconf.sections[0].content[5].value = self.config.get('coef500');
+ uiconf.sections[0].content[6].value = self.config.get('coef1000');
+ uiconf.sections[0].content[7].value = self.config.get('coef2000');
+ uiconf.sections[0].content[8].value = self.config.get('coef4000');
+ uiconf.sections[0].content[9].value = self.config.get('coef8000');
+ uiconf.sections[0].content[10].value = self.config.get('coef16000');
+ uiconf.sections[0].content[1].value = self.config.get('phas31');
+ uiconf.sections[0].content[2].value = self.config.get('phas63');
+ uiconf.sections[0].content[3].value = self.config.get('phas125');
+ uiconf.sections[0].content[4].value = self.config.get('phas250');
+ uiconf.sections[0].content[5].value = self.config.get('phas500');
+ uiconf.sections[0].content[6].value = self.config.get('phas1000');
+ uiconf.sections[0].content[7].value = self.config.get('phas2000');
+ uiconf.sections[0].content[8].value = self.config.get('phas4000');
+ uiconf.sections[0].content[9].value = self.config.get('phas8000');
+ uiconf.sections[0].content[10].value = self.config.get('phas16000');
+
 
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
 
@@ -513,6 +534,17 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  self.config.set('coef4000', data['coef4000']);
  self.config.set('coef8000', data['coef8000']);
  self.config.set('coef16000', data['coef16000']);
+ self.config.set('phas31', data['phas31']);
+ self.config.set('phas63', data['phas63']);
+ self.config.set('phas125', data['phas125']);
+ self.config.set('phas250', data['phas250']);
+ self.config.set('phas500', data['phas500']);
+ self.config.set('phas1000', data['phas1000']);
+ self.config.set('phas2000', data['phas2000']);
+ self.config.set('phas4000', data['phas4000']);
+ self.config.set('phas8000', data['phas8000']);
+ self.config.set('phas16000', data['phas16000']);
+
 
 self.logger.info('Configurations have been set');
 
@@ -579,8 +611,8 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   });
 
  return defer.promise;
-}
-/*
+},
+
 ControllerBrutefir.prototype.loadI18NStrings = function (code) {
     this.logger.info('BRUTEFIR I18N LOAD FOR LOCALE '+code);
 
@@ -591,6 +623,6 @@ ControllerBrutefir.prototype.loadI18NStrings = function (code) {
 ControllerBrutefir.prototype.getI18NString = function (key) {
     return this.i18nString[key];
 }
-*/
+
 
 

@@ -1,5 +1,5 @@
 {  "page": {
-        "label": "Brutefir settings"
+        "label": "BRUTEFIR_SETTINGS"
     },
     "sections": [
         {
@@ -24,11 +24,26 @@
                     "coef2000",
                     "coef4000",
                     "coef8000",
-                    "coef16000"
+                    "coef16000",
+		    "phas31",
+                    "phas63",
+                    "phas125",
+                    "phas250",
+                    "phas500",
+                    "phas1000",
+                    "phas2000",
+                    "phas4000",
+                    "phas8000",
+                    "phas16000"
                 ]
             },
 	     "content": [
-                
+                {
+          "id": "enabled",
+          "element": "switch",
+          "label": "On= Gain Settings / Off= Phase Settings",
+          "value": true
+        	},
 		{
                     "id": "coef31",
                     "element": "input",
@@ -38,27 +53,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                       
+                    ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef63",
@@ -69,27 +69,11 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-			]
+                      	],
+		"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef125",
@@ -100,27 +84,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef250",
@@ -131,27 +100,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                       
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef500",
@@ -162,27 +116,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                     
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef1000",
@@ -193,27 +132,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                        
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef2000",
@@ -224,27 +148,12 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                        
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef4000",
@@ -255,58 +164,28 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                      
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef8000",
                      "element": "input",
                     "label": "8KHz",
                     "value": {
-                        "value": "",
-                        "label": ""
+                        "value": "0",
+                        "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                        
+                    ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
                 },
                 {
                     "id": "coef16000",
@@ -317,30 +196,187 @@
                         "label": "0"
                     },
                     "options": [
-                        {
-                            "value": "-10",
-                            "label": "-10"
-                        },
-                        {
-                            "value": "-5",
-                            "label": "-5"
-                        },
-                        {
-                            "value": "0",
-                            "label": "0"
-                        },
-                        {
-                            "value": "5",
-                            "label": "5"
-                        },
-                        {
-                            "value": "10",
-                            "label": "10"
-                        }
-                    ]
+                      
+                    ],
+			"visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+                },
+		{
+                    "id": "phas31",
+                    "element": "input",
+                    "label": "phase 31Hz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas63",
+                    "element": "input",
+                    "label": "phase 63Hz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		
+		{
+                    "id": "phas125",
+                    "element": "input",
+                    "label": "phase 125Hz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas250",
+                    "element": "input",
+                    "label": "phase 250Hz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas500",
+                    "element": "input",
+                    "label": "phase 500Hz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas1000",
+                    "element": "input",
+                    "label": "phase 1KHz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas2000",
+                    "element": "input",
+                    "label": "phase 2KHz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas4000",
+                    "element": "input",
+                    "label": "phase 4KHz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas8000",
+                    "element": "input",
+                    "label": "phase 8KHz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
+                },
+		{
+                    "id": "phas16000",
+                    "element": "input",
+                    "label": "phase 16KHz",
+                    "value": {
+                        "value": "0",
+                        "label": "0"
+                             },
+                    "options": [
+                       
+                   		 ],
+		"visibleIf": {
+            "field": "enabled",
+            "value": false
+	                     }
+         
                 }
-            ]
-        },
+     ]
+},
+
         {
             "id": "advanced",
             "element": "section",
