@@ -383,7 +383,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 // Internal Methods ---------------------------------------------------------------------------------------
 
 // burtefir command - until now send nothing....
-ControllerBrutefir.prototype.sendequalizer = function() {
+ControllerBrutefir.prototype.sendgainequalizer = function() {
  var self = this;
 // var defer = libQ.defer();
 /* self.config.get('coef31', data['coef31']);
@@ -407,17 +407,7 @@ uiconf.sections[0].content[1].value = self.config.get('coef31');
  uiconf.sections[0].content[8].value = self.config.get('coef4000');
  uiconf.sections[0].content[9].value = self.config.get('coef8000');
  uiconf.sections[0].content[10].value = self.config.get('coef16000');
- uiconf.sections[0].content[1].value = self.config.get('phas31');
- uiconf.sections[0].content[2].value = self.config.get('phas63');
- uiconf.sections[0].content[3].value = self.config.get('phas125');
- uiconf.sections[0].content[4].value = self.config.get('phas250');
- uiconf.sections[0].content[5].value = self.config.get('phas500');
- uiconf.sections[0].content[6].value = self.config.get('phas1000');
- uiconf.sections[0].content[7].value = self.config.get('phas2000');
- uiconf.sections[0].content[8].value = self.config.get('phas4000');
- uiconf.sections[0].content[9].value = self.config.get('phas8000');
- uiconf.sections[0].content[10].value = self.config.get('phas16000');
-
+ 
 
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
 
@@ -461,6 +451,28 @@ ControllerBrutefir.prototype.onStop = function() {
  return libQ.defer();
 };
 */
+ControllerBrutefir.prototype.sendphasequalizer = function() {
+ var self = this;
+ uiconf.sections[0].content[1].value = self.config.get('phas31');
+ uiconf.sections[0].content[2].value = self.config.get('phas63');
+ uiconf.sections[0].content[3].value = self.config.get('phas125');
+ uiconf.sections[0].content[4].value = self.config.get('phas250');
+ uiconf.sections[0].content[5].value = self.config.get('phas500');
+ uiconf.sections[0].content[6].value = self.config.get('phas1000');
+ uiconf.sections[0].content[7].value = self.config.get('phas2000');
+ uiconf.sections[0].content[8].value = self.config.get('phas4000');
+ uiconf.sections[0].content[9].value = self.config.get('phas8000');
+ uiconf.sections[0].content[10].value = self.config.get('phas16000');
+
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 phase 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
+
+ // brutefir cmd
+ //return self.sendBrutefirCommand('lmc eq 0 phase 31/' + phas31, ', 63/' + phas63, ', 125/' + phas125, ', 250/' + phas250, ', 500/' + phas500, ', 1000/' + phas1000, ', 2000/' + phas2000, ', 4000/' + phas4000, ', 8000/' + phas8000, ', 16000/' + phas16000);
+return self.sendBrutefirCommand('lmc eq 0 phase 1000/' + phas1000);
+};
+
+
+
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
 
