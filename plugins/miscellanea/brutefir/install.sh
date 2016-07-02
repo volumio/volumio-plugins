@@ -1,16 +1,27 @@
 #!/bin/bash
 
 echo "Installing brutefir dependencies"
-sudo apt-get update
-sudo apt-get -y install brutefir
-echo "adding snd_aloop to /etc/module"
-echo 'snd_aloop' | tee --append /etc/modules
-echo 'trying to load snd_aloop module'
-sudo modprobe snd_aloop
-echo "adding brutefir service"
-cp /data/plugins/miscellanea/brutefir/brutefir.service.gz /
-sudo tar -xvf brutefir.service.gz
-rm /brutefir.service.gz
+if ! grep -q snd_aloop "/etc/modules";
+	then
+		echo "adding snd_aloop to /etc/module"
+		echo 'snd_aloop' | tee --append /etc/modules
+		#sudo modprobe snd-aloop
+	else
+		echo "/etc/modules already contains snd_aloop, nothing to do..."
+fi
+#sudo apt-get update
+#sudo apt-get -y install brutefir
+echo "checking if brutefir service exists"
+if [ ! -f "/etc/systemd/system/brutefir.service" ];
+	then
+		echo "file brutefir.service doesn't exist, creating"
+		cp /data/plugins/miscellanea/brutefir/brutefir.service.gz /
+		cd /
+		sudo tar -xvf brutefir.service.gz
+		rm /brutefir.service.gz
+	else
+		echo "File brutefir.service already exists"
+fi
 
 #required to end the plugin install
 echo "plugininstallend"
