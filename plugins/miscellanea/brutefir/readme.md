@@ -1,4 +1,4 @@
-22 JUNE 2016
+2 JULLY 2016
 	BRUTEFIR PLUGIN
 
 brutefir plugin
@@ -23,16 +23,18 @@ This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
 - What is working :
-Installation even if it never end...
+
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
 Access to webUI and save configuration
 The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
+
 - What is not working :
 No change in sound when setting equalizer
-Sometimes brutefir hangs dueto a buffer overflow
-Autolsection of inut output device is not automatic
 
-
+- WARNING
+If you want to test, you have to reboot after installation so that module load, and then go to advanced settings in Brutefir plugin and save.
+If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". If not working, this probably due to a wrong I/O device.
+Type "aplay -L" to determine  right devices
 
 And next step is to provide a webUI with sliders to set equalizer, and a file selector to choose filter (as it has been done to select background).
 To be continued ;-)
