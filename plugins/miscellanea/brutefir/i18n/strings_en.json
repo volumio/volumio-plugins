@@ -1,17 +1,19 @@
 {
+ "BRUTEFIR":{
  "BRUTEFIR_SETTINGS":"Brutefir settings",
  "EQUALIZER":"Equalizer",
  "EQUALIZER_SETTINGS":"Equalizer settings",
- "ADVANCED_SETTINGS":"Advanced settings",
+ "ADVANCED_SETTINGS":"Advanced toto settings",
  "INPUT_ATTENUATION":"Input attenuation",
  "LEFT_FILTER":"Reft filter",
  "RIGHT_FILTER":"Right filter",
  "FILTER_SIZE":"Filter size",
  "NUMBER_PARTITION":"Number of partitions",
- "INTERNAL_RESOLUTION":"Internal résolution",
+ "INTERNAL_RESOLUTION":"Internal resolution",
  "SAMPLE_RATE":"Sample rate",
  "INPUT_FORMAT":"Input format",
  "OUTPUT_FORMAT":"Outputformat",
  "INPUT_DEVICE":"Input device",
  "OUTPUT_DEVICE":"Output device"
+}
 }

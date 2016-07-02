@@ -1,11 +1,11 @@
 {  "page": {
-        "label": "BRUTEFIR_SETTINGS"
+        "label": "TRANSLATE.BRUTEFIR.BRUTEFIR_SETTINGS"
     },
     "sections": [
         {
             "id": "equalizer",
             "element": "section",
-            "label": "Equalizer_settings",
+            "label": "TRANSLATE.BRUTEFIR.EQUALIZER_SETTINGS",
             "icon": "fa-sliders fa-rotate-90",
             "onSave": {
                 "type": "controller",
@@ -380,7 +380,7 @@
         {
             "id": "advanced",
             "element": "section",
-            "label": "Advanced settings",
+            "label": "TRANSLATE.BRUTEFIR.ADVANCED_SETTINGS",
             "icon": "fa-cogs",
             "onSave": {
                 "type": "controller",
@@ -560,7 +560,7 @@
                     "id": "fl_bits",
 		    "element": "select",
 		    "doc": "floating point internal resolusion",
-                    "label": "internal resolution bits",
+                    "label": "internal bits resolution",
                     "value": {
                         "value": "64",
                         "label": "64"

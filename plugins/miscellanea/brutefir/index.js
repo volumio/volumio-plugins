@@ -397,6 +397,7 @@ ControllerBrutefir.prototype.sendgainequalizer = function() {
  self.config.get('coef8000', data['coef8000']);
  self.config.get('coef16000', data['coef16000']);
 */
+var uiconf = {};
 uiconf.sections[0].content[1].value = self.config.get('coef31');
  uiconf.sections[0].content[2].value = self.config.get('coef63');
  uiconf.sections[0].content[3].value = self.config.get('coef125');
@@ -406,8 +407,23 @@ uiconf.sections[0].content[1].value = self.config.get('coef31');
  uiconf.sections[0].content[7].value = self.config.get('coef2000');
  uiconf.sections[0].content[8].value = self.config.get('coef4000');
  uiconf.sections[0].content[9].value = self.config.get('coef8000');
- uiconf.sections[0].content[10].value = self.config.get('coef16000');
- 
+ uiconf.sections[0].content[10].value = self.config.get('coef16000')
+
+/*var coef = {
+
+coef31,
+coef63,
+coef125,
+coef250,
+coef500,
+coef1000,
+coef2000,
+coef4000,
+coef8000,
+coef16000
+*/
+
+console.log(JSON.stringify(uiconf));
 
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
 
@@ -625,12 +641,36 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  return defer.promise;
 },
 
+/*ControllerBrutefir.prototype.getleftfilterfile = function()
+{
+    var self = this;
+    var defer = libQ.defer();
+
+    //var backgroundsArray = [];
+
+    fs.readdir(leftfilterfilePath, function(err, files) {
+        if (err) {
+            console.log(err);
+        }
+        files.forEach(function(f) {
+
+        var leftfilterfile_title = config.get('leftfilter_title');
+        var leftfilterfile_path = config.get('leftfilter_path');
+        var leftfilter = {"current":{"name":leftfilterfile_title,"path":leftfilterfile_path},"available":leftfilterfileArray};
+        defer.resolve(backgrounds);
+
+    });
+
+    return defer.promise;
+};
+/*
 ControllerBrutefir.prototype.loadI18NStrings = function (code) {
     this.logger.info('BRUTEFIR I18N LOAD FOR LOCALE '+code);
 
-    this.i18nString=libFsExtra.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
+   this.i18nString=libFsExtra.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
+ //  this.i18nString=libFsExtra.readJsonSync('/data/pulgins/miscellanea/brutefir/i18n/strings_'+code+".json");
 }
-
+*/
 
 ControllerBrutefir.prototype.getI18NString = function (key) {
     return this.i18nString[key];
