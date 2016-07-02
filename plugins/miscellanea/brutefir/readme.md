@@ -1,7 +1,8 @@
 2 JULLY 2016
 	BRUTEFIR PLUGIN
 
-brutefir plugin
+Brutefir plugin
+
 This plugin is designed to use brutefir with volumio2
 
 It will provide :
@@ -44,5 +45,4 @@ To do list (not exhaustive and not in order)
 - file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
 - Several profil for equalizer (pre-set or user pre-set) with naming like rock classical, jazz etc...
 - a switch to set the gain OR phase for each band
-- fix brutefir hangs ( maybe new parameter attenuation will help)
 - ....
