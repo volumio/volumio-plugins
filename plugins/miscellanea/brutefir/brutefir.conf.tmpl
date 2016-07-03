@@ -33,6 +33,8 @@ input "l_in", "r_in" {
             device: "alsa" {device: "${input_device}";};
             sample: "${input_format}";   # sample format
             channels: 2;            # number of open channels / which to use
+		delay: 0,5;
+		maxdelay: -1;
     };
 
 
@@ -86,4 +88,7 @@ process: -1;
 #         device: "file" {path: "/dev/stdout";};
             sample: "${output_format}";   # sample format
             channels: 2;        # number of open channels / which to use
+	delay: 0,0;
+	maxdelay: -1;
+	dither: true;
     };
