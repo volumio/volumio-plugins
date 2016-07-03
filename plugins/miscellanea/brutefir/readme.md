@@ -33,7 +33,7 @@ The plugin access to brutefir via telnet localhost port 3002( can see that with 
 No change in sound when setting equalizer
 
 - WARNING
-If you want to test, you have to reboot after installation so that module load, and then go to advanced settings in Brutefir plugin and save.
+If you want to test, you have to reboot after installation so that module load, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
 If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". If not working, this probably due to a wrong I/O device.
 Type "aplay -L" to determine  right devices
 
