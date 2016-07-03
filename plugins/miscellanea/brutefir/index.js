@@ -383,21 +383,30 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 // Internal Methods ---------------------------------------------------------------------------------------
 
 // burtefir command - until now send nothing....
-ControllerBrutefir.prototype.sendgainequalizer = function() {
+ControllerBrutefir.prototype.setConf = function(varName, varValue) {
+ var self = this;
+ //Perform your installation tasks here
+};
+// Public methods ---------------------------------------------------------------
+
+// Internal Methods ---------------------------------------------------------------------------------------
+
+// burtefir command - until now send nothing....
+ControllerBrutefir.prototype.sendgainequalizer = function(coef) {
  var self = this;
 // var defer = libQ.defer();
-/* self.config.get('coef31', data['coef31']);
- self.config.get('coef63', data['coef63']);
- self.config.get('coef125', data['coef125']);
- self.config.get('coef250', data['coef250']);
- self.config.get('coef500', data['coef500']);
- self.config.get('coef1000', data['coef1000']);
- self.config.get('coef2000', data['coef2000']);
- self.config.get('coef4000', data['coef4000']);
- self.config.get('coef8000', data['coef8000']);
- self.config.get('coef16000', data['coef16000']);
-*/
-var uiconf = {};
+self.config.set('coef31', data['coef31']);
+ self.config.set('coef63', data['coef63']);
+ self.config.set('coef125', data['coef125']);
+ self.config.set('coef250', data['coef250']);
+ self.config.set('coef500', data['coef500']);
+ self.config.set('coef1000', data['coef1000']);
+ self.config.set('coef2000', data['coef2000']);
+ self.config.set('coef4000', data['coef4000']);
+ self.config.set('coef8000', data['coef8000']);
+ self.config.set('coef16000', data['coef16000']);
+
+/*
 uiconf.sections[0].content[1].value = self.config.get('coef31');
  uiconf.sections[0].content[2].value = self.config.get('coef63');
  uiconf.sections[0].content[3].value = self.config.get('coef125');
@@ -407,28 +416,29 @@ uiconf.sections[0].content[1].value = self.config.get('coef31');
  uiconf.sections[0].content[7].value = self.config.get('coef2000');
  uiconf.sections[0].content[8].value = self.config.get('coef4000');
  uiconf.sections[0].content[9].value = self.config.get('coef8000');
- uiconf.sections[0].content[10].value = self.config.get('coef16000')
-
-/*var coef = {
-
-coef31,
-coef63,
-coef125,
-coef250,
-coef500,
-coef1000,
-coef2000,
-coef4000,
-coef8000,
-coef16000
+ uiconf.sections[0].content[10].value = self.config.get('coef16000');
 */
+var coef = new Object();
 
-console.log(JSON.stringify(uiconf));
+coef.coef31 = '31/' + coef31;
+coef.coef63 = '63/'+ coef63,
+coef.coef125 = '125/'+ coef125,
+coef.coef250 = '250/'+ coef250,
+coef.coef500 = '500/'+ coef500,
+coef.coef1000 = '1000/'+ coef1000,
+coef.coef2000 = '2000/'+ coef2000,
+coef.coef4000 = '4000/'+ coef4000,
+coef.coef8000 = '8000/'+ coef8000,
+coef.coef16000 = '16000/'+ coef16000
 
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
 
+console.log(JSON.stringify(coef))
+
+
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');
+self.commandRouter.pushToastMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');
  // brutefir cmd
- return self.sendBrutefirCommand('lmc eq 0 mag 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
+ return self.sendBrutefirCommand('lmc eq 0 (JSON.stringify(coef))');
 
 };
 
