@@ -296,7 +296,7 @@ ControllerSpop.prototype.listPlaylists=function()
 	var commandDefer=self.sendSpopCommand('ls',[]);
 	commandDefer.then(function(results){
 			var resJson=JSON.parse(results);
-            //self.logger.info(JSON.stringify(resJson));
+                        self.logger.info(JSON.stringify(resJson));
 
 			self.commandRouter.logger.info(resJson);
 			var response={
@@ -310,15 +310,31 @@ ControllerSpop.prototype.listPlaylists=function()
 
 			for(var i in resJson.playlists)
 			{
-				if(resJson.playlists[i].name!=='')
+				if(resJson.playlists[i].hasOwnProperty('name') && resJson.playlists[i].name !== '')
 				{
-					response.navigation.list.push({
-						service: 'spop',
-						type: 'folder',
-						title: resJson.playlists[i].name,
-						icon: 'fa fa-list-ol',
-						uri: 'spotify/playlists/'+resJson.playlists[i].index
-					});
+					if(resJson.playlists[i].type == 'playlist')
+					{
+						response.navigation.list.push({
+							service: 'spop',
+							type: 'folder',
+							title: resJson.playlists[i].name,
+							icon: 'fa fa-list-ol',
+							uri: 'spotify/playlists/'+resJson.playlists[i].index
+					        });
+				        }
+					else if(resJson.playlists[i].type == 'folder')
+					{
+						for(var j in resJson.playlists[i].playlists)
+						{
+							response.navigation.list.push({
+							        service: 'spop',
+							        type: 'folder',
+							        title: resJson.playlists[i].playlists[j].name,
+							        icon: 'fa fa-list-ol',
+							        uri: 'spotify/playlists/'+resJson.playlists[i].playlists[j].index
+					                });
+						}
+					}
 				}
 			}
 
