@@ -1,6 +1,7 @@
 8 JULLY 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
+For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
 
 This plugin is designed to use Spotify connect web with volumio
 Base on this work : https://github.com/Fornoth/spotify-connect-web
