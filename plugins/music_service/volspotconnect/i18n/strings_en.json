@@ -1,0 +1,8 @@
+{
+ "VOLSPOTCONNECT":{
+ "USERNAME":"username",
+ "PASSOWRD":"password",
+ "DEVICENAME":"devicename",
+ "OUTPUT_DEVICE":"Output device"
+}
+}

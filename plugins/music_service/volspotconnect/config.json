@@ -1,0 +1,22 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "username": {
+      "type": "string",
+      "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+ "bitrate": {
+    "type": "boolean",
+    "value": true
+  },
+  "devicename": {
+      "type": "string",
+      "value": ""
+  }
+}
