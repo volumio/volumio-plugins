@@ -223,6 +223,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
                     rate="320";
 		else rate="128"
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
 			var hwdev = 'hw:' + outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
@@ -230,15 +231,16 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				bitratevalue = 'false';
 			}
 
-            var conf1 = data.replace("${username}", self.config.get('username'));
-            var conf2 = conf1.replace("${password}", self.config.get('password'));
-           var conf3 = conf2.replace("${rate}", rate);
-	    var conf4 = conf3.replace("${devicename}", self.config.get('devicename'));
-
+		var conf1 = data.replace("${username}", self.config.get('username'));
+		var conf2 = conf1.replace("${password}", self.config.get('password'));
+		var conf3 = conf2.replace("${rate}", rate);
+		var conf4 = conf3.replace("${devicename}", self.config.get('devicename'));
 		var conf5 = conf4.replace("${outdev}", hwdev);
-	    var conf6 = conf5.replace("${devicename}", self.config.get('devicename'));
+		var conf6 = conf5.replace("${mixer}", mixer);
+		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf8 = conf7.replace("${devicename}", self.config.get('devicename'));
 
-            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf6, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
