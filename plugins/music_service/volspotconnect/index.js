@@ -75,19 +75,19 @@ ControllerVolspotconnect.prototype.onStart = function() {
 
     var defer=libQ.defer();
 
- /*  self.startSpopDaemon()
+  self.startVolspotconnectDaemon()
         .then(function(e)
         {
             setTimeout(function () {
                 self.logger.info("Connecting to daemon");
-                self.spopDaemonConnect(defer);
+                self.volspotconnectDaemonConnect(defer);
             }, 5000);
         })
         .fail(function(e)
         {
             defer.reject(new Error());
         });
-*/
+
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 
     return defer.promise;
