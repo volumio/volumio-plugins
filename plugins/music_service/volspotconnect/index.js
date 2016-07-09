@@ -63,7 +63,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("killall spotify-connect-web", function (error, stdout, stderr) {
+	exec("killall node", function (error, stdout, stderr) { //not done in a elegant way...
 
 	});
 
@@ -294,7 +294,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("killall spotify-connect-web", function (error, stdout, stderr) {
+            exec("killall node", function (error, stdout, stderr) { //not done in a elegant way
                 edefer.resolve();
             });
             return edefer.promise;
