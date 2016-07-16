@@ -202,12 +202,8 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	// Attempt to load tracklist from database on disk
 	// TODO make this a relative path
 
-
-    self.spotifyApi= new SpotifyWebApi({
-		clientId : self.config.get('spotify_api_client_id'),
-		clientSecret : self.config.get('spotify_api_client_secret')
-	});
-
+	// Create a spotifyAPI object and then get an access token
+	self.spotifyApiConnect();
 
 };
 
@@ -260,16 +256,43 @@ ControllerSpop.prototype.handleBrowseUri=function(curUri)
 					prev: {
 						uri: 'spotify'
 					},
-					list: [{
-						service: 'spop',
-						type: 'folder',
-						title: 'Playlists',
-						artist: '',
-						album: '',
-						icon: 'fa fa-folder-open-o',
-						uri: 'spotify/playlists'
-					}
-
+					list: [
+						{
+							service: 'spop',
+							type: 'folder',
+							title: 'My Playlists',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/playlists'
+						},
+						{
+							service: 'spop',
+							type: 'folder',
+							title: 'Featured Playlists',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/featuredplaylists'
+						},
+						{
+							service: 'spop',
+							type: 'folder',
+							title: 'What\'s New',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/new'
+						},
+						{
+							service: 'spop',
+							type: 'folder',
+							title: 'Genres & Moods',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/categories'
+						}
 					]
 				}
 			});
@@ -282,6 +305,30 @@ ControllerSpop.prototype.handleBrowseUri=function(curUri)
 			{
 				response=self.listPlaylist(curUri);
 			}
+		}
+		else if(curUri.startsWith('spotify/featuredplaylists'))
+		{
+			response=self.featuredPlaylists(curUri);
+		}
+		else if(curUri.startsWith('spotify/webplaylist'))
+		{
+			response=self.listWebPlaylist(curUri);
+		}
+		else if(curUri.startsWith('spotify/new'))
+		{
+			response=self.listWebNew(curUri);
+		}
+		else if(curUri.startsWith('spotify/categories'))
+		{
+			response=self.listWebCategories(curUri);
+		}
+		else if(curUri.startsWith('spotify/album'))
+		{
+			response=self.listWebAlbum(curUri);
+		}
+		else if(curUri.startsWith('spotify/category'))
+		{
+			response=self.listWebCategory(curUri);
 		}
 	}
 
@@ -392,8 +439,377 @@ ControllerSpop.prototype.listPlaylist=function(curUri)
 	return defer.promise;
 };
 
+ControllerSpop.prototype.spotifyApiConnect=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	self.spotifyApi= new SpotifyWebApi({
+		clientId : '7160366cc0944645bb1f32a7b81dd1ee',
+		clientSecret : 'ab4691ab353b4da6a35b151eb73dfd59'
+	});
+
+	// Retrieve an access token
+	self.spotifyClientCredentialsGrant()
+		.then(function(data) {
+			self.logger.info('Spotify credentials grant success');
+			defer.resolve();
+		}, function(err) {
+			self.logger.info('Spotify credentials grant failed with ' + err);
+			}
+		);
+
+	return defer.promise;
+}
+
+ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	var now = d.getTime();
+
+	// Retrieve an access token
+	self.spotifyApi.clientCredentialsGrant()
+		.then(function(data) {
+			self.spotifyApi.setAccessToken(data.body['access_token']);
+			self.spotifyAccessToken = data.body['access_token'];
+			self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+			self.logger.info('The access token expires at ' + self.spotifyAccessTokenExpiration);
+			self.logger.info('The access token is ' + data.body['access_token']);
+			defer.resolve();
+		}, function(err) {
+			self.logger.info('Spotify credentials grant failed with ' + err);
+		});
+
+	return defer.promise;
+}
+
+ControllerSpop.prototype.spotifyCheckAccessToken=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	var now = d.getTime();
+
+	if (self.spotifyAccessTokenExpiration < now)
+	{
+		self.spotifyClientCredentialsGrant()
+			.then(function(data) {
+				self.logger.info('Refreshed access token');
+			});
+	}
+
+	defer.resolve();
+
+	return defer.promise;
+
+}
+
+ControllerSpop.prototype.featuredPlaylists=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getFeaturedPlaylists();
+			spotifyDefer.then(function (results) {
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/featuredplaylists'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.playlists.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: results.body.playlists.items[i].name,
+						icon: 'fa fa-list-ol',
+						artArray: results.body.playlists.items[i].images,
+						uri: 'spotify/webplaylist/' + results.body.playlists.items[i].owner.id + '/' + results.body.playlists.items[i].id
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify featured playlists ' + err);
+			});
+		}
+	);
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebPlaylist=function(curUri)
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split('/');
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getPlaylist(uriSplitted[2], uriSplitted[3]);
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/webplaylists'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.tracks.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'song',
+						title: results.body.tracks.items[i].track.name,
+						artist: results.body.tracks.items[i].track.artists[0].name,
+						album: results.body.tracks.items[i].track.album.name,
+						icon: 'fa fa-spotify',
+						uri: results.body.tracks.items[i].track.uri
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify top tracks ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebNew=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getNewReleases();
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/new'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.albums.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: results.body.albums.items[i].name,
+						icon: 'fa fa-list-ol',
+						artArray: results.body.albums.items[i].images,
+						uri: 'spotify/album/' + results.body.albums.items[i].id + '/' + encodeURIComponent(results.body.albums.items[i].name),
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify new albums ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebAlbum=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split('/');
+
+	var album = decodeURIComponent(uriSplitted[3]);
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+				var spotifyDefer = self.spotifyApi.getAlbumTracks(uriSplitted[2]);
+				spotifyDefer.then(function (results) {
+					var response = {
+						navigation: {
+							prev: {
+								uri: 'spotify/new'
+							},
+							list: []
+						}
+					};
+
+					for (var i in results.body.items) {
+						response.navigation.list.push({
+							service: 'spop',
+							type: 'song',
+							title: results.body.items[i].name,
+							artist: results.body.items[i].artists[0].name,
+							album: album,
+							icon: 'fa fa-spotify',
+							uri: results.body.items[i].uri
+						});
+					}
+					defer.resolve(response);
+				}, function (err) {
+					self.logger.info('An error occurred while listing Spotify new album tracks ' + err);
+				});
+			}
+		);
 
 
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebCategories=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getCategories();
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/categories'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.categories.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: results.body.categories.items[i].name,
+						icon: 'fa fa-folder-open-o',
+						artArray: results.body.categories.items[i].icons,
+						uri: 'spotify/category/' + results.body.categories.items[i].id
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify categories ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebCategory=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split('/');
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getPlaylistsForCategory(uriSplitted[2]);
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/categories'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.playlists.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: results.body.playlists.items[i].name,
+						icon: 'fa fa-list',
+						artArray: results.body.playlists.items[i].images,
+						uri: 'spotify/webplaylist/spotify/' + results.body.playlists.items[i].id
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify playlist categories ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+// below is not working yet
+// TODO add robust search
+
+ControllerSpop.prototype.searchWeb=function(query)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.search(query, ['album', 'artist', 'playlist', 'track']);
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify'
+						},
+						list: []
+					}
+				};
+
+				// Show artists, albums, playlists then tracks
+
+				for (var i in results.body.playlists.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'spotifyfolder',
+						title: results.body.playlists.items[i].name,
+						icon: 'fa fa-list',
+						artArray: results.body.playlists.items[i].images,
+						uri: 'spotify/webplaylist/spotify/' + results.body.playlists.items[i].id
+					});
+					self.logger.info('Pushing New Category ' + results.body.playlists.items[i].name);
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while searching ' + err);
+			});
+		});
+
+	return defer.promise;
+};
 
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
@@ -401,11 +817,6 @@ ControllerSpop.prototype.onStop = function() {
 
 	});
 };
-
-
-
-
-
 
 // Spop stop
 ControllerSpop.prototype.stop = function() {
@@ -961,6 +1372,43 @@ ControllerSpop.prototype.explodeUri = function(uri) {
             });
 
     }
+    else if (uri.startsWith('spotify/webplaylist'))
+	{
+		var uriSplitted=uri.split('/');
+
+		self.spotifyCheckAccessToken()
+			.then(function(data) {
+				var spotifyDefer = self.spotifyApi.getPlaylist(uriSplitted[2], uriSplitted[3]);
+				spotifyDefer.then(function (results) {
+
+					var response = [];
+
+					for (var i in results.body.tracks.items) {
+						var track = results.body.tracks.items[i].track;
+						var albumart=self.getAlbumArt({artist: track.artists[0].name, album: track.album.name}, "");
+						var qitem = {
+							service: 'spop',
+							type: 'song',
+							name: track.name,
+							title: track.name,
+							artist: track.artists[0].name,
+							album: track.album.name,
+							uri: track.uri,
+							samplerate: '44.1 KHz',
+							bitdepth: '16 bit',
+							trackType: 'spotify',
+						//	albumart: track.album.images[2].url,
+							albumart: albumart,
+							duration: Math.trunc(track.duration_ms / 1000)
+						};
+						response.push(qitem);
+					}
+					defer.resolve(response);
+				}, function (err) {
+					self.logger.info('An error occurred while exploding listing Spotify top tracks ' + err);
+				});
+			});
+	}
     else
     {
         var splitted=uri.split(':');
