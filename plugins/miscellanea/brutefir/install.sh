@@ -9,8 +9,8 @@ if ! grep -q snd_aloop "/etc/modules";
 	else
 		echo "/etc/modules already contains snd_aloop, nothing to do..."
 fi
-#sudo apt-get update
-#sudo apt-get -y install brutefir
+sudo apt-get update
+sudo apt-get -y install brutefir
 echo "checking if brutefir service exists"
 if [ ! -f "/etc/systemd/system/brutefir.service" ];
 	then
