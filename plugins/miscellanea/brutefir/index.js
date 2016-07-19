@@ -32,8 +32,8 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
  this.config.loadFile(configFile);
 }
 
-ControllerBrutefir.prototype.getConfigurationFiles = function() {
-		var self = this;
+ControllerBrutefir.prototype.getConfigurationFiles = function()
+{
  return ['config.json'];
 };
 
@@ -187,11 +187,11 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
- self.logger.info("Killing Brutefir daemon");
- exec("killall brutefir.real", function(error, stdout, stderr) {
-
+ self.logger.info("Stopping Brutefir service");
+//exec("killall brutefir.real", function(error, stdout, stderr) {
+exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
  });
- return libQ.defer();
+ return libQ.resolve();
 };
 
 
@@ -562,7 +562,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  var self = this;
  var defer = libQ.defer();
 
- self.config.set('coef31', data['coef31']);
+self.config.set('coef31', data['coef31']);
  self.config.set('coef63', data['coef63']);
  self.config.set('coef125', data['coef125']);
  self.config.set('coef250', data['coef250']);
@@ -583,7 +583,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  self.config.set('phas8000', data['phas8000']);
  self.config.set('phas16000', data['phas16000']);
 
-
+/*self.config.set('bandEqualizer', data['bandEqualizer']);
+ self.config.set('equalizerSelector', data['equalizerSelector']);*/
 self.logger.info('Configurations have been set');
 
 
@@ -673,14 +674,14 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
 
     return defer.promise;
 };
-/*
+*/
 ControllerBrutefir.prototype.loadI18NStrings = function (code) {
     this.logger.info('BRUTEFIR I18N LOAD FOR LOCALE '+code);
 
    this.i18nString=libFsExtra.readJsonSync(__dirname+'/i18n/strings_'+code+".json");
- //  this.i18nString=libFsExtra.readJsonSync('/data/pulgins/miscellanea/brutefir/i18n/strings_'+code+".json");
+// this.i18nString=libFsExtra.readJsonSync('/data/pulgins/miscellanea/brutefir/i18n/strings_'+code+".json");
 }
-*/
+
 
 ControllerBrutefir.prototype.getI18NString = function (key) {
     return this.i18nString[key];
