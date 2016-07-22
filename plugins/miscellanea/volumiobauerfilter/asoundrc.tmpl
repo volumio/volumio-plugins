@@ -1,0 +1,18 @@
+pcm.bs2b {
+  type ladspa
+  slave.pcm "plug:dmix"
+  path "/usr/lib/ladspa"
+  plugins [
+    {
+      label bs2b
+      input {
+        controls [ ${frequency} ${attenuation} ]
+      }
+    }
+  ]
+}
+
+pcm.!default {
+  type plug
+  slave.pcm "pcm.bs2b"
+}

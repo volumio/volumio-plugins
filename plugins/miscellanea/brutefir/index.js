@@ -432,8 +432,9 @@ coef.coef8000 = '8000/'+ coef8000,
 coef.coef16000 = '16000/'+ coef16000
 
 
-console.log(JSON.stringify(coef))
-
+//console.log(JSON.stringify(coef))
+var json = JSON.stringify(coef);
+console.log(json);
 
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');
 self.commandRouter.pushToastMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');

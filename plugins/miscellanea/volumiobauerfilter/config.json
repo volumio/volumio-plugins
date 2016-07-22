@@ -1,0 +1,11 @@
+{
+   "frequency": {
+    "type": "string",
+    "value": "700"
+  },
+ 
+  "attenuation": {
+      "type": "string",
+      "value": "4.5"
+  }
+}
