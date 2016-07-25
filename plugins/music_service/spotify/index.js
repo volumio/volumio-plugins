@@ -330,6 +330,10 @@ ControllerSpop.prototype.handleBrowseUri=function(curUri)
 		{
 			response=self.listWebCategory(curUri);
 		}
+		else if(curUri.startsWith('spotify:artist:'))
+		{
+			response=self.listWebArtist(curUri);
+		}
 	}
 
 	return response;
@@ -343,9 +347,9 @@ ControllerSpop.prototype.listPlaylists=function()
 	var commandDefer=self.sendSpopCommand('ls',[]);
 	commandDefer.then(function(results){
 			var resJson=JSON.parse(results);
-                        self.logger.info(JSON.stringify(resJson));
+                     //   self.logger.info(JSON.stringify(resJson));
 
-			self.commandRouter.logger.info(resJson);
+		//	self.commandRouter.logger.info(resJson);
 			var response={
 				navigation: {
 					prev: {
@@ -529,7 +533,7 @@ ControllerSpop.prototype.featuredPlaylists=function(curUri)
 				var response = {
 					navigation: {
 						prev: {
-							uri: 'spotify/featuredplaylists'
+							uri: 'spotify'
 						},
 						list: []
 					}
@@ -571,7 +575,7 @@ ControllerSpop.prototype.listWebPlaylist=function(curUri)
 				var response = {
 					navigation: {
 						prev: {
-							uri: 'spotify/webplaylists'
+							uri: 'spotify'
 						},
 						list: []
 					}
@@ -612,7 +616,7 @@ ControllerSpop.prototype.listWebNew=function(curUri)
 				var response = {
 					navigation: {
 						prev: {
-							uri: 'spotify/new'
+							uri: 'spotify'
 						},
 						list: []
 					}
@@ -655,7 +659,7 @@ ControllerSpop.prototype.listWebAlbum=function(curUri)
 					var response = {
 						navigation: {
 							prev: {
-								uri: 'spotify/new'
+								uri: 'spotify'
 							},
 							list: []
 						}
@@ -698,7 +702,7 @@ ControllerSpop.prototype.listWebCategories=function(curUri)
 				var response = {
 					navigation: {
 						prev: {
-							uri: 'spotify/categories'
+							uri: 'spotify'
 						},
 						list: []
 					}
@@ -765,19 +769,27 @@ ControllerSpop.prototype.listWebCategory=function(curUri)
 	return defer.promise;
 };
 
-// below is not working yet
-// TODO add robust search
+ControllerSpop.prototype.listWebArtist = function (curUri) {
 
-ControllerSpop.prototype.searchWeb=function(query)
-{
+	var self = this;
 
-	var self=this;
+	var defer = libQ.defer();
 
-	var defer=libQ.defer();
+	var uriSplitted = curUri.split(':');
+
+	var artistId = uriSplitted[2];
+
+	var artistName = '';
 
 	self.spotifyCheckAccessToken()
-		.then(function(data) {
-			var spotifyDefer = self.spotifyApi.search(query, ['album', 'artist', 'playlist', 'track']);
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtist(artistId);
+			spotifyDefer.then(function (results) {
+				artistName = results.body.name;
+			})
+		})
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtistTopTracks(artistId, 'GB');
 			spotifyDefer.then(function (results) {
 
 				var response = {
@@ -788,24 +800,67 @@ ControllerSpop.prototype.searchWeb=function(query)
 						list: []
 					}
 				};
-
-				// Show artists, albums, playlists then tracks
-
-				for (var i in results.body.playlists.items) {
+				response.navigation.list.push({type: 'title', title: 'Top Tracks'});
+				for (var i in results.body.tracks) {
+					var track = results.body.tracks[i];
 					response.navigation.list.push({
 						service: 'spop',
-						type: 'spotifyfolder',
-						title: results.body.playlists.items[i].name,
-						icon: 'fa fa-list',
-						artArray: results.body.playlists.items[i].images,
-						uri: 'spotify/webplaylist/spotify/' + results.body.playlists.items[i].id
+						type: 'song',
+						title: track.name,
+						album: track.album.name,
+						artist: track.artists[0].name,
+						icon: 'fa fa-spotify',
+						artArray: track.album.images,
+						uri: track.uri,
 					});
-					self.logger.info('Pushing New Category ' + results.body.playlists.items[i].name);
 				}
-				defer.resolve(response);
-			}, function (err) {
-				self.logger.info('An error occurred while searching ' + err);
-			});
+				//	defer.resolve(response);
+				return response;
+			})
+				.then(function (data) {
+					var spotifyDefer = self.spotifyApi.getArtistAlbums(artistId);
+					spotifyDefer.then(function (results) {
+
+						var response = data;
+						response.navigation.list.push({type: 'title', title: 'Albums'});
+						for (var i in results.body.items) {
+							var album = results.body.items[i];
+							response.navigation.list.push({
+								service: 'spop',
+								type: 'folder',
+								title: album.name,
+								icon: 'fa fa-folder-open-o',
+								artArray: album.images,
+								uri: 'spotify/album/' + album.id + '/' + encodeURIComponent(album.name),
+							});
+						}
+						// defer.resolve(response);
+						return response;
+					})
+						.then(function (data) {
+							var spotifyDefer = self.spotifyApi.getArtistRelatedArtists(artistId);
+							spotifyDefer.then(function (results) {
+
+								var response = data;
+								response.navigation.list.push({type: 'title', title: 'Related Artists'});
+								for (var i in results.body.artists) {
+									var artist = results.body.artists[i];
+									response.navigation.list.push({
+										service: 'spop',
+										type: 'artist',
+										title: artist.name,
+										icon: 'fa fa-user',
+										artArray: artist.images,
+										uri: artist.uri
+									});
+								}
+								defer.resolve(response);
+							})
+						}),
+						function (err) {
+							self.logger.info('An error occurred while listing Spotify artist albums ' + err);
+						}
+				})
 		});
 
 	return defer.promise;
@@ -1220,9 +1275,16 @@ ControllerSpop.prototype.getAlbumTracks = function(id,offset,album) {
 
 
 ControllerSpop.prototype.explodeUri = function(uri) {
+
 	var self = this;
 
 	var defer=libQ.defer();
+
+	var rate;
+
+	if(self.config.get('bitrate')===true)
+		rate="320Kbps";
+	else rate="128Kbps";
 
     if (uri.startsWith('spotify/playlists')) {
                 var uriSplitted=uri.split('/');
@@ -1230,11 +1292,6 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                 var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
                 commandDefer.then(function(results){
                     var resJson=JSON.parse(results);
-
-                    var rate;
-                    if(self.config.get('bitrate')===true)
-                        rate="320";
-                    else rate="128";
 
                     var response=[];
                     for(var i in resJson.tracks)
@@ -1251,7 +1308,7 @@ ControllerSpop.prototype.explodeUri = function(uri) {
                             album: resJson.tracks[i].album,
                             duration: resJson.tracks[i].duration/1000,
                             albumart: albumart,
-                            samplerate: '44.1 KHz',
+                            samplerate: rate,
                             bitdepth: '16 bit',
                             trackType: 'spotify'
 
@@ -1268,111 +1325,90 @@ ControllerSpop.prototype.explodeUri = function(uri) {
     }
     else if(uri.startsWith('spotify:artist:'))
     {
-        var splitted=uri.split(':');
+        var uriSplitted=uri.split(':');
+		self.spotifyCheckAccessToken()
+			.then(function(data) {
+				self.spotifyApi.getArtistTopTracks(uriSplitted[2], 'GB')
+					.then(function (result) {
+						var resJson = result.body;
+						var response = [];
+						for (var i in resJson.tracks) {
+							var artist = resJson.tracks[i].artists[0].name;
+							var album = resJson.tracks[i].album.name;
 
-        self.spotifyApi.getArtistTopTracks(splitted[2], 'GB')
-            .then(function(result)
-            {
-                var resJson=result.body;
+							var albumart = self.getAlbumArt({
+								artist: artist,
+								album: album
+							}, "");
 
-                var rate;
-                if(self.config.get('bitrate')===true)
-                    rate="320";
-                else rate="128";
+							var item = {
+								uri: resJson.tracks[i].uri,
+								service: 'spop',
+								type: 'song',
+								name: resJson.tracks[i].name,
+								title: resJson.tracks[i].name,
+								artist: artist,
+								album: album,
+								duration: Math.trunc(resJson.tracks[i].duration_ms / 1000),
+								albumart: albumart,
+								samplerate: rate,
+								bitdepth: '16 bit',
+								trackType: 'spotify'
 
-                var response=[];
-                for(var i in resJson.tracks)
-                {
-                    var artist=resJson.tracks[i].artists[0].name;
-                    var album=resJson.tracks[i].album.name;
+							};
 
-                    var albumart=self.getAlbumArt({artist:artist,
-                        album:album},"");
-
-                    var item={
-                        uri: resJson.tracks[i].uri,
-                        service: 'spop',
-                        type: 'song',
-                        name: resJson.tracks[i].name,
-                        title: resJson.tracks[i].name,
-                        artist:artist,
-                        album: album,
-                        duration: Math.trunc(resJson.tracks[i].duration_ms/1000),
-                        albumart: albumart,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        trackType: 'spotify'
-
-                    };
-
-                    response.push(item);
-                }
-                defer.resolve(response);
-            });
+							response.push(item);
+						}
+						defer.resolve(response);
+					});
+			});
 
     }
-    else if(uri.startsWith('spotify:album:'))
-    {
-        var splitted=uri.split(':');
-        var id=splitted[2];
+    else if(uri.startsWith('spotify/album/'))
+	{
+		var uriSplitted=uri.split('/');
 
-        self.spotifyApi.getAlbums([id])
-            .then(function (result) {
-                var resJson = result.body.albums[0];
-                var album=resJson.name;
-                var albumart;
+		var albumName = decodeURIComponent(uriSplitted[3]);
 
-                if(resJson.images!==undefined && resJson.images.length>0)
-                {
-                    console.log(resJson.images[0]);
-                    albumart=resJson.images[0].url;
-                }
+		self.spotifyCheckAccessToken()
+			.then(function(data) {
+					var spotifyDefer = self.spotifyApi.getAlbumTracks(uriSplitted[2]);
+					spotifyDefer.then(function (results) {
+						var response = [];
 
-                var rate;
-                if(self.config.get('bitrate')===true)
-                    rate="320";
-                else rate="128";
-
-                var response=[];
-                for(var i in resJson.tracks.items) {
-                    var track=resJson.tracks.items[i];
-
-                    var artist = track.name;
-
-                    if(albumart===undefined) {
-                        albumart = self.getAlbumArt({
-                            artist: artist,
-                            album: album
-                        }, "");
-                    }
-
-                    var item = {
-                        uri: track.uri,
-                        service: 'spop',
-                        type: 'song',
-                        name: track.name,
-                        title: track.name,
-                        artist: artist,
-                        album: album,
-                        duration: Math.trunc(track.duration_ms / 1000),
-                        albumart: albumart,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        trackType: 'spotify'
-
-                    };
-
-                    console.log(JSON.stringify(item));
-
-                    response.push(item);
-                }
-
-                defer.resolve(response);
-
-            });
-
-    }
-    else if (uri.startsWith('spotify/webplaylist'))
+						for (var i in results.body.items) {
+							var artist = '';
+							var album = albumName;
+							var track = results.body.items[i];
+							if (track.artists.length > 0) {
+								artist = track.artists[0].name;
+							}
+							var albumart=self.getAlbumArt({artist: artist, album: album}, "");
+							var qitem = {
+								service: 'spop',
+								type: 'song',
+								title: track.name,
+								name: track.name,
+								artist: artist,
+								album: album,
+							//	icon: 'fa fa-spotify',
+								uri: track.uri,
+								samplerate: rate,
+								bitdepth: '16 bit',
+								trackType: 'spotify',
+								albumart: albumart,
+								duration: Math.trunc(track.duration_ms / 1000)
+							};
+							response.push(qitem);
+						}
+						defer.resolve(response);
+					}, function (err) {
+						self.logger.info('An error occurred while listing Spotify new album tracks ' + err);
+					});
+				}
+			);
+	}
+    else if (uri.startsWith('spotify/webplaylist/'))
 	{
 		var uriSplitted=uri.split('/');
 
@@ -1394,7 +1430,7 @@ ControllerSpop.prototype.explodeUri = function(uri) {
 							artist: track.artists[0].name,
 							album: track.album.name,
 							uri: track.uri,
-							samplerate: '44.1 KHz',
+							samplerate: rate,
 							bitdepth: '16 bit',
 							trackType: 'spotify',
 						//	albumart: track.album.images[2].url,
@@ -1409,45 +1445,51 @@ ControllerSpop.prototype.explodeUri = function(uri) {
 				});
 			});
 	}
-    else
+    else if (uri.startsWith('spotify:track:'))
     {
-        var splitted=uri.split(':');
+		var uriSplitted = uri.split(':');
 
-        self.spotifyApi.getTrack(splitted[2])
-            .then(function(data) {
-                self.commandRouter.logger.info(JSON.stringify(data));
+		self.spotifyApi.getTrack(uriSplitted[2])
+			.then(function (data) {
 
+				var response = [];
+				var artist = '';
+				var album = '';
+				var title = '';
 
-                var artist='';
-                var album='';
-                var title='';
+				if (data.body.artists.length > 0) {
+					artist = data.body.artists[0].name;
+				}
 
-                if(data.body.artists.length>0)
-                    artist=data.body.artists[0].name;
+				if (data.body.hasOwnProperty('album') && data.body.album.hasOwnProperty('name')) {
+					album = data.body.album.name;
+				}
 
-                if(data.body.album!==undefined)
-                    album=data.body.album.name;
+				var albumart = self.getAlbumArt({artist: artist, album: album}, "");
 
-                var albumart=self.getAlbumArt({artist:artist,album:album},"");
-
-                defer.resolve({
-                    uri: uri,
-                    service: 'spop',
-                    name: data.body.name,
-                    artist: artist,
-                    album: album,
-                    type: 'track',
-                    duration: parseInt(data.body.duration_ms/1000),
-                    tracknumber: data.body.track_number,
-                    albumart: albumart,
-					samplerate: '44.1 KHz',
+				var qitem = {
+					uri: uri,
+					service: 'spop',
+					name: data.body.name,
+					artist: artist,
+					album: album,
+					type: 'track',
+					duration: parseInt(data.body.duration_ms / 1000),
+					tracknumber: data.body.track_number,
+					albumart: albumart,
+					samplerate: rate,
 					bitdepth: '16 bit',
 					trackType: 'spotify'
-
-                });
-
-            });
-    }
+				};
+				response.push(qitem);
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while exploding listing Spotify track ' + err);
+			});
+	}
+	else {
+		self.logger.info('Bad URI while exploding Spotify URI: ' + uri);
+	}
 
 	return defer.promise;
 };
@@ -1603,71 +1645,86 @@ ControllerSpop.prototype.seek = function (timepos) {
 };
 
 ControllerSpop.prototype.search = function (query) {
-	var self = this;
 
-	var defer = libQ.defer();
-	var list = [];
-	var commandDefer=self.sendSpopCommand('search', [query.value]);
-	commandDefer.then(function(results){
-		var resJson=JSON.parse(results);
-		//console.log(resJson.tracks);
+	var self=this;
 
+	var defer=libQ.defer();
 
-        if(resJson.artists.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_ARTISTS_SECTION')});
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.search(query.value, ['artist', 'album', 'playlist', 'track']);
+			spotifyDefer.then(function (results) {
 
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.artists[i].artist,
-                    icon: 'fa fa-spotify',
-                    uri: resJson.artists[i].uri
-                });
-            }
-        }
+				var list = [];
 
-        if(resJson.albums.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_ALBUMS_SECTION')});
-
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.albums[i].title,
-                    artist:resJson.albums[i].artist,
-                    album:'',
-                    icon: 'fa fa-spotify',
-                    uri: resJson.albums[i].uri
-                });
-            }
-        }
-
-        if(resJson.tracks.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_SONGS_SECTION')});
-
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.tracks[i].title,
-                    artist:resJson.tracks[i].artist,
-                    album: resJson.tracks[i].album,
-                    icon: 'fa fa-spotify',
-                    uri: resJson.tracks[i].uri
-                });
-            }
-        }
-
-        defer.resolve(list);
-		//console.log(list);
-	})
-		.fail(function()
-		{
-            defer.resolve();
+				// TODO put in internationalized strings
+				// Show artists, albums, playlists then tracks
+				if(results.body.hasOwnProperty('artists') && results.body.artists.items.length > 0)
+				{
+					list.push({type: 'title', title: 'Spotify Artists'});
+					for (var i in results.body.artists.items) {
+						var artist = results.body.artists.items[i];
+						list.push({
+							service: 'spop',
+							type: 'artist',
+							title: artist.name,
+							icon: 'fa fa-user',
+							artArray: artist.images,
+							uri: artist.uri
+						});
+					}
+				}
+				if(results.body.hasOwnProperty('albums') && results.body.albums.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Albums'});
+					for (var i in results.body.albums.items) {
+						var album = results.body.albums.items[i];
+						list.push({
+							service: 'spop',
+							type: 'folder',
+							title: album.name,
+							icon: 'fa fa-folder-open',
+							artArray: album.images,
+							uri: 'spotify/album/' + album.id + '/' + encodeURIComponent(album.name),
+						});
+					}
+				}
+				if(results.body.hasOwnProperty('playlists') && results.body.playlists.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Playlists'});
+					for (var i in results.body.playlists.items) {
+						var playlist = results.body.playlists.items[i];
+						list.push({
+							service: 'spop',
+							type: 'folder',
+							title: playlist.name,
+							icon: 'fa fa-list',
+							artArray: playlist.images,
+							uri: 'spotify/webplaylist/' + playlist.owner.id + '/' + playlist.id,
+						});
+					}
+				}
+				if(results.body.hasOwnProperty('tracks') && results.body.tracks.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Tracks'});
+					for (var i in results.body.tracks.items) {
+						var track = results.body.tracks.items[i];
+						list.push({
+							service: 'spop',
+							type: 'song',
+							title: track.name,
+							artist: track.artists[0].name,
+							album: track.album.name,
+							icon: 'fa fa-spotify',
+							artArray: track.album.images,
+							uri: track.uri
+						});
+					}
+				}
+				defer.resolve(list);
+			}, function (err) {
+				self.logger.info('An error occurred while searching ' + err);
+			});
 		});
 
 	return defer.promise;
