@@ -11,10 +11,10 @@ echo "Installing Spop and libspotify"
 DPKG_ARCH=`dpkg --print-architecture`
 
 echo $DPKG_ARCH
-cd / 
+cd /tmp 
 wget http://repo.volumio.org/Packages/Spop/spop-${DPKG_ARCH}.tar.gz
-sudo tar xf /spop-${DPKG_ARCH}.tar.gz
-rm /spop-${DPKG_ARCH}.tar.gz
+sudo tar xvf /tmp/spop-${DPKG_ARCH}.tar.gz -C /
+rm /tmp/spop-${DPKG_ARCH}.tar.gz
 
 
 sudo chmod 777 /etc/spopd.conf
