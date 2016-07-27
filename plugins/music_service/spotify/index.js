@@ -216,7 +216,7 @@ ControllerSpop.prototype.onStop = function() {
 
 	});
 
-    return libQ.defer();
+    return libQ.resolve();
 };
 
 ControllerSpop.prototype.onStart = function() {
@@ -866,13 +866,13 @@ ControllerSpop.prototype.listWebArtist = function (curUri) {
 	return defer.promise;
 };
 
-ControllerSpop.prototype.onStop = function() {
+/*ControllerSpop.prototype.onStop = function() {
 	var self = this;
 	exec("killall spopd", function (error, stdout, stderr) {
 
 	});
 };
-
+*/
 // Spop stop
 ControllerSpop.prototype.stop = function() {
 	var self = this;
