@@ -60,7 +60,7 @@ ControllerBauerfilter.prototype.onStart = function() {
 
     var defer=libQ.defer();
 
-  self.startVolspotconnectDaemon()
+  self.startVolumiobauerfilterDaemon()
         .then(function(e)
         {
             setTimeout(function () {
@@ -78,7 +78,7 @@ ControllerBauerfilter.prototype.onStart = function() {
     return defer.promise;
 };
 
-// Volspotconnect stop
+// Volumiobauerfilter stop
 ControllerBauerfilter.prototype.stop = function() {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBauerfilter::stop');
@@ -141,33 +141,13 @@ ControllerBauerfilter.prototype.setConf = function(varName, varValue) {
 	//Perform your installation tasks here
 };
 
-// Public Methods ---------------------------------------------------------------------------------------
-// These are 'this' aware, and return a promise
 
-
-
-// Rebuild a library of user's playlisted Spotify tracks
-
-
-// Define a method to clear, add, and play an array of tracks
-
-
-// Internal methods ---------------------------------------------------------------------------
-// These are 'this' aware, and may or may not return a promise
-
-
-
-// Volspotconnect get state
 ControllerBauerfilter.prototype.getState = function() {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBauerfilter::getState');
 
-	return self.sendVolspotconnectCommand('status', []);
+	return self.sendVolumiobauerCommand('status', []);
 };
-
-
-// Announce updated Volspotconnect state
-
 
 
 

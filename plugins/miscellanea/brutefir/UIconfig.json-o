@@ -16,8 +16,8 @@
 			"saveButton": {
 				"label": "save",
 				"data": [
-					"coef31",
-					"phas31"
+					"coef31"
+					
 				]
 			},
 			"content": [
@@ -30,184 +30,34 @@
 				{
 					"id": "coef31",
 					"element": "equalizer",
-					"label": "Equalizer",
-					"description": "",
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"ticksLabels":"toto",
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": 1,
-								"value": 0,
-								"tooltip": "show"
-							}
-						]
-					}
-				},
-				
-				{
-					"id": "phas31",
-					"element": "equalizer",
-					"label": "Equalizer",
-					"description": "",
-					"visibleIf": {
-						"field": "enabled",
-						"value": false
-					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							}
+					"label": "31Hz",
+					"description":"",
+					"visibleIf":{"field":"enabled","value":true},
+					"config":{"orientation":"vertical","bars":[
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"},
+						{"min":-10,"max":10,"max":10,"step":1,"value":0,"tooltip":"show"}
 						]
 					}
 				}
-			]
-		},
+			] 	
+				
+			},	
+		
 		{
 			"id": "advanced",
 			"element": "section",
-			"label": "BRUTEFIR.ADVANCED_SETTINGS",
+			"label": "TRANSLATE.BRUTEFIR.ADVANCED_SETTINGS",
 			"icon": "fa-cogs",
 			"onSave": {
-				"type": "plugin",
+				"type": "controller",
 				"endpoint": "miscellanea/brutefir",
 				"method": "saveBrutefirconfigAccount2"
 			},
