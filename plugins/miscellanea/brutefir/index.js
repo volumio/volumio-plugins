@@ -95,7 +95,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  });
  // Init some command socket variables
  self.bBrutefirCommandGotFirstMessage = false;
- self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events (basically when it emits 'spop 0.0.1').
+ self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events 
  self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
  self.arrayResponseStack = [];
  self.sResponseBuffer = '';
@@ -273,72 +273,50 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		.then(function(uiconf)
 		{
 
-//var uiconf = libFsExtra.readJsonSync(__dirname + '/UIConfig.json');
 var value;	
-//{		
+		
  var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+/*value = self.config.get('coef');
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+*/
+ uiconf.sections[0].content[1].value = self.config.get('coef');
+ uiconf.sections[0].content[2].value = self.config.get('phas');
+ uiconf.sections[1].content[1].value = self.config.get('levelfcut');
+ uiconf.sections[1].content[2].value = self.config.get('levelfeed');
 
- uiconf.sections[0].content[1].value = self.config.get('coef31');
-/* uiconf.sections[0].content[2].value = self.config.get('coef63');
- uiconf.sections[0].content[3].value = self.config.get('coef125');
- uiconf.sections[0].content[4].value = self.config.get('coef250');
- uiconf.sections[0].content[5].value = self.config.get('coef500');
- uiconf.sections[0].content[6].value = self.config.get('coef1000');
- uiconf.sections[0].content[7].value = self.config.get('coef2000');
- uiconf.sections[0].content[8].value = self.config.get('coef4000');
- uiconf.sections[0].content[9].value = self.config.get('coef8000');
- uiconf.sections[0].content[10].value = self.config.get('coef16000');*/
- uiconf.sections[0].content[2].value = self.config.get('phas31');
- /*uiconf.sections[0].content[12].value = self.config.get('phas63');
- uiconf.sections[0].content[13].value = self.config.get('phas125');
- uiconf.sections[0].content[14].value = self.config.get('phas250');
- uiconf.sections[0].content[15].value = self.config.get('phas500');
- uiconf.sections[0].content[16].value = self.config.get('phas1000');
- uiconf.sections[0].content[17].value = self.config.get('phas2000');
- uiconf.sections[0].content[18].value = self.config.get('phas4000');
- uiconf.sections[0].content[19].value = self.config.get('phas8000');
- uiconf.sections[0].content[20].value = self.config.get('phas16000');*/
- uiconf.sections[1].content[2].value = self.config.get('leftfilter');
- uiconf.sections[1].content[3].value = self.config.get('rightfilter');
+ uiconf.sections[2].content[2].value = self.config.get('leftfilter');
+ uiconf.sections[2].content[3].value = self.config.get('rightfilter');
  
 value = self.config.get('attenuation');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[1].options'), value));
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
 
-// uiconf.sections[1].content[1].value = self.config.get('attenuation');
 value = self.config.get('filter_size');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[4].options'), value));
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
 
-// uiconf.sections[1].content[4].value = self.config.get('filter_size');
  
 value = self.config.get('numb_part');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[5].options'), value));
-//uiconf.sections[1].content[5].value = self.config.get('numb_part');
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
 value = self.config.get('fl_bits');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[6].options'), value));
-// uiconf.sections[1].content[6].value = self.config.get('fl_bits');
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[6].options'), value));
 value = self.config.get('smpl_rate');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[7].options'), value));
-// uiconf.sections[1].content[7].value = self.config.get('smpl_rate');
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[7].options'), value));
 value = self.config.get('input_format');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[8].options'), value));
-//  uiconf.sections[1].content[8].value = self.config.get('input_format');
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[8].options'), value));
 value = self.config.get('output_format');
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[9].options'), value));
-// uiconf.sections[1].content[9].value = self.config.get('output_format')
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[9].options'), value));
 var value;	
- uiconf.sections[1].content[10].value = self.config.get('input_device');
- uiconf.sections[1].content[11].value = self.config.get('output_device');
+ uiconf.sections[2].content[10].value = self.config.get('input_device');
+ uiconf.sections[2].content[11].value = self.config.get('output_device');
 
-//self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].id', 'output_format');
-// return uiconf;
-//}
+
 	defer.resolve(uiconf);
 		})
 		.fail(function()
@@ -346,8 +324,6 @@ var value;
 			defer.reject(new Error());
 		})
 	return defer.promise
-
-//return uiconf;
 
 };
 
@@ -392,56 +368,17 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 // Internal Methods ---------------------------------------------------------------------------------------
 
 // burtefir command - until now send nothing....
-ControllerBrutefir.prototype.sendgainequalizer = function(coef) {
+ControllerBrutefir.prototype.sendgainequalizer = function() {
  var self = this;
-// var defer = libQ.defer();
- uiconf.sections[0].content[1].value = self.config.get('coef31');
-//self.config.set('coef31', data['coef31']);
-/* self.config.set('coef63', data['coef63']);
- self.config.set('coef125', data['coef125']);
- self.config.set('coef250', data['coef250']);
- self.config.set('coef500', data['coef500']);
- self.config.set('coef1000', data['coef1000']);
- self.config.set('coef2000', data['coef2000']);
- self.config.set('coef4000', data['coef4000']);
- self.config.set('coef8000', data['coef8000']);
- self.config.set('coef16000', data['coef16000']);
-*/
-/*
-uiconf.sections[0].content[1].value = self.config.get('coef31');
- uiconf.sections[0].content[2].value = self.config.get('coef63');
- uiconf.sections[0].content[3].value = self.config.get('coef125');
- uiconf.sections[0].content[4].value = self.config.get('coef250');
- uiconf.sections[0].content[5].value = self.config.get('coef500');
- uiconf.sections[0].content[6].value = self.config.get('coef1000');
- uiconf.sections[0].content[7].value = self.config.get('coef2000');
- uiconf.sections[0].content[8].value = self.config.get('coef4000');
- uiconf.sections[0].content[9].value = self.config.get('coef8000');
- uiconf.sections[0].content[10].value = self.config.get('coef16000');
-*/
-/*var coef = new Object();
 
-coef.coef31 = '31/' + coef31;
-coef.coef63 = '63/'+ coef63,
-coef.coef125 = '125/'+ coef125,
-coef.coef250 = '250/'+ coef250,
-coef.coef500 = '500/'+ coef500,
-coef.coef1000 = '1000/'+ coef1000,
-coef.coef2000 = '2000/'+ coef2000,
-coef.coef4000 = '4000/'+ coef4000,
-coef.coef8000 = '8000/'+ coef8000,
-coef.coef16000 = '16000/'+ coef16000
-*/
+	//uiconf.sections[0].content[1].value = self.config.get('coef');
+	self.config.set('coef', data['coef']);
 
-//console.log(JSON.stringify(coef))
-//var json = JSON.stringify(coef);
-//console.log(json);
-var values = coef31.value.split(',');
+
+
+var values = coef.value.split(',');
 var commandString = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-// print out the string
-// self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');
-//self.commandRouter.pushToastMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 (JSON.stringify(coef))');
- // brutefir cmd
+debugger;
  console.log(commandString);
  return self.sendBrutefirCommand(commandString);
 
@@ -451,13 +388,8 @@ ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParam
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
 
-/*var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
-		return sCollected + ' ' + sCurrent;
-	}, '');
-*/
- // Pass the command to Brutefir when the command socket is ready
- 
-var brutefirResponseDeferred= lobQ.defer();
+
+var brutefirResponseDeferred= libQ.defer();
 self.brutefirCommandReady
   .then(function() {
    return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
@@ -473,33 +405,16 @@ self.brutefirCommandReady
  // Return a promise for the command response
  return brutefirResponse;
 };
-/*
-ControllerBrutefir.prototype.onStop = function() {
- var self = this;
- exec("killall brutefir.real", function(error, stdout, stderr) {
 
- });
- return libQ.defer();
-};
-*/
 ControllerBrutefir.prototype.sendphasequalizer = function() {
  var self = this;
- uiconf.sections[0].content[1].value = self.config.get('phas31');
-/* uiconf.sections[0].content[2].value = self.config.get('phas63');
- uiconf.sections[0].content[3].value = self.config.get('phas125');
- uiconf.sections[0].content[4].value = self.config.get('phas250');
- uiconf.sections[0].content[5].value = self.config.get('phas500');
- uiconf.sections[0].content[6].value = self.config.get('phas1000');
- uiconf.sections[0].content[7].value = self.config.get('phas2000');
- uiconf.sections[0].content[8].value = self.config.get('phas4000');
- uiconf.sections[0].content[9].value = self.config.get('phas8000');
- uiconf.sections[0].content[10].value = self.config.get('phas16000');
-*/
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::lmc eq 0 phase 31/' + coef31, ', 63/' + coef63, ', 125/' + coef125, ', 250/' + coef250, ', 500/' + coef500, ', 1000/' + coef1000, ', 2000/' + coef2000, ', 4000/' + coef4000, ', 8000/' + coef8000, ', 16000/' + coef16000);
+ uiconf.sections[0].content[2].value = self.config.get('phas');
 
- // brutefir cmd
- //return self.sendBrutefirCommand('lmc eq 0 phase 31/' + phas31, ', 63/' + phas63, ', 125/' + phas125, ', 250/' + phas250, ', 500/' + phas500, ', 1000/' + phas1000, ', 2000/' + phas2000, ', 4000/' + phas4000, ', 8000/' + phas8000, ', 16000/' + phas16000);
-return self.sendBrutefirCommand('lmc eq 0 phase 1000/' + phas1000);
+var values = phas.value.split(',');
+var commandString = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
+
+ console.log(commandString);
+ return self.sendBrutefirCommand(commandString);
 };
 
 
@@ -562,34 +477,52 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 
 };
 
+ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
+    var self = this;
+
+    var defer=libQ.defer();
+
+
+    try {
+
+        fs.readFile(__dirname + "/asoundrc.tmpl", 'utf8', function (err, data) {
+            if (err) {
+                defer.reject(new Error(err));
+                return console.log(err);
+            }
+		
+		var conf1 = data.replace("${levelfcut}", self.config.get('levelfcut'));
+		var conf2 = conf1.replace("${levelfeed}", self.config.get('levelfeed'));
+		
+
+	            fs.writeFile("/etc/asound.conf", conf2, 'utf8', function (err) {
+                if (err)
+                    defer.reject(new Error(err));
+                else defer.resolve();
+            });
+
+
+        });
+
+
+    }
+    catch (err) {
+
+
+    }
+
+    return defer.promise;
+
+};
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  var self = this;
  var defer = libQ.defer();
 
-self.config.set('coef31', data['coef31']);
-/* self.config.set('coef63', data['coef63']);
- self.config.set('coef125', data['coef125']);
- self.config.set('coef250', data['coef250']);
- self.config.set('coef500', data['coef500']);
- self.config.set('coef1000', data['coef1000']);
- self.config.set('coef2000', data['coef2000']);
- self.config.set('coef4000', data['coef4000']);
- self.config.set('coef8000', data['coef8000']);
- self.config.set('coef16000', data['coef16000']);*/
- self.config.set('phas31', data['phas31']);
-/* self.config.set('phas63', data['phas63']);
- self.config.set('phas125', data['phas125']);
- self.config.set('phas250', data['phas250']);
- self.config.set('phas500', data['phas500']);
- self.config.set('phas1000', data['phas1000']);
- self.config.set('phas2000', data['phas2000']);
- self.config.set('phas4000', data['phas4000']);
- self.config.set('phas8000', data['phas8000']);
- self.config.set('phas16000', data['phas16000']);
-*/
-/*self.config.set('bandEqualizer', data['bandEqualizer']);
- self.config.set('equalizerSelector', data['equalizerSelector']);*/
+self.config.set('coef', data['coef']);
+
+self.config.set('phas', data['phas']);
+
 self.logger.info('Configurations have been set');
 
 
@@ -600,6 +533,44 @@ self.logger.info('Configurations have been set');
  return defer.promise;
 };
 
+ControllerBrutefir.prototype.saveBauerfilter = function (data) {
+    var self = this;
+
+    var defer = libQ.defer();
+
+    self.config.set('levelfcut', data['levelfcut']);
+    self.config.set('levelfeed', data['levelfeed']);
+   self.logger.info('Configurations have been set');
+
+/*    self.rebuildBRUTEFIRAndRestartDaemon()
+        .then(function(e){
+            self.commandRouter.pushToastMessage('success', "Configuration update", 'Binaural filtreing configuration has been successfully updated');
+            defer.resolve({});
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        })
+
+
+ 	self.commandRouter.pushToastMessage('success', "Configuration update", 'Configuration has been successfully updated');
+
+	defer.resolve({});  
+	return defer.promise;
+*/
+ self.rebuildBRUTEFIRAndRestartDaemon()
+  .then(function(e) {
+   self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+   defer.resolve({});
+  })
+  .fail(function(e) {
+   defer.reject(new Error());
+  })
+
+
+ return defer.promise;
+
+};
 
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
@@ -637,13 +608,14 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
  var defer = libQ.defer();
-
+self.createBAUERFILTERFile()
  self.createBRUTEFIRFile()
   .then(function(e) {
    var edefer = libQ.defer();
-   exec("killall brutefir.real", function(error, stdout, stderr) {
-    edefer.resolve();
-   });
+exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
+  edefer.resolve();}
+  );
+ 
    return edefer.promise;
   })
   .then(self.startBrutefirDaemon.bind(self))

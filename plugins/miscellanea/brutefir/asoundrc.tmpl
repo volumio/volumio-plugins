@@ -1,0 +1,15 @@
+pcm.bs2b {
+  type ladspa
+  slave.pcm "plug:dmix"
+  path "/usr/lib/ladspa"
+  plugins [
+    {
+      label bs2b
+      input {
+        controls [ ${levelfcut} ${levelfeed} ]
+      }
+    }
+  ]
+}
+
+

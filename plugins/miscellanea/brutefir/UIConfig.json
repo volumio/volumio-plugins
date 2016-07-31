@@ -16,11 +16,12 @@
 			"saveButton": {
 				"label": "save",
 				"data": [
-					"coef31",
-					"phas31"
+					"coef",
+					"phas"
 				]
 			},
-			"content": [
+			"content": 
+			[
 				{
 					"id": "enabled",
 					"element": "switch",
@@ -28,7 +29,7 @@
 					"value": true
 				},
 				{
-					"id": "coef31",
+					"id": "coef",
 					"element": "equalizer",
 					"label": "Equalizer",
 					"description": "",
@@ -43,7 +44,6 @@
 								"min": -10,
 								"max": 10,
 								"step": 1,
-								"ticksLabels":"toto",
 								"value": 0,
 								"tooltip": "show"
 							},
@@ -113,9 +113,8 @@
 						]
 					}
 				},
-				
 				{
-					"id": "phas31",
+					"id": "phas",
 					"element": "equalizer",
 					"label": "Equalizer",
 					"description": "",
@@ -195,11 +194,86 @@
 								"step": 10,
 								"value": 0,
 								"tooltip": "show"
+								}
+								]
 							}
-						]
-					}
-				}
+						}
 			]
+				
+			
+		},
+		{
+					"id": "bauer",
+					"label": "Bauer binaural filter",
+					"element": "section",
+					"icon": "fa-cogs",
+					"onSave": {
+						"type": "plugin",
+						"endpoint": "miscellanea/brutefir",
+						"method": "saveBauerfilter"
+					},
+					"saveButton": {
+						"label": "save",
+						"data": [
+							"levelfcut",
+							"levelfeed"
+						]
+					},
+					"content": 
+					[
+						{
+							"id": "enabled",
+							"element": "switch",
+							"label": "Bauer filter settings",
+							"value": false
+						},
+						{
+							"id": "levelfcut",
+							"element": "equalizer",
+							"label": "Frequency cut Hz",
+							"description":"",
+							"visibleIf": {
+								"field": "enabled",
+								"value": true
+							},
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "200",
+										"max": "2000",
+										"step": "50",
+										"value": "700",
+										"tooltip":"always"
+									}
+								]
+							}
+						},
+						{
+							"id": "levelfeed",
+							"element": "equalizer",
+							"label": "Level feed dB",
+							"description":"",
+							"visibleIf": {
+								"field": "enabled",
+								"value": true
+							},
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min":"1",
+										"max":"15",
+										"step":"0.5",
+										"value":"5",
+										"tooltip":"always"
+									}
+								]
+							}
+						}
+					]
+				
+							
 		},
 		{
 			"id": "advanced",
@@ -227,7 +301,8 @@
 					"output_device"
 				]
 			},
-			"content": [
+			"content": 
+			[
 				{
 					"id": "enabled",
 					"element": "switch",
@@ -623,5 +698,5 @@
 				}
 			]
 		}
-	]
+			]	
 }
