@@ -1,6 +1,6 @@
 {
 	"page": {
-		"label": "BRUTEFIR.BRUTEFIR_SETTINGS"
+		"label": "Volumio2 Dsp Center"
 	},
 	"sections": [
 		{
@@ -45,6 +45,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["31Hz"],
 								"tooltip": "show"
 							},
 							{
@@ -52,6 +53,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["63Hz"],
 								"tooltip": "show"
 							},
 							{
@@ -59,6 +61,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["125Hz"],
 								"tooltip": "show"
 							},
 							{
@@ -66,6 +69,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["250Hz"],
 								"tooltip": "show"
 							},
 							{
@@ -73,6 +77,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["500Hz"],
 								"tooltip": "show"
 							},
 							{
@@ -80,6 +85,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["1KHz"],
 								"tooltip": "show"
 							},
 							{
@@ -87,6 +93,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["2KHz"],
 								"tooltip": "show"
 							},
 							{
@@ -94,6 +101,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["4KHz"],
 								"tooltip": "show"
 							},
 							{
@@ -101,6 +109,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["8KHz"],
 								"tooltip": "show"
 							},
 							{
@@ -108,6 +117,7 @@
 								"max": 10,
 								"step": 1,
 								"value": 0,
+								"ticksLabels": ["16KHz"],
 								"tooltip": "show"
 							}
 						]
@@ -204,9 +214,9 @@
 		},
 		{
 					"id": "bauer",
-					"label": "Bauer binaural filter",
+					"label": "Bauer Stereo to binaural filter",
 					"element": "section",
-					"icon": "fa-cogs",
+					"icon": "fa-headphones",
 					"onSave": {
 						"type": "plugin",
 						"endpoint": "miscellanea/brutefir",
@@ -230,7 +240,7 @@
 						{
 							"id": "levelfcut",
 							"element": "equalizer",
-							"label": "Frequency cut Hz",
+							"label": "Frequency cut (Hz)",
 							"description":"",
 							"visibleIf": {
 								"field": "enabled",
@@ -241,7 +251,7 @@
 								"bars": [
 									{
 										"min": "200",
-										"max": "2000",
+										"max": "1200",
 										"step": "50",
 										"value": "700",
 										"tooltip":"always"
@@ -252,7 +262,7 @@
 						{
 							"id": "levelfeed",
 							"element": "equalizer",
-							"label": "Level feed dB",
+							"label": "Level feed (dB)",
 							"description":"",
 							"visibleIf": {
 								"field": "enabled",
@@ -263,7 +273,7 @@
 								"bars": [
 									{
 										"min":"1",
-										"max":"15",
+										"max":"10",
 										"step":"0.5",
 										"value":"5",
 										"tooltip":"always"

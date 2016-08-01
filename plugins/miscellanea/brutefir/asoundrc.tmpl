@@ -1,6 +1,6 @@
-pcm.bs2b {
+pcm.ladspa {
   type ladspa
-  slave.pcm "plug:dmix"
+  slave.pcm "plughw:2"
   path "/usr/lib/ladspa"
   plugins [
     {
@@ -12,4 +12,10 @@ pcm.bs2b {
   ]
 }
 
+pcm.headphones {
+ type plug
+ slave {
+  pcm "ladspa"
+ }
+}
 
