@@ -294,7 +294,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("killall node", function (error, stdout, stderr) { //not done in a elegant way
+            exec("killall avahi-publish-service", function (error, stdout, stderr) { //not done in a elegant way
                 edefer.resolve();
             });
             return edefer.promise;
