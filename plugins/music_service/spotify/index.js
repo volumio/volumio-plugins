@@ -26,9 +26,14 @@ function ControllerSpop(context) {
 
 ControllerSpop.prototype.onVolumioStart = function()
 {
-    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-    this.config = new (require('v-conf'))();
-    this.config.loadFile(configFile);
+	var self = this;
+	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+	this.config = new (require('v-conf'))();
+	this.config.loadFile(configFile);
+
+	if(self.config.get('bitrate')===true)
+		self.samplerate="320Kbps";
+	else self.samplerate="128Kbps";
 
 }
 
@@ -47,20 +52,20 @@ ControllerSpop.prototype.addToBrowseSources = function () {
 ControllerSpop.prototype.startSpopDaemon = function() {
 	var self = this;
 
-    var defer=libQ.defer();
+	var defer=libQ.defer();
 
 	exec("/usr/bin/sudo /bin/systemctl start spop.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting SPOPD: ' + error);
-            defer.reject();
+			defer.reject();
 		}
 		else {
 			self.commandRouter.pushConsoleMessage('SpopD Daemon Started');
-            defer.resolve();
+			defer.resolve();
 		}
 	});
 
-    return defer.promise;
+	return defer.promise;
 };
 
 ControllerSpop.prototype.spopDaemonConnect = function(defer) {
@@ -76,29 +81,29 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	var nPort=6602;
 	self.connSpopCommand = libNet.createConnection(nPort, nHost); // Socket to send commands and receive track listings
 	self.connSpopStatus = libNet.createConnection(nPort, nHost, function(){
-        self.addToBrowseSources();
-        defer.resolve();
-    }); // Socket to listen for status changes
+		self.addToBrowseSources();
+		defer.resolve();
+	}); // Socket to listen for status changes
 
 	// Start a listener for receiving errors
 	self.connSpopCommand.on('error', function(err) {
 		self.logger.info('SPOP command error:');
-        self.logger.info(err);
+		self.logger.info(err);
 
-        try
-        {
-            defer.reject();
-        } catch(ecc) {}
+		try
+		{
+			defer.reject();
+		} catch(ecc) {}
 
 	});
 	self.connSpopStatus.on('error', function(err) {
-        self.logger.info('SPOP status error:');
-        self.logger.info(err);
+		self.logger.info('SPOP status error:');
+		self.logger.info(err);
 
-        try
-        {
-            defer.reject();
-        } catch(ecc) {}
+		try
+		{
+			defer.reject();
+		} catch(ecc) {}
 	});
 
 	// Init some command socket variables
@@ -112,14 +117,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	self.connSpopCommand.on('data', function(data) {
 		self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
 
-        //self.commandRouter.logger.info("DATA: "+self.sResponseBuffer);
+		//self.commandRouter.logger.info("DATA: "+self.sResponseBuffer);
 
-        // If the last character in the data chunk is a newline, this is the end of the response
+		// If the last character in the data chunk is a newline, this is the end of the response
 		if (data.slice(data.length - 1).toString() === '\n') {
 
-            self.commandRouter.logger.info("FIRST BRANCH");
+			self.commandRouter.logger.info("FIRST BRANCH");
 
-            // If this is the first message, then the connection is open
+			// If this is the first message, then the connection is open
 			if (!self.bSpopCommandGotFirstMessage) {
 				self.bSpopCommandGotFirstMessage = true;
 				try {
@@ -130,14 +135,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 				// Else this is a command response
 			} else {
 				try {
-                    self.commandRouter.logger.info("BEFORE: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+					self.commandRouter.logger.info("BEFORE: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
 
-                    if(self.arrayResponseStack!==undefined && self.arrayResponseStack.length>0)
-					    self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
+					if(self.arrayResponseStack!==undefined && self.arrayResponseStack.length>0)
+						self.arrayResponseStack.shift().resolve(self.sResponseBuffer);
 
-                    self.commandRouter.logger.info("AFTER: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
+					self.commandRouter.logger.info("AFTER: SPOP HAS "+self.arrayResponseStack.length+" PROMISE IN STACK");
 
-                } catch (error) {
+				} catch (error) {
 					self.pushError(error);
 				}
 			}
@@ -153,14 +158,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 
 	// Start a listener for status socket messages
 	self.connSpopStatus.on('data', function(data) {
-        self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
+		self.sStatusBuffer = self.sStatusBuffer.concat(data.toString());
 
 		// If the last character in the data chunk is a newline, this is the end of the status update
 		if (data.slice(data.length - 1).toString() === '\n') {
 			// Put socket back into monitoring mode
 			self.connSpopStatus.write('idle\n');
 
-            // If this is the first message, then the connection is open
+			// If this is the first message, then the connection is open
 			if (!self.bSpopStatusGotFirstMessage) {
 				self.bSpopStatusGotFirstMessage = true;
 				// Else this is a state update announcement
@@ -168,14 +173,14 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 				var timeStart = Date.now();
 				var sStatus = self.sStatusBuffer;
 
-                self.commandRouter.logger.info("STATUS");
+				self.commandRouter.logger.info("STATUS");
 
-                self.commandRouter.logger.info(sStatus);
+				self.commandRouter.logger.info(sStatus);
 
-                self.logStart('Spop announces state update')
-					//.then(function(){
-					// return self.getState.call(self);
-					// })
+				self.logStart('Spop announces state update')
+				//.then(function(){
+				// return self.getState.call(self);
+				// })
 					.then(function() {
 						return self.parseState.call(self, sStatus);
 					})
@@ -202,12 +207,8 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 	// Attempt to load tracklist from database on disk
 	// TODO make this a relative path
 
-
-    self.spotifyApi= new SpotifyWebApi({
-		clientId : self.config.get('spotify_api_client_id'),
-		clientSecret : self.config.get('spotify_api_client_secret')
-	});
-
+	// Create a spotifyAPI object and then get an access token
+	self.spotifyApiConnect();
 
 };
 
@@ -215,34 +216,34 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
 
-    self.logger.info("Killing SpopD daemon");
+	self.logger.info("Killing SpopD daemon");
 	exec("killall spopd", function (error, stdout, stderr) {
 
 	});
 
-    return libQ.defer();
+	return libQ.defer();
 };
 
 ControllerSpop.prototype.onStart = function() {
-    var self = this;
+	var self = this;
 
-    var defer=libQ.defer();
+	var defer=libQ.defer();
 
-    self.startSpopDaemon()
-        .then(function(e)
-        {
-            setTimeout(function () {
-                self.logger.info("Connecting to daemon");
-                self.spopDaemonConnect(defer);
-            }, 5000);
-        })
-        .fail(function(e)
-        {
-            defer.reject(new Error());
-        });
+	self.startSpopDaemon()
+		.then(function(e)
+		{
+			setTimeout(function () {
+				self.logger.info("Connecting to daemon");
+				self.spopDaemonConnect(defer);
+			}, 5000);
+		})
+		.fail(function(e)
+		{
+			defer.reject(new Error());
+		});
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildSPOPDAndRestartDaemon.bind(this));
 
-    return defer.promise;
+	return defer.promise;
 };
 
 ControllerSpop.prototype.handleBrowseUri=function(curUri)
@@ -260,16 +261,43 @@ ControllerSpop.prototype.handleBrowseUri=function(curUri)
 					prev: {
 						uri: 'spotify'
 					},
-					list: [{
-						service: 'spop',
-						type: 'folder',
-						title: 'Playlists',
-						artist: '',
-						album: '',
-						icon: 'fa fa-folder-open-o',
-						uri: 'spotify/playlists'
-					}
-
+					list: [
+						{
+							service: 'spop',
+							type: 'spotify-category',
+							title: 'My Playlists',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/playlists'
+						},
+						{
+							service: 'spop',
+							type: 'spotify-category',
+							title: 'Featured Playlists',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/featuredplaylists'
+						},
+						{
+							service: 'spop',
+							type: 'spotify-category',
+							title: 'What\'s New',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/new'
+						},
+						{
+							service: 'spop',
+							type: 'spotify-category',
+							title: 'Genres & Moods',
+							artist: '',
+							album: '',
+							icon: 'fa fa-folder-open-o',
+							uri: 'spotify/categories'
+						}
 					]
 				}
 			});
@@ -283,6 +311,34 @@ ControllerSpop.prototype.handleBrowseUri=function(curUri)
 				response=self.listPlaylist(curUri);
 			}
 		}
+		else if(curUri.startsWith('spotify/featuredplaylists'))
+		{
+			response=self.featuredPlaylists(curUri);
+		}
+		else if(curUri.startsWith('spotify:user:'))
+		{
+			response=self.listWebPlaylist(curUri);
+		}
+		else if(curUri.startsWith('spotify/new'))
+		{
+			response=self.listWebNew(curUri);
+		}
+		else if(curUri.startsWith('spotify/categories'))
+		{
+			response=self.listWebCategories(curUri);
+		}
+		else if(curUri.startsWith('spotify:album'))
+		{
+			response=self.listWebAlbum(curUri);
+		}
+		else if(curUri.startsWith('spotify/category'))
+		{
+			response=self.listWebCategory(curUri);
+		}
+		else if(curUri.startsWith('spotify:artist:'))
+		{
+			response=self.listWebArtist(curUri);
+		}
 	}
 
 	return response;
@@ -295,52 +351,52 @@ ControllerSpop.prototype.listPlaylists=function()
 	var defer=libQ.defer();
 	var commandDefer=self.sendSpopCommand('ls',[]);
 	commandDefer.then(function(results){
-			var resJson=JSON.parse(results);
-                        self.logger.info(JSON.stringify(resJson));
+		var resJson=JSON.parse(results);
+		//   self.logger.info(JSON.stringify(resJson));
 
-			self.commandRouter.logger.info(resJson);
-			var response={
-				navigation: {
-					prev: {
-						uri: 'spotify'
-					},
-					list: []
-				}
-			};
+		//	self.commandRouter.logger.info(resJson);
+		var response={
+			navigation: {
+				prev: {
+					uri: 'spotify'
+				},
+				list: []
+			}
+		};
 
-			for(var i in resJson.playlists)
+		for(var i in resJson.playlists)
+		{
+			if(resJson.playlists[i].hasOwnProperty('name') && resJson.playlists[i].name !== '')
 			{
-				if(resJson.playlists[i].hasOwnProperty('name') && resJson.playlists[i].name !== '')
+				if(resJson.playlists[i].type == 'playlist')
 				{
-					if(resJson.playlists[i].type == 'playlist')
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: resJson.playlists[i].name,
+						icon: 'fa fa-list-ol',
+						uri: 'spotify/playlists/'+resJson.playlists[i].index
+					});
+				}
+				else if(resJson.playlists[i].type == 'folder')
+				{
+					for(var j in resJson.playlists[i].playlists)
 					{
 						response.navigation.list.push({
 							service: 'spop',
 							type: 'folder',
-							title: resJson.playlists[i].name,
+							title: resJson.playlists[i].playlists[j].name,
 							icon: 'fa fa-list-ol',
-							uri: 'spotify/playlists/'+resJson.playlists[i].index
-					        });
-				        }
-					else if(resJson.playlists[i].type == 'folder')
-					{
-						for(var j in resJson.playlists[i].playlists)
-						{
-							response.navigation.list.push({
-							        service: 'spop',
-							        type: 'folder',
-							        title: resJson.playlists[i].playlists[j].name,
-							        icon: 'fa fa-list-ol',
-							        uri: 'spotify/playlists/'+resJson.playlists[i].playlists[j].index
-					                });
-						}
+							uri: 'spotify/playlists/'+resJson.playlists[i].playlists[j].index
+						});
 					}
 				}
 			}
+		}
 
-			defer.resolve(response);
+		defer.resolve(response);
 
-		})
+	})
 		.fail(function()
 		{
 			defer.fail(new Error('An error occurred while listing playlists'));
@@ -358,32 +414,32 @@ ControllerSpop.prototype.listPlaylist=function(curUri)
 	var defer=libQ.defer();
 	var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
 	commandDefer.then(function(results){
-			var resJson=JSON.parse(results);
+		var resJson=JSON.parse(results);
 
-			var response={
-				navigation: {
-					prev: {
-						uri: 'spotify/playlists'
-					},
-					list: []
-				}
-			};
-
-			for(var i in resJson.tracks)
-			{
-				response.navigation.list.push({
-					service: 'spop',
-					type: 'song',
-					title: resJson.tracks[i].title,
-					artist:resJson.tracks[i].artist,
-					album: resJson.tracks[i].album,
-					icon: 'fa fa-spotify',
-					uri: resJson.tracks[i].uri
-				});
+		var response={
+			navigation: {
+				prev: {
+					uri: 'spotify/playlists'
+				},
+				list: []
 			}
+		};
 
-			defer.resolve(response);
-		})
+		for(var i in resJson.tracks)
+		{
+			response.navigation.list.push({
+				service: 'spop',
+				type: 'song',
+				title: resJson.tracks[i].title,
+				artist:resJson.tracks[i].artist,
+				album: resJson.tracks[i].album,
+				icon: 'fa fa-spotify',
+				uri: resJson.tracks[i].uri
+			});
+		}
+
+		defer.resolve(response);
+	})
 		.fail(function()
 		{
 			defer.fail(new Error('An error occurred while listing playlists'));
@@ -392,8 +448,535 @@ ControllerSpop.prototype.listPlaylist=function(curUri)
 	return defer.promise;
 };
 
+ControllerSpop.prototype.spotifyApiConnect=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	self.spotifyApi= new SpotifyWebApi({
+		clientId : '7160366cc0944645bb1f32a7b81dd1ee',
+		clientSecret : 'ab4691ab353b4da6a35b151eb73dfd59',
+		redirectUri : 'http://localhost'
+	});
+
+	// Retrieve an access token
+	self.spotifyClientCredentialsGrant()
+		.then(function(data) {
+				self.logger.info('Spotify credentials grant success');
+				defer.resolve();
+			}, function(err) {
+				self.logger.info('Spotify credentials grant failed with ' + err);
+			}
+		);
+
+	return defer.promise;
+}
+
+ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	var now = d.getTime();
+
+	// Retrieve an access token
+	self.spotifyApi.clientCredentialsGrant()
+		.then(function(data) {
+			self.spotifyApi.setAccessToken(data.body['access_token']);
+			self.spotifyAccessToken = data.body['access_token'];
+			self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+			self.logger.info('Spotify access token expires at ' + self.spotifyAccessTokenExpiration);
+			self.logger.info('Spotify access token is ' + data.body['access_token']);
+			defer.resolve();
+		}, function(err) {
+			self.logger.info('Spotify credentials grant failed with ' + err);
+		});
+
+	return defer.promise;
+}
+
+ControllerSpop.prototype.spotifyCheckAccessToken=function()
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var d = new Date();
+
+	var now = d.getTime();
+
+	if (self.spotifyAccessTokenExpiration < now)
+	{
+		self.spotifyClientCredentialsGrant()
+			.then(function(data) {
+				self.logger.info('Refreshed Spotify access token');
+			});
+	}
+
+	defer.resolve();
+
+	return defer.promise;
+
+};
+
+ControllerSpop.prototype.featuredPlaylists=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+				var spotifyDefer = self.spotifyApi.getFeaturedPlaylists();
+				spotifyDefer.then(function (results) {
+					var response = {
+						navigation: {
+							prev: {
+								uri: 'spotify'
+							},
+							list: []
+						}
+					};
+
+					for (var i in results.body.playlists.items) {
+						var playlist = results.body.playlists.items[i];
+						response.navigation.list.push({
+							service: 'spop',
+							type: 'playlist',
+							title: playlist.name,
+							albumart: playlist.images[0].url,
+							uri: playlist.uri
+						});
+					}
+					defer.resolve(response);
+				}, function (err) {
+					self.logger.info('An error occurred while listing Spotify featured playlists ' + err);
+				});
+			}
+		);
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebPlaylist=function(curUri)
+{
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split(':');
+
+	var spotifyDefer = self.getPlaylistTracks(uriSplitted[2], uriSplitted[4]);
+	spotifyDefer.then(function (results) {
+		var response = {
+			navigation: {
+				prev: {
+					uri: 'spotify'
+				},
+				list: []
+			}
+		};
+		for (var i in results) {
+			response.navigation.list.push(results[i]);
+		}
+		defer.resolve(response);
+	});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebNew=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getNewReleases();
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.albums.items) {
+					var album = results.body.albums.items[i];
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: album.name,
+						albumart: album.images[0].url,
+						uri: album.uri
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify new albums ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebAlbum=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split(':');
+
+	var spotifyDefer = self.getAlbumTracks(uriSplitted[2]);
+	spotifyDefer.then(function (results) {
+		var response = {
+			navigation: {
+				prev: {
+					uri: 'spotify'
+				},
+				list: []
+			}
+		};
+		for (var i in results) {
+			response.navigation.list.push(results[i]);
+		}
+		defer.resolve(response);
+	});
+
+	return defer.promise;
+};
 
 
+
+ControllerSpop.prototype.listWebCategories=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getCategories();
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.categories.items) {
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'spotify-category',
+						title: results.body.categories.items[i].name,
+						albumart: results.body.categories.items[i].icons[0].url,
+						uri: 'spotify/category/' + results.body.categories.items[i].id
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify categories ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebCategory=function(curUri)
+{
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	var uriSplitted=curUri.split('/');
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getPlaylistsForCategory(uriSplitted[2]);
+			spotifyDefer.then(function (results) {
+
+				var response = {
+					navigation: {
+						prev: {
+							uri: 'spotify/categories'
+						},
+						list: []
+					}
+				};
+
+				for (var i in results.body.playlists.items) {
+					var playlist = results.body.playlists.items[i];
+					response.navigation.list.push({
+						service: 'spop',
+						type: 'folder',
+						title: playlist.name,
+						albumart: playlist.images[0].url,
+						uri: playlist.uri
+					});
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while listing Spotify playlist category ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listWebArtist = function (curUri) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	var uriSplitted = curUri.split(':');
+
+	var artistId = uriSplitted[2];
+
+	self.spotifyCheckAccessToken()
+		.then(function (data) {
+			var response = {
+				navigation: {
+					prev: {
+						uri: 'spotify'
+					},
+					list: []
+				}
+			};
+			var spotifyDefer = self.listArtistTracks(artistId);
+			spotifyDefer.then(function (results) {
+				for (var i in results) {
+					response.navigation.list.push(results[i]);
+				}
+				return response;
+			})
+				.then(function (data) {
+					var response = data;
+					var spotifyDefer = self.getArtistRelatedArtists(artistId);
+					spotifyDefer.then(function (results) {
+						response.navigation.list.push({type: 'title', title: 'Related Artists'});
+						for (var i in results) {
+							response.navigation.list.push(results[i]);
+						}
+						defer.resolve(response);
+					})
+				});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.listArtistTracks = function (id) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	var list = [{type: 'title', title: 'Top Tracks'}];
+
+	var spotifyDefer = self.getArtistTopTracks(id);
+	spotifyDefer.then(function (data) {
+		for (var i in data) {
+			list.push(data[i]);
+		}
+		return list;
+	})
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtistAlbums(id);
+			spotifyDefer.then(function (results) {
+				var title = {type: 'title', title: 'Albums'};
+				var response = data;
+				response.push(title);
+				for (var i in results.body.items) {
+					var albumart = '';
+					var album = results.body.items[i];
+					if (album.hasOwnProperty('images') && album.images.length > 0) {
+						albumart = album.images[0].url;
+					}
+					;
+					response.push({
+						service: 'spop',
+						type: 'folder',
+						title: album.name,
+						albumart: albumart,
+						uri: album.uri,
+					});
+				}
+				defer.resolve(response);
+			})
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getArtistTracks = function(id) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	var list = [];
+
+	var spotifyDefer = self.getArtistTopTracks(id);
+	spotifyDefer.then(function (data) {
+		for (var i in data) {
+			list.push(data[i]);
+		}
+		return list;
+	})
+		.then(function (data) {
+			var spotifyDefer = self.getArtistAlbumTracks(id);
+			spotifyDefer.then(function (results) {
+				var response = data;
+				for (var i in results) {
+					response.push(results[i]);
+				}
+				defer.resolve(response);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getArtistAlbumTracks = function(id) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	var list = [];
+
+	var spotifyDefer = self.spotifyApi.getArtistAlbums(id);
+	spotifyDefer.then(function (results) {
+		//	var response = data;
+		var response = [];
+		return results.body.items.map(function (a) {
+			return a.id
+		});
+	})
+		.then(function(albums) {
+			var spotifyDefer = self.spotifyApi.getAlbums(albums);
+			spotifyDefer.then(function (data) {
+				var results = data;
+				var response = [];
+				for (var i in results.body.albums) {
+					var album = results.body.albums[i];
+					for (var j in album.tracks.items) {
+						var track = album.tracks.items[j];
+						var albumart = '';
+						if (album.hasOwnProperty('images') && album.images.length > 0) {
+							albumart = album.images[0].url;
+						}
+						response.push({
+							service: 'spop',
+							type: 'song',
+							name: track.name,
+							title: track.name,
+							artist: track.artists[0].name,
+							album: album.name,
+							albumart: albumart,
+							uri: track.uri
+						});
+					}
+				}
+				defer.resolve(response);
+			});
+		});
+
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getArtistAlbums = function(artistId) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtistAlbums(artistId);
+			spotifyDefer.then(function (results) {
+				var response = [];
+				for (var i in results.body.items) {
+					var albumart = '';
+					var album = results.body.items[i];
+					if (album.hasOwnProperty('images') && album.images.length > 0) {
+						albumart = album.images[0].url;
+					}
+					response.push({
+						service: 'spop',
+						type: 'folder',
+						title: album.name,
+						albumart: albumart,
+						uri: album.uri
+					});
+				}
+				defer.resolve(response);
+			});
+		});
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getArtistRelatedArtists = function (artistId) {
+
+	var self = this;
+
+	var defer = libQ.defer();
+
+	var list = [];
+
+	self.spotifyCheckAccessToken()
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtistRelatedArtists(artistId);
+			spotifyDefer.then(function (results) {
+				for (var i in results.body.artists) {
+					var albumart = '';
+					var artist = results.body.artists[i];
+					if (artist.hasOwnProperty('images') && artist.images.length > 0) {
+						albumart = artist.images[0].url;
+					}
+					var item = {
+						service: 'spop',
+						type: 'folder',
+						title: artist.name,
+						albumart: albumart,
+						uri: artist.uri
+					};
+					if (albumart == '') {
+						item.icon = 'fa fa-user';
+					}
+					list.push(item);
+				}
+				defer.resolve(list);
+			})
+		});
+
+	return defer.promise;
+};
+
+
+// Controller functions
 
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
@@ -401,11 +984,6 @@ ControllerSpop.prototype.onStop = function() {
 
 	});
 };
-
-
-
-
-
 
 // Spop stop
 ControllerSpop.prototype.stop = function() {
@@ -436,24 +1014,24 @@ ControllerSpop.prototype.getUIConfig = function() {
 
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-        self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-                __dirname+'/i18n/strings_en.json',
-                __dirname + '/UIConfig.json')
-        .then(function(uiconf)
-        {
+	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+		__dirname+'/i18n/strings_en.json',
+		__dirname + '/UIConfig.json')
+		.then(function(uiconf)
+		{
 
-uiconf.sections[0].content[0].value = self.config.get('username');
-uiconf.sections[0].content[1].value = self.config.get('password');
-uiconf.sections[0].content[2].value = self.config.get('bitrate');
+			uiconf.sections[0].content[0].value = self.config.get('username');
+			uiconf.sections[0].content[1].value = self.config.get('password');
+			uiconf.sections[0].content[2].value = self.config.get('bitrate');
 
-            defer.resolve(uiconf);
-            })
-                .fail(function()
-            {
-                defer.reject(new Error());
-        });
+			defer.resolve(uiconf);
+		})
+		.fail(function()
+		{
+			defer.reject(new Error());
+		});
 
-        return defer.promise;
+	return defer.promise;
 };
 
 ControllerSpop.prototype.setUIConfig = function(data) {
@@ -484,9 +1062,9 @@ ControllerSpop.prototype.clearAddPlayTrack = function(track) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::clearAddPlayTrack');
 
-    self.commandRouter.logger.info(JSON.stringify(track));
+	self.commandRouter.logger.info(JSON.stringify(track));
 
-    return self.sendSpopCommand('uplay', [track.uri]);
+	return self.sendSpopCommand('uplay', [track.uri]);
 };
 
 // Spop stop
@@ -521,9 +1099,9 @@ ControllerSpop.prototype.getTracklist = function() {
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::getTracklist');
 
 	return self.tracklistReady
-	.then(function() {
-		return self.tracklist;
-	});
+		.then(function() {
+			return self.tracklist;
+		});
 };
 
 // Internal methods ---------------------------------------------------------------------------
@@ -540,29 +1118,29 @@ ControllerSpop.prototype.sendSpopCommand = function(sCommand, arrayParameters) {
 	}, '');
 
 
-    var spopResponseDeferred = libQ.defer();
+	var spopResponseDeferred = libQ.defer();
 	// Pass the command to Spop when the command socket is ready
 	self.spopCommandReady
-	.then(function() {
-		return libQ.nfcall(libFast.bind(self.connSpopCommand.write, self.connSpopCommand), sCommand + sParameters + '\n', 'utf-8')
-            /*.then(function()
-            {
-                spopResponseDeferred.resolve();
-            })
-            .fail(function(err)
-            {
-                spopResponseDeferred.reject(new Error(err));
-            })*/;
-	});
+		.then(function() {
+			return libQ.nfcall(libFast.bind(self.connSpopCommand.write, self.connSpopCommand), sCommand + sParameters + '\n', 'utf-8')
+				/*.then(function()
+				 {
+				 spopResponseDeferred.resolve();
+				 })
+				 .fail(function(err)
+				 {
+				 spopResponseDeferred.reject(new Error(err));
+				 })*/;
+		});
 
 
 	var spopResponse = spopResponseDeferred.promise;
 
-    if(sCommand!=='status')
-    {
-        self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
-        self.arrayResponseStack.push(spopResponseDeferred);
-    }
+	if(sCommand!=='status')
+	{
+		self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
+		self.arrayResponseStack.push(spopResponseDeferred);
+	}
 	// Return a promise for the command response
 	return spopResponse;
 };
@@ -608,18 +1186,12 @@ ControllerSpop.prototype.parseState = function(sState) {
 		nPosition = objState.current_track - 1;
 	}
 
-    var rate;
-
-    if(self.config.get('bitrate')==true)
-        rate='320';
-    else rate='128';
-
-    return libQ.resolve({
+	return libQ.resolve({
 		status: sStatus,
 		position: nPosition,
 		seek: nSeek,
 		duration: nDuration,
-		samplerate: rate, // Pull these values from somwhere else since they are not provided in the Spop state
+		samplerate: self.samplerate, // Pull these values from somwhere else since they are not provided in the Spop state
 		bitdepth: null,
 		channels: null,
 		artist: objState.artist,
@@ -661,10 +1233,10 @@ ControllerSpop.prototype.rebuildTracklistFromSpopPlaylists = function(objInput, 
 	var promisedActions = libQ.resolve();
 
 	libFast.map(arrayPlaylists, function(curPlaylist) {
-/*
-		if (!('index' in curPlaylist)) {
-			return;
-		}*/
+		/*
+		 if (!('index' in curPlaylist)) {
+		 return;
+		 }*/
 		var sPlaylistName = '';
 		if (curPlaylist.name === '') {
 			// The Starred playlist has a blank name
@@ -684,322 +1256,314 @@ ControllerSpop.prototype.rebuildTracklistFromSpopPlaylists = function(objInput, 
 			var curPlaylistIndex = curPlaylist.index;
 
 			promisedActions = promisedActions
-			.then(function() {
-				return self.sendSpopCommand('ls', [curPlaylistIndex]);
-			})
-			.then(JSON.parse)
-			.then(function(curTracklist) {
-				var nTracks = 0;
+				.then(function() {
+					return self.sendSpopCommand('ls', [curPlaylistIndex]);
+				})
+				.then(JSON.parse)
+				.then(function(curTracklist) {
+					var nTracks = 0;
 
-				if (!('tracks' in curTracklist)) {
-					return;
-				}
+					if (!('tracks' in curTracklist)) {
+						return;
+					}
 
-				nTracks = curTracklist.tracks.length;
+					nTracks = curTracklist.tracks.length;
 
-				for (var j = 0; j < nTracks; j++) {
-					self.tracklist.push({
-						'name': curTracklist.tracks[j].title,
-						'service': self.servicename,
-						'uri': curTracklist.tracks[j].uri,
-						'browsepath': arrayNewPath,
-						'album': curTracklist.tracks[j].album,
-						'artists': libFast.map(curTracklist.tracks[j].artist.split(','), function(sArtist) {
-							// TODO - parse other options in artist string, such as "feat."
-							return sArtist.trim();
+					for (var j = 0; j < nTracks; j++) {
+						self.tracklist.push({
+							'name': curTracklist.tracks[j].title,
+							'service': self.servicename,
+							'uri': curTracklist.tracks[j].uri,
+							'browsepath': arrayNewPath,
+							'album': curTracklist.tracks[j].album,
+							'artists': libFast.map(curTracklist.tracks[j].artist.split(','), function(sArtist) {
+								// TODO - parse other options in artist string, such as "feat."
+								return sArtist.trim();
 
-						}),
-						'performers': [],
-						'genres': [],
-						'tracknumber': 0,
-						'date': '',
-						'duration': 0
-					});
-				}
-			});
+							}),
+							'performers': [],
+							'genres': [],
+							'tracknumber': 0,
+							'date': '',
+							'duration': 0
+						});
+					}
+				});
 		}
 	});
 
 	return promisedActions;
 };
 
+// TODO delete below function - not used
 ControllerSpop.prototype.explodeAlbumUri = function(id) {
-    var self=this;
-    var defer=libQ.defer();
+	var self=this;
+	var defer=libQ.defer();
 
-    self.spotifyApi.getAlbum(id, 'GB')
-        .then(function(result)
-        {
-            self.commandRouter.logger.info(result);
-            defer.resolve();
-        });
-
-
-    return defer.promise;
-}
+	self.spotifyApi.getAlbum(id, 'GB')
+		.then(function(result)
+		{
+			self.commandRouter.logger.info(result);
+			defer.resolve();
+		});
 
 
+	return defer.promise;
+};
 
-ControllerSpop.prototype.getAlbumTracks = function(id,offset,album) {
-    var self=this;
-    var defer=libQ.defer();
+ControllerSpop.prototype.getAlbumTracks = function(id) {
 
-    var offsetStep=10;
+	var self=this;
 
-    self.spotifyApi.getAlbums([id],{limit:offsetStep,offset:offset})
-        .then(function (result) {
-            console.log(JSON.stringify(result.body.albums[0]));
+	var defer=libQ.defer();
 
-            var resJson = result.body.albums[0];
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+				var spotifyDefer = self.spotifyApi.getAlbum(id);
+				spotifyDefer.then(function (results) {
+					var response = [];
+					var album = results.body.name;
+					var albumart = results.body.images[0].url;
+					for (var i in results.body.tracks.items) {
+						var track = results.body.tracks.items[i];
+						response.push({
+							service: 'spop',
+							type: 'song',
+							title: track.name,
+							name: track.name,
+							artist:track.artists[0].name,
+							album: album,
+							albumart: albumart,
+							uri: track.uri,
+							samplerate: self.samplerate,
+							bitdepth: '16 bit',
+							trackType: 'spotify',
+							duration: Math.trunc(track.duration_ms / 1000)
+						});
+					}
+					defer.resolve(response);
+				}, function (err) {
+					self.logger.info('An error occurred while listing Spotify album tracks ' + err);
+				});
+			}
+		);
 
-            var rate;
-            if (self.config.get('bitrate') === true)
-                rate = "320";
-            else rate = "128";
+	return defer.promise;
+};
 
-            var moreDefer = libQ.defer();
-            if (resJson.total > offset+offsetStep) {
-                moreDefer = self.getAlbumTracks(id, offset + offsetStep);
-            }
-            else moreDefer.resolve();
+ControllerSpop.prototype.getPlaylistTracks = function(userId, playlistId) {
 
-            moreDefer.then(function (result) {
-                console.log("RESULT:         "+JSON.stringify(result));
+	var self=this;
 
-                var response=[];
+	var defer=libQ.defer();
 
-                for (var i in resJson.items) {
-                    var artist = resJson.items[i].artists[0].name;
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getPlaylist(userId, playlistId);
+			spotifyDefer.then(function (results) {
 
-                    var albumart = self.getAlbumArt({
-                        artist: artist,
-                        album: album
-                    }, "");
+				var response = [];
 
-                    var item = {
-                        uri: resJson.items[i].uri,
-                        service: 'spop',
-                        type: 'song',
-                        name: resJson.items[i].name,
-                        title: resJson.items[i].name,
-                        artist: artist,
-                        album: album,
-                        duration: resJson.items[i].duration_ms / 1000,
-                        albumart: albumart,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        trackType: 'spotify'
+				for (var i in results.body.tracks.items) {
+					var track = results.body.tracks.items[i].track;
+					var item = {
+						service: 'spop',
+						type: 'song',
+						name: track.name,
+						title: track.name,
+						artist: track.artists[0].name,
+						album: track.album.name,
+						uri: track.uri,
+						samplerate: self.samplerate,
+						bitdepth: '16 bit',
+						trackType: 'spotify',
+						albumart: track.album.images[0].url,
+						duration: Math.trunc(track.duration_ms / 1000)
+					};
+					response.push(item);
+				}
+				defer.resolve(response);
+			}, function (err) {
+				self.logger.info('An error occurred while exploding listing Spotify playlist tracks ' + err);
+			});
+		});
 
-                    };
+	return defer.promise;
+};
 
-                    response.push(item);
-                }
+ControllerSpop.prototype.getArtistTopTracks = function(id) {
 
-                response=response.concat(result).filter(function(v){return !!(v)==true;});
-                defer.resolve(response);
-            }).fail(function (err) {
-                defer.reject(new Error(err));
-            })
-        });
+	var self = this;
 
-    return defer.promise;
-}
+	var defer = libQ.defer();
 
+	self.spotifyCheckAccessToken()
+		.then(function (data) {
+			var spotifyDefer = self.spotifyApi.getArtistTopTracks(id, 'GB');
+			spotifyDefer.then(function (results) {
+				var response = [];
+				for (var i in results.body.tracks) {
+					var albumart = '';
+					var track = results.body.tracks[i];
+					if (track.album.hasOwnProperty('images') && track.album.images.length > 0) {
+						albumart = track.album.images[0].url;
+					}
+					response.push({
+						service: 'spop',
+						type: 'track',
+						name: track.name,
+						title: track.name,
+						artist: track.artists[0].name,
+						album: track.album.name,
+						albumart: albumart,
+						duration: parseInt(track.duration_ms / 1000),
+						samplerate: self.samplerate,
+						bitdepth: '16 bit',
+						trackType: 'spotify',
+						uri: track.uri
+					});
+				}
+				defer.resolve(response);
+			}), function (err) {
+				self.logger.info('An error occurred while listing Spotify artist tracks ' + err);
+			}
+		});
 
+	return defer.promise;
+};
+
+ControllerSpop.prototype.getTrack = function(id) {
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.getTrack(id);
+			spotifyDefer.then(function (results) {
+
+				var response = [];
+				var artist = '';
+				var album = '';
+				var title = '';
+				var albumart = '';
+
+				if (results.body.artists.length > 0) {
+					artist = results.body.artists[0].name;
+				}
+
+				if (results.body.hasOwnProperty('album') && results.body.album.hasOwnProperty('name')) {
+					album = results.body.album.name;
+				}
+
+				if (results.body.album.hasOwnProperty('images') && results.body.album.images.length > 0) {
+					albumart = results.body.album.images[0].url;
+				}
+				else {
+					albumart = '';
+				}
+
+				var item = {
+					uri: results.body.uri,
+					service: 'spop',
+					name: results.body.name,
+					artist: artist,
+					album: album,
+					type: 'track',
+					duration: parseInt(results.body.duration_ms / 1000),
+					tracknumber: results.body.track_number,
+					albumart: albumart,
+					samplerate: self.samplerate,
+					bitdepth: '16 bit',
+					trackType: 'spotify'
+				};
+				response.push(item);
+				defer.resolve(response);
+			});
+		});
+
+	return defer.promise;
+};
 
 
 ControllerSpop.prototype.explodeUri = function(uri) {
+
 	var self = this;
 
 	var defer=libQ.defer();
 
-    if (uri.startsWith('spotify/playlists')) {
-                var uriSplitted=uri.split('/');
+	var uriSplitted;
 
-                var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
-                commandDefer.then(function(results){
-                    var resJson=JSON.parse(results);
+	var response;
 
-                    var rate;
-                    if(self.config.get('bitrate')===true)
-                        rate="320";
-                    else rate="128";
+	if (uri.startsWith('spotify/playlists')) {
+		// TODO replace this with SpotifyAPI when we have Oauth support
 
-                    var response=[];
-                    for(var i in resJson.tracks)
-                    {
-                        var albumart=self.getAlbumArt({artist:resJson.tracks[i].artist,album:resJson.tracks[i].album},"");
+		uriSplitted=uri.split('/');
 
-                        var item={
-                            uri: resJson.tracks[i].uri,
-                            service: 'spop',
-                            type: 'song',
-                            name: resJson.tracks[i].title,
-                            title: resJson.tracks[i].title,
-                            artist:resJson.tracks[i].artist,
-                            album: resJson.tracks[i].album,
-                            duration: resJson.tracks[i].duration/1000,
-                            albumart: albumart,
-                            samplerate: '44.1 KHz',
-                            bitdepth: '16 bit',
-                            trackType: 'spotify'
+		var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
+		commandDefer.then(function(results){
+			var resJson=JSON.parse(results);
 
-                        };
+			var response=[];
+			for(var i in resJson.tracks)
+			{
+				var albumart=self.getAlbumArt({artist:resJson.tracks[i].artist,album:resJson.tracks[i].album},"");
 
-                        response.push(item);
-                    }
-                    defer.resolve(response);
-                })
-                    .fail(function()
-                    {
-                        defer.fail(new Error('An error occurred while listing playlists'));
-                    });
-    }
-    else if(uri.startsWith('spotify:artist:'))
-    {
-        var splitted=uri.split(':');
-
-        self.spotifyApi.getArtistTopTracks(splitted[2], 'GB')
-            .then(function(result)
-            {
-                var resJson=result.body;
-
-                var rate;
-                if(self.config.get('bitrate')===true)
-                    rate="320";
-                else rate="128";
-
-                var response=[];
-                for(var i in resJson.tracks)
-                {
-                    var artist=resJson.tracks[i].artists[0].name;
-                    var album=resJson.tracks[i].album.name;
-
-                    var albumart=self.getAlbumArt({artist:artist,
-                        album:album},"");
-
-                    var item={
-                        uri: resJson.tracks[i].uri,
-                        service: 'spop',
-                        type: 'song',
-                        name: resJson.tracks[i].name,
-                        title: resJson.tracks[i].name,
-                        artist:artist,
-                        album: album,
-                        duration: Math.trunc(resJson.tracks[i].duration_ms/1000),
-                        albumart: albumart,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        trackType: 'spotify'
-
-                    };
-
-                    response.push(item);
-                }
-                defer.resolve(response);
-            });
-
-    }
-    else if(uri.startsWith('spotify:album:'))
-    {
-        var splitted=uri.split(':');
-        var id=splitted[2];
-
-        self.spotifyApi.getAlbums([id])
-            .then(function (result) {
-                var resJson = result.body.albums[0];
-                var album=resJson.name;
-                var albumart;
-
-                if(resJson.images!==undefined && resJson.images.length>0)
-                {
-                    console.log(resJson.images[0]);
-                    albumart=resJson.images[0].url;
-                }
-
-                var rate;
-                if(self.config.get('bitrate')===true)
-                    rate="320";
-                else rate="128";
-
-                var response=[];
-                for(var i in resJson.tracks.items) {
-                    var track=resJson.tracks.items[i];
-
-                    var artist = track.name;
-
-                    if(albumart===undefined) {
-                        albumart = self.getAlbumArt({
-                            artist: artist,
-                            album: album
-                        }, "");
-                    }
-
-                    var item = {
-                        uri: track.uri,
-                        service: 'spop',
-                        type: 'song',
-                        name: track.name,
-                        title: track.name,
-                        artist: artist,
-                        album: album,
-                        duration: Math.trunc(track.duration_ms / 1000),
-                        albumart: albumart,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        trackType: 'spotify'
-
-                    };
-
-                    console.log(JSON.stringify(item));
-
-                    response.push(item);
-                }
-
-                defer.resolve(response);
-
-            });
-
-    }
-    else
-    {
-        var splitted=uri.split(':');
-
-        self.spotifyApi.getTrack(splitted[2])
-            .then(function(data) {
-                self.commandRouter.logger.info(JSON.stringify(data));
-
-
-                var artist='';
-                var album='';
-                var title='';
-
-                if(data.body.artists.length>0)
-                    artist=data.body.artists[0].name;
-
-                if(data.body.album!==undefined)
-                    album=data.body.album.name;
-
-                var albumart=self.getAlbumArt({artist:artist,album:album},"");
-
-                defer.resolve({
-                    uri: uri,
-                    service: 'spop',
-                    name: data.body.name,
-                    artist: artist,
-                    album: album,
-                    type: 'track',
-                    duration: parseInt(data.body.duration_ms/1000),
-                    tracknumber: data.body.track_number,
-                    albumart: albumart,
-					samplerate: '44.1 KHz',
+				var item={
+					uri: resJson.tracks[i].uri,
+					service: 'spop',
+					type: 'song',
+					name: resJson.tracks[i].title,
+					title: resJson.tracks[i].title,
+					artist:resJson.tracks[i].artist,
+					album: resJson.tracks[i].album,
+					duration: resJson.tracks[i].duration/1000,
+					albumart: albumart,
+					samplerate: self.samplerate,
 					bitdepth: '16 bit',
 					trackType: 'spotify'
 
-                });
+				};
 
-            });
-    }
+				response.push(item);
+			}
+			defer.resolve(response);
+		})
+			.fail(function()
+			{
+				defer.fail(new Error('An error occurred while listing playlists'));
+			});
+	}
+	else if(uri.startsWith('spotify:artist:'))
+	{
+		uriSplitted=uri.split(':');
+		// TODO *jpa* Add tracks from albums next
+		response = self.getArtistTracks(uriSplitted[2]);
+		defer.resolve(response);
+	}
+	else if(uri.startsWith('spotify:album:'))
+	{
+		uriSplitted=uri.split(':');
+		response = self.getAlbumTracks(uriSplitted[2]);
+		defer.resolve(response);
+	}
+	else if (uri.startsWith('spotify:user:'))
+	{
+		uriSplitted=uri.split(':');
+		response = self.getPlaylistTracks(uriSplitted[2], uriSplitted[4]);
+		defer.resolve(response);
+	}
+	else if (uri.startsWith('spotify:track:'))
+	{
+		uriSplitted = uri.split(':');
+		response = self.getTrack(uriSplitted[2]);
+		defer.resolve(response);
+	}
+	else {
+		self.logger.info('Bad URI while exploding Spotify URI: ' + uri);
+	}
 
 	return defer.promise;
 };
@@ -1054,18 +1618,18 @@ ControllerSpop.prototype.logStart = function(sCommand) {
 
 
 ControllerSpop.prototype.createSPOPDFile = function () {
-    var self = this;
+	var self = this;
 
-    var defer=libQ.defer();
+	var defer=libQ.defer();
 
 
-    try {
+	try {
 
-        fs.readFile(__dirname + "/spop.conf.tmpl", 'utf8', function (err, data) {
-            if (err) {
-                defer.reject(new Error(err));
-                return console.log(err);
-            }
+		fs.readFile(__dirname + "/spop.conf.tmpl", 'utf8', function (err, data) {
+			if (err) {
+				defer.reject(new Error(err));
+				return console.log(err);
+			}
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 			var hwdev = 'hw:' + outdev;
 			var  bitrate = self.config.get('bitrate');
@@ -1074,154 +1638,232 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 				bitratevalue = 'false';
 			}
 
-            var conf1 = data.replace("${username}", self.config.get('username'));
-            var conf2 = conf1.replace("${password}", self.config.get('password'));
-            var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
+			var conf1 = data.replace("${username}", self.config.get('username'));
+			var conf2 = conf1.replace("${password}", self.config.get('password'));
+			var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
 			var conf4 = conf3.replace("${outdev}", hwdev);
 
-            fs.writeFile("/etc/spopd.conf", conf4, 'utf8', function (err) {
-                if (err)
-                    defer.reject(new Error(err));
-                else defer.resolve();
-            });
+			fs.writeFile("/etc/spopd.conf", conf4, 'utf8', function (err) {
+				if (err)
+					defer.reject(new Error(err));
+				else defer.resolve();
+			});
 
 
-        });
+		});
 
 
-    }
-    catch (err) {
+	}
+	catch (err) {
 
 
-    }
+	}
 
-    return defer.promise;
+	return defer.promise;
 
 };
 
 ControllerSpop.prototype.saveSpotifyAccount = function (data) {
-    var self = this;
-
-    var defer = libQ.defer();
-
-    self.config.set('username', data['username']);
-    self.config.set('password', data['password']);
-    self.config.set('bitrate', data['bitrate']);
-
-    self.rebuildSPOPDAndRestartDaemon()
-        .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-            defer.resolve({});
-        })
-        .fail(function(e)
-        {
-            defer.reject(new Error());
-        })
-
-
-    return defer.promise;
-
-};
-
-
-ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
-    var self=this;
-    var defer=libQ.defer();
-
-    self.createSPOPDFile()
-        .then(function(e)
-        {
-            var edefer=libQ.defer();
-            exec("killall spopd", function (error, stdout, stderr) {
-                edefer.resolve();
-            });
-            return edefer.promise;
-        })
-        .then(self.startSpopDaemon.bind(self))
-        .then(function(e)
-        {
-            setTimeout(function () {
-                self.logger.info("Connecting to daemon");
-                self.spopDaemonConnect(defer);
-            }, 5000);
-        });
-
-    return defer.promise;
-}
-
-ControllerSpop.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::seek to ' + timepos);
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-ControllerSpop.prototype.search = function (query) {
 	var self = this;
 
 	var defer = libQ.defer();
-	var list = [];
-	var commandDefer=self.sendSpopCommand('search', [query.value]);
-	commandDefer.then(function(results){
-		var resJson=JSON.parse(results);
-		//console.log(resJson.tracks);
 
+	self.config.set('username', data['username']);
+	self.config.set('password', data['password']);
+	self.config.set('bitrate', data['bitrate']);
 
-        if(resJson.artists.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_ARTISTS_SECTION')});
-
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.artists[i].artist,
-                    icon: 'fa fa-spotify',
-                    uri: resJson.artists[i].uri
-                });
-            }
-        }
-
-        if(resJson.albums.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_ALBUMS_SECTION')});
-
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.albums[i].title,
-                    artist:resJson.albums[i].artist,
-                    album:'',
-                    icon: 'fa fa-spotify',
-                    uri: resJson.albums[i].uri
-                });
-            }
-        }
-
-        if(resJson.tracks.length>0)
-        {
-            list.push({type:'title',title:self.getI18NString('SEARCH_SONGS_SECTION')});
-
-            for(var i in resJson.tracks) {
-                list.push({
-                    service: 'spop',
-                    type: 'song',
-                    title: resJson.tracks[i].title,
-                    artist:resJson.tracks[i].artist,
-                    album: resJson.tracks[i].album,
-                    icon: 'fa fa-spotify',
-                    uri: resJson.tracks[i].uri
-                });
-            }
-        }
-
-        defer.resolve(list);
-		//console.log(list);
-	})
-		.fail(function()
+	self.rebuildSPOPDAndRestartDaemon()
+		.then(function(e){
+			self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+			defer.resolve({});
+		})
+		.fail(function(e)
 		{
-            defer.resolve();
+			defer.reject(new Error());
 		});
 
 	return defer.promise;
 };
 
+
+ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
+	var self=this;
+	var defer=libQ.defer();
+
+	self.createSPOPDFile()
+		.then(function(e)
+		{
+			var edefer=libQ.defer();
+			exec("killall spopd", function (error, stdout, stderr) {
+				edefer.resolve();
+			});
+			return edefer.promise;
+		})
+		.then(self.startSpopDaemon.bind(self))
+		.then(function(e)
+		{
+			setTimeout(function () {
+				self.logger.info("Connecting to daemon");
+				self.spopDaemonConnect(defer);
+			}, 5000);
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype.seek = function (timepos) {
+	this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::seek to ' + timepos);
+	return this.sendSpopCommand('seek '+timepos, []);
+};
+
+ControllerSpop.prototype.search = function (query) {
+
+	var self=this;
+
+	var defer=libQ.defer();
+
+	self.spotifyCheckAccessToken()
+		.then(function(data) {
+			var spotifyDefer = self.spotifyApi.search(query.value, ['artist', 'album', 'playlist', 'track']);
+			spotifyDefer.then(function (results) {
+
+				var list = [];
+
+				// TODO put in internationalized strings
+				// Show artists, albums, playlists then tracks
+
+				if(results.body.hasOwnProperty('artists') && results.body.artists.items.length > 0)
+				{
+					list.push({type: 'title', title: 'Spotify Artists'});
+					var artists = self._searchArtists(results);
+					for (var i in artists) {
+						list.push(artists[i]);
+					}
+				}
+				if(results.body.hasOwnProperty('albums') && results.body.albums.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Albums'});
+					var albums = self._searchAlbums(results);
+					for (var i in albums) {
+						list.push(albums[i]);
+					}
+				}
+				if(results.body.hasOwnProperty('playlists') && results.body.playlists.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Playlists'});
+					var playlists = self._searchPlaylists(results);
+					for (var i in playlists) {
+						list.push(playlists[i]);
+					}
+				}
+				if(results.body.hasOwnProperty('tracks') && results.body.tracks.items.length > 0)
+				{
+					list.push({type:'title',title:'Spotify Tracks'});
+					var tracks = self._searchTracks(results);
+					for (var i in tracks) {
+						list.push(tracks[i]);
+					}
+				}
+				defer.resolve(list);
+			}, function (err) {
+				self.logger.info('An error occurred while searching ' + err);
+			});
+		});
+
+	return defer.promise;
+};
+
+ControllerSpop.prototype._searchArtists = function (results) {
+
+	var list = [];
+
+	for (var i in results.body.artists.items) {
+		var albumart = '';
+		var artist = results.body.artists.items[i];
+		if (artist.hasOwnProperty('images') && artist.images.length > 0) {
+			albumart = artist.images[0].url;
+		};
+		var item = {
+			service: 'spop',
+			type: 'folder',
+			title: artist.name,
+			albumart: albumart,
+			uri: artist.uri
+		};
+		if (albumart == '') {
+			item.icon = 'fa fa-user';
+		}
+		list.push(item);
+	}
+
+	return list;
+
+};
+
+ControllerSpop.prototype._searchAlbums = function (results) {
+
+	var list = [];
+
+	for (var i in results.body.albums.items) {
+		var albumart = '';
+		var album = results.body.albums.items[i];
+		if (album.hasOwnProperty('images') && album.images.length > 0) {
+			albumart = album.images[0].url;
+		};
+		list.push({
+			service: 'spop',
+			type: 'folder',
+			title: album.name,
+			albumart: albumart,
+			uri: album.uri,
+		});
+	}
+
+	return list;
+};
+
+ControllerSpop.prototype._searchPlaylists = function (results) {
+
+	var list = [];
+
+	for (var i in results.body.playlists.items) {
+		var albumart = '';
+		var playlist = results.body.playlists.items[i];
+		if (playlist.hasOwnProperty('images') && playlist.images.length > 0) {
+			albumart = playlist.images[0].url;
+		};
+		list.push({
+			service: 'spop',
+			type: 'folder',
+			title: playlist.name,
+			albumart: albumart,
+			uri: playlist.uri
+		});
+	}
+
+	return list;
+};
+
+ControllerSpop.prototype._searchTracks = function (results) {
+
+	var list = [];
+
+	for (var i in results.body.tracks.items) {
+		var albumart = '';
+		var track = results.body.tracks.items[i];
+		if (track.album.hasOwnProperty('images') && track.album.images.length > 0) {
+			albumart = track.album.images[0].url;
+		};
+		list.push({
+			service: 'spop',
+			type: 'song',
+			title: track.name,
+			artist: track.artists[0].name,
+			album: track.album.name,
+			albumart: albumart,
+			uri: track.uri
+		});
+	}
+
+	return list;
+};
