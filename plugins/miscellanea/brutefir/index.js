@@ -214,7 +214,7 @@ ControllerBrutefir.prototype.onStart = function() {
  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
  return defer.promise;
 };
-
+/*
 ControllerBrutefir.prototype.handleBrowseUri = function(curUri) {
  var self = this;
 
@@ -244,7 +244,7 @@ ControllerBrutefir.prototype.handleBrowseUri = function(curUri) {
 
  return response;
 };
-
+*/
 ControllerBrutefir.prototype.onRestart = function() {
  var self = this;
 
@@ -273,9 +273,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		.then(function(uiconf)
 		{
 
-var value;	
+//var value;	
 		
- var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
+// var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 /*value = self.config.get('coef');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
@@ -368,23 +368,33 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 // Internal Methods ---------------------------------------------------------------------------------------
 
 // burtefir command - until now send nothing....
-ControllerBrutefir.prototype.sendgainequalizer = function() {
+ControllerBrutefir.prototype.sendgainEq = function() {
  var self = this;
-
-	//uiconf.sections[0].content[1].value = self.config.get('coef');
-	self.config.set('coef', data['coef']);
-
+ uiconf.sections[0].content[1].value = self.config.get('coef');
 
 
 var values = coef.value.split(',');
-var commandString = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-debugger;
- console.log(commandString);
- return self.sendBrutefirCommand(commandString);
+var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
+	debugger;
+ console.log(commandgainEq);
+ return self.sendBrutefirCommand(commandgainEq);
 
 };
 
-ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
+ControllerBrutefir.prototype.sendphasEq = function() {
+ var self = this;
+ uiconf.sections[0].content[2].value = self.config.get('phas');
+
+var values = phas.value.split(',');
+var commandphaseEq = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
+
+ console.log(commandphaseEq);
+ return self.sendBrutefirCommand(commandphaseEq);
+};
+
+
+ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
 
@@ -394,7 +404,7 @@ self.brutefirCommandReady
   .then(function() {
    return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
   });
-
+console.log(commandString);
  var brutefirResponse = brutefirResponseDeferred.promise;
 	 if(sCommand!=='status')
     {
@@ -406,16 +416,6 @@ self.brutefirCommandReady
  return brutefirResponse;
 };
 
-ControllerBrutefir.prototype.sendphasequalizer = function() {
- var self = this;
- uiconf.sections[0].content[2].value = self.config.get('phas');
-
-var values = phas.value.split(',');
-var commandString = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-
- console.log(commandString);
- return self.sendBrutefirCommand(commandString);
-};
 
 
 
