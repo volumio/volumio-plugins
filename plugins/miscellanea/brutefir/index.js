@@ -375,7 +375,7 @@ var values = coef.value.split(',');
 var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
 ///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
 	debugger;
-  return self.sendBrutefirCommand('commandgainEq');
+  return self.sendBrutefirCommand(commandgainEq);
 debugger;
 };
 
