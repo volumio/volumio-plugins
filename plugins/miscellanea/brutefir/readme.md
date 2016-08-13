@@ -6,12 +6,12 @@
 This plugin is designed to use brutefir with volumio2
 
 It will provide :
- -A automated installation
- -A loopback device setting for alsa
+- A automated installation
+- A loopback device setting for alsa
 
- -The use of custom filter - for DRC digital room correction
+- The use of custom filter - for DRC digital room correction
 
- -A multiband equalizer
+- A multiband equalizer
 	with gain for each band
 	with phase setting for each band (not implemented yet)
 - A stereo to binaural filtering using BAUER alsa ladspa plugin
@@ -28,7 +28,6 @@ For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250
 
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
 Access to webUI and save configuration
-The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
 Binaural filtering if correct output set... 
 
 - What is not working :
