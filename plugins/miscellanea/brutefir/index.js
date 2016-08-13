@@ -59,23 +59,18 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
 ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var self = this;
 
- // TODO use names from the package.json instead
  self.servicename = 'brutefir';
  self.displayname = 'Brutefir';
 
 
- // Each core gets its own set of Brutefir sockets connected
 
  var nHost = 'localhost';
  var nPort = 3002;
  self.connBrutefirCommand = libNet.createConnection(nPort, nHost);
  self.connBrutefirStatus = libNet.createConnection(nPort, nHost, function() {
-//  self.addToBrowseSources();
   defer.resolve();
- }); // Socket to listen for status changes
-
- // Start a listener for receiving errors
-
+ }); 
+ 
  self.connBrutefirCommand.on('error', function(err) {
   self.logger.info('BRUTEFIR status error:');
   self.logger.info(err);
@@ -93,13 +88,13 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    defer.reject();
   } catch (ecc) {}
  });
+ /*
  // Init some command socket variables
  self.bBrutefirCommandGotFirstMessage = false;
  self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events 
  self.brutefirCommandReady = self.brutefirCommandReadyDeferred.promise;
  self.arrayResponseStack = [];
  self.sResponseBuffer = '';
-
  // Start a listener for command socket messages (command responses)
  self.connBrutefirCommand.on('data', function(data) {
   self.sResponseBuffer = self.sResponseBuffer.concat(data.toString());
@@ -117,7 +112,10 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
      self.pushError(error);
     }
     // Else this is a command response
-   } else {
+    
+   }
+   */
+/*   else {
     try {
      self.commandRouter.logger.info("BEFORE: BRUTEFIR HAS " + self.arrayResponseStack.length + " PROMISE IN STACK");
 
@@ -135,7 +133,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    self.sResponseBuffer = '';
   }
  });
-
+/*
  // Init some status socket variables
  self.bBrutefirStatusGotFirstMessage = false;
  self.sStatusBuffer = '';
@@ -164,7 +162,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
     self.logStart('Brutefir announces state update')
      /*.then(function(){
       return self.getState.call(self);
-      })*/
+      })
      .then(function() {
       return self.parseState.call(self, sStatus);
      })
@@ -179,8 +177,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    self.sStatusBuffer = '';
   }
  });
-
-
+*/
 
 };
 
@@ -335,6 +332,7 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
 	}
 
 	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+
 };
 
 
@@ -367,33 +365,32 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 
 // Internal Methods ---------------------------------------------------------------------------------------
 
-// burtefir command - until now send nothing....
+// here we compose command to be send to brutefir- until now send nothing....
+//for gain settings
 ControllerBrutefir.prototype.sendgainEq = function() {
  var self = this;
- uiconf.sections[0].content[1].value = self.config.get('coef');
-
 
 var values = coef.value.split(',');
+	console.log(values);
 var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
+///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
 	debugger;
- console.log(commandgainEq);
- return self.sendBrutefirCommand(commandgainEq);
-
+  return self.sendBrutefirCommand('commandgainEq');
+debugger;
 };
 
+//for phase settings
 ControllerBrutefir.prototype.sendphasEq = function() {
  var self = this;
- uiconf.sections[0].content[2].value = self.config.get('phas');
 
 var values = phas.value.split(',');
 var commandphaseEq = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
 
- console.log(commandphaseEq);
+
  return self.sendBrutefirCommand(commandphaseEq);
 };
 
-
+//here we send command to brutefir
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
@@ -402,16 +399,16 @@ ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
 var brutefirResponseDeferred= libQ.defer();
 self.brutefirCommandReady
   .then(function() {
-   return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8');
+   return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand);
   });
-console.log(commandString);
- var brutefirResponse = brutefirResponseDeferred.promise;
+  debugger;
+ /*var brutefirResponse = brutefirResponseDeferred.promise;
 	 if(sCommand!=='status')
     {
         self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
         self.arrayResponseStack.push(brutefirResponseDeferred);
     }
-
+*/
  // Return a promise for the command response
  return brutefirResponse;
 };
@@ -457,7 +454,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf10 = conf9.replace("${rightfilter}", self.config.get('rightfilter'));
    var conf11 = conf10.replace("${output_device}", self.config.get('output_device'));
    var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
-
+debugger;
    fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
@@ -518,13 +515,11 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  var self = this;
  var defer = libQ.defer();
+	self.config.set('coef', data['coef']);
 
-self.config.set('coef', data['coef']);
+	self.config.set('phas', data['phas']);
 
-self.config.set('phas', data['phas']);
-
-self.logger.info('Configurations have been set');
-
+	self.logger.info('Configurations have been set');
 
 	self.commandRouter.pushToastMessage('success', "Configuration update", 'Configuration has been successfully updated');
 
