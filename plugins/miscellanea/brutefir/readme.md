@@ -1,7 +1,7 @@
-2 JULLY 2016
+13 august 2016
 	BRUTEFIR PLUGIN
 
-Brutefir plugin
+
 
 This plugin is designed to use brutefir with volumio2
 
@@ -14,6 +14,7 @@ It will provide :
  -A multiband equalizer
 	with gain for each band
 	with phase setting for each band (not implemented yet)
+- A stereo to binaural filtering using BAUER alsa ladspa plugin
 
 Path for filters (left and right) will be set through webUI and stored in a file.
 They will be used each time brutefir start
@@ -28,21 +29,22 @@ For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
 Access to webUI and save configuration
 The plugin access to brutefir via telnet localhost port 3002( can see that with netstat | grep 3002
+Binaural filtering if correct output set... 
 
 - What is not working :
 No change in sound when setting equalizer
+Equalizer appears on several line / label are unreadable
 
 - WARNING
 If you want to test, you have to reboot after installation so that module load, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
 If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". If not working, this probably due to a wrong I/O device.
 Type "aplay -L" to determine  right devices
 
-And next step is to provide a webUI with sliders to set equalizer, and a file selector to choose filter (as it has been done to select background).
 To be continued ;-)
 
 To do list (not exhaustive and not in order)
 - auto detection input output device
 - file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
 - Several profil for equalizer (pre-set or user pre-set) with naming like rock classical, jazz etc...
-- a switch to set the gain OR phase for each band
+- This plugin should be rename as "Volumio DSP center" as it include other filtering than brutefir...
 - ....
