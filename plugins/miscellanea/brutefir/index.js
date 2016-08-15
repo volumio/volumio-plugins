@@ -17,13 +17,18 @@ var config = new(require('v-conf'))();
 module.exports = ControllerBrutefir;
 function ControllerBrutefir(context) {
  // This fixed variable will let us refer to 'this' object at deeper scopes
- var self = this;
+	var self = this;
+	self.context=context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger = self.context.logger;
+	 this.configManager = this.context.configManager;
 
+/*
  this.context = context;
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
-
+*/
 }
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
@@ -401,14 +406,13 @@ self.brutefirCommandReady
   .then(function() {
    return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand);
   });
-  debugger;
- /*var brutefirResponse = brutefirResponseDeferred.promise;
+ var brutefirResponse = brutefirResponseDeferred.promise;
 	 if(sCommand!=='status')
     {
         self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
         self.arrayResponseStack.push(brutefirResponseDeferred);
     }
-*/
+console.log("send brutefir");
  // Return a promise for the command response
  return brutefirResponse;
 };

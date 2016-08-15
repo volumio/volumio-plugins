@@ -1,12 +1,12 @@
 {
 	"page": {
-		"label": "Volumio2 Dsp Center"
+		"label": "TRANSLATE.BRUTEFIR.VOLUMIO_DSP"
 	},
 	"sections": [
 		{
 			"id": "equalizer",
 			"element": "section",
-			"label": "BRUTEFIR.EQUALIZER_SETTINGS",
+			"label": "TRANSLATE.BRUTEFIR.BRUTEFIR_EQUALIZER_SETTINGS",
 			"icon": "fa-sliders fa-rotate-90",
 			"onSave": {
 				"type": "plugin",
@@ -25,13 +25,13 @@
 				{
 					"id": "enabled",
 					"element": "switch",
-					"label": "On= Gain Settings / Off= Phase Settings",
+					"label": "TRANSLATE.BRUTEFIR.EQUALIZER_MODE",
 					"value": true
 				},
 				{
 					"id": "coef",
 					"element": "equalizer",
-					"label": "Equalizer",
+					"label": "TRANSLATE.BRUTEFIR.GAIN_EQUALIZER",
 					"description": "",
 					"visibleIf": {
 						"field": "enabled",
@@ -44,7 +44,6 @@
 								"min": -10,
 								"max": 10,
 								"step": 1,
-								"value": 0,
 								"ticksLabels": ["31Hz"],
 								"tooltip": "show"
 							},
@@ -126,7 +125,7 @@
 				{
 					"id": "phas",
 					"element": "equalizer",
-					"label": "Equalizer",
+					"label": "TRANSLATE.BRUTEFIR.PHASE_EQUALIZER",
 					"description": "",
 					"visibleIf": {
 						"field": "enabled",
@@ -214,7 +213,7 @@
 		},
 		{
 					"id": "bauer",
-					"label": "Bauer Stereo to binaural filter",
+					"label": "TRANSLATE.BAUER.BAUER_TITLE",
 					"element": "section",
 					"icon": "fa-headphones",
 					"onSave": {
@@ -223,7 +222,7 @@
 						"method": "saveBauerfilter"
 					},
 					"saveButton": {
-						"label": "save",
+						"label": "TRANSLATE.BRUTEFIR.SAVE",
 						"data": [
 							"levelfcut",
 							"levelfeed"
@@ -234,13 +233,13 @@
 						{
 							"id": "enabled",
 							"element": "switch",
-							"label": "Bauer filter settings",
+							"label": "TRANSLATE.BAUER_FILTER_SETTINGS",
 							"value": false
 						},
 						{
 							"id": "levelfcut",
 							"element": "equalizer",
-							"label": "Frequency cut (Hz)",
+							"label": "TRANSLATE.BAUER.FCUT",
 							"description":"",
 							"visibleIf": {
 								"field": "enabled",
@@ -262,7 +261,7 @@
 						{
 							"id": "levelfeed",
 							"element": "equalizer",
-							"label": "Level feed (dB)",
+							"label": "TRANSLATE.BAUER.FLEVEL",
 							"description":"",
 							"visibleIf": {
 								"field": "enabled",
@@ -288,7 +287,7 @@
 		{
 			"id": "advanced",
 			"element": "section",
-			"label": "BRUTEFIR.ADVANCED_SETTINGS",
+			"label": "TRANSLATE.BRUTEFIR.BRUTEFIR_ADVANCED_SETTINGS",
 			"icon": "fa-cogs",
 			"onSave": {
 				"type": "plugin",
@@ -296,7 +295,7 @@
 				"method": "saveBrutefirconfigAccount2"
 			},
 			"saveButton": {
-				"label": "save",
+				"label": "TRANSLATE.BRUTEFIR.SAVE",
 				"data": [
 					"attenuation",
 					"leftfilter",
@@ -316,13 +315,13 @@
 				{
 					"id": "enabled",
 					"element": "switch",
-					"label": "Advanced settings",
+					"label": "TRANSLATE.BRUTEFIR.ADVANCED_SETTINGS",
 					"value": false
 				},
 				{
 					"id": "attenuation",
 					"element": "select",
-					"label": "Input attenuation",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_ATTENUATION",
 					"value": {
 						"value": "10",
 						"label": "10"
@@ -362,7 +361,7 @@
 					"id": "leftfilter",
 					"element": "input",
 					"doc": "Leftfilter file (path/name) if none dirac pulse is used",
-					"label": "left filter",
+					"label": "TRANSLATE.BRUTEFIR.LEFT_FILTER",
 					"value": {
 						"value": "dirac pulse",
 						"label": "dirac pulse"
@@ -377,7 +376,7 @@
 					"id": "rightfilter",
 					"element": "input",
 					"doc": "Right filter file (path/name) if none dirac pulse is used",
-					"label": "right filter",
+					"label": "TRANSLATE.BRUTEFIR.RIGHT_FILTER",
 					"value": {
 						"value": "dirac pulse",
 						"label": "dirac pulse"
@@ -392,7 +391,7 @@
 					"id": "filter_size",
 					"element": "select",
 					"doc": "size of filter",
-					"label": "filter size",
+					"label": "TRANSLATE.BRUTEFIR.FILTER_SIZE",
 					"value": {
 						"value": "8192",
 						"label": "8192"
@@ -432,7 +431,7 @@
 					"id": "numb_part",
 					"element": "select",
 					"doc": "number of filter partion",
-					"label": "number of partitions",
+					"label": "TRANSLATE.BRUTEFIR.NUMBER_PARTITION",
 					"value": {
 						"value": "8",
 						"label": "8"
@@ -464,7 +463,7 @@
 					"id": "fl_bits",
 					"element": "select",
 					"doc": "floating point internal resolusion",
-					"label": "internal bits resolution",
+					"label": "TRANSLATE.BRUTEFIR.INTERNAL_RESOLUTION",
 					"value": {
 						"value": "64",
 						"label": "64"
@@ -488,7 +487,7 @@
 					"id": "smpl_rate",
 					"element": "select",
 					"doc": "sample rate",
-					"label": "sample rate",
+					"label": "TRANSLATE.BRUTEFIR.SAMPLE_RATE",
 					"value": {
 						"value": "44100",
 						"label": "44100"
@@ -520,7 +519,7 @@
 					"id": "input_format",
 					"element": "select",
 					"doc": "input format",
-					"label": "input format",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_FORMAT",
 					"value": {
 						"value": "S16_LE",
 						"label": "S16_LE"
@@ -600,7 +599,7 @@
 					"id": "output_format",
 					"element": "select",
 					"doc": "output format",
-					"label": "output format",
+					"label": "TRANSLATE.BRUTEFIR.OUTPUT_FORMAT",
 					"value": {
 						"value": "S16_LE",
 						"label": "S16_LE"
@@ -680,7 +679,7 @@
 					"id": "input_device",
 					"element": "input",
 					"doc": "input device - should be the output sets in playback options",
-					"label": "input device",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_DEVICE",
 					"value": {
 						"value": "hw:Loopback,1",
 						"label": "hw:Loopback,1"
@@ -695,7 +694,7 @@
 					"id": "output_device",
 					"element": "input",
 					"doc": "output device - device used for the output",
-					"label": "output device",
+					"label": "TRANSLATE.BRUTEFIR.OUTPUT_DEVICE",
 					"value": {
 						"value": "hw:1",
 						"label": "hw:1"
