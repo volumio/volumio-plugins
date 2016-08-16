@@ -240,7 +240,8 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 	var sbauer;
                 if(self.config.get('sbauer')===true)
                     output_device="headphones";
-		else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
+                else output_device= self.config.get('output_device');
+		//else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
 	
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -261,7 +262,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[0].content[1].value = self.config.get('coef');
  uiconf.sections[0].content[2].value = self.config.get('phas');
 //bauer section
-// uiconf.sections[1].content[0].value = item.enabled;
+ uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].value = self.config.get('levelfcut');
  uiconf.sections[1].content[2].value = self.config.get('levelfeed');
 //advanced settings option
@@ -424,6 +425,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    //var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    //var intero = 1;
    //var boutdev = 'hw:' + intero;
+   var boutput_device;
+   var sbauer;
+   var output_device;
+       if(self.config.get('sbauer')===true)
+                    output_device="headphones";
+                else output_device=self.config.get('output_device');
+
+   console.log("output_device");
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
@@ -434,9 +443,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf8 = conf7.replace("${attenuation2}", self.config.get('attenuation'));
    var conf9 = conf8.replace("${leftfilter}", self.config.get('leftfilter'));
    var conf10 = conf9.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf11 = conf10.replace("${output_device}", self.config.get('output_device'));
+   var conf11 = conf10.replace("${output_device}", output_device);
    var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
-debugger;
+
    fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
@@ -514,7 +523,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
     var self = this;
 
     var defer = libQ.defer();
-
+    self.config.set('sbauer', data['sbauer']);
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
    self.logger.info('Configurations of filter have been set');
@@ -552,7 +561,13 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
-
+ var output_device = self.config.get('output_device');
+ var sbauer;
+                if(self.config.get('sbauer')===true)
+                    output_device="headphones";
+                else output_device= self.config.get('output_device');
+		//else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
+console.log(output_device);	
  var defer = libQ.defer();
  self.config.set('attenuation', data['attenuation'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);
@@ -565,7 +580,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('input_format', data['input_format'].value);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
-
+ 
 
 
  self.rebuildBRUTEFIRAndRestartDaemon()

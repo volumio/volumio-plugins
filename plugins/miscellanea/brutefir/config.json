@@ -2,6 +2,7 @@
 "attenuation":{"type":"string","value":"10"},
 "coef":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
 "phas":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"sbauer":{"type":"boolean","value":false},
 "levelfcut":{"type":"string","value":"700"},
 "levelfeed":{"type":"string","value":"5"},
 "smpl_rate":{"type": "string","value": "44100"},

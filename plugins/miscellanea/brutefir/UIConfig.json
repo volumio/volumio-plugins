@@ -224,6 +224,7 @@
 					"saveButton": {
 						"label": "TRANSLATE.BRUTEFIR.SAVE",
 						"data": [
+							"sbauer",
 							"levelfcut",
 							"levelfeed"
 						]
