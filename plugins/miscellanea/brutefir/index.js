@@ -190,8 +190,8 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
  self.logger.info("Stopping Brutefir service");
-//exec("killall brutefir.real", function(error, stdout, stderr) {
-exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
+
+	exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
  });
  return libQ.resolve();
 };
@@ -216,37 +216,7 @@ ControllerBrutefir.prototype.onStart = function() {
  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
  return defer.promise;
 };
-/*
-ControllerBrutefir.prototype.handleBrowseUri = function(curUri) {
- var self = this;
 
- //self.commandRouter.logger.info(curUri);
- var response;
-
- if (curUri.startsWith('brutefir')) {
-  if (curUri == 'brutefir') 
-	{
-   response = libQ.resolve({
-    navigation: {
-     prev: {
-      uri: 'brutefir'
-     },
-     list: [{
-       service: 'brutefir',
-       type: 'folder',
-       icon: 'fa fa-folder-open-o',
-       uri: 'brutefir'
-      }
-
-     ]
-    }
-   });
-  }
- }
-
- return response;
-};
-*/
 ControllerBrutefir.prototype.onRestart = function() {
  var self = this;
 
@@ -266,15 +236,20 @@ ControllerBrutefir.prototype.onUninstall = function() {
 ControllerBrutefir.prototype.getUIConfig = function() {
  	var self = this;
 	var defer = libQ.defer();
-
+	var output_device;
+	var sbauer;
+                if(self.config.get('sbauer')===true)
+                    output_device="headphones";
+		else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
+	
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
-	 //var language_code = config.get('language_code');
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
 		__dirname+'/i18n/strings_en.json',
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
 
+	
 //var value;	
 		
 // var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
@@ -282,11 +257,14 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 */
+//equalizer section			
  uiconf.sections[0].content[1].value = self.config.get('coef');
  uiconf.sections[0].content[2].value = self.config.get('phas');
+//bauer section
+// uiconf.sections[1].content[0].value = item.enabled;
  uiconf.sections[1].content[1].value = self.config.get('levelfcut');
  uiconf.sections[1].content[2].value = self.config.get('levelfeed');
-
+//advanced settings option
  uiconf.sections[2].content[2].value = self.config.get('leftfilter');
  uiconf.sections[2].content[3].value = self.config.get('rightfilter');
  
@@ -539,7 +517,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
-   self.logger.info('Configurations have been set');
+   self.logger.info('Configurations of filter have been set');
 
 /*    self.rebuildBRUTEFIRAndRestartDaemon()
         .then(function(e){
@@ -626,7 +604,7 @@ exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 10
   });
 
  return defer.promise;
-},
+}
 
 /*ControllerBrutefir.prototype.getleftfilterfile = function()
 {
@@ -650,7 +628,7 @@ exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 10
 
     return defer.promise;
 };
-*/
+
 ControllerBrutefir.prototype.loadI18NStrings = function (code) {
     this.logger.info('BRUTEFIR I18N LOAD FOR LOCALE '+code);
 
@@ -662,6 +640,6 @@ ControllerBrutefir.prototype.loadI18NStrings = function (code) {
 ControllerBrutefir.prototype.getI18NString = function (key) {
     return this.i18nString[key];
 }
-
+*/
 
 

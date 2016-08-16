@@ -231,9 +231,9 @@
 					"content": 
 					[
 						{
-							"id": "enabled",
+							"id": "sbauer",
 							"element": "switch",
-							"label": "TRANSLATE.BAUER_FILTER_SETTINGS",
+							"label": "TRANSLATE.BAUER.BAUER_FILTER_SETTINGS",
 							"value": false
 						},
 						{
@@ -242,7 +242,7 @@
 							"label": "TRANSLATE.BAUER.FCUT",
 							"description":"",
 							"visibleIf": {
-								"field": "enabled",
+								"field": "sbauer",
 								"value": true
 							},
 							"config": {
@@ -264,7 +264,7 @@
 							"label": "TRANSLATE.BAUER.FLEVEL",
 							"description":"",
 							"visibleIf": {
-								"field": "enabled",
+								"field": "sbauer",
 								"value": true
 							},
 							"config": {

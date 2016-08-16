@@ -24,7 +24,7 @@
 },
  "BAUER":{
  "BAUER_TITLE":"Filtre Bauer Stereo->Binaural",
- "BAUER_FILTER_SETTINGS":"Réglages du filtre",
+ "BAUER_FILTER_SETTINGS":"Activer le filtre",
  "FCUT":"Fréquence de coupure (Hz)",
  "FLEVEL":"Niveau (dB)"
 }

@@ -24,7 +24,7 @@
 },
  "BAUER":{
  "BAUER_TITLE":"Bauer Stereo to binaural filter",
- "BAUER_FILTER_SETTINGS":"Bauer filter settings",
+ "BAUER_FILTER_SETTINGS":"Enabling Bauer filter",
  "FCUT":"Frequency cut (Hz)",
  "FLEVEL":"Level feed (dB)"
 }
