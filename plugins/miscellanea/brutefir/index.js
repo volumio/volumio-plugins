@@ -250,21 +250,15 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		.then(function(uiconf)
 		{
 
-	
-//var value;	
-		
-// var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
-/*value = self.config.get('coef');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-*/
 //equalizer section			
  uiconf.sections[0].content[1].value = self.config.get('coef');
  uiconf.sections[0].content[2].value = self.config.get('phas');
+
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].value = self.config.get('levelfcut');
  uiconf.sections[1].content[2].value = self.config.get('levelfeed');
+
 //advanced settings option
  uiconf.sections[2].content[2].value = self.config.get('leftfilter');
  uiconf.sections[2].content[3].value = self.config.get('rightfilter');
@@ -272,12 +266,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 value = self.config.get('attenuation');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
-
 value = self.config.get('filter_size');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
-
- 
 value = self.config.get('numb_part');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
@@ -296,7 +287,6 @@ value = self.config.get('output_format');
 var value;	
  uiconf.sections[2].content[10].value = self.config.get('input_device');
  uiconf.sections[2].content[11].value = self.config.get('output_device');
-
 
 	defer.resolve(uiconf);
 		})
@@ -322,7 +312,6 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
 
 ControllerBrutefir.prototype.setUIConfig = function(data) {
  var self = this;
- // var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
 };
 
@@ -340,7 +329,6 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 
 // Internal Methods ---------------------------------------------------------------------------------------
 
-// burtefir command - until now send nothing....
 ControllerBrutefir.prototype.setConf = function(varName, varValue) {
  var self = this;
  //Perform your installation tasks here
@@ -358,7 +346,7 @@ var values = coef.value.split(',');
 	console.log(values);
 var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
 ///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
-	debugger;
+	
   return self.sendBrutefirCommand(commandgainEq);
 debugger;
 };
@@ -433,7 +421,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
 		//output_device = output_device;
-   console.log('foutput_device');
+   console.log(output_device);
+   debugger;
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
@@ -525,7 +514,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
     var defer = libQ.defer();
     self.config.set('sbauer', data['sbauer']);
-    self.config.set('bauerout',data['bauerout']);
+  //  self.config.set('bauerout',data['bauerout']);
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
     self.logger.info('Configurations of filter have been set');
@@ -569,7 +558,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
                     output_device="headphones";
                 else output_device= self.config.get('output_device');
 		//else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
-console.log(output_device);	
+console.log('output_device');	
  var defer = libQ.defer();
  self.config.set('attenuation', data['attenuation'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);

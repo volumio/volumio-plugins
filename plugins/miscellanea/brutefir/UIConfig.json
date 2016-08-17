@@ -14,7 +14,7 @@
 				"method": "saveBrutefirconfigAccount1"
 			},
 			"saveButton": {
-				"label": "save",
+				"label": "TRANSLATE.BRUTEFIR.SAVE",
 				"data": [
 					"coef",
 					"phas"

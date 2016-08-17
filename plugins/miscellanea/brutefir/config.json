@@ -1,7 +1,7 @@
 {
 "attenuation":{"type":"string","value":"10"},
-"coef":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
-"phas":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"coef":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0,0"},
+"phas":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0,0"},
 "sbauer":{"type":"boolean","value":false},
 "levelfcut":{"type":"string","value":"700"},
 "levelfeed":{"type":"string","value":"5"},
