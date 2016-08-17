@@ -1,6 +1,6 @@
 pcm.ladspa {
   type ladspa
-  slave.pcm "plughw:1"
+  slave.pcm "plughw:${bauerout}"
   path "/usr/lib/ladspa"
   plugins [
     {
@@ -17,11 +17,5 @@ pcm.headphones {
  slave {
   pcm "ladspa"
  }
-}
-
-pcm.fbruteout {
-	type hw
-	card 1
-	device 0
 }
 

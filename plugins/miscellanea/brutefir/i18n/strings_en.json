@@ -17,10 +17,10 @@
  "INTERNAL_RESOLUTION":"Internal resolution",
  "SAMPLE_RATE":"Sample rate",
  "INPUT_FORMAT":"Input format",
- "OUTPUT_FORMAT":"Outputformat",
- "INPUT_DEVICE":"Input device",
+ "OUTPUT_FORMAT":"Output format",
+ "INPUT_DEVICE":"Input device hw:",
  "SAVE":"Save",
- "OUTPUT_DEVICE":"Output device"
+ "OUTPUT_DEVICE":"Output device hw:"
 },
  "BAUER":{
  "BAUER_TITLE":"Bauer Stereo to binaural filter",

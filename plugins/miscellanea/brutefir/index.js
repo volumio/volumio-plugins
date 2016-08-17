@@ -425,14 +425,15 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    //var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
    //var intero = 1;
    //var boutdev = 'hw:' + intero;
-   var boutput_device;
+   //var boutput_device;
    var sbauer;
    var output_device;
+   //var foutput_device;
        if(self.config.get('sbauer')===true)
                     output_device="headphones";
-                else output_device=self.config.get('output_device');
-
-   console.log("output_device");
+                else output_device='hw:'+self.config.get('output_device');
+		//output_device = output_device;
+   console.log('foutput_device');
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
@@ -478,12 +479,12 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
                 defer.reject(new Error(err));
                 return console.log(err);
             }
-		
-		var conf1 = data.replace("${levelfcut}", self.config.get('levelfcut'));
-		var conf2 = conf1.replace("${levelfeed}", self.config.get('levelfeed'));
+		var conf1 = data.replace("${bauerout}", self.config.get('output_device'));		
+		var conf2 = conf1.replace("${levelfcut}", self.config.get('levelfcut'));
+		var conf3 = conf2.replace("${levelfeed}", self.config.get('levelfeed'));
 		
 
-	            fs.writeFile("/etc/asound.conf", conf2, 'utf8', function (err) {
+	            fs.writeFile("/etc/asound.conf", conf3, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -524,9 +525,10 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
     var defer = libQ.defer();
     self.config.set('sbauer', data['sbauer']);
+    self.config.set('bauerout',data['bauerout']);
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
-   self.logger.info('Configurations of filter have been set');
+    self.logger.info('Configurations of filter have been set');
 
 /*    self.rebuildBRUTEFIRAndRestartDaemon()
         .then(function(e){
