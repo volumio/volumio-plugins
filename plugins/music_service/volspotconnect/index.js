@@ -63,7 +63,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("killall node", function (error, stdout, stderr) { //not done in a elegant way...
+	exec("killall avahi-publish-service", function (error, stdout, stderr) { 
 
 	});
 
