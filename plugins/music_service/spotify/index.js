@@ -217,8 +217,10 @@ ControllerSpop.prototype.onStop = function() {
 	var self = this;
 
 	self.logger.info("Killing SpopD daemon");
-	exec("killall spopd", function (error, stdout, stderr) {
-
+	exec("/usr/bin/sudo /usr/bin/killall spopd", function (error, stdout, stderr) {
+		if(error){
+			self.logger.info('Cannot kill spop Daemon')
+		}
 	});
 
 	return libQ.resolve();
