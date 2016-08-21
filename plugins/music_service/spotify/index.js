@@ -221,7 +221,7 @@ ControllerSpop.prototype.onStop = function() {
 
 	});
 
-	return libQ.defer();
+	return libQ.resolve();
 };
 
 ControllerSpop.prototype.onStart = function() {
@@ -975,15 +975,7 @@ ControllerSpop.prototype.getArtistRelatedArtists = function (artistId) {
 	return defer.promise;
 };
 
-
 // Controller functions
-
-ControllerSpop.prototype.onStop = function() {
-	var self = this;
-	exec("killall spopd", function (error, stdout, stderr) {
-
-	});
-};
 
 // Spop stop
 ControllerSpop.prototype.stop = function() {
