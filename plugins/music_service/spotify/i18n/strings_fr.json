@@ -1,11 +1,11 @@
 {
-  "spotify_username":"Nom d'utilisateur Spotify",
-  "spotify_password":"Mot de passe Spotify",
-  "high_bitrate":"Haute qualité",
-  "search_results":"Nombre de résultat",
-  "plugins":"Last.fm",
-  "last_fm_username":"Nom d'utilistateur Last.fm",
-  "last_fm_password":"Mot de passe Last.fm",
+  "SPOTIFY_USERNAME":"Nom d'utilisateur Spotify",
+  "SPOTIFY_PASSWORD":"Mot de passe Spotify",
+  "HIGH_BITRATE":"Haute qualité",
+  "SEARCH_RESULTS":"Nombre de résultat",
+  "PLUGINS":"Last.fm",
+  "LAST_FM_USERNAME":"Nom d'utilistateur Last.fm",
+  "LAST_FM_PASSWORD":"Mot de passe Last.fm",
   "SEARCH_SONGS_SECTION":"Pistes Spotify",
   "SEARCH_ALBUMS_SECTION":"Album Spotity",
   "SEARCH_ARTISTS_SECTION":"Aritstes Spotify"

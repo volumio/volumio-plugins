@@ -1,11 +1,11 @@
 {
-  "spotify_username":"Spotify gebruikersnaam",
-  "spotify_password":"Spotify wachtwoord",
-  "high_bitrate":"Hoge kwaliteit",
-  "search_results":"Aantal resultaten",
-  "plugins":"Last.fm",
-  "last_fm_username":"Last.fm gebruikersnaam",
-  "last_fm_password":"Last.fm wachtwoord",
+  "SPOTIFY_USERNAME":"Spotify gebruikersnaam",
+  "SPOTIFY_PASSWORD":"Spotify wachtwoord",
+  "HIGH_BITRATE":"Hoge kwaliteit",
+  "SEARCH_RESULTS":"Aantal resultaten",
+  "PLUGINS":"Last.fm",
+  "LAST_FM_USERNAME":"Last.fm gebruikersnaam",
+  "LAST_FM_PASSWORD":"Last.fm wachtwoord",
   "SEARCH_SONGS_SECTION":"Spotify nummers",
   "SEARCH_ALBUMS_SECTION":"Spotity albums",
   "SEARCH_ARTISTS_SECTION":"Spotify artiesten"
