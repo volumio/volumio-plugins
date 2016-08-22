@@ -18,17 +18,17 @@ module.exports = ControllerBrutefir;
 function ControllerBrutefir(context) {
  // This fixed variable will let us refer to 'this' object at deeper scopes
 	var self = this;
-	self.context=context;
-	self.commandRouter = self.context.coreCommand;
-	self.logger = self.context.logger;
-	 this.configManager = this.context.configManager;
+//	self.context=context;
+//	self.commandRouter = self.context.coreCommand;
+//	self.logger = self.context.logger;
+//	 this.configManager = this.context.configManager;
 
-/*
+
  this.context = context;
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
-*/
+
 }
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
@@ -329,39 +329,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 
 // Internal Methods ---------------------------------------------------------------------------------------
 
-ControllerBrutefir.prototype.setConf = function(varName, varValue) {
- var self = this;
- //Perform your installation tasks here
-};
-// Public methods ---------------------------------------------------------------
-
-// Internal Methods ---------------------------------------------------------------------------------------
-
 // here we compose command to be send to brutefir- until now send nothing....
-//for gain settings
-ControllerBrutefir.prototype.sendgainEq = function() {
- var self = this;
-
-var values = coef.value.split(',');
-	console.log(values);
-var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
-	
-  return self.sendBrutefirCommand(commandgainEq);
-debugger;
-};
-
-//for phase settings
-ControllerBrutefir.prototype.sendphasEq = function() {
- var self = this;
-
-var values = phas.value.split(',');
-var commandphaseEq = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-
-
- return self.sendBrutefirCommand(commandphaseEq);
-};
-
 //here we send command to brutefir
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
  var self = this;
@@ -383,6 +351,32 @@ console.log("send brutefir");
  // Return a promise for the command response
  return brutefirResponse;
 };
+
+//for gain settings
+ControllerBrutefir.prototype.sendgainEq = function(sCommand) {
+ var self = this;
+
+var values = coef.value.split(',');
+	console.log(values);
+var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
+///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
+	
+  return self.sendBrutefirCommand(commandgainEq);
+
+};
+
+//for phase settings
+ControllerBrutefir.prototype.sendphasEq = function(sCommand) {
+ var self = this;
+
+var values = phas.value.split(',');
+var commandphaseEq = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
+
+
+ return self.sendBrutefirCommand(commandphaseEq);
+};
+
+
 
 
 
