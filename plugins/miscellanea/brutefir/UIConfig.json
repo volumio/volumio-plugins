@@ -253,7 +253,7 @@
 										"min": "200",
 										"max": "1200",
 										"step": "50",
-										"value": "700",
+										"value": "7OO",
 										"tooltip":"always"
 									}
 								]
@@ -274,8 +274,8 @@
 									{
 										"min":"1",
 										"max":"15",
-										"step":"0.5",
-										"value":"5",
+										"step":"1",
+										"value":"6",
 										"tooltip":"always"
 									}
 								]

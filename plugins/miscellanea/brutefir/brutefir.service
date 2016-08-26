@@ -6,6 +6,7 @@ After=syslog.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/brutefir /data/configuration/miscellanea/brutefir/volumio-brutefir-config
+Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=volumio
