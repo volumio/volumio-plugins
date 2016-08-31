@@ -1,4 +1,4 @@
-8 JULLY 2016
+31 August 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -16,6 +16,4 @@ Some links :
 https://github.com/Fornoth/spotify-connect-web
 
 Thank you to all developpers !
-
-nota : you have to put your spotify app key in /data/plugins/music_service/volspotconnect/spotify-connect-web/ folder.
-A file selector is comming...
+This version include its own spotify_app_key, so you don't need to get one anymore
