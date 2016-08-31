@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "Unistalling Brutefir dependencies"
+echo "Unistalling volspotconnect dependencies"
 
-echo "Removing Brutefir"
+echo "Removing volspotconnect"
 
 echo "Done"
 echo "pluginuninstallend"
