@@ -1,4 +1,4 @@
-31 August 2016
+11 September 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -16,4 +16,9 @@ Some links :
 https://github.com/Fornoth/spotify-connect-web
 
 Thank you to all developpers !
-This version include its own spotify_app_key, so you don't need to get one anymore
+
+This version includes its own spotify_app_key, so you don't need to get one anymore
+
+Issues : 
+- no feed back from UI when settings are saved
+- UI only works with English language. So choose English in appearance, set the plugin (credentials) and after you can choose your language. 
