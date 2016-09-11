@@ -1,16 +1,16 @@
 {
   "page": {
-    "label": "Volumio Spotify connect Configuration"
+    "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTCONF"
   },
   "sections": [ 
    {
       "id": "section_account",
       "element": "section",
-      "label": "Spotify account",
+      "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTACCOUNT",
       "icon": "fa-plug",
       "onSave": {"type":"controller", "endpoint":"music_service/volspotconnect", "method":"saveVolspotconnectAccount"},
       "saveButton": {
-        "label": "Save",
+        "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
         "data": [
           "username",
           "password",
@@ -24,7 +24,7 @@
           "type":"text",
           "element": "input",
           "doc": "This is the username of your Spotify account",
-          "label": "Username",
+          "label": "TRANSLATE.VOLSPOTCONNECT.USERNAME",
           "value": ""
         },
         {
@@ -32,14 +32,14 @@
           "type":"password",
           "element": "input",
           "doc": "This is the password of your Spotify account",
-          "label": "Password",
+          "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
           "value": ""
         },
 {
           "id":"bitrate",
           "element": "switch",
           "doc": "High bitrate",
-          "label": "Set for high bitrate",
+          "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
           "value": true
         },
        	 {
@@ -47,7 +47,7 @@
 	"type":"text",
           "element": "input",
           "doc": "name of device",
-          "label": "name of device",
+          "label": "TRANSLATE.VOLSPOTCONNECT.DEVICENAME",
           "value": "volumio2"
         }
       ]

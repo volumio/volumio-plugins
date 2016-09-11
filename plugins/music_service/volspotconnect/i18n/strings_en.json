@@ -1,8 +1,12 @@
 {
  "VOLSPOTCONNECT":{
+ "VOLSPOTCONNECTCONF":"Volumio Spotify connect Configuration",
+ "VOLSPOTCONNECTACCOUNT":"Spotify account",
  "USERNAME":"username",
- "PASSOWRD":"password",
- "DEVICENAME":"devicename",
- "OUTPUT_DEVICE":"Output device"
+ "PASSWORD":"password",
+ "HIGHBITRATE":"Set for high bitrate",
+ "DEVICENAME":"device name",
+ "OUTPUT_DEVICE":"Output device",
+ "SAVE":"Save"
 }
 }
