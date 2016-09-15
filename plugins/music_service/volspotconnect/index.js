@@ -25,6 +25,7 @@ function ControllerVolspotconnect(context) {
 
 ControllerVolspotconnect.prototype.onVolumioStart = function()
 {
+    var self= this;
     var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
@@ -63,11 +64,13 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("killall avahi-publish-service", function (error, stdout, stderr) { 
-
+	exec("killall -g avahi-publish-service", function (error, stdout, stderr) { //not done in a elegant way...
+	if(error){
+self.logger.info('Error in killing Voslpotconnect')
+	}
 	});
 
-    return libQ.defer();
+   return libQ.resolve();
 };
 
 ControllerVolspotconnect.prototype.onStart = function() {
@@ -96,10 +99,18 @@ ControllerVolspotconnect.prototype.onStart = function() {
 // Volspotconnect stop
 ControllerVolspotconnect.prototype.stop = function() {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolspotconnect::stop');
+	
 
-	return self.sendVolspotconnectCommand('stop', []);
+    self.logger.info("Killing Spotify-connect-web daemon");
+	exec("killall -g avahi-publish-service", function (error, stdout, stderr) { //not done in a elegant way...
+	if(error){
+self.logger.info('Error in killing Voslpotconnect')
+	}
+	});
+
+   return libQ.resolve();
 };
+
 
 ControllerVolspotconnect.prototype.onRestart = function() {
 	var self = this;
@@ -190,7 +201,7 @@ ControllerVolspotconnect.prototype.getState = function() {
 
 
 
-
+/*
 ControllerVolspotconnect.prototype.logDone = function(timeStart) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + '------------------------------ ' + (Date.now() - timeStart) + 'ms');
@@ -203,7 +214,7 @@ ControllerVolspotconnect.prototype.logStart = function(sCommand) {
 	return libQ.resolve();
 };
 
-
+*/
 
 ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     var self = this;
@@ -236,11 +247,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf3 = conf2.replace("${rate}", rate);
 		var conf4 = conf3.replace("${devicename}", self.config.get('devicename'));
 		var conf5 = conf4.replace("${outdev}", hwdev);
-		var conf6 = conf5.replace("${mixer}", mixer);
-		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf8 = conf7.replace("${devicename}", self.config.get('devicename'));
+//		var conf6 = conf5.replace("${mixer}", mixer);
+//		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf6 = conf5.replace("${devicename}", self.config.get('devicename'));
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf6, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -294,7 +305,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("killall avahi-publish-service", function (error, stdout, stderr) { //not done in a elegant way
+            exec("killall -g avahi-publish-service", function (error, stdout, stderr) { //not done in a elegant way
                 edefer.resolve();
             });
             return edefer.promise;
