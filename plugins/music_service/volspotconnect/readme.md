@@ -21,6 +21,7 @@ This version includes its own spotify_app_key, so you don't need to get one anym
 
 Last changes
 - add --dbrange 45 to allow wider range of volume control
+- reverse too add mixer settings
 
 Issues : 
 - no feed back from UI when settings are saved
