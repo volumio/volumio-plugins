@@ -12,9 +12,9 @@ It just allow you tou install and configure spotify connect-web in Volumio 2
 It will not (for the moment) display album art, title or allow changing track from volumio.
 But from a external device and the offcial Spotify app, you'll be able to send your music to your device.
 
-- This version supprt Family account : every member can use the device !
+- This version supports Family account : every member can use the device !
 
-This version includes its own spotify_app_key, so you don't need to get one anymore
+- This version includes its own spotify_app_key, so you don't need to get one anymore
 
 To install
 - You only need to download volspotconnect.zip
