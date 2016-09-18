@@ -1,4 +1,4 @@
-11 September 2016
+18 September 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -18,6 +18,9 @@ https://github.com/Fornoth/spotify-connect-web
 Thank you to all developpers !
 
 This version includes its own spotify_app_key, so you don't need to get one anymore
+
+Last changes
+- add --dbrange 45 to allow wider range of volume control
 
 Issues : 
 - no feed back from UI when settings are saved
