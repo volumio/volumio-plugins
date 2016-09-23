@@ -64,7 +64,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/killall -g spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
+	exec("/usr/bin/killall spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
 	if(error){
 self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -136,7 +136,7 @@ ControllerVolspotconnect.prototype.stop = function() {
 	
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/killall -g spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
+	exec("/usr/bin/killall spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
 	if(error){
 self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -281,11 +281,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf3 = conf2.replace("${rate}", rate);
 		var conf4 = conf3.replace("${devicename}", self.config.get('devicename'));
 		var conf5 = conf4.replace("${outdev}", hwdev);
-//		var conf6 = conf5.replace("${mixer}", mixer);
+		var conf6 = conf5.replace("${mixer}", mixer);
 //		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf6 = conf5.replace("${devicename}", self.config.get('devicename'));
+		var conf7 = conf6.replace("${devicename}", self.config.get('devicename'));
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf6, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf7, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
