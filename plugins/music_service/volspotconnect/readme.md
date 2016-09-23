@@ -1,4 +1,4 @@
-September, 19th 2016
+September, 23th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -21,9 +21,8 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
-- add --dbrange 45 to allow wider range of volume control
-- reverse too add mixer settings
-- allow complex password containing (&@!;,$)...
+
+- settings are now saved in config.json 
 
 Issues : 
 - no feed back from UI when settings are saved
