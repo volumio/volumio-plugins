@@ -36,4 +36,4 @@ Issues :
 Todo
 
 - Add album art and working button in volumio UI
-- switch to enable family share
+- switch to enable/disable family share
