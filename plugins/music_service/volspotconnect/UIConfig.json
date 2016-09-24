@@ -14,8 +14,7 @@
         "data": [
           "username",
           "password",
-          "bitrate",
-	  "devicename"
+          "bitrate"
         ]
       },
       "content": [
