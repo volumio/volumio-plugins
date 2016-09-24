@@ -118,6 +118,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
     return defer.promise;
 };
 
+//For future features....
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  var self = this;
 
