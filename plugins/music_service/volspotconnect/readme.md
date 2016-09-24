@@ -29,9 +29,11 @@ Last changes
 
 Issues : 
 
+- feed back of saved settings not always work....
+- complex password works, but are not saved properly in config.json
 - UI only works with English language. So choose English in appearance, set the plugin (credentials) and after you can choose your language. 
 
 Todo
 
 - Add album art and working button in volumio UI
-
+- switch to enable family share
