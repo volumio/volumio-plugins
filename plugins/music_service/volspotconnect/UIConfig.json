@@ -34,7 +34,7 @@
           "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
           "value": ""
         },
-{
+	{
           "id":"bitrate",
           "element": "switch",
           "doc": "High bitrate",

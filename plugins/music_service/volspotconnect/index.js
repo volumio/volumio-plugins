@@ -37,13 +37,25 @@ ControllerVolspotconnect.prototype.onVolumioStart = function()
   // 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
+    var boundMethod = self.onPlayerNameChanged.bind(self);
+	self.commandRouter.executeOnPlugin('system_controller', 'system', 'registerCallback', boundMethod);
+
+return libQ.resolve();
+
+
 
 }
 
 ControllerVolspotconnect.prototype.getConfigurationFiles = function()
 {
 	return ['config.json'];
-}
+};
+ControllerVolspotconnect.prototype.onPlayerNameChanged = function (playerName) {
+	var self = this;
+
+	self.onRestart();
+};
+
 
 
 // Plugin methods -----------------------------------------------------------------------------
@@ -290,11 +302,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf1 = data.replace("${username}", self.config.get('username'));
 		var conf2 = conf1.replace("${password}", self.config.get('password'));
 		var conf3 = conf2.replace("${rate}", rate);
-		var conf4 = conf3.replace("${devicename}", self.config.get('devicename'));
+		var conf4 = conf3.replace("${devicename}",devicename);
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
 //		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf7 = conf6.replace("${devicename}", self.config.get('devicename'));
+		var conf7 = conf6.replace("${devicename}",devicename);
 
 	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf7, 'utf8', function (err) {
                 if (err)

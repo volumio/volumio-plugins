@@ -28,8 +28,10 @@ Last changes
 
 
 Issues : 
-- no feed back from UI when settings are saved
+
 - UI only works with English language. So choose English in appearance, set the plugin (credentials) and after you can choose your language. 
 
+Todo
 
+- Add album art and working button in volumio UI
 
