@@ -1,4 +1,4 @@
-September, 23th 2016
+September, 24th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -23,6 +23,9 @@ To install
 Last changes
 
 - settings are now saved in config.json 
+- plugin appears to be active in volumio UI
+- plugin now use volumio device name
+
 
 Issues : 
 - no feed back from UI when settings are saved

@@ -14,9 +14,5 @@
  "bitrate": {
     "type": "boolean",
     "value": true
-  },
-  "devicename": {
-      "type": "string",
-      "value": ""
   }
 }

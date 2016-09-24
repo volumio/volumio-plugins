@@ -41,14 +41,6 @@
           "doc": "High bitrate",
           "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
           "value": true
-        },
-       	 {
-          "id":"devicename",
-	"type":"text",
-          "element": "input",
-          "doc": "name of device",
-          "label": "TRANSLATE.VOLSPOTCONNECT.DEVICENAME",
-          "value": "volumio2"
         }
       ]
    }

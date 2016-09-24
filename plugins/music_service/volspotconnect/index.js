@@ -2,22 +2,28 @@
 
 var libQ = require('kew');
 var libNet = require('net');
-var libFast = require('fast.js');
+//var libFast = require('fast.js');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
-var nodetools = require('nodetools');
+//var nodetools = require('nodetools');
 
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
+
 function ControllerVolspotconnect(context) {
 	// This fixed variable will let us refer to 'this' object at deeper scopes
 	var self = this;
 
-	this.context = context;
+/*	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
+*/
+	self.context = context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger=self.commandRouter.logger;
+
 
 }
 
@@ -27,6 +33,8 @@ ControllerVolspotconnect.prototype.onVolumioStart = function()
 {
     var self= this;
     var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    
+  // 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
 
@@ -92,6 +100,8 @@ ControllerVolspotconnect.prototype.onStart = function() {
         });
 
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
+	
+
 
     return defer.promise;
 };
@@ -180,7 +190,7 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
 uiconf.sections[0].content[0].value = self.config.get('username');
 uiconf.sections[0].content[1].value = self.config.get('password');
 uiconf.sections[0].content[2].value = self.config.get('bitrate');
-uiconf.sections[0].content[3].value = self.config.get('devicename');
+//uiconf.sections[0].content[3].value = self.config.get('devicename');
             defer.resolve(uiconf);
             })
                 .fail(function()
@@ -269,6 +279,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		else rate="128"
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
+			var devicename = self.commandRouter.sharedVars.get('system.name');
 			var hwdev = 'hw:' + outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
@@ -313,7 +324,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     self.config.set('username', data['username']);
     self.config.set('password', data['password']);
    self.config.set('bitrate', data['bitrate']);
-    self.config.set('devicename', data['devicename']);
+  //  self.config.set('devicename', data['devicename']);
 
     self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){
