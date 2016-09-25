@@ -1,4 +1,4 @@
-September, 24th 2016
+September, 25th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -31,7 +31,7 @@ Issues :
 
 - feed back of saved settings not always work....
 - complex password works, but are not saved properly in config.json
-- UI only works with English language. So choose English in appearance, set the plugin (credentials) and after you can choose your language. 
+
 
 Todo
 
