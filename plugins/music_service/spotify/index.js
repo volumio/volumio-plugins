@@ -248,98 +248,94 @@ ControllerSpop.prototype.onStart = function() {
 	return defer.promise;
 };
 
-ControllerSpop.prototype.handleBrowseUri=function(curUri)
-{
-	var self=this;
+ControllerSpop.prototype.handleBrowseUri = function (curUri) {
+	var self = this;
 
 	//self.commandRouter.logger.info(curUri);
 	var response;
 
 	if (curUri.startsWith('spotify')) {
-		if(curUri=='spotify')
-		{
-			response=libQ.resolve({
+		if (curUri == 'spotify') {
+			response = libQ.resolve({
 				navigation: {
-					prev: {
-						uri: 'spotify'
-					},
-					list: [
+					lists: [
 						{
-							service: 'spop',
-							type: 'spotify-category',
-							title: 'My Playlists',
-							artist: '',
-							album: '',
-							icon: 'fa fa-folder-open-o',
-							uri: 'spotify/playlists'
-						},
-						{
-							service: 'spop',
-							type: 'spotify-category',
-							title: 'Featured Playlists',
-							artist: '',
-							album: '',
-							icon: 'fa fa-folder-open-o',
-							uri: 'spotify/featuredplaylists'
-						},
-						{
-							service: 'spop',
-							type: 'spotify-category',
-							title: 'What\'s New',
-							artist: '',
-							album: '',
-							icon: 'fa fa-folder-open-o',
-							uri: 'spotify/new'
-						},
-						{
-							service: 'spop',
-							type: 'spotify-category',
-							title: 'Genres & Moods',
-							artist: '',
-							album: '',
-							icon: 'fa fa-folder-open-o',
-							uri: 'spotify/categories'
+							"availableListViews": [
+								"list"
+							],
+							"items": [
+								{
+									service: 'spop',
+									type: 'spotify-category',
+									title: 'My Playlists',
+									artist: '',
+									album: '',
+									icon: 'fa fa-folder-open-o',
+									uri: 'spotify/playlists'
+								},
+								{
+									service: 'spop',
+									type: 'spotify-category',
+									title: 'Featured Playlists',
+									artist: '',
+									album: '',
+									icon: 'fa fa-folder-open-o',
+									uri: 'spotify/featuredplaylists'
+								},
+								{
+									service: 'spop',
+									type: 'spotify-category',
+									title: 'What\'s New',
+									artist: '',
+									album: '',
+									icon: 'fa fa-folder-open-o',
+									uri: 'spotify/new'
+								},
+								{
+									service: 'spop',
+									type: 'spotify-category',
+									title: 'Genres & Moods',
+									artist: '',
+									album: '',
+									icon: 'fa fa-folder-open-o',
+									uri: 'spotify/categories'
+								}
+							]
 						}
-					]
+					],
+					"prev": {
+						uri: 'spotify'
+					}
 				}
 			});
 		}
-		else if(curUri.startsWith('spotify/playlists'))
-		{
-			if(curUri=='spotify/playlists')
-				response=self.listPlaylists();
-			else
-			{
-				response=self.listPlaylist(curUri);
+		else if (curUri.startsWith('spotify/playlists')) {
+			if (curUri == 'spotify/playlists')
+				response = self.listPlaylists();
+			else {
+				response = self.listPlaylist(curUri);
 			}
 		}
-		else if(curUri.startsWith('spotify/featuredplaylists'))
-		{
-			response=self.featuredPlaylists(curUri);
+		else if (curUri.startsWith('spotify/featuredplaylists')) {
+			response = self.featuredPlaylists(curUri);
 		}
-		else if(curUri.startsWith('spotify:user:'))
-		{
-			response=self.listWebPlaylist(curUri);
+		else if (curUri.startsWith('spotify:user:')) {
+			response = self.listWebPlaylist(curUri);
 		}
-		else if(curUri.startsWith('spotify/new'))
-		{
-			response=self.listWebNew(curUri);
+		else if (curUri.startsWith('spotify/new')) {
+			response = self.listWebNew(curUri);
 		}
-		else if(curUri.startsWith('spotify/categories'))
-		{
-			response=self.listWebCategories(curUri);
+		else if (curUri.startsWith('spotify/categories')) {
+			response = self.listWebCategories(curUri);
 		}
-		else if(curUri.startsWith('spotify:album'))
-		{
-			response=self.listWebAlbum(curUri);
+		else if (curUri.startsWith('spotify:album')) {
+			response = self.listWebAlbum(curUri);
 		}
-		else if(curUri.startsWith('spotify/category'))
-		{
-			response=self.listWebCategory(curUri);
+		else if (curUri.startsWith('spotify/category')) {
+			response = self.listWebCategory(curUri);
 		}
-		else if(curUri.startsWith('spotify:artist:'))
-		{
-			response=self.listWebArtist(curUri);
+		else if (curUri.startsWith('spotify:artist:')) {
+			response = self.listWebArtist(curUri);
 		}
 	}
 
@@ -359,10 +355,19 @@ ControllerSpop.prototype.listPlaylists=function()
 		//	self.commandRouter.logger.info(resJson);
 		var response={
 			navigation: {
-				prev: {
+				"prev": {
 					uri: 'spotify'
 				},
-				list: []
+				"lists": [
+					{
+						"availableListViews": [
+							"list"
+						],
+						"items": [
+
+						]
+					}
+				]
 			}
 		};
 
@@ -372,7 +377,7 @@ ControllerSpop.prototype.listPlaylists=function()
 			{
 				if(resJson.playlists[i].type == 'playlist')
 				{
-					response.navigation.list.push({
+					response.navigation.lists[0].items.push({
 						service: 'spop',
 						type: 'folder',
 						title: resJson.playlists[i].name,
@@ -384,7 +389,7 @@ ControllerSpop.prototype.listPlaylists=function()
 				{
 					for(var j in resJson.playlists[i].playlists)
 					{
-						response.navigation.list.push({
+						response.navigation.lists[0].items.push({
 							service: 'spop',
 							type: 'folder',
 							title: resJson.playlists[i].playlists[j].name,
@@ -423,13 +428,22 @@ ControllerSpop.prototype.listPlaylist=function(curUri)
 				prev: {
 					uri: 'spotify/playlists'
 				},
-				list: []
+				"lists": [
+					{
+						"availableListViews": [
+							"list"
+						],
+						"items": [
+
+						]
+					}
+				]
 			}
 		};
 
 		for(var i in resJson.tracks)
 		{
-			response.navigation.list.push({
+			response.navigation.lists[0].items.push({
 				service: 'spop',
 				type: 'song',
 				title: resJson.tracks[i].title,
@@ -543,13 +557,23 @@ ControllerSpop.prototype.featuredPlaylists=function(curUri)
 							prev: {
 								uri: 'spotify'
 							},
-							list: []
+							"lists": [
+								{
+									"availableListViews": [
+										"list",
+										"grid"
+									],
+									"items": [
+
+									]
+								}
+							]
 						}
 					};
 
 					for (var i in results.body.playlists.items) {
 						var playlist = results.body.playlists.items[i];
-						response.navigation.list.push({
+						response.navigation.lists[0].items.push({
 							service: 'spop',
 							type: 'playlist',
 							title: playlist.name,
@@ -582,11 +606,21 @@ ControllerSpop.prototype.listWebPlaylist=function(curUri)
 				prev: {
 					uri: 'spotify'
 				},
-				list: []
+				"lists": [
+					{
+						"availableListViews": [
+							"list",
+							"grid"
+						],
+						"items": [
+
+						]
+					}
+				]
 			}
 		};
 		for (var i in results) {
-			response.navigation.list.push(results[i]);
+			response.navigation.lists[0].items.push(results[i]);
 		}
 		defer.resolve(response);
 	});
@@ -611,13 +645,23 @@ ControllerSpop.prototype.listWebNew=function(curUri)
 						prev: {
 							uri: 'spotify'
 						},
-						list: []
+						"lists": [
+							{
+								"availableListViews": [
+									"list",
+									"grid"
+								],
+								"items": [
+
+								]
+							}
+						]
 					}
 				};
 
 				for (var i in results.body.albums.items) {
 					var album = results.body.albums.items[i];
-					response.navigation.list.push({
+					response.navigation.lists[0].items.push({
 						service: 'spop',
 						type: 'folder',
 						title: album.name,
@@ -650,11 +694,20 @@ ControllerSpop.prototype.listWebAlbum=function(curUri)
 				prev: {
 					uri: 'spotify'
 				},
-				list: []
+				"lists": [
+					{
+						"availableListViews": [
+							"list"
+						],
+						"items": [
+
+						]
+					}
+				]
 			}
 		};
 		for (var i in results) {
-			response.navigation.list.push(results[i]);
+			response.navigation.lists[0].items.push(results[i]);
 		}
 		defer.resolve(response);
 	});
@@ -681,12 +734,22 @@ ControllerSpop.prototype.listWebCategories=function(curUri)
 						prev: {
 							uri: 'spotify'
 						},
-						list: []
+						"lists": [
+							{
+								"availableListViews": [
+									"list",
+									"grid"
+								],
+								"items": [
+
+								]
+							}
+						]
 					}
 				};
 
 				for (var i in results.body.categories.items) {
-					response.navigation.list.push({
+					response.navigation.lists[0].items.push({
 						service: 'spop',
 						type: 'spotify-category',
 						title: results.body.categories.items[i].name,
@@ -722,13 +785,23 @@ ControllerSpop.prototype.listWebCategory=function(curUri)
 						prev: {
 							uri: 'spotify/categories'
 						},
-						list: []
+						"lists": [
+							{
+								"availableListViews": [
+									"list",
+									"grid"
+								],
+								"items": [
+
+								]
+							}
+						]
 					}
 				};
 
 				for (var i in results.body.playlists.items) {
 					var playlist = results.body.playlists.items[i];
-					response.navigation.list.push({
+					response.navigation.lists[0].items.push({
 						service: 'spop',
 						type: 'folder',
 						title: playlist.name,
@@ -762,13 +835,22 @@ ControllerSpop.prototype.listWebArtist = function (curUri) {
 					prev: {
 						uri: 'spotify'
 					},
-					list: []
+					"lists": [
+						{
+							"availableListViews": [
+								"list"
+							],
+							"items": [
+
+							]
+						}
+					]
 				}
 			};
 			var spotifyDefer = self.listArtistTracks(artistId);
 			spotifyDefer.then(function (results) {
 				for (var i in results) {
-					response.navigation.list.push(results[i]);
+					response.navigation.lists[0].items.push(results[i]);
 				}
 				return response;
 			})
@@ -776,9 +858,9 @@ ControllerSpop.prototype.listWebArtist = function (curUri) {
 					var response = data;
 					var spotifyDefer = self.getArtistRelatedArtists(artistId);
 					spotifyDefer.then(function (results) {
-						response.navigation.list.push({type: 'title', title: 'Related Artists'});
+						response.navigation.lists[0].items.push({type: 'title', title: 'Related Artists'});
 						for (var i in results) {
-							response.navigation.list.push(results[i]);
+							response.navigation.lists[0].items.push(results[i]);
 						}
 						defer.resolve(response);
 					})
@@ -1710,6 +1792,7 @@ ControllerSpop.prototype.seek = function (timepos) {
 	return this.sendSpopCommand('seek '+timepos, []);
 };
 
+// TODO - didn't have time to update the search function for the new grid view UI....
 ControllerSpop.prototype.search = function (query) {
 
 	var self=this;
