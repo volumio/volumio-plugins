@@ -6,7 +6,7 @@ var libNet = require('net');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
-var nodetools = require('nodetools');
+//var nodetools = require('nodetools');
 
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
@@ -15,16 +15,16 @@ function ControllerVolspotconnect(context) {
 	// This fixed variable will let us refer to 'this' object at deeper scopes
 	var self = this;
 
-/*	this.context = context;
+	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-*/
+/*
 	self.context = context;
 	self.commandRouter = self.context.coreCommand;
 	self.logger=self.commandRouter.logger;
 
-
+*/
 }
 
 
@@ -34,12 +34,12 @@ ControllerVolspotconnect.prototype.onVolumioStart = function()
     var self= this;
     var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     
-  // 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
+// 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
-    var boundMethod = self.onPlayerNameChanged.bind(self);
-	self.commandRouter.executeOnPlugin('system_controller', 'system', 'registerCallback', boundMethod);
-
+ //   var boundMethod = self.onPlayerNameChanged.bind(self);
+//	self.commandRouter.executeOnPlugin('system_controller', 'system', 'registerCallback', boundMethod);
+	self.createVOLSPOTCONNECTFile();
 return libQ.resolve();
 
 
@@ -112,6 +112,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
         });
 
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
+	this.commandRouter.sharedVars.registerCallback('system.name', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	
 
 
@@ -306,10 +307,10 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf4 = conf3.replace("${devicename}",devicename);
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
-//		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf7 = conf6.replace("${devicename}",devicename);
+		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf8 = conf7.replace("${devicename}",devicename);
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf7, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -341,7 +342,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 
     self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration of Volspotconnect has been successfully updated');
             defer.resolve({});
         })
         .fail(function(e)
@@ -363,7 +364,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("/usr/bin/killall spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way
+            exec("/usr/bin/killall spotify-connect-web",{uid:1000,gid:1000}, function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;
@@ -379,4 +380,11 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
 
     return defer.promise;
 }
+/*;
+ControllerVolspotconnect.prototype.playerNameCallback = function () {
+	var self = this;
 
+	self.context.coreCommand.pushConsoleMessage('System name has changed, restarting Volspotconnect');
+	self.createVOLSPOTCONNECTFile()
+}
+*/
