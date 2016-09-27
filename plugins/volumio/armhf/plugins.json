@@ -37,7 +37,7 @@
     "plugins": [
 	  {
 		"prettyName": "GPIO Buttons Controller",
-		"icon": "play-circle-o",
+		"icon": "fa-play-circle-o",
 		"name": "gpio-buttons",
 		"version": "0.7.5",
 		"url": "http://tomatpasser.dk/gpio-buttons.zip",
