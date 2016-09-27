@@ -1811,35 +1811,39 @@ ControllerSpop.prototype.search = function (query) {
 
 				if(results.body.hasOwnProperty('artists') && results.body.artists.items.length > 0)
 				{
-					list.push({type: 'title', title: 'Spotify Artists'});
+					var artistlist = [];
 					var artists = self._searchArtists(results);
 					for (var i in artists) {
-						list.push(artists[i]);
+						artistlist.push(artists[i]);
 					}
+					list.push({type: 'title', title: 'Spotify Artists', availableListViews: ["list", "grid"], items: artistlist});
 				}
 				if(results.body.hasOwnProperty('albums') && results.body.albums.items.length > 0)
 				{
-					list.push({type:'title',title:'Spotify Albums'});
+					var albumlist = [];
 					var albums = self._searchAlbums(results);
 					for (var i in albums) {
-						list.push(albums[i]);
+						albumlist.push(albums[i]);
 					}
+					list.push({type:'title',title:'Spotify Albums', availableListViews: ["list", "grid"], items: albumlist});
 				}
 				if(results.body.hasOwnProperty('playlists') && results.body.playlists.items.length > 0)
 				{
-					list.push({type:'title',title:'Spotify Playlists'});
+					var playlistlist = [];
 					var playlists = self._searchPlaylists(results);
 					for (var i in playlists) {
-						list.push(playlists[i]);
+						playlistlist.push(playlists[i]);
 					}
+					list.push({type:'title',title:'Spotify Playlists', availableListViews: ["list", "grid"], items: playlistlist});
 				}
 				if(results.body.hasOwnProperty('tracks') && results.body.tracks.items.length > 0)
 				{
-					list.push({type:'title',title:'Spotify Tracks'});
+					var songlist = [];
 					var tracks = self._searchTracks(results);
 					for (var i in tracks) {
-						list.push(tracks[i]);
+						songlist.push(tracks[i]);
 					}
+					list.push({type:'title',title:'Spotify Tracks', availableListViews: ["list"], items: songlist});
 				}
 				defer.resolve(list);
 			}, function (err) {
