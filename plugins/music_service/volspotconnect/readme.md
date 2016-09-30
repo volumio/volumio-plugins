@@ -1,4 +1,4 @@
-September, 26th 2016
+September, 30th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -23,7 +23,7 @@ To install
 Last changes
 
 - add mixer_device_index
-- now the plugin is automatically updated when output or device name is changed in volumio
+- now the plugin is automatically updated when output or device or device name is changed in volumio
 
 Issues : 
 

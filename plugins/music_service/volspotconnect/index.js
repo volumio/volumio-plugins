@@ -37,7 +37,7 @@ ControllerVolspotconnect.prototype.onVolumioStart = function()
 // 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
- //   var boundMethod = self.onPlayerNameChanged.bind(self);
+ //  var boundMethod = self.onPlayerNameChanged.bind(self);
 //	self.commandRouter.executeOnPlugin('system_controller', 'system', 'registerCallback', boundMethod);
 	self.createVOLSPOTCONNECTFile();
 return libQ.resolve();
@@ -112,8 +112,8 @@ ControllerVolspotconnect.prototype.onStart = function() {
         });
 
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
+	this.commandRouter.sharedVars.registerCallback('alsa.outputdevicemixer', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	this.commandRouter.sharedVars.registerCallback('system.name', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
-	
 
 
     return defer.promise;
@@ -307,10 +307,10 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf4 = conf3.replace("${devicename}",devicename);
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
-		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf8 = conf7.replace("${devicename}",devicename);
+//		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf7 = conf6.replace("${devicename}",devicename);
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf7, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
