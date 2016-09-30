@@ -22,7 +22,7 @@ To install
 
 Last changes
 
-- add mixer_device_index
+- future software mixer support
 - now the plugin is automatically updated when output or device or device name is changed in volumio
 
 Issues : 

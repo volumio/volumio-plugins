@@ -292,6 +292,9 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
                     rate="320";
 		else rate="128"
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			if (outdev != 'softvolume' ) {
+				outdev = 'plughw:'+outdev+',0';
+				}
 			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
 			var devicename = self.commandRouter.sharedVars.get('system.name');
 			var hwdev = 'hw:' + outdev;
