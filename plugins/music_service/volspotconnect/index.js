@@ -306,7 +306,8 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}
 			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
 			var devicename = self.commandRouter.sharedVars.get('system.name');
-			var hwdev = 'hw:' + outdev;
+		//	var hwdev = 'hw:' + outdev;
+			var hwdev = outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
 			if (bitrate == false ) {
