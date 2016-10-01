@@ -23,6 +23,7 @@ To install
 Last changes
 October 1st
 - volspotconnect is now managed as a systemctl service
+- add switch to enable/ disable family share 
 
 Previous
 

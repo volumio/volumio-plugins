@@ -6,6 +6,7 @@ After=syslog.target
 [Service]
 Type=simple
 ExecStart=/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh
+Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=volumio

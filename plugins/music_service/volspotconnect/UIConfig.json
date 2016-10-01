@@ -14,7 +14,8 @@
         "data": [
           "username",
           "password",
-          "bitrate"
+          "bitrate",
+          "familyshare"
         ]
       },
       "content": [
@@ -39,6 +40,13 @@
           "element": "switch",
           "doc": "High bitrate",
           "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
+          "value": true
+        },
+        {
+          "id":"familyshare",
+          "element": "switch",
+          "doc": "Family shared device",
+          "label": "TRANSLATE.VOLSPOTCONNECT.FAMILYSHARE",
           "value": true
         }
       ]

@@ -188,11 +188,15 @@ ControllerVolspotconnect.prototype.onUninstall = function() {
 ControllerVolspotconnect.prototype.getUIConfig = function() {
 	var defer = libQ.defer();
 	var self = this;
-	var rate;
+/*	var rate;
                 if(self.config.get('bitrate')===true)
                     rate="320";
 		else rate="128"
-
+	var family;
+		if(self.config.get('familyshare')===true)
+		    family="sd"
+		else family="#"
+*/
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 
         self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -204,7 +208,7 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
 uiconf.sections[0].content[0].value = self.config.get('username');
 uiconf.sections[0].content[1].value = self.config.get('password');
 uiconf.sections[0].content[2].value = self.config.get('bitrate');
-//uiconf.sections[0].content[3].value = self.config.get('devicename');
+uiconf.sections[0].content[3].value = self.config.get('familyshare');
             defer.resolve(uiconf);
             })
                 .fail(function()
@@ -291,6 +295,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
                 if(self.config.get('bitrate')===true)
                     rate="320";
 		else rate="128"
+			var family;
+		if(self.config.get('familyshare')===true)
+		    family=""
+		else family="#"
+
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 			if (outdev != 'softvolume' ) {
 				outdev = 'plughw:'+outdev+',0';
@@ -311,9 +320,10 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
 //		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf7 = conf6.replace("${devicename}",devicename);
+		var conf7 = conf6.replace("${familyshare}", family);
+		var conf8 = conf7.replace("${devicename}",devicename);
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf7, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -341,7 +351,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     self.config.set('username', data['username']);
     self.config.set('password', data['password']);
    self.config.set('bitrate', data['bitrate']);
-  //  self.config.set('devicename', data['devicename']);
+    self.config.set('familyshare', data['familyshare']);
 
     self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){

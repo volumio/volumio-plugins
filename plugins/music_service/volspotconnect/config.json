@@ -1,9 +1,5 @@
 {
-  "enabled": {
-    "type": "boolean",
-    "value": false
-  },
-  "username": {
+   "username": {
       "type": "string",
       "value": ""
   },
@@ -12,6 +8,10 @@
     "value": ""
   },
  "bitrate": {
+    "type": "boolean",
+    "value": true
+  },
+  "familyshare": {
     "type": "boolean",
     "value": true
   }
