@@ -65,7 +65,7 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 
     var defer=libQ.defer();
 
-	exec("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+	exec("/usr/bin/sudo /bin/systemctl start volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting VOLSPOTCONNECT: ' + error);
             defer.reject();
@@ -84,7 +84,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/killall spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -160,7 +160,7 @@ ControllerVolspotconnect.prototype.stop = function() {
 	
 
     self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/killall spotify-connect-web", {uid:1000,gid:1000}, function (error, stdout, stderr) { //not done in a elegant way...
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -367,7 +367,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("/usr/bin/killall spotify-connect-web",{uid:1000,gid:1000}, function (error, stdout, stderr) {
+            exec("/usr/bin/sudo /bin/systemctl restart volspotconnect.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;
@@ -375,19 +375,16 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(self.startVolspotconnectDaemon.bind(self))
         .then(function(e)
         {
+        self.commandRouter.pushToastMessage('success', "Configuration update", 'Volumio Spotify Connect has been successfully updated');
+   defer.resolve({});
+/*        {
             setTimeout(function () {
                 self.logger.info("Connecting to daemon");
                 self.volspotconnectDaemonConnect(defer);
             }, 5000);
+*/
         });
+
 
     return defer.promise;
 }
-/*;
-ControllerVolspotconnect.prototype.playerNameCallback = function () {
-	var self = this;
-
-	self.context.coreCommand.pushConsoleMessage('System name has changed, restarting Volspotconnect');
-	self.createVOLSPOTCONNECTFile()
-}
-*/

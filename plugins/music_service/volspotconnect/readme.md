@@ -21,13 +21,16 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+October 1st
+- volspotconnect is now managed as a systemctl service
+
+Previous
 
 - future software mixer support
 - now the plugin is automatically updated when output or device or device name is changed in volumio
 
 Issues : 
 
-- feed back of saved settings not always work....
 - complex password works, but are not saved properly in config.json
 
 

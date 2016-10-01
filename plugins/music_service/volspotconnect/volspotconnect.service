@@ -1,0 +1,17 @@
+
+[Unit]
+Description=Volspotconnect Daemon
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+User=volumio
+Group=volumio
+
+[Install]
+WantedBy=multi-user.target
+
