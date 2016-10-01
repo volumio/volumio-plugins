@@ -301,13 +301,14 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		else family="#"
 
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-			if (outdev != 'softvolume' ) {
-				outdev = 'plughw:'+outdev+',0';
-				}
+		//	if (outdev != 'softvolume' ) {
+		//		outdev = 'plughw:'+outdev+',0';
+		//		}
+		//	var mixind = 1 //mixer_device_index : don't know how to determine automatically...
 			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
 			var devicename = self.commandRouter.sharedVars.get('system.name');
-		//	var hwdev = 'hw:' + outdev;
-			var hwdev = outdev;
+			var hwdev = 'hw:' + outdev;
+		//	var hwdev = outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
 			if (bitrate == false ) {
@@ -320,11 +321,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf4 = conf3.replace("${devicename}",devicename);
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
-//		var conf7 = conf6.replace("${mixind}", outdev);
-		var conf7 = conf6.replace("${familyshare}", family);
-		var conf8 = conf7.replace("${devicename}",devicename);
+		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf8 = conf7.replace("${familyshare}", family);
+		var conf9 = conf8.replace("${devicename}",devicename);
 
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf8, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf9, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();

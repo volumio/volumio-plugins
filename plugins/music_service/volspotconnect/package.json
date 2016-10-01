@@ -1,6 +1,6 @@
 {
   "name": "volspotconnect",
-  "version": "0.22 beta October 1st 2016",
+  "version": "0.23 beta October 1st 2016",
   "description": "basic plugins to install and configure spotify-connect-web",
   "main": "index.js",
   "scripts": {
