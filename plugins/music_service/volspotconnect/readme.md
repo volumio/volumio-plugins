@@ -1,4 +1,4 @@
-September, 30th 2016
+October, 2nd th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -21,11 +21,17 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 2nd
+
+- correct output device
+
 October 1st
+
 - volspotconnect is now managed as a systemctl service
 - add switch to enable/ disable family share 
 
-Previous
+Previous changes...
 
 - future software mixer support
 - now the plugin is automatically updated when output or device or device name is changed in volumio
@@ -33,9 +39,9 @@ Previous
 Issues : 
 
 - complex password works, but are not saved properly in config.json
-
+- may not work with Digi dac and all output with no mixer... I'm working on this !
 
 Todo
 
 - Add album art and working button in volumio UI
-- switch to enable/disable family share
+- clean the code , update node modules, remove unused node modules
