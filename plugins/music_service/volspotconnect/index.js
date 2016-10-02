@@ -305,7 +305,20 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		//		outdev = 'plughw:'+outdev+',0';
 		//		}
 		//	var mixind = 1 //mixer_device_index : don't know how to determine automatically...
-			var mixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
+			var smixer;
+			var mixer;
+			var slindex;
+			var mindex;
+			var smixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
+				if (smixer != "") {
+					mixer = "--mixer " + smixer;
+				} else { mixer = ""
+				}
+			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
+				if (smindex != "") {
+					mindex = "--mixer_device_index " + smindex;
+				}else { mindex = ""
+				}
 			var devicename = self.commandRouter.sharedVars.get('system.name');
 			var hwdev = 'hw:' + outdev;
 		//	var hwdev = outdev;
@@ -321,7 +334,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf4 = conf3.replace("${devicename}",devicename);
 		var conf5 = conf4.replace("${outdev}", hwdev);
 		var conf6 = conf5.replace("${mixer}", mixer);
-		var conf7 = conf6.replace("${mixind}", outdev);
+		var conf7 = conf6.replace("${mixind}", mindex);
 		var conf8 = conf7.replace("${familyshare}", family);
 		var conf9 = conf8.replace("${devicename}",devicename);
 

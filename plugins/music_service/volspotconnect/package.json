@@ -1,6 +1,6 @@
 {
   "name": "volspotconnect",
-  "version": "0.25 beta October 2nd 2016",
+  "version": "0.26 beta October 2nd 2016",
   "description": "basic plugins to install and configure spotify-connect-web",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "",
   "volumio_info": {
     "prettyName": "Volumio Spotify Connect",
+    "icon": "fa-spotify",
     "plugin_type": "music_service"
   },
   "dependencies": {

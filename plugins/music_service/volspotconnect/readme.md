@@ -24,6 +24,7 @@ Last changes
 
 October 2nd
 
+- work to remove mixer settings if no mixer in volumio. Should help with hifiberry digi+ 
 - correct output device
 
 October 1st
