@@ -1486,7 +1486,7 @@ ControllerSpop.prototype.getArtistTopTracks = function(id) {
 					}
 					response.push({
 						service: 'spop',
-						type: 'track',
+						type: 'song',
 						name: track.name,
 						title: track.name,
 						artist: track.artists[0].name,
@@ -1546,7 +1546,7 @@ ControllerSpop.prototype.getTrack = function(id) {
 					name: results.body.name,
 					artist: artist,
 					album: album,
-					type: 'track',
+					type: 'song',
 					duration: parseInt(results.body.duration_ms / 1000),
 					tracknumber: results.body.track_number,
 					albumart: albumart,
