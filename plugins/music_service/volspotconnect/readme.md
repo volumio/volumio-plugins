@@ -24,7 +24,7 @@ Last changes
 
 October 3rd
 
-- remove unuseful node modules
+- remove useless node modules
 - clean code
 
 October 2nd
