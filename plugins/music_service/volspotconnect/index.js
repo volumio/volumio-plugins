@@ -2,48 +2,35 @@
 
 var libQ = require('kew');
 var libNet = require('net');
-//var libFast = require('fast.js');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
-//var nodetools = require('nodetools');
+
 
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
 
 function ControllerVolspotconnect(context) {
-	// This fixed variable will let us refer to 'this' object at deeper scopes
+
 	var self = this;
 
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-/*
-	self.context = context;
-	self.commandRouter = self.context.coreCommand;
-	self.logger=self.commandRouter.logger;
 
-*/
 }
 
 
 
 ControllerVolspotconnect.prototype.onVolumioStart = function()
 {
-    var self= this;
-    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-    
-// 		this.commandRouter.sharedVars.registerCallback('system.name', this.playerNameCallback.bind(this));
-    this.config = new (require('v-conf'))();
-    this.config.loadFile(configFile);
- //  var boundMethod = self.onPlayerNameChanged.bind(self);
-//	self.commandRouter.executeOnPlugin('system_controller', 'system', 'registerCallback', boundMethod);
-	self.createVOLSPOTCONNECTFile();
-return libQ.resolve();
-
-
-
+	var self= this;
+	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+	this.config = new (require('v-conf'))();
+	this.config.loadFile(configFile);
+	    		self.createVOLSPOTCONNECTFile();
+	return libQ.resolve();
 }
 
 ControllerVolspotconnect.prototype.getConfigurationFiles = function()
@@ -62,10 +49,9 @@ ControllerVolspotconnect.prototype.onPlayerNameChanged = function (playerName) {
 
 ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 	var self = this;
+	var defer=libQ.defer();
 
-    var defer=libQ.defer();
-
-	exec("/usr/bin/sudo /bin/systemctl start volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+		exec("/usr/bin/sudo /bin/systemctl start volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting VOLSPOTCONNECT: ' + error);
             defer.reject();
@@ -76,17 +62,17 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 		}
 	});
 
-    return defer.promise;
+		return defer.promise;
 };
 
 
 ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
-    self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+	self.logger.info("Killing Spotify-connect-web daemon");
+		exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
-self.logger.info('Error in killing Voslpotconnect')
+	self.logger.info('Error in killing Voslpotconnect')
 	}
 	});
 
@@ -188,15 +174,6 @@ ControllerVolspotconnect.prototype.onUninstall = function() {
 ControllerVolspotconnect.prototype.getUIConfig = function() {
 	var defer = libQ.defer();
 	var self = this;
-/*	var rate;
-                if(self.config.get('bitrate')===true)
-                    rate="320";
-		else rate="128"
-	var family;
-		if(self.config.get('familyshare')===true)
-		    family="sd"
-		else family="#"
-*/
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 
         self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -235,48 +212,6 @@ ControllerVolspotconnect.prototype.setConf = function(varName, varValue) {
 };
 
 // Public Methods ---------------------------------------------------------------------------------------
-// These are 'this' aware, and return a promise
-
-
-
-// Rebuild a library of user's playlisted Spotify tracks
-
-
-// Define a method to clear, add, and play an array of tracks
-
-
-// Internal methods ---------------------------------------------------------------------------
-// These are 'this' aware, and may or may not return a promise
-
-
-
-// Volspotconnect get state
-/*ControllerVolspotconnect.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolspotconnect::getState');
-
-	return self.sendVolspotconnectCommand('status', []);
-};
-*/
-
-// Announce updated Volspotconnect state
-
-
-
-/*
-ControllerVolspotconnect.prototype.logDone = function(timeStart) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + '------------------------------ ' + (Date.now() - timeStart) + 'ms');
-	return libQ.resolve();
-};
-
-ControllerVolspotconnect.prototype.logStart = function(sCommand) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('\n' + '[' + Date.now() + '] ' + '---------------------------- ' + sCommand);
-	return libQ.resolve();
-};
-
-*/
 
 ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     var self = this;
@@ -301,10 +236,6 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		else family="#"
 
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-		//	if (outdev != 'softvolume' ) {
-		//		outdev = 'plughw:'+outdev+',0';
-		//		}
-		//	var mixind = 1 //mixer_device_index : don't know how to determine automatically...
 			var smixer;
 			var mixer;
 			var slindex;
@@ -363,12 +294,11 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 
     var defer = libQ.defer();
 
-    self.config.set('username', data['username']);
-    self.config.set('password', data['password']);
-   self.config.set('bitrate', data['bitrate']);
-    self.config.set('familyshare', data['familyshare']);
-
-    self.rebuildVOLSPOTCONNECTAndRestartDaemon()
+	self.config.set('username', data['username']);
+	self.config.set('password', data['password']);
+	self.config.set('bitrate', data['bitrate']);
+	self.config.set('familyshare', data['familyshare']);
+	self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){
             self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration of Volspotconnect has been successfully updated');
             defer.resolve({});
@@ -382,7 +312,6 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     return defer.promise;
 
 };
-
 
 ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = function () {
     var self=this;
@@ -402,14 +331,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         {
         self.commandRouter.pushToastMessage('success', "Configuration update", 'Volumio Spotify Connect has been successfully updated');
    defer.resolve({});
-/*        {
-            setTimeout(function () {
-                self.logger.info("Connecting to daemon");
-                self.volspotconnectDaemonConnect(defer);
-            }, 5000);
-*/
         });
-
 
     return defer.promise;
 }

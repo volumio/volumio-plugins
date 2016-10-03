@@ -1,7 +1,7 @@
 {
   "name": "volspotconnect",
-  "version": "0.26 beta October 2nd 2016",
-  "description": "basic plugins to install and configure spotify-connect-web",
+  "version": "1.2.0",
+  "description": "Plugin for Spotify connect in Volumio2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,13 +10,10 @@
   "license": "",
   "volumio_info": {
     "prettyName": "Volumio Spotify Connect",
-    "icon": "fa-spotify",
     "plugin_type": "music_service"
   },
   "dependencies": {
-    "socket.io-client": "^1.4.6",
     "fs-extra": "^0.28.0",
-    "child_process":"",
     "kew": "^0.7.0",
     "net": "^1.0.2",
     "v-conf": "^0.10.0"

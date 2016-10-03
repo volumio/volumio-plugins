@@ -1,4 +1,4 @@
-October, 2nd th 2016
+October, 3rd th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
@@ -22,6 +22,11 @@ To install
 
 Last changes
 
+October 3rd
+
+- remove unuseful node modules
+- clean code
+
 October 2nd
 
 - work to remove mixer settings if no mixer in volumio. Should help with hifiberry digi+ 
@@ -40,9 +45,8 @@ Previous changes...
 Issues : 
 
 - complex password works, but are not saved properly in config.json
-- may not work with Digi dac and all output with no mixer... I'm working on this !
+- wrong music speed on some usb dac
 
 Todo
 
 - Add album art and working button in volumio UI
-- clean the code , update node modules, remove unused node modules
