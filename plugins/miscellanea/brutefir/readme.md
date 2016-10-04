@@ -1,4 +1,4 @@
-13 august 2016
+O4th October 2016
 	BRUTEFIR PLUGIN
 
 
@@ -33,6 +33,9 @@ Binaural filtering if correct output set...
 - What is not working :
 No change in sound when setting equalizer
 Equalizer appears on several line / label are unreadable
+
+- Last changes
+remove useless node modules
 
 - WARNING
 If you want to test, you have to reboot after installation so that module load, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
