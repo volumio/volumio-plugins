@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo "Installing spotify-connect-web dependencies"
-sudo apt-get update
-sudo apt-get -y install avahi-utils
 echo "checking if volspotconnect service exists"
 if [ ! -f "/etc/systemd/system/volspotconnect.service" ];
 	then
@@ -14,5 +11,8 @@ if [ ! -f "/etc/systemd/system/volspotconnect.service" ];
 	else
 		echo "volspotconnect.service already exists"
 fi
+echo "Installing spotify-connect-web dependencies"
+sudo apt-get update
+sudo apt-get -y install avahi-utils
 #required to end the plugin install
 echo "plugininstallend"

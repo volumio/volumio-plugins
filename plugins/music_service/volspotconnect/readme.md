@@ -1,7 +1,10 @@
-October, 3rd th 2016
+October, 7th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
+IMPORTANT
 
-For armv7+ (Rpi 2, Rpi 3, etc, but not Rpi 1/Rpi Zero) devices only for now
+- For armv7+ (Rpi 2, Rpi 3, Sparky an d other devices etc, but not Rpi 1/Rpi Zero) devices only for now
+- Requires a Premuim or Family account
+- Requires a Family account to use Family shared device
 
 This plugin is designed to use Spotify connect web with volumio
 Base on this work : https://github.com/Fornoth/spotify-connect-web
@@ -21,6 +24,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 7th
+- new work in case of software mixer or No mixer - seems to work ;-)
+- mod in volspotconnect.service (set user as root) (useful for a next release suppporting RPI 1 and ZERO !)
+-  
 
 October 3rd
 
@@ -50,3 +58,4 @@ Issues :
 Todo
 
 - Add album art and working button in volumio UI
+- support for Rpi <2

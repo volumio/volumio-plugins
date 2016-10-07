@@ -1,7 +1,7 @@
 {
   "name": "volspotconnect",
-  "version": "1.2.0",
-  "description": "Plugin for Spotify connect in Volumio2",
+  "version": "1.2.1",
+  "description": "Plugin for Spotify connect in Volumio2. Requires a Premium account and a Family account for Family shared device",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
