@@ -1,4 +1,4 @@
-October, 7th th 2016
+October, 8th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -25,6 +25,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 8th
+
+- correction mixer_device_index
 
 October 7th
 
