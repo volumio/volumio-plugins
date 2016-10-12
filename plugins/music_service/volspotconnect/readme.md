@@ -1,4 +1,4 @@
-October, 8th th 2016
+October, 12th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -25,6 +25,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 12th
+
+- Support for armv6l ( rpi B, B+) - but fails to install...
+- spotify connect lib are downloaded from volumio repo
 
 October 8th
 
