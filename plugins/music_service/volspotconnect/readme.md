@@ -1,11 +1,14 @@
-October, 12th th 2016
+October, 13th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
 
-- For armv7+ (Rpi 2, Rpi 3, Sparky an d other devices etc, but not Rpi 1/Rpi Zero) devices only for now
-- Requires a Premuim or Family account
+- Requires a Premium or Family account
 - Requires a Family account to use Family shared device
+
+IMPORTANT 2
+
+- Version for armV6 requires to download a large file (180Mo). It is long and installation is very long...25min! Be patient !	
 
 This plugin is designed to use Spotify connect web with volumio
 Base on this work : https://github.com/Fornoth/spotify-connect-web
@@ -25,6 +28,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 13th
+
+- correction in install.sh
+- armv6 now supported !
 
 October 12th
 
@@ -62,7 +70,6 @@ Previous changes...
 
 Issues : 
 
-- complex password works, but are not saved properly in config.json
 - wrong music speed on some usb dac
 
 Todo
