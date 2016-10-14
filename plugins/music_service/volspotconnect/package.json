@@ -1,6 +1,6 @@
 {
   "name": "volspotconnect",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Plugin for Spotify connect in Volumio2. Requires a Premium account and a Family account for Family shared device",
   "main": "index.js",
   "scripts": {

@@ -247,7 +247,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}
 			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
 				if (smixer == "SoftMaster") {
-					mindex = ""
+					mindex = "--mixer_device_index 1"
 				}else if (smixer == "None") {	
 					mindex = ""
 				}else { mindex = "--mixer_device_index " + smindex;
