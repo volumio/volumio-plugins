@@ -1,0 +1,30 @@
+{
+  "page": {
+	"label": "TRANSLATE.SPOTIFY_CONFIGURATION"
+  },
+  "sections": [
+	{
+	  "id": "section_account",
+	  "element": "section",
+	  "label": "TRANSLATE.SPOTIFY_ACCOUNT",
+	  "icon": "fa-plug",
+	  "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveDisplayOptions"},
+	  "saveButton": {
+		"label": "TRANSLATE.SAVE",
+		"data": [
+		  "none"
+		]
+	  },
+	  "content": [
+		{
+		  "id": "none",
+		  "type":"text",
+		  "element": "input",
+		  "doc": "",
+		  "label": "",
+		  "value": ""
+		}
+	  ]
+	}
+  ]
+}
