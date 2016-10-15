@@ -1,8 +1,8 @@
 'use strict';
 
-var fs = require('fs-extra');
 var exec = require('child_process').exec;
 var os = require('os');
+var libQ = require('kew');
 // Define the TouchDisplay class
 module.exports = TouchDisplay;
 
@@ -39,6 +39,7 @@ TouchDisplay.prototype.onStart = function() {
 		.then(function(e)
 		{
 			self.logger.info('Kiosk Started');
+			defer.resolve();
 		})
 		.fail(function(e)
 		{

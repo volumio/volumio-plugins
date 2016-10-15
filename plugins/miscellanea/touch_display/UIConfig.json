@@ -1,28 +1,17 @@
 {
   "page": {
-	"label": "TRANSLATE.SPOTIFY_CONFIGURATION"
+	"label": "TRANSLATE.TOUCHSCREEN_CONFIGURATION"
   },
   "sections": [
 	{
-	  "id": "section_account",
+	  "id": "no_setting",
 	  "element": "section",
-	  "label": "TRANSLATE.SPOTIFY_ACCOUNT",
+	  "label": "TRANSLATE.NO_SETTINGS_AVAILABLE",
 	  "icon": "fa-plug",
 	  "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveDisplayOptions"},
-	  "saveButton": {
-		"label": "TRANSLATE.SAVE",
-		"data": [
-		  "none"
-		]
-	  },
 	  "content": [
 		{
-		  "id": "none",
-		  "type":"text",
-		  "element": "input",
-		  "doc": "",
-		  "label": "",
-		  "value": ""
+
 		}
 	  ]
 	}

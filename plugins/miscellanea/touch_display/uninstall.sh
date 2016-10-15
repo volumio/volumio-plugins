@@ -2,6 +2,6 @@
 
 echo "Unistalling gpiobuttons dependencies"
 
-echo "Removing gpiobuttons"
+echo "Removing Touch display"
 
 echo "Done"

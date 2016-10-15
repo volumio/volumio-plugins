@@ -12,5 +12,10 @@
     "prettyName": "Touch Display",
     "icon": "fa-hand-pointer-o",
     "plugin_type": "miscellanea"
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^0.10.0"
   }
 }
