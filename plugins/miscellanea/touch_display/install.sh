@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get -y install
 
 echo "Installing Graphical environment"
-sudo apt-get install -y xinit xorg openbox
+sudo apt-get install -y xinit xorg openbox libexif12
 
 echo "Download Chromium"
 cd /home/volumio/
