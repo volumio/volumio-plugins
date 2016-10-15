@@ -26,7 +26,19 @@
     "id": "cat2",
     "description": "Things that cannot go in other categories",
     "plugins": [
-
+	  {
+		"prettyName": "Touch Display Plugin",
+		"icon": "fa-hand-pointer-o",
+		"name": "touch_display",
+		"version": "1.0",
+		"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/touch_display/touchdisplay.zip",
+		"license": "Free for non commercial USE",
+		"description": "This Plugin shows Volumio's UI to whatever Display attached to the device. It is especially optimized for the 7'' Raspberry PI display.",
+		"details":"<strong>Using this plugin is not recommended with Raspberry PI B+! Suggested, Raspberry PI 3, Odroid C1 or C2</strong>",
+		"author": "Volumio Team",
+		"screenshots": [],
+		"updated": "15-10-2016"
+	  }
     ]
   },
   {
