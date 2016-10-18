@@ -1,4 +1,4 @@
-October, 17th th 2016
+October, 18th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -28,6 +28,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 18th
+
+- uncomment avahi installation in install script
 
 October 17th
 

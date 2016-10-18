@@ -1,18 +1,18 @@
 #!/bin/bash
 echo "Installing spotify-connect-web dependencies"
-#sudo apt-get update
-#sudo apt-get -y install avahi-utils
+sudo apt-get update
+sudo apt-get -y install avahi-utils
 
-echo "detecting cpu"
+echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 
 if [ $cpu = "armv6l" ]
 then
-        echo "Cpu is Armv6l, downloading required package"
+        echo "Cpu is Armv6l, downloading required package. Be very patient, it could take up to 15min..."
 	wget http://repo.volumio.org/Volumio2/plugins/Volspotconnectchroot.tar.gz
 	if [ $? -eq 0 ]
 		then
-			echo "extracting data"
+			echo "Extracting data"
 			sudo tar -xf Volspotconnectchroot.tar.gz -C /
 			rm Volspotconnectchroot.tar.gz
 		else
@@ -26,7 +26,7 @@ then
 	wget http://repo.volumio.org/Volumio2/plugins/Volspotconnect.tar.gz
 		if [ $? -eq 0 ]
 		then
-			echo "extracting data"
+			echo "Extracting data"
 			sudo tar -xf Volspotconnect.tar.gz -C /
 			rm Volspotconnect.tar.gz
 		else
@@ -40,7 +40,7 @@ else
 	exit -1
 fi
 
-echo "checking if volspotconnect service exists"
+echo "Checking if volspotconnect service exists"
 if [ ! -f "/etc/systemd/system/volspotconnect.service" ];
 	then
 		echo "file volspotconnect.service doesn't exist, creating"
