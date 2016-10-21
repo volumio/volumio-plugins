@@ -25,8 +25,17 @@ xset -dpms
 xset s off
 openbox-session &
 while true; do
-  rm -rf ~/.{config,cache}/chromium/
-  /usr/bin/chromium-browser --disable-session-crashed-bubble --disable-infobars --kiosk --no-first-run  'http://localhost:3000'
+  /usr/bin/chromium-browser \\
+    --kiosk \\
+    --incognito \\
+    --no-first-run \\
+    --disable-3d-apis \\
+    --disable-breakpad \\
+    --disable-crash-reporter \\
+    --disable-infobars \\
+    --disable-session-crashed-bubble \\
+    --disable-translate \\
+    http://localhost:3000
 done" > /opt/volumiokiosk.sh
 /bin/chmod +x /opt/volumiokiosk.sh
 
