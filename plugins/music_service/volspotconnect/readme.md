@@ -1,4 +1,4 @@
-October, 18th th 2016
+October, 21th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -28,6 +28,14 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 21th
+
+- work on install script - a special service is used for rpi1
+
+October 20th
+
+- properly stop chroot system with RPI 1
 
 October 18th
 
