@@ -27,7 +27,6 @@ openbox-session &
 while true; do
   /usr/bin/chromium-browser \\
     --kiosk \\
-    --incognito \\
     --no-first-run \\
     --disable-3d-apis \\
     --disable-breakpad \\
