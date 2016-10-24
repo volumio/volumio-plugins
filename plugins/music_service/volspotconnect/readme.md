@@ -1,4 +1,4 @@
-October, 21th th 2016
+October, 24th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -7,6 +7,8 @@ IMPORTANT
 - Requires a Family account to use Family shared device
 
 IMPORTANT 2
+
+- Now the plugin should work with armv6 RPI (previvous to RPI 2) even if just tested on RPI B...And of course with armv7 device (RPI 2, RPI3, Sparky ) 
 
 - Version for armV6 requires to download a large file (180Mo). It is long and installation is very long...25min! Be patient !	
 
@@ -28,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+October 24 th
+
+- update readme
 
 October 21th
 
@@ -95,8 +101,10 @@ Previous changes...
 Issues : 
 
 - wrong music speed on some usb dac
+- no sound with software volume control
+- some problem to uninstall plugin with armv6 devices
+
 
 Todo
 
 - Add album art and working button in volumio UI
-- support for Rpi <2
