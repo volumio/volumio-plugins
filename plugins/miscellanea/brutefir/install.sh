@@ -24,7 +24,7 @@ if [ ! -f "/etc/systemd/system/brutefir.service" ];
 fi
 
 echo "creating filters folder"
-mkdir /data/INTERNAL/brutefirfilters
+mkdir -m 777 /data/INTERNAL/brutefirfilters
 
 #required to end the plugin install
 echo "plugininstallend"

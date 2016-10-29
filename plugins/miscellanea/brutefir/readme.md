@@ -29,7 +29,7 @@ For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
 Access to webUI and save configuration
 Binaural filtering if correct output set... 
-Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings
+Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
 
 - What is not working :
 No change in sound when setting equalizer
