@@ -253,7 +253,7 @@
 										"min": "200",
 										"max": "1200",
 										"step": "50",
-										"value": "7OO",
+										"value": "700",
 										"tooltip":"always"
 									}
 								]
@@ -274,8 +274,8 @@
 									{
 										"min":"1",
 										"max":"15",
-										"step":"1",
-										"value":"6",
+										"step":"0.5",
+										"value":"5",
 										"tooltip":"always"
 									}
 								]
@@ -301,6 +301,7 @@
 					"attenuation",
 					"leftfilter",
 					"rightfilter",
+					"filter_format",
 					"filter_size",
 					"numb_part",
 					"fl_bits",
@@ -364,7 +365,7 @@
 					"doc": "Leftfilter file (path/name) if none dirac pulse is used",
 					"label": "TRANSLATE.BRUTEFIR.LEFT_FILTER",
 					"value": {
-						"value": "dirac pulse",
+						"value": "",
 						"label": "dirac pulse"
 					},
 					"options": [],
@@ -379,10 +380,90 @@
 					"doc": "Right filter file (path/name) if none dirac pulse is used",
 					"label": "TRANSLATE.BRUTEFIR.RIGHT_FILTER",
 					"value": {
-						"value": "dirac pulse",
+						"value": "",
 						"label": "dirac pulse"
 					},
 					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "filter_format",
+					"element": "select",
+					"doc": "filter format",
+					"label": "TRANSLATE.BRUTEFIR.FILTER_FORMAT",
+					"value": {
+						"value": "",
+						"label": ""
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						},
+						{
+							"value": "AUTO",
+							"label": "AUTO"
+						}
+					],
 					"visibleIf": {
 						"field": "enabled",
 						"value": true

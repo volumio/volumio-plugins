@@ -12,6 +12,7 @@
  "INPUT_ATTENUATION":"Attenuation d'entrée",
  "LEFT_FILTER":"Filtre gauche",
  "RIGHT_FILTER":"Filtre droit",
+  "FILTER_FORMAT":"Format du filtre",
  "FILTER_SIZE":"Taille du filtre",
  "NUMBER_PARTITION":"Nombre de partitions",
  "INTERNAL_RESOLUTION":"Résolution interne",

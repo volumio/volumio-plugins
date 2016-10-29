@@ -23,5 +23,8 @@ if [ ! -f "/etc/systemd/system/brutefir.service" ];
 		echo "File brutefir.service already exists"
 fi
 
+echo "creating filters folder"
+mkdir /data/INTERNAL/brutefirfilters
+
 #required to end the plugin install
 echo "plugininstallend"

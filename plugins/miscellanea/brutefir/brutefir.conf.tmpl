@@ -62,7 +62,7 @@ crossfade: false; # crossfade when coefficient is changed
 
 coeff "filter_1" {
 filename: "${leftfilter}";
-format: "FLOAT64_LE";
+format: "${filter_format1}";
 };
 
 filter "l_drc" {
@@ -74,7 +74,7 @@ process: -1;
 
 coeff "filter_2" {
 filename: "${rightfilter}";
-format: "FLOAT64_LE";
+format: "${filter_format2}";
 };
 
 filter "r_drc" {

@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 // This file is surely full of error. I have to say that I try to understand how it works by copying / modifying code from other plugins.
 // as result plenty of line should be removed or added...
 // not sure all var are required....
@@ -93,7 +93,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    defer.reject();
   } catch (ecc) {}
  });
- /*
+ //comment
  // Init some command socket variables
  self.bBrutefirCommandGotFirstMessage = false;
  self.brutefirCommandReadyDeferred = libQ.defer(); // Make a promise for when the Brutefir connection is ready to receive events 
@@ -119,8 +119,8 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
     // Else this is a command response
     
    }
-   */
-/*   else {
+   
+   else {
     try {
      self.commandRouter.logger.info("BEFORE: BRUTEFIR HAS " + self.arrayResponseStack.length + " PROMISE IN STACK");
 
@@ -138,7 +138,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    self.sResponseBuffer = '';
   }
  });
-/*
+
  // Init some status socket variables
  self.bBrutefirStatusGotFirstMessage = false;
  self.sStatusBuffer = '';
@@ -165,7 +165,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
     self.commandRouter.logger.info(sStatus);
 
     self.logStart('Brutefir announces state update')
-     /*.then(function(){
+     .then(function(){
       return self.getState.call(self);
       })
      .then(function() {
@@ -182,7 +182,7 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
    self.sStatusBuffer = '';
   }
  });
-*/
+
 
 };
 
@@ -266,27 +266,30 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 value = self.config.get('attenuation');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
-value = self.config.get('filter_size');
+value = self.config.get('filter_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
-value = self.config.get('numb_part');
+value = self.config.get('filter_size');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
-value = self.config.get('fl_bits');
+value = self.config.get('numb_part');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[6].options'), value));
-value = self.config.get('smpl_rate');
+value = self.config.get('fl_bits');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[7].options'), value));
-value = self.config.get('input_format');
+value = self.config.get('smpl_rate');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[8].options'), value));
-value = self.config.get('output_format');
+value = self.config.get('input_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[9].options'), value));
+value = self.config.get('output_format');
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
 var value;	
- uiconf.sections[2].content[10].value = self.config.get('input_device');
- uiconf.sections[2].content[11].value = self.config.get('output_device');
+ uiconf.sections[2].content[11].value = self.config.get('input_device');
+ uiconf.sections[2].content[12].value = self.config.get('output_device');
 
 	defer.resolve(uiconf);
 		})
@@ -331,7 +334,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 
 // here we compose command to be send to brutefir- until now send nothing....
 //here we send command to brutefir
-ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
+/*ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
 
@@ -351,21 +354,56 @@ console.log("send brutefir");
  // Return a promise for the command response
  return brutefirResponse;
 };
-
+*/
 //for gain settings
-ControllerBrutefir.prototype.sendgainEq = function(sCommand) {
+ControllerBrutefir.prototype.gainEq = function() {
  var self = this;
 
 var values = coef.value.split(',');
 	console.log(values);
 var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
 ///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
-	
-  return self.sendBrutefirCommand(commandgainEq);
+		this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eq gain' + timepos);
+  return self.sendBrutefirCommand('commandgainEq');
 
 };
 
+
+ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
+
+	// Convert the array of parameters to a string
+	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
+		return sCollected + ' ' + sCurrent;
+	}, '');
+
+
+	var brutfirResponseDeferred = libQ.defer();
+	// Pass the command to brutefir when the command socket is ready
+	self.brutefirCommandReady
+		.then(function() {
+			return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8')
+				
+		});
+
+
+	var brutefirResponse = brutefirResponseDeferred.promise;
+
+	if(sCommand!=='status')
+	{
+		self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
+		self.arrayResponseStack.push(brutefirResponseDeferred);
+	}
+	// Return a promise for the command response
+	return brutefirResponse;
+};
+
+
 //for phase settings
+
+
+
 ControllerBrutefir.prototype.sendphasEq = function(sCommand) {
  var self = this;
 
@@ -410,10 +448,19 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    //var boutput_device;
    var sbauer;
    var output_device;
-   //var foutput_device;
+   var filter_path = "/data/INTERNAL/brutefirfilters/";
+   var leftfilter;
+   var rightfilter;
+   //var foutput_devi'ce;
        if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
+       if(self.config.get('leftfilter')== "")
+       			leftfilter ="dirac pulse";
+       		else leftfilter = filter_path + self.config.get('leftfilter');	
+       if(self.config.get('rightfilter')== "")
+       			rightfilter ="dirac pulse";
+       		else rightfilter = filter_path + self.config.get('rightfilter');	
 		//output_device = output_device;
    console.log(output_device);
    debugger;
@@ -425,12 +472,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf6 = conf5.replace("${input_format}", self.config.get('input_format'));
    var conf7 = conf6.replace("${attenuation1}", self.config.get('attenuation'));
    var conf8 = conf7.replace("${attenuation2}", self.config.get('attenuation'));
-   var conf9 = conf8.replace("${leftfilter}", self.config.get('leftfilter'));
-   var conf10 = conf9.replace("${rightfilter}", self.config.get('rightfilter'));
-   var conf11 = conf10.replace("${output_device}", output_device);
-   var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
+   var conf9 = conf8.replace("${leftfilter}", leftfilter);
+   var conf10 = conf9.replace("${filter_format1}", self.config.get('filter_format'));
+   var conf11 = conf10.replace("${rightfilter}", rightfilter);
+   var conf12 = conf11.replace("${filter_format2}", self.config.get('filter_format'));
+   var conf13 = conf12.replace("${output_device}", output_device);
+   var conf14 = conf13.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf14, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
