@@ -63,6 +63,7 @@ crossfade: false; # crossfade when coefficient is changed
 coeff "filter_1" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
+attenuation: 22.0;
 };
 
 filter "l_drc" {
@@ -75,6 +76,7 @@ process: -1;
 coeff "filter_2" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
+attenuation: 22.0;
 };
 
 filter "r_drc" {
