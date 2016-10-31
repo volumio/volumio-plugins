@@ -1,4 +1,4 @@
-29th October 2016
+31th October 2016
 	BRUTEFIR PLUGIN
 
 
@@ -34,6 +34,7 @@ Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and 
 - What is not working :
 No change in sound when setting equalizer
 Equalizer appears on several line / label are unreadable
+No volume control
 
 - Last changes
 remove useless node modules

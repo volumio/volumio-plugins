@@ -451,19 +451,23 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var filter_path = "/data/INTERNAL/brutefirfilters/";
    var leftfilter;
    var rightfilter;
+   var filterattenuation;
    //var foutput_devi'ce;
        if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
        if(self.config.get('leftfilter')== "")
-       			leftfilter ="dirac pulse";
+       			{leftfilter ="dirac pulse";
+       			filterattenuation ="0"}
        		else leftfilter = filter_path + self.config.get('leftfilter');	
+       			filterattenuation ="6";
        if(self.config.get('rightfilter')== "")
-       			rightfilter ="dirac pulse";
-       		else rightfilter = filter_path + self.config.get('rightfilter');	
+       			rightfilter ="dirac pulse",
+       			filterattenuation ="0"
+       		else rightfilter = filter_path + self.config.get('rightfilter');
+       			filterattenuation ="6";	
 		//output_device = output_device;
    console.log(output_device);
-   debugger;
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
@@ -474,12 +478,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf8 = conf7.replace("${attenuation2}", self.config.get('attenuation'));
    var conf9 = conf8.replace("${leftfilter}", leftfilter);
    var conf10 = conf9.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf11 = conf10.replace("${rightfilter}", rightfilter);
-   var conf12 = conf11.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf13 = conf12.replace("${output_device}", output_device);
-   var conf14 = conf13.replace("${output_format}", self.config.get('output_format'));
+   var conf11 = conf10.replace("${filterattenuation1}", filterattenuation);
+   var conf12 = conf11.replace("${rightfilter}", rightfilter);
+   var conf13 = conf12.replace("${filter_format2}", self.config.get('filter_format'));
+   var conf14 = conf13.replace("${filterattenuation2}", filterattenuation);
+   var conf15 = conf14.replace("${output_device}", output_device);
+   var conf16 = conf15.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf14, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf16, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();

@@ -25,6 +25,7 @@ fi
 
 echo "creating filters folder"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
+cp /data/plugins/miscellanea/brutefir/filters/* /data/INTERNAL/brutefirfilters/
 
 #required to end the plugin install
 echo "plugininstallend"
