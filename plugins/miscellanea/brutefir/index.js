@@ -613,6 +613,7 @@ console.log('output_device');
  self.config.set('smpl_rate', data['smpl_rate'].value);
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
+ self.config.set('filter_format', data['filter_format'].value);
  self.config.set('filter_size', data['filter_size'].value);
  self.config.set('numb_part', data['numb_part'].value);
  self.config.set('fl_bits', data['fl_bits'].value);

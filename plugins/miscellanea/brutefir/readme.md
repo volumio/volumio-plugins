@@ -1,4 +1,4 @@
-31th October 2016
+04th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -37,6 +37,7 @@ Equalizer appears on several line / label are unreadable
 No volume control
 
 - Last changes
+correction in index.js
 remove useless node modules
 
 - WARNING
