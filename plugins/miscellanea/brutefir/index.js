@@ -522,7 +522,7 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 		var conf3 = conf2.replace("${levelfeed}", self.config.get('levelfeed'));
 		
 
-	            fs.writeFile("/etc/asound.conf", conf3, 'utf8', function (err) {
+	            fs.writeFile("/etc/asound.conf.fake", conf3, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();

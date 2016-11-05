@@ -1,4 +1,4 @@
-04th November 2016
+05th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -34,9 +34,14 @@ Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and 
 - What is not working :
 No change in sound when setting equalizer
 Equalizer appears on several line / label are unreadable
-No volume control
+
 
 - Last changes
+
+software volume control is now working !
+disbled bauer because onfilct with soft vol
+add new filter for testing
+
 correction in index.js
 remove useless node modules
 

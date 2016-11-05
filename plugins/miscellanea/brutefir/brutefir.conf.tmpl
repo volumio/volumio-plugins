@@ -34,8 +34,8 @@ input "l_in", "r_in" {
             device: "alsa" {device: "hw:${input_device}";};
             sample: "${input_format}";   # sample format
             channels: 2;            # number of open channels / which to use
-		delay: 0,5;
-		maxdelay: -1;
+#		delay: 0,5;
+#		maxdelay: -1;
     };
 
 
@@ -56,7 +56,7 @@ from_inputs: "r_in"/${attenuation2};
 to_filters: "r_drc";
 process: -1; # process index to run in (-1 means auto)
 coeff: "equalizer";
-delay: 0; # predelay, in blocks
+#delay: 0; # predelay, in blocks
 crossfade: false; # crossfade when coefficient is changed
 }; 
 
@@ -91,7 +91,7 @@ process: -1;
 #         device: "file" {path: "/dev/stdout";};
             sample: "${output_format}";   # sample format
             channels: 2;        # number of open channels / which to use
-	delay: 0,0;
-	maxdelay: -1;
-	dither: true;
+#	delay: 0,0;
+#	maxdelay: -1;
+	dither: false;
     };
