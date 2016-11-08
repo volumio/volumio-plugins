@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Brutefir plugin for Volumio2. Provide a phase & gain equalizer, and the use of personnal filters",
   "main": "index.js",
   "scripts": {

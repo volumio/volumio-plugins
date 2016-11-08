@@ -1,4 +1,4 @@
-05th November 2016
+08th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -38,15 +38,17 @@ Equalizer appears on several line / label are unreadable
 
 - Last changes
 
-software volume control is now working !
+inducation in webUi
+
+software volume control is now working !* WITH DEV VERSION
 disbled bauer because onfilct with soft vol
 add new filter for testing
 
 correction in index.js
 remove useless node modules
 
-- WARNING
-If you want to test, you have to reboot after installation so that module load, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
+- INSTALLATION WARNING 
+If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
 If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". If not working, this probably due to a wrong I/O device.
 Type "aplay -L" to determine  right devices
 
