@@ -1,4 +1,4 @@
-08th November 2016
+11th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -38,7 +38,9 @@ Equalizer appears on several line / label are unreadable
 
 - Last changes
 
-inducation in webUi
+Add a output selector !
+
+indication in webUi
 
 software volume control is now working !* WITH DEV VERSION
 disbled bauer because onfilct with soft vol

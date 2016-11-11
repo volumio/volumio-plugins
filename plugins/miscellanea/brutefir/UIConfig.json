@@ -802,12 +802,12 @@
 				},
 				{
 					"id": "output_device",
-					"element": "input",
+					"element": "select",
 					"doc": "output device - device used for the output",
 					"label": "TRANSLATE.BRUTEFIR.OUTPUT_DEVICE",
 					"value": {
-						"value": "hw:1",
-						"label": "hw:1"
+						"value": "0",
+						"label": "0"
 					},
 					"options": [],
 					"visibleIf": {

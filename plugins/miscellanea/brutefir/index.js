@@ -289,7 +289,48 @@ value = self.config.get('output_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
 var value;	
  uiconf.sections[2].content[11].value = self.config.get('input_device');
- uiconf.sections[2].content[12].value = self.config.get('output_device');
+ 		{
+			var value;
+			var devicevalue;
+
+			var cards = self.getAlsaCards();
+
+			value = self.config.get('output_device');
+			if (value == undefined){
+				value = 0;
+			} else if (value == 'softvolume') {
+				value = self.config.get('softvolumenumber');
+			}
+		
+
+			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.value', value);
+			var output_device = self.config.get('output_device');
+			if (output_device) {
+				self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', output_device);
+			} else {
+				self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', self.getLabelForSelectedCard(cards, value));
+			}
+
+
+			for (var i in cards) {
+				if (cards[i].name === 'Audio Jack') {
+					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
+						value: cards[i].id,
+						label: 'Audio Jack'
+					});
+					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
+						value: cards[i].id,
+						label: 'HDMI Out'
+					});
+				} else {
+					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
+						value: cards[i].id,
+						label: cards[i].name
+					});
+				}
+		}	
+		}
+// uiconf.sections[2].content[12].value = self.config.get('output_device');
 
 	defer.resolve(uiconf);
 		})
@@ -310,6 +351,48 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
 
 	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 
+};
+
+ControllerBrutefir.prototype.getLabelForSelectedCard = function (cards, key) {
+	var n = cards.length;
+	for (var i = 0; i < n; i++) {
+		if (cards[i].id == key)
+			return cards[i].name;
+	}
+
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+};
+
+ControllerBrutefir.prototype.getAlsaCards = function () {
+	var cards = [];
+
+	var soundCardDir = '/proc/asound/';
+	var idFile = '/id';
+	var regex = /card(\d+)/;
+	var carddata = fs.readJsonSync(('/volumio/app/plugins/audio_interface/alsa_controller/cards.json'),  'utf8', {throws: false});
+
+	var soundFiles = fs.readdirSync(soundCardDir);
+
+	for (var i = 0; i < soundFiles.length; i++) {
+		var fileName = soundFiles[i];
+		var matches = regex.exec(fileName);
+		var idFileName = soundCardDir + fileName + idFile;
+		if (matches && fs.existsSync(idFileName)) {
+			var id = matches[1];
+			var content = fs.readFileSync(idFileName);
+			var rawname = content.toString().trim();
+			var name = rawname;
+			for (var n = 0; n < carddata.cards.length; n++){
+				var cardname = carddata.cards[n].name.toString().trim();
+				if (cardname === rawname){
+					var name = carddata.cards[n].prettyname;
+				}
+			} cards.push({id: id, name: name});
+
+		}
+	}
+
+	return cards;
 };
 
 
@@ -446,16 +529,20 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    //var intero = 1;
    //var boutdev = 'hw:' + intero;
    //var boutput_device;
+   var value;
+   var devicevalue;
+   var cards = self.getAlsaCards();
    var sbauer;
-   var output_device;
+   //var output_device;
    var filter_path = "/data/INTERNAL/brutefirfilters/";
    var leftfilter;
    var rightfilter;
    var filterattenuation;
    //var foutput_devi'ce;
-       if(self.config.get('sbauer')===true)
+   /*    if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
+   */
        if(self.config.get('leftfilter')== "")
        			{leftfilter ="dirac pulse";
        			filterattenuation ="0"}
@@ -467,7 +554,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
        		else rightfilter = filter_path + self.config.get('rightfilter');
        			filterattenuation ="6";	
 		//output_device = output_device;
-   console.log(output_device);
+ //  console.log(output_device);
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", self.config.get('filter_size'));
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
@@ -482,7 +569,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf12 = conf11.replace("${rightfilter}", rightfilter);
    var conf13 = conf12.replace("${filter_format2}", self.config.get('filter_format'));
    var conf14 = conf13.replace("${filterattenuation2}", filterattenuation);
-   var conf15 = conf14.replace("${output_device}", output_device);
+   var conf15 = conf14.replace("${output_device}", self.config.get('output_device'));
    var conf16 = conf15.replace("${output_format}", self.config.get('output_format'));
 
    fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf16, 'utf8', function(err) {
@@ -619,7 +706,7 @@ console.log('output_device');
  self.config.set('fl_bits', data['fl_bits'].value);
  self.config.set('input_device', data['input_device']);
  self.config.set('input_format', data['input_format'].value);
- self.config.set('output_device', data['output_device']);
+ self.config.set('output_device', data['output_device'].label);
  self.config.set('output_format', data['output_format'].value);
  
 
