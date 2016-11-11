@@ -77,7 +77,7 @@
 		"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/accessory/503_hta_tube_amp/tubeamp.zip",
 		"license": "Free for non commercial USE",
 		"description": "This plugin allows to use GPIO functionalities of the PI2 Design 503hta Tube AMP-DAC",
-		"details":"<h4>PI2 Design 503hta Tube AMP-DAC</h4><br>This plugin allows to use GPIO functionalities of the 503hta Tube AMP-DAC<br><a href=\"https://volumio.org/product/pi2design-503hta-hybrid-tube-amp/\" target=\"blank\">GET YOUR PI2 Design 503hta Tube AMP-DAC ON VOLUMIO SHOP</a><br><ul><li>Shutdown</li><li>High Frequency Rolloff Filter</li></ul><br>",
+		"details":"<h4>PI2 Design 503hta Tube AMP-DAC</h4><br>This plugin allows to use GPIO functionalities of the 503hta Tube AMP-DAC<br><br><ul><li>Shutdown</li><li>High Frequency Rolloff Filter</li></ul><br><br>&nbsp;&nbsp;<strong><a href=\"https://volumio.org/product/pi2design-503hta-hybrid-tube-amp/\" target=\"blank\">Get the PI2 Design 503hta Tube AMP-DAC on Volumio Shop</a></strong>",
 		"author": "Volumio Team",
 		"screenshots": [],
 		"updated": "11-11-2016"
