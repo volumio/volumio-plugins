@@ -1,4 +1,4 @@
-11th November 2016
+12th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -38,6 +38,8 @@ Equalizer appears on several line / label are unreadable
 
 - Last changes
 
+Small correction in default output value
+
 Add a output selector !
 
 indication in webUi
@@ -50,14 +52,13 @@ correction in index.js
 remove useless node modules
 
 - INSTALLATION WARNING 
-If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin and save.
-If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". If not working, this probably due to a wrong I/O device.
-Type "aplay -L" to determine  right devices
+If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin change the output to your DAC and save.
+If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". 
 
 To be continued ;-)
 
 To do list (not exhaustive and not in order)
-- auto detection input output device
+
 - file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
 - Several profil for equalizer (pre-set or user pre-set) with naming like rock classical, jazz etc...
 - This plugin should be rename as "Volumio DSP center" as it include other filtering than brutefir...

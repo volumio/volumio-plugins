@@ -15,5 +15,5 @@
 "input_format":{"type": "string","value": "S16_LE"},
 "output_format":{"type": "string","value": "S16_LE"},
 "input_device":{"type": "string","value": "Loopback,1"},
-"output_device":{"type": "string","value": "1"}
+"output_device":{"type": "string","value": "Audio Jack"}
 }
