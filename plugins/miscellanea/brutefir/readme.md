@@ -1,4 +1,4 @@
-12th November 2016
+13th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -24,6 +24,10 @@ They will be used each time brutefir start and change in setting in webUI will s
 This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
+Base scheme
+
+[volumio]--->[Loopback]--->[Brutefir]--->[output /DAC]
+
 - What is working :
 
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
@@ -37,6 +41,8 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+new way for filter size calculation
 
 Small correction in default output value
 

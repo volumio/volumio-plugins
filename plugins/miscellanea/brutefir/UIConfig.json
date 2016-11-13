@@ -499,7 +499,7 @@
 					"doc": "size of filter",
 					"label": "TRANSLATE.BRUTEFIR.FILTER_SIZE",
 					"value": {
-						"value": "8192",
+						"value": 8192,
 						"label": "8192"
 					},
 					"options": [
@@ -530,6 +530,10 @@
 						{
 							"value": "65536",
 							"label": "65536"
+						},
+						{
+							"value": "131072",
+							"label": "131072"
 						}
 					],
 					"visibleIf": {
