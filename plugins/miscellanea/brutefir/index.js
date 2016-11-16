@@ -67,8 +67,6 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  self.servicename = 'brutefir';
  self.displayname = 'Brutefir';
 
-
-
  var nHost = 'localhost';
  var nPort = 3002;
  self.connBrutefirCommand = libNet.createConnection(nPort, nHost);
@@ -76,16 +74,17 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
   defer.resolve();
  }); 
  
- self.connBrutefirCommand.on('error', function(err) {
+  self.connBrutefirCommand.on('error', function(err) {
   self.logger.info('BRUTEFIR status error:');
+  self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config');
   self.logger.info(err);
   try {
    defer.reject();
   } catch (ecc) {}
 
-
  });
  self.connBrutefirStatus.on('error', function(err) {
+  self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config');
   self.logger.info('Brutefir status error:');
   self.logger.info(err);
 
@@ -254,6 +253,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  uiconf.sections[0].content[1].value = self.config.get('coef');
  uiconf.sections[0].content[2].value = self.config.get('phas');
 
+//	console.log(%j coef);
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].value = self.config.get('levelfcut');
@@ -340,6 +340,29 @@ var value;
 		})
 	return defer.promise
 
+};
+
+ControllerBrutefir.prototype.getFilterListForSelect = function (filterl, key) {
+	var n = filterl.length;
+	for (var i = 0; i < n; i++) {
+		if (filterl[i].value == key)
+			return filterl[i].label;
+	}
+
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+
+};
+
+ControllerBrutefir.prototype.getFilterList = function () {
+	var filterfolder = "/data/INTERNAL/brutefirfilters"
+	var filterl = [];
+	fs.readdir(filterfolder, (err, filterl) => {
+ 	 filterl.forEach(filterl => {
+    	console.log(filterl);
+    	return filterl;
+     	 });
+     	 })
+	
 };
 
 ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
@@ -441,14 +464,15 @@ console.log("send brutefir");
 //for gain settings
 ControllerBrutefir.prototype.gainEq = function() {
  var self = this;
-
+var coef = self.config.get('coef');
+console.log(coef);
 var values = coef.value.split(',');
 	console.log(values);
 var commandgainEq = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
 ///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
 		this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eq gain' + timepos);
   return self.sendBrutefirCommand('commandgainEq');
-
+console.log(commandgainEq);
 };
 
 
@@ -650,7 +674,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 
 	self.logger.info('Configurations have been set');
 
-	self.commandRouter.pushToastMessage('success', "Configuration update", 'Configuration has been successfully updated');
+	self.commandRouter.pushToastMessage('success', "Configuration update", 'Brutefir Configuration has been successfully updated');
 
 	defer.resolve({});
 
@@ -689,7 +713,8 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
    defer.resolve({});
   })
   .fail(function(e) {
-   defer.reject(new Error());
+   defer.reject(new Error('brutefir error'));
+   self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
   })
 
 
@@ -718,7 +743,7 @@ console.log('output_device');
  self.config.set('fl_bits', data['fl_bits'].value);
  self.config.set('input_device', data['input_device']);
  self.config.set('input_format', data['input_format'].value);
- self.config.set('output_device', data['output_device'].label);
+ self.config.set('output_device', data['output_device'].value);
  self.config.set('output_format', data['output_format'].value);
  
 
@@ -729,7 +754,9 @@ console.log('output_device');
    defer.resolve({});
   })
   .fail(function(e) {
-   defer.reject(new Error());
+ 
+			defer.reject(new Error('Brutefir failed to start. Check your config !'));
+			self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
   })
 
 
@@ -745,6 +772,13 @@ self.createBAUERFILTERFile()
   .then(function(e) {
    var edefer = libQ.defer();
 exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
+if (error) {
+			self.logger.error('Cannot Enable brutefir');
+						self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+		} else {
+			self.logger.error('Brutefir started ! ');
+
+}
   edefer.resolve();}
   );
  
@@ -755,7 +789,13 @@ exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 10
    setTimeout(function() {
     self.logger.info("Connecting to daemon");
     self.brutefirDaemonConnect(defer);
-   }, 5000);
+   }, 5000)
+   .fail(function(e)
+		{
+			defer.reject(new Error('Brutefir failed to start. Check your config !'));
+			self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+		//	self.logger.info("Brutefir failed to start. Check your config !");
+});
   });
 
  return defer.promise;

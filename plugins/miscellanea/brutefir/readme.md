@@ -1,4 +1,4 @@
-13th November 2016
+16th November 2016
 	BRUTEFIR PLUGIN
 
 
@@ -36,11 +36,14 @@ Binaural filtering if correct output set...
 Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
 
 - What is not working :
+
 No change in sound when setting equalizer
 Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+correction in output selector
 
 new way for filter size calculation
 
