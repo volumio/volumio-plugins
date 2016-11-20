@@ -242,7 +242,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 			var mindex;
 			var smixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
 				if (smixer != "None") {
-					mixer = "--mixer " + smixer;
+					mixer = "--mixer " + "'"+ smixer +"'";
 				} else { mixer = ""
 				}
 			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');

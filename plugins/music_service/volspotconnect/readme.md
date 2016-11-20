@@ -1,4 +1,4 @@
-October, 24th th 2016
+November, 20th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+November 20th
+
+- change to suppport mixer name with space
 
 October 24 th
 
