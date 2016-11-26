@@ -43,7 +43,10 @@ ControllerVolspotconnect.prototype.onPlayerNameChanged = function (playerName) {
 	self.onRestart();
 };
 
-
+ControllerVolspotconnect.prototype.addToBrowseSources = function () {
+	var data = {name: 'Spotify_connect', uri: 'volspotconnect',plugin_type:'music_service',plugin_name:'volspotconnect'};
+	this.commandRouter.volumioAddToBrowseSources(data);
+};
 
 // Plugin methods -----------------------------------------------------------------------------
 
@@ -336,4 +339,10 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         });
 
     return defer.promise;
+};
+ControllerVolspotconnect.prototype.stop = function() {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Volspotconnect::stop');
+
+	return self.sendSpopCommand('stop', []);
 }
