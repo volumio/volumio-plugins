@@ -1,4 +1,4 @@
-November, 26th th 2016
+November, 27th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+November 27 th
+
+change output hw in plughw
+copy asound.conf in chroot /etc in case of software mixer
 
 November 26 th
 
@@ -104,13 +109,13 @@ October 1st
 
 Previous changes...
 
-- future software mixer support
+- Software mixer support
 - now the plugin is automatically updated when output or device or device name is changed in volumio
 
 Issues : 
 
 - wrong music speed on some usb dac
-- no sound with software volume control
+- can't change volume from Spotify with software volume control
 - some problem to uninstall plugin with armv6 devices
 
 

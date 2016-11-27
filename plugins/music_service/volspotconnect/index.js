@@ -43,10 +43,7 @@ ControllerVolspotconnect.prototype.onPlayerNameChanged = function (playerName) {
 	self.onRestart();
 };
 
-ControllerVolspotconnect.prototype.addToBrowseSources = function () {
-	var data = {name: 'Spotify_connect', uri: 'volspotconnect',plugin_type:'music_service',plugin_name:'volspotconnect'};
-	this.commandRouter.volumioAddToBrowseSources(data);
-};
+
 
 // Plugin methods -----------------------------------------------------------------------------
 
@@ -256,7 +253,10 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}else { mindex = "--mixer_device_index " + smindex;
 				}
 			var devicename = self.commandRouter.sharedVars.get('system.name');
-			var hwdev = 'hw:' + outdev;
+			var hwdev ='plughw:' + outdev;
+				if (outdev == "softvolume") {
+					hwdev = "softvolume"
+					}
 		//	var hwdev = outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
@@ -273,14 +273,13 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf7 = conf6.replace("${mixind}", mindex);
 		var conf8 = conf7.replace("${familyshare}", family);
 		var conf9 = conf8.replace("${devicename}",devicename);
-
+			
 	            fs.writeFile("/data/plugins/music_service/volspotconnect/spotify-connect-web/startconnect.sh", conf9, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
             });
-
-
+            
         });
 
 
@@ -293,6 +292,21 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     return defer.promise;
 
 };
+
+ControllerVolspotconnect.prototype.createASOUNDFile = function () {
+    var self = this;
+    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+    var defer = libQ.defer();
+    if (outdev = 'softvolume') {
+    console.log(outdev)
+        fs.copy('/etc/asound.conf', '/data/plugins/music_service/volspotconnect/spotify-connect-web/etc/asound.conf', 'utf8', function (err) {
+            if (err) return console.error(err);
+            console.log("copied with success")
+               })
+           };
+ 
+};
+
 
 ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     var self = this;
@@ -321,7 +335,8 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
-
+    self.createASOUNDFile()	
+console.log('toto')
     self.createVOLSPOTCONNECTFile()
         .then(function(e)
         {
@@ -339,10 +354,4 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         });
 
     return defer.promise;
-};
-ControllerVolspotconnect.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Volspotconnect::stop');
-
-	return self.sendSpopCommand('stop', []);
 }
