@@ -15,7 +15,7 @@ then
 		then
 			echo "Extracting data"
 			sudo tar -xf Volspotconnectchroot.tar.gz -C /
-			rm Volspotconnectchroot.tar.gz
+			rm Volspotconnectchroot.tar.gz*
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -30,7 +30,8 @@ then
 		then
 			echo "Extracting data"
 			sudo tar -xf Volspotconnect.tar.gz -C /
-			rm Volspotconnect.tar.gz
+			rm Volspotconnect.tar.gz*
+
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1

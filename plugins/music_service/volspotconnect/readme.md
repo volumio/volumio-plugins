@@ -1,4 +1,4 @@
-November, 27th th 2016
+November, 30th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+November 30 th
+
+changes in install
+chroot version should uninstall properly now ( without braking volumio)
 
 November 27 th
 

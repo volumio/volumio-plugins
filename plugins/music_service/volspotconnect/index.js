@@ -168,7 +168,14 @@ ControllerVolspotconnect.prototype.onInstall = function() {
 
 ControllerVolspotconnect.prototype.onUninstall = function() {
 	var self = this;
-	//Perform your installation tasks here
+   self.logger.info("Killing Spotify-connect-web daemon");
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+	if(error){
+self.logger.info('Error in killing Voslpotconnect')
+	}
+	});
+
+   return libQ.resolve();
 };
 
 ControllerVolspotconnect.prototype.getUIConfig = function() {
