@@ -1,4 +1,4 @@
-16th November 2016
+05th December 2016
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,8 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+just to update brutefir.zip
 
 correction in output selector
 
