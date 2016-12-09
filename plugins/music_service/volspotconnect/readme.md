@@ -1,4 +1,4 @@
-November, 30th th 2016
+December, 9th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 8th
+
+Change in avahi config. Share device should be seenable by any user on the local network
 
 November 30 th
 
