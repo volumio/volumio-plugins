@@ -11,7 +11,7 @@ then
 	SERVICE=volspotconnectchroot
         echo "Cpu is Armv6l, downloading required package. Be very patient, it could take up to 15min..."
 	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnectchroot.tar.gz
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnectchroot.tar.gz
+	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnectchroot.tar.gz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -27,7 +27,7 @@ then
 	SERVICE=volspotconnect        
 	echo "Cpu is Armv7l, downloading required package"
 	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnect.tar.gz
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnect.tar.gz
+	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnect.tar.gz
 		if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
