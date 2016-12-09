@@ -33,6 +33,7 @@ Last changes
 
 December 8th
 
+new repo (github) to store package
 Change in avahi config. Share device should be seenable by any user on the local network
 
 November 30 th
