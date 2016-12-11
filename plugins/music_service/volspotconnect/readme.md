@@ -1,4 +1,4 @@
-December, 9th th 2016
+December, 11th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 11th
+
+correction for low bitrate
 
 December 8th
 

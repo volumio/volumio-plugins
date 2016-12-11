@@ -236,7 +236,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 			var rate;
                 if(self.config.get('bitrate')===true)
                     rate="320";
-		else rate="128"
+		else rate="90"
 			var family;
 		if(self.config.get('familyshare')===true)
 		    family=""
