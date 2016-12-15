@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Installing spotify-connect-web dependencies"
 sudo apt-get update
-sudo apt-get -y install avahi-utils
+sudo apt-get -y install avahi-utils bzip2
 
 echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
@@ -11,12 +11,12 @@ then
 	SERVICE=volspotconnectchroot
         echo "Cpu is Armv6l, downloading required package. Be patient, it could take up to 5min..."
 	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnectchroot.tar.gz
-	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnectchroot.tar.gz
+	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnectchroot.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf Volspotconnectchroot.tar.gz -C /
-			rm Volspotconnectchroot.tar.gz*
+			sudo tar -xf Volspotconnectchroot.tar.xz -C /
+			rm Volspotconnectchroot.tar.xz*
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
