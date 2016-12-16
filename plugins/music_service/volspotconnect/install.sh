@@ -27,12 +27,12 @@ then
 	SERVICE=volspotconnect        
 	echo "Cpu is Armv7l, downloading required package"
 	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnect.tar.gz
-	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnect.tar.gz
+	echo | wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/package/Volspotconnect.tar.xz
 		if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf Volspotconnect.tar.gz -C /
-			rm Volspotconnect.tar.gz*
+			sudo tar -xf Volspotconnect.tar.xz -C /
+			rm Volspotconnect.tar.xz*
 
 		else
 			echo "Failed to download. Stopping installation now"
