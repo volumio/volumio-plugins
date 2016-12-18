@@ -1,4 +1,4 @@
-December, 16th th 2016
+December, 18th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 18th
+
+Correction for in volspotconnectchroot.tar.xz Fails to work due to a missing file
 
 December 16th
 

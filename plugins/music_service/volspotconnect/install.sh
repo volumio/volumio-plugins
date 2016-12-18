@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Installing spotify-connect-web dependencies"
 sudo apt-get update
-sudo apt-get -y install avahi-utils bzip2
+sudo apt-get -y install avahi-utils
 
 echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
