@@ -637,7 +637,7 @@ ControllerSpop.prototype.listWebNew=function(curUri)
 
 	self.spotifyCheckAccessToken()
 		.then(function(data) {
-			var spotifyDefer = self.spotifyApi.getNewReleases();
+			var spotifyDefer = self.spotifyApi.getNewReleases({limit : 50});
 			spotifyDefer.then(function (results) {
 
 				var response = {
@@ -687,7 +687,7 @@ ControllerSpop.prototype.listWebAlbum=function(curUri)
 
 	var uriSplitted=curUri.split(':');
 
-	var spotifyDefer = self.getAlbumTracks(uriSplitted[2]);
+	var spotifyDefer = self.getAlbumTracks(uriSplitted[2], {limit : 50});
 	spotifyDefer.then(function (results) {
 		var response = {
 			navigation: {
@@ -726,7 +726,7 @@ ControllerSpop.prototype.listWebCategories=function(curUri)
 
 	self.spotifyCheckAccessToken()
 		.then(function(data) {
-			var spotifyDefer = self.spotifyApi.getCategories();
+			var spotifyDefer = self.spotifyApi.getCategories({limit : 50});
 			spotifyDefer.then(function (results) {
 
 				var response = {
@@ -777,7 +777,7 @@ ControllerSpop.prototype.listWebCategory=function(curUri)
 
 	self.spotifyCheckAccessToken()
 		.then(function(data) {
-			var spotifyDefer = self.spotifyApi.getPlaylistsForCategory(uriSplitted[2]);
+			var spotifyDefer = self.spotifyApi.getPlaylistsForCategory(uriSplitted[2], {limit : 50});
 			spotifyDefer.then(function (results) {
 
 				var response = {
