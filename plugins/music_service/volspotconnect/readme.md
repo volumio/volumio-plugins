@@ -1,4 +1,4 @@
-December, 18th th 2016
+December, 19th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 19th
+
+Chroot Version Revert some file removing... Should be solved : laggy sound, unworking plugin with softvol, unworking plugin....
 
 December 18th
 
