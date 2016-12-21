@@ -257,6 +257,8 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 					mindex = "--mixer_device_index 1"
 				}else if (smixer == "None") {	
 					mindex = ""
+				}else if (smixer == "undefined") {	
+					mindex = ""
 				}else { mindex = "--mixer_device_index " + smindex;
 				}
 			var devicename = self.commandRouter.sharedVars.get('system.name');
