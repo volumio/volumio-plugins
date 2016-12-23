@@ -248,9 +248,18 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 			var slindex;
 			var mindex;
 			var smixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
-				if (smixer != "None") {
+		/*		if (smixer != "None") {
 					mixer = "--mixer " + "'"+ smixer +"'";
 				} else { mixer = ""
+				}
+				*/
+				if (smixer == "None") {
+					mixer = ""
+				}else if (smixer =="undefined") {
+					mixer = ""
+				}else if (smixer =="") {
+					mixer = ""
+				}else { mixer = "--mixer " + "'"+ smixer +"'";
 				}
 			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
 				if (smixer == "SoftMaster") {
@@ -258,6 +267,8 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}else if (smixer == "None") {	
 					mindex = ""
 				}else if (smixer == "undefined") {	
+					mindex = ""
+				}else if (smixer == "") {
 					mindex = ""
 				}else { mindex = "--mixer_device_index " + smindex;
 				}
