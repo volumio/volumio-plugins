@@ -33,6 +33,8 @@ Last changes
 
 December 24th
 
+ver1.5.5 seems to works with software mixer !!!!
+
 add missing alsa mixer in chroot package
 
 December 23th
