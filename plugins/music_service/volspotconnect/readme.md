@@ -1,4 +1,4 @@
-December, 23th th 2016
+December, 24th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 24th
+
+add missing alsa mixer in chroot package
 
 December 23th
 
