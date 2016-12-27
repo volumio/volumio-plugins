@@ -218,6 +218,11 @@ ControllerVolspotconnect.prototype.setConf = function(varName, varValue) {
 	//Perform your installation tasks here
 };
 
+ControllerVolspotconnect.prototype.getAdditionalConf = function (type, controller, data) {
+	var self = this;
+	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+};
+
 // Public Methods ---------------------------------------------------------------------------------------
 
 ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
@@ -263,7 +268,8 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}
 			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
 				if (smixer == "SoftMaster") {
-					mindex = "--mixer_device_index 1"
+					var smindex = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
+					mindex = "--mixer_device_index " + smindex ;	
 				}else if (smixer == "None") {	
 					mindex = ""
 				}else if (smixer == "undefined") {	

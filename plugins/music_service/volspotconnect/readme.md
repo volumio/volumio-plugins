@@ -1,4 +1,4 @@
-December, 24th th 2016
+December, 27th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
 
 Last changes
+
+December 27th
+
+autoconfig mixer_device_index from alsa setting
 
 December 24th
 
