@@ -1,0 +1,18 @@
+{
+  "name": "wifireconnect",
+  "version": "0.0.1",
+  "description": "Wifireconnect reconnect wifi after a network fail",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balbuze",
+  "license": "",
+  "volumio_info": {
+    "prettyName": "Wifireconnect",
+    "plugin_type": "miscellanea"
+  },
+  "dependencies": {
+    
+      }
+}
