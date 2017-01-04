@@ -1,0 +1,19 @@
+{
+"attenuation":{"type":"string","value":"10"},
+"coef":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0,0"},
+"phas":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0,0"},
+"sbauer":{"type":"boolean","value":false},
+"levelfcut":{"type":"string","value":"700"},
+"levelfeed":{"type":"string","value":"5"},
+"smpl_rate":{"type": "string","value": "44100"},
+"leftfilter":{"type": "string","value": ""},
+"rightfilter":{"type": "string","value": ""},
+"filter_format":{"type": "string","value": "S32_LE"},
+"filter_size":{"type": "number","value": "65536"},
+"numb_part":{"type": "number","value": "8"},
+"fl_bits":{"type": "string","value": "64"},
+"input_format":{"type": "string","value": "S16_LE"},
+"output_format":{"type": "string","value": "S16_LE"},
+"input_device":{"type": "string","value": "Loopback,1"},
+"output_device":{"type": "string","value": "Audio Jack"}
+}

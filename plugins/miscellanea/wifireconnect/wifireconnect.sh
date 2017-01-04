@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The IP for the server you wish to ping (8.8.8.8 is a public Google DNS serv$
+# The IP for the server you wish to ping (8.8.8.8 is a public Google DNS server)
 SERVER=8.8.8.8
 
 # Only send two pings, sending output to /dev/null
