@@ -1,0 +1,22 @@
+{
+  "name": "ampswitch",
+  "version": "0.1.0",
+  "description": "Status based power management of external amplifier",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Lange",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "Amplifier Switch",
+    "icon": "fa-lightbulb-o",
+    "plugin_type": "miscellanea"
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "onoff": "^1.1.1",
+    "v-conf": "^0.10.0"
+  }
+}
