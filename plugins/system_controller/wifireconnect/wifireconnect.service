@@ -1,0 +1,17 @@
+
+[Unit]
+Description=Wifireconnect service
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /data/plugins/system_controler/wifireconnect/wifireconnect.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+

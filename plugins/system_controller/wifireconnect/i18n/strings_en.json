@@ -1,0 +1,9 @@
+{
+ "WIFIRECONNECT":{
+ "WIFIRECONNECTT":"Wifireconnect Interface",
+ "WIFRECONNECTCONF":"Wifireconnect Configuration",
+ "SERVERIP":"IP adress to be ping",
+ "INTERFACE":"Interface to survey",
+ "SAVE":"Save"
+}
+}

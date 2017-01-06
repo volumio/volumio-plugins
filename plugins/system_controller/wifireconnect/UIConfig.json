@@ -1,0 +1,39 @@
+{
+  "page": {
+    "label": "TRANSLATE.WIFIRECONNECT.WIFIRECONNECTT"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.WIFIRECONNECT.WIFIRECONNECTCONF",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"system_controller/wifireconnect", "method":"saveWifireconnectAccount"},
+      "saveButton": {
+        "label": "TRANSLATE.WIFIRECONNECT.SAVE",
+        "data": [
+          "serverip",
+          "interface"
+        ]
+      },
+      "content": [
+      	{
+          "id":"serverip",
+          "type":"text",
+          "element": "input",
+          "doc": "server to be reached",
+          "label": "TRANSLATE.WIFIRECONNECT.SERVERIP",
+          "value": "8.8.8.8"
+        },
+        {
+          "id":"interface",
+          "type":"text",
+          "element": "input",
+          "doc": "Interface to be surveyed",
+          "label": "TRANSLATE.WIFIRECONNECT.INTERFACE",
+          "value": "wlan0"
+        }
+      ]
+   }
+  ]
+}

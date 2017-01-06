@@ -1,0 +1,10 @@
+{
+   "serverip": {
+      "type": "string",
+      "value": ""
+  },
+  "interface": {
+    "type": "string",
+    "value": ""
+  }
+}
