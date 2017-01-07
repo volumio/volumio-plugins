@@ -1,10 +1,10 @@
 {
    "serverip": {
       "type": "string",
-      "value": ""
+      "value": "8.8.8.8"
   },
   "interface": {
     "type": "string",
-    "value": ""
+    "value": "wlan0"
   }
 }
