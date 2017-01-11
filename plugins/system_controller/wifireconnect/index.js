@@ -243,8 +243,6 @@ ControllerWifireconnect.prototype.rebuildWIFIRECONNECTAndRestartDaemon = functio
     var self=this;
     var defer=libQ.defer();
     self.createWIFIRECONNECTFile()	
-console.log('toto')
-    self.createWIFIRECONNECTFile()
         .then(function(e)
         {
             var edefer=libQ.defer();
