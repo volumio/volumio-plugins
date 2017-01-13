@@ -10,13 +10,15 @@
   "license": "ISC",
   "volumio_info": {
     "prettyName": "Amplifier Switch",
-    "icon": "fa-lightbulb-o",
-    "plugin_type": "miscellanea"
+    "icon": "fa-power-off",
+    "plugin_type": "miscellanea",
+    "boot_priority": 1
   },
   "dependencies": {
-    "fs-extra": "^0.28.0",
-    "kew": "^0.7.0",
-    "onoff": "^1.1.1",
-    "v-conf": "^0.10.0"
+      "fs-extra": "^0.28.0",
+      "kew": "^0.7.0",
+      "v-conf": "^0.10.0",
+      "onoff": "^1.1.1",
+      "socket.io-client": "^1.4.5"
   }
 }

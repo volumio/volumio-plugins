@@ -1,6 +1,6 @@
 {
-    "port": {
-        "type": "Integer",
-        "value": "14"
+    "port":{
+        "type": "number" ,
+        "value": 14
     }
 }
