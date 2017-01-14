@@ -345,7 +345,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 	self.config.set('familyshare', data['familyshare']);
 	self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration of Volspotconnect has been successfully updated');
+        //    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration of Volspotconnect has been successfully updated');
             defer.resolve({});
         })
         .fail(function(e)

@@ -1,4 +1,4 @@
-December, 27th th 2016
+December, 14th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -8,7 +8,7 @@ IMPORTANT
 
 IMPORTANT 2
 
-- Now the plugin should work with armv6 RPI (previvous to RPI 2) even if just tested on RPI B...And of course with armv7 device (RPI 2, RPI3, Sparky ) 
+- Now the plugin works with armv6 RPI (previvous to RPI 2) even if just tested on RPI B...And of course with armv7 device (RPI 2, RPI3, Sparky ) 
 
 - Version for armV6 requires a chroot system (11Mo). Installation may be long...10min! Be patient !	
 
@@ -16,20 +16,25 @@ This plugin is designed to use Spotify connect web with volumio
 Base on this work : https://github.com/Fornoth/spotify-connect-web
 Thank you to all developpers !
 
-To start it is a very basic plugin.
+To start, it is a very basic plugin.
 It just allow you tou install and configure spotify connect-web in Volumio 2
 It will not (for the moment) display album art, title or allow changing track from volumio.
 But from a external device and the offcial Spotify app, you'll be able to send your music to your device.
 
 - This version supports Family account : every member can use the device !
 
-- This version includes its own spotify_app_key, so you don't need to get one anymore
 
 To install
-- You only need to download volspotconnect.zip
-- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded 
+- You only need to download volspotconnect.zip. Take care to download the "raw" file, not only html from github...
+- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
+- First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+January 14th
+
+change in install (downloaded files location) are nox in /tmp
+remove redondant message in webUI 
 
 December 27th
 
@@ -167,7 +172,6 @@ Previous changes...
 Issues : 
 
 - wrong music speed on some usb dac
-- can't change volume from Spotify with software volume control
 - some problem to uninstall plugin with armv6 devices
 
 
