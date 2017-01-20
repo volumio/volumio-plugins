@@ -264,7 +264,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				}else { mixer = "--mixer " + "'"+ smixer +"'";
 				}
 		*/		
-			var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
+		/*	var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
 				if (smixer == "SoftMaster") {
 					var smindex = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
 					mindex = "--mixer_device_index " + smindex ;	
@@ -281,6 +281,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				if (outdev == "softvolume") {
 					hwdev = "softvolume"
 					}
+		*/
 		//	var hwdev = outdev;
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
