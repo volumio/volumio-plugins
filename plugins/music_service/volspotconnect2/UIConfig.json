@@ -1,0 +1,32 @@
+{
+  "page": {
+    "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTCONF"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTACCOUNT",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/volspotconnect", "method":"saveVolspotconnectAccount"},
+      "saveButton": {
+        "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
+        "data": [
+          
+          "bitrate"
+        
+        ]
+      },
+      "content": [
+       
+	{
+          "id":"bitrate",
+          "element": "switch",
+          "doc": "High bitrate",
+          "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
+          "value": true
+        }
+      ]
+   }
+  ]
+}

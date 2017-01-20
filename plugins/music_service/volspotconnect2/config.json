@@ -1,0 +1,6 @@
+{
+  "bitrate": {
+    "type": "boolean",
+    "value": true
+   }
+}
