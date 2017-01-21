@@ -17,6 +17,8 @@ Last changes
 
 January 21th
 
+fix output device
+try to autoremove credentials at stop
 new work - first almost working plugin
 remove x bit on service
 

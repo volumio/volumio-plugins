@@ -253,10 +253,14 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 			
 		var devicename = self.commandRouter.sharedVars.get('system.name');
+		var hwdev ='plughw:' + outdev;
+				if (outdev == "softvolume") {
+					hwdev = "softvolume"
+					}
 			
 		var conf1 = data.replace("${rate}", rate);
 		var conf2 = conf1.replace("${devicename}", devicename);
-		var conf3 = conf2.replace("${outdev}", outdev);
+		var conf3 = conf2.replace("${outdev}", hwdev);
 					
 	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf3, 'utf8', function (err) {
                 if (err)
