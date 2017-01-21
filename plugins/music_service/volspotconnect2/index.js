@@ -1,7 +1,6 @@
 'use strict';
 
 var libQ = require('kew');
-var libNet = require('net');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
@@ -13,11 +12,17 @@ module.exports = ControllerVolspotconnect;
 function ControllerVolspotconnect(context) {
 
 	var self = this;
-
+/*
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
+*/
+	var self = this;
+	// Save a reference to the parent commandRouter
+	self.context = context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger=self.commandRouter.logger;
 
 }
 
@@ -51,14 +56,14 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 	var self = this;
 	var defer=libQ.defer();
 
-		exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+	exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
-			self.commandRouter.pushConsoleMessage('The following error occurred while starting VOLSPOTCONNECT: ' + error);
-            defer.reject();
+			self.logger.info('The following error occurred while starting VOLSPOTCONNECT: ' + error);
+            		defer.reject();
 		}
 		else {
-			self.commandRouter.pushConsoleMessage('Volspotconnect Daemon Started');
-            defer.resolve();
+			self.logger.info('Volspotconnect Daemon Started');
+           		defer.resolve();
 		}
 	});
 
@@ -70,9 +75,9 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
 	self.logger.info("Killing Spotify-connect-web daemon");
-		exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", function (error, stdout, stderr) { 
 	if(error){
-	self.logger.info('Error in killing Voslpotconnect')
+		self.logger.info('Error in killing Voslpotconnect')
 	}
 	});
 
@@ -80,33 +85,33 @@ ControllerVolspotconnect.prototype.onStop = function() {
 };
 
 ControllerVolspotconnect.prototype.onStart = function() {
-    var self = this;
 
-    var defer=libQ.defer();
+var self = this;
 
-  self.startVolspotconnectDaemon()
-        .then(function(e)
-        {
-            setTimeout(function () {
-                self.logger.info("Connecting to daemon");
-                self.volspotconnectDaemonConnect(defer);
-            }, 5000);
-        })
-        .fail(function(e)
-        {
-            defer.reject(new Error());
-        });
+	var defer=libQ.defer();
 
+	self.startVolspotconnectDaemon()
+		.then(function(e)
+		{
+			self.logger.info('Volspotconnect Started');
+			defer.resolve();
+		})
+		.fail(function(e)
+		{
+			defer.reject(new Error());
+		});
+
+	return defer.promise;
+};
+
+ /*
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevicemixer', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	this.commandRouter.sharedVars.registerCallback('system.name', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 
-
-    return defer.promise;
-};
-
-//For future features....
-
+*/
+ //For future features....
+/*
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  var self = this;
 
@@ -139,10 +144,11 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
    defer.reject();
   } catch (ecc) {}
  });
-*/
-};
 
+};
+*/
 // Volspotconnect stop
+/*
 ControllerVolspotconnect.prototype.stop = function() {
 	var self = this;
 	
@@ -179,7 +185,7 @@ self.logger.info('Error in killing Voslpotconnect')
 
    return libQ.resolve();
 };
-
+*/
 ControllerVolspotconnect.prototype.getUIConfig = function() {
 	var defer = libQ.defer();
 	var self = this;
@@ -244,53 +250,10 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		else rate="90"
 			
 
-			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-			/*
-			var smixer;
-			var mixer;
-			var slindex;
-			var mindex;
-			var smixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
-		/*		if (smixer != "None") {
-					mixer = "--mixer " + "'"+ smixer +"'";
-				} else { mixer = ""
-				}
-				
-				if (smixer == "None") {
-					mixer = ""
-				}else if (smixer =="undefined") {
-					mixer = ""
-				}else if (smixer =="") {
-					mixer = ""
-				}else { mixer = "--mixer " + "'"+ smixer +"'";
-				}
-		*/		
-		/*	var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
-				if (smixer == "SoftMaster") {
-					var smindex = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
-					mindex = "--mixer_device_index " + smindex ;	
-				}else if (smixer == "None") {	
-					mindex = ""
-				}else if (smixer == "undefined") {	
-					mindex = ""
-				}else if (smixer == "") {
-					mindex = ""
-				}else { mindex = "--mixer_device_index " + smindex;
-				}
-			var devicename = self.commandRouter.sharedVars.get('system.name');
-			var hwdev ='plughw:' + outdev;
-				if (outdev == "softvolume") {
-					hwdev = "softvolume"
-					}
-		*/
-		//	var hwdev = outdev;
-					var devicename = self.commandRouter.sharedVars.get('system.name');
-			//var  bitrate = self.config.get('bitrate');
-			//ar bitratevalue = 'true';
-			//if (bitrate == false ) {
-			//	bitratevalue = 'false';
-		//	}
-
+		var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			
+		var devicename = self.commandRouter.sharedVars.get('system.name');
+			
 		var conf1 = data.replace("${rate}", rate);
 		var conf2 = conf1.replace("${devicename}", devicename);
 		var conf3 = conf2.replace("${outdev}", outdev);
