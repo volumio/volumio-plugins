@@ -1,4 +1,4 @@
-January 20th 2017
+January 21th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot.
@@ -15,6 +15,10 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+January 21th
+
+new work - first almost working plugin
 
 January 20th
 

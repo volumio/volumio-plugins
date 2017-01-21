@@ -51,7 +51,7 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 	var self = this;
 	var defer=libQ.defer();
 
-		exec("/usr/bin/sudo /bin/systemctl start volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+		exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while starting VOLSPOTCONNECT: ' + error);
             defer.reject();
@@ -70,7 +70,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
 	self.logger.info("Killing Spotify-connect-web daemon");
-		exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+		exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 	self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -106,14 +106,14 @@ ControllerVolspotconnect.prototype.onStart = function() {
 };
 
 //For future features....
-/*
+
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  var self = this;
 
  self.servicename = 'volspotconnect2';
  self.displayname = 'volspotconnect2';
 
-
+/*
 
  var nHost = 'localhost';
  var nPort = 4000;
@@ -139,17 +139,18 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
    defer.reject();
   } catch (ecc) {}
  });
-};
 */
+};
+
 // Volspotconnect stop
 ControllerVolspotconnect.prototype.stop = function() {
 	var self = this;
 	
 
-    self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+    self.logger.info("Killing Volspotconnect2 daemon");
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
-self.logger.info('Error in killing Voslpotconnect')
+self.logger.info('Error in killing Voslpotconnect2')
 	}
 	});
 
@@ -232,7 +233,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 
     try {
 
-        fs.readFile(__dirname + "/volspotconnect.tmpl", 'utf8', function (err, data) {
+        fs.readFile(__dirname + "/volspotconnect2.tmpl", 'utf8', function (err, data) {
             if (err) {
                 defer.reject(new Error(err));
                 return console.log(err);
@@ -283,16 +284,18 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 					}
 		*/
 		//	var hwdev = outdev;
-			var  bitrate = self.config.get('bitrate');
-			var bitratevalue = 'true';
-			if (bitrate == false ) {
-				bitratevalue = 'false';
-			}
+					var devicename = self.commandRouter.sharedVars.get('system.name');
+			//var  bitrate = self.config.get('bitrate');
+			//ar bitratevalue = 'true';
+			//if (bitrate == false ) {
+			//	bitratevalue = 'false';
+		//	}
 
-		var conf1 = data.replace("${rate}", self.config.get('rate'));
-		var conf2 = conf1.replace("${outdev}", hwdev);
+		var conf1 = data.replace("${rate}", rate);
+		var conf2 = conf1.replace("${devicename}", devicename);
+		var conf3 = conf2.replace("${outdev}", outdev);
 					
-	            fs.writeFile("/data/plugins/music_service/volspotconnect/startconnect.sh", conf2, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf3, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -339,7 +342,7 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("/usr/bin/sudo /bin/systemctl restart volspotconnect.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
+            exec("/usr/bin/sudo /bin/systemctl restart volspotconnect2.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;
