@@ -1,4 +1,4 @@
-January 21th 2017
+January 22th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -14,6 +14,11 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
 
 Last changes
+
+January 22th
+
+crendetials autoremove when stop playing : discovery mode ok
+
 
 January 21th
 
