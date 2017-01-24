@@ -8,24 +8,40 @@
       "element": "section",
       "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTACCOUNT",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"music_service/volspotconnect", "method":"saveVolspotconnectAccount"},
+      "onSave": {"type":"controller", "endpoint":"music_service/volspotconnect2", "method":"saveVolspotconnectAccount"},
       "saveButton": {
         "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
         "data": [
-          
           "bitrate"
-        
-        ]
+                ]
       },
       "content": [
        
 	{
           "id":"bitrate",
-          "element": "switch",
+          "element": "select",
           "doc": "High bitrate",
           "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
-          "value": true
+          "value": {
+						"value": "160",
+						"label": "160"
+					},
+					"options": [
+						{
+							"value": "90",
+							"label": "90"
+						},
+						{
+							"value": "160",
+							"label": "160"
+						},
+						{
+							"value": "320",
+							"label": "320"
+						}
+						]
         }
+        
       ]
    }
   ]

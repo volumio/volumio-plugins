@@ -1,6 +1,6 @@
 {
   "bitrate": {
-    "type": "boolean",
-    "value": true
+    "type": "string",
+    "value": "320"
    }
 }
