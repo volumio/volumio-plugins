@@ -1,7 +1,6 @@
 'use strict';
 
 var libQ = require('kew');
-var libNet = require('net');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
@@ -11,17 +10,15 @@ var exec = require('child_process').exec;
 module.exports = ControllerWifireconnect;
 
 function ControllerWifireconnect(context) {
-
 	var self = this;
 
-	this.context = context;
-	this.commandRouter = this.context.coreCommand;
-	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;
+	var self = this;
+	// Save a reference to the parent commandRouter
+	self.context = context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger=self.commandRouter.logger;
 
 }
-
-
 
 ControllerWifireconnect.prototype.onVolumioStart = function()
 {
@@ -29,7 +26,7 @@ ControllerWifireconnect.prototype.onVolumioStart = function()
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
-	    		self.createWIFIRECONNECTFile();
+	//    		self.createWIFIRECONNECTFile();
 	return libQ.resolve();
 }
 
@@ -49,12 +46,12 @@ ControllerWifireconnect.prototype.startWifireconnectDaemon = function() {
 
 		exec("/usr/bin/sudo /bin/systemctl start wifireconnect.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
-			self.commandRouter.pushConsoleMessage('The following error occurred while starting Wifireconnect: ' + error);
-            defer.reject();
+			self.logger.info('The following error occurred while starting wifireconnect ' + error);
+            		defer.reject();
 		}
 		else {
-			self.commandRouter.pushConsoleMessage('Wifireconnect Daemon Started');
-            defer.resolve();
+			self.logger.info('wifireconnect Daemon Started');
+           		defer.resolve();
 		}
 	});
 
@@ -83,10 +80,8 @@ ControllerWifireconnect.prototype.onStart = function() {
   self.startWifireconnectDaemon()
         .then(function(e)
         {
-            setTimeout(function () {
-                self.logger.info("Connecting to daemon");
-                self.wifireconnectDaemonConnect(defer);
-            }, 5000);
+            self.logger.info('wifireconnect started');
+			defer.resolve();
         })
         .fail(function(e)
         {
@@ -97,24 +92,8 @@ ControllerWifireconnect.prototype.onStart = function() {
     return defer.promise;
 };
 
-ControllerWifireconnect.prototype.wifireconnectDaemonConnect = function(defer) {
- var self = this;
-};
-
 // Wifireconnect stop
-ControllerWifireconnect.prototype.stop = function() {
-	var self = this;
-	
 
-    self.logger.info("Killing wifireconnect");
-	exec("/usr/bin/sudo /bin/systemctl stop wifireconnect.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
-	if(error){
-self.logger.info('Error in killing wifireconnect')
-	}
-	});
-
-   return libQ.resolve();
-};
 
 
 ControllerWifireconnect.prototype.onRestart = function() {
@@ -226,7 +205,6 @@ ControllerWifireconnect.prototype.saveWifireconnectAccount = function (data) {
 	self.config.set('interface', data['interface']);
 	self.rebuildWIFIRECONNECTAndRestartDaemon()
         .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration of Wifireconnect has been successfully updated');
             defer.resolve({});
         })
         .fail(function(e)
