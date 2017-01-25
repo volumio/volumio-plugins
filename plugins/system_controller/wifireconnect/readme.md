@@ -1,4 +1,4 @@
-12 th January 2017
+25 th January 2017
 
 This plugin is supposed to reactivate wifi when a router has been reboot...
 It uses a bash script to ping a server and a systemd timer to launch the script every minute (it could be changed but a short delay is convenient to test).
@@ -7,6 +7,10 @@ the principle : every X minutes a ping is sent to a server (8.8.8.8 google dns b
 If no response, the wlan is restarted.
 
 The plugin UI  allows to set the IP and the interface to check.
+
+25th january
+
+plugin appears active now
 
 12th january : plugin now add default-lease-time 600 and max-lease-time 3600 in /etc/dhcp/dhcpd.conf
 
