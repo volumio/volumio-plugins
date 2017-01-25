@@ -17,6 +17,7 @@ Last changes
 
 January 25th
 
+volumio is set on pause when start playing
 add volspotconnect22.service
 
 January 24th
