@@ -1,4 +1,4 @@
-December, 14th th 2016
+December, 26th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+January 26th
+
+ Merge branch 'petternorman-master' volspotconnect - escape special chars in password
 
 January 14th
 
