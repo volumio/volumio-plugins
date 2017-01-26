@@ -33,7 +33,7 @@ Last changes
 
 January 26th
 
- Merge branch 'petternorman-master' volspotconnect - escape special chars in password
+Merge branch 'petternorman-master' volspotconnect - escape special chars in password
 
 January 14th
 
