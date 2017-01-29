@@ -1,4 +1,4 @@
-December, 26th th 2016
+December, 29th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,11 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+January 27th
+
+add support for aarch64 cpu (odroid c2)
+reverse - escape special characters in password - because it does not work in some case. Need to investigate
 
 January 26th
 
