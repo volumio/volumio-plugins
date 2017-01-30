@@ -6,20 +6,21 @@
                  {
                  "id": "port",
                  "element": "section",
-                 "label": "TRANSLATE.PORT",
+                 "label": "TRANSLATE.OUTPUT",
                  "icon": "fa-plug",
                  "onSave": {"type":"controller", "endpoint":"miscellanea/ampswitch", "method":"saveOptions"},
                  "saveButton": {
                  "label": "TRANSLATE.SAVE",
                  "data": [
-                          "port_setting"
+                          "port_setting",
+                          "inverted_setting"
                           ]
                  },
                  "content": [
                              {
                              "id": "port_setting",
                              "element": "select",
-                             "doc": "Output port",
+                             "doc": "TRANSLATE.PORT_DOC",
                              "label": "TRANSLATE.PORT",
                              "value": {
                              "value": 14,
@@ -131,6 +132,13 @@
                                          "label": "27"
                                          }
                                          ]
+                             },
+                             {
+                             "id": "inverted_setting",
+                             "element": "switch",
+                             "label": "TRANSLATE.INVERTED",
+                             "doc": "TRANSLATE.INVERTED_DOC",
+                             "value": false
                              }
                              ]
                  }

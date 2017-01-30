@@ -24,8 +24,7 @@ function AmpSwitchController(context) {
 	self.logger=self.commandRouter.logger;
 	this.configManager = this.context.configManager;
 
-    //define timer and shutdown variables
-    self.timer;
+    //define shutdown variable
     self.shutdown;
 
 }
@@ -82,6 +81,8 @@ AmpSwitchController.prototype.onStop = function() {
 AmpSwitchController.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
+    self.logger.info('Port: ' + self.config.get('port'));
+    self.logger.info('Inverted: ' + self.config.get('inverted'))
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
@@ -90,7 +91,9 @@ AmpSwitchController.prototype.getUIConfig = function() {
                                 __dirname + '/UIConfig.json')
     .then(function(uiconf)
           {
-          uiconf.sections[0].content[0].value = self.config.get('port');
+          uiconf.sections[0].content[0].value.value = self.config.get('port');
+          uiconf.sections[0].content[0].value.label = self.config.get('port').toString();
+          uiconf.sections[0].content[1].value = self.config.get('inverted');
           defer.resolve(uiconf);
           })
     .fail(function()
@@ -104,22 +107,36 @@ AmpSwitchController.prototype.getUIConfig = function() {
 // define what happens when the user clicks the 'save' button on the settings page
 AmpSwitchController.prototype.saveOptions = function(data) {
     var self = this;
+    var successful = true;
+    var old_setting = self.config.get('port');
 
     // save port setting to our config
-    self.config.set('port', data['port_setting']);
+    self.logger.info('Set inverter to ' + data['inverted_setting'])
+    self.config.set('port', data['port_setting']['value']);
+    self.config.set('inverted', data['inverted_setting']);
     // unexport GPIOs before constructing new GPIO object
     self.freeGPIO();
-    self.ampGPIOInit();
+    try{
+        self.ampGPIOInit()
+    } catch(err) {
+        successful = false;
+    }
+    if(successful){
+        // output message about successful saving to the UI
+        self.commandRouter.pushToastMessage('Success','Settings', 'saved');
+    } else {
+        // save port setting to old config
+        self.config.set('port', old_setting);
+        self.commandRouter.pushToastMessage('Failure','Port not accessible', '');
+    }
 
-    // output message about successful saving to the UI
-    self.commandRouter.pushToastMessage('success','Output port', 'saved');
 };
 
 // initialize shutdown port to the one that we stored in the config
 AmpSwitchController.prototype.ampGPIOInit = function() {
     var self = this;
 
-    self.shutdown = new Gpio(self.config.get('port')['value'],'out');
+    self.shutdown = new Gpio(self.config.get('port'),'out');
 };
 
 // a pushState event has happened. Check whether it differs from the last known status and
@@ -141,14 +158,22 @@ AmpSwitchController.prototype.parseStatus = function(state) {
 AmpSwitchController.prototype.on = function() {
     var self = this;
 
-    self.shutdown.writeSync(1);
+    if(!self.config.get('inverted')){
+        self.shutdown.writeSync(1);
+    } else {
+        self.shutdown.writeSync(0);
+    }
 };
 
 //switch output port off
 AmpSwitchController.prototype.off = function() {
     var self = this;
 
-    self.shutdown.writeSync(0);
+    if(!self.config.get('inverted')){
+        self.shutdown.writeSync(0);
+    } else {
+        self.shutdown.writeSync(1);
+    }
 };
 
 // stop claiming output port

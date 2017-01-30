@@ -2,5 +2,9 @@
     "port":{
         "type": "number" ,
         "value": 14
+    },
+    "inverted":{
+        "type": "boolean",
+        "value": false
     }
 }
