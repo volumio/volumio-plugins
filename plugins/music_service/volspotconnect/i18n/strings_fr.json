@@ -5,9 +5,12 @@
  "USERNAME":"Nom utilisateur",
  "PASSWORD":"Mot de passe",
  "HIGHBITRATE":"Haute qualité",
- "DEVICENAME":"Nom du périphérique",
- "OUTPUT_DEVICE":"Output device",
  "FAMILYSHARE":"Périphérique partagé",
- "SAVE":"Sauver"
-}
+ "SAVE":"Sauver",
+ "TIPSPOTACCOUNT":"Votre nom d'utilisateur Spotify",
+ "TIPSPOTPASSWD":"Le mot de passe de votre compte Spotify",
+ "TIPBITRATE":"Qualité du flux",
+ "TIPSHAREDDEVICE":"Si activé, alors votre périphérique est utilisable par toute personne connecté sur votre réseau local",
+ "MESSCONFIGSAVE":"Nouvelle configuration de Volspotconnect sauvée"
+ }
 }

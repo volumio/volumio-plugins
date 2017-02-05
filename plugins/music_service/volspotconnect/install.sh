@@ -59,7 +59,7 @@ then
 		fi
 	
 else
-        echo "Sorry, your device is not yet supported !"
+        echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
 	exit -1
 fi

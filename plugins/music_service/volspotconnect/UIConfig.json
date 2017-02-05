@@ -23,7 +23,7 @@
           "id": "username",
           "type":"text",
           "element": "input",
-          "doc": "This is the username of your Spotify account",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTACCOUNT",
           "label": "TRANSLATE.VOLSPOTCONNECT.USERNAME",
           "value": ""
         },
@@ -31,21 +31,21 @@
           "id": "password",
           "type":"password",
           "element": "input",
-          "doc": "This is the password of your Spotify account",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTPASSWD",
           "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
           "value": ""
         },
 	{
           "id":"bitrate",
           "element": "switch",
-          "doc": "High bitrate",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPBITRATE",
           "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
           "value": true
         },
         {
           "id":"familyshare",
           "element": "switch",
-          "doc": "Family shared device",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSHAREDDEVICE",
           "label": "TRANSLATE.VOLSPOTCONNECT.FAMILYSHARE",
           "value": true
         }

@@ -5,9 +5,12 @@
  "USERNAME":"username",
  "PASSWORD":"password",
  "HIGHBITRATE":"Set for high bitrate",
- "DEVICENAME":"device name",
- "OUTPUT_DEVICE":"Output device",
  "FAMILYSHARE":"Shared device",
- "SAVE":"Save"
-}
+ "SAVE":"Save",
+ "TIPSPOTACCOUNT":"This is the username of your Spotify account",
+ "TIPSPOTPASSWD":"This is the password of your Spotify account",
+ "TIPBITRATE":"Stream Quality",
+ "TIPSHAREDDEVICE":"Enable to share your device with other user on your local network",
+ "MESSCONFIGSAVE":"New volspotconnect configuration saved"
+ }
 }

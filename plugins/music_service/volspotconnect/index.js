@@ -361,8 +361,8 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
-    self.createASOUNDFile()	
-console.log('toto')
+   self.createASOUNDFile()	
+//console.log('toto')
     self.createVOLSPOTCONNECTFile()
         .then(function(e)
         {
@@ -375,7 +375,8 @@ console.log('toto')
         .then(self.startVolspotconnectDaemon.bind(self))
         .then(function(e)
         {
-        self.commandRouter.pushToastMessage('success', "Configuration update", 'Volumio Spotify Connect has been successfully updated');
+        self.commandRouter.pushToastMessage('success','config Ok');
+
    defer.resolve({});
         });
 

@@ -1,4 +1,4 @@
-December, 29th th 2016
+Febuary, 05th th 2016
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -30,6 +30,10 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+Febuary 5th
+
+Better translation for help tips
 
 January 27th
 
@@ -181,7 +185,7 @@ Previous changes...
 Issues : 
 
 - wrong music speed on some usb dac
-- some problem to uninstall plugin with armv6 devices
+- some problem to uninstall plugin with armv6 devices if plugin not disabled before uninstall
 
 
 Todo
