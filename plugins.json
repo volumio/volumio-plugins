@@ -38,6 +38,15 @@
         "description": "Something Random",
         "author": "Volumio Team",
         "updated": "23-04-2016"
+      },
+      {
+        "name": "Autoplay",
+        "version": "1.0",
+        "url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscelleanea/auto_play.zip",
+        "license": "gpl-v3",
+        "description": "Auto play music after starting volumio",
+        "author": "Thomas Doerr",
+        "updated": "01-02-2017"
       }
     ]
   },
