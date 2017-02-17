@@ -50,7 +50,7 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 	var self = this;
 	var defer=libQ.defer();
 
-	exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service volspotconnect2purgecache.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+	exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.logger.info('The following error occurred while starting VOLSPOTCONNECT: ' + error);
             		defer.reject();
@@ -70,7 +70,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
 	self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service volspotconnect22.service", function (error, stdout, stderr) { 
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", function (error, stdout, stderr) { 
 	if(error){
 		self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -186,16 +186,16 @@ ControllerVolspotconnect.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
 };
-/*
+
 ControllerVolspotconnect.prototype.purgecache = function intervalFunc() {
 	var self = this;
 	console.log ('essai  timer')
-		exec("/data/plugins/music_service/volspotconnect2/remove.sh", function (error, stdout, stderr) { }
+	//	exec("/data/plugins/music_service/volspotconnect2/remove.sh", function (error, stdout, stderr) { }
 	setInterval(intervalFunc, 500);
 	
 	//Perform your installation tasks here
 };
-*/
+
 ControllerVolspotconnect.prototype.getAdditionalConf = function (type, controller, data) {
 	var self = this;
 	return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
