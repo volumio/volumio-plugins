@@ -1,0 +1,22 @@
+{
+  "name": "qobuz",
+  "version": "1.0.0",
+  "description": "Qobuz plugin for Volumio2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "Qobuz",
+    "icon": "fa-music",
+    "plugin_type": "music_service"
+  },
+  "dependencies": {
+    "cache-manager": "^2.2.0",
+    "kew": "^0.7.0",
+    "unirest": "",
+    "v-conf": "^0.10.0"
+  }
+}
