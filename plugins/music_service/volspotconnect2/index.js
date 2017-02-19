@@ -50,8 +50,8 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 	var self = this;
 	var defer=libQ.defer();
 
-//	exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) {
-		exec("/bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", function (error, stdout, stderr) {
+	exec("/usr/bin/sudo /bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+//		exec("/bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", function (error, stdout, stderr) {
 		if (error !== null) {
 			self.logger.info('The following error occurred while starting VOLSPOTCONNECT: ' + error);
             		defer.reject();
@@ -320,8 +320,8 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
         .then(function(e)
         {
             var edefer=libQ.defer();
-         //   exec("/usr/bin/sudo /bin/systemctl restart volspotconnect2.service volspotconnect22.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
-                       exec("/bin/systemctl restart volspotconnect2.service volspotconnect22.service", function (error, stdout, stderr) {
+            exec("/usr/bin/sudo /bin/systemctl restart volspotconnect2.service volspotconnect22.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
+         //              exec("/bin/systemctl restart volspotconnect2.service volspotconnect22.service", function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;
