@@ -18,6 +18,8 @@ Last changes
 
 Febuary 19th
 
+cache is now written in /dev/shm to preserve sd card
+better global responsivness
 better handling multi users
 
 Febuary 17th

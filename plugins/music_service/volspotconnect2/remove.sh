@@ -2,8 +2,8 @@
 # this script removes last file in volspotconnect2 cache when cachesize limit is reached
 cachesize=120
 let ucachesize=$cachesize/2
-c1folder=/tmp/volspotconnect2/cache/c1/files
-c2folder=/tmp/volspotconnect2/cache/c2/files
+c1folder=/dev/shm/volspotconnect2/cache/c1/files
+c2folder=/dev/shm/volspotconnect2/cache/c2/files
 
 cd $c1folder
 checkedsize=$(du -sm $c1folder)
