@@ -14,7 +14,7 @@ then
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot.xz -C /
+			sudo tar -xf librespot-arm.xz -C /
 			rm librespot.xz*
 		else
 			echo "Failed to download. Stopping installation now"
@@ -28,7 +28,7 @@ then
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot.xz #-C /
+			sudo tar -xf librespot-armhf.xz #-C /
 			rm librespot.xz*
 		else
 			echo "Failed to download. Stopping installation now"
@@ -42,7 +42,7 @@ then
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot.xz #-C $libpath
+			sudo tar -xf librespot-armhf.xz #-C $libpath
 			rm librespot.xz*
 		else
 			echo "Failed to download. Stopping installation now"
@@ -56,7 +56,7 @@ then
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot.xz #-C /
+			sudo tar -xf librespot-x86.xz #-C /
 			rm librespot.xz*
 		else
 			echo "Failed to download. Stopping installation now"
