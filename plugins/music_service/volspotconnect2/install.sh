@@ -10,7 +10,7 @@ then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
 	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnectchroot.tar.gz
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/arm/librespot.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/arm/librespot-arm.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
