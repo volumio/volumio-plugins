@@ -20,7 +20,7 @@ Febuary 25th
 
 new librespot library.
 support x86 arch
-
+cache written in /tmp
 
 Febuary 19th
 
