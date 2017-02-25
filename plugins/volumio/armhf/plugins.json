@@ -12,7 +12,7 @@
         "version": "1.3",
         "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
         "license": "Free for non commercial USE",
-        "description": "Spotify Plugin for Volumio: Browse, Play and discover Spotify Music<br> ATTENTION: Does not work with Software Mixer, use None instead",
+        "description": "Spotify Plugin for Volumio: Browse, Play and discover Spotify Music ATTENTION: Does not work with Software Mixer, use None instead",
         "details":"<h4>Spotify Plugin for Volumio</h4><br>Adds Spotify Playback capabilites to Volumio<br>Features:<br><ul><li>Playlists</li></ul><br><strong>Note:</strong> Requires Spotify premium account.",
         "author": "Volumio Team",
         "screenshots": [{"image": "", "thumb": ""}],
