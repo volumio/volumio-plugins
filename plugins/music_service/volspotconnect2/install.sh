@@ -14,8 +14,8 @@ then
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-arm.xz -C /
-			rm librespot.xz*
+			sudo tar -xf librespot-arm.xz # -C /
+			rm librespot-arm.xz
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -29,7 +29,7 @@ then
 		then
 			echo "Extracting data"
 			sudo tar -xf librespot-armhf.xz #-C /
-			rm librespot.xz*
+			rm librespot-armhf.xz*
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -43,7 +43,7 @@ then
 		then
 			echo "Extracting data"
 			sudo tar -xf librespot-armhf.xz #-C $libpath
-			rm librespot.xz*
+			rm librespot-armhf.xz*
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -57,12 +57,12 @@ then
 		then
 			echo "Extracting data"
 			sudo tar -xf librespot-x86.xz #-C /
-			rm librespot.xz*
+			rm librespot-x86.xz*
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
 		fi
-elif [ $cpu = "x86" ]
+elif [ $cpu = "i686" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
