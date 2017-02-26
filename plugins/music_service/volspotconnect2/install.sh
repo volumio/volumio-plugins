@@ -9,13 +9,12 @@ if [ $cpu = "armv6l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	#wget http://repo.volumio.org/Volumio2/plugins/Volspotconnectchroot.tar.gz
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/arm/librespot-arm.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/arm/librespot-arm.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-arm.xz # -C /
-			rm librespot-arm.xz
+			sudo tar -xf librespot-arm.tar.xz # -C /
+			rm librespot-arm.tar.xz
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -24,12 +23,12 @@ elif [ $cpu = "armv7l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-armhf.xz #-C /
-			rm librespot-armhf.xz*
+			sudo tar -xf librespot-armhf.tar.xz #-C /
+			rm librespot-armhf.tar.xz
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -38,26 +37,12 @@ elif [ $cpu = "aarch64" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-armhf.xz #-C $libpath
-			rm librespot-armhf.xz*
-		else
-			echo "Failed to download. Stopping installation now"
-			exit -1
-		fi
-elif [ $cpu = "x86_64" ]
-then
-	cd $libpath
-        echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86.xz
-	if [ $? -eq 0 ]
-		then
-			echo "Extracting data"
-			sudo tar -xf librespot-x86.xz #-C /
-			rm librespot-x86.xz*
+			sudo tar -xf librespot-armhf.tar.xz #-C $libpath
+			rm librespot-armhf.tar.xz
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
@@ -66,12 +51,12 @@ elif [ $cpu = "i686" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot.xz #-C /
-			rm librespot.xz*
+			sudo tar -xf librespot-x86.tar.xz #-C /
+			rm librespot-x86.tar.xz
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1

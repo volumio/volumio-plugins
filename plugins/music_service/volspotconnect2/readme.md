@@ -25,7 +25,7 @@ To install
 Last changes
 
 Febuary 26th
-
+- correct librespot x86
 - correction to install on i686
 
 Febuary 25th
