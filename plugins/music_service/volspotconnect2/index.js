@@ -156,7 +156,10 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
                 __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
- uiconf.sections[0].content[0].value = self.config.get('bitrate');
+ //uiconf.sections[0].content[0].value = self.config.get('bitrate');
+ uiconf.sections[0].content[0].value = self.config.get('shareddevice');
+ uiconf.sections[0].content[1].value = self.config.get('username');
+ uiconf.sections[0].content[2].value = self.config.get('password');
  /*
 value = self.config.get('bitrate');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
@@ -208,15 +211,22 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     var self = this;
 
     var defer=libQ.defer();
-
-
+	
     try {
 
         fs.readFile(__dirname + "/volspotconnect2.tmpl", 'utf8', function (err, data) {
             if (err) {
                 defer.reject(new Error(err));
                 return console.log(err);
-            }
+		}
+	var shared;
+	var username = (self.config.get('username'));
+	var password = (self.config.get('password'));
+	if(self.config.get('shareddevice')===false) {
+		    shared = " --disable-discovery " + "-u " + username + " -p " + password;
+console.log(shared)
+	} else shared="";
+             
 					
 		var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 		var devicename = self.commandRouter.sharedVars.get('system.name');
@@ -224,7 +234,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				if (outdev == "softvolume") {
 					hwdev = "softvolume"
 					}
-		var conf1 = data.replace("${bitrate}", self.config.get('bitrate'));
+		var conf1 = data.replace("${shared}", shared);
 		var conf2 = conf1.replace("${devicename}", devicename);
 		var conf3 = conf2.replace("${outdev}", hwdev);
 							
@@ -247,48 +257,6 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 
 };
 
-ControllerVolspotconnect.prototype.createVOLSPOTCONNECT2File = function () {
-    var self = this;
-
-    var defer=libQ.defer();
-
-
-    try {
-
-        fs.readFile(__dirname + "/volspotconnect22.tmpl", 'utf8', function (err, data) {
-            if (err) {
-                defer.reject(new Error(err));
-                return console.log(err);
-            }
-					
-		var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-		var devicename = self.commandRouter.sharedVars.get('system.name');
-		var hwdev ='plughw:' + outdev;
-				if (outdev == "softvolume") {
-					hwdev = "softvolume"
-					}
-		var conf1 = data.replace("${bitrate}", self.config.get('bitrate'));
-		var conf2 = conf1.replace("${devicename}", devicename);
-		var conf3 = conf2.replace("${outdev}", hwdev);
-							
-	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect2.sh", conf3, 'utf8', function (err) {
-                
-               if (err)
-                    defer.reject(new Error(err));
-                else defer.resolve();
-            });
-            
-        });
-    			
-
-    }
-    catch (err) {
-
-    }
-
-    return defer.promise;
-
-};
 
 
 ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
@@ -296,7 +264,11 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 
     var defer = libQ.defer();
     
-   	self.config.set('bitrate', data['bitrate'].value);
+   //	self.config.set('bitrate', data['bitrate']);
+   	self.config.set('shareddevice', data['shareddevice']);
+   	self.config.set('username', data['username']);
+   	self.config.set('password', data['password']);
+
 	self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){
             defer.resolve({});
@@ -316,7 +288,6 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
     var defer=libQ.defer();
  
     self.createVOLSPOTCONNECTFile()
-    self.createVOLSPOTCONNECT2File()
         .then(function(e)
         {
             var edefer=libQ.defer();

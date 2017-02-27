@@ -4,10 +4,10 @@
  "VOLSPOTCONNECTACCOUNT":"Spotify account",
  "USERNAME":"username",
  "PASSWORD":"password",
- "HIGHBITRATE":"Stream quality (kbps)",
+ "HIGHBITRATE":"stream bitrate",
  "DEVICENAME":"device name",
  "OUTPUT_DEVICE":"Output device",
- "FAMILYSHARE":"Shared device",
+ "SHAREDDEVICE":"Shared device",
  "SAVE":"Save"
 }
 }

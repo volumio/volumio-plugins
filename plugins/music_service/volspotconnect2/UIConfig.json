@@ -12,34 +12,47 @@
       "saveButton": {
         "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
         "data": [
-          "bitrate"
+	"shareddevice",
+	"username",
+	"password"
                 ]
       },
       "content": [
        
+	
 	{
-          "id":"bitrate",
-          "element": "select",
-          "doc": "High bitrate",
-          "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
-          "value": {
-						"value": "160",
-						"label": "160"
-					},
-					"options": [
-						{
-							"value": "90",
-							"label": "90"
-						},
-						{
-							"value": "160",
-							"label": "160"
-						},
-						{
-							"value": "320",
-							"label": "320"
-						}
-						]
+          "id":"shareddevice",
+          "element": "switch",
+          "doc": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+          "label": "TRANSLATE.VOLSPOTCONNECT.SHAREDDEVICE",
+          "value": true
+        },
+	{
+          "id": "username",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTACCOUNT",
+          "label": "TRANSLATE.VOLSPOTCONNECT.USERNAME",
+          "value": "",
+	"options": [],
+					"visibleIf": {
+						"field": "shareddevice",
+						"value": false
+					}
+        },
+	
+        {
+          "id": "password",
+          "type":"password",
+          "element": "input",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTPASSWD",
+          "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
+          "value": "",
+	"options": [],
+					"visibleIf": {
+						"field": "shareddevice",
+						"value": false
+					}
         }
         
       ]

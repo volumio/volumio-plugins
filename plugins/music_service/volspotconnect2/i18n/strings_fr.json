@@ -4,10 +4,10 @@
  "VOLSPOTCONNECTACCOUNT":"Compte Spotify",
  "USERNAME":"Nom utilisateur",
  "PASSWORD":"Mot de passe",
- "HIGHBITRATE":"Qaulité du flux (kbps)",
+ "HIGHBITRATE":"Haute qualité",
  "DEVICENAME":"Nom du périphérique",
  "OUTPUT_DEVICE":"Output device",
- "FAMILYSHARE":"Périphérique partagé",
+ "SHAREDDEVICE":"Périphérique partagé",
  "SAVE":"Sauver"
 }
 }

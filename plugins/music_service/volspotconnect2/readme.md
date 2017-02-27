@@ -1,4 +1,4 @@
-Febuary 26th 2017
+Febuary 27th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -6,8 +6,9 @@ If it works as expected, it will remplace volspotconnect
 It is just a prototype, and may not work as expected
 
 Tested on :
-RPI B
-RPI B+
+RPI 0 not working yet
+RPI B not working yet
+RPI B+ not working yet
 RPI2
 SPARKY
 PINE64
@@ -21,8 +22,12 @@ IMPORTANT
 To install
 - You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
-
 Last changes
+
+Febuary 27th
+
+- option to share or no the device
+- remove stream rate selector - default is now 320kbps 
 
 Febuary 26th
 - correct librespot x86
