@@ -35,10 +35,6 @@ self.createVOLSPOTCONNECTFile()
         {
             defer.reject(new Error());
         })
-
-
-	    		//self.createVOLSPOTCONNECTFile();
-//	return libQ.resolve();
 }
 
 ControllerVolspotconnect.prototype.getConfigurationFiles = function()
@@ -112,46 +108,10 @@ var self = this;
 
 };
 
-
-
- /*
-	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
-	this.commandRouter.sharedVars.registerCallback('alsa.outputdevicemixer', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
-	this.commandRouter.sharedVars.registerCallback('system.name', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
-
-
-*/
-// Volspotconnect stop
-/*
-ControllerVolspotconnect.prototype.stop = function() {
-	var self = this;
-	
-
-    self.logger.info("Killing Volspotconnect2 daemon");
-	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
-	if(error){
-self.logger.info('Error in killing Voslpotconnect2')
-	}
-	});
-
-   return libQ.resolve();
-};
-
-
-ControllerVolspotconnect.prototype.onRestart = function() {
-	var self = this;
-	//
-};
-
-ControllerVolspotconnect.prototype.onInstall = function() {
-	var self = this;
-	//Perform your installation tasks here
-};
-
 ControllerVolspotconnect.prototype.onUninstall = function() {
 	var self = this;
    self.logger.info("Killing Spotify-connect-web daemon");
-	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service volspotconnect2purgecache.timer", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 self.logger.info('Error in killing Voslpotconnect')
 	}
@@ -159,7 +119,7 @@ self.logger.info('Error in killing Voslpotconnect')
 
    return libQ.resolve();
 };
-*/
+
 ControllerVolspotconnect.prototype.getUIConfig = function() {
 	var defer = libQ.defer();
 	var self = this;
@@ -174,11 +134,6 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
  uiconf.sections[0].content[0].value = self.config.get('shareddevice');
  uiconf.sections[0].content[1].value = self.config.get('username');
  uiconf.sections[0].content[2].value = self.config.get('password');
- /*
-value = self.config.get('bitrate');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
-*/
 
             defer.resolve(uiconf);
             })
@@ -205,14 +160,6 @@ ControllerVolspotconnect.prototype.setConf = function(varName, varValue) {
 	//Perform your installation tasks here
 };
 
-ControllerVolspotconnect.prototype.purgecache = function intervalFunc() {
-	var self = this;
-	console.log ('essai  timer')
-	//	exec("/data/plugins/music_service/volspotconnect2/remove.sh", function (error, stdout, stderr) { }
-	setInterval(intervalFunc, 500);
-	
-	//Perform your installation tasks here
-};
 
 ControllerVolspotconnect.prototype.getAdditionalConf = function (type, controller, data) {
 	var self = this;
