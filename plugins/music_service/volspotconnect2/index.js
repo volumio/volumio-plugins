@@ -23,10 +23,20 @@ function ControllerVolspotconnect(context) {
 
 ControllerVolspotconnect.prototype.onVolumioStart = function()
 {
-//	var self= this;
+	var self= this;
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
+self.createVOLSPOTCONNECTFile()
+        .then(function(e){
+            defer.resolve({});
+        })
+        .fail(function(e)
+        {
+            defer.reject(new Error());
+        })
+
+
 	    		//self.createVOLSPOTCONNECTFile();
 //	return libQ.resolve();
 }
@@ -98,7 +108,11 @@ var self = this;
 		});
 
 	return defer.promise;
+
+
 };
+
+
 
  /*
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
