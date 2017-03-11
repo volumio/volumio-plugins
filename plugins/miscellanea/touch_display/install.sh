@@ -27,6 +27,7 @@ xset 0 0 120
 openbox-session &
 while true; do
   /usr/bin/chromium-browser \\
+    --no-touch-pinch \\
     --kiosk \\
     --no-first-run \\
     --disable-3d-apis \\
