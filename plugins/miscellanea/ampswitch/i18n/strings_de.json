@@ -1,0 +1,9 @@
+{
+  "AMPSWITCH_TITLE":"Amplifier Switch",
+  "OUTPUT":"Ausgabe",
+  "PORT": "Ausgang",
+  "PORT_DOC": "Ausgang auf deinem Gerät",
+  "INVERTED": "Invertiert",
+  "INVERTED_DOC": "Wenn der Ausgang invertiert ist, entspricht AN 0V und AUS 5V",
+  "SAVE":"Speichern"
+}
