@@ -24,7 +24,7 @@
  "OUTPUT_DEVICE":"Périphérique de sortie hw:"
 },
  "BAUER":{
- "BAUER_TITLE":"Filtre Bauer Stereo->Binaural PAS ENCORE ACTIF!!!",
+ "BAUER_TITLE":"Filtre Bauer Stereo->Binaural Peux interferer avec softvol!!!",
  "BAUER_FILTER_SETTINGS":"Activer le filtre",
  "FCUT":"Fréquence de coupure (Hz)",
  "FLEVEL":"Niveau (dB)"

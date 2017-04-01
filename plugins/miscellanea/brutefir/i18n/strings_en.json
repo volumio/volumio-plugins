@@ -1,7 +1,7 @@
 {
  "BRUTEFIR":{
  "VOLUMIO_DSP":"Volumio DSP center",
- "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer settings NOT ACTIVE YET !!!",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer Not activated yet",
  "EQUALIZER":"Equalizer",
  "EQUALIZER_SETTINGS":"Equalizer settings",
  "EQUALIZER_MODE":"On= Gain Settings / Off= Phase Settings",
@@ -24,7 +24,7 @@
  "OUTPUT_DEVICE":"Output device hw:"
 },
  "BAUER":{
- "BAUER_TITLE":"Bauer Stereo to binaural filter NOT ACTIVE YET!!!",
+ "BAUER_TITLE":"Bauer Stereo to binaural filter May conflict with softvol!!!",
  "BAUER_FILTER_SETTINGS":"Enabling Bauer filter",
  "FCUT":"Frequency cut (Hz)",
  "FLEVEL":"Level feed (dB)"

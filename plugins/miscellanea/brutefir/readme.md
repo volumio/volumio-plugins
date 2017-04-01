@@ -1,4 +1,4 @@
-05th December 2016
+O1st April 2017
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,12 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+1st April 2017
+
+re-enable Bauer binaural
+
+before...
 
 just to update brutefir.zip
 
