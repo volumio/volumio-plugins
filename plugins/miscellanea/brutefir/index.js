@@ -575,10 +575,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
   // console.log(filtersizedivided)
  
    //var foutput_devi'ce;
-   /*    if(self.config.get('sbauer')===true)
+      if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
-   */
+   
        if(self.config.get('leftfilter')== "")
        			{leftfilter ="dirac pulse";
        			filterattenuation ="0"}
