@@ -605,7 +605,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf12 = conf11.replace("${rightfilter}", rightfilter);
    var conf13 = conf12.replace("${filter_format2}", self.config.get('filter_format'));
    var conf14 = conf13.replace("${filterattenuation2}", filterattenuation);
-   var conf15 = conf14.replace("${output_device}", self.config.get('output_device'));
+   var conf15 = conf14.replace("${output_device}", output_device);
    var conf16 = conf15.replace("${output_format}", self.config.get('output_format'));
 
    fs.writeFile("/data/configuration/miscellanea/brutefir/volumio-brutefir-config", conf16, 'utf8', function(err) {

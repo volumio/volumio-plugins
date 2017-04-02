@@ -1,4 +1,4 @@
-O1st April 2017
+02nd April 2017
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,9 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+2nd April 2017
+correction bauer
 
 1st April 2017
 
