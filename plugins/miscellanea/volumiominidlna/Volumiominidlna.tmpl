@@ -7,7 +7,7 @@
 # documentation about this file.
 
 # Specify the user name or uid to run as.
-#user=minidlna
+user=volumio
 
 
 # Path to the directory you want scanned for media files.
@@ -34,6 +34,7 @@ media_dir=V,${video_folder}
 
 # Path to the directory that should hold the database and album art cache.
 #db_dir=/var/cache/minidlna
+db_dir=/data/configuration/miscellanea/volumiominidlna
 
 # Path to the directory that should hold the log file.
 #log_dir=/var/log
@@ -88,14 +89,14 @@ port=49200
 serial=681019810597110
 
 # Model name the server reports to clients.
-#model_name=Windows Media Connect compatible (MiniDLNA)
+model_name=Windows Media Connect compatible (MiniDLNA)
 
 # Model number the server reports to clients.
 # Defaults to the version number of minidlna.
 #model_number=
 
 # Automatic discovery of new files in the media_dir directory.
-#inotify=yes
+inotify=yes
 
 # List of file names to look for when searching for album art.
 # Names should be delimited with a forward slash ("/").

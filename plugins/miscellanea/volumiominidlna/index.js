@@ -131,7 +131,7 @@ ControllerVolumiominidlna.prototype.getUIConfig = function() {
 
 uiconf.sections[0].content[0].value = self.config.get('audio_folder');
 uiconf.sections[0].content[1].value = self.config.get('picture_folder');
-uiconf.sections[0].content[1].value = self.config.get('video_folder');
+uiconf.sections[0].content[2].value = self.config.get('video_folder');
             defer.resolve(uiconf);
             })
                 .fail(function()
@@ -179,7 +179,7 @@ ControllerVolumiominidlna.prototype.createVolumiominidlnaFile = function () {
 		var conf2 = conf1.replace("${picture_folder}", self.config.get('picture_folder'));
 		var conf3 = conf2.replace("${video_folder}", self.config.get('video_folder'));
 					
-	            fs.writeFile("/etc/minidlna.conf", conf3, 'utf8', function (err) {
+	            fs.writeFile("/data/configuration/miscellanea/volumiominidlna/minidlna.conf", conf3, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
