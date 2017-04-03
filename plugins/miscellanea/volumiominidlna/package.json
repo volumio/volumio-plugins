@@ -1,7 +1,7 @@
 {
-  "name": "volumiobauerfilter",
-  "version": "0.1 beta",
-  "description": "basic plugins to install and configure bauer filter",
+  "name": "volumiominidlna",
+  "version": "0.0.1",
+  "description": "Install and configure minidlna for volumio",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio Bauer Filter",
+    "prettyName": "Volumio mini-dlna",
     "plugin_type": "miscellanea"
   },
   "dependencies": {
@@ -17,7 +17,6 @@
     "fs-extra": "^0.28.0",
     "child_process":"",
     "kew": "^0.7.0",
-    "net": "^1.0.2",
     "v-conf": "^0.10.0"
       }
 }

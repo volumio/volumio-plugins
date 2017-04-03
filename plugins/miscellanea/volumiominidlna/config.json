@@ -1,0 +1,15 @@
+{
+   "audio_folder": {
+    "type": "string",
+    "value": "/data/INTERNAL"
+  },
+ 
+  "picture_folder": {
+      "type": "string",
+      "value": "/data/INTERNAL"
+  },
+"video_folder": {
+      "type": "string",
+      "value": "/data/INTERNAL"
+  }
+}

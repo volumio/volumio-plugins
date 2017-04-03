@@ -1,0 +1,48 @@
+{
+  "page": {
+    "label": "Volumio mini dlna Configuration"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "Volumio mini dlna settings",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/volumiominidlna", "method":"saveVolumiominidlnaAccount"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "audio_folder",
+          "picture_folder",
+	  "video_folder"
+        ]
+      },
+      "content": [
+        {
+          "id": "audio_folder",
+          "type":"text",
+          "element": "input",
+          "doc": "enter your audio files folder",
+          "label": "audio_folder",
+          "value": "/data/INTERNAL"
+        },
+        {
+          "id": "picture_folder",
+          "type":"text",
+          "element": "input",
+          "doc": "enter your audio files folder",
+          "label": "picture_folder",
+          "value": "/data/INTERNAL"   	
+        },
+	{
+          "id": "video_folder",
+          "type":"text",
+          "element": "input",
+          "doc": "enter your video files folder",
+          "label": "video_folder",
+          "value": "/data/INTERNAL"
+	}
+      ]
+   }
+  ]
+}
