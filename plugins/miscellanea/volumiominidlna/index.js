@@ -44,7 +44,7 @@ ControllerVolumiominidlna.prototype.startVolumiominidlnaDaemon = function() {
 	var self = this;
 	var defer=libQ.defer();
 
-		exec("/usr/bin/sudo /bin/systemctl start minidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+		exec("/usr/bin/sudo /bin/systemctl start volumiominidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.logger.info('The following error occurred while starting Volumiominidlna ' + error);
             		defer.reject();
@@ -63,7 +63,7 @@ ControllerVolumiominidlna.prototype.onStop = function() {
 	var self = this;
 
 	self.logger.info("Killing Volumiominidlna");
-		exec("/usr/bin/sudo /bin/systemctl stop minidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+		exec("/usr/bin/sudo /bin/systemctl stop volumiominidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 	self.logger.info('Error in killing Volumiominidlna')
 	}
@@ -109,7 +109,7 @@ ControllerVolumiominidlna.prototype.onInstall = function() {
 ControllerVolumiominidlna.prototype.onUninstall = function() {
 	var self = this;
    self.logger.info("Killing Volumiominidlna");
-	exec("/usr/bin/sudo /bin/systemctl stop minidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
+	exec("/usr/bin/sudo /bin/systemctl stop volumiominidlna.service", {uid:1000,gid:1000}, function (error, stdout, stderr) { 
 	if(error){
 self.logger.info('Error in killing Volumiominidlna')
 	}
@@ -179,7 +179,7 @@ ControllerVolumiominidlna.prototype.createVolumiominidlnaFile = function () {
 		var conf2 = conf1.replace("${picture_folder}", self.config.get('picture_folder'));
 		var conf3 = conf2.replace("${video_folder}", self.config.get('video_folder'));
 					
-	            fs.writeFile("/data/configuration/miscellanea/volumiominidlna/minidlna.conf", conf3, 'utf8', function (err) {
+	            fs.writeFile("/data/configuration/miscellanea/volumiominidlna/minidlna.conf", conf3, 'utf8',  function (err) {
                 if (err)
                     defer.reject(new Error(err));
                 else defer.resolve();
@@ -227,7 +227,7 @@ ControllerVolumiominidlna.prototype.rebuildVolumiominidlnaAndRestartDaemon = fun
         .then(function(e)
         {
             var edefer=libQ.defer();
-            exec("/usr/bin/sudo /bin/systemctl restart minidlna.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
+            exec("/usr/bin/sudo /bin/systemctl restart volumiominidlna.service",{uid:1000,gid:1000}, function (error, stdout, stderr) {
                 edefer.resolve();
             });
             return edefer.promise;

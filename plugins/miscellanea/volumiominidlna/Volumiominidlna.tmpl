@@ -22,7 +22,7 @@ user=volumio
 #   * "P" for pictures (eg. media_dir=P,/var/lib/minidlna/pictures)
 #   * "V" for video    (eg. media_dir=V,/var/lib/minidlna/videos)
 #   * "PV" for pictures and video (eg. media_dir=PV,/var/lib/minidlna/digital_camera)
-media_dir=/data/configuration/miscellanea/volumiominidlna
+#media_dir=/data/configuration/miscellanea/volumiominidlna
 media_dir=A,${audio_folder}
 media_dir=P,${picture_folder}
 media_dir=V,${video_folder}
@@ -37,7 +37,7 @@ media_dir=V,${video_folder}
 db_dir=/data/configuration/miscellanea/volumiominidlna
 
 # Path to the directory that should hold the log file.
-#log_dir=/var/log
+log_dir=/var/log
 
 # Type and minimum level of importance of messages to be logged.
 #
@@ -70,7 +70,7 @@ db_dir=/data/configuration/miscellanea/volumiominidlna
 
 # Network interface(s) to bind to (e.g. eth0), comma delimited.
 # This option can be specified more than once.
-#network_interface=
+network_interface=eth0,wlan0
 
 # Port number for HTTP traffic (descriptions, SOAP, media transfer).
 # This option is mandatory (or it must be specified on the command-line using
