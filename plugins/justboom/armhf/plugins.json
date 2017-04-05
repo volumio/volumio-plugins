@@ -1,0 +1,76 @@
+{"categories": [
+  {
+    "prettyName": "Music Services",
+    "name": "music_service",
+    "id": "cat1",
+    "description": "Plugins for Adding Music Sources ",
+    "plugins": [
+      {
+        "prettyName": "Spotify",
+        "icon": "fa-spotify",
+        "name": "spop",
+        "version": "1.3",
+        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/spotify/spotify.zip",
+        "license": "Free for non commercial USE",
+        "description": "Spotify Plugin: Browse, Play and discover Spotify Music ATTENTION: Does not work with Software Mixer, use None instead",
+        "details":"<h4>Spotify Plugin</h4><br>Adds Spotify Playback capabilites<br>Features:<br><ul><li>Playlists</li></ul><br><strong>Note:</strong> Requires Spotify premium account.",
+        "author": "Volumio Team",
+        "screenshots": [{"image": "", "thumb": ""}],
+        "updated": "13-10-2016"
+      }
+    ]
+  },
+  {
+    "prettyName":"Miscelleanea",
+    "name": "miscelleanea",
+    "id": "cat2",
+    "description": "Things that cannot go in other categories",
+    "plugins": [
+	  {
+		"prettyName": "Touch Display Plugin",
+		"icon": "fa-hand-pointer-o",
+		"name": "touch_display",
+		"version": "1.1",
+		"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/touch_display/touchdisplay.zip",
+		"license": "Free for non commercial USE",
+		"description": "This Plugin shows the UI to whatever Display attached to the device. It is especially optimized for the 7'' Raspberry PI display.",
+		"details":"",
+		"author": "Volumio Team",
+		"screenshots": [],
+		"updated": "15-10-2016"
+	  }
+    ]
+  },
+  {
+    "prettyName":"System Tools",
+    "name": "system_controller",
+    "id": "cat3",
+    "description": "Volumio System Tools",
+    "plugins": [
+	  {
+		"prettyName": "GPIO Buttons Controller",
+		"icon": "fa-play-circle-o",
+		"name": "gpio-buttons",
+		"version": "0.7.5",
+		"url": "http://tomatpasser.dk/gpio-buttons.zip",
+		"license": "Free for non commercial USE",
+		"description": "With this Plugin you can control basic playback funcions by connecting buttons to Raspberry PI GPIOs",
+		"details":"<h4>GPIO Buttons Controller</h4><br>control basic playback funcions by connecting buttons to Raspberry PI GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous/pause</li><li>Volume +  -</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
+		"author": "Tomatpasser",
+		"screenshots": [{"image": "http://tomatpasser.dk/gpio-buttons2.png", "thumb": "http://tomatpasser.dk/gpio-buttons2.png"}],
+		"updated": "03-08-2016"
+	  }
+
+    ]
+  },
+  {
+	"prettyName":"Accessories",
+	"name": "accessory",
+	"id": "cat3",
+	"description": "Plugins for Volumio Accessories",
+	"plugins": [
+	
+	]
+  }
+]
+}
