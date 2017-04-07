@@ -1,6 +1,6 @@
 {
   "name": "volumiominidlna",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Install and configure minidlna for volumio",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio mini-dlna ver 0.0.2",
+    "prettyName": "Volumio mini-dlna ver 0.0.3",
     "plugin_type": "miscellanea"
   },
   "dependencies": {

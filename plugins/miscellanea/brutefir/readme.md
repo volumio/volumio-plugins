@@ -1,4 +1,4 @@
-02nd April 2017
+07th April 2017
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,10 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+7th April
+
+corrected a variable undeclared that hanged the plugin
 
 2nd April 2017
 correction bauer

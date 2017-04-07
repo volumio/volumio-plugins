@@ -574,7 +574,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
   //          console.log(filter_size)
   // console.log(filtersizedivided)
  
-   //var foutput_devi'ce;
+var output_device;
       if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
@@ -590,7 +590,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
        		else rightfilter = filter_path + self.config.get('rightfilter');
        			filterattenuation ="6";	
 		//output_device = output_device;
- //  console.log(output_device);
+ console.log(output_device);
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
