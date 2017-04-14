@@ -7,7 +7,7 @@
  "HIGHBITRATE":"Haute qualité",
  "DEVICENAME":"Nom du périphérique",
  "OUTPUT_DEVICE":"Output device",
- "SHAREDDEVICE":"Périphérique partagé",
+ "SHAREDDEVICE":"Périphérique partagé entre plusieurs utilisateur",
  "SAVE":"Sauver"
 }
 }

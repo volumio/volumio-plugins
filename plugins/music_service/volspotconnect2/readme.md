@@ -1,4 +1,4 @@
-April 2nd 2017
+April 14th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -25,9 +25,14 @@ To install
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
 Last changes
 
+April 14th
+
+- new librespot with correction in protocol
+- default volume is now about 30% instead of 100%
+
 April 2nd
 
-Add auto restart service if hang
+- Add auto restart service if hang
 
 Mars 2nd
 
