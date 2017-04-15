@@ -1,4 +1,4 @@
-April 14th 2017
+April 15th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -9,10 +9,10 @@ Tested on :
 - RPI 0 
 - RPI B
 - RPI B+
-- RPI2 ok
-- SPARKY ok
-- PINE64 ok
-- x86 laptop ok
+- RPI2
+- SPARKY
+- PINE64
+- x86 laptop
 
 
 IMPORTANT
@@ -24,6 +24,11 @@ To install
 - You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
 Last changes
+
+April 15th
+
+- change error message when download requires package failed
+- new librespot for armv6
 
 April 14th
 

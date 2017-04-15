@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Installing spotify-connect-web dependencies"
 libpath=/data/plugins/music_service/volspotconnect2
-
+derrormess="Failed to download. Stopping installation now. Check your connection. Thanks your ISP, check DNS settings in Volumio as it may be the cause"
 echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 
@@ -16,7 +16,7 @@ then
 			sudo tar -xf librespot-arm.tar.xz # -C /
 			rm librespot-arm.tar.xz
 		else
-			echo "Failed to download. Stopping installation now"
+			echo "$derrormess"
 			exit -1
 		fi	
 elif [ $cpu = "armv7l" ]
@@ -30,7 +30,7 @@ then
 			sudo tar -xf librespot-armhf.tar.xz #-C /
 			rm librespot-armhf.tar.xz
 		else
-			echo "Failed to download. Stopping installation now"
+			echo "$derrormess"
 			exit -1
 		fi
 elif [ $cpu = "aarch64" ]
@@ -44,7 +44,7 @@ then
 			sudo tar -xf librespot-armhf.tar.xz #-C $libpath
 			rm librespot-armhf.tar.xz
 		else
-			echo "Failed to download. Stopping installation now"
+			echo "$derrormess"
 			exit -1
 		fi
 elif [ $cpu = "i686" ]
@@ -58,7 +58,7 @@ then
 			sudo tar -xf librespot-x86.tar.xz #-C /
 			rm librespot-x86.tar.xz
 		else
-			echo "Failed to download. Stopping installation now"
+			echo "$derrormess"
 			exit -1
 		fi
 else
