@@ -566,7 +566,7 @@ ControllerQobuz.prototype.qobuzAccountLogin = function (data) {
             libQ.resolve();
         })
         .fail(function (e) {
-            self.commandRouter.pushToastMessage('failure', "Qobuz Account Login", 'Qobuz account login failed.');
+            self.commandRouter.pushToastMessage('error', "Qobuz Account Login", 'Qobuz account login failed.');
             libQ.resolve();
         });
 };
@@ -693,7 +693,7 @@ ControllerQobuz.prototype.saveQobuzCacheSettings = function (data) {
             self.commandRouter.pushToastMessage('success', "Qobuz Cache Settings", 'Qobuz Cache Settings successsfully updated.');
         })
         .fail(function (e) {
-            self.commandRouter.pushToastMessage('failure', "Qobuz Cache Settings", 'Qobuz Cache Settings save failed.');
+            self.commandRouter.pushToastMessage('error', "Qobuz Cache Settings", 'Qobuz Cache Settings save failed.');
             libQ.reject(new Error());
         });
 };
@@ -706,7 +706,7 @@ ControllerQobuz.prototype.clearQobuzCache = function () {
                 self.commandRouter.pushToastMessage('success', "Qobuz Cache", 'Qobuz Cache successfully cleared.');
             })
             .fail(function (e) {
-                self.commandRouter.pushToastMessage('failure', "Qobuz Cache", 'Qobuz Cache clear failed.');
+                self.commandRouter.pushToastMessage('error', "Qobuz Cache", 'Qobuz Cache clear failed.');
                 libQ.reject(new Error());
             });
     }
