@@ -3,10 +3,8 @@
 var exec = require('child_process').exec;
 var os = require('os');
 var libQ = require('kew');
-var Gpio = require('onoff').Gpio,
-	shutdown = new Gpio(22, 'high'),
-	shutdowndetect = new Gpio(24, 'in', 'rising'),
-	rolloff = new Gpio(13, 'low');
+var Gpio = require('onoff').Gpio;
+var shutdown, shutdowndetect, rolloff;
 
 // Define the TubeAmpController class
 module.exports = TubeAmpController;
@@ -26,9 +24,14 @@ function TubeAmpController(context) {
 TubeAmpController.prototype.onVolumioStart = function()
 {
 	var self = this;
+	var defer=libQ.defer();
+
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
+
+	defer.resolve();
+	return defer.promise;
 
 }
 
@@ -72,6 +75,11 @@ TubeAmpController.prototype.tubeGpioInit = function() {
 	var rolloff_mode =0;
 
 	var rolloffsetting = self.config.get('enable_roll_off');
+
+	shutdown = new Gpio(22, 'high');
+	shutdowndetect = new Gpio(24, 'in', 'rising'),
+	rolloff = new Gpio(13, 'low');
+
 	if (rolloffsetting){
 		rolloff_mode =1;
 	}
@@ -93,7 +101,7 @@ TubeAmpController.prototype.tubeGpioInit = function() {
 			console.log('Shutdown Knob: shutting down');
 			return self.commandRouter.shutdown();
 		}
-	})
+	});
 
 };
 
@@ -102,8 +110,11 @@ TubeAmpController.prototype.stopGpioWatch = function() {
 	var defer=libQ.defer();
 
 	shutdown.unexport()
-	shutdowndetect.unexport()
-	rolloff.unexport()
+	shutdowndetect.unwatchAll();
+	shutdowndetect.unexport();
+	rolloff.unexport();
+	
+	defer.resolve();
 	return defer.promise;
 };
 
