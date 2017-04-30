@@ -6,5 +6,9 @@
     "inverted":{
         "type": "boolean",
         "value": false
+    },
+    "delay":{
+        "type": "number",
+        "value": 720
     }
 }
