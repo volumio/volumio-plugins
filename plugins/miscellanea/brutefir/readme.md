@@ -1,4 +1,4 @@
-26th April 2017
+May 1st April 2017
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,10 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+1st May
+
+add return libQ.resolve(); in index.js
 
 26th April
 
