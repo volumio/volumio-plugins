@@ -1,4 +1,4 @@
-07th April 2017
+26th April 2017
 	BRUTEFIR PLUGIN
 
 
@@ -42,6 +42,10 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+26th April
+
+toast messages
 
 7th April
 

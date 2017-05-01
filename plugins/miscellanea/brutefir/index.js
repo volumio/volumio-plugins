@@ -713,8 +713,8 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
    defer.resolve({});
   })
   .fail(function(e) {
-   defer.reject(new Error('brutefir error'));
-   self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+//   defer.reject(new Error('brutefir error'));
+   self.commandRouter.pushToastMessage('error',"Brutefir failed to start. Check your config !");
   })
 
 
@@ -792,8 +792,8 @@ if (error) {
    }, 5000)
    .fail(function(e)
 		{
-			defer.reject(new Error('Brutefir failed to start. Check your config !'));
-			self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+		//	defer.reject(new Error('Brutefir failed to start. Check your config !'));
+			self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
 		//	self.logger.info("Brutefir failed to start. Check your config !");
 });
   });

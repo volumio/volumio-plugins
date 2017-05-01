@@ -35,6 +35,7 @@ self.createVOLSPOTCONNECTFile()
         {
             defer.reject(new Error());
         })
+	return libQ.resolve();
 }
 
 ControllerVolspotconnect.prototype.getConfigurationFiles = function()
