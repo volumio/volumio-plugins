@@ -61,14 +61,19 @@ client.connect(3002, '127.0.0.1', function() {
 	defer.resolve();
 	console.log('Connected to brutefir');
 var coef = self.config.get('coef');
+var phas = self.config.get('phas');
 var values
 var value
+var valp
 console.log(coef);
 console.log(values);
+console.log(valp);
 var values = coef.split(',');
-
+var valp = phas.split(',');
 client.write('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
-console.log(client.write);
+//console.log(client.write);
+//client.write('lmc eq 0 phase 31/'+valp[0]+', 63/'+valp[1]+', 125/'+valp[2]+', 250/'+valp[3]+', 500/'+valp[4]+', 1000/'+valp[5]+', 2000/'+valp[6]+', 4000/'+valp[7]+', 8000/'+valp[8]+', 16000/'+valp[9]);
+console.log('client.write');
 
 });
 client.on('data', function(data) {
@@ -232,7 +237,7 @@ var value;
 			defer.reject(new Error());
 		})
 	return defer.promise
-
+   // self.brutefirDaemonConnect(defer);
 };
 
 ControllerBrutefir.prototype.getFilterListForSelect = function (filterl, key) {
@@ -444,7 +449,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     else defer.resolve();
    });
 
-
+self.createBAUERFILTERFile()
   });
 
 
@@ -506,8 +511,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 
 	self.commandRouter.pushToastMessage('success', "Configuration update", 'Brutefir Configuration has been successfully updated');
 
-	defer.resolve({});
-//self.brutefirDaemonConnect(defer);
+	self.brutefirDaemonConnect(defer);
  return defer.promise;
 };
 
@@ -521,22 +525,6 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
     self.config.set('levelfeed', data['levelfeed']);
     self.logger.info('Configurations of filter have been set');
 
-/*    self.rebuildBRUTEFIRAndRestartDaemon()
-        .then(function(e){
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'Binaural filtreing configuration has been successfully updated');
-            defer.resolve({});
-        })
-        .fail(function(e)
-        {
-            defer.reject(new Error());
-        })
-
-
- 	self.commandRouter.pushToastMessage('success', "Configuration update", 'Configuration has been successfully updated');
-
-	defer.resolve({});  
-	return defer.promise;
-*/
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');

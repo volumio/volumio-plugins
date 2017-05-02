@@ -37,13 +37,15 @@ Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and 
 
 - What is not working :
 
-No change in sound when setting equalizer
+
 Equalizer appears on several line / label are unreadable
 
 
 - Last changes
 
 2nd May
+
+- working gain equaliser when saving settings (but values not restored....)
 
 - new work on index.js gain is working when enabling/ disabling plugin....
 
