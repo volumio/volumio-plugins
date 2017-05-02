@@ -1,4 +1,4 @@
-May 1st April 2017
+May 2nd April 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -42,6 +42,10 @@ Equalizer appears on several line / label are unreadable
 
 
 - Last changes
+
+2nd May
+
+- new work on index.js gain is working when enabling/ disabling plugin....
 
 1st May
 

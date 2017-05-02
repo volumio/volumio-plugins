@@ -60,18 +60,20 @@ var client = new net.Socket();
 client.connect(3002, '127.0.0.1', function() {
 	defer.resolve();
 	console.log('Connected to brutefir');
-//});
 var coef = self.config.get('coef');
 var values
 var value
 console.log(coef);
+console.log(values);
 var values = coef.split(',');
-	console.log(values);
-setTimeout(function() {
 
 client.write('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
 console.log(client.write);
-}, 2000);
+
+});
+client.on('data', function(data) {
+	console.log('Received: ' + data);
+	client.destroy(); // kill client after server's response
 });
 
 };
@@ -325,33 +327,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
  var self = this;
  //Perform your installation tasks here
 };
-// Public methods ---------------------------------------------------------------
 
-// Internal Methods ---------------------------------------------------------------------------------------
-
-// here we compose command to be send to brutefir- until now send nothing....
-//here we send command to brutefir
-/*ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand) {
- var self = this;
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
-
-
-var brutefirResponseDeferred= libQ.defer();
-self.brutefirCommandReady
-  .then(function() {
-   return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand);
-  });
- var brutefirResponse = brutefirResponseDeferred.promise;
-	 if(sCommand!=='status')
-    {
-        self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
-        self.arrayResponseStack.push(brutefirResponseDeferred);
-    }
-console.log("send brutefir");
- // Return a promise for the command response
- return brutefirResponse;
-};
-*/
 //for gain settings
 ControllerBrutefir.prototype.gainEq = function() {
  var self = this;
@@ -369,32 +345,15 @@ console.log(commandgainEq);
 
 ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::sendBrutefirCommand');
+var coef = self.config.get('coef');
+var values
+var value
+console.log(coef);
+console.log(values);
+var values = coef.split(',');
+	sendcoef =('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
 
-	// Convert the array of parameters to a string
-	var sParameters = libFast.reduce(arrayParameters, function(sCollected, sCurrent) {
-		return sCollected + ' ' + sCurrent;
-	}, '');
-
-
-	var brutfirResponseDeferred = libQ.defer();
-	// Pass the command to brutefir when the command socket is ready
-	self.brutefirCommandReady
-		.then(function() {
-			return libQ.nfcall(libFast.bind(self.connBrutefirCommand.write, self.connBrutefirCommand), sCommand + sParameters + '\n', 'utf-8')
-				
-		});
-
-
-	var brutefirResponse = brutefirResponseDeferred.promise;
-
-	if(sCommand!=='status')
-	{
-		self.commandRouter.logger.info("ADDING DEFER FOR COMMAND " + sCommand);
-		self.arrayResponseStack.push(brutefirResponseDeferred);
-	}
-	// Return a promise for the command response
-	return brutefirResponse;
+console.log(sendcoef);
 };
 
 
@@ -430,20 +389,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     defer.reject(new Error(err));
     return console.log(err);
    }
-   /* input for brutefir config is the output set in playback
-   and output in brutefir config is hardware in use
-   */
- //  var indev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   /* the right device is not properly selected - have to remove 1 - need investigation
-    */
-  // var inter = indev;
-   //var bindev = 'hw:Loopback,1';
-   /*brutefir output dev - don't know how to detect- so set manually
-    */
-   //var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   //var intero = 1;
-   //var boutdev = 'hw:' + intero;
-   //var boutput_device;
+ 
    var value;
    var devicevalue;
    var cards = self.getAlsaCards();
@@ -458,14 +404,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var f_size = self.config.get('filter_size');
    var filter_size = parseInt(f_size);
    var filtersizedivided = filter_size / num_part;
- //  var filtersizedivided = self.config.get('filter_size') + self.config.get('num_part');
- //     console.log(n_part)
-  //          console.log(num_part)
-  //    console.log(f_size)
-  //          console.log(filter_size)
-  // console.log(filtersizedivided)
- 
-var output_device;
+   var output_device;
       if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
@@ -568,7 +507,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 	self.commandRouter.pushToastMessage('success', "Configuration update", 'Brutefir Configuration has been successfully updated');
 
 	defer.resolve({});
-
+//self.brutefirDaemonConnect(defer);
  return defer.promise;
 };
 
