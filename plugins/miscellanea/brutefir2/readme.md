@@ -1,4 +1,4 @@
-May 2nd April 2017
+May 3rd April 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -31,17 +31,22 @@ Base scheme
 - What is working :
 
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
+Gain Equalizer
 Access to webUI and save configuration
 Binaural filtering if correct output set... 
-Use of personnal filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
+Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
 
 - What is not working :
 
 
-Equalizer appears on several line / label are unreadable
+Equalizer appears on several lines
 
 
 - Last changes
+
+3rd May
+
+- small UI change
 
 2nd May
 

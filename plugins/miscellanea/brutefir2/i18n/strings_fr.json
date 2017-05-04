@@ -1,7 +1,7 @@
 {
  "BRUTEFIR":{
  "VOLUMIO_DSP":"Centre DSP Volumio",
- "BRUTEFIR_EQUALIZER_SETTINGS":"Réglages de l'égaliseur Brutefir PAS ENCORE ACTIF!!!!",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Réglages de l'égaliseur Brutefir (phase eq PAS ENCORE ACTIF!!!!)",
  "EQUALIZER":"Egaliseur",
  "EQUALIZER_SETTINGS":"Réglages de l'égaliseur",
  "EQUALIZER_MODE":"On= Réglage du Gain / Off= Réglage de la Phase",
@@ -21,6 +21,7 @@
  "OUTPUT_FORMAT":"Format de sortie",
  "INPUT_DEVICE":"Périphérique d'entrée hw:",
  "SAVE":"Sauver",
+ "APPLY":"Appliquer",
  "OUTPUT_DEVICE":"Périphérique de sortie hw:"
 },
  "BAUER":{

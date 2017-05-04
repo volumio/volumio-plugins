@@ -1,7 +1,7 @@
 {
  "BRUTEFIR":{
  "VOLUMIO_DSP":"Volumio DSP center",
- "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer Not activated yet",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer (phase eq Not activated yet !!!)",
  "EQUALIZER":"Equalizer",
  "EQUALIZER_SETTINGS":"Equalizer settings",
  "EQUALIZER_MODE":"On= Gain Settings / Off= Phase Settings",
@@ -21,6 +21,7 @@
  "OUTPUT_FORMAT":"Output format",
  "INPUT_DEVICE":"Input device hw:",
  "SAVE":"Save",
+ "APPLY":"Apply",
  "OUTPUT_DEVICE":"Output device hw:"
 },
  "BAUER":{
