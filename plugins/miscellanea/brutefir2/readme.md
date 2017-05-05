@@ -1,4 +1,4 @@
-May 3rd April 2017
+May 5th April 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -43,6 +43,9 @@ Equalizer appears on several lines
 
 
 - Last changes
+5th May
+
+- remove brutefir rti index in console
 
 3rd May
 
