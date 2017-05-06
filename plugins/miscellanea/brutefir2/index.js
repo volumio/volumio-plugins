@@ -60,16 +60,38 @@ var client = new net.Socket();
 client.connect(3002, '127.0.0.1', function() {
 	defer.resolve();
 	console.log('Connected to brutefir');
+var eqprofile = self.config.get('eqprofile')
 var coef = self.config.get('coef');
-var phas = self.config.get('phas');
-var values
-var value
-var valp
-console.log(coef);
-console.log(values);
-console.log(valp);
-var values = coef.split(',');
-var valp = phas.split(',');
+var enablemyeq = self.config.get('enablemyeq')
+var scoef
+console.log(enablemyeq)
+//var phas = self.config.get('phas');
+//use equalizer profile
+if (self.config.get('enablemyeq')==false){
+	if (self.config.get('eqprofile')==='flat')
+                    scoef="0,0,0,0,0,0,0,0,0,0"
+	else if (self.config.get('eqprofile')==='rock')
+                    scoef="0,0,0,0,5,0,0,0,0,0"
+	else if (self.config.get('eqprofile')==='classic')
+                    scoef="0,0,0,0,5,0,0,0,0,0"
+	else if (self.config.get('eqprofile')==='bass')
+                    scoef="0,6,7,6,5,0,0,0,0,0"
+	else if (self.config.get('eqprofile')==='voice')
+                    scoef="0,0,0,0,0,7,8,0,0,0"
+	}
+else	scoef = self.config.get('coef')
+
+//console.log(eqprofile);	
+
+//var values
+//var value
+console.log(' values sent to brutefir are %j', scoef);
+//c//onsole.log(coef);
+//console.log(values);
+//console.log(valp);
+var values = scoef.split(',');
+//var valp = phas.split(',');
+console.log('coef values sent to brutefir are %j', values);	
 client.write('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
 //console.log(client.write);
 //client.write('lmc eq 0 phase 31/'+valp[0]+', 63/'+valp[1]+', 125/'+valp[2]+', 250/'+valp[3]+', 500/'+valp[4]+', 1000/'+valp[5]+', 2000/'+valp[6]+', 4000/'+valp[7]+', 8000/'+valp[8]+', 16000/'+valp[9]);
@@ -147,11 +169,26 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		.then(function(uiconf)
 		{
 
-//equalizer section			
- uiconf.sections[0].content[1].value = self.config.get('coef');
- uiconf.sections[0].content[2].value = self.config.get('phas');
+//equalizer section
+//var coefvalue = self.config.get('coef');
+//console.log('value are %j', coefvalue);	
+//var splitcoefvalues = coefvalue.split(',');
+//var output = JSON.parse(coef);
+//console.log(output);	
+//console.log('value are %j', splitcoefvalues);	
+//self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
+					//	value: coefvalues
+			//
+ uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
+ uiconf.sections[0].content[2].value = self.config.get('coef');
+value = self.config.get('eqprofile');
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+	
 
-//	console.log(%j coef);
+
+ //uiconf.sections[0].content[3].value = self.config.get('phas');
+
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].value = self.config.get('levelfcut');
@@ -334,6 +371,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 };
 
 //for gain settings
+/*
 ControllerBrutefir.prototype.gainEq = function() {
  var self = this;
 var coef = self.config.get('coef');
@@ -346,41 +384,7 @@ client.write = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]
   return self.sendBrutefirCommand('commandgainEq');
 console.log(commandgainEq);
 };
-
-
-ControllerBrutefir.prototype.sendBrutefirCommand = function(sCommand, arrayParameters) {
-	var self = this;
-var coef = self.config.get('coef');
-var values
-var value
-console.log(coef);
-console.log(values);
-var values = coef.split(',');
-	sendcoef =('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
-
-console.log(sendcoef);
-};
-
-
-//for phase settings
-
-
-
-ControllerBrutefir.prototype.sendphasEq = function(sCommand) {
- var self = this;
-
-var values = phas.value.split(',');
-var commandphaseEq = 'lmc eq 0 phase 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-
-
- return self.sendBrutefirCommand(commandphaseEq);
-};
-
-
-
-
-
-
+*/
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
 
@@ -503,9 +507,11 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
  var self = this;
  var defer = libQ.defer();
+	self.config.set('enablemyeq', data['enablemyeq']);	
+	self.config.set('eqprofile', data['eqprofile'].value);
 	self.config.set('coef', data['coef']);
 
-	self.config.set('phas', data['phas']);
+//	self.config.set('phas', data['phas']);
 
 	self.logger.info('Configurations have been set');
 

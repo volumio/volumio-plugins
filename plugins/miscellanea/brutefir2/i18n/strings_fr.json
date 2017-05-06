@@ -1,7 +1,7 @@
 {
  "BRUTEFIR":{
  "VOLUMIO_DSP":"Centre DSP Volumio",
- "BRUTEFIR_EQUALIZER_SETTINGS":"Réglages de l'égaliseur Brutefir (phase eq PAS ENCORE ACTIF!!!!)",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Réglages de l'égaliseur Brutefir",
  "EQUALIZER":"Egaliseur",
  "EQUALIZER_SETTINGS":"Réglages de l'égaliseur",
  "EQUALIZER_MODE":"On= Réglage du Gain / Off= Réglage de la Phase",

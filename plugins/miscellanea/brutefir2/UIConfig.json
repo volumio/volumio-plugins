@@ -14,19 +14,53 @@
 				"method": "saveBrutefirconfigAccount1"
 			},
 			"saveButton": {
-				"label": "TRANSLATE.BRUTEFIR.SAVE",
+				"label": "TRANSLATE.BRUTEFIR.APPLY",
 				"data": [
-					"coef",
-					"phas"
-				]
+					"enablemyeq",
+					"eqprofile",
+					"coef"
+					]
 			},
 			"content": 
 			[
 				{
-					"id": "enabled",
+					"id": "enablemyeq",
 					"element": "switch",
-					"label": "TRANSLATE.BRUTEFIR.EQUALIZER_MODE",
+					"label": "myeq=on or preset=off",
 					"value": true
+				},
+				{
+					"id": "eqprofile",
+					"element": "select",
+					"doc": "eqprofile",
+					"label": "eqprofile",
+		
+					"value": {
+						"value": "flat",
+						"label": "flat"
+						},
+					"options": [
+						{
+							"value": "flat",
+							"label": "flat"
+						},
+						{
+							"value": "rock",
+							"label": "rock"
+						},
+{
+							"value": "classic",
+							"label": "classic"
+						},
+						{
+							"value": "voice",
+							"label": "voice"
+						}
+					],
+						"visibleIf": {
+						"field": "enablemyeq",
+						"value": false
+					}
 				},
 				{
 					"id": "coef",
@@ -34,7 +68,7 @@
 					"label": "TRANSLATE.BRUTEFIR.GAIN_EQUALIZER",
 					"description": "",
 					"visibleIf": {
-						"field": "enabled",
+						"field": "enablemyeq",
 						"value": true
 					},
 					"config": {
@@ -122,92 +156,8 @@
 							}
 						]
 					}
-				},
-				{
-					"id": "phas",
-					"element": "equalizer",
-					"label": "TRANSLATE.BRUTEFIR.PHASE_EQUALIZER",
-					"description": "",
-					"visibleIf": {
-						"field": "enabled",
-						"value": false
-					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-							},
-							{
-								"min": 0,
-								"max": 180,
-								"step": 10,
-								"value": 0,
-								"tooltip": "show"
-								}
-								]
-							}
-						}
+				}
+						
 			]
 				
 			

@@ -1,7 +1,7 @@
 {
  "BRUTEFIR":{
  "VOLUMIO_DSP":"Volumio DSP center",
- "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer (phase eq Not activated yet !!!)",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer",
  "EQUALIZER":"Equalizer",
  "EQUALIZER_SETTINGS":"Equalizer settings",
  "EQUALIZER_MODE":"On= Gain Settings / Off= Phase Settings",
