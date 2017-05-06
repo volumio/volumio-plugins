@@ -26,14 +26,14 @@
 				{
 					"id": "enablemyeq",
 					"element": "switch",
-					"label": "myeq=on or preset=off",
+					"label": "custom equalizer=on or preset=off",
 					"value": true
 				},
 				{
 					"id": "eqprofile",
 					"element": "select",
-					"doc": "eqprofile",
-					"label": "eqprofile",
+					"doc": "choose between setting you like",
+					"label": "Equalization profile",
 		
 					"value": {
 						"value": "flat",
@@ -45,12 +45,20 @@
 							"label": "flat"
 						},
 						{
+							"value": "loudness",
+							"label": "loudness"
+						},
+						{
 							"value": "rock",
 							"label": "rock"
 						},
-{
+						{
 							"value": "classic",
 							"label": "classic"
+						},
+						{
+							"value": "bass",
+							"label": "bass"
 						},
 						{
 							"value": "voice",
@@ -67,6 +75,7 @@
 					"element": "equalizer",
 					"label": "TRANSLATE.BRUTEFIR.GAIN_EQUALIZER",
 					"description": "",
+					"doc": "Create your own equalizer",
 					"visibleIf": {
 						"field": "enablemyeq",
 						"value": true

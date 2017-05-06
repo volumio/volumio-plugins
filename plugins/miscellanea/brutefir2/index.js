@@ -70,14 +70,16 @@ console.log(enablemyeq)
 if (self.config.get('enablemyeq')==false){
 	if (self.config.get('eqprofile')==='flat')
                     scoef="0,0,0,0,0,0,0,0,0,0"
+	else if (self.config.get('eqprofile')==='loudness')
+                    scoef="4,3,0,0,-1,0,-1,-2,3,0"
 	else if (self.config.get('eqprofile')==='rock')
-                    scoef="0,0,0,0,5,0,0,0,0,0"
+                    scoef="4,3,2,0,-1,-1,0,1,2,3"
 	else if (self.config.get('eqprofile')==='classic')
-                    scoef="0,0,0,0,5,0,0,0,0,0"
+                    scoef="4,3,2,1,-1,-1,0,1,2,3"
 	else if (self.config.get('eqprofile')==='bass')
                     scoef="0,6,7,6,5,0,0,0,0,0"
 	else if (self.config.get('eqprofile')==='voice')
-                    scoef="0,0,0,0,0,7,8,0,0,0"
+                    scoef="-3,-1,0,1,2,3,3,2,3,1"
 	}
 else	scoef = self.config.get('coef')
 
@@ -179,12 +181,13 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 //self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
 					//	value: coefvalues
 			//
+//verif = self.config.get('coef');
  uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
  uiconf.sections[0].content[2].value = self.config.get('coef');
 value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-	
+//console.log(' coef value from self.config are %s', verif);	
 
 
  //uiconf.sections[0].content[3].value = self.config.get('phas');
