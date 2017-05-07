@@ -9,7 +9,7 @@ var socket = io.connect('http://localhost:3000');
 
 
 //declare global status variable
-var status = 'stop';
+var status = 'na';
 
 // Define the AmpSwitchController class
 module.exports = AmpSwitchController;
