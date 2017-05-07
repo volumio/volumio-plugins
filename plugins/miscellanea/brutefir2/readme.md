@@ -1,19 +1,20 @@
-May 6th April 2017
+May 7th April 2017
 	BRUTEFIR2 PLUGIN
 
 
 
 This plugin is designed to use brutefir with volumio2
 
-It will provide :
+It provides :
 - A automated installation
 - A loopback device setting for alsa
 
-- The use of custom filter - for DRC digital room correction
+- The use of custom filters - for DRC digital room correction
 
 - A multiband equalizer
 	with gain for each band
-	with phase setting for each band (not implemented yet)
+	several equalizer preset such as loudness, bass, voice, rock, flat
+
 - A stereo to binaural filtering using BAUER alsa ladspa plugin
 
 Path for filters (left and right) will be set through webUI and stored in a file.
@@ -28,6 +29,13 @@ Base scheme
 
 [volumio]--->[Loopback]--->[Brutefir]--->[output /DAC]
 
+
+
+- INSTALLATION WARNING 
+If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. 
+You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options. Go to advanced settings in Brutefir plugin change the output to your DAC and save.
+When you first enable the plugin, the webUI restart beceause the plugin can't connect to brutefir, cause it is not configured. To do that go to advanced settings in Brutefir plugin change the output to your DAC and save.
+
 - What is working :
 
 Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
@@ -38,12 +46,20 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 
 - What is not working :
 
-
+Bauer filter may conflict with softvol
+To use with i2s dac, it require some tweak in volumio, let me know if you need help for this point
+Can't use hardware volume control of the dac because volumio can't do that (yet).
 Equalizer appears on several lines
-
+setting for equalizer are not restored in the UI, even if correct values are sent. 
 
 - Last changes
+
+7th
+
+- update readme.md
+
 6th
+
 - add eq profiles
 
 5th May
@@ -64,16 +80,11 @@ Equalizer appears on several lines
 
 - new write of index.js
 
-
-- INSTALLATION WARNING 
-If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options and then go to advanced settings in Brutefir plugin change the output to your DAC and save.
-If no sound, you can check if brutefir service is working in a ssh terminal "systemctl status brutefir". 
-
 To be continued ;-)
 
 To do list (not exhaustive and not in order)
 
 - file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
-- Several profil for equalizer (pre-set or user pre-set) with naming like rock classical, jazz etc...
-- This plugin should be rename as "Volumio DSP center" as it include other filtering than brutefir...
+
+
 - ....
