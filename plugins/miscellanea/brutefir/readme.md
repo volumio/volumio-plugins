@@ -1,7 +1,8 @@
-May 1st April 2017
+May 7th April 2017
 	BRUTEFIR PLUGIN
 
-
+DO NOT USE ANYMORE.
+USE BRUTEFIR2 PLUGIN INSTEAD : https://github.com/balbuze/volumio-plugins/tree/master/plugins/miscellanea/brutefir2
 
 This plugin is designed to use brutefir with volumio2
 
