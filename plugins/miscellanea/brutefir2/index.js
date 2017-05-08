@@ -42,9 +42,11 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var defer = libQ.defer();
 
   exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
-  if (error !== null) {
+ /* if (error !== null) {
    self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
-   defer.reject();
+   defer.reject(); */
+if (error) {
+self.logger.info('brutefir failed to start. Check your configuration '+error);
   } else {
    self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
    defer.resolve();
@@ -57,16 +59,18 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var self = this;
 
 var client = new net.Socket();
-client.connect(3002, '127.0.0.1', function() {
+client.connect(3002, '127.0.0.1', function(error, stdout, stderr) {
 	defer.resolve();
 	console.log('Connected to brutefir');
+if 
+('error', function() { console.log("error writing brutefir"); });
+
 var eqprofile = self.config.get('eqprofile')
 var coef = self.config.get('coef');
 var enablemyeq = self.config.get('enablemyeq')
 var scoef
-console.log(enablemyeq)
-//var phas = self.config.get('phas');
-//use equalizer profile
+console.log('myeq or preset =' + enablemyeq)
+
 if (self.config.get('enablemyeq')==false){
 	if (self.config.get('eqprofile')==='flat')
                     scoef="0,0,0,0,0,0,0,0,0,0"
@@ -83,22 +87,18 @@ if (self.config.get('enablemyeq')==false){
 	}
 else	scoef = self.config.get('coef')
 
-//console.log(eqprofile);	
-
-//var values
-//var value
-console.log(' values sent to brutefir are %j', scoef);
-//c//onsole.log(coef);
-//console.log(values);
-//console.log(valp);
+console.log(' raw values are %j', scoef);
 var values = scoef.split(',');
-//var valp = phas.split(',');
-console.log('coef values sent to brutefir are %j', values);	
-client.write('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
-//console.log(client.write);
-//client.write('lmc eq 0 phase 31/'+valp[0]+', 63/'+valp[1]+', 125/'+valp[2]+', 250/'+valp[3]+', 500/'+valp[4]+', 1000/'+valp[5]+', 2000/'+valp[6]+', 4000/'+valp[7]+', 8000/'+valp[8]+', 16000/'+valp[9]);
-console.log('client.write');
 
+console.log('splitted coef values are %j', values);
+var brutefircmd	
+//here we compose brutefir command
+brutefircmd = ('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
+
+//here we send the command to brutefir
+client.write(brutefircmd);
+
+console.log('cmd sent to brutefir = ' + brutefircmd);
 });
 client.on('data', function(data) {
 	console.log('Received: ' + data);
@@ -128,7 +128,7 @@ ControllerBrutefir.prototype.onStart = function() {
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
     self.brutefirDaemonConnect(defer);
-   }, 2000);
+   }, 1000);
   })
   .fail(function(e) {
    defer.reject(new Error());
@@ -162,7 +162,6 @@ ControllerBrutefir.prototype.getUIConfig = function() {
                 if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device= self.config.get('output_device');
-		//else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
 	
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -170,27 +169,20 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-
 //equalizer section
-//var coefvalue = self.config.get('coef');
-//console.log('value are %j', coefvalue);	
-//var splitcoefvalues = coefvalue.split(',');
-//var output = JSON.parse(coef);
-//console.log(output);	
-//console.log('value are %j', splitcoefvalues);	
-//self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
-					//	value: coefvalues
-			//
-//verif = self.config.get('coef');
- uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
- uiconf.sections[0].content[2].value = self.config.get('coef');
+uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
+// self.configManager.setUIConfigParam(uiconf,'sections[0].content[2].value',self.config.get('coef'));
+//value = self.config.get('coef');
+//var array = JSON.parse("value");
+//console.log("array");
+//uiconf.sections[0].content[2].value = Array.from(self.config.get('coef'));
+//uiconf.sections[0].content[2].values([0],[1],[2],[3],[4],[5],[6],[7],[8],[9]) = self.config.get('coef');	
+//var scoef = coef.split(',');
+//uiconf.sections[0].content[2].value.value.value.value.value.value.value.value.value.value = self.config.get('coef');
+uiconf.sections[0].content[2].options = self.config.get('coef');	
 value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-//console.log(' coef value from self.config are %s', verif);	
-
-
- //uiconf.sections[0].content[3].value = self.config.get('phas');
 
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
@@ -251,24 +243,25 @@ var value;
 
 
 			for (var i in cards) {
-				if (cards[i].name === 'Audio Jack') {
+				/*if (cards[i].name === 'Audio Jack-t') {
 					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
 						value: cards[i].id,
 						label: 'Audio Jack'
-					});
+					/*});
 					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
 						value: cards[i].id,
 						label: 'HDMI Out'
 					});
-				} else {
+				} */
+				//else {
 					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
 						value: cards[i].id,
 						label: cards[i].name
 					});
-				}
+			//	}
 		}	
 		}
-// uiconf.sections[2].content[12].value = self.config.get('output_device');
+
 
 	defer.resolve(uiconf);
 		})
@@ -277,7 +270,7 @@ var value;
 			defer.reject(new Error());
 		})
 	return defer.promise
-   // self.brutefirDaemonConnect(defer);
+
 };
 
 ControllerBrutefir.prototype.getFilterListForSelect = function (filterl, key) {
@@ -373,21 +366,6 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
  //Perform your installation tasks here
 };
 
-//for gain settings
-/*
-ControllerBrutefir.prototype.gainEq = function() {
- var self = this;
-var coef = self.config.get('coef');
-console.log(coef);
-var values = coef.value.split(',');
-	console.log(values);
-client.write = 'lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+' 8000/'+values[8]+', 16000/'+values[9]
-///	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eqgainsetting');
-		this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::eq gain' + timepos);
-  return self.sendBrutefirCommand('commandgainEq');
-console.log(commandgainEq);
-};
-*/
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
 
@@ -616,12 +594,12 @@ if (error) {
    setTimeout(function() {
     self.logger.info("Connecting to daemon");
     self.brutefirDaemonConnect(defer);
-   }, 5000)
+   }, 2000)
    .fail(function(e)
 		{
 		//	defer.reject(new Error('Brutefir failed to start. Check your config !'));
 			self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
-		//	self.logger.info("Brutefir failed to start. Check your config !");
+			self.logger.info("Brutefir failed to start. Check your config !");
 });
   });
 

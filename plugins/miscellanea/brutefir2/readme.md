@@ -1,4 +1,4 @@
-May 7th April 2017
+May 8th April 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,12 @@ Equalizer appears on several lines
 setting for equalizer are not restored in the UI, even if correct values are sent. 
 
 - Last changes
+
+8th
+
+
+- better handling for output "audiojack" and "hdmi"
+- handling for error connection to deamon - not ok....
 
 7th
 
