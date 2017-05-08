@@ -1,0 +1,7 @@
+{
+  "YOUTUBE_CONFIGURATION":"Youtube Configuration",
+  "YOUTUBE_SETTINGS":" Settings",
+  "YOUTUBE_RESULTS_LIMIT": "Results limit",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Configure how many videos shall be showed when searching for something on YouTube. Playlists will always be completely loaded! Default: 50",
+  "YOUTUBE_SAVE": "Save"
+}
