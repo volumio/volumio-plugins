@@ -17,7 +17,20 @@
         "author": "Volumio Team",
         "screenshots": [{"image": "", "thumb": ""}],
         "updated": "13-10-2016"
-      }
+      },
+      	  {
+		"prettyName": "Youtube Playback",
+		"icon": "fa-youtube",
+		"name": "youtube",
+		"version": "0.0.3",
+		"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/youtube/youtube.zip",
+		"license": "ISC",
+		"description": "Youtube Plugin for Volumio: Browse, Play and Search your favourite Youtube Music",
+		"details":"<h4>Youtube Plugin for Volumio</h4><br>Adds Youtube Playback capabilites to Volumio<br>Features:<br><ul><li>Search for youtube Videos</li><li>Play trending videos</li></ul><br><",
+		"author": "Cristian Pintea, Stefan Laesser",
+		"screenshots": [{"image": "", "thumb": ""}],
+		"updated": "09-05-2017"
+	  }
     ]
   },
   {
