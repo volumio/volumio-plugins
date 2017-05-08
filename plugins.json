@@ -22,6 +22,16 @@
         "description": "Adding other WebRadios",
         "author": "Volumio Team",
         "updated": "23-04-2016"
+      },
+      {
+	"name": "Youtube",
+	"version": "0.0.3",
+	"url": "volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/youtube/youtube.zip",
+	"license": "Copyright Cristian Pintea, Stefan Laesser",
+	"description": "Youtube for Volumio",
+	"author": "Cristian Pintea, Stefan Laesser",
+	"screenshots": [{"image": "", "thumb": ""}],
+	"updated": "09-05-2017"
       }
     ]
   },
