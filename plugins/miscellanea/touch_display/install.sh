@@ -57,6 +57,9 @@ fi
 
 echo "Dependencies installed"
 
+echo "Creating Kiosk Data dir"
+mkdir /data/volumiokiosk
+
 echo "  Creating chromium kiosk start script"
 echo "#!/bin/bash
 xset +dpms
@@ -74,6 +77,7 @@ while true; do
     --disable-infobars \\
     --disable-session-crashed-bubble \\
     --disable-translate \\
+    --user-data-dir='/data/volumiokiosk' \
 	--no-sandbox \
     http://localhost:3000
 done" > /opt/volumiokiosk.sh
