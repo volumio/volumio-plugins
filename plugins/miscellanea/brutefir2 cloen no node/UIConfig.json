@@ -1,0 +1,785 @@
+{
+	"page": {
+		"label": "TRANSLATE.BRUTEFIR.VOLUMIO_DSP"
+	},
+	"sections": [
+		{
+			"id": "equalizer",
+			"element": "section",
+			"label": "TRANSLATE.BRUTEFIR.BRUTEFIR_EQUALIZER_SETTINGS",
+			"icon": "fa-sliders fa-rotate-90",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "miscellanea/brutefir",
+				"method": "saveBrutefirconfigAccount1"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.BRUTEFIR.APPLY",
+				"data": [
+					"enablemyeq",
+					"eqprofile",
+					"coef"
+					]
+			},
+			"content": 
+			[
+				{
+					"id": "enablemyeq",
+					"element": "switch",
+					"label": "custom equalizer=on or preset=off",
+					"value": true
+				},
+				{
+					"id": "eqprofile",
+					"element": "select",
+					"doc": "choose between setting you like",
+					"label": "Equalization profile",
+		
+					"value": {
+						"value": "flat",
+						"label": "flat"
+						},
+					"options": [
+						{
+							"value": "flat",
+							"label": "flat"
+						},
+						{
+							"value": "loudness",
+							"label": "loudness"
+						},
+						{
+							"value": "rock",
+							"label": "rock"
+						},
+						{
+							"value": "classic",
+							"label": "classic"
+						},
+						{
+							"value": "bass",
+							"label": "bass"
+						},
+						{
+							"value": "voice",
+							"label": "voice"
+						}
+					],
+						"visibleIf": {
+						"field": "enablemyeq",
+						"value": false
+					}
+				},
+				{
+					"id": "coef",
+					"element": "equalizer",
+					"label": "TRANSLATE.BRUTEFIR.GAIN_EQUALIZER",
+					"description": "",
+					"doc": "Create your own equalizer",
+					"visibleIf": {
+						"field": "enablemyeq",
+						"value": true
+					},
+					"config": {
+						"orientation": "vertical",
+						"bars": [
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--31Hz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--63Hz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--125Hz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--250Hz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--500Hz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--1KHz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--2KHz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--4KHz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--8KHz"],
+								"tooltip": "show"
+							},
+							{
+								"min": -10,
+								"max": 10,
+								"step": 1,
+								"value": 0,
+								"ticksLabels": ["--16KHz"],
+								"tooltip": "show"
+							}
+						]
+					}
+				}
+						
+			]
+				
+			
+		},
+		{
+					"id": "bauer",
+					"label": "TRANSLATE.BAUER.BAUER_TITLE",
+					"element": "section",
+					"icon": "fa-headphones",
+					"onSave": {
+						"type": "plugin",
+						"endpoint": "miscellanea/brutefir",
+						"method": "saveBauerfilter"
+					},
+					"saveButton": {
+						"label": "TRANSLATE.BRUTEFIR.SAVE",
+						"data": [
+							"sbauer",
+							"levelfcut",
+							"levelfeed"
+						]
+					},
+					"content": 
+					[
+						{
+							"id": "sbauer",
+							"element": "switch",
+							"label": "TRANSLATE.BAUER.BAUER_FILTER_SETTINGS",
+							"value": false
+						},
+						{
+							"id": "levelfcut",
+							"element": "equalizer",
+							"label": "TRANSLATE.BAUER.FCUT",
+							"description":"",
+							"visibleIf": {
+								"field": "sbauer",
+								"value": true
+							},
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "200",
+										"max": "1200",
+										"step": "50",
+										"value": "700",
+										"tooltip":"always"
+									}
+								]
+							}
+						},
+						{
+							"id": "levelfeed",
+							"element": "equalizer",
+							"label": "TRANSLATE.BAUER.FLEVEL",
+							"description":"",
+							"visibleIf": {
+								"field": "sbauer",
+								"value": true
+							},
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min":"1",
+										"max":"15",
+										"step":"0.5",
+										"value":"5",
+										"tooltip":"always"
+									}
+								]
+							}
+						}
+					]
+				
+							
+		},
+		{
+			"id": "advanced",
+			"element": "section",
+			"label": "TRANSLATE.BRUTEFIR.BRUTEFIR_ADVANCED_SETTINGS",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "miscellanea/brutefir",
+				"method": "saveBrutefirconfigAccount2"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.BRUTEFIR.SAVE",
+				"data": [
+					"attenuation",
+					"leftfilter",
+					"rightfilter",
+					"filter_format",
+					"filter_size",
+					"numb_part",
+					"fl_bits",
+					"smpl_rate",
+					"input_format",
+					"output_format",
+					"input_device",
+					"output_device"
+				]
+			},
+			"content": 
+			[
+				{
+					"id": "enabled",
+					"element": "switch",
+					"label": "TRANSLATE.BRUTEFIR.ADVANCED_SETTINGS",
+					"value": false
+				},
+				{
+					"id": "attenuation",
+					"element": "select",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_ATTENUATION",
+					"value": {
+						"value": "10",
+						"label": "10"
+					},
+					"options": [
+						{
+							"value": "0",
+							"label": "0"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "6",
+							"label": "6"
+						},
+						{
+							"value": "8",
+							"label": "8"
+						},
+						{
+							"value": "10",
+							"label": "10"
+						},
+						{
+							"value": "12",
+							"label": "12"
+						},
+						{
+							"value": "14",
+							"label": "14"
+						},
+						{
+							"value": "16",
+							"label": "16"
+						},
+						{
+							"value": "18",
+							"label": "18"
+						},
+						{
+							"value": "20",
+							"label": "20"
+						},
+						{
+							"value": "22",
+							"label": "22"
+						}					
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "leftfilter",
+					"element": "input",
+					"doc": "Leftfilter file (path/name) if none dirac pulse is used",
+					"label": "TRANSLATE.BRUTEFIR.LEFT_FILTER",
+					"value": {
+						"value": "",
+						"label": "dirac pulse"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "rightfilter",
+					"element": "input",
+					"doc": "Right filter file (path/name) if none dirac pulse is used",
+					"label": "TRANSLATE.BRUTEFIR.RIGHT_FILTER",
+					"value": {
+						"value": "",
+						"label": "dirac pulse"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "filter_format",
+					"element": "select",
+					"doc": "filter format",
+					"label": "TRANSLATE.BRUTEFIR.FILTER_FORMAT",
+					"value": {
+						"value": "",
+						"label": ""
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						},
+						{
+							"value": "AUTO",
+							"label": "AUTO"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "filter_size",
+					"element": "select",
+					"doc": "size of filter",
+					"label": "TRANSLATE.BRUTEFIR.FILTER_SIZE",
+					"value": {
+						"value": 8192,
+						"label": "8192"
+					},
+					"options": [
+						{
+							"value": "1024",
+							"label": "1024"
+						},
+						{
+							"value": "2048",
+							"label": "2048"
+						},
+						{
+							"value": "4096",
+							"label": "4096"
+						},
+						{
+							"value": "8192",
+							"label": "8192"
+						},
+						{
+							"value": "16384",
+							"label": "16384"
+						},
+						{
+							"value": "32768",
+							"label": "32768"
+						},
+						{
+							"value": "65536",
+							"label": "65536"
+						},
+						{
+							"value": "131072",
+							"label": "131072"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "numb_part",
+					"element": "select",
+					"doc": "number of filter partion",
+					"label": "TRANSLATE.BRUTEFIR.NUMBER_PARTITION",
+					"value": {
+						"value": "8",
+						"label": "8"
+					},
+					"options": [
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "8",
+							"label": "8"
+						},
+						{
+							"value": "16",
+							"label": "16"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "fl_bits",
+					"element": "select",
+					"doc": "floating point internal resolusion",
+					"label": "TRANSLATE.BRUTEFIR.INTERNAL_RESOLUTION",
+					"value": {
+						"value": "64",
+						"label": "64"
+					},
+					"options": [
+						{
+							"value": "32",
+							"label": "32"
+						},
+						{
+							"value": "64",
+							"label": "64"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "smpl_rate",
+					"element": "select",
+					"doc": "sample rate",
+					"label": "TRANSLATE.BRUTEFIR.SAMPLE_RATE",
+					"value": {
+						"value": "44100",
+						"label": "44100"
+					},
+					"options": [
+						{
+							"value": "44100",
+							"label": "44100"
+						},
+						{
+							"value": "48000",
+							"label": "48000"
+						},
+						{
+							"value": "96000",
+							"label": "96000"
+						},
+						{
+							"value": "192000",
+							"label": "192000"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "input_format",
+					"element": "select",
+					"doc": "input format",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_FORMAT",
+					"value": {
+						"value": "S16_LE",
+						"label": "S16_LE"
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						},
+						{
+							"value": "AUTO",
+							"label": "AUTO"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "output_format",
+					"element": "select",
+					"doc": "output format",
+					"label": "TRANSLATE.BRUTEFIR.OUTPUT_FORMAT",
+					"value": {
+						"value": "S16_LE",
+						"label": "S16_LE"
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						},
+						{
+							"value": "AUTO",
+							"label": "AUTO"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "input_device",
+					"element": "input",
+					"doc": "input device - should be the output sets in playback options",
+					"label": "TRANSLATE.BRUTEFIR.INPUT_DEVICE",
+					"value": {
+						"value": "hw:Loopback,1",
+						"label": "hw:Loopback,1"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "output_device",
+					"element": "select",
+					"doc": "output device - device used for the output",
+					"label": "TRANSLATE.BRUTEFIR.OUTPUT_DEVICE",
+					"value": {
+						"value": "0",
+						"label": "0"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				}
+			]
+		}
+			]	
+}
