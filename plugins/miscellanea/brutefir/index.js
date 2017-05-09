@@ -127,6 +127,8 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
+    // On start, we try to set volume parameters based on what brutefir needs
+    self.setVolumeParameters();
     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
@@ -229,7 +231,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
 
-	
+
     uiconf.sections[2].content[11].value = self.config.get('input_device');
  		{
 			var value;
@@ -618,3 +620,78 @@ if (error) {
  return defer.promise;
 }
 
+
+ControllerBrutefir.prototype.setVolumeParameters= function() {
+    var self = this;
+    // here we set the volume controller in /volumio/app/volumecontrol.js
+    // we need to do it since it will be automatically set to the loopback device by alsa controller
+    // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
+    // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
+
+
+    var settings = {
+        // need to set the device that brutefir wants to control volume to
+        device : '0',
+        // need to set the device name of the original device brutefir is controlling
+        name : 'Allo BOSS',
+        // Mixer name
+        mixer : 'Analogue',
+        // hardware, software, none
+        mixertype: 'hardware',
+        // max volume setting
+        maxvolume : '100',
+        // log or linear
+        volumecurve : 'logarithmic',
+        //
+        volumestart : 'disabled',
+        //
+        volumesteps : '10'
+    }
+
+     // once completed, uncomment
+    //return self.commandRouter.volumioUpdateVolumeSettings(settings)
+}
+
+ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
+    var self = this;
+
+    var conf;
+    // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
+
+    //device
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'device');
+    self.config.set('alsa_device', conf);
+
+    //name
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
+    self.config.set('alsa_outputdevicename', conf);
+
+    //mixer
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer');
+    self.config.set('alsa_mixer', conf);
+
+    //mixer_type
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+    self.config.set('alsa_mixer_type', conf);
+
+    //maxvolume
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumemax');
+    self.config.set('alsa_volumemax', conf);
+
+    //volumecurve
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumecurvemode');
+    self.config.set('alsa_volumecurvemode', conf);
+
+    //volumestart
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumestart');
+    self.config.set('alsa_volumestart', conf);
+
+    //volumesteps
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
+    self.config.set('alsa_volumesteps', conf);
+}
+
+ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
+     var self = this;
+     return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+};
