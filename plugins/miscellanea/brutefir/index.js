@@ -169,56 +169,68 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-//equalizer section
-uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
-// self.configManager.setUIConfigParam(uiconf,'sections[0].content[2].value',self.config.get('coef'));
-//value = self.config.get('coef');
-//var array = JSON.parse("value");
-//console.log("array");
-//uiconf.sections[0].content[2].value = Array.from(self.config.get('coef'));
-//uiconf.sections[0].content[2].values([0],[1],[2],[3],[4],[5],[6],[7],[8],[9]) = self.config.get('coef');	
-//var scoef = coef.split(',');
-//uiconf.sections[0].content[2].value.value.value.value.value.value.value.value.value.value = self.config.get('coef');
-uiconf.sections[0].content[2].options = self.config.get('coef');	
-value = self.config.get('eqprofile');
+    //equalizer section
+    uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
+
+    // we retrieve the coefficient configuration
+    var coefconf =self.config.get('coef');
+
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarray = coefconf.split(',');
+
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarray) {
+        uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
+    }
+
+//uiconf.sections[0].content[2].options =
+    value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 
-//bauer section
- uiconf.sections[1].content[0].value = self.config.get('sbauer');
- uiconf.sections[1].content[1].value = self.config.get('levelfcut');
- uiconf.sections[1].content[2].value = self.config.get('levelfeed');
+    //bauer section
+     uiconf.sections[1].content[0].value = self.config.get('sbauer');
+     uiconf.sections[1].content[1].value = self.config.get('levelfcut');
+    uiconf.sections[1].content[2].value = self.config.get('levelfeed');
 
-//advanced settings option
- uiconf.sections[2].content[2].value = self.config.get('leftfilter');
- uiconf.sections[2].content[3].value = self.config.get('rightfilter');
+    //advanced settings option
+    uiconf.sections[2].content[2].value = self.config.get('leftfilter');
+    uiconf.sections[2].content[3].value = self.config.get('rightfilter');
  
-value = self.config.get('attenuation');
+    value = self.config.get('attenuation');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
-value = self.config.get('filter_format');
+
+	value = self.config.get('filter_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
-value = self.config.get('filter_size');
+
+	value = self.config.get('filter_size');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
-value = self.config.get('numb_part');
+
+	value = self.config.get('numb_part');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[6].options'), value));
-value = self.config.get('fl_bits');
+
+	value = self.config.get('fl_bits');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[7].options'), value));
-value = self.config.get('smpl_rate');
+
+	value = self.config.get('smpl_rate');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[8].options'), value));
-value = self.config.get('input_format');
+
+	value = self.config.get('input_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[9].options'), value));
-value = self.config.get('output_format');
+
+	value = self.config.get('output_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
-var value;	
- uiconf.sections[2].content[11].value = self.config.get('input_device');
+
+	
+    uiconf.sections[2].content[11].value = self.config.get('input_device');
  		{
 			var value;
 			var devicevalue;
