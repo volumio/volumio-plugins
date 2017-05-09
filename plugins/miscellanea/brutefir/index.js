@@ -128,7 +128,8 @@ ControllerBrutefir.prototype.onStart = function() {
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
     // On start, we try to set volume parameters based on what brutefir needs
-    self.setVolumeParameters();
+    //self.setVolumeParameters();
+    self.enableLoopBackDevice();
     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
@@ -694,4 +695,22 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+};
+
+ControllerBrutefir.prototype.enableLoopBackDevice = function (type, controller, data) {
+     var self = this;
+
+     //lets check if we have snd_aloop in /etc/modules, if yes means that we don't need to enable it now
+    fs.readFile('/etc/modules', function (err, data) {
+        if (err) {
+            self.logger.info('Brutefir: cannot read /etc/modules file: '+error);
+        } else {
+            if(data.indexOf('snd_aloop') <= 0){
+                console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'+data)
+            } else {
+                console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            }
+        }
+
+    });
 };
