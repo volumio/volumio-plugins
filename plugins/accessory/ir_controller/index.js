@@ -40,9 +40,7 @@ IrController.prototype.onStart = function() {
 
 	var defer = libQ.defer();
 
-	var deviceName = self.getAdditionalConf("system_controller", "system", "device");
-
-	self.createHardwareConf(deviceName);
+	self.restartLirc();
 
 	return defer.promise;
 };
@@ -90,6 +88,48 @@ IrController.prototype.createHardwareConf = function(device){
 	}
 }
 
+IrController.prototype.restartLirc = function () {
+	var self = this;
+
+	/*exec('usr/bin/sudo /etc/init.d/lirc start', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error restarting LIRC: '+error);
+            } else {
+                self.logger.info('lirc correctly started');
+            }
+        });
+*/}
+
+IrController.prototype.saveIROptions = function (data) {
+	var self = this;
+
+	self.config.set("ir_profile", data.ir_profile.value);
+
+	var deviceName = self.getAdditionalConf("system_controller", "system", "device");
+    self.createHardwareConf(deviceName);
+    var profileFolder = data.ir_profile.value.replace(/ /g, '\\ ');
+
+    exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error setting lirc conf file perms: '+error);
+            } else {
+                self.logger.info('lirc permissions set');
+                exec('/bin/cp -r ' + __dirname +'/configurations/'+profileFolder +
+                    '/* /etc/lirc/', {uid:1000,gid:1000},
+                    function (error, stdout, stderr) {
+                        if(error != null) {
+                            self.logger.info('Error copying configurations: '+error);
+                        } else {
+                            self.logger.info('lirc correctly updated');
+                            self.restartLirc();
+                        }
+                    });
+
+            }
+        });
+}
 
 IrController.prototype.getUIConfig = function() {
 	var defer = libQ.defer();
@@ -102,8 +142,16 @@ IrController.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-			uiconf.sections[0].content[0].value = self.config.get('enable_roll_off');
-			defer.resolve(uiconf);
+			var activeProfile = self.config.get("ir_profile");
+            uiconf.sections[0].content[0].value.value = activeProfile;
+            uiconf.sections[0].content[0].value.label = activeProfile;
+
+			var dirs = fs.readdirSync(__dirname + "/configurations");
+			for (var i in dirs) {
+                uiconf.sections[0].content[0].options[i].value = dirs[i];
+                uiconf.sections[0].content[0].options[i].label = dirs[i];
+            }
+            defer.resolve(uiconf);
 		})
 		.fail(function()
 		{

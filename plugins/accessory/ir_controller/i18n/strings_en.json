@@ -1,2 +1,6 @@
 {
+  "IR_CONFIGURATION":"IR Remote Configuration",
+  "SAVE": "Save",
+  "PROFILE_SELECTOR": "Select profile",
+  "PROFILE_SELECTOR_DOC": "choose the appropriate configuration for your remote"
 }
