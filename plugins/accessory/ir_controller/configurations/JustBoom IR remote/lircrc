@@ -1,0 +1,45 @@
+begin
+prog = irexec
+button = OK
+config = mpc toggle
+end
+begin
+prog = irexec
+button = Volume-Up
+config = mpc volume +2
+end
+begin
+prog = irexec
+button = Volume-Down
+config = mpc volume -2
+end
+begin
+prog = irexec
+button = Right
+config = mpc next
+end
+begin
+prog = irexec
+button = Left
+config = mpc prev
+end
+begin
+prog = irexec
+button = Up
+config = mpc seek +00:00:10
+end
+begin
+prog = irexec
+button = Down
+config = mpc seek -00:00:10
+end
+begin
+prog = irexec
+button = Back
+config = mpc repeat on
+end
+begin
+prog = irexec
+button = Menu
+config = mpc repeat off
+end
