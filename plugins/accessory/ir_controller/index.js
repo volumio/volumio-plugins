@@ -42,7 +42,7 @@ IrController.prototype.onStart = function() {
 
 	var defer = libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
-    if (device == " Raspberry PI") {
+    if (device == "Raspberry PI") {
         self.enablePIOverlay();
     }
 
@@ -178,7 +178,7 @@ IrController.prototype.enablePIOverlay = function() {
                 self.logger.info('Error enabling lirc-rpi overlay: '+error);
                 defer.reject();
             } else {
-                self.logger.info('lirc-rpi overlay enabled');ù
+                self.logger.info('lirc-rpi overlay enabled');
                 defer.resolve();
             }
         });

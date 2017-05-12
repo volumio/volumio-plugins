@@ -1,27 +1,27 @@
 begin
 prog = irexec
 button = OK
-config = /usr/bin/curl http://127.0.0.1:3000/api/v1/commands/?cmd=play
+config = /usr/local/bin/volumio toggle
 end
 begin
 prog = irexec
 button = Volume-Up
-config = mpc volume +2
+config = /usr/local/bin/volumio volume plus
 end
 begin
 prog = irexec
 button = Volume-Down
-config = mpc volume -2
+config = /usr/local/bin/volumio volume minus
 end
 begin
 prog = irexec
 button = Right
-config = mpc next
+config = /usr/local/bin/volumio next
 end
 begin
 prog = irexec
 button = Left
-config = mpc prev
+config = /usr/local/bin/volumio previous
 end
 begin
 prog = irexec
