@@ -1,4 +1,4 @@
-May 8th April 2017
+May 12th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 setting for equalizer are not restored in the UI, even if correct values are sent. 
 
 - Last changes
+
+12th
+
+- big step ahead thanks to the help of Michelangelo ! 
+- now values are restored in equalizer !
 
 8th
 

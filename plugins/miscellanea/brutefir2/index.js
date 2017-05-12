@@ -171,6 +171,19 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		{
 //equalizer section
 uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
+
+
+    // we retrieve the coefficient configuration
+    var coefconf =self.config.get('coef');
+
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarray = coefconf.split(',');
+
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarray) {
+        uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
+    }
+
 // self.configManager.setUIConfigParam(uiconf,'sections[0].content[2].value',self.config.get('coef'));
 //value = self.config.get('coef');
 //var array = JSON.parse("value");
@@ -179,7 +192,7 @@ uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
 //uiconf.sections[0].content[2].values([0],[1],[2],[3],[4],[5],[6],[7],[8],[9]) = self.config.get('coef');	
 //var scoef = coef.split(',');
 //uiconf.sections[0].content[2].value.value.value.value.value.value.value.value.value.value = self.config.get('coef');
-uiconf.sections[0].content[2].options = self.config.get('coef');	
+//uiconf.sections[0].content[2].options = self.config.get('coef');	
 value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
