@@ -2,6 +2,8 @@
 
 var libQ = require('kew');
 var fs=require('fs-extra');
+var execSync = require('child_process').execSync;
+var exec = require('child_process').exec;
 
 // Define the IrController class
 module.exports = IrController;
@@ -39,8 +41,13 @@ IrController.prototype.onStart = function() {
 	var self = this;
 
 	var defer = libQ.defer();
+    var device = self.getAdditionalConf("system_controller", "system", "device");
+    if (device == " Raspberry PI") {
+        self.enablePIOverlay();
+    }
 
-	self.restartLirc();
+    var ir_profile = self.config.get('ir_profile', 'JustBoom IR remote');
+	self.saveIROptions({"ir_profile":{"value": ir_profile}});
 
 	return defer.promise;
 };
@@ -159,4 +166,22 @@ IrController.prototype.getUIConfig = function() {
 		});
 
 	return defer.promise;
+};
+
+IrController.prototype.enablePIOverlay = function() {
+    var defer = libQ.defer();
+    var self = this;
+
+    exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error enabling lirc-rpi overlay: '+error);
+                defer.reject();
+            } else {
+                self.logger.info('lirc-rpi overlay enabled');ù
+                defer.resolve();
+            }
+        });
+
+    return defer.promise;
 };
