@@ -25,6 +25,12 @@ config = /usr/local/bin/volumio previous
 end
 begin
 prog = irexec
+button = Mute
+config = /usr/local/bin/volumio volume toggle
+repeat = 0
+end
+begin
+prog = irexec
 button = Up
 config = mpc seek +00:00:10
 end

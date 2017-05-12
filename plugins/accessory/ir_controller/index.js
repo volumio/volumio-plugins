@@ -170,11 +170,14 @@ IrController.prototype.getUIConfig = function() {
             uiconf.sections[0].content[0].value.value = activeProfile;
             uiconf.sections[0].content[0].value.label = activeProfile;
 
-			var dirs = fs.readdirSync(__dirname + "/configurations");
-			for (var i in dirs) {
+
+            var dirs = fs.readdirSync(__dirname + "/configurations");
+
+            for (i = 0; i < dirs.length; i++) {
                 uiconf.sections[0].content[0].options[i].value = dirs[i];
                 uiconf.sections[0].content[0].options[i].label = dirs[i];
             }
+            
             defer.resolve(uiconf);
 		})
 		.fail(function()
