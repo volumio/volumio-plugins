@@ -35,10 +35,26 @@ IrController.prototype.getConfigurationFiles = function()
 
 IrController.prototype.onStop = function() {
 	var self = this;
+
+    var defer = libQ.defer();
+
+    exec('usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error stopping LIRC: '+error);
+            } else {
+                self.logger.info('lirc correctly stopped');
+                defer.resolve();
+            }
+        });
+
+    return defer.promise;
 };
 
 IrController.prototype.onStart = function() {
 	var self = this;
+
+    var defer = libQ.defer();
 
 	var defer = libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
@@ -48,6 +64,7 @@ IrController.prototype.onStart = function() {
 
     var ir_profile = self.config.get('ir_profile', 'JustBoom IR remote');
 	self.saveIROptions({"ir_profile":{"value": ir_profile}});
+    defer.resolve();
 
 	return defer.promise;
 };
@@ -98,7 +115,7 @@ IrController.prototype.createHardwareConf = function(device){
 IrController.prototype.restartLirc = function () {
 	var self = this;
 
-	/*exec('usr/bin/sudo /etc/init.d/lirc start', {uid:1000,gid:1000},
+	exec('usr/bin/sudo /bin/systemctl start lirc.service', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
                 self.logger.info('Error restarting LIRC: '+error);
@@ -106,7 +123,7 @@ IrController.prototype.restartLirc = function () {
                 self.logger.info('lirc correctly started');
             }
         });
-*/}
+}
 
 IrController.prototype.saveIROptions = function (data) {
 	var self = this;
