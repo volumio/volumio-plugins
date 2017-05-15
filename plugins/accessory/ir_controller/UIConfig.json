@@ -7,7 +7,7 @@
       "id": "ir_conf",
       "element": "section",
       "label": "TRANSLATE.IR_CONFIGURATION",
-      "icon": "fa-volume-up",
+      "icon": "fa-magic",
       "onSave": {"type":"controller", "endpoint":"system_controller/ir_controller", "method":"saveIROptions"},
       "saveButton": {
         "label": "TRANSLATE.SAVE",

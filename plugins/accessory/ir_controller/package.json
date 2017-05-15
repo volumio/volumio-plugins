@@ -10,7 +10,7 @@
   "license": "ISC",
   "volumio_info": {
     "prettyName": "IR Controller",
-    "icon": "fa-lightbulb-o",
+    "icon": "fa-magic",
     "plugin_type": "system_controller"
   },
   "dependencies": {
