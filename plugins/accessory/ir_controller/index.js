@@ -15,6 +15,7 @@ function IrController(context) {
 	self.context = context;
 	self.commandRouter = self.context.coreCommand;
 	self.logger=self.commandRouter.logger;
+    self.configManager = self.context.configManager;
 
 
 }
@@ -114,17 +115,32 @@ IrController.prototype.createHardwareConf = function(device){
 	}
 }
 
-IrController.prototype.restartLirc = function () {
+IrController.prototype.restartLirc = function (message) {
 	var self = this;
+
+    exec('usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Cannot kill irexec: '+error);
+            }
+            setTimeout(function(){
 
 	exec('usr/bin/sudo /bin/systemctl start lirc.service', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
                 self.logger.info('Error restarting LIRC: '+error);
+                if (message){
+                    self.commandRouter.pushToastMessage('error', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
+                }
             } else {
                 self.logger.info('lirc correctly started');
+                if (message){
+                    self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                }
             }
         });
+            },1000)
+    });
 }
 
 IrController.prototype.saveIROptions = function (data) {
@@ -147,9 +163,14 @@ IrController.prototype.saveIROptions = function (data) {
                     function (error, stdout, stderr) {
                         if(error != null) {
                             self.logger.info('Error copying configurations: '+error);
+                            self.commandRouter.pushToastMessage('error', 'IR Controller', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
                         } else {
                             self.logger.info('lirc correctly updated');
-                            self.restartLirc();
+                            self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+                            setTimeout(function(){
+                                self.restartLirc(true);
+                            },1000)
+
                         }
                     });
 
@@ -162,6 +183,7 @@ IrController.prototype.getUIConfig = function() {
 	var self = this;
 
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
+    var dirs = fs.readdirSync(__dirname + "/configurations");
 
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
 		__dirname+'/i18n/strings_en.json',
@@ -172,14 +194,13 @@ IrController.prototype.getUIConfig = function() {
             uiconf.sections[0].content[0].value.value = activeProfile;
             uiconf.sections[0].content[0].value.label = activeProfile;
 
-
-            var dirs = fs.readdirSync(__dirname + "/configurations");
-
             for (i = 0; i < dirs.length; i++) {
-                uiconf.sections[0].content[0].options[i].value = dirs[i];
-                uiconf.sections[0].content[0].options[i].label = dirs[i];
+                self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+                    value: dirs[i],
+                    label: dirs[i]
+                });
             }
-            
+
             defer.resolve(uiconf);
 		})
 		.fail(function()
@@ -207,3 +228,4 @@ IrController.prototype.enablePIOverlay = function() {
 
     return defer.promise;
 };
+

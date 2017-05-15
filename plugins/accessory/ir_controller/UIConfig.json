@@ -16,8 +16,6 @@
         ]
       },
       "value":  {
-        "value": "0",
-        "label": "Unknown"
       },
       "content": [
         {
@@ -26,13 +24,8 @@
           "doc": "TRANSLATE.PROFILE_SELECTOR_DOC",
           "label": "TRANSLATE.PROFILE_SELECTOR",
           "value":  {
-            "value":0,
-            "label": "unknown"
           },
           "options": [
-            { "value":0,
-              "label": "0"
-            }
           ]
 
         }
