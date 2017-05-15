@@ -1235,6 +1235,7 @@ ControllerSpop.prototype.parseState = function(sState) {
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::parseState');
 
 	var objState = JSON.parse(sState);
+	console.log(objState)
 
 	var nSeek = null;
 	if ('position' in objState) {
@@ -1243,7 +1244,7 @@ ControllerSpop.prototype.parseState = function(sState) {
 
 	var nDuration = null;
 	if ('duration' in objState) {
-		nDuration = objState.duration;
+		nDuration = Math.trunc(objState.duration / 1000);
 	}
 
 	var sStatus = null;
@@ -1789,7 +1790,8 @@ ControllerSpop.prototype.rebuildSPOPDAndRestartDaemon = function () {
 
 ControllerSpop.prototype.seek = function (timepos) {
 	this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerSpop::seek to ' + timepos);
-	return this.sendSpopCommand('seek '+timepos, []);
+
+    return this.sendSpopCommand('seek '+timepos, []);
 };
 
 // TODO - didn't have time to update the search function for the new grid view UI....
