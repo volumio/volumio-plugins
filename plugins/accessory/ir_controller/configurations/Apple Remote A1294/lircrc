@@ -5,7 +5,7 @@ config = /usr/local/bin/volumio toggle
 end
 begin
 prog = irexec
-button = KEY_OK
+button = KEY_ENTER
 config = /usr/local/bin/volumio volume toggle
 end
 begin

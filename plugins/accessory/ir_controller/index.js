@@ -66,7 +66,7 @@ IrController.prototype.onStart = function() {
     }
 
     var ir_profile = self.config.get('ir_profile', 'JustBoom IR remote');
-	self.saveIROptions({"ir_profile":{"value": ir_profile}});
+	self.saveIROptions({"ir_profile":{"value": ir_profile, "notify":false}});
     defer.resolve();
 
 	return defer.promise;
@@ -168,7 +168,10 @@ IrController.prototype.saveIROptions = function (data) {
                             self.logger.info('lirc correctly updated');
                             self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
                             setTimeout(function(){
-                                self.restartLirc(true);
+                                if (data.ir_profile.notify == undefined){
+                                    self.restartLirc(true);
+                                }
+
                             },1000)
 
                         }
