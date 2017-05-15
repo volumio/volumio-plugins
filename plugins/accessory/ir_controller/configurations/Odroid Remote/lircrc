@@ -42,10 +42,10 @@ end
 begin
 prog = irexec
 button = KEY_BACK
-config = mpc repeat on
+config = /usr/local/bin/volumio repeat
 end
 begin
 prog = irexec
 button = KEY_MENU
-config = mpc repeat off
+config = /usr/local/bin/volumio random
 end
