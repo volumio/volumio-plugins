@@ -32,12 +32,12 @@ end
 begin
 prog = irexec
 button = Up
-config = mpc seek +00:00:10
+config = /usr/local/bin/volumio seek plus
 end
 begin
 prog = irexec
 button = Down
-config = mpc seek -00:00:10
+config = /usr/local/bin/volumio seek minus
 end
 begin
 prog = irexec
