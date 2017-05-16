@@ -65,7 +65,7 @@ IrController.prototype.onStart = function() {
         self.enablePIOverlay();
     }
 
-    var ir_profile = self.config.get('ir_profile', 'JustBoom IR remote');
+    var ir_profile = self.config.get('ir_profile', "JustBoom IR Remote");
 	self.saveIROptions({"ir_profile":{"value": ir_profile, "notify":false}});
     defer.resolve();
 
@@ -193,11 +193,11 @@ IrController.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-			var activeProfile = self.config.get("ir_profile");
+			var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
             uiconf.sections[0].content[0].value.value = activeProfile;
             uiconf.sections[0].content[0].value.label = activeProfile;
 
-            for (i = 0; i < dirs.length; i++) {
+            for (var i = 0; i < dirs.length; i++) {
                 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
                     value: dirs[i],
                     label: dirs[i]
