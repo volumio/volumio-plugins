@@ -9,7 +9,7 @@
   "author": "Volumio Team",
   "license": "ISC",
   "volumio_info": {
-    "prettyName": "IR Controller",
+    "prettyName": "IR Remote Controller",
     "icon": "fa-magic",
     "plugin_type": "system_controller"
   },
