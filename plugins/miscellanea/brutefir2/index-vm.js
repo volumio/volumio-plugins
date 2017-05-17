@@ -4,7 +4,6 @@ var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
 var libQ = require('kew');
 var libNet = require('net');
 var net= require('net');
@@ -60,16 +59,11 @@ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var self = this;
 
 var client = new net.Socket();
-client.connect(3002, '127.0.0.1', function(err) {
+client.connect(3002, '127.0.0.1', function(error, stdout, stderr) {
 	defer.resolve();
-
-	//console.log('Connected to brutefir');
-if (err) { 
-console.log("error writing brutefir")
-}
-else {
-console.log("connected to brutefir")
-}
+	console.log('Connected to brutefir');
+if 
+('error', function() { console.log("error writing brutefir"); });
 
 var eqprofile = self.config.get('eqprofile')
 var coef = self.config.get('coef');
@@ -133,6 +127,8 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
+    // On start, we try to set volume parameters based on what brutefir needs
+    //self.setVolumeParameters();
     self.enableLoopBackDevice();
     self.brutefirDaemonConnect(defer);
    }, 1000);
@@ -146,7 +142,6 @@ ControllerBrutefir.prototype.onStart = function() {
 };
 
 ControllerBrutefir.prototype.onRestart = function() {
-    self.enableLoopBackDevice();
  var self = this;
 
 };
@@ -177,9 +172,8 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-//equalizer section
-uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
-
+    //equalizer section
+    uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
 
     // we retrieve the coefficient configuration
     var coefconf =self.config.get('coef');
@@ -192,45 +186,54 @@ uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
         uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
 
-value = self.config.get('eqprofile');
+//uiconf.sections[0].content[2].options =
+    value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 
-//bauer section
- uiconf.sections[1].content[0].value = self.config.get('sbauer');
- uiconf.sections[1].content[1].config.bars[0].value = self.config.get('levelfcut');
- uiconf.sections[1].content[2].config.bars[0].value = self.config.get('levelfeed');
+    //bauer section
+     uiconf.sections[1].content[0].value = self.config.get('sbauer');
+     uiconf.sections[1].content[1].value = self.config.get('levelfcut');
+    uiconf.sections[1].content[2].value = self.config.get('levelfeed');
 
-//advanced settings option
- uiconf.sections[2].content[2].value = self.config.get('leftfilter');
- uiconf.sections[2].content[3].value = self.config.get('rightfilter');
+    //advanced settings option
+    uiconf.sections[2].content[2].value = self.config.get('leftfilter');
+    uiconf.sections[2].content[3].value = self.config.get('rightfilter');
  
-value = self.config.get('attenuation');
+    value = self.config.get('attenuation');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
-value = self.config.get('filter_format');
+
+	value = self.config.get('filter_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
-value = self.config.get('filter_size');
+
+	value = self.config.get('filter_size');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
-value = self.config.get('numb_part');
+
+	value = self.config.get('numb_part');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[6].options'), value));
-value = self.config.get('fl_bits');
+
+	value = self.config.get('fl_bits');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[7].options'), value));
-value = self.config.get('smpl_rate');
+
+	value = self.config.get('smpl_rate');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[8].options'), value));
-value = self.config.get('input_format');
+
+	value = self.config.get('input_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[9].options'), value));
-value = self.config.get('output_format');
+
+	value = self.config.get('output_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
-var value;	
- uiconf.sections[2].content[11].value = self.config.get('input_device');
+
+
+    uiconf.sections[2].content[11].value = self.config.get('input_device');
  		{
 			var value;
 			var devicevalue;
@@ -477,24 +480,21 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 		var conf3 = conf2.replace("${levelfeed}", self.config.get('levelfeed'));
 		
 
-	        fs.writeFile("/home/volumio/asoundrc", conf3, 'utf8', function (err) {
-                if (err) {
-	                    defer.reject(new Error(err));
-			//self.logger.info('Cannot write /etc/asound.conf: '+err)
-		}		
-		else {
-			self.logger.info('asound.conf file written');
-			var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', { uid:1000, gid: 1000, encoding: 'utf8' });
-			var apply = execSync('/usr/sbin/alsactl -L -R nrestore', { uid:1000, gid: 1000, encoding: 'utf8' });
-			defer.resolve();
-		}});
-		
+	            fs.writeFile("/etc/asound.conf", conf3, 'utf8', function (err) {
+                if (err)
+                    defer.reject(new Error(err));
+                else defer.resolve();
+            });
 
-});
-    
 
-}
- catch (err) {}
+        });
+
+
+    }
+    catch (err) {
+
+
+    }
 
     return defer.promise;
 
@@ -522,7 +522,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
     var defer = libQ.defer();
     self.config.set('sbauer', data['sbauer']);
-    self.config.set('bauerout',data['bauerout']);
+  //  self.config.set('bauerout',data['bauerout']);
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
     self.logger.info('Configurations of filter have been set');
@@ -619,8 +619,9 @@ if (error) {
   });
 
  return defer.promise;
-};
-/*
+}
+
+
 ControllerBrutefir.prototype.setVolumeParameters= function() {
     var self = this;
     // here we set the volume controller in /volumio/app/volumecontrol.js
@@ -689,8 +690,8 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
     //volumesteps
     conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
     self.config.set('alsa_volumesteps', conf);
-};
-*/
+}
+
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
@@ -704,15 +705,12 @@ ControllerBrutefir.prototype.enableLoopBackDevice = function (type, controller, 
         if (err) {
             self.logger.info('Brutefir: cannot read /etc/modules file: '+error);
         } else {
-            if(data.indexOf('snd_aloop') === -1){
-                console.log('snd_aloop not loaded, loading it now...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-  		exec("/usr/bin/sudo /sbin/modprobe snd_aloop", {uid: 1000,gid: 1000},function(error, stdout, stderr) {});
+            if(data.indexOf('snd_aloop') <= 0){
+                console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'+data)
             } else {
-                console.log('snd_aloop already loaded, nothing to do aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'+data)
+                console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            }
+        }
 
-       		}
-	}
     });
-//return defer.promise;
-}
-
+};

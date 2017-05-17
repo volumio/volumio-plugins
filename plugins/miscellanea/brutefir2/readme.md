@@ -1,4 +1,4 @@
-May 12th May 2017
+May 17th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 setting for equalizer are not restored in the UI, even if correct values are sent. 
 
 - Last changes
+
+17th
+
+- value for Bauer are no restored in UI
+- first work to auto load snd_aloop when enabling plugin
 
 12th
 
