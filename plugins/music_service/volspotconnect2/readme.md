@@ -27,7 +27,7 @@ Last changes
 
 May 18th
 
-- new librespot for armhf. Please wait for x86 and arm....
+- new librespot for armhf and x86. Please wait for and arm....
 
 May 1st
 
