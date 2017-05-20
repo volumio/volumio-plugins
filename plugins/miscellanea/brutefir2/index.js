@@ -577,7 +577,7 @@ console.log('output_device');
   .fail(function(e) {
  
 			defer.reject(new Error('Brutefir failed to start. Check your config !'));
-			self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+			self.commandRouter.pushToastMessage('error','Brutefir failed to start. Check your config !');
   })
 
 
@@ -595,10 +595,10 @@ self.createBAUERFILTERFile()
 exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
 if (error) {
 		//	self.logger.error('Cannot Enable brutefir');
-						self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
+						self.commandRouter.pushToastMessage('error','Brutefir failed to start. Check your config !');
 		} else {
 			//self.logger.error('Brutefir started ! ');
-						self.commandRouter.pushToastMessage('Brutefir started !');
+						self.commandRouter.pushToastMessage('success','Brutefir started !');
 }
   edefer.resolve();}
   );

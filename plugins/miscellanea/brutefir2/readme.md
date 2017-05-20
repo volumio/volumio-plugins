@@ -33,7 +33,7 @@ Base scheme
 
 - INSTALLATION WARNING 
 If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. 
-You have to reboot after installation so that Loopback module is loaded, select Loopback as output device in volumio playback options. Go to advanced settings in Brutefir plugin change the output to your DAC and save.
+Loopback as output device in volumio playback options. Go to advanced settings in Brutefir plugin change the output to your DAC and save.
 When you first enable the plugin, the webUI restart beceause the plugin can't connect to brutefir, cause it is not configured. To do that go to advanced settings in Brutefir plugin change the output to your DAC and save.
 
 - What is working :
@@ -50,7 +50,7 @@ Bauer filter may conflict with softvol
 To use with i2s dac, it require some tweak in volumio, let me know if you need help for this point
 Can't use hardware volume control of the dac because volumio can't do that (yet).
 Equalizer appears on several lines
-setting for equalizer are not restored in the UI, even if correct values are sent. 
+
 
 - Last changes
 
