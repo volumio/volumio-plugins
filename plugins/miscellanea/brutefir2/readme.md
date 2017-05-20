@@ -1,4 +1,4 @@
-May 17th May 2017
+May 20th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -54,9 +54,18 @@ setting for equalizer are not restored in the UI, even if correct values are sen
 
 - Last changes
 
+20th
+
+- problem to load Ui (not sure it works all the time)
+- minimal brutefir config file is created
+
+19th
+
+- work to modprobe snd_aloop after installation
+
 17th
 
-- value for Bauer are no restored in UI
+- value for Bauer are now restored in UI
 - first work to auto load snd_aloop when enabling plugin
 
 12th

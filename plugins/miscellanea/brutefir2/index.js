@@ -133,7 +133,7 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
-    self.enableLoopBackDevice();
+ //   self.enableLoopBackDevice();
     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
@@ -146,7 +146,7 @@ ControllerBrutefir.prototype.onStart = function() {
 };
 
 ControllerBrutefir.prototype.onRestart = function() {
-    self.enableLoopBackDevice();
+   // self.enableLoopBackDevice();
  var self = this;
 
 };
@@ -180,21 +180,22 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 //equalizer section
 uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
 
+value = self.config.get('eqprofile');
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+//for coef in equalizer
+//uiconf.sections[0].content[2].value = self.config.get('coef');
 
     // we retrieve the coefficient configuration
     var coefconf =self.config.get('coef');
-
-    // it is a string, so to get single values we split them by , and create an array from that
+console.log(coefconf)
+   // it is a string, so to get single values we split them by , and create an array from that
     var coefarray = coefconf.split(',');
-
+console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarray) {
         uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
-
-value = self.config.get('eqprofile');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
@@ -593,11 +594,11 @@ self.createBAUERFILTERFile()
    var edefer = libQ.defer();
 exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
 if (error) {
-			self.logger.error('Cannot Enable brutefir');
+		//	self.logger.error('Cannot Enable brutefir');
 						self.commandRouter.pushToastMessage('Brutefir failed to start. Check your config !');
 		} else {
-			self.logger.error('Brutefir started ! ');
-
+			//self.logger.error('Brutefir started ! ');
+						self.commandRouter.pushToastMessage('Brutefir started !');
 }
   edefer.resolve();}
   );
@@ -695,7 +696,7 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 };
-
+/*
 ControllerBrutefir.prototype.enableLoopBackDevice = function (type, controller, data) {
      var self = this;
 
@@ -715,4 +716,4 @@ ControllerBrutefir.prototype.enableLoopBackDevice = function (type, controller, 
     });
 //return defer.promise;
 }
-
+*/

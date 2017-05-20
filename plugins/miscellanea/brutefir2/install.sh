@@ -5,7 +5,8 @@ if ! grep -q snd_aloop "/etc/modules";
 	then
 		echo "adding snd_aloop to /etc/module"
 		echo 'snd_aloop' | tee --append /etc/modules
-		sudo modprobe snd-aloop
+		echo "loading module now..."
+		sudo modprobe snd_aloop
 	else
 		echo "/etc/modules already contains snd_aloop, nothing to do..."
 fi
@@ -26,6 +27,7 @@ fi
 echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
 cp /data/plugins/miscellanea/brutefir/filters/* /data/INTERNAL/brutefirfilters/
-
+echo "creating brutefir minimal config file"
+cp /data/plugins/miscellanea/brutefir/volumio-brutefir-config /data/configuration/miscellanea/brutefir
 #required to end the plugin install
 echo "plugininstallend"
