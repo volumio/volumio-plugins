@@ -30,8 +30,8 @@ cp /data/plugins/miscellanea/brutefir/filters/* /data/INTERNAL/brutefirfilters/
 echo "creating brutefir minimal config file"
 #not really elegant....
 mkdir -m 777 /data/configuration/miscellanea/brutefir
+cp /data/plugins/miscellanea/brutefir/volumio-brutefir-config /data/configuration/miscellanea/brutefir/volumio-brutefir-config
 sudo chown -R volumio /data/configuration/miscellanea/brutefir
 sudo chgrp -R volumio /data/configuration/miscellanea/brutefir
-cp /data/plugins/miscellanea/brutefir/volumio-brutefir-config /data/configuration/miscellanea/brutefir/volumio-brutefir-config
 #required to end the plugin install
 echo "plugininstallend"

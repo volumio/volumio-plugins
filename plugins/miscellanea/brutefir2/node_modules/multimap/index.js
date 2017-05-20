@@ -14,6 +14,16 @@ var Multimap = (function() {
   var mapCtor;
   if (typeof Map !== 'undefined') {
     mapCtor = Map;
+
+    if (!Map.prototype.keys) {
+      Map.prototype.keys = function() {
+        var keys = [];
+        this.forEach(function(item, key) {
+          keys.push(key);
+        });
+        return keys;
+      };
+    }
   }
 
   function Multimap(iterable) {

@@ -16,7 +16,6 @@
   "_from": "jsonfile@>=2.1.0 <3.0.0",
   "_id": "jsonfile@2.4.0",
   "_inCache": true,
-  "_installable": true,
   "_location": "/jsonfile",
   "_nodeVersion": "6.1.0",
   "_npmOperationalInternal": {
