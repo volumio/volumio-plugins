@@ -68,7 +68,7 @@ if (err) {
 console.log("error writing brutefir")
 }
 else {
-console.log("connected to brutefir")
+console.log("Ok ! Connected to brutefir")
 }
 
 var eqprofile = self.config.get('eqprofile')

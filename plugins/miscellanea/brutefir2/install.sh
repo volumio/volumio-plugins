@@ -28,6 +28,6 @@ echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
 cp /data/plugins/miscellanea/brutefir/filters/* /data/INTERNAL/brutefirfilters/
 echo "creating brutefir minimal config file"
-cp /data/plugins/miscellanea/brutefir/volumio-brutefir-config /data/configuration/miscellanea/brutefir
+cp /data/plugins/miscellanea/brutefir/volumio-brutefir-config /data/configuration/miscellanea/brutefir/volumio-brutefir-config
 #required to end the plugin install
 echo "plugininstallend"
