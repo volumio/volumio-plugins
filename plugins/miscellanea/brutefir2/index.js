@@ -184,8 +184,8 @@ value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 //for coef in equalizer
-//uiconf.sections[0].content[2].value = self.config.get('coef');
-
+uiconf.sections[0].content[2].value = self.config.get('coef');
+/*
     // we retrieve the coefficient configuration
     var coefconf =self.config.get('coef');
 console.log(coefconf)
@@ -196,7 +196,7 @@ console.log(coefarray)
     for (var i in coefarray) {
         uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
-
+*/
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].config.bars[0].value = self.config.get('levelfcut');

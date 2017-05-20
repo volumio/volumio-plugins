@@ -58,6 +58,7 @@ setting for equalizer are not restored in the UI, even if correct values are sen
 
 - problem to load Ui (not sure it works all the time)
 - minimal brutefir config file is created
+- some other fixes
 
 19th
 
