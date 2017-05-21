@@ -1,4 +1,4 @@
-May 20th May 2017
+May 21th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+21th
+
+- revert in UI so that it loads but values are not restored in UI for equalizer - need a fix
 
 20th
 
