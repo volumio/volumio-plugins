@@ -184,7 +184,7 @@ value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 //for coef in equalizer
-uiconf.sections[0].content[2] = self.config.get('coef');//comment that line to test if UI comes (add // to comment)
+uiconf.sections[0].content[2].values = self.config.get('coef');//comment that line to test if UI comes (add // to comment)
 //* uncomment that line if  you comment above line (remove firt / and go line 199)
     // we retrieve the coefficient configuration
     var coefconf =self.config.get('coef');
