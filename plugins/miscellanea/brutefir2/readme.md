@@ -1,4 +1,4 @@
-May 21th May 2017
+May 22th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+22th
+
+- fix the UI
+- change default filter lenght to 32768
 
 21th
 

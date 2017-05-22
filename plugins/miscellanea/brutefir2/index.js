@@ -21,7 +21,7 @@ function ControllerBrutefir(context) {
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
 
-}
+}"0,0,0,0,0,0,0,0,0,0"
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
@@ -183,20 +183,18 @@ uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
 value = self.config.get('eqprofile');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+
 //for coef in equalizer
-uiconf.sections[0].content[2].values = self.config.get('coef');//comment that line to test if UI comes (add // to comment)
-/* uncomment that line if  you comment above line (remove firt / and go line 199)
     // we retrieve the coefficient configuration
-    var coefconf =self.config.get('coef');
-//console.log(coefconf)
+	var coefconf = self.config.get('coef');
    // it is a string, so to get single values we split them by , and create an array from that
-    var coefarray = coefconf.split(',');
+	var coefarray = coefconf.split(',');
 //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
-    for (var i in coefarray) {
+	for (var i in coefarray) {
         uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
-/*/// uncomment that line (remove firt /)
+
 //bauer section
  uiconf.sections[1].content[0].value = self.config.get('sbauer');
  uiconf.sections[1].content[1].config.bars[0].value = self.config.get('levelfcut');
