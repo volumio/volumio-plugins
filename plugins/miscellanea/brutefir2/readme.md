@@ -1,4 +1,4 @@
-May 22th May 2017
+May 24th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+24th
+
+- brutefir errors handling to avoid UI hanging...
 
 22th
 

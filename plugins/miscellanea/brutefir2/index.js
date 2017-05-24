@@ -20,8 +20,7 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
-
-}"0,0,0,0,0,0,0,0,0,0"
+}
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
@@ -43,10 +42,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var defer = libQ.defer();
 
   exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
- /* if (error !== null) {
-   self.commandRouter.pushConsoleMessage('The following error occurred while starting Brutefir: ' + error);
-   defer.reject(); */
-if (error) {
+ if (error) {
 self.logger.info('brutefir failed to start. Check your configuration '+error);
   } else {
    self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
@@ -59,20 +55,12 @@ self.logger.info('brutefir failed to start. Check your configuration '+error);
 ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var self = this;
 
+
 var client = new net.Socket();
 client.connect(3002, '127.0.0.1', function(err) {
 	defer.resolve();
-
-	//console.log('Connected to brutefir');
-if (err) { 
-console.log("error writing brutefir")
-}
-else {
-console.log("Ok ! Connected to brutefir")
-}
-
 var eqprofile = self.config.get('eqprofile')
-var coef = self.config.get('coef');
+var coef = self.config.get('coef')
 var enablemyeq = self.config.get('enablemyeq')
 var scoef
 console.log('myeq or preset =' + enablemyeq)
@@ -103,14 +91,22 @@ brutefircmd = ('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]
 
 //here we send the command to brutefir
 client.write(brutefircmd);
-
 console.log('cmd sent to brutefir = ' + brutefircmd);
+
+});
+//error handling section
+client.on('error', function(e) {
+
+   if (e.code == 'ECONNREFUSED') {
+        console.log('Is the brutefir running ?');
+	   self.commandRouter.pushToastMessage('error',"Brutefir failed to start. Check your config !");
+   
+}
 });
 client.on('data', function(data) {
 	console.log('Received: ' + data);
 	client.destroy(); // kill client after server's response
 });
-
 };
 
 
@@ -134,6 +130,7 @@ ControllerBrutefir.prototype.onStart = function() {
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
  //   self.enableLoopBackDevice();
+self.getFilterList();
     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
@@ -147,6 +144,7 @@ ControllerBrutefir.prototype.onStart = function() {
 
 ControllerBrutefir.prototype.onRestart = function() {
    // self.enableLoopBackDevice();
+
  var self = this;
 
 };
@@ -201,6 +199,27 @@ value = self.config.get('eqprofile');
  uiconf.sections[1].content[2].config.bars[0].value = self.config.get('levelfeed');
 
 //advanced settings option
+		
+//
+
+var filterfolder = "/data/INTERNAL/brutefirfilters";
+	//var filterl = [];
+	fs.readdir(filterfolder, function(err, items) {
+    	console.log(items);
+  //  for (var i=0; i<items.length; i++) {
+      //  console.log(items[i]);
+//var values = items.split(',');
+//console.log(values)
+//for (var i in items) {
+// uiconf.sections[2].content[2].value[i] = items[i]
+//}
+
+});
+
+    
+     	 
+
+
  uiconf.sections[2].content[2].value = self.config.get('leftfilter');
  uiconf.sections[2].content[3].value = self.config.get('rightfilter');
  
@@ -283,7 +302,7 @@ var value;
 	return defer.promise
 
 };
-
+/*
 ControllerBrutefir.prototype.getFilterListForSelect = function (filterl, key) {
 	var n = filterl.length;
 	for (var i = 0; i < n; i++) {
@@ -295,15 +314,14 @@ ControllerBrutefir.prototype.getFilterListForSelect = function (filterl, key) {
 
 };
 
+*/
 ControllerBrutefir.prototype.getFilterList = function () {
 	var filterfolder = "/data/INTERNAL/brutefirfilters"
-	var filterl = [];
-	fs.readdir(filterfolder, (err, filterl) => {
- 	 filterl.forEach(filterl => {
-    	console.log(filterl);
-    	return filterl;
+	//var filterl = [];
+	fs.readdirSync(filterfolder).forEach(file => {
+    	console.log(file);
      	 });
-     	 })
+     	 
 	
 };
 
@@ -508,9 +526,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
 
 //	self.config.set('phas', data['phas']);
 
-	self.logger.info('Configurations have been set');
+	self.logger.info('Equalizer Configurations have been set');
 
-	self.commandRouter.pushToastMessage('success', "Configuration update", 'Brutefir Configuration has been successfully updated');
+	self.commandRouter.pushToastMessage('success', "Configuration update", 'Brutefir new equalizer successfully applied');
 
 	self.brutefirDaemonConnect(defer);
  return defer.promise;
@@ -528,7 +546,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
-   self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+   self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
    defer.resolve({});
   })
   .fail(function(e) {
@@ -593,10 +611,10 @@ self.createBAUERFILTERFile()
 exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
 if (error) {
 		//	self.logger.error('Cannot Enable brutefir');
-						self.commandRouter.pushToastMessage('error','Brutefir failed to start. Check your config !');
+						self.commandRouter.pushToastMessage('error','Brutefir failed to start. Check your config !', 'Output, filters name');
 		} else {
 			//self.logger.error('Brutefir started ! ');
-						self.commandRouter.pushToastMessage('success','Brutefir started !');
+						self.commandRouter.pushToastMessage('success','Attempt to start Brutefir');
 }
   edefer.resolve();}
   );
@@ -612,7 +630,7 @@ if (error) {
    .fail(function(e)
 		{
 		//	defer.reject(new Error('Brutefir failed to start. Check your config !'));
-			self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+			self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !", "Wrong Ouptut or filter name ?");
 			self.logger.info("Brutefir failed to start. Check your config !");
 });
   });

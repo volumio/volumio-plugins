@@ -1,7 +1,7 @@
 {
   "name": "brutefir",
-  "version": "0.1.6",
-  "description": "Brutefir2 plugin for Volumio2. Provide gain equalizer, and the use of custom filters",
+  "version": "0.1.7",
+  "description": "Brutefir2 plugin for Volumio2. Provide an equalizer, and the use of custom filters",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Brutefir for Volumio 0.1.6",
+    "prettyName": "Brutefir for Volumio 0.1.7",
     "plugin_type": "miscellanea"
   },
   "dependencies": {
