@@ -34,7 +34,8 @@ ControllerSpop.prototype.onVolumioStart = function()
 	if(self.config.get('bitrate')===true)
 		self.samplerate="320Kbps";
 	else self.samplerate="128Kbps";
-
+	
+	return libQ.resolve();
 }
 
 ControllerSpop.prototype.getConfigurationFiles = function()
