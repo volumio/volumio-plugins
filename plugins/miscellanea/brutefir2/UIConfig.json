@@ -748,36 +748,6 @@
 						"field": "enabled",
 						"value": true
 					}
-				},
-				{
-					"id": "input_device",
-					"element": "input",
-					"doc": "input device - should be the output sets in playback options",
-					"label": "TRANSLATE.BRUTEFIR.INPUT_DEVICE",
-					"value": {
-						"value": "hw:Loopback,1",
-						"label": "hw:Loopback,1"
-					},
-					"options": [],
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					}
-				},
-				{
-					"id": "output_device",
-					"element": "select",
-					"doc": "output device - device used for the output",
-					"label": "TRANSLATE.BRUTEFIR.OUTPUT_DEVICE",
-					"value": {
-						"value": "0",
-						"label": "0"
-					},
-					"options": [],
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					}
 				}
 			]
 		}

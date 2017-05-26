@@ -40,7 +40,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
 
  var defer = libQ.defer();
-
+self.setVolumeParameters();
   exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
  if (error) {
 self.logger.info('brutefir failed to start. Check your configuration '+error);
@@ -112,6 +112,7 @@ client.on('data', function(data) {
 
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
+
  self.logger.info("Stopping Brutefir service");
 
 	exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
@@ -129,7 +130,8 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
- //   self.enableLoopBackDevice();
+self.saveHardwareAudioParameters();
+
 self.getFilterList();
     self.brutefirDaemonConnect(defer);
    }, 1000);
@@ -138,7 +140,7 @@ self.getFilterList();
    defer.reject(new Error());
   });
 
- this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
+ //this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
  return defer.promise;
 };
 
@@ -203,18 +205,18 @@ value = self.config.get('eqprofile');
 //
 
 var filterfolder = "/data/INTERNAL/brutefirfilters";
-	//var filterl = [];
+var itemslist	//var filterl = [];
 	fs.readdir(filterfolder, function(err, items) {
-    	console.log(items);
+    	console.log('list of available filters: ' + items);
   //  for (var i=0; i<items.length; i++) {
       //  console.log(items[i]);
-//var values = items.split(',');
-//console.log(values)
+})
+//var itemslist = items.toString().split(',');
+//console.log('available filters are:' + itemslist)
 //for (var i in items) {
 // uiconf.sections[2].content[2].value[i] = items[i]
-//}
 
-});
+
 
     
      	 
@@ -247,7 +249,8 @@ value = self.config.get('input_format');
 value = self.config.get('output_format');
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
 	self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
-var value;	
+var value;
+/*	
  uiconf.sections[2].content[11].value = self.config.get('input_device');
  		{
 			var value;
@@ -282,7 +285,7 @@ var value;
 						value: cards[i].id,
 						label: 'HDMI Out'
 					});
-				} */
+				} 
 				//else {
 					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
 						value: cards[i].id,
@@ -291,7 +294,7 @@ var value;
 			//	}
 		}	
 		}
-
+*/
 
 	defer.resolve(uiconf);
 		})
@@ -413,6 +416,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var devicevalue;
    var cards = self.getAlsaCards();
    var sbauer;
+   var input_device = 'Loopback,1';
    //var output_device;
    var filter_path = "/data/INTERNAL/brutefirfilters/";
    var leftfilter;
@@ -424,10 +428,17 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var filter_size = parseInt(f_size);
    var filtersizedivided = filter_size / num_part;
    var output_device;
+
+
+                if(self.config.get('sbauer')===true)
+                    output_device="headphones";
+                else output_device= 'hw:'+self.config.get('alsa_device');
+
+/*
       if(self.config.get('sbauer')===true)
                     output_device="headphones";
                 else output_device='hw:'+self.config.get('output_device');
-   
+*/   
        if(self.config.get('leftfilter')== "")
        			{leftfilter ="dirac pulse";
        			filterattenuation ="0"}
@@ -444,7 +455,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
    var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
-   var conf5 = conf4.replace("${input_device}", self.config.get('input_device'));
+   var conf5 = conf4.replace("${input_device}", input_device);
    var conf6 = conf5.replace("${input_format}", self.config.get('input_format'));
    var conf7 = conf6.replace("${attenuation1}", self.config.get('attenuation'));
    var conf8 = conf7.replace("${attenuation2}", self.config.get('attenuation'));
@@ -562,12 +573,15 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
- var output_device = self.config.get('output_device');
+ var output_device = self.config.get('alsa_device');
+ var input_device = 'Loopback,1';
  var sbauer;
                 if(self.config.get('sbauer')===true)
                     output_device="headphones";
-                else output_device= self.config.get('output_device');
-		//else output_device=self.commandRouter.sharedVars.get('alsa.outputdevice')
+                else output_device= self.config.get('alsa_device');
+
+ //var alsa_device =self.commandRouter.sharedVars.get('device')
+ //var alsa_outputdevice =self.commandRouter.sharedVars.get('alsa.outputdevicename')
 console.log('output_device');	
  var defer = libQ.defer();
  self.config.set('attenuation', data['attenuation'].value);
@@ -580,10 +594,8 @@ console.log('output_device');
  self.config.set('fl_bits', data['fl_bits'].value);
  self.config.set('input_device', data['input_device']);
  self.config.set('input_format', data['input_format'].value);
- self.config.set('output_device', data['output_device'].value);
+ self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
- 
-
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
@@ -614,7 +626,7 @@ if (error) {
 						self.commandRouter.pushToastMessage('error','Brutefir failed to start. Check your config !', 'Output, filters name');
 		} else {
 			//self.logger.error('Brutefir started ! ');
-						self.commandRouter.pushToastMessage('success','Attempt to start Brutefir');
+						self.commandRouter.pushToastMessage('success','Attempt to start Brutefir...');
 }
   edefer.resolve();}
   );
@@ -637,7 +649,7 @@ if (error) {
 
  return defer.promise;
 };
-/*
+
 ControllerBrutefir.prototype.setVolumeParameters= function() {
     var self = this;
     // here we set the volume controller in /volumio/app/volumecontrol.js
@@ -648,26 +660,26 @@ ControllerBrutefir.prototype.setVolumeParameters= function() {
 
     var settings = {
         // need to set the device that brutefir wants to control volume to
-        device : '0',
+        device : self.config.get('alsa_device'),
         // need to set the device name of the original device brutefir is controlling
-        name : 'Allo BOSS',
+        name : self.config.get('alsa_outputdevicename'),
         // Mixer name
-        mixer : 'Analogue',
+        mixer : self.config.get('alsa_mixer'),
         // hardware, software, none
-        mixertype: 'hardware',
+        mixertype : self.config.get('alsa_mixer_type'),
         // max volume setting
-        maxvolume : '100',
+        maxvolume : self.config.get('alsa_volumemax'),
         // log or linear
-        volumecurve : 'logarithmic',
+        volumecurve : self.config.get('alsa_volumecurvemode'),
         //
-        volumestart : 'disabled',
+        volumestart : self.config.get('alsa_volumestart'),
         //
-        volumesteps : '10'
+        volumesteps : self.config.get('alsa_volumesteps')
     }
-
+console.log(settings)
      // once completed, uncomment
-    //return self.commandRouter.volumioUpdateVolumeSettings(settings)
-}
+   return self.commandRouter.volumioUpdateVolumeSettings(settings)
+};
 
 ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
     var self = this;
@@ -676,9 +688,8 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
     // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
 
     //device
-    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'device');
+    conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
     self.config.set('alsa_device', conf);
-
     //name
     conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
     self.config.set('alsa_outputdevicename', conf);
@@ -707,29 +718,8 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters= function() {
     conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
     self.config.set('alsa_volumesteps', conf);
 };
-*/
+
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-};
-/*
-ControllerBrutefir.prototype.enableLoopBackDevice = function (type, controller, data) {
-     var self = this;
-
-     //lets check if we have snd_aloop in /etc/modules, if yes means that we don't need to enable it now
-    fs.readFile('/etc/modules', function (err, data) {
-        if (err) {
-            self.logger.info('Brutefir: cannot read /etc/modules file: '+error);
-        } else {
-            if(data.indexOf('snd_aloop') === -1){
-                console.log('snd_aloop not loaded, loading it now...bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-  		exec("/usr/bin/sudo /sbin/modprobe snd_aloop", {uid: 1000,gid: 1000},function(error, stdout, stderr) {});
-            } else {
-                console.log('snd_aloop already loaded, nothing to do aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'+data)
-
-       		}
-	}
-    });
-//return defer.promise;
 }
-*/

@@ -1,4 +1,4 @@
-May 24th May 2017
+May 26th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+26th
+
+- new work to keep volume control of the dac when using Loopback output
+- auto configure input / output
 
 24th
 
