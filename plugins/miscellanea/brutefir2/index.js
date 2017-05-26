@@ -125,7 +125,9 @@ ControllerBrutefir.prototype.onStart = function() {
  var self = this;
 
  var defer = libQ.defer();
+ self.rebuildBRUTEFIRAndRestartDaemon()
  self.startBrutefirDaemon()
+
   .then(function(e) 
 	{
    setTimeout(function() {
