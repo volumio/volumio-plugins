@@ -575,8 +575,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var self = this;
- var output_device = self.config.get('alsa_device');
- var input_device = 'Loopback,1';
+ var input_device = "Loopback,1";
  var sbauer;
                 if(self.config.get('sbauer')===true)
                     output_device="headphones";
