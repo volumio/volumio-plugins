@@ -124,30 +124,6 @@
           "updated": "11-11-2016"
         }
       ]
-    },
-    {
-      "name": "audio_interface",
-      "prettyName": "audio interface",
-      "description": "",
-      "plugins": [
-        {
-          "icon": "fa-lightbulb",
-          "name": "test_plugin",
-          "version": "1.0",
-          "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/test_plugin/test_plugin.zip",
-          "license": "ISC",
-          "description": "plugin to test the plugin helper",
-          "author": "Volumio Team",
-          "screenshots": [
-            {
-              "image": "",
-              "thumb": ""
-            }
-          ],
-          "updated": "26-5-2017"
-        }
-      ],
-      "id": "cat5"
     }
   ]
 }
