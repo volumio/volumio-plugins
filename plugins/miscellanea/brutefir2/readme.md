@@ -1,4 +1,4 @@
-May 26th May 2017
+May 27th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+27th
+
+- fix no sound -
 
 26th
 
