@@ -132,7 +132,7 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
-self.saveHardwareAudioParameters();
+//self.saveHardwareAudioParameters();
 
 self.getFilterList();
     self.brutefirDaemonConnect(defer);
@@ -419,7 +419,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var cards = self.getAlsaCards();
    var sbauer;
    var input_device = 'Loopback,1';
-   //var output_device;
    var filter_path = "/data/INTERNAL/brutefirfilters/";
    var leftfilter;
    var rightfilter;
@@ -502,7 +501,7 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
                 defer.reject(new Error(err));
                 return console.log(err);
             }
-		var conf1 = data.replace("${bauerout}", self.config.get('output_device'));		
+		var conf1 = data.replace("${bauerout}", self.config.get('alsa_device'));		
 		var conf2 = conf1.replace("${levelfcut}", self.config.get('levelfcut'));
 		var conf3 = conf2.replace("${levelfeed}", self.config.get('levelfeed'));
 		
@@ -514,6 +513,7 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 		}		
 		else {
 			self.logger.info('asound.conf file written');
+			self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
 			var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', { uid:1000, gid: 1000, encoding: 'utf8' });
 			var apply = execSync('/usr/sbin/alsactl -L -R nrestore', { uid:1000, gid: 1000, encoding: 'utf8' });
 			defer.resolve();
@@ -552,7 +552,8 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
     var defer = libQ.defer();
     self.config.set('sbauer', data['sbauer']);
-    self.config.set('bauerout',data['bauerout']);
+    //self.config.set('bauerout',data['bauerout']);
+    self.config.set('bauerout',data['alsa_device']);
     self.config.set('levelfcut', data['levelfcut']);
     self.config.set('levelfeed', data['levelfeed']);
     self.logger.info('Configurations of filter have been set');
@@ -725,7 +726,7 @@ ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, dat
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
 };
-
+/*
 ControllerBrutefir.prototype.setLoopbackoutput= function() {
     var self = this;
 
@@ -740,7 +741,7 @@ ControllerBrutefir.prototype.setLoopbackoutput= function() {
     self.config.set('alsa_outputdevicename', conf);
 };
 
-
+*/
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
