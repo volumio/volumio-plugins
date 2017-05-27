@@ -32,16 +32,16 @@ Base scheme
 
 
 - INSTALLATION WARNING 
-If you want to test, just download brutefir.zip file and install it through volumio plugin management UI. 
-Loopback as output device in volumio playback options. Go to advanced settings in Brutefir plugin change the output to your DAC and save.
-When you first enable the plugin, the webUI restart beceause the plugin can't connect to brutefir, cause it is not configured. To do that go to advanced settings in Brutefir plugin change the output to your DAC and save.
+If you want to test, just download brutefir.zip file and install it through volumio plugin management UI and Enable the plugin !
+Set Loopback as output device in volumio playback options. 
+
 
 - What is working :
 
-Sound if I/O is in brutefir config is correctly set. (could work by saving advanced settings) 
+
 Gain Equalizer
 Access to webUI and save configuration
-Binaural filtering if correct output set... 
+Binaural filtering
 Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
 
 - What is not working :
@@ -56,6 +56,8 @@ Equalizer appears on several lines
 
 27th
 
+- new work to auto-confgure the plugin and volumio to use brutefir
+- brutefir service run as root to allow RT
 - fix no sound -
 
 26th

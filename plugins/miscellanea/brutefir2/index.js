@@ -132,8 +132,8 @@ ControllerBrutefir.prototype.onStart = function() {
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
-//self.saveHardwareAudioParameters();
-
+self.saveHardwareAudioParameters();
+self.setLoopbackoutput();
 self.getFilterList();
     self.brutefirDaemonConnect(defer);
    }, 1000);
@@ -560,7 +560,7 @@ ControllerBrutefir.prototype.saveBauerfilter = function (data) {
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
-   self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
+ //  self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
    defer.resolve({});
   })
   .fail(function(e) {
@@ -726,22 +726,16 @@ ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, dat
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
 };
-/*
+
 ControllerBrutefir.prototype.setLoopbackoutput= function() {
     var self = this;
-
+	var loopback = 'Loopback';
     var conf;
-    // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
-
-    //device
-//    conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
-//    self.config.set('alsa_device', conf);
-    //name
-    conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
-    self.config.set('alsa_outputdevicename', conf);
+    conf = self.setAdditionalConf('audio_interface', 'alsa_controller','outputdevicename');
+    self.config.set(loopback, conf);
 };
 
-*/
+
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
      var self = this;
      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
