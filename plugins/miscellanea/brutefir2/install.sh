@@ -12,17 +12,17 @@ if ! grep -q snd_aloop "/etc/modules";
 fi
 sudo apt-get update
 sudo apt-get -y install brutefir bs2b-ladspa
-echo "checking if brutefir service exists"
-if [ ! -f "/etc/systemd/system/brutefir.service" ];
-	then
-		echo "file brutefir.service doesn't exist, creating"
+#echo "checking if brutefir service exists"
+#if [ ! -f "/etc/systemd/system/brutefir.service" ];
+#	then
+#		echo "file brutefir.service doesn't exist, creating"
 		cp /data/plugins/miscellanea/brutefir/brutefir.service.gz /
 		cd /
 		sudo tar -xvf brutefir.service.gz
 		rm /brutefir.service.gz
-	else
-		echo "File brutefir.service already exists"
-fi
+#	else
+#		echo "File brutefir.service already exists"
+ #fi
 
 echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
