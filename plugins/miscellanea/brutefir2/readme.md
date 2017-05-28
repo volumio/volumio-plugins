@@ -11,18 +11,17 @@ It provides :
 
 - The use of custom filters - for DRC digital room correction
 
-- A multiband equalizer
-	with gain for each band
+- A 10 bands equalizer
+	with gain for each band can be set by step of 0.5 (+/-10db)
 	several equalizer preset such as loudness, bass, voice, rock, flat
 
 - A stereo to binaural filtering using BAUER alsa ladspa plugin
 
-Path for filters (left and right) will be set through webUI and stored in a file.
+- Path for filters (left and right) will be set through webUI and stored in a file.
 They will be used each time brutefir start
 
 Setting of equalizer will be set through webUI and store in a file
 They will be used each time brutefir start and change in setting in webUI will send a command to brutefir to apply the change in "live".
-This command will be sent with a telnet command.
 For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
 Base scheme
@@ -32,9 +31,19 @@ Base scheme
 
 
 - INSTALLATION WARNING 
-If you want to test, just download brutefir.zip file and install it through volumio plugin management UI and Enable the plugin !
-Set Loopback as output device in volumio playback options. 
 
+
+First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
+
+VERY IMPORTANT STOP PLAYING MUSIC BEFORE SETTING THE PLUGIN OR YOU WILL GET NO SOUND
+
+1) download brutefir.zip file and install it through volumio plugin management UI.
+2) Enable the plugin
+3) Set Loopback as output device in volumio playback options. 
+4) In plugin advanced settings, save (even if you don't change anything).
+5) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
+
+if you experience problems, remove the configuration folder "rm -Rf /data/configuration/miscellanea/brutefir"
 
 - What is working :
 
@@ -47,8 +56,7 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 - What is not working :
 
 Bauer filter may conflict with softvol
-To use with i2s dac, it require some tweak in volumio, let me know if you need help for this point
-Can't use hardware volume control of the dac because volumio can't do that (yet).
+To use with i2s dac, it require some tweak in volumio, let me know if you need help for this point. With autoconfigured dac you should have no problem....
 Equalizer appears on several lines
 
 
@@ -56,6 +64,7 @@ Equalizer appears on several lines
 
 28th may
 
+- volume control of the dac is now used ! Tested with iqaudio only...
 - mkidr demo filters folder properly
 - correct install.sh
 - correct brutefir.service

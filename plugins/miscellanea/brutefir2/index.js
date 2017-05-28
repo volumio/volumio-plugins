@@ -40,7 +40,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
 
  var defer = libQ.defer();
-//self.setVolumeParameters();
+self.setVolumeParameters();
   exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
  if (error) {
 self.logger.info('brutefir failed to start. Check your configuration '+error);
@@ -133,6 +133,7 @@ ControllerBrutefir.prototype.onStart = function() {
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
 self.saveHardwareAudioParameters();
+self.setVolumeParameters();
 self.setLoopbackoutput();
 self.getFilterList();
     self.brutefirDaemonConnect(defer);
@@ -730,9 +731,13 @@ ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, dat
 ControllerBrutefir.prototype.setLoopbackoutput= function() {
     var self = this;
 	var loopback = 'Loopback';
+	var loopbackn = '2';
     var conf;
     conf = self.setAdditionalConf('audio_interface', 'alsa_controller','outputdevicename');
     self.config.set(loopback, conf);
+conf = self.setAdditionalConf('audio_interface', 'alsa_controller','outdevice');
+    self.config.set(loopbackn, conf);
+console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 };
 
 

@@ -10,7 +10,7 @@
 "leftfilter":{"type": "string","value": ""},
 "rightfilter":{"type": "string","value": ""},
 "filter_format":{"type": "string","value": "S32_LE"},
-"filter_size":{"type": "string","value": "8192"},
+"filter_size":{"type": "string","value": "65536"},
 "numb_part":{"type": "string","value": "8"},
 "fl_bits":{"type": "string","value": "64"},
 "input_format":{"type": "string","value": "S16_LE"},
