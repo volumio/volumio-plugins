@@ -56,6 +56,7 @@ Equalizer appears on several lines
 
 28th may
 
+- mkidr demo filters folder properly
 - correct install.sh
 - correct brutefir.service
 

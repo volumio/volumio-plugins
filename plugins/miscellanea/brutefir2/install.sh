@@ -25,6 +25,8 @@ sudo apt-get -y install brutefir bs2b-ladspa
  #fi
 
 echo "creating filters folder and copying demo filters"
+mkdir -m 777 /data/INTERNAL/brutefirfilters
+echo "copying demo flters"
 sudo cp /data/plugins/miscellanea/brutefir/filters/* /data/INTERNAL/brutefirfilters/
 
 #required to end the plugin install
