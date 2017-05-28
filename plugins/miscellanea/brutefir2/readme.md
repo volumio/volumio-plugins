@@ -1,4 +1,4 @@
-May 27th May 2017
+May 28th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+28th may
+
+- correct install.sh
+- correct brutefir.service
 
 27th
 
