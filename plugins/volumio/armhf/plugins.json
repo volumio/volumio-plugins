@@ -45,8 +45,8 @@
       ]
     },
     {
-      "prettyName": "Miscelleanea",
-      "name": "miscelleanea",
+      "prettyName": "Miscellanea",
+      "name": "miscellanea",
       "id": "cat2",
       "description": "Things that cannot go in other categories",
       "plugins": [
