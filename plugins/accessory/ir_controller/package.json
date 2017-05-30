@@ -11,7 +11,7 @@
   "volumio_info": {
     "prettyName": "IR Remote Controller",
     "icon": "fa-magic",
-    "plugin_type": "system_controller"
+    "plugin_type": "accessory"
   },
   "dependencies": {
     "fs-extra": "^0.28.0",

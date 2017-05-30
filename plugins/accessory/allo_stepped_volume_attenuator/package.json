@@ -11,7 +11,7 @@
   "volumio_info": {
     "prettyName": "Allo Stepped Volume Attenuator",
     "icon": "fa-volume-up",
-    "plugin_type": "miscellanea"
+    "plugin_type": "accessory"
   },
   "dependencies": {
     "fs-extra": "^0.28.0",
