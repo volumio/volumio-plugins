@@ -1,6 +1,6 @@
 {
   "name": "example_plugin",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Example Plugin for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "ISC",
   "volumio_info": {
     "prettyName": "Example Plugin",
-    "icon": "fa-lightbulb",
+    "icon": "fa-lightbulb-o",
     "plugin_type": "music_service"
   },
   "dependencies": {
