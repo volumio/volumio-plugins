@@ -55,6 +55,9 @@ else
 
 fi
 
+echo "Installing Japanese, Korean, Chinese and Taiwanese fonts"
+apt-get -y install fonts-arphic-ukai fonts-arphic-gbsn00lp fonts-unfonts-core
+
 echo "Dependencies installed"
 
 echo "Creating Kiosk Data dir"
