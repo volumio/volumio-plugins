@@ -1,4 +1,4 @@
-May 28th May 2017
+May 30th May 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -35,13 +35,9 @@ Base scheme
 
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
-VERY IMPORTANT STOP PLAYING MUSIC BEFORE SETTING THE PLUGIN OR YOU WILL GET NO SOUND
-
 1) download brutefir.zip file and install it through volumio plugin management UI.
 2) Enable the plugin
-3) Set Loopback as output device in volumio playback options. 
-4) In plugin advanced settings, save (even if you don't change anything).
-5) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
+4) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
 
 if you experience problems, remove the configuration folder "rm -Rf /data/configuration/miscellanea/brutefir"
 
@@ -56,11 +52,22 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 - What is not working :
 
 Bauer filter may conflict with softvol
-To use with i2s dac, it require some tweak in volumio, let me know if you need help for this point. With autoconfigured dac you should have no problem....
+
 Equalizer appears on several lines
 
 
 - Last changes
+
+01st June
+
+- full auto conf : just enbale plugin and play ! 
+- new filters. Thanks to https://github.com/tomaszrondio
+
+30th may
+
+- save and restore volumio parameters
+- Loopback auto set
+
 
 28th may
 

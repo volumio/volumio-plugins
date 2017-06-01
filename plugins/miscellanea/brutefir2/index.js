@@ -16,11 +16,15 @@ var config = new(require('v-conf'))();
 module.exports = ControllerBrutefir;
 function ControllerBrutefir(context) {
 	var self = this;
- this.context = context;
- this.commandRouter = this.context.coreCommand;
- this.logger = this.context.logger;
- this.configManager = this.context.configManager;
-}
+self.context = context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger=self.commandRouter.logger;
+
+this.context = context;
+this.commandRouter = this.context.coreCommand;
+this.logger = this.context.logger;
+this.configManager = this.context.configManager;
+};
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
@@ -35,6 +39,44 @@ ControllerBrutefir.prototype.getConfigurationFiles = function()
 };
 
 // Plugin methods -----------------------------------------------------------------------------
+//here we save the volumio config for the next plugin start
+ControllerBrutefir.prototype.saveVolumioconfig = function () {
+    var self = this;
+
+    var defer=libQ.defer();
+
+
+			var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
+			defer.resolve();
+//we set Loopback as output
+self.setLoopbackoutput();
+
+
+setTimeout(function (){
+self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
+console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+}, 2000);
+
+//we restore volumio config for the next start
+setTimeout(function (){
+self.restoreVolumioconfig();
+ 
+}, 2000);
+
+};
+//here we define the volumio restore config
+ControllerBrutefir.prototype.restoreVolumioconfig = function () {
+    var self = this;
+
+    var defer=libQ.defer();
+
+			var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
+//console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
+			defer.resolve();
+
+};
+
+
 
 ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  var self = this;
@@ -133,8 +175,9 @@ ControllerBrutefir.prototype.onStart = function() {
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
 self.saveHardwareAudioParameters();
+self.saveVolumioconfig();
 self.setVolumeParameters();
-self.setLoopbackoutput();
+
 self.getFilterList();
     self.brutefirDaemonConnect(defer);
    }, 1000);
@@ -731,14 +774,24 @@ ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, dat
 ControllerBrutefir.prototype.setLoopbackoutput= function() {
     var self = this;
 	var loopback = 'Loopback';
-	var loopbackn = '2';
-    var conf;
-    conf = self.setAdditionalConf('audio_interface', 'alsa_controller','outputdevicename');
-    self.config.set(loopback, conf);
-conf = self.setAdditionalConf('audio_interface', 'alsa_controller','outdevice');
-    self.config.set(loopbackn, conf);
-console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+	var loopbackn = '0';
+	var settings = {
+        // need to set the device that brutefir wants to control volume to
+        device : loopback,
+        // need to set the device name of the original device brutefir is controlling
+        name : loopbackn,
+        // Mixer name
+        }
+//return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', settings);
+
+
+var str = {"output_device":{"value":"Loopback","label":"Brutefir plugin"}}
+return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+
+    console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 };
+
+
 
 
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
