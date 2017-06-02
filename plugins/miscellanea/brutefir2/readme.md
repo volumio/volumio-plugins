@@ -60,6 +60,7 @@ Equalizer appears on several lines
 
 02nd June
 
+- restore initial volumio settings when plugin is disabled
 -correction for nosound....
 
 01st June

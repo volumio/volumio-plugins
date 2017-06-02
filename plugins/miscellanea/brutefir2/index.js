@@ -159,6 +159,7 @@ ControllerBrutefir.prototype.onStop = function() {
 
 	exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {uid: 1000,gid: 1000}, function(error, stdout, stderr) {
  });
+self.restoresettingwhendisabling();
  return libQ.resolve();
 };
 
@@ -791,6 +792,17 @@ return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 
     console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 };
 
+
+ControllerBrutefir.prototype.restoresettingwhendisabling= function() {
+    var self = this;
+	var output_restored = self.config.get('alsa_device')
+	var output_label = self.config.get('alsa_outputdevicename')
+
+var str = {"output_device":{"value": output_restored,"label": output_label}}
+return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+
+    console.log(str);
+};
 
 
 
