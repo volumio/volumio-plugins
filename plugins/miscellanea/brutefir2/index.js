@@ -167,18 +167,18 @@ ControllerBrutefir.prototype.onStart = function() {
  var self = this;
 
  var defer = libQ.defer();
- self.rebuildBRUTEFIRAndRestartDaemon()
- self.startBrutefirDaemon()
+self.saveHardwareAudioParameters()
+self.saveVolumioconfig()
+self.setVolumeParameters()
+self.rebuildBRUTEFIRAndRestartDaemon()
+self.startBrutefirDaemon()
 
   .then(function(e) 
 	{
    setTimeout(function() {
     self.logger.info("Connecting to daemon brutefir");
-self.saveHardwareAudioParameters();
-self.saveVolumioconfig();
-self.setVolumeParameters();
 
-self.getFilterList();
+//self.getFilterList();
     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
@@ -557,7 +557,7 @@ ControllerBrutefir.prototype.createBAUERFILTERFile = function () {
 		}		
 		else {
 			self.logger.info('asound.conf file written');
-			self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
+			//self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
 			var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', { uid:1000, gid: 1000, encoding: 'utf8' });
 			var apply = execSync('/usr/sbin/alsactl -L -R nrestore', { uid:1000, gid: 1000, encoding: 'utf8' });
 			defer.resolve();
