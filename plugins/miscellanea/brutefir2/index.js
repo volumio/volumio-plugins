@@ -47,10 +47,18 @@
 
 
   var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
-  var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
-  var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
-   console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-  defer.resolve();
+  var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json'); 
+try { 
+var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt'); 
+  // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+ } catch (err) {
+     self.logger.info('config.txt does not exist');
+ }
+ defer.resolve()
+
+
+
+
   //we set Loopback as output
   self.setLoopbackoutput();
 
@@ -75,8 +83,12 @@
 
   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
   var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
-  var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
-  console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
+try { 
+ var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+ } catch (err) {
+     self.logger.info('config.txt does not exist');
+ }
+//  console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
   defer.resolve();
 
  };
