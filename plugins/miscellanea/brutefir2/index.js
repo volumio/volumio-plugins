@@ -47,6 +47,9 @@
 
 
   var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
+  var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
+  var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
+   console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
   defer.resolve();
   //we set Loopback as output
   self.setLoopbackoutput();
@@ -54,7 +57,7 @@
 
   setTimeout(function() {
    self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
-   console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+
   }, 2000);
 
   //we restore volumio config for the next start
@@ -71,7 +74,9 @@
   var defer = libQ.defer();
 
   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
-  //console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
+  var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
+  var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+  console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
   defer.resolve();
 
  };

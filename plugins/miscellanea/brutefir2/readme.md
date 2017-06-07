@@ -1,4 +1,4 @@
-June 02nd 2017
+June 07th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -57,6 +57,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+07th june
+
+- work on i2s dac settings -seems to work. tested with iqaudio
 
 02nd June
 
