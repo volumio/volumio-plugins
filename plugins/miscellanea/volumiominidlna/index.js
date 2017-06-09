@@ -180,12 +180,21 @@ ControllerVolumiominidlna.prototype.createVolumiominidlnaFile = function () {
 		var conf3 = conf2.replace("${video_folder}", self.config.get('video_folder'));
 					
 	            fs.writeFile("/data/configuration/miscellanea/volumiominidlna/minidlna.conf", conf3, 'utf8',  function (err) {
-                if (err)
-                    defer.reject(new Error(err));
-                else defer.resolve();
-            });
-            
-        });
+                self.logger.info('asound.conf file written');
+      //self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
+      var mv = execSync('/usr/bin/sudo /bin/mv /data/configuration/miscellanea/volumiominidlna/minidlna.conf /etc/minidlna.conf', {
+       uid: 1000,
+       gid: 1000,
+       encoding: 'utf8'
+      });
+     
+      defer.resolve();
+     
+    });
+
+
+   });
+
 
 
     }
