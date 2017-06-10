@@ -4,7 +4,7 @@ var libQ = require('kew');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
-
+ var execSync = require('child_process').execSync;
 
 // Define the ControllerVolumiominidlna class
 module.exports = ControllerVolumiominidlna;
@@ -179,15 +179,18 @@ ControllerVolumiominidlna.prototype.createVolumiominidlnaFile = function () {
 		var conf2 = conf1.replace("${picture_folder}", self.config.get('picture_folder'));
 		var conf3 = conf2.replace("${video_folder}", self.config.get('video_folder'));
 					
-	            fs.writeFile("/data/configuration/miscellanea/volumiominidlna/minidlna.conf", conf3, 'utf8',  function (err) {
-                self.logger.info('asound.conf file written');
+	            fs.writeFile("/home/volumio/minidlna.conf", conf3, 'utf8',  function (err) {
+                self.logger.info('minidlna.conf file written');
       //self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
-      var mv = execSync('/usr/bin/sudo /bin/mv /data/configuration/miscellanea/volumiominidlna/minidlna.conf /etc/minidlna.conf', {
+try {
+      var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/minidlna.conf /etc/minidlna.conf', {
        uid: 1000,
        gid: 1000,
        encoding: 'utf8'
       });
-     
+    } catch (err) {
+     self.logger.info('minidlna.conf does not exist');
+ } 
       defer.resolve();
      
     });

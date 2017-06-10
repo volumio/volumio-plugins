@@ -1,4 +1,4 @@
-June 07th 2017
+June 10th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -57,6 +57,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+10th
+
+- warning if a wrong filter name is given
 
 07th june
 

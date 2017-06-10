@@ -393,6 +393,49 @@ try {
 
  };
 
+ControllerBrutefir.prototype.checkifleftfilterexits = function() {
+var self = this ;
+var filterfolder = "/data/INTERNAL/brutefirfilters";
+var filterfile = self.config.get('leftfilter');
+var filetocheck;
+filetocheck = filterfolder + filterfile ;
+var 
+   stats;
+
+try {
+  stats = fs.statSync(filetocheck);
+  console.log("File exists.");
+}
+catch (e) {
+  console.log("File does not exist.");
+self.commandRouter.pushToastMessage('error', "Wrong left filter name", 'check the spelling or extension');
+}
+
+
+ };
+
+ControllerBrutefir.prototype.checkifrightfilterexits = function() {
+var self = this ;
+var filterfolder = "/data/INTERNAL/brutefirfilters";
+var filterfile = self.config.get('rightfilter');
+var filetocheck;
+filetocheck = filterfolder + filterfile ;
+var 
+   stats;
+
+try {
+  stats = fs.statSync(filetocheck);
+  console.log("File exists.");
+}
+catch (e) {
+  console.log("File does not exist.");
+self.commandRouter.pushToastMessage('error', "Wrong right filter name", 'check the spelling or extension');
+}
+
+
+ };
+
+
  ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
   var n = options.length;
   for (var i = 0; i < n; i++) {
@@ -543,7 +586,8 @@ try {
       defer.reject(new Error(err));
      else defer.resolve();
     });
-
+self.checkifleftfilterexits()
+self.checkifrightfilterexits()
     self.createBAUERFILTERFile()
    });
 
