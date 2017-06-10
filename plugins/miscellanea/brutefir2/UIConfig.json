@@ -346,7 +346,7 @@
 				{
 					"id": "leftfilter",
 					"element": "input",
-					"doc": "Leftfilter file (path/name) if none dirac pulse is used",
+					"doc": "Leftfilter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
 					"label": "TRANSLATE.BRUTEFIR.LEFT_FILTER",
 					"value": {
 						"value": "",
@@ -361,7 +361,7 @@
 				{
 					"id": "rightfilter",
 					"element": "input",
-					"doc": "Right filter file (path/name) if none dirac pulse is used",
+					"doc": "Right filter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
 					"label": "TRANSLATE.BRUTEFIR.RIGHT_FILTER",
 					"value": {
 						"value": "",
