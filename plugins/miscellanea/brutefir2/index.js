@@ -395,12 +395,12 @@ try {
 
 ControllerBrutefir.prototype.checkifleftfilterexits = function() {
 var self = this ;
-var filterfolder = "/data/INTERNAL/brutefirfilters";
+var filterfolder = "/data/INTERNAL/brutefirfilters/";
 var filterfile = self.config.get('leftfilter');
 var filetocheck;
 filetocheck = filterfolder + filterfile ;
-var 
-   stats;
+console.log(filetocheck)
+var stats;
 
 try {
   stats = fs.statSync(filetocheck);
@@ -416,7 +416,7 @@ self.commandRouter.pushToastMessage('error', "Wrong left filter name", 'check th
 
 ControllerBrutefir.prototype.checkifrightfilterexits = function() {
 var self = this ;
-var filterfolder = "/data/INTERNAL/brutefirfilters";
+var filterfolder = "/data/INTERNAL/brutefirfilters/";
 var filterfile = self.config.get('rightfilter');
 var filetocheck;
 filetocheck = filterfolder + filterfile ;
