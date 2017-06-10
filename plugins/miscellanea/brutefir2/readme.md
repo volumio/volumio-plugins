@@ -7,22 +7,18 @@ This plugin is designed to use brutefir with volumio2
 
 It provides :
 - A automated installation
-- A loopback device setting for alsa
+- A automatic configuration - Just install and enable the plugin. It's ready for use !
 
 - The use of custom filters - for DRC digital room correction
 
 - A 10 bands equalizer
 	with gain for each band can be set by step of 0.5 (+/-10db)
-	several equalizer preset such as loudness, bass, voice, rock, flat
+	several equalizer preset such as loudness, bass, voice, rock, flat etc...
+- Filters (left and right) will be set through webUI by giving the name of the file to use.
 
 - A stereo to binaural filtering using BAUER alsa ladspa plugin
 
-- Path for filters (left and right) will be set through webUI and stored in a file.
-They will be used each time brutefir start
 
-Setting of equalizer will be set through webUI and store in a file
-They will be used each time brutefir start and change in setting in webUI will send a command to brutefir to apply the change in "live".
-For example, changing the setting of 5db the 250Hz will send a "lmc eq 0 mag 250/5" command.
 
 Base scheme
 
@@ -39,7 +35,6 @@ First, you must have a working configuration with volumio, the dac you want to u
 2) Enable the plugin
 4) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
 
-if you experience problems, remove the configuration folder "rm -Rf /data/configuration/miscellanea/brutefir"
 
 - What is working :
 
@@ -58,7 +53,7 @@ Equalizer appears on several lines
 
 - Last changes
 
-10th
+10th June
 
 - warning if a wrong filter name is given
 
