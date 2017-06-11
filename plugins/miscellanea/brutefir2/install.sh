@@ -1,6 +1,13 @@
 #!/bin/bash
 
 echo "Installing brutefir dependencies"
+if ! grep -q 'options snd_aloop index=7' "/etc/modprobe.d/alsa-base.conf";
+	then
+		echo "adding snd_aloop index=7 to /etc/modprobe.d/alsa-base.conf"
+		echo 'options snd_aloop index=7' | tee --append /etc/modprobe.d/alsa-base.conf
+	else
+		echo "/etc/modprobe.d/alsa-base.conf already contains snd_aloop index=7, nothing to do..."
+fi
 if ! grep -q snd_aloop "/etc/modules";
 	then
 		echo "adding snd_aloop to /etc/module"

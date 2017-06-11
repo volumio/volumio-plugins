@@ -1,4 +1,4 @@
-June 10th 2017
+June 11th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+11th
+
+- force loopback index to 7
 
 10th June
 
