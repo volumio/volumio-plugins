@@ -164,7 +164,6 @@ To be continued ;-)
 
 To do list (not exhaustive and not in order)
 
-- file selector for filter file (as for background) - it will save files in /data/configurations/miscellanea/brutefir/ folder
-
+- file selector for filter file
 
 - ....
