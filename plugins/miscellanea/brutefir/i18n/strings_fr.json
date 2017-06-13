@@ -1,0 +1,33 @@
+{
+ "BRUTEFIR":{
+ "VOLUMIO_DSP":"Centre DSP Volumio",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Réglages de l'égaliseur Brutefir",
+ "EQUALIZER":"Egaliseur",
+ "EQUALIZER_SETTINGS":"Réglages de l'égaliseur",
+ "EQUALIZER_MODE":"On= Réglage du Gain / Off= Réglage de la Phase",
+ "PHASE_EQUALIZER":"Egaliseur de phase",
+ "GAIN_EQUALIZER":"Egaliseur",
+ "BRUTEFIR_ADVANCED_SETTINGS":"Réglages avancés de Brutefir",
+ "ADVANCED_SETTINGS":"Réglages avancés",
+ "INPUT_ATTENUATION":"Attenuation d'entrée",
+ "LEFT_FILTER":"Filtre gauche",
+ "RIGHT_FILTER":"Filtre droit",
+  "FILTER_FORMAT":"Format du filtre",
+ "FILTER_SIZE":"Taille du filtre",
+ "NUMBER_PARTITION":"Nombre de partitions",
+ "INTERNAL_RESOLUTION":"Résolution interne",
+ "SAMPLE_RATE":"Taux d'échantillonage",
+ "INPUT_FORMAT":"Format d'entrée",
+ "OUTPUT_FORMAT":"Format de sortie",
+ "INPUT_DEVICE":"Périphérique d'entrée hw:",
+ "SAVE":"Sauver",
+ "APPLY":"Appliquer",
+ "OUTPUT_DEVICE":"Périphérique de sortie hw:"
+},
+ "BAUER":{
+ "BAUER_TITLE":"Filtre Bauer Stereo->Binaural Peux interferer avec softvol!!!",
+ "BAUER_FILTER_SETTINGS":"Activer le filtre",
+ "FCUT":"Fréquence de coupure (Hz)",
+ "FLEVEL":"Niveau (dB)"
+}
+}

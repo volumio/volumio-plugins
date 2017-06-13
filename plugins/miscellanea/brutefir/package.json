@@ -1,7 +1,7 @@
 {
   "name": "brutefir",
-  "version": "1.0.0",
-  "description": "brutefir plugin for Volumio2",
+  "version": "0.0.8",
+  "description": "Brutefir2 plugin for Volumio2. Provide gain equalizer, and the use of custom filters",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,16 +9,15 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "brutefir",
+    "prettyName": "Brutefir for Volumio 0.0.8",
     "plugin_type": "miscellanea"
   },
   "dependencies": {
-    "fast.js": "^0.1.1",
+    "socket.io-client": "^1.4.6",
     "fs-extra": "^0.28.0",
+    "child_process":"",
     "kew": "^0.7.0",
     "net": "^1.0.2",
-    "socket.io-client": "^1.4.6",
-    "telnet-client": "0.9.1",
     "v-conf": "^0.10.0"
-  }
+      }
 }

@@ -11,7 +11,7 @@
   "volumio_info": {
     "prettyName": "503 HTA Tube Amp GPIO Plugin",
     "icon": "fa-lightbulb-o",
-    "plugin_type": "miscellanea"
+    "plugin_type": "accessory"
   },
   "dependencies": {
     "fs-extra": "^0.28.0",
