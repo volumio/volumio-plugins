@@ -1,0 +1,7 @@
+{
+  "YOUTUBE_CONFIGURATION":"Configurazione Youtube",
+  "YOUTUBE_SETTINGS":"Impostazioni",
+  "YOUTUBE_RESULTS_LIMIT": "Risultati per pagina",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Quanti risultati devono essere visualizzati in una pagina? (Le playlist saranno sempre visualizzate per intero). Valore predefinito: 50",
+  "YOUTUBE_SAVE": "Salva"
+}
