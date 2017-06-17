@@ -1,6 +1,8 @@
 #!/bin/bash
 
 echo "Installing brutefir dependencies"
+echo "unload Loopback module if exists"
+sudo rmmod snd_aloop
 if ! grep -q 'options snd_aloop index=7' "/etc/modprobe.d/alsa-base.conf";
 	then
 		echo "adding snd_aloop index=7 to /etc/modprobe.d/alsa-base.conf"
@@ -12,21 +14,22 @@ if ! grep -q snd_aloop "/etc/modules";
 	then
 		echo "adding snd_aloop to /etc/module"
 		echo 'snd_aloop' | tee --append /etc/modules
-		echo "loading module now..."
-		sudo modprobe snd_aloop
-	else
+			else
 		echo "/etc/modules already contains snd_aloop, nothing to do..."
 fi
+echo "re-loading snd-loop now"
+echo "loading module now..."
+		sudo modprobe snd_aloop
 sudo apt-get update
 sudo apt-get -y install brutefir bs2b-ladspa
 #echo "checking if brutefir service exists"
 #if [ ! -f "/etc/systemd/system/brutefir.service" ];
 #	then
 #		echo "file brutefir.service doesn't exist, creating"
-		cp /data/plugins/miscellanea/brutefir/brutefir.service.gz /
+		cp /data/plugins/miscellanea/brutefir/brutefir.service.tar /
 		cd /
-		sudo tar -xvf brutefir.service.gz
-		rm /brutefir.service.gz
+		sudo tar -xvf brutefir.service.tar
+		rm /brutefir.service.tar
 #	else
 #		echo "File brutefir.service already exists"
  #fi

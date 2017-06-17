@@ -1,4 +1,4 @@
-June 15th 2017
+June 17th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,12 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+17th June
+
+- remove x bit on brutefir.service
+- install.sh unload snd_aloop, change index and reload
+- index.js work on promises
 
 15 th
 
