@@ -1,4 +1,4 @@
-June 11th 2017
+June 15th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+15 th
+
+- use of promises for synchrone functions
 
 11th
 

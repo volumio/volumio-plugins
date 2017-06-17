@@ -43,8 +43,8 @@
  ControllerBrutefir.prototype.saveVolumioconfig = function() {
   var self = this;
 
-  var defer = libQ.defer();
-
+//  var defer = libQ.defer();
+   return new Promise(function(resolve, reject) {
 
   var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
   var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json'); 
@@ -54,32 +54,19 @@ var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
  } catch (err) {
      self.logger.info('config.txt does not exist');
  }
- defer.resolve()
 
-
-
-
-  //we set Loopback as output
-  self.setLoopbackoutput();
-
-
-  setTimeout(function() {
-   self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
-
-  }, 2000);
-
-  //we restore volumio config for the next start
-  setTimeout(function() {
-   self.restoreVolumioconfig();
-
-  }, 2000);
+//	return defer.promise;
+      resolve();
+    });
 
  };
+
+
  //here we define the volumio restore config
  ControllerBrutefir.prototype.restoreVolumioconfig = function() {
   var self = this;
-
-  var defer = libQ.defer();
+    return new Promise(function(resolve, reject) {
+  //var defer = libQ.defer();
 
   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
   var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
@@ -88,18 +75,17 @@ try {
  } catch (err) {
      self.logger.info('config.txt does not exist');
  }
-//  console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzetetttttttttttttttttt')
-  defer.resolve();
 
+	resolve();
+});
  };
-
 
 
  ControllerBrutefir.prototype.startBrutefirDaemon = function() {
   var self = this;
 
   var defer = libQ.defer();
-  self.setVolumeParameters();
+
   exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {
    uid: 1000,
    gid: 1000
@@ -111,7 +97,9 @@ try {
     defer.resolve();
    }
   });
+
   return defer.promise;
+
  };
 
  ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
@@ -179,20 +167,49 @@ try {
   exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {
    uid: 1000,
    gid: 1000
-  }, function(error, stdout, stderr) {});
-  self.restoresettingwhendisabling();
-  return libQ.resolve();
+  }, function(error, stdout, stderr) {})
+
+self.restoresettingwhendisabling()
+
+//  return libQ.resolve();
  };
 
+
+ ControllerBrutefir.prototype.autoconfig = function() {
+  var self = this;
+ // var defer=libQ.defer();
+  self.saveVolumioconfig()
+.then(function(resolve){
+  self.saveHardwareAudioParameters()
+return resolve;
+})
+.then(function(resolve){
+ 	self.setLoopbackoutput()
+return resolve;
+})
+.then(function(resolve){
+	self.restoreVolumioconfig()
+return resolve;
+})
+.then(function(resolve){
+ self.setVolumeParameters()
+return resolve;
+})
+.then(function(resolve){
+	defer.resolve();
+})
+.catch(function(err){
+     console.log(err);
+ });
+ //return libQ.resolve();
+};
 
  ControllerBrutefir.prototype.onStart = function() {
   var self = this;
 
   var defer = libQ.defer();
-  self.saveHardwareAudioParameters()
-  self.saveVolumioconfig()
-  self.setVolumeParameters()
-  self.rebuildBRUTEFIRAndRestartDaemon()
+     self.autoconfig()
+//  self.rebuildBRUTEFIRAndRestartDaemon()
   self.startBrutefirDaemon()
 
   .then(function(e) {
@@ -215,7 +232,7 @@ try {
   // self.enableLoopBackDevice();
 
   var self = this;
-
+  //   self.autoconfig()
  };
 
  ControllerBrutefir.prototype.onInstall = function() {
@@ -782,7 +799,7 @@ self.checkifrightfilterexits()
   // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
   // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
 
-
+   return new Promise(function(resolve, reject) {       
   var settings = {
    // need to set the device that brutefir wants to control volume to
    device: self.config.get('alsa_device'),
@@ -803,13 +820,18 @@ self.checkifrightfilterexits()
   }
   console.log(settings)
    // once completed, uncomment
+
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
+
+resolve();
+});
  };
 
  ControllerBrutefir.prototype.saveHardwareAudioParameters = function() {
   var self = this;
 
   var conf;
+return new Promise(function(resolve, reject) {
   // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
 
   //device
@@ -842,6 +864,8 @@ self.checkifrightfilterexits()
   //volumesteps
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
   self.config.set('alsa_volumesteps', conf);
+resolve();
+});
  };
 
  ControllerBrutefir.prototype.setAdditionalConf = function(type, controller, data) {
@@ -851,18 +875,8 @@ self.checkifrightfilterexits()
 
  ControllerBrutefir.prototype.setLoopbackoutput = function() {
   var self = this;
-  var loopback = 'Loopback';
-  var loopbackn = '0';
-  var settings = {
-    // need to set the device that brutefir wants to control volume to
-    device: loopback,
-    // need to set the device name of the original device brutefir is controlling
-    name: loopbackn,
-    // Mixer name
-   }
-   //return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', settings);
-
-
+	//var defer=libQ.defer();
+ return new Promise(function(resolve, reject) {
   var str = {
    "output_device": {
     "value": "Loopback",
@@ -870,16 +884,20 @@ self.checkifrightfilterexits()
    }
   }
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
-
-  console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+ //self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
+ //console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+	//return defer.promise;
+resolve();
+});
  };
 
 
  ControllerBrutefir.prototype.restoresettingwhendisabling = function() {
+
   var self = this;
   var output_restored = self.config.get('alsa_device')
   var output_label = self.config.get('alsa_outputdevicename')
-
+ return new Promise(function(resolve, reject) {
   var str = {
    "output_device": {
     "value": output_restored,
@@ -887,8 +905,8 @@ self.checkifrightfilterexits()
    }
   }
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
-
-  console.log(str);
+resolve();
+});
  };
 
 
