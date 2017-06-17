@@ -36,6 +36,13 @@ then
 			sudo tar -xf Volspotconnect.tar.xz -C /
 			rm Volspotconnect.tar.xz*
 
+			# Fix problems with the new ALSA (lib) update as of version 2.157
+			VERSION=$(cat /etc/os-release | grep VOLUMIO_VERSION | cut -d'"' -f 2)
+			BUILD=$(echo $VERSION | cut -d'.' -f 2)
+			if [ $(( $BUILD )) -gt 156 ] && [ "$cpu" = "armv7l" ];
+			then
+				mv /data/plugins/music_service/volspotconnect/spotify-connect-web/libasound.so.2 /data/plugins/music_service/volspotconnect/spotify-connect-web/libasound.so.2.dontuse
+			fi
 		else
 			echo "Failed to download. Stopping installation now"
 			exit -1
