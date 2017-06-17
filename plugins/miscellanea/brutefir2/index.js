@@ -209,8 +209,8 @@ return resolve;
 
   var defer = libQ.defer();
      self.autoconfig()
-//  self.rebuildBRUTEFIRAndRestartDaemon()
-  self.startBrutefirDaemon()
+  self.rebuildBRUTEFIRAndRestartDaemon()
+ // self.startBrutefirDaemon()
 
   .then(function(e) {
     setTimeout(function() {
@@ -887,7 +887,9 @@ resolve();
  //self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
  //console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 	//return defer.promise;
+    setTimeout(function() {
 resolve();
+    }, 2500);
 });
  };
 
