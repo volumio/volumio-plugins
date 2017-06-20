@@ -1,2 +1,3 @@
 # balbuze github repo
-https://gitter.im/balbuze/Lobby
+come to gitter and let's talk about plugin !!!
+https://gitter.im/balbuze/
