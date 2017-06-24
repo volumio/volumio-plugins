@@ -186,11 +186,7 @@ self.restoresettingwhendisabling()
  var defer=libQ.defer();
 self.saveVolumioconfig()
 .then( self.saveHardwareAudioParameters())
-
 .then(self.setLoopbackoutput() )
-
- // debugger;
-
 .then( self.setVolumeParameters() )
 .then( self.restoreVolumioconfig() )
  
@@ -232,7 +228,7 @@ defer.resolve()
   // self.enableLoopBackDevice();
 
   var self = this;
-     self.autoconfig()
+  //   self.autoconfig()
  };
 
  ControllerBrutefir.prototype.onInstall = function() {
@@ -800,9 +796,9 @@ self.checkifrightfilterexits()
   // we need to do it since it will be automatically set to the loopback device by alsa controller
   // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
   // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
-
+setTimeout(function() { 
  //  return new Promise(function(resolve, reject) { 
-  var defer = libQ.defer();
+  //var defer = libQ.defer();
   var settings = {
    // need to set the device that brutefir wants to control volume to
    device: self.config.get('alsa_device'),
@@ -827,9 +823,9 @@ self.checkifrightfilterexits()
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
 //setTimeout(function() {      
 //resolve();
- // }, 3000);
+ }, 4000);
 //});
-  return defer.promise;
+ // return defer.promise;
  };
 
  ControllerBrutefir.prototype.saveHardwareAudioParameters = function() {
