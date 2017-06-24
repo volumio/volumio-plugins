@@ -183,11 +183,19 @@ self.restoresettingwhendisabling()
   var self = this;
  var defer=libQ.defer();
 self.saveVolumioconfig()
-.then( self.saveHardwareAudioParameters() )
-.then( self.setLoopbackoutput() )
-.then( self.setVolumeParameters() )
-.then( self.restoreVolumioconfig() )
-
+.then( self.saveHardwareAudioParameters())
+ .then( self.setLoopbackoutput() )
+ // debugger;
+.then(function(e) {   
+ setTimeout(function() {
+self.setVolumeParameters()
+  }, 2500)
+})
+.then(function(e) {   
+ setTimeout(function() {
+self.restoreVolumioconfig()
+  }, 6000)
+})
 .catch(function(err){
     console.log(err);
 });
@@ -195,15 +203,16 @@ defer.resolve()
   return defer.promise;
 
  };
- 
+
+
  ControllerBrutefir.prototype.onStart = function() {
   var self = this;
 
   var defer = libQ.defer();
      self.autoconfig()
 
-//  self.rebuildBRUTEFIRAndRestartDaemon()
-  self.startBrutefirDaemon()
+  self.rebuildBRUTEFIRAndRestartDaemon()
+self.startBrutefirDaemon()
 
   .then(function(e) {
     setTimeout(function() {

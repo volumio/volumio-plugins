@@ -1,4 +1,4 @@
-June 23th 2017
+June 24th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+24th June
+
+- still wip on autoconf and still not good...
+- first time brutefir config generation
 
 23th June
 
