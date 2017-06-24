@@ -55,6 +55,7 @@ Equalizer appears on several lines
 
 24th June
 
+- working i2s autoconf tested with rpi2 and iqaudio
 - still wip on autoconf and still not good...
 - first time brutefir config generation
 

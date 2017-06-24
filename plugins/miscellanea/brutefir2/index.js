@@ -69,8 +69,8 @@ resolve();
  ControllerBrutefir.prototype.restoreVolumioconfig = function() {
   var self = this;
  return new Promise(function(resolve, reject) {
-  //var defer = libQ.defer();
-
+    setTimeout(function() {
+//  var defer = libQ.defer();
   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
   var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
 try { 
@@ -78,12 +78,14 @@ try {
  } catch (err) {
      self.logger.info('config.txt does not exist');
  }
- // defer.resolve()
-resolve();
-    });
 
-//	resolve();
-//});
+ //defer.resolve()
+//resolve();
+  //  });
+ //return defer.promise;
+     }, 8000)
+	resolve();
+});
  };
 
 
@@ -184,18 +186,14 @@ self.restoresettingwhendisabling()
  var defer=libQ.defer();
 self.saveVolumioconfig()
 .then( self.saveHardwareAudioParameters())
- .then( self.setLoopbackoutput() )
+
+.then(self.setLoopbackoutput() )
+
  // debugger;
-.then(function(e) {   
- setTimeout(function() {
-self.setVolumeParameters()
-  }, 2500)
-})
-.then(function(e) {   
- setTimeout(function() {
-self.restoreVolumioconfig()
-  }, 6000)
-})
+
+.then( self.setVolumeParameters() )
+.then( self.restoreVolumioconfig() )
+ 
 .catch(function(err){
     console.log(err);
 });
@@ -212,7 +210,7 @@ defer.resolve()
      self.autoconfig()
 
   self.rebuildBRUTEFIRAndRestartDaemon()
-self.startBrutefirDaemon()
+//  self.startBrutefirDaemon()
 
   .then(function(e) {
     setTimeout(function() {
@@ -234,7 +232,7 @@ self.startBrutefirDaemon()
   // self.enableLoopBackDevice();
 
   var self = this;
-  //   self.autoconfig()
+     self.autoconfig()
  };
 
  ControllerBrutefir.prototype.onInstall = function() {
@@ -804,7 +802,7 @@ self.checkifrightfilterexits()
   // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
 
  //  return new Promise(function(resolve, reject) { 
-
+  var defer = libQ.defer();
   var settings = {
    // need to set the device that brutefir wants to control volume to
    device: self.config.get('alsa_device'),
@@ -831,6 +829,7 @@ self.checkifrightfilterexits()
 //resolve();
  // }, 3000);
 //});
+  return defer.promise;
  };
 
  ControllerBrutefir.prototype.saveHardwareAudioParameters = function() {
@@ -865,8 +864,6 @@ self.checkifrightfilterexits()
   self.config.set('alsa_outputdevicename', conf);
 
   return defer.promise;
-self.setLoopbackoutput()
-
 
  }
 
@@ -878,13 +875,19 @@ self.setLoopbackoutput()
 //here we set the Loopback output
  ControllerBrutefir.prototype.setLoopbackoutput = function() {
   var self = this;
-  var str = {
+  var defer = libQ.defer();
+ //   setTimeout(function() {
+  var stri = {
    "output_device": {
     "value": "Loopback",
     "label": "Brutefir plugin"
    }
   }
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+ self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+//}, 1000);
+
+  return defer.promise;
   };
 
 //here we restore config of volumio when the plugin is disabled
@@ -893,11 +896,17 @@ self.setLoopbackoutput()
   var self = this;
   var output_restored = self.config.get('alsa_device')
   var output_label = self.config.get('alsa_outputdevicename')
+  var mixert = self.config.get('alsa_mixer')
+  var mixerty = self.config.get('mixer_type')
   var str = {
    "output_device": {
     "value": output_restored,
     "label": output_label
-   }
+		},
+    "mixer": {
+	"value": mixert,
+	"value": mixerty
+   		}
   }
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
  
