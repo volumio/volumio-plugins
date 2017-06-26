@@ -3,23 +3,23 @@
 echo "Installing brutefir dependencies"
 echo "unload Loopback module if exists"
 sudo rmmod snd_aloop
-if ! grep -q 'options snd_aloop index=7' "/etc/modprobe.d/alsa-base.conf";
-	then
-		echo "adding snd_aloop index=7 to /etc/modprobe.d/alsa-base.conf"
-		echo 'options snd_aloop index=7' | tee --append /etc/modprobe.d/alsa-base.conf
-	else
-		echo "/etc/modprobe.d/alsa-base.conf already contains snd_aloop index=7, nothing to do..."
-fi
-if ! grep -q snd_aloop "/etc/modules";
-	then
-		echo "adding snd_aloop to /etc/module"
-		echo 'snd_aloop' | tee --append /etc/modules
-			else
-		echo "/etc/modules already contains snd_aloop, nothing to do..."
-fi
-echo "re-loading snd-loop now"
-echo "loading module now..."
-		sudo modprobe snd_aloop
+#if ! grep -q 'options snd_aloop index=7' "/etc/modprobe.d/alsa-base.conf";
+#	then
+#		echo "adding snd_aloop index=7 to /etc/modprobe.d/alsa-base.conf"
+#		echo 'options snd_aloop index=7' | tee --append /etc/modprobe.d/alsa-base.conf
+#	else
+#		echo "/etc/modprobe.d/alsa-base.conf already contains snd_aloop index=7, nothing to do..."
+#fi
+#if ! grep -q snd_aloop "/etc/modules";
+#	then
+#		echo "adding snd_aloop to /etc/module"
+#		echo 'snd_aloop' | tee --append /etc/modules
+#			else
+#		echo "/etc/modules already contains snd_aloop, nothing to do..."
+#fi
+#echo "re-loading snd-loop now"
+#echo "loading module now..."
+#		sudo modprobe snd_aloop
 sudo apt-get update
 sudo apt-get -y install brutefir bs2b-ladspa
 #echo "checking if brutefir service exists"

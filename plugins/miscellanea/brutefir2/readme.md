@@ -1,4 +1,4 @@
-June 24th 2017
+June 26th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+26th June
+
+- snd_aloop dynamically load by the plugin instead of /etc/modules
+- no more wrinting in /etc/modprobe.d/alsa-base.conf 
 
 24th June
 

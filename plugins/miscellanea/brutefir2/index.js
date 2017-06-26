@@ -41,12 +41,34 @@ self.autoconfig
  };
 
  // Plugin methods -----------------------------------------------------------------------------
- //here we save the volumio config for the next plugin start
+//here we load snd_aloop module to provide a Loopback device
+ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
+     var self = this;
+  var defer = libQ.defer();
+
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7", {
+   uid: 1000,
+   gid: 1000
+  }, function(error, stdout, stderr) {
+   if (error) {
+    self.logger.info('failed to load snd_aloop' + error);
+   } else {
+    self.commandRouter.pushConsoleMessage('snd_aloop loaded');
+ defer.resolve();
+   }
+  });
+ setTimeout(function() {
+
+  return defer.promise;
+ }, 500)
+}; 
+
+//here we save the volumio config for the next plugin start
  ControllerBrutefir.prototype.saveVolumioconfig = function() {
   var self = this;
 
    return new Promise(function(resolve, reject) {
- //var defer = libQ.defer();
+
   var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
   var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json'); 
 try { 
@@ -58,19 +80,15 @@ var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
      self.logger.info('config.txt does not exist');
  }
 resolve();
-    //  defer.resolve()
     });
-
-
  };
-
 
  //here we define the volumio restore config
  ControllerBrutefir.prototype.restoreVolumioconfig = function() {
   var self = this;
  return new Promise(function(resolve, reject) {
     setTimeout(function() {
-//  var defer = libQ.defer();
+
   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
   var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
 try { 
@@ -79,10 +97,6 @@ try {
      self.logger.info('config.txt does not exist');
  }
 
- //defer.resolve()
-//resolve();
-  //  });
- //return defer.promise;
      }, 8000)
 	resolve();
 });
@@ -137,10 +151,10 @@ try {
      scoef = "-3,-1,0,1,2,3,3,2,3,1"
    } else scoef = self.config.get('coef')
 
-   console.log(' raw values are %j', scoef);
+//   console.log(' raw values are %j', scoef);
    var values = scoef.split(',');
 
-   console.log('splitted coef values are %j', values);
+//   console.log('splitted coef values are %j', values);
    var brutefircmd
     //here we compose brutefir command
    brutefircmd = ('lmc eq 0 mag 31/' + values[0] + ', 63/' + values[1] + ', 125/' + values[2] + ', 250/' + values[3] + ', 500/' + values[4] + ', 1000/' + values[5] + ', 2000/' + values[6] + ', 4000/' + values[7] + ', 8000/' + values[8] + ', 16000/' + values[9]);
@@ -154,7 +168,7 @@ try {
   client.on('error', function(e) {
 
    if (e.code == 'ECONNREFUSED') {
-    console.log('Is the brutefir running ?');
+    console.log('Huumm, is brutefir running ?');
     self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
 
    }
@@ -185,6 +199,7 @@ self.restoresettingwhendisabling()
   var self = this;
  var defer=libQ.defer();
 self.saveVolumioconfig()
+.then( self.modprobeLoopBackDevice() )
 .then( self.saveHardwareAudioParameters())
 .then(self.setLoopbackoutput() )
 .then( self.setVolumeParameters() )
@@ -205,8 +220,8 @@ defer.resolve()
   var defer = libQ.defer();
      self.autoconfig()
 
-  self.rebuildBRUTEFIRAndRestartDaemon()
-//  self.startBrutefirDaemon()
+self.rebuildBRUTEFIRAndRestartDaemon()
+ // .then( self.startBrutefirDaemon() )
 
   .then(function(e) {
     setTimeout(function() {
@@ -329,51 +344,7 @@ defer.resolve()
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
     var value;
-    /*	
-     uiconf.sections[2].content[11].value = self.config.get('input_device');
-     		{
-    			var value;
-    			var devicevalue;
-
-    			var cards = self.getAlsaCards();
-
-    			value = self.config.get('output_device');
-    			if (value == undefined){
-    				value = 0;
-    			} else if (value == 'softvolume') {
-    				value = self.config.get('softvolumenumber');
-    			}
-    		
-
-    			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.value', value);
-    			var output_device = self.config.get('output_device');
-    			if (output_device) {
-    				self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', output_device);
-    			} else {
-    				self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', self.getLabelForSelectedCard(cards, value));
-    			}
-
-
-    			for (var i in cards) {
-    				/*if (cards[i].name === 'Audio Jack-t') {
-    					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
-    						value: cards[i].id,
-    						label: 'Audio Jack'
-    					/*});
-    					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
-    						value: cards[i].id,
-    						label: 'HDMI Out'
-    					});
-    				} 
-    				//else {
-    					self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
-    						value: cards[i].id,
-    						label: cards[i].name
-    					});
-    			//	}
-    		}	
-    		}
-    */
+ 
 
     defer.resolve(uiconf);
    })
@@ -904,6 +875,7 @@ setTimeout(function() {
 	"value": mixerty
    		}
   }
+ self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
  
  };
