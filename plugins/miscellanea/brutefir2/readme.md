@@ -1,4 +1,4 @@
-June 26th 2017
+June 27th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+27 th June
+
+- code cleaning
 
 26th June
 
