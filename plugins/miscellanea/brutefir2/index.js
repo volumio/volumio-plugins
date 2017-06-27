@@ -32,7 +32,7 @@
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
-self.autoconfig
+  self.autoconfig
   return libQ.resolve();
  }
 
@@ -41,9 +41,9 @@ self.autoconfig
  };
 
  // Plugin methods -----------------------------------------------------------------------------
-//here we load snd_aloop module to provide a Loopback device
-ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
-     var self = this;
+ //here we load snd_aloop module to provide a Loopback device
+ ControllerBrutefir.prototype.modprobeLoopBackDevice = function() {
+  var self = this;
   var defer = libQ.defer();
 
   exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7", {
@@ -54,52 +54,52 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
     self.logger.info('failed to load snd_aloop' + error);
    } else {
     self.commandRouter.pushConsoleMessage('snd_aloop loaded');
- defer.resolve();
+    defer.resolve();
    }
   });
- setTimeout(function() {
+  setTimeout(function() {
 
-  return defer.promise;
- }, 500)
-}; 
+   return defer.promise;
+  }, 500)
+ };
 
-//here we save the volumio config for the next plugin start
+ //here we save the volumio config for the next plugin start
  ControllerBrutefir.prototype.saveVolumioconfig = function() {
   var self = this;
 
-   return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
 
-  var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
-  var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json'); 
-try { 
-var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt'); 
+   var cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
+   var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
+   try {
+    var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
 
-  // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
 
- } catch (err) {
-     self.logger.info('config.txt does not exist');
- }
-resolve();
-    });
+   } catch (err) {
+    self.logger.info('config.txt does not exist');
+   }
+   resolve();
+  });
  };
 
  //here we define the volumio restore config
  ControllerBrutefir.prototype.restoreVolumioconfig = function() {
   var self = this;
- return new Promise(function(resolve, reject) {
-    setTimeout(function() {
+  return new Promise(function(resolve, reject) {
+   setTimeout(function() {
 
-  var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
-  var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
-try { 
- var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
- } catch (err) {
+    var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
+    var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
+    try {
+     var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+    } catch (err) {
      self.logger.info('config.txt does not exist');
- }
+    }
 
-     }, 8000)
-	resolve();
-});
+   }, 8000)
+   resolve();
+  });
  };
 
 
@@ -124,7 +124,7 @@ try {
 
  };
 
-//here we connect to brutefir to send equalizer settings
+ //here we connect to brutefir to send equalizer settings
  ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
   var self = this;
   var client = new net.Socket();
@@ -151,10 +151,10 @@ try {
      scoef = "-3,-1,0,1,2,3,3,2,3,1"
    } else scoef = self.config.get('coef')
 
-//   console.log(' raw values are %j', scoef);
+   //   console.log(' raw values are %j', scoef);
    var values = scoef.split(',');
 
-//   console.log('splitted coef values are %j', values);
+   //   console.log('splitted coef values are %j', values);
    var brutefircmd
     //here we compose brutefir command
    brutefircmd = ('lmc eq 0 mag 31/' + values[0] + ', 63/' + values[1] + ', 125/' + values[2] + ', 250/' + values[3] + ', 500/' + values[4] + ', 1000/' + values[5] + ', 2000/' + values[6] + ', 4000/' + values[7] + ', 8000/' + values[8] + ', 16000/' + values[9]);
@@ -190,25 +190,25 @@ try {
    gid: 1000
   }, function(error, stdout, stderr) {})
 
-self.restoresettingwhendisabling()
+  self.restoresettingwhendisabling()
 
- return libQ.resolve();
+  return libQ.resolve();
  };
 
  ControllerBrutefir.prototype.autoconfig = function() {
   var self = this;
- var defer=libQ.defer();
-self.saveVolumioconfig()
-.then( self.modprobeLoopBackDevice() )
-.then( self.saveHardwareAudioParameters())
-.then(self.setLoopbackoutput() )
-.then( self.setVolumeParameters() )
-.then( self.restoreVolumioconfig() )
- 
-.catch(function(err){
-    console.log(err);
-});
-defer.resolve()
+  var defer = libQ.defer();
+  self.saveVolumioconfig()
+   .then(self.modprobeLoopBackDevice())
+   .then(self.saveHardwareAudioParameters())
+   .then(self.setLoopbackoutput())
+   .then(self.setVolumeParameters())
+   .then(self.restoreVolumioconfig())
+
+  .catch(function(err) {
+   console.log(err);
+  });
+  defer.resolve()
   return defer.promise;
 
  };
@@ -218,10 +218,10 @@ defer.resolve()
   var self = this;
 
   var defer = libQ.defer();
-     self.autoconfig()
+  self.autoconfig()
 
-self.rebuildBRUTEFIRAndRestartDaemon()
- // .then( self.startBrutefirDaemon() )
+  self.rebuildBRUTEFIRAndRestartDaemon()
+   // .then( self.startBrutefirDaemon() )
 
   .then(function(e) {
     setTimeout(function() {
@@ -344,7 +344,7 @@ self.rebuildBRUTEFIRAndRestartDaemon()
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
     var value;
- 
+
 
     defer.resolve(uiconf);
    })
@@ -376,45 +376,43 @@ self.rebuildBRUTEFIRAndRestartDaemon()
 
 
  };
-//here we test if the name.ext of filter exists
-ControllerBrutefir.prototype.checkifleftfilterexits = function() {
-var self = this ;
-var filterfolder = "/data/INTERNAL/brutefirfilters/";
-var filterfile = self.config.get('leftfilter');
-var filetocheck;
-filetocheck = filterfolder + filterfile ;
-console.log(filetocheck)
-var stats;
+ //here we test if the name.ext of filter exists
+ ControllerBrutefir.prototype.checkifleftfilterexits = function() {
+  var self = this;
+  var filterfolder = "/data/INTERNAL/brutefirfilters/";
+  var filterfile = self.config.get('leftfilter');
+  var filetocheck;
+  filetocheck = filterfolder + filterfile;
+  console.log(filetocheck)
+  var stats;
 
-try {
-  stats = fs.statSync(filetocheck);
-  console.log("File exists.");
-}
-catch (e) {
-  console.log("File does not exist.");
-self.commandRouter.pushToastMessage('error', "Wrong left filter name", 'check the spelling or extension');
-}
+  try {
+   stats = fs.statSync(filetocheck);
+   console.log("File exists.");
+  } catch (e) {
+   console.log("File does not exist.");
+   self.commandRouter.pushToastMessage('error', "Wrong left filter name", 'check the spelling or extension');
+  }
 
 
  };
-//here we test if the name.ext of filter exists
-ControllerBrutefir.prototype.checkifrightfilterexits = function() {
-var self = this ;
-var filterfolder = "/data/INTERNAL/brutefirfilters/";
-var filterfile = self.config.get('rightfilter');
-var filetocheck;
-filetocheck = filterfolder + filterfile ;
-var 
+ //here we test if the name.ext of filter exists
+ ControllerBrutefir.prototype.checkifrightfilterexits = function() {
+  var self = this;
+  var filterfolder = "/data/INTERNAL/brutefirfilters/";
+  var filterfile = self.config.get('rightfilter');
+  var filetocheck;
+  filetocheck = filterfolder + filterfile;
+  var
    stats;
 
-try {
-  stats = fs.statSync(filetocheck);
-  console.log("File exists.");
-}
-catch (e) {
-  console.log("File does not exist.");
-self.commandRouter.pushToastMessage('error', "Wrong right filter name", 'check the spelling or extension');
-}
+  try {
+   stats = fs.statSync(filetocheck);
+   console.log("File exists.");
+  } catch (e) {
+   console.log("File does not exist.");
+   self.commandRouter.pushToastMessage('error', "Wrong right filter name", 'check the spelling or extension');
+  }
 
 
  };
@@ -570,8 +568,8 @@ self.commandRouter.pushToastMessage('error', "Wrong right filter name", 'check t
       defer.reject(new Error(err));
      else defer.resolve();
     });
-self.checkifleftfilterexits()
-self.checkifrightfilterexits()
+    self.checkifleftfilterexits()
+    self.checkifrightfilterexits()
     self.createBAUERFILTERFile()
    });
 
@@ -585,7 +583,7 @@ self.checkifrightfilterexits()
 
  };
 
-//here we save the Bauer file config
+ //here we save the Bauer file config
  ControllerBrutefir.prototype.createBAUERFILTERFile = function() {
   var self = this;
 
@@ -635,7 +633,7 @@ self.checkifrightfilterexits()
 
  };
 
-//here we save the equalizer settings
+ //here we save the equalizer settings
  ControllerBrutefir.prototype.saveBrutefirconfigAccount1 = function(data) {
   var self = this;
   var defer = libQ.defer();
@@ -679,7 +677,7 @@ self.checkifrightfilterexits()
 
  };
 
-//here we save the brutefir config.json
+ //here we save the brutefir config.json
  ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
   var self = this;
   var output_device
@@ -767,36 +765,36 @@ self.checkifrightfilterexits()
   // we need to do it since it will be automatically set to the loopback device by alsa controller
   // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
   // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
-setTimeout(function() { 
- //  return new Promise(function(resolve, reject) { 
-  //var defer = libQ.defer();
-  var settings = {
-   // need to set the device that brutefir wants to control volume to
-   device: self.config.get('alsa_device'),
-   // need to set the device name of the original device brutefir is controlling
-   name: self.config.get('alsa_outputdevicename'),
-   // Mixer name
-   mixer: self.config.get('alsa_mixer'),
-   // hardware, software, none
-   mixertype: self.config.get('alsa_mixer_type'),
-   // max volume setting
-   maxvolume: self.config.get('alsa_volumemax'),
-   // log or linear
-   volumecurve: self.config.get('alsa_volumecurvemode'),
-   //
-   volumestart: self.config.get('alsa_volumestart'),
-   //
-   volumesteps: self.config.get('alsa_volumesteps')
-  }
-  console.log(settings)
-   // once completed, uncomment
+  setTimeout(function() {
+   //  return new Promise(function(resolve, reject) { 
+   //var defer = libQ.defer();
+   var settings = {
+    // need to set the device that brutefir wants to control volume to
+    device: self.config.get('alsa_device'),
+    // need to set the device name of the original device brutefir is controlling
+    name: self.config.get('alsa_outputdevicename'),
+    // Mixer name
+    mixer: self.config.get('alsa_mixer'),
+    // hardware, software, none
+    mixertype: self.config.get('alsa_mixer_type'),
+    // max volume setting
+    maxvolume: self.config.get('alsa_volumemax'),
+    // log or linear
+    volumecurve: self.config.get('alsa_volumecurvemode'),
+    //
+    volumestart: self.config.get('alsa_volumestart'),
+    //
+    volumesteps: self.config.get('alsa_volumesteps')
+   }
+   console.log(settings)
+    // once completed, uncomment
 
-  return self.commandRouter.volumioUpdateVolumeSettings(settings)
-//setTimeout(function() {      
-//resolve();
- }, 4000);
-//});
- // return defer.promise;
+   return self.commandRouter.volumioUpdateVolumeSettings(settings)
+    //setTimeout(function() {      
+    //resolve();
+  }, 4000);
+  //});
+  // return defer.promise;
  };
 
  ControllerBrutefir.prototype.saveHardwareAudioParameters = function() {
@@ -805,28 +803,28 @@ setTimeout(function() {
 
   var conf;
   // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
- //volumestart
+  //volumestart
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumestart');
   self.config.set('alsa_volumestart', conf);
- //maxvolume
+  //maxvolume
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumemax');
   self.config.set('alsa_volumemax', conf);
- //volumecurve
+  //volumecurve
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumecurvemode');
   self.config.set('alsa_volumecurvemode', conf);
   //device
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
   self.config.set('alsa_device', conf);
- //mixer_type
+  //mixer_type
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
   self.config.set('alsa_mixer_type', conf);
- //mixer
+  //mixer
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer');
   self.config.set('alsa_mixer', conf);
   //volumesteps
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
   self.config.set('alsa_volumesteps', conf);
-//name
+  //name
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
   self.config.set('alsa_outputdevicename', conf);
 
@@ -839,25 +837,25 @@ setTimeout(function() {
   return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
  };
 
-//here we set the Loopback output
+ //here we set the Loopback output
  ControllerBrutefir.prototype.setLoopbackoutput = function() {
   var self = this;
   var defer = libQ.defer();
- //   setTimeout(function() {
+  //   setTimeout(function() {
   var stri = {
    "output_device": {
     "value": "Loopback",
     "label": "Brutefir plugin"
    }
   }
- self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-//}, 1000);
+  //}, 1000);
 
   return defer.promise;
-  };
+ };
 
-//here we restore config of volumio when the plugin is disabled
+ //here we restore config of volumio when the plugin is disabled
  ControllerBrutefir.prototype.restoresettingwhendisabling = function() {
 
   var self = this;
@@ -869,15 +867,15 @@ setTimeout(function() {
    "output_device": {
     "value": output_restored,
     "label": output_label
-		},
-    "mixer": {
-	"value": mixert,
-	"value": mixerty
-   		}
+   },
+   "mixer": {
+    "value": mixert,
+    "value": mixerty
+   }
   }
- self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
+  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
- 
+
  };
 
  ControllerBrutefir.prototype.getAdditionalConf = function(type, controller, data) {

@@ -1,0 +1,13 @@
+    ctl.equal {
+      type equal;
+    }
+
+    pcm.plugequal {
+      type equal;
+      slave.pcm "plughw:1,0";
+    }
+
+    pcm.!default {
+      type plug;
+      slave.pcm plugequal;
+    }
