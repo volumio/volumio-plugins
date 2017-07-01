@@ -1,20 +1,20 @@
 {
 	"page": {
-		"label": "TRANSLATE.VOLSPIMPLEEQUAL.VOLUMIO_DSP"
+		"label": "TRANSLATE.VOLUMIO_DSP"
 	},
 	"sections": [
 		{
 			"id": "equalizer",
 			"element": "section",
-			"label": "TRANSLATE.VOLSPIMPLEEQUAL.VOLSPIMPLEEQUAL_EQUALIZER_SETTINGS",
+			"label": "TRANSLATE.VOLSPIMPLEEQUAL_EQUALIZER_SETTINGS",
 			"icon": "fa-sliders fa-rotate-90",
 			"onSave": {
 				"type": "plugin",
-				"endpoint": "miscellanea/brutefir",
-				"method": "saveBrutefirconfigAccount1"
+				"endpoint": "miscellanea/volsimpleequal",
+				"method": "savealsaequal"
 			},
 			"saveButton": {
-				"label": "TRANSLATE.VOLSPIMPLEEQUAL.APPLY",
+				"label": "TRANSLATE.APPLY",
 				"data": [
 					"enablemyeq",
 					"eqprofile",
@@ -73,7 +73,7 @@
 				{
 					"id": "coef",
 					"element": "equalizer",
-					"label": "TRANSLATE.VOLSPIMPLEEQUAL.GAIN_EQUALIZER",
+					"label": "TRANSLATE.GAIN_EQUALIZER",
 					"description": "",
 					"doc": "Create your own equalizer",
 					"visibleIf": {
@@ -84,81 +84,81 @@
 						"orientation": "vertical",
 						"bars": [
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--31Hz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--63Hz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--125Hz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--250Hz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--500Hz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--1KHz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--2KHz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--4KHz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--8KHz"],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "0.5",
+								"min": 0,
+								"max": 100,
+								"step": "5",
 								"value": 0,
 								"ticksLabels": ["--16KHz"],
 								"tooltip": "show"

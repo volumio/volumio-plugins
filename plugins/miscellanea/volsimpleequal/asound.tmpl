@@ -4,7 +4,7 @@
 
     pcm.plugequal {
       type equal;
-      slave.pcm "plughw:1,0";
+      slave.pcm "plughw:${hwout}";
     }
 
     pcm.!default {
