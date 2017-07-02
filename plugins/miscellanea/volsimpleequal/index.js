@@ -41,7 +41,49 @@
  };
 
  // Plugin methods -----------------------------------------------------------------------------
- 
+ //here we load snd_aloop module to provide a Loopback device 
+ ControllerVolsimpleequal.prototype.modprobeLoopBackDevice = function() {
+  var self = this;
+  var defer = libQ.defer();
+
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7", {
+   uid: 1000,
+   gid: 1000
+  }, function(error, stdout, stderr) {
+   if (error) {
+    self.logger.info('failed to load snd_aloop' + error);
+   } else {
+    self.commandRouter.pushConsoleMessage('snd_aloop loaded');
+    defer.resolve();
+   }
+  });
+  setTimeout(function() {
+
+   return defer.promise;
+  }, 500)
+ };
+
+// here we make the bridge between Loopback and equal
+ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
+  var self = this;
+  var defer = libQ.defer();
+
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P equal -t 20000 -W 1000", {
+   uid: 1000,
+   gid: 1000
+  }, function(error, stdout, stderr) {
+   if (error) {
+    self.logger.info('failed to bridge' + error);
+   } else {
+    self.commandRouter.pushConsoleMessage('bridge ok');
+    defer.resolve();
+   }
+  });
+  setTimeout(function() {
+
+   return defer.promise;
+  }, 500)
+ };
  //here we save the volumio config for the next plugin start
  ControllerVolsimpleequal.prototype.saveVolumioconfig = function() {
   var self = this;
@@ -94,9 +136,9 @@
     if (self.config.get('eqprofile') === 'flat')
      scoef = "0,0,0,0,0,0,0,0,0,0"
     else if (self.config.get('eqprofile') === 'loudness')
-     scoef = "4,3,0,0,-1,0,-1,-2,3,0"
+     scoef = "60,50,0,0,10,20,10,40,50,20"
     else if (self.config.get('eqprofile') === 'rock')
-     scoef = "4,3,2,0,-1,-1,0,1,2,3"
+     scoef = "50,40,30,10,0,0,0,20,30,40"
     else if (self.config.get('eqprofile') === 'classic')
      scoef = "4,3,2,1,-1,-1,0,1,2,3"
     else if (self.config.get('eqprofile') === 'bass')
@@ -144,6 +186,8 @@ console.log("/bin/echo /usr/bin/amixer -D equal cset numid="+ [i] + " "+ coefarr
   var self = this;
   var defer = libQ.defer();
   self.saveVolumioconfig()
+   .then(self.modprobeLoopBackDevice())
+   .then(self.bridgeLoopBackequal())
    .then(self.saveHardwareAudioParameters())
    .then(self.setalsaequaloutput())
    .then(self.setVolumeParameters())
@@ -408,7 +452,7 @@ self.createASOUNDFile()
   //   setTimeout(function() {
   var stri = {
    "output_device": {
-    "value": "equal",
+    "value": "Loopback",
     "label": "equalizer plugin"
    }
   }
