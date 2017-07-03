@@ -1,13 +1,16 @@
+ 
     ctl.equal {
-      type equal;
+      type equal
+      controls /home/volumio/.alsaequal.bin
     }
 
     pcm.plugequal {
-      type equal;
-      slave.pcm "plughw:${hwout}";
+      type equal
+      slave.pcm   "plughw:${hwout}"
+      controls /home/volumio/.alsaequal.bin
     }
 
-    pcm.!default {
-      type plug;
-      slave.pcm plugequal;
+    pcm.equal {
+      type plug
+      slave.pcm plugequal
     }

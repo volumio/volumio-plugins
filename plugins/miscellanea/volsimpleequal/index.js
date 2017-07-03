@@ -68,7 +68,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plugequal -t 20000 -W 1000", {
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P equal -t 20000 -W 1000", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
