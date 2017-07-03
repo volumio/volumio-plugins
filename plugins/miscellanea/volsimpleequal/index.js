@@ -68,7 +68,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P equal -t 20000 -W 1000", {
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plugequal -t 20000 -W 1000", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -104,7 +104,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   });
  };
 
- //here we define the volumio restore config
+ //here we define the volumio rore config
  ControllerVolsimpleequal.prototype.restoreVolumioconfig = function() {
   var self = this;
   return new Promise(function(resolve, reject) {
@@ -178,8 +178,11 @@ console.log("/bin/echo /usr/bin/amixer -D equal cset numid="+ [i] + " "+ coefarr
 
  ControllerVolsimpleequal.prototype.onStop = function() {
   var self = this;
+ var defer=libQ.defer();
   self.restoresettingwhendisabling()
-  
+    defer.resolve();
+
+return libQ.resolve();
  };
 
  ControllerVolsimpleequal.prototype.autoconfig = function() {

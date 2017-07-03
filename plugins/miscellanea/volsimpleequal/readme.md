@@ -1,8 +1,15 @@
+03 july
 
-2nd July 2017
+
+
 folder for volsimpleequal volumio simple equalizer
 based on alsaequal
+Can't work with softvol !!!!
 NOTHING USEABLE YET!
+
+03rd July
+- add onStop promise
+- plugequal instead of equal
 
 2nd July
 - working version ! But Presets non working...
