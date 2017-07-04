@@ -1,4 +1,4 @@
-03 july
+04 july
 
 
 
@@ -6,6 +6,9 @@ folder for volsimpleequal volumio simple equalizer
 based on alsaequal
 Can't work with softvol !!!!
 NOTHING USEABLE YET!
+
+04th July
+- correction in install.sh
 
 03rd July
 - add onStop promise

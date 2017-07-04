@@ -5,7 +5,7 @@ echo "unload Loopback module if exists"
 sudo rmmod snd_aloop
 
 sudo apt-get update
-sudo apt-get install caps libasound2-plugin-equal
+sudo apt-get -y install libasound2-plugin-equal
 
 #required to end the plugin install
 echo "plugininstallend"
