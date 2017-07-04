@@ -60,7 +60,7 @@
   setTimeout(function() {
 
    return defer.promise;
-  }, 500)
+  }, 1000)
  };
 
 // here we make the bridge between Loopback and equal
@@ -68,7 +68,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P equal -t 20000 -W 1000", {
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 20000", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -82,7 +82,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   setTimeout(function() {
 
    return defer.promise;
-  }, 500)
+  }, 1000)
  };
  //here we save the volumio config for the next plugin start
  ControllerVolsimpleequal.prototype.saveVolumioconfig = function() {
