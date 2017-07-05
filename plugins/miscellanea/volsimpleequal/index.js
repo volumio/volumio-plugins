@@ -1,6 +1,6 @@
  'use strict';
 
-// var io = require('socket.io-client');
+ var io = require('socket.io-client');
  var fs = require('fs-extra');
  var libFsExtra = require('fs-extra');
  var exec = require('child_process').exec;
@@ -60,7 +60,7 @@
   setTimeout(function() {
 
    return defer.promise;
-  }, 1000)
+  }, 1500)
  };
 
 // here we make the bridge between Loopback and equal
@@ -68,7 +68,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 20000", {
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 20000 -w 500", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -82,7 +82,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   setTimeout(function() {
 
    return defer.promise;
-  }, 1000)
+  }, 1500)
  };
  //here we save the volumio config for the next plugin start
  ControllerVolsimpleequal.prototype.saveVolumioconfig = function() {
@@ -134,17 +134,17 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
 
    if (self.config.get('enablemyeq') == false) {
     if (self.config.get('eqprofile') === 'flat')
-     scoef = "0,0,0,0,0,0,0,0,0,0"
+     scoef = "60,60,60,60,60,60,60,60,60,60"
     else if (self.config.get('eqprofile') === 'loudness')
-     scoef = "60,50,0,0,10,20,10,40,50,20"
+     scoef = "67,60,50,50,42,50,46,32,65,50"
     else if (self.config.get('eqprofile') === 'rock')
-     scoef = "50,40,30,10,0,0,0,20,30,40"
+     scoef = "67,62,60,55,49,46,53,58,62,64"
     else if (self.config.get('eqprofile') === 'classic')
-     scoef = "4,3,2,1,-1,-1,0,1,2,3"
+     scoef = "666,62,60,59,45,49,58,60,62"
     else if (self.config.get('eqprofile') === 'bass')
-     scoef = "0,6,7,6,5,0,0,0,0,0"
+     scoef = "68,67,69,60,46,50,51,53,52"
     else if (self.config.get('eqprofile') === 'voice')
-     scoef = "-3,-1,0,1,2,3,3,2,3,1"
+     scoef = "31,36,40,51,63,79,73,67,53,52"
    } else scoef = self.config.get('coef')
 
    //   console.log(' raw values are %j', scoef);
@@ -152,9 +152,9 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
 
    //   console.log('splitted coef values are %j', values);
    var alsaequalcmd
-var i
-var j
-var coefarray = scoef.split(',');
+	var i
+	var j
+	var coefarray = scoef.split(',');
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarray) {
@@ -166,22 +166,14 @@ console.log("/bin/echo /usr/bin/amixer -D equal cset numid="+ [i] + " "+ coefarr
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {})
-
-
     }
-
-
-
-
  };
-
 
  ControllerVolsimpleequal.prototype.onStop = function() {
   var self = this;
  var defer=libQ.defer();
   self.restoresettingwhendisabling()
     defer.resolve();
-
 return libQ.resolve();
  };
 
@@ -255,11 +247,11 @@ self.createASOUNDFile()
     uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
     uiconf.sections[0].content[1].value = self.config.get('eqprofile');
 /*
-
     value = self.config.get('eqprofile');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 */
+
     //for coef in equalizer
     // we retrieve the coefficient configuration
     var coefconf = self.config.get('coef');
@@ -271,7 +263,7 @@ self.createASOUNDFile()
      uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
 
-  //  uiconf.sections[0].content[2].value = self.config.get('coef');
+
     defer.resolve(uiconf);
    })
    .fail(function() {
@@ -289,9 +281,7 @@ self.createASOUNDFile()
    if (options[i].value == key)
     return options[i].label;
   }
-
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
-
  };
 
  ControllerVolsimpleequal.prototype.setUIConfig = function(data) {

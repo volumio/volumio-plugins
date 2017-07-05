@@ -1,11 +1,14 @@
-04 july
+05 july
 
 
 
 folder for volsimpleequal volumio simple equalizer
 based on alsaequal
 Can't work with softvol !!!!
-NOTHING USEABLE YET!
+
+05th
+- mod timeout settings in index.js
+- correct values for presets - but srcolling list not working
 
 04th July
 - correction in install.sh
