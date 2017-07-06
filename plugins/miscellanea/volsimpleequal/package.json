@@ -1,6 +1,6 @@
 {
   "name": "volsimpleequal",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Volsimpleequal plugin for Volumio2. Provide an equalizerbased on alsaequal",
   "main": "index.js",
   "scripts": {
@@ -9,15 +9,13 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio simple equalizer 0.0.7",
+    "prettyName": "Volumio simple equalizer 0.0.8",
     "plugin_type": "miscellanea"
   },
   "dependencies": {
-    "socket.io-client": "^1.4.6",
     "fs-extra": "^0.28.0",
     "child_process":"",
     "kew": "^0.7.0",
-    "net": "^1.0.2",
     "v-conf": "^0.10.0"
-      }
+          }
 }

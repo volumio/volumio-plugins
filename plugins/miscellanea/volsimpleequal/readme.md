@@ -1,10 +1,37 @@
-05 july
+06 july 2017
 
 
+		Volsimpleequal volumio simple equalizer
+A simple Equalizer plugin for Volumio2.
+Based on alsaequal https://github.com/raedwulf/alsaequal
 
-folder for volsimpleequal volumio simple equalizer
-based on alsaequal
 Can't work with softvol !!!!
+
+Requirement
+
+ A working well configured volumio > 2.041
+
+How to install ?
+
+ Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
+ Enable it and... enjoy
+
+What is working ?
+
+ Install, equalizer settings, presets settings
+
+What is not working
+
+ May not work with some source / output.
+ Equalizer appears on several lines
+ It still a beta version, need feedback !
+
+06th
+- remove useless node modules
+- add comment in index.js
+- change loudness values
+- preset  scrolling list ok
+- code cleaning
 
 05th
 - mod timeout settings in index.js

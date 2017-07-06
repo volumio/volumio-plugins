@@ -1,15 +1,14 @@
  'use strict';
 
- var io = require('socket.io-client');
+ //var io = require('socket.io-client');
  var fs = require('fs-extra');
  var libFsExtra = require('fs-extra');
  var exec = require('child_process').exec;
  var execSync = require('child_process').execSync;
  var libQ = require('kew');
-// var libNet = require('net');
-// var net = require('net');
+ // var libNet = require('net');
+ // var net = require('net');
  var config = new(require('v-conf'))();
-
 
 
  // Define the ControllerVolsimpleequal class
@@ -32,9 +31,8 @@
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
- // self.autoconfig
   return libQ.resolve();
- }
+ };
 
  ControllerVolsimpleequal.prototype.getConfigurationFiles = function() {
   return ['config.json'];
@@ -63,8 +61,8 @@
   }, 1500)
  };
 
-// here we make the bridge between Loopback and equal
-ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
+ // here we make the bridge between Loopback and equal
+ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
 
@@ -84,6 +82,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
    return defer.promise;
   }, 1500)
  };
+
  //here we save the volumio config for the next plugin start
  ControllerVolsimpleequal.prototype.saveVolumioconfig = function() {
   var self = this;
@@ -125,58 +124,59 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
 
  //here we send equalizer settings
  ControllerVolsimpleequal.prototype.sendequal = function(defer) {
-	var self = this;
-    var eqprofile = self.config.get('eqprofile')
-   var coef = self.config.get('coef')
-   var enablemyeq = self.config.get('enablemyeq')
-   var scoef
-   console.log('myeq or preset =' + enablemyeq)
+  var self = this;
+  var eqprofile = self.config.get('eqprofile')
+  var coef = self.config.get('coef')
+  var enablemyeq = self.config.get('enablemyeq')
+  var scoef
+  console.log('myeq or preset =' + enablemyeq)
 
-   if (self.config.get('enablemyeq') == false) {
-    if (self.config.get('eqprofile') === 'flat')
-     scoef = "60,60,60,60,60,60,60,60,60,60"
-    else if (self.config.get('eqprofile') === 'loudness')
-     scoef = "67,60,50,50,42,50,46,32,65,50"
-    else if (self.config.get('eqprofile') === 'rock')
-     scoef = "67,62,60,55,49,46,53,58,62,64"
-    else if (self.config.get('eqprofile') === 'classic')
-     scoef = "666,62,60,59,45,49,58,60,62"
-    else if (self.config.get('eqprofile') === 'bass')
-     scoef = "68,67,69,60,46,50,51,53,52"
-    else if (self.config.get('eqprofile') === 'voice')
-     scoef = "31,36,40,51,63,79,73,67,53,52"
-   } else scoef = self.config.get('coef')
+  if (self.config.get('enablemyeq') == false) {
+   if (self.config.get('eqprofile') === 'flat')
+    scoef = "60,60,60,60,60,60,60,60,60,60"
+   else if (self.config.get('eqprofile') === 'loudness')
+    scoef = "67,60,50,50,42,50,46,39,65,50"
+   else if (self.config.get('eqprofile') === 'rock')
+    scoef = "67,62,60,55,49,46,53,58,62,64"
+   else if (self.config.get('eqprofile') === 'classic')
+    scoef = "666,62,60,59,45,49,58,60,62"
+   else if (self.config.get('eqprofile') === 'bass')
+    scoef = "68,67,69,60,46,50,51,53,52"
+   else if (self.config.get('eqprofile') === 'voice')
+    scoef = "31,36,40,51,63,79,73,67,53,52"
+  } else scoef = self.config.get('coef')
 
-   //   console.log(' raw values are %j', scoef);
-   var values = scoef.split(',');
+  //   console.log(' raw values are %j', scoef);
+  var values = scoef.split(',');
 
-   //   console.log('splitted coef values are %j', values);
-   var alsaequalcmd
-	var i
-	var j
-	var coefarray = scoef.split(',');
-    //console.log(coefarray)
-    // for every value that we put in array, we set the according bar value
-    for (var i in coefarray) {
-j=i
-i = ++i
+  //   console.log('splitted coef values are %j', values);
+  var alsaequalcmd
+  var i
+  var j
+  var coefarray = scoef.split(',');
+  //console.log(coefarray)
+  // for every value that we put in array, we set the according bar value
+  for (var i in coefarray) {
+   j = i
+   i = ++i
 
-console.log("/bin/echo /usr/bin/amixer -D equal cset numid="+ [i] + " "+ coefarray[j])
- exec("/usr/bin/amixer -D equal cset numid=" +[i] + " "+ coefarray[j], {
-   uid: 1000,
-   gid: 1000
-  }, function(error, stdout, stderr) {})
-    }
+   console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + coefarray[j])
+   exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + coefarray[j], {
+    uid: 1000,
+    gid: 1000
+   }, function(error, stdout, stderr) {})
+  }
  };
 
  ControllerVolsimpleequal.prototype.onStop = function() {
   var self = this;
- var defer=libQ.defer();
+  var defer = libQ.defer();
   self.restoresettingwhendisabling()
-    defer.resolve();
-return libQ.resolve();
+  defer.resolve();
+  return libQ.resolve();
  };
 
+ //here we define function used when autoconf is called
  ControllerVolsimpleequal.prototype.autoconfig = function() {
   var self = this;
   var defer = libQ.defer();
@@ -193,7 +193,6 @@ return libQ.resolve();
   });
   defer.resolve()
   return defer.promise;
-
  };
 
 
@@ -202,30 +201,23 @@ return libQ.resolve();
 
   var defer = libQ.defer();
   self.autoconfig()
-self.createASOUNDFile()
-.then(function(e)
-		{
-			self.logger.info('Volsimpleequal Started');
-			defer.resolve();
-		})
-		.fail(function(e)
-		{
-			defer.reject(new Error());
-		});
-//self.sendequal()
-  //this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildBRUTEFIRAndRestartDaemon.bind(this));
-  return defer.promise;
+  self.createASOUNDFile()
+   .then(function(e) {
+    self.logger.info('Volsimpleequal Started');
+    defer.resolve();
+   })
+   .fail(function(e) {
+    defer.reject(new Error());
+   });
+   return defer.promise;
  };
 
  ControllerVolsimpleequal.prototype.onRestart = function() {
-
   var self = this;
-  //   self.autoconfig()
  };
 
  ControllerVolsimpleequal.prototype.onInstall = function() {
   var self = this;
-
   //	//Perform your installation tasks here
  };
 
@@ -237,7 +229,6 @@ self.createASOUNDFile()
  ControllerVolsimpleequal.prototype.getUIConfig = function() {
   var self = this;
   var defer = libQ.defer();
- 
   var lang_code = this.commandRouter.sharedVars.get('language_code');
   self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
     __dirname + '/i18n/strings_en.json',
@@ -245,13 +236,12 @@ self.createASOUNDFile()
    .then(function(uiconf) {
     //equalizer section
     uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
-    uiconf.sections[0].content[1].value = self.config.get('eqprofile');
-/*
+  //  uiconf.sections[0].content[1].value = self.config.get('eqprofile');
+  	var value;
     value = self.config.get('eqprofile');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-*/
-
+	
     //for coef in equalizer
     // we retrieve the coefficient configuration
     var coefconf = self.config.get('coef');
@@ -263,7 +253,6 @@ self.createASOUNDFile()
      uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
 
-
     defer.resolve(uiconf);
    })
    .fail(function() {
@@ -271,9 +260,9 @@ self.createASOUNDFile()
    })
   return defer.promise
 
- 
-};
- 
+
+ };
+
 
  ControllerVolsimpleequal.prototype.getLabelForSelect = function(options, key) {
   var n = options.length;
@@ -300,7 +289,7 @@ self.createASOUNDFile()
   //Perform your installation tasks here
  };
 
-  //here we save the asound.conf file config
+ //here we save the asound.conf file config
  ControllerVolsimpleequal.prototype.createASOUNDFile = function() {
   var self = this;
 
@@ -314,7 +303,7 @@ self.createASOUNDFile()
      return console.log(err);
     }
     var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
-   
+
 
     fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
      if (err) {
@@ -337,14 +326,9 @@ self.createASOUNDFile()
      }
     });
 
-
    });
-
-
   } catch (err) {}
-
   return defer.promise;
-
  };
 
  //here we save the equalizer settings
@@ -359,7 +343,7 @@ self.createASOUNDFile()
   self.sendequal(defer);
   return defer.promise;
  };
-  
+
  ControllerVolsimpleequal.prototype.setVolumeParameters = function() {
   var self = this;
   // here we set the volume controller in /volumio/app/volumecontrol.js
@@ -431,7 +415,7 @@ self.createASOUNDFile()
 
   return defer.promise;
 
- }
+ };
 
  ControllerVolsimpleequal.prototype.setAdditionalConf = function(type, controller, data) {
   var self = this;
