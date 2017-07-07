@@ -1,17 +1,16 @@
  
-    ctl.equal {
-      type equal
-
-    }
-
-    pcm.plugequal {
-      type equal
-      slave.pcm   "plughw:${hwout},0"
-
-    }
-
-    pcm.!default {
-      type plug;
-      slave.pcm equal;
-    }
-
+pcm.!default { 
+ type plug 
+ slave.pcm plugequal; 
+} 
+ctl.equal { 
+ type equal; 
+} 
+pcm.plugequal { 
+ type equal; 
+ slave.pcm "plughw:${hwout},0"; 
+}
+pcm.equal {
+ type plug;
+ slave.pcm plugequal;
+ }

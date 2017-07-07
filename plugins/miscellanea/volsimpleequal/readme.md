@@ -1,4 +1,4 @@
-06 july 2017
+07 july 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -25,6 +25,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+07th
+- fix for audio jack
+- probable fix for miscellaneous formats -> float
 
 06th
 - remove useless node modules
