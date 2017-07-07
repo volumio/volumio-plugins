@@ -30,6 +30,7 @@ What is not working
 - fix for audio jack
 - probable fix for miscellaneous formats -> float
 - onstop now kills alsaloop
+- redefine order in autoconfig
 
 06th
 - remove useless node modules

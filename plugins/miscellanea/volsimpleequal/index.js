@@ -58,26 +58,25 @@
   setTimeout(function() {
 
    return defer.promise;
-  }, 1500)
+  }, 2500)
  };
 
  // here we make the bridge between Loopback and equal
  ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function() {
   var self = this;
   var defer = libQ.defer();
-
+  setTimeout(function() {
   exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 20000 -w 500", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
    if (error) {
-    self.logger.info('failed to bridge' + error);
+    self.logger.info('failed to bridge ' + error);
    } else {
     self.commandRouter.pushConsoleMessage('bridge ok');
     defer.resolve();
    }
   });
-  setTimeout(function() {
 
    return defer.promise;
   }, 1500)
@@ -192,12 +191,12 @@
   var defer = libQ.defer();
   self.saveVolumioconfig()
    .then(self.modprobeLoopBackDevice())
-   .then(self.bridgeLoopBackequal())
+   .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.setalsaequaloutput())
    .then(self.setVolumeParameters())
    .then(self.restoreVolumioconfig())
-
+   .then(self.bridgeLoopBackequal())
   .catch(function(err) {
    console.log(err);
   });
@@ -211,7 +210,7 @@
 
   var defer = libQ.defer();
   self.autoconfig()
-  self.createASOUNDFile()
+//  self.createASOUNDFile()
    .then(function(e) {
     self.logger.info('Volsimpleequal Started');
     defer.resolve();
@@ -338,7 +337,9 @@
 
    });
   } catch (err) {}
+setTimeout(function() {
   return defer.promise;
+  }, 2000);
  };
 
  //here we save the equalizer settings
