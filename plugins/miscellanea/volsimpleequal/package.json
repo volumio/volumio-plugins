@@ -1,7 +1,7 @@
 {
   "name": "volsimpleequal",
-  "version": "0.0.9",
-  "description": "Volsimpleequal plugin for Volumio2. Provide an equalizerbased on alsaequal",
+  "version": "0.1.0",
+  "description": "Volsimpleequal plugin for Volumio2. Provide an equalizer based on alsaequal",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio simple equalizer 0.0.9",
+    "prettyName": "Volumio simple equalizer 0.1.0",
     "plugin_type": "miscellanea"
   },
   "dependencies": {

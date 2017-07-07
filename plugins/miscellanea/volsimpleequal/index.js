@@ -172,6 +172,16 @@
   var self = this;
   var defer = libQ.defer();
   self.restoresettingwhendisabling()
+ exec("/usr/bin/killall alsaloop", {
+   uid: 1000,
+   gid: 1000
+  }, function(error, stdout, stderr) {
+   if (error) {
+    self.logger.info('failed to stop alsaloop' + error);
+   } else {
+    self.commandRouter.pushConsoleMessage('alsaloop stopped');
+   }
+  });
   defer.resolve();
   return libQ.resolve();
  };

@@ -29,6 +29,7 @@ What is not working
 07th
 - fix for audio jack
 - probable fix for miscellaneous formats -> float
+- onstop now kills alsaloop
 
 06th
 - remove useless node modules
