@@ -182,7 +182,7 @@
 
  ControllerBrutefir.prototype.onStop = function() {
   var self = this;
-
+  var defer = libQ.defer();
   self.logger.info("Stopping Brutefir service");
 
   exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {
@@ -191,7 +191,7 @@
   }, function(error, stdout, stderr) {})
 
   self.restoresettingwhendisabling()
-
+  defer.resolve();
   return libQ.resolve();
  };
 

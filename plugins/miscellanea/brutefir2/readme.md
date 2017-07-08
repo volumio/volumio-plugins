@@ -1,4 +1,4 @@
-June 27th 2017
+July 08th 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,10 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+08 th July
+
+- correct promise onstop
 
 27 th June
 
