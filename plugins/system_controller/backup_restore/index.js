@@ -7,7 +7,8 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 var items = ["queue", "playlist", "favourites", "configuration", "albumart"];
-var backupFile = "/boot/volumio_data.tar";
+var backupFile = "/data/INTERNAL/volumio_data.tgz";
+var excludeList = "--exclude='/data/configuration/plugins.json' --exclude='/data/INTERNAL/volumio_data.tgz'";
 
 
 module.exports = backupRestore;
@@ -109,28 +110,26 @@ backupRestore.prototype.backup = function(data) {
     var defer = libQ.defer();
     var self = this;
 
-
-	exec("/bin/rm " + backupFile + ".* && /bin/touch " + backupFile, function (error) {});
+	var archiveList=" ";
+	exec("/bin/rm " + backupFile, function (error) {});
 	
 	items.forEach(function(item) {
 		if (data[item] == true) {
-			execSync("/bin/tar -uf " + backupFile + " /data/" + item, function (error) {
-				if (error !== null) {
-					console.log("Archive ERROR: "+ error);
-					self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
-					defer.reject(new Error());
-				}				
-			
-				if (item == "configuration")
-					exec("/bin/tar -f " + backupFile + " --delete data/configuration/plugins.json", function (error) {});
-			});
-			
+			archiveList = archiveList + "/data/" + item + " ";
 		}
 	});
 	
-	exec("/bin/gzip " + backupFile, function (error) {
-		self.commandRouter.pushToastMessage('success',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
-		defer.resolve();
+	if (archiveList != " ")
+ 		exec("/bin/tar " + excludeList + " -zcf " + backupFile + archiveList, function (error) {
+ 			if (error == null) {
+				self.commandRouter.pushToastMessage('success',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+				defer.resolve();
+			}
+			else {
+				console.log("Compress ERROR: "+ error);
+				self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
+				defer.reject(new Error());						
+			}	
 	});
 
     return defer.promise;
@@ -141,7 +140,7 @@ backupRestore.prototype.restore = function(data) {
     var defer = libQ.defer();
     var self = this;
         
-    exec("/bin/tar -zxf " + backupFile + ".gz --overwrite -C / ", function (error) {
+    exec("/bin/tar -zxf " + backupFile + " --overwrite -C / ", function (error) {
     	if (error == null) {
 			self.commandRouter.pushToastMessage('success',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
 			defer.resolve();
