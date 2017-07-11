@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Choose Backup or Restore",
+  "BACKUP_LABEL":"Backup options",
+  "BACKUP_DO":"Backup",
+  "BACKUP_DESC":"Data will be saved as volumio_data.tar.gz on root of SD CARD: you may copy it to other SD in same location. WARNING: New backup will erase previous",
+  "RESTORE_LABEL":"Restore",
+  "RESTORE_DO":"Restore",
+  "RESTORE_DESC":"Will use volumio_data.tar.gz file from root of SD CARD to restore settings: make sure file is present !",
+  "QUEUE":"Queue",
+  "QUEUE_DOC":"Select if you want to backup current play queue",
+  "PLAYLIST":"Playlist",
+  "PLAYLIST_DOC":"Select if you want to backup playlists",
+  "FAVOURITES":"Favourites",
+  "FAVOURITES_DOC":"Select if you want to backup Favourites (includes my Web Radios, etc...)",
+  "CONFIGURATION":"Configuration",
+  "CONFIGURATION_DOC":"Select if you want to backup all settings. This will also save plugins settings. On restore on a new image, actual plugins will need to be re-installed, but their settings will be the kept",
+  "ALBUMART":"Album Art",
+  "ALBUMART_DOC":"Select if you want to backup Album Arts"
+}
+
+

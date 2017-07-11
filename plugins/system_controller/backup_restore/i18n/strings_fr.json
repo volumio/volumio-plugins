@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Sélectionner Sauvegarde ou Restauration",
+  "BACKUP_LABEL":"Options de sauvegarde",
+  "BACKUP_DO":"Sauvegarder",
+  "BACKUP_DESC":"Les données seront sauvegardées dans le fichier volumio_data.tar.gz à la racine de la carte SD: vous pouvez le copier au même endroit sur une autre carte. ATTENTION: Chaque nouvelle sauvegarde efface la précédente",
+  "RESTORE_LABEL":"Restauration",
+  "RESTORE_DO":"Restaurer",
+  "RESTORE_DESC":"Utilise le ficher volumio_data.tar.gz à la racine de la carte SD pour restaurer les données: assurez-vous de sa présence !",
+  "QUEUE":"Queue",
+  "QUEUE_DOC":"Sélectionnez si vous souhaitez sauvegarder la queue",
+  "PLAYLIST":"Playlist",
+  "PLAYLIST_DOC":"Sélectionnez si vous souhaitez sauvegarder les playlists",
+  "FAVOURITES":"Favoris",
+  "FAVOURITES_DOC":"Sélectionnez si vous souhaitez sauvegarder les Favoris (inclus mes Web Radios, etc...)",
+  "CONFIGURATION":"Réglages",
+  "CONFIGURATION_DOC":"Sélectionnez si vous souhaitez sauvegarder les Réglages. Cela sauvegarde aussi les réglages des plugins. Après restauration sur une image vierge les plugins devront être ré-installés, mais leurs réglages seront conservés",
+  "ALBUMART":"Pochettes",
+  "ALBUMART_DOC":"Sélectionnez si vous souhaitez sauvegarder les Pochettes"
+}
+
+
