@@ -8,7 +8,6 @@ var execSync = require('child_process').execSync;
 
 var items = ["queue", "playlist", "favourites", "configuration", "albumart"];
 var backupFile = "/data/INTERNAL/volumio_data.tgz";
-var excludeList = "--exclude='/data/configuration/plugins.json' --exclude='/data/INTERNAL/volumio_data.tgz'";
 
 
 module.exports = backupRestore;
@@ -110,13 +109,14 @@ backupRestore.prototype.backup = function(data) {
     var defer = libQ.defer();
     var self = this;
 
-	var archiveList=" ";
+	var archiveList = " ";
+	var excludeList = "--exclude='" + backupFile + "' --exclude='/data/configuration/plugins.json'";
+
 	exec("/bin/rm " + backupFile, function (error) {});
 	
 	items.forEach(function(item) {
-		if (data[item] == true) {
+		if (data[item] == true)
 			archiveList = archiveList + "/data/" + item + " ";
-		}
 	});
 	
 	if (archiveList != " ")
@@ -130,7 +130,7 @@ backupRestore.prototype.backup = function(data) {
 				self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
 				defer.reject(new Error());						
 			}	
-	});
+		});
 
     return defer.promise;
 };
