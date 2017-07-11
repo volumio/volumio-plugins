@@ -1,6 +1,6 @@
 # volumio-plugins
 
-You'll find here Backup & Restore Plugin for Volumio:
+You'll find here [Backup & Restore Plugin](https://github.com/macmpi/volumio-plugins/tree/gh-pages/plugins/system_controller/backup_restore) for Volumio:
 
 LATEST
 * Get install file from [here](https://github.com/macmpi/volumio-plugins/raw/gh-pages/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip)
