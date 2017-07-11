@@ -8,10 +8,11 @@ LATEST
 
 
 ## changelog:
-0.6.0:
+0.6.0:  (July 11th 2017)
 - optimized compression
 - Archive file is now on SMB share for easier access
+
   
-0.5.0:
+0.5.0:  (July 10th 2017)
 - initial release
 - Archive file is on SD
