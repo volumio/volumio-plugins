@@ -3,7 +3,7 @@
 You'll find here Backup & Restore Plugin for Volumio:
 
 LATEST
-* Link : https://volumio.org/get-started/
+* Get install file from [here](https://github.com/macmpi/volumio-plugins/raw/gh-pages/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip)
 
 ## changelog:
 0.6.0:
