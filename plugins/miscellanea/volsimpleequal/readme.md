@@ -1,4 +1,4 @@
-07 july 2017
+12 july 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -25,6 +25,9 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+12th July
+- small tweak for alsaloop command
 
 07th
 - fix for audio jack

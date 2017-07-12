@@ -66,7 +66,7 @@
   var self = this;
   var defer = libQ.defer();
   setTimeout(function() {
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 20000 -w 500", {
+  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 80000 -w 500", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
