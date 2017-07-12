@@ -7,7 +7,8 @@
       "id": "section_backup",
       "element": "section",
       "label": "TRANSLATE.BACKUP_LABEL",
-      "icon": "fa-caret-square-o-down",
+      "description": "TRANSLATE.BACKUP_DESC",
+      "icon": "fa-sign-out",
       "onSave": {"type":"controller", "endpoint":"system_controller/backup_restore", "method":"backup"},
       "saveButton": {
         "label": "TRANSLATE.BACKUP_DO",
@@ -55,12 +56,6 @@
           "doc": "TRANSLATE.ALBUMART_DOC",
           "element": "switch",
           "value": false
-        },
-        {
-          "id": "dummy",
-          "element": "none",
-      	  "description": "TRANSLATE.BACKUP_DESC",
-          "value": false
         }
       ]
    },
@@ -68,7 +63,8 @@
       "id": "section_restore",
       "element": "section",
       "label": "TRANSLATE.RESTORE_LABEL",
-      "icon": "fa-caret-square-o-up",
+      "description": "TRANSLATE.RESTORE_DESC",
+      "icon": "fa-sign-in",
       "onSave": {"type":"controller", "endpoint":"system_controller/backup_restore", "method":"restore"},
       "saveButton": {
         "label": "TRANSLATE.RESTORE_DO",
@@ -80,8 +76,8 @@
         {
           "id": "dummy",
           "element": "none",
-      	  "description": "TRANSLATE.RESTORE_DESC",
-          "value": ""
+          "value": "",
+          "hidden": true
         }
       ]  
      

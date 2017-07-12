@@ -126,7 +126,7 @@ backupRestore.prototype.backup = function(data) {
 				defer.resolve();
 			}
 			else {
-				console.log("Compress ERROR: "+ error);
+				console.log("Backup & Restore Plugin: Compress ERROR: "+ error);
 				self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
 				defer.reject(new Error());						
 			}	
@@ -149,7 +149,7 @@ backupRestore.prototype.restore = function(data) {
 			defer.resolve();
 		}
 		else {
-			console.log("Restore ERROR: "+ error);
+			console.log("Backup & Restore Plugin: Restore ERROR: "+ error);
 			self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
 			defer.reject(new Error());
 		}
@@ -157,9 +157,3 @@ backupRestore.prototype.restore = function(data) {
 
     return defer.promise;
 };
-
-
-
-
-
-

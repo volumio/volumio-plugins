@@ -1,11 +1,11 @@
 {
   "PLUGIN_CONFIGURATION":"Choose Backup or Restore",
   "BACKUP_LABEL":"Backup options",
+  "BACKUP_DESC":"volumio_data.tgz file will be created on root of SMB Share: you may copy it to other device in same location. WARNING: New backup will erase previous.",
   "BACKUP_DO":"Backup",
-  "BACKUP_DESC":"Data will be saved as volumio_data.tgz on root of SMB Share: you may copy it to other device in same location. WARNING: New backup will erase previous",
   "RESTORE_LABEL":"Restore",
+  "RESTORE_DESC":"volumio_data.tgz file from root of SMB Share is used to restore settings: make sure file is present !  Reboot advised after restore.",
   "RESTORE_DO":"Restore",
-  "RESTORE_DESC":"Will use volumio_data.tgz file from root of SMB Share to restore settings: make sure file is present !",
   "QUEUE":"Queue",
   "QUEUE_DOC":"Select if you want to backup current play queue",
   "PLAYLIST":"Playlist",
