@@ -8,6 +8,11 @@ LATEST
 
 
 ## changelog:
+0.6.5:  (July 12th 2017)
+- UI tweaks
+- code cleanup
+
+
 0.6.0:  (July 11th 2017)
 - optimized compression
 - Archive file is now on SMB share for easier access
