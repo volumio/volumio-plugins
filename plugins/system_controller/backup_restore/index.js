@@ -131,6 +131,9 @@ backupRestore.prototype.backup = function(data) {
 				defer.reject(new Error());						
 			}	
 		});
+	
+	else
+		defer.resolve();
 
     return defer.promise;
 };
