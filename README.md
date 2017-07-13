@@ -8,8 +8,12 @@ LATEST
 
 
 ## changelog:
+0.7.0:  (July 13th 2017)
+- added restart dialog after Restore
+
+
 0.6.7:  (July 13th 2017)
-- protect against rare cases where queue file may not exist yet
+- protect against rare cases where some elements (queue) may not exist yet
 
 
 0.6.5:  (July 12th 2017)
