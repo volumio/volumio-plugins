@@ -114,6 +114,10 @@ backupRestore.prototype.backup = function(data) {
 
 	exec("/bin/rm " + backupFile, function (error) {});
 	
+	if (! fs.existsSync("/data/queue")) // protect rare cases where queue file may not exist yet
+			exec("/bin/touch /data/queue", function (error) {});  
+
+	
 	items.forEach(function(item) {
 		if (data[item] == true)
 			archiveList = archiveList + "/data/" + item + " ";
@@ -126,7 +130,7 @@ backupRestore.prototype.backup = function(data) {
 				defer.resolve();
 			}
 			else {
-				console.log("Backup & Restore Plugin: Compress ERROR: "+ error);
+				console.log("Backup & Restore Plugin: Compress ERROR: " + error);
 				self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
 				defer.reject(new Error());						
 			}	
@@ -149,7 +153,7 @@ backupRestore.prototype.restore = function(data) {
 			defer.resolve();
 		}
 		else {
-			console.log("Backup & Restore Plugin: Restore ERROR: "+ error);
+			console.log("Backup & Restore Plugin: Restore ERROR: " + error);
 			self.commandRouter.pushToastMessage('error',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
 			defer.reject(new Error());
 		}
