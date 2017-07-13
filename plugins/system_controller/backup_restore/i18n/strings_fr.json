@@ -15,7 +15,7 @@
   "CONFIGURATION":"Réglages",
   "CONFIGURATION_DOC":"Sélectionnez si vous souhaitez sauvegarder les Réglages. Cela sauvegarde aussi les réglages des plugins. Après restauration sur une image vierge les plugins devront être ré-installés, mais leurs réglages seront conservés",
   "ALBUMART":"Pochettes",
-  "ALBUMART_DOC":"Sélectionnez si vous souhaitez sauvegarder les Pochettes"
+  "ALBUMART_DOC":"Sélectionnez si vous souhaitez sauvegarder les Pochettes",
 }
 
 

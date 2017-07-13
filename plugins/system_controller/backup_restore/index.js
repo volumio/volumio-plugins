@@ -143,10 +143,32 @@ backupRestore.prototype.backup = function(data) {
 backupRestore.prototype.restore = function(data) {
     var defer = libQ.defer();
     var self = this;
+    
+    var modalData = {
+		title: "Continue to restart Volumio", 								// to be translated when possible
+		message: "It is advised to restart Volumio to enjoy new settings", // to be translated when possible
+		size: 'lg',
+		buttons: [
+			{
+				name: self.commandRouter.getI18nString('COMMON.CANCEL'),
+				class: 'btn btn-cancel',
+				emit:'',
+				payload:''
+			},
+			{
+				name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
+				class: 'btn btn-info',
+				emit:'callMethod',
+				payload:{'endpoint':'system_controller/backup_restore','method':'relaunch','data':{}}
+			}
+		]
+	};
+
         
     exec("/bin/tar -zxf " + backupFile + " --overwrite -C / ", function (error) {
     	if (error == null) {
 			self.commandRouter.pushToastMessage('success',"Backup & Restore Plugin", self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+			self.commandRouter.broadcastMessage("openModal", modalData);
 			defer.resolve();
 		}
 		else {
@@ -157,4 +179,14 @@ backupRestore.prototype.restore = function(data) {
 	});
 
     return defer.promise;
+};
+
+
+backupRestore.prototype.relaunch = function() {
+    var defer = libQ.defer();
+    var self = this;
+    
+    exec("sudo /bin/systemctl restart volumio", function (error) {});
+	
+	return defer.resolve();
 };
