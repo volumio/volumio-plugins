@@ -8,6 +8,10 @@ LATEST
 
 
 ## changelog:
+0.6.6:  (July 13th 2017)
+- protect against rare cases where queue file may not exist yet
+
+
 0.6.5:  (July 12th 2017)
 - UI tweaks
 - code cleanup
