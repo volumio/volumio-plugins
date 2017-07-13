@@ -113,14 +113,11 @@ backupRestore.prototype.backup = function(data) {
 	var excludeList = "--exclude='" + backupFile + "' --exclude='/data/configuration/plugins.json'";
 
 	exec("/bin/rm " + backupFile, function (error) {});
-	
-	if (! fs.existsSync("/data/queue")) // protect rare cases where queue file may not exist yet
-			exec("/bin/touch /data/queue", function (error) {});  
 
-	
 	items.forEach(function(item) {
-		if (data[item] == true)
-			archiveList = archiveList + "/data/" + item + " ";
+		if (data[item] == true) 
+			if (fs.existsSync("/data/" + item)) // protect against rare cases where file or directory may not exist yet
+				archiveList = archiveList + "/data/" + item + " ";	
 	});
 	
 	if (archiveList != " ")
