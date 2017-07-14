@@ -1,9 +1,12 @@
-12 july 2017
+14 july 2017
 
 
 		Volsimpleequal volumio simple equalizer
 A simple Equalizer plugin for Volumio2.
 Based on alsaequal https://github.com/raedwulf/alsaequal
+
+![Alt text](volsimpleequal.png?raw=true "Equalizer")
+
 
 Can't work with softvol !!!!
 
@@ -25,6 +28,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+14th July
+
+- add png in readme
 
 12th July
 - small tweak for alsaloop command
