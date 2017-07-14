@@ -27,8 +27,7 @@ Last changes
 
 July 14th
 
-- new librespot for armv6 and armv7 - x86 please wait...
-
+- new librespot for armv6, armv7 and x86
 July 10th
 
 - new librespot for armv6 and armv7 - x86 please wait, fails to compile....
