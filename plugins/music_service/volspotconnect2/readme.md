@@ -27,6 +27,8 @@ Last changes
 
 July 14th
 
+- disable cache - remove related service
+- common librespot for armv6 and armv7
 - new librespot for armv6, armv7 and x86
 July 10th
 

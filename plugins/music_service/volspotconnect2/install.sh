@@ -9,12 +9,12 @@ if [ $cpu = "armv6l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/arm/librespot-arm.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-arm.tar.xz # -C /
-			rm librespot-arm.tar.xz
+			sudo tar -xf librespot-armhf.tar.xz # -C /
+			rm librespot-armhf.tar.xz
 		else
 			echo "$derrormess"
 			exit -1
@@ -67,7 +67,7 @@ else
 	exit -1
 fi
 
-mkdir /dev/shm/volspotconnetc2/cache
+#mkdir /dev/shm/volspotconnetc2/cache
 #echo "Checking if volspotconnect2 service exists"
 #if [ ! -f "/etc/systemd/system/volspotconnect2.service" ];
 #	then
