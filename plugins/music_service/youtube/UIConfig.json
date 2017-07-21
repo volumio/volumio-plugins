@@ -3,6 +3,23 @@
     "label": "TRANSLATE.YOUTUBE_CONFIGURATION"
   },
   "sections": [
+		{
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.YOUTUBE_ACCOUNT",
+			"description": "TRANSLATE.YOUTUBE_GRANT_ACCESS",
+      "icon": "fa-user",
+			"content": [
+        {
+          "id": "access_code",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.YOUTUBE_ACCESS_CODE_DOC",
+          "label": "TRANSLATE.YOUTUBE_ACCESS_CODE",
+          "value": ""
+        }
+      ]
+    },
     {
       "id": "section_settings",
       "element": "section",
