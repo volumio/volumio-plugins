@@ -850,10 +850,6 @@ Youtube.prototype.parseResponseItemData = function (item) {
 
   if (item.kind) {
     switch (item.kind) {
-      case 'youtube#video':
-        url = item.id;
-        type = 'song';
-        break;
       case 'youtube#searchResult':
         switch (item.id.kind) {
           case 'youtube#video':
@@ -872,6 +868,10 @@ Youtube.prototype.parseResponseItemData = function (item) {
             url = 'youtube/unhandled-search-kind: ' + item.id.kind;
             break;
         }
+        break;
+      case 'youtube#video':
+        url = item.id;
+        type = 'song';
         break;
       case 'youtube#playlist':
         url = 'youtube/playlist/' + item.id;
@@ -892,6 +892,10 @@ Youtube.prototype.parseResponseItemData = function (item) {
         } else {
           url = 'youtube/unhandled-subscription-kind: ' + item.kind;
         }
+        break;
+      case 'youtube#activity':
+        url = 'youtube/channel/' + item.snippet.channelId;
+        type = 'folder';
         break;
       default:
         url = 'youtube/unhandled-kind: ' + item.kind;
