@@ -27,6 +27,7 @@ alloSteppedVolumeAttenuator.prototype.onVolumioStart = function()
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
+
     return libQ.resolve();
 }
 
@@ -35,7 +36,7 @@ alloSteppedVolumeAttenuator.prototype.onStart = function() {
 	var defer=libQ.defer();
 
 
-	// Once the Plugin has successfull started resolve the promise
+	self.startRattenu();
 	defer.resolve();
 
     return defer.promise;
@@ -46,6 +47,7 @@ alloSteppedVolumeAttenuator.prototype.onStop = function() {
     var defer=libQ.defer();
 
     // Once the Plugin has successfull stopped resolve the promise
+	self.removeVolumeScripts();
     defer.resolve();
 
     return libQ.resolve();
@@ -99,157 +101,30 @@ alloSteppedVolumeAttenuator.prototype.setConf = function(varName, varValue) {
 };
 
 
+alloSteppedVolumeAttenuator.prototype.startRattenu = function () {
+	var self = this;
 
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
+    exec("echo volumio | sudo -S /usr/bin/r_attenu -d > /dev/null 2>&1", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+        if (error !== null) {
 
+            self.logger.info('Error, cannot start R ATTENU '+error)
+        } else {
+            self.logger.info('R Attenu started')
+			self.addVolumeScripts();
+        }
+    });
 
-alloSteppedVolumeAttenuator.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
 };
 
-alloSteppedVolumeAttenuator.prototype.handleBrowseUri = function (curUri) {
+alloSteppedVolumeAttenuator.prototype.addVolumeScripts = function() {
     var self = this;
 
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
+    var data = {'enabled':false, 'setvolumescript':'/data/plugins/accessory/allo_stepped_volume_attenuator/setvolume.sh', 'getvolumescript':'/data/plugins/accessory/allo_stepped_volume_attenuator/getvolume.sh'};
+    self.commandRouter.updateVolumeScripts(data);
 };
 
-
-
-// Define a method to clear, add, and play an array of tracks
-alloSteppedVolumeAttenuator.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-alloSteppedVolumeAttenuator.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-alloSteppedVolumeAttenuator.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::stop');
-
-
-};
-
-// Spop pause
-alloSteppedVolumeAttenuator.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::pause');
-
-
-};
-
-// Get state
-alloSteppedVolumeAttenuator.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::getState');
-
-
-};
-
-//Parse state
-alloSteppedVolumeAttenuator.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-alloSteppedVolumeAttenuator.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'alloSteppedVolumeAttenuator::pushState');
-
-	return self.commandRouter.servicePushState(state, self.servicename);
-};
-
-
-alloSteppedVolumeAttenuator.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-alloSteppedVolumeAttenuator.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-alloSteppedVolumeAttenuator.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-alloSteppedVolumeAttenuator.prototype._searchArtists = function (results) {
-
-};
-
-alloSteppedVolumeAttenuator.prototype._searchAlbums = function (results) {
-
-};
-
-alloSteppedVolumeAttenuator.prototype._searchPlaylists = function (results) {
-
-
-};
-
-alloSteppedVolumeAttenuator.prototype._searchTracks = function (results) {
-
+alloSteppedVolumeAttenuator.prototype.removeVolumeScripts = function() {
+    var self = this;
+    var data = {'enabled':false, 'setvolumescript':'', 'getvolumescript':''};
+    self.commandRouter.updateVolumeScripts(data);
 };

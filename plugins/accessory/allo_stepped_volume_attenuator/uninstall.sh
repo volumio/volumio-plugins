@@ -2,8 +2,9 @@
 
 # Uninstall dependendencies
 
-sudo rm /usr/bin/r_attenuc
-sudo rm /usr/bin/r_attenu
+apt-get remove -y lirc
+rm /usr/bin/r_attenu
+rm /usr/bin/r_attenuc
 
 echo "Done"
 echo "pluginuninstallend"
