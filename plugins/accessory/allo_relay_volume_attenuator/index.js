@@ -103,10 +103,9 @@ alloSteppedVolumeAttenuator.prototype.setConf = function(varName, varValue) {
 
 alloSteppedVolumeAttenuator.prototype.startRattenu = function () {
 	var self = this;
-
-    exec("echo volumio | sudo -S /usr/bin/r_attenu -d > /dev/null 2>&1", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+    
+    exec("/usr/bin/sudo /bin/systemctl start rattenu.service", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
         if (error !== null) {
-
             self.logger.info('Error, cannot start R ATTENU '+error)
         } else {
             self.logger.info('R Attenu started')
@@ -119,7 +118,9 @@ alloSteppedVolumeAttenuator.prototype.startRattenu = function () {
 alloSteppedVolumeAttenuator.prototype.addVolumeScripts = function() {
     var self = this;
 
-    var data = {'enabled':false, 'setvolumescript':'/data/plugins/accessory/allo_stepped_volume_attenuator/setvolume.sh', 'getvolumescript':'/data/plugins/accessory/allo_stepped_volume_attenuator/getvolume.sh'};
+
+    var data = {'enabled':true, 'setvolumescript':'/data/plugins/miscellanea/allo_relay_volume_attenuator/setvolume.sh', 'getvolumescript':'/data/plugins/miscellanea/allo_relay_volume_attenuator/getvolume.sh'};
+    self.logger.info('Adding Allo Relay attenuator parameters'+ JSON.stringify(data))
     self.commandRouter.updateVolumeScripts(data);
 };
 

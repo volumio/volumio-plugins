@@ -1,0 +1,15 @@
+[Unit]
+Description = Allo Relay attenuator Service
+Wants=lirc.service
+
+[Service]
+ExecStart=/usr/bin/r_attenu -d
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rattenu
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+
