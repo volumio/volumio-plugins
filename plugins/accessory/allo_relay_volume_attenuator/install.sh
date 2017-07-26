@@ -15,9 +15,6 @@ sudo cp /data/plugins/miscellanea/allo_relay_volume_attenuator/lircd.conf  /etc/
 sudo cp /data/plugins/miscellanea/allo_relay_volume_attenuator/hardware.conf  /etc/lirc/
 sudo cp /data/plugins/miscellanea/allo_relay_volume_attenuator/lircrc  /etc/lirc/
 
-#To add lirc-rpi in config.txt
-printf "dtoverlay=lirc-rpi,gpio_in_pin=17" >> /boot/config.txt
-
 sudo cp /data/plugins/miscellanea/allo_relay_volume_attenuator/r_attenu /usr/bin/
 sudo chmod a+x /usr/bin/r_attenu
 sudo cp /data/plugins/miscellanea/allo_relay_volume_attenuator/r_attenuc /usr/bin/
