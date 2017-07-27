@@ -351,7 +351,8 @@ Youtube.prototype.addToBrowseSources = function () {
     name: 'Youtube',
     uri: 'youtube',
     plugin_type: 'music_service',
-    plugin_name: 'youtube'
+    plugin_name: 'youtube',
+    albumart: '/albumart?sourceicon=music_service/youtube/youtube.svg'
   });
 };
 
