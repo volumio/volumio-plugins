@@ -217,14 +217,19 @@ ControllerSpop.prototype.spopDaemonConnect = function(defer) {
 ControllerSpop.prototype.onStop = function() {
 	var self = this;
 
+    var defer=libQ.defer();
+
 	self.logger.info("Killing SpopD daemon");
 	exec("/usr/bin/sudo /usr/bin/killall spopd", function (error, stdout, stderr) {
 		if(error){
 			self.logger.info('Cannot kill spop Daemon')
+            defer.reject();
+		} else {
+			defer.resolve()
 		}
 	});
 
-	return libQ.resolve();
+    return defer.promise;
 };
 
 ControllerSpop.prototype.onStart = function() {
