@@ -1,0 +1,7 @@
+{
+  "YOUTUBE_CONFIGURATION":"Youtube Configuration",
+  "YOUTUBE_SETTINGS":" Settings",
+  "YOUTUBE_RESULTS_LIMIT": "Results per page",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "How many search results should be viewed per page? (Playlists will always be loaded completely). Default: 50",
+  "YOUTUBE_SAVE": "Save"
+}

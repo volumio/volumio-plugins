@@ -1,0 +1,70 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "username": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "user_auth_token": {
+    "type": "string",
+    "value": ""
+  },
+  "max_bitrate": {
+    "type": "number",
+    "value": 6
+  },
+  "gapless": {
+    "type": "boolean",
+    "value": true
+  },
+  "proxy": {
+    "type": "string",
+    "value": ""
+  },
+  "sort_albums": {
+    "type": "string",
+    "value": ""
+  },
+  "sort_playlists": {
+    "type": "string",
+    "value": ""
+  },
+  "sort_tracks": {
+    "type": "string",
+    "value": ""
+  },
+  "show_qobuz_lists": {
+    "type": "boolean",
+    "value": false
+  },
+  "debug": {
+    "type": "boolean",
+    "value": false
+  },
+  "cache_enabled": {
+    "type": "boolean",
+    "value": true
+  },
+  "cache_editorial": {
+    "type": "number",
+    "value": 720
+  },
+  "cache_favourites": {
+    "type": "number",
+    "value": 360
+  },
+  "cache_items": {
+    "type": "number",
+    "value": 720
+  },
+  "cache_prune_interval": {
+    "type": "number",
+    "value": 60
+  }
+}
