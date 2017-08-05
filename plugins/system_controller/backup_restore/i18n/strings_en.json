@@ -13,7 +13,7 @@
   "FAVOURITES":"Favourites",
   "FAVOURITES_DOC":"Select if you want to backup Favourites (includes my Web Radios, etc...)",
   "CONFIGURATION":"Configuration",
-  "CONFIGURATION_DOC":"Select if you want to backup all settings. This will also save plugins settings. On restore on a new image, actual plugins will need to be re-installed, but their settings will be the kept",
+  "CONFIGURATION_DOC":"Select if you want to backup all settings. This will also save plugins settings. On restore on a new image, actual plugins will need to be re-installed, but their settings will be the kept. Some settings may need to be re-applied through UI to be activated.",
   "ALBUMART":"Album Art",
   "ALBUMART_DOC":"Select if you want to backup Album Arts"
 }

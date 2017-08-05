@@ -48,7 +48,7 @@
           "label": "TRANSLATE.CONFIGURATION",
           "doc": "TRANSLATE.CONFIGURATION_DOC",
           "element": "switch",
-          "value": true
+          "value": false
         },
         {
           "id":"albumart",

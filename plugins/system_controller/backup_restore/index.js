@@ -146,7 +146,7 @@ backupRestore.prototype.restore = function(data) {
     
     var modalData = {
 		title: "Continue to restart Volumio", 								// to be translated when possible
-		message: "It is advised to restart Volumio to enjoy new settings", // to be translated when possible
+		message: "It is advised to restart Volumio to leaverage new settings", // to be translated when possible
 		size: 'lg',
 		buttons: [
 			{

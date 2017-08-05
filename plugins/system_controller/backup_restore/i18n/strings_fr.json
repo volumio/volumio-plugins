@@ -13,7 +13,7 @@
   "FAVOURITES":"Favoris",
   "FAVOURITES_DOC":"Sélectionnez si vous souhaitez sauvegarder les Favoris (inclus mes Web Radios, etc...)",
   "CONFIGURATION":"Réglages",
-  "CONFIGURATION_DOC":"Sélectionnez si vous souhaitez sauvegarder les Réglages. Cela sauvegarde aussi les réglages des plugins. Après restauration sur une image vierge les plugins devront être ré-installés, mais leurs réglages seront conservés",
+  "CONFIGURATION_DOC":"Sélectionnez si vous souhaitez sauvegarder les Réglages. Cela sauvegarde aussi les réglages des plugins. Après restauration sur une image vierge les plugins devront être ré-installés, mais leurs réglages seront conservés. Certains réglages devront être ré-appliqués depuis l'interface pour être actifs.",
   "ALBUMART":"Pochettes",
   "ALBUMART_DOC":"Sélectionnez si vous souhaitez sauvegarder les Pochettes",
 }
