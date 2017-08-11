@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Brutefir2 plugin for Volumio2. Provide an equalizer, and the use of custom filters",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,9 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Brutefir for Volumio 0.4.2",
-    "plugin_type": "miscellanea"
+    "prettyName": "Brutefir for Volumio 0.4.3",
+    "plugin_type": "miscellanea",
+    "icon":"fa-sliders fa-rotate-90"
   },
   "dependencies": {
     "socket.io-client": "^1.4.6",

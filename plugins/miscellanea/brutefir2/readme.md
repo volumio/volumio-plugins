@@ -1,4 +1,4 @@
-July 08th 2017
+11th August 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -52,6 +52,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+11th August
+
+- clearest naming of the output device when the plugin is enabled
+- plugin icon 
 
 08 th July
 

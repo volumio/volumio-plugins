@@ -841,11 +841,13 @@
  ControllerBrutefir.prototype.setLoopbackoutput = function() {
   var self = this;
   var defer = libQ.defer();
+  var outputp
+  outputp = self.config.get('alsa_outputdevicename')
   //   setTimeout(function() {
   var stri = {
    "output_device": {
     "value": "Loopback",
-    "label": "Brutefir plugin"
+    "label": (outputp + " through brutefir")
    }
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
