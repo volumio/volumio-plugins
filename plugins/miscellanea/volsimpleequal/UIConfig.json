@@ -63,6 +63,10 @@
 						{
 							"value": "voice",
 							"label": "voice"
+						},
+						{
+							"value": "soundtrack",
+							"label": "soundtrack"
 						}
 					],
 						"visibleIf": {

@@ -1,4 +1,4 @@
-14 july 2017
+11th August 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -19,6 +19,8 @@ How to install ?
  Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
  Enable it and... enjoy
 
+note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
+
 What is working ?
 
  Install, equalizer settings, presets settings
@@ -28,6 +30,13 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+
+11th August
+
+- update readme
+- add a new preset "soundtrack"
+- change to better restore volumio initial volume
 
 14th July
 

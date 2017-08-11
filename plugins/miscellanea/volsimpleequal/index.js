@@ -102,7 +102,7 @@
   });
  };
 
- //here we define the volumio rore config
+ //here we define the volumio restore config
  ControllerVolsimpleequal.prototype.restoreVolumioconfig = function() {
   var self = this;
   return new Promise(function(resolve, reject) {
@@ -143,6 +143,8 @@
     scoef = "68,67,69,60,46,50,51,53,52"
    else if (self.config.get('eqprofile') === 'voice')
     scoef = "31,36,40,51,63,79,73,67,53,52"
+  else if (self.config.get('eqprofile') === 'soundtrack')
+    scoef = "65,75,70,60,60,70,70,70,60,70"
   } else scoef = self.config.get('coef')
 
   //   console.log(' raw values are %j', scoef);
@@ -185,7 +187,7 @@
   return libQ.resolve();
  };
 
- //here we define function used when autoconf is called
+ //here we define functions used when autoconf is called
  ControllerVolsimpleequal.prototype.autoconfig = function() {
   var self = this;
   var defer = libQ.defer();
@@ -388,7 +390,7 @@ setTimeout(function() {
    return self.commandRouter.volumioUpdateVolumeSettings(settings)
     //setTimeout(function() {      
     //resolve();
-  }, 4000);
+  }, 5000);
   //});
   // return defer.promise;
  };
