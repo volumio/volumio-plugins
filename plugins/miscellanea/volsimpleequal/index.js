@@ -439,11 +439,13 @@ setTimeout(function() {
  ControllerVolsimpleequal.prototype.setalsaequaloutput = function() {
   var self = this;
   var defer = libQ.defer();
+var outputp
+outputp = self.config.get('alsa_outputdevicename')
   //   setTimeout(function() {
   var stri = {
    "output_device": {
     "value": "Loopback",
-    "label": "equalizer plugin"
+    "label": (outputp + " through equalizer plugin")
    }
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');

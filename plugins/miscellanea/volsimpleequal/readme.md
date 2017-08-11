@@ -34,6 +34,8 @@ What is not working
 
 11th August
 
+- more clear naming for output device when plugin is activated
+- plugin icon
 - update readme
 - add a new preset "soundtrack"
 - change to better restore volumio initial volume
