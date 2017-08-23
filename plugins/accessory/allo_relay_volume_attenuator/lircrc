@@ -1,0 +1,72 @@
+begin
+           button = KEY_POWER
+           prog = r_attenu
+           config = sudo echo "power" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = BUTTON1
+           prog = r_attenu
+           config = hardware_control
+           #config = sudo echo "mute" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = BUTTON2
+           prog = r_attenu
+           config = KEY_PAUSE
+           #config = sudo echo "pause" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = BUTTON3
+           prog = r_attenu
+           config = hardware_control
+           #config = sudo echo "mixer volume -1" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = BUTTON4
+           prog = r_attenu
+           config = hardware_control
+           #config = sudo echo "mixer volume +1" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = KEY_PREVIOUS
+           prog = r_attenu
+           config = sudo echo "playlist index -1" | telnet  127.0.0.1 9090
+end
+
+begin
+           button = KEY_NEXT
+           prog = r_attenu
+           config = sudo echo "playlist index +1" | telnet  127.0.0.1 9090
+end
+
+begin
+           button = KEY_MUTE
+           prog = r_attenu
+	   config = hardware_control
+           #config = sudo echo "mute" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = KEY_VOLUMEUP
+           prog = r_attenu
+           config = hardware_control	
+           #config = sudo echo "mixer volume +1" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = KEY_VOLUMEDOWN
+           prog = r_attenu
+           config = hardware_control	
+           #config = sudo echo "mixer volume -1" | telnet  127.0.0.1 9090  
+end
+
+begin
+           button = KEY_PAUSE
+           prog = r_attenu 
+           config = sudo echo "pause" | telnet  127.0.0.1 9090
+end 
