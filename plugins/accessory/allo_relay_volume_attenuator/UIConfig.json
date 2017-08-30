@@ -32,9 +32,18 @@
         {
           "id":"section_documentation",
           "type": "section",
-          "label": "Documentation",
+          "label": "Resources",
           "icon": "fa-book",
           "content": [
+            {
+              "id": "shop",
+              "element": "button",
+              "label": "Get yours on Volumio Shop",
+              "onClick": {
+                "type": "openUrl",
+                "url": "https://volumio.org/product/allo-relay-attenuator/"
+              }
+            },
         {
           "id": "user_manual",
           "element": "button",
