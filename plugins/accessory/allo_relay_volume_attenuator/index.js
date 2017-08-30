@@ -48,6 +48,10 @@ alloSteppedVolumeAttenuator.prototype.onStart = function() {
     return defer.promise;
 };
 
+alloSteppedVolumeAttenuator.prototype.getConfigurationFiles = function() {
+	return ['config.json'];
+}
+
 alloSteppedVolumeAttenuator.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
