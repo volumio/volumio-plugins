@@ -79,7 +79,7 @@ alloSteppedVolumeAttenuator.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
+            self.configManager.setUIConfigParam(uiconf,'sections[0].content[0].value',self.config.get('map_to_100', false));
 
             defer.resolve(uiconf);
         })
@@ -138,15 +138,33 @@ alloSteppedVolumeAttenuator.prototype.stopRattenu = function () {
 alloSteppedVolumeAttenuator.prototype.addVolumeScripts = function() {
     var self = this;
 
+    var enabled = true;
+    var setVolumeScript = '/data/plugins/miscellanea/allo_relay_volume_attenuator/setvolume.sh';
+    var getVolumeScript = '/data/plugins/miscellanea/allo_relay_volume_attenuator/getvolume.sh';
+    var setMuteScript = '/data/plugins/miscellanea/allo_relay_volume_attenuator/setmute.sh';
+    var getMuteScript = '/data/plugins/miscellanea/allo_relay_volume_attenuator/getmute.sh';
+    var minVol = 0;
+    var maxVol = 63;
+    var mapTo100 = self.config.get('map_to_100', false);
 
-    var data = {'enabled':true, 'setvolumescript':'/data/plugins/miscellanea/allo_relay_volume_attenuator/setvolume.sh', 'getvolumescript':'/data/plugins/miscellanea/allo_relay_volume_attenuator/getvolume.sh'};
+    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.logger.info('Adding Allo Relay attenuator parameters'+ JSON.stringify(data))
     self.commandRouter.updateVolumeScripts(data);
 };
 
 alloSteppedVolumeAttenuator.prototype.removeVolumeScripts = function() {
     var self = this;
-    var data = {'enabled':false, 'setvolumescript':'', 'getvolumescript':''};
+
+    var enabled = false;
+    var setVolumeScript = '';
+    var getVolumeScript = '';
+    var setMuteScript = '';
+    var getMuteScript = '';
+    var minVol = 0;
+    var maxVol = 100;
+    var mapTo100 = false;
+
+    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.commandRouter.updateVolumeScripts(data);
 };
 
@@ -172,4 +190,15 @@ alloSteppedVolumeAttenuator.prototype.getAdditionalConf = function (type, contro
     var self = this;
     var confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
     return confs;
+};
+
+alloSteppedVolumeAttenuator.prototype.saveRelayAttOptions = function (data) {
+    var self = this;
+    
+    self.config.set('map_to_100', data['map_to_100']);
+
+    setTimeout(function(){
+        self.addVolumeScripts();
+        self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+    },500)
 };
