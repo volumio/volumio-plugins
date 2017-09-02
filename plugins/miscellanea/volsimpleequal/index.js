@@ -44,7 +44,7 @@
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7", {
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -138,7 +138,7 @@
    else if (self.config.get('eqprofile') === 'rock')
     scoef = "67,62,60,55,49,46,53,58,62,64"
    else if (self.config.get('eqprofile') === 'classic')
-    scoef = "666,62,60,59,45,49,58,60,62"
+    scoef = "66,62,60,59,45,49,58,60,62"
    else if (self.config.get('eqprofile') === 'bass')
     scoef = "68,67,69,60,46,50,51,53,52"
    else if (self.config.get('eqprofile') === 'voice')

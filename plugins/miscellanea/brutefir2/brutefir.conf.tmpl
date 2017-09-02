@@ -32,7 +32,7 @@ blocks: 4;
 };
 
 input "l_in", "r_in" {
-            device: "alsa" {device: "hw:${input_device}";};
+            device: "alsa" {device: "plughw:${input_device}";};
             sample: "${input_format}";   # sample format
             channels: 2;            # number of open channels / which to use
 #		delay: 0,5;
