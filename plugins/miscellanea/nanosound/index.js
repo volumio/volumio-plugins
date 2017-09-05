@@ -47,6 +47,8 @@ nanosound.prototype.onStart = function() {
  	    self.enablePIOverlay();
 	}
 
+	self.createHardwareConf(device);
+
 	self.commandRouter.pushToastMessage('info', "NanoSound", "Plug in starting");	
 	exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
@@ -63,9 +65,9 @@ nanosound.prototype.onStart = function() {
                             self.logger.info('lirc correctly updated');
                             self.commandRouter.pushToastMessage('success', 'NanoSound', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
                             setTimeout(function(){
-                                if (data.ir_profile.notify == undefined){
-                                    self.restartLirc(true);
-                                }
+                                //if (data.ir_profile.notify == undefined){
+                                //    self.restartLirc(true);
+                                //}
 
                             },1000)
 
@@ -75,6 +77,7 @@ nanosound.prototype.onStart = function() {
             }
         });
 
+	self.restartLirc(true);
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
 
