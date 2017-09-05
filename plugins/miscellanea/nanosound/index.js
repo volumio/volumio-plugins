@@ -5,7 +5,11 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-
+var Gpio = require('onoff').Gpio;
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+var actions = ["playPause", "volumeUp", "volumeDown", "previous", "next", "shutdown"];
+var pins = [13,10,9,11,12,4]
 
 module.exports = nanosound;
 function nanosound(context) {
@@ -15,7 +19,8 @@ function nanosound(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-	this.logger.info("Starting NanoSound Pluging");
+	this.logger.info("Starting NanoSound Plug-in");
+	self.triggers = [];
 }
 
 nanosound.prototype.getAdditionalConf = function (type, controller, data) {
@@ -47,8 +52,11 @@ nanosound.prototype.onStart = function() {
  	    self.enablePIOverlay();
 	}
 
+	//-------------- START OF LIRC SETUP --------------------
+	//setup LIRC hardware.conf
 	self.createHardwareConf(device);
 
+	//setup lirc config files
 	self.commandRouter.pushToastMessage('info', "NanoSound", "Plug in starting");	
 	exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
@@ -78,11 +86,107 @@ nanosound.prototype.onStart = function() {
         });
 
 	self.restartLirc(true);
+
+	//---------------- End of LIRC setup -------------------
+
+
+	//---------------- Start of GPIO setup -----------------
+
+
+	self.createTriggers();
+
+
+	//-----------------------------------------------------
+
+
+
+
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
 
     return defer.promise;
 };
+
+nanosound.prototype.createTriggers = function() {
+	var self = this;
+
+	self.logger.info('NanoSound - Creating button triggers');
+
+	actions.forEach(function(action, index, array) {
+		
+		var pin = pins[index];		
+		
+		self.logger.info(action + ' on pin ' + pin);
+		var j = new Gpio(pin,'in','both');
+		j.watch(self.listener.bind(self,action));
+		self.triggers.push(j);
+		
+	});
+		
+	return libQ.resolve();
+};
+
+nanosound.prototype.listener = function(action,err,value){
+	var self = this;
+
+	var c3 = action.concat('.value');
+	var lastvalue = self.config.get(c3);
+
+	// IF change AND high (or low?)
+	if(value !== lastvalue && value === 1){
+		//do thing
+		self[action]();
+	}
+	// remember value
+	self.config.set(c3,value);
+};
+
+
+//Play / Pause
+nanosound.prototype.playPause = function() {
+  //this.logger.info('Play/pause button pressed');
+  socket.emit('getState','');
+  socket.once('pushState', function (state) {
+    if(state.status=='play' && state.service=='webradio'){
+      socket.emit('stop');
+    } else if(state.status=='play'){
+      socket.emit('pause');
+    } else {
+      socket.emit('play');
+    }
+  });
+};
+
+//next on playlist
+nanosound.prototype.next = function() {
+  //this.logger.info('GPIO-Buttons: next-button pressed');
+  socket.emit('next')
+};
+
+//previous on playlist
+nanosound.prototype.previous = function() {
+  //this.logger.info('GPIO-Buttons: previous-button pressed');
+  socket.emit('prev')
+};
+
+//Volume up
+nanosound.prototype.volumeUp = function() {
+  //this.logger.info('GPIO-Buttons: Vol+ button pressed');
+  socket.emit('volume','+');
+};
+
+//Volume down
+nanosound.prototype.volumeDown = function() {
+  //this.logger.info('GPIO-Buttons: Vol- button pressed\n');
+  socket.emit('volume','-');
+};
+
+//shutdown
+nanosound.prototype.shutdown = function() {
+  // this.logger.info('GPIO-Buttons: shutdown button pressed\n');
+  this.commandRouter.shutdown();
+};
+
 
 nanosound.prototype.onStop = function() {
     var self = this;
@@ -350,12 +454,12 @@ nanosound.prototype.restartLirc = function (message) {
             if(error != null) {
                 self.logger.info('Error restarting LIRC: '+error);
                 if (message){
-                    self.commandRouter.pushToastMessage('error', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
+                    self.commandRouter.pushToastMessage('error', 'NanoSound', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
                 }
             } else {
                 self.logger.info('lirc correctly started');
                 if (message){
-                    self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                    self.commandRouter.pushToastMessage('success', 'NanoSound', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
                 }
             }
         });
