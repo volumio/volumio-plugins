@@ -30,7 +30,12 @@ if [ ! -f "/etc/systemd/system/wifireconnect.service" ];
 		sudo tar -xvf wifireconnect.tar.gz
 		rm /wifireconnect.tar.gz
 	else
-		echo "wifireconnect.service already exists. Nothing to do !"
+		echo "wifireconnect.service removing to install new version !"
+		sudo rm /etc/systemd/system/wifireconnect*
+		cp /data/plugins/system_controller/wifireconnect/wifireconnect.tar.gz /
+		cd /
+		sudo tar -xvf wifireconnect.tar.gz
+		rm /wifireconnect.tar.gz
 fi
 
 #required to end the plugin install

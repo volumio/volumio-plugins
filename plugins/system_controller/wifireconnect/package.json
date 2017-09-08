@@ -1,6 +1,6 @@
 {
   "name": "wifireconnect",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Wifireconnect reconnect wifi after a network fail",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Wifireconnect ver0.0.8",
+    "prettyName": "Wifireconnect ver0.0.9",
     "plugin_type": "system_controller"
   },
    "dependencies": {
