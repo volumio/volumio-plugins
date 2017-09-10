@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+SERVER=${serverip}
+NINTERFACE=${interface}
+
+ping -c2 ${SERVER} > /dev/null
+
+if [ $? != 0 ]
+then
+/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh play
+else
+/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh stop
+fi
+

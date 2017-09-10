@@ -1,0 +1,7 @@
+{
+ "PLAYONCONNECT":{
+ "SERVERIP":"Server IP adress to ping",
+ "STREAMTOPLAY":"streamtoplay",
+ "SAVE":"Save"
+}
+}

@@ -1,0 +1,10 @@
+{
+   "serverip": {
+      "type": "string",
+      "value": "8.8.8.8"
+  },
+  "streamtoplay": {
+    "type": "string",
+    "value": "wlan0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "playonconnect",
+  "version": "0.0.1",
+  "description": "playonconnect play something when a specific ip is detected on the network",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balbuze",
+  "license": "",
+  "volumio_info": {
+    "prettyName": "layonconnect ver0.0.1",
+    "plugin_type": "miscellanea"
+  },
+   "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "net": "^1.0.2",
+    "v-conf": "^0.10.0"
+      }
+}
