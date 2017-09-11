@@ -8,7 +8,7 @@
       "element": "section",
       "label": "TRANSLATE.PLAYONCONNECT.PLAYONCONNECTCONF",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"system_controller/PLAYONCONNECT", "method":"saveplayconnectAccount"},
+      "onSave": {"type":"controller", "endpoint":"miscellanea/PLAYONCONNECT", "method":"saveplayconnectAccount"},
       "saveButton": {
         "label": "TRANSLATE.PLAYONCONNECT.SAVE",
         "data": [
@@ -23,14 +23,14 @@
           "element": "input",
           "doc": "Ip of device to monitor",
           "label": "TRANSLATE.PLAYONCONNECT.SERVERIP",
-          "value": "8.8.8.8"
+          "value": "192.168.1.10"
         },
         {
           "id":"streamtoplay",
           "type":"text",
           "element": "input",
           "doc": "stream to play",
-          "label": "TRANSLATE.PLAYONCONNECT.INTERFACE",
+          "label": "TRANSLATE.PLAYONCONNECT.STREAMTOPLAY",
           "value": ""
         }
       ]
