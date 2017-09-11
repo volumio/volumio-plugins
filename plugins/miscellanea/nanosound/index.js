@@ -43,6 +43,12 @@ nanosound.prototype.onVolumioStart = function()
     	return libQ.resolve();
 }
 
+nanosound.prototype.getConfigurationFiles = function()
+{
+	return ['config.json'];
+}
+
+
 nanosound.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
