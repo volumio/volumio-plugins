@@ -104,7 +104,77 @@ nanosound.prototype.onStart = function() {
 
 	//-----------------------------------------------------
 
+	//---------------- Set up OLED ---------------
+	
+	exec('/bin/cp -r ' + __dirname +'/oled/nanosound_oled.service /lib/systemd/system/', {uid:1000,gid:1000},
+                    function (error, stdout, stderr) {
+                        if(error != null) {
+                            self.logger.info('Error copying configurations: '+error);
+                            self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with copying nanosound_oled.service');
+                        } else {
+                            self.logger.info('nanosound_oled.service correctly updated');
+                            self.commandRouter.pushToastMessage('success', 'nanosound', 'nanosound_oled setup successfully');
+                        	
+				exec('/usr/bin/sudo /bin/systemctl daemon-reload', {uid:1000,gid:1000},
+		                    function (error, stdout, stderr) {
+                		        if(error != null) {
+                            		  self.logger.info('Error daemon-reload ' + error);
+                            		  self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with daemon-reload:' + error);
+                         		} else {
+                            		  self.logger.info('daemon reloaded');
+                            		  self.commandRouter.pushToastMessage('success', 'nanosound', 'Daemon reloaded successfully');
+                           
+						 exec('/usr/bin/sudo /bin/systemctl daemon-reload', {uid:1000,gid:1000},
+                		                    function (error, stdout, stderr) {
+                                		        if(error != null) {
+                                          			self.logger.info('Error daemon-reload ' + error);
+                                          			self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with daemon-reload:' + error);
+                                        			} else {
+                                          			self.logger.info('daemon reloaded');
+                                          			self.commandRouter.pushToastMessage('success', 'nanosound', 'Daemon reloaded successfully');
 
+								exec('/usr/bin/sudo /bin/systemctl enable nanosound_oled', {uid:1000,gid:1000},
+		                                                    function (error, stdout, stderr) {
+                		                                        if(error != null) {
+                                		                                self.logger.info('Error during enable ' + error);
+                                                		                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with enabling nanosound_oled:' + error);
+                                                               		} else {
+                                                                		self.logger.info('Daemon enabled');
+                                                                		self.commandRouter.pushToastMessage('success', 'nanosound', 'nanosound_oled daemon enabled');
+
+
+										 exec('/usr/bin/sudo /bin/systemctl start nanosound_oled', {uid:1000,gid:1000},
+		                                                                    function (error, stdout, stderr) {
+                		                                                        if(error != null) {
+                                		                                                self.logger.info('Error starting nanosound_oled ' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with starting nanosound_oled:' + error);
+                                                                		        } else {
+                                                                                		self.logger.info('nanosound_oled started');
+                                                                               			self.commandRouter.pushToastMessage('success', 'nanosound', 'nanosound_oled daemon started');
+
+		                                                                        }
+                		                                                });
+
+
+                                                        		}
+                                                  		});
+
+
+        	                                	}
+	                                     	  });
+
+                        		}
+                    		     });
+				}
+
+
+			});
+
+	 
+
+                          
+
+	
 
 
 	// Once the Plugin has successfull started resolve the promise
@@ -203,10 +273,25 @@ nanosound.prototype.onStop = function() {
             if(error != null) {
                 self.logger.info('Error stopping LIRC: '+error);
             } else {
-                self.logger.info('lirc correctly stopped');
-                defer.resolve();
+                self.logger.info('LIRC correctly stopped');
+
+		    exec('usr/bin/sudo /bin/systemctl stop nanosound_oled.service', {uid:1000,gid:1000},
+        		function (error, stdout, stderr) {
+            		if(error != null) {
+                		self.logger.info('cannot stop nanosound_oled: '+error);
+            		} else {
+                		self.logger.info('nanosound_oled stopped');
+                		defer.resolve();
+            		}
+        	    });
+
+
+              
             }
         });
+
+
+    
 
     return defer.promise;
 };

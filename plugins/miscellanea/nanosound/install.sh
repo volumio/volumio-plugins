@@ -14,8 +14,9 @@ echo "Creating lircrc file"
 touch /etc/lirc/lircrc
 #END OF LIRC
 
-
-
+#START OF python devs
+sudo apt-get -y install python-dev python-pip libfreetype6-dev libjpeg-dev
+sudo -H yes pip install --upgrade luma.oled
 
 
 # If you need to differentiate install for armhf and i386 you can get the variable like this
