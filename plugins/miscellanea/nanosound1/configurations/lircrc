@@ -1,0 +1,56 @@
+begin
+    prog = irexec
+    button = KEY_PREVIOUS
+    config = volumio previous
+    repeat = 0
+end
+begin
+    prog = irexec
+    button = KEY_NEXT
+    config = volumio next
+    repeat = 0
+end
+begin
+    prog = irexec
+    button = KEY_PLAY
+    config = volumio toggle
+    repeat = 0
+end
+begin
+    prog = irexec
+    button = KEY_PAUSE
+    config = mpc toggle
+    repeat = 0
+end
+
+begin
+    prog = irexec
+    button = KEY_VOLUMEUP
+    config = volumio volume plus
+    repeat = 4
+end
+begin
+    prog = irexec
+    button = KEY_VOLUMEDOWN
+    config = volumio volume minus
+    repeat = 4
+end
+begin
+    prog = irexec
+    button = KEY_FASTFORWARD
+    config = mpc seek +1%
+    repeat = 4
+end
+begin
+    prog = irexec
+    button = KEY_REWIND
+    config = mpc seek -1%
+    repeat = 4
+end
+begin
+    prog = irexec
+    button = KEY_MUTE
+    config = mpc volume 0
+    repeat = 0
+end
+
