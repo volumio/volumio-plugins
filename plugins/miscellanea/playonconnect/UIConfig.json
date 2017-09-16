@@ -1,6 +1,6 @@
 {
   "page": {
-    "label": "TRANSLATE.PLAYONCONNECT.PLAYONCONNECTT"
+    "label": "TRANSLATE.PLAYONCONNECT.PLAYONCONNECT"
   },
   "sections": [ 
    {
@@ -8,7 +8,7 @@
       "element": "section",
       "label": "TRANSLATE.PLAYONCONNECT.PLAYONCONNECTCONF",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"miscellanea/PLAYONCONNECT", "method":"saveplayconnectAccount"},
+      "onSave": {"type":"controller", "endpoint":"miscellanea/playonconnect", "method":"saveplayonconnectAccount"},
       "saveButton": {
         "label": "TRANSLATE.PLAYONCONNECT.SAVE",
         "data": [
@@ -31,7 +31,7 @@
           "element": "input",
           "doc": "stream to play",
           "label": "TRANSLATE.PLAYONCONNECT.STREAMTOPLAY",
-          "value": ""
+          "value": "stream to play"
         }
       ]
    }

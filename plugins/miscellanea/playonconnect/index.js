@@ -159,7 +159,7 @@ Controllerplayonconnect.prototype.setConf = function(varName, varValue) {
 
 // Public Methods ---------------------------------------------------------------------------------------
 
-Controllerplayonconnect.prototype.createplayonconnectFile = function () {
+Controllerplayonconnect.prototype.createPLAYONCONNECTFile = function () {
     var self = this;
 
     var defer=libQ.defer();
@@ -175,11 +175,12 @@ Controllerplayonconnect.prototype.createplayonconnectFile = function () {
 			
 
 		var conf1 = data.replace("${serverip}", self.config.get('serverip'));
-		var conf2 = conf1.replace("${stremtoplay}", self.config.get('streamtoplay'));
+		var conf2 = conf1.replace("${streamtoplay}", self.config.get('streamtoplay'));
 					
-	            fs.writeFile("/data/plugins/system_controller/playonconnect/playonconnect.sh", conf2, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/miscellanea/playonconnect/playonconnect.sh", conf2, 'utf8', function (err) {
                 if (err)
                     defer.reject(new Error(err));
+
                 else defer.resolve();
             });
             
@@ -220,7 +221,7 @@ Controllerplayonconnect.prototype.saveplayonconnectAccount = function (data) {
 Controllerplayonconnect.prototype.rebuildplayonconnectAndRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
-    self.createplayonconnectFile()	
+    self.createPLAYONCONNECTFile()	
         .then(function(e)
         {
             var edefer=libQ.defer();

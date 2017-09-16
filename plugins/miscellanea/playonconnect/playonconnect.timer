@@ -1,8 +1,8 @@
 [Unit]
-Description=Runs playonconnect every 1min
+Description=Runs playonconnect every 5sec
 [Timer]
 # Time to wait after booting before we run first time
-OnBootSec=1min
+OnBootSec=5sec
 # Time between running each consecutive time
 OnUnitActiveSec=1min
 Unit=playonconnect.service
