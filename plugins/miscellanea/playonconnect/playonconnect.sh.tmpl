@@ -3,22 +3,26 @@
 
 SERVER=${serverip}
 #STREAMTOPLAY=${streamtoplay}
-#IPHERE=0
-
-#ping -c2 ${SERVER} > /dev/null
 #if IPHERE=0
         ping -c2 ${SERVER} > /dev/null
         if [ $? != 0 ]
         then
+                if  [ ! -f "/tmp/IPNOTHERE" ]
+                then
                 echo "mais t'es ou?"
-                IPHERE=0
                 /volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh stop
+                rm /tmp/IPHERE
+                touch /tmp/IPNOTHERE
+                else
+                echo "deja pas la"
+                fi
         else
-                #if IPHERE=1
-                #then
-                #echo "deja la"
-                #else
+                if  [ ! -f "/tmp/IPHERE" ]
+                then
                 /volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh play
-                IPHERE=1
-                #fi
+                touch /tmp/IPHERE
+                rm /tmp/IPNOTHERE
+                else
+                echo "deja la"
+                fi
         fi

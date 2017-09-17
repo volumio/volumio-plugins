@@ -1,4 +1,4 @@
-16th Sepetember 2017
+17th Sepetember 2017
 
 This plugin is supposed to play something when a specific IP is detected on the network
 
@@ -20,6 +20,8 @@ ping ip
 
 WARNING : need to solve the play when the device has already been detected...
 
+17 th september
+- working version
 
 16 th september
 - correct  service
