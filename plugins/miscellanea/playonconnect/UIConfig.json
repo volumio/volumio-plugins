@@ -31,7 +31,7 @@
           "element": "input",
           "doc": "stream to play",
           "label": "TRANSLATE.PLAYONCONNECT.STREAMTOPLAY",
-          "value": "stream to play"
+          "value": "NOT IN USE!"
         }
       ]
    }
