@@ -1,4 +1,4 @@
-31th August 2017
+20th september 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,7 +31,11 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
-02nd Sepetember 17
+20th september
+
+- small change to work with last dev version of volumio >2.277
+
+02nd September 17
 
 - correction for "classic" preset
 - Now only two Loopback substreams are loaded
