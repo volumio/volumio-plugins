@@ -1,4 +1,4 @@
-11th August 2017
+20th september 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -18,6 +18,7 @@ It provides :
 
 - A stereo to binaural filtering using BAUER alsa ladspa plugin
 
+![Alt text](volumiobrutefir.png?raw=true "Brutefir plugin settings")
 
 
 Base scheme
@@ -52,6 +53,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+21th september
+
+- small change to be compatible with last dev version of volumio >2.277
+- pict in readme
 
 11th August
 

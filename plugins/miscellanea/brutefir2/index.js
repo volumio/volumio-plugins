@@ -843,7 +843,7 @@
   var defer = libQ.defer();
   var outputp
   outputp = self.config.get('alsa_outputdevicename')
-  //   setTimeout(function() {
+     setTimeout(function() {
   var stri = {
    "output_device": {
     "value": "Loopback",
@@ -852,7 +852,7 @@
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  //}, 1000);
+  }, 2500);
 
   return defer.promise;
  };
