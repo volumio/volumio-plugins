@@ -43,15 +43,16 @@ cd /tmp
 wget https://github.com/nanomesher/volumio-plugins/raw/master/plugins/miscellanea/nanosound/packages/nanosound_lirc.tar.gz
 sudo tar xvf /tmp/nanosound_lirc.tar.gz -C /etc/lirc
 
-cp /etc/modules /etc/modules_nanosound.bak
-grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules || echo "lirc_dev" >> /etc/modules
-sed --in-place '/lirc_rpi/d' /etc/modules
-echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
+sudo cp /etc/modules /etc/modules_nanosound.bak
+sudo grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules || echo "lirc_dev" >> /etc/modules
+sudo sed --in-place '/lirc_rpi/d' /etc/modules
+sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
 
-cp /boot/config.txt /boot/config_nanosound.txt
-sed --in-place '/dtoverlay=lirc-rpi/d' /boot/config.txt
-echo "dtoverlay=lirc-rpi,gpio_in_pin=17" >> /boot/config.txt
+sudo cp /boot/config.txt /boot/config_nanosound.txt
+sudo sed --in-place '/dtoverlay=lirc-rpi/d' /boot/config.txt
+sudo echo "dtoverlay=lirc-rpi,gpio_in_pin=17" >> /boot/config.txt
 
+echo "To complete installation, Reboot Pi then enable NanoSound under Plugins"
 
 
 # If you need to differentiate install for armhf and i386 you can get the variable like this
