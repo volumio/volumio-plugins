@@ -1,4 +1,4 @@
-August 10th 2017
+September 22th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -27,6 +27,9 @@ To install
 
 
 Last changes
+September 21th
+
+- on stop function to stop volumio playing when volspotconnect2 starts to play
 
 August 10 th
 
