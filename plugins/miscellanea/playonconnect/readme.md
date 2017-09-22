@@ -1,7 +1,7 @@
 22th Sepetember 2017
 
-This plugin plays the queue when a specific IP is detected the first time on the network and stop plyaing when the ip diseappears.
-It means that for example, if you configure the iP of your smartphone in the plugin, when your back home, it starts to play the queue.
+This plugin plays a given playlist when a specific IP is detected the first time on the network and stop playing when the ip disappears.
+It means that for example, if you configure the iP of your smartphone in the plugin, when your back home, it starts to play the playlist.
 And if you leave, it stops the playing.
 
 22th september
