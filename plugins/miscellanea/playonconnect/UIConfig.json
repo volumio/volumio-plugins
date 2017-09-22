@@ -29,7 +29,7 @@
           "id":"streamtoplay",
           "type":"text",
           "element": "input",
-          "doc": "stream to play",
+          "doc": "playlist to play",
           "label": "TRANSLATE.PLAYONCONNECT.STREAMTOPLAY",
           "value": "NOT IN USE!"
         }

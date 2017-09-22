@@ -2,7 +2,7 @@
  "PLAYONCONNECT":{
  "PLAYONCONNECTCONF":"configuration",
  "SERVERIP":"Server IP adress to ping",
- "STREAMTOPLAY":"stream to play",
+ "STREAMTOPLAY":"Playlist to play",
  "SAVE":"Save"
 }
 }

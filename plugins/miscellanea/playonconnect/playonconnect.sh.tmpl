@@ -1,5 +1,6 @@
 #!/bin/bash
 SERVER=${serverip}
+#PLAYLIST=${streamtoplay-b}
 
 ping -c2 ${SERVER} > /dev/null
         if [ $? != 0 ]
@@ -16,10 +17,12 @@ ping -c2 ${SERVER} > /dev/null
         else
                 if  [ ! -f "/tmp/IPHERE" ]
                 then
-                /volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh play
+                #/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh play
+                wget "localhost:3000/api/v1/commands/?cmd=playplaylist&name=${streamtoplay}"
                 touch /tmp/IPHERE
                 rm /tmp/IPNOTHERE
                 else
                 echo "deja la"
                 fi
         fi
+
