@@ -54,16 +54,20 @@ nanosound.prototype.onStart = function() {
 	var defer=libQ.defer();
 
  	var device = self.getAdditionalConf("system_controller", "system", "device");
- 	if (device == "Raspberry PI") {
- 	    self.enablePIOverlay();
-	}
+ 	
+	//Now done by install.sh
+	//if (device == "Raspberry PI") {
+ 	//    self.enablePIOverlay();
+	//}
 
 	//-------------- START OF LIRC SETUP --------------------
 	//setup LIRC hardware.conf
-	self.createHardwareConf(device);
+	//Now setup by install.sh
+	//self.createHardwareConf(device);
 
 	//setup lirc config files
 	self.commandRouter.pushToastMessage('info', "NanoSound", "Plug in starting");	
+	/*
 	exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
@@ -90,6 +94,7 @@ nanosound.prototype.onStart = function() {
 
             }
         });
+	*/
 
 	self.restartLirc(true);
 

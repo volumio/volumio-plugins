@@ -1,0 +1,10 @@
+[Unit]
+Description=NanoSound OLED Diplay Service
+
+[Service]
+ExecStart=/home/volumio/nanosound_oled/nanodac_oled.py
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
+Alias=nanosound_oled.service
