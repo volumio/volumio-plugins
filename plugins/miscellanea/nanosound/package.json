@@ -1,6 +1,6 @@
 {
   "name": "nanosound",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NanoSound",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "Nanomesher",
   "license": "ISC",
   "volumio_info": {
-    "prettyName": "NanoSound",
-    "icon": "fa-magic",
+    "prettyName": "NanoSound by Nanomesher",
+    "icon": "fa-play-circle-o",
     "plugin_type": "miscellanea"
   },
   "dependencies": {

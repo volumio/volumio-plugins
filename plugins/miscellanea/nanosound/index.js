@@ -118,11 +118,11 @@ nanosound.prototype.onStart = function() {
 										 exec('/usr/bin/sudo /bin/systemctl start nanosound_oled', {uid:1000,gid:1000},
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
-                                		                                                self.logger.info('Error starting nanosound_oled ' + error);
-                                                		                                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with starting nanosound_oled:' + error);
+                                		                                                self.logger.info('Error starting NanoSound OLED ' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with starting NanoSound OLED:' + error);
                                                                 		        } else {
-                                                                                		self.logger.info('nanosound_oled started');
-                                                                               			self.commandRouter.pushToastMessage('success', 'nanosound', 'nanosound_oled daemon started');
+                                                                                		self.logger.info('NanoSound OLED daemon started');
+                                                                               			self.commandRouter.pushToastMessage('success', 'nanosound', 'NanoSound OLED daemon started');
 
 		                                                                        }
                 		                  });
@@ -140,6 +140,22 @@ nanosound.prototype.onStart = function() {
 
     return defer.promise;
 };
+
+nanosound.prototype.clearTriggers = function () {
+	var self = this;
+	
+	self.triggers.forEach(function(trigger, index, array) {
+  		self.logger.info("NanoSound remove trigger " + index);
+
+		trigger.unwatchAll();
+		trigger.unexport();		
+	});
+	
+	self.triggers = [];
+
+	return libQ.resolve();	
+};
+
 
 nanosound.prototype.createTriggers = function() {
 	var self = this;
@@ -225,28 +241,34 @@ nanosound.prototype.shutdown = function() {
 nanosound.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
+	
+	self.clearTriggers()
+		.then (function (result) {
+			self.logger.info("Button triggers stopped");
+			    exec('usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
+				function (error, stdout, stderr) {
+					if(error != null) {
+						self.logger.info('Error stopping LIRC: '+error);
+					} else {
+						self.logger.info('LIRC correctly stopped');
 
-    exec('usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Error stopping LIRC: '+error);
-            } else {
-                self.logger.info('LIRC correctly stopped');
-
-		    exec('usr/bin/sudo /bin/systemctl stop nanosound_oled.service', {uid:1000,gid:1000},
-        		function (error, stdout, stderr) {
-            		if(error != null) {
-                		self.logger.info('cannot stop nanosound_oled: '+error);
-            		} else {
-                		self.logger.info('nanosound_oled stopped');
-                		defer.resolve();
-            		}
-        	    });
+					exec('usr/bin/sudo /bin/systemctl stop nanosound_oled.service', {uid:1000,gid:1000},
+						function (error, stdout, stderr) {
+							if(error != null) {
+								self.logger.info('Cannot stop NanoSound OLED service: '+error);
+							} else {
+								self.logger.info('NanoSound OLED stopped');
+								defer.resolve();
+							}
+						});
 
 
-              
-            }
-        });
+					  
+					}
+				});
+		});
+
+
 
 
     
