@@ -1,4 +1,4 @@
-20th september 2017
+24th september 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -30,6 +30,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+24 th septembermer to make it work with last volumio dev 2.279
+
+- change some ti
 
 20th september
 

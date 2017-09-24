@@ -79,7 +79,7 @@
   });
 
    return defer.promise;
-  }, 1500)
+  }, 3500)
  };
 
  //here we save the volumio config for the next plugin start
