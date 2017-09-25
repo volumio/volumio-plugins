@@ -80,6 +80,6 @@ fi
 #	else
 #		echo "volspotconnect2.service already exists. Nothing to do !"
 #fi
-
+sudo chmod +x /data/plugins/music_service/volspotconnect2/onstart1.sh
 #required to end the plugin install
 echo "plugininstallend"
