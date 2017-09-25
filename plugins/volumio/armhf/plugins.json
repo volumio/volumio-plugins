@@ -106,6 +106,24 @@
 						}
 					],
 					"updated": "25-05-2017"
+				},
+				{
+					"prettyName": "NanoSound by Nanomesher",
+					"icon": "fa-lightbulb-o",
+					"name": "nanosound",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
+					"license": "ISC",
+					"description": "NanoSound",
+					"details": "This plugin automatically sets up the system to use The Nanomesher Nanosound card with display and buttons",
+					"author": "Nanomesher",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-9-2017"
 				}
 			]
 		},
