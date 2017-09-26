@@ -1,4 +1,4 @@
-24th september 2017
+26th september 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,7 +31,14 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
-24 th septembermer to make it work with last volumio dev 2.279
+
+25th september
+
+- alsaloop run now as a service
+
+24 th september
+
+timer to make it work with last volumio dev 2.279
 
 - change some ti
 

@@ -66,7 +66,7 @@
   var self = this;
   var defer = libQ.defer();
   setTimeout(function() {
-  exec("/usr/bin/alsaloop -C plughw:Loopback,1 -P plug:plugequal -t 80000 -w 500", {
+  exec("/usr/bin/sudo /bin/systemctl start volsimpleequal.service", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -173,7 +173,7 @@
   var self = this;
   var defer = libQ.defer();
   self.restoresettingwhendisabling()
- exec("/usr/bin/killall alsaloop", {
+ exec("/usr/bin/sudo /bin/systemctl stop volsimleequal.service", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
