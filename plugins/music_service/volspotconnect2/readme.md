@@ -1,4 +1,4 @@
-September 27th 2017
+September 28th 2017
 	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -27,6 +27,10 @@ To install
 
 
 Last changes
+
+September 28th
+
+- new version of librespot for x86. Now stops playing at the end of a playlist.
 
 September 27th
 
