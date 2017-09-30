@@ -35,6 +35,7 @@ Last changes
 September 30th
 
 GReat improvement : info title album artist album art in webUI! Thanks ashthespy!
+warning webUI buttons not operationnal (yet)!
 solved some problem with armv7 version ( mixer error )
 
 June 17th 2017
