@@ -57,6 +57,8 @@ ControllerQobuz.prototype.onVolumioStart = function () {
 
     if (self.gapless === true)
         self.prefetch = self.qobuzPrefetch;
+    
+    return libQ.resolve();
 };
 
 ControllerQobuz.prototype.getConfigurationFiles = function () {

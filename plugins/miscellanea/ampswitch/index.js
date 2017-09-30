@@ -42,6 +42,7 @@ AmpSwitchController.prototype.onVolumioStart = function()
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
 
+    return libQ.resolve();
 }
 
 // Volumio needs this
