@@ -175,7 +175,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 		self.state.title  	 = meta.track_name;
 		self.state.artist 	 = meta.artist_name;
 		self.state.album  	 = meta.album_name;
-		self.state.duration  = (meta.duration)/1000).toFixed(0);
+		self.state.duration  = (meta.duration/1000).toFixed(0);
 		self.state.volume    = meta.volume;
 		self.state.albumart  = meta.albumart;
 
