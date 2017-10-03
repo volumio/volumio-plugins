@@ -1,4 +1,4 @@
-June, 17th th 2017
+September 30th th 2017
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -14,6 +14,7 @@ IMPORTANT 2
 
 This plugin is designed to use Spotify connect web with volumio
 Base on this work : https://github.com/Fornoth/spotify-connect-web
+With the great work of ashthespy for the webUI integration!
 Thank you to all developpers !
 
 To start, it is a very basic plugin.
@@ -30,6 +31,12 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+September 30th
+
+GReat improvement : info title album artist album art in webUI! Thanks ashthespy!
+warning webUI buttons not operationnal (yet)!
+solved some problem with armv7 version ( mixer error )
 
 June 17th 2017
 
