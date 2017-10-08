@@ -5,5 +5,7 @@
   "PORT_DOC": "Ausgang auf deinem Gerät",
   "INVERTED": "Invertiert",
   "INVERTED_DOC": "Wenn der Ausgang invertiert ist, entspricht AN 0V und AUS 5V",
+  "DELAY": "Verzögerung",
+  "DELAY_DOC": "Verzögerung nach Stoppen der Musik, bevor Ausgang geschaltet wird.",
   "SAVE":"Speichern"
 }
