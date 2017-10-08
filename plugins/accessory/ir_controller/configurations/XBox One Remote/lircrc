@@ -1,0 +1,51 @@
+begin
+prog = irexec
+button = KEY_OK
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+end
+begin
+prog = irexec
+button = KEY_RIGHT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_LEFT
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_MUTE
+config = /usr/local/bin/volumio volume toggle
+repeat = 0
+end
+begin
+prog = irexec
+button = KEY_UP
+config = /usr/local/bin/volumio seek plus
+end
+begin
+prog = irexec
+button = KEY_DOWN
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_BACK
+config = /usr/local/bin/volumio repeat
+end
+begin
+prog = irexec
+button = KEY_TITLE
+config = /usr/local/bin/volumio random
+end
