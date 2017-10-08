@@ -96,8 +96,8 @@
 					"version": "0.8.0",
 					"url": "http://tomatpasser.dk/gpio-buttons.zip",
 					"license": "ISC",
-					"description": "With this Plugin you can control basic playback funcions by connecting buttons to Raspberry Pi GPIOs",
-					"details": "<h4>GPIO Buttons</h4><br>Control basic playback funcions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
+					"description": "With this Plugin you can control basic playback functions by connecting buttons to Raspberry Pi GPIOs",
+					"details": "<h4>GPIO Buttons</h4><br>Control basic playback functions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
 					"author": "tomatpasser",
 					"screenshots": [
 						{
