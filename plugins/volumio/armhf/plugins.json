@@ -124,6 +124,24 @@
 						}
 					],
 					"updated": "25-9-2017"
+				},
+				{
+					"prettyName": "Amplifier Switch",
+					"icon": "fa-lightbulb-o",
+					"name": "ampswitch",
+					"version": "0.1.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/ampswitch/ampswitch.zip",
+					"license": "ISC",
+					"description": "Status based power management of external amplifier",
+					"details": "This plugin allows the control of a power amplifier via GPIOs, to turn it on and off based on Volumio playback status",
+					"author": "Tim Lange",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "8-10-2017"
 				}
 			]
 		},
