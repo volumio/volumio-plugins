@@ -7,7 +7,7 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 
 const SpotConnCtrl = require('./SpotConnController');
-
+var routn = {};
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
 
@@ -39,7 +39,8 @@ ControllerVolspotconnect.prototype.onVolumioStart = function()
 	var self= this;
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
+	this.config.loadFile(configFile)
+//self.getoutputdevicenumberfromfile();
 	    		self.createVOLSPOTCONNECTFile();
 	return libQ.resolve();
 }
@@ -108,6 +109,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	this.commandRouter.sharedVars.registerCallback('alsa.outputdevicemixer', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 	this.commandRouter.sharedVars.registerCallback('system.name', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
+	this.commandRouter.sharedVars.registerCallback('alsa.device', this.rebuildVOLSPOTCONNECTAndRestartDaemon.bind(this));
 
 
     return defer.promise;
@@ -117,7 +119,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  	var self = this;
  	self.servicename = 'volspotconnect';
- 	self.displayname = 'volspotconnect';
+ 	self.displayname = 'Volspotconnect';
 
 	self.state = {
         status: 'stop',
@@ -175,7 +177,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 		self.state.title  	 = meta.track_name;
 		self.state.artist 	 = meta.artist_name;
 		self.state.album  	 = meta.album_name;
-		self.state.duration  = (meta.duration)/1000).toFixed(0);
+		self.state.duration  = ((meta.duration)/1000).toFixed(0);
 		self.state.volume    = meta.volume;
 		self.state.albumart  = meta.albumart;
 
@@ -303,6 +305,31 @@ ControllerVolspotconnect.prototype.getAdditionalConf = function (type, controlle
 };
 
 // Public Methods ---------------------------------------------------------------------------------------
+/*
+ControllerVolspotconnect.prototype.getoutputdevicenumberfromfile = function(file, data, err,mindex) {
+  var self = this;
+  var defer = libQ.defer();
+	var outputdevicen
+ fs.readFile('/tmp/vconfig.json', 'utf8', function(err, data) {
+    if (!err) {
+
+		var obj = JSON.parse(data);
+		var outputdevicen = obj.outputdevice;
+
+		var outn = JSON.stringify(outputdevicen);
+		var outdn = outn.split('"')
+
+		var routn = (outdn[7])
+   console.log(routn +'wwwwwwwwwwwwwwwwwwwwwwwwwww'); 
+
+    } else {
+        console.log(err)
+    }
+ 
+}
+ );
+};
+*/
 
 ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     var self = this;
@@ -327,16 +354,14 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		else family="#"
 
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+			//var mixloop = self.commandRouter.sharedVars.get('device');
 			var smixer;
 			var mixer;
 			var slindex;
 			var mindex;
+			routn ='';
+			var OutputDeviceNumber;
 			var smixer = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
-		/*		if (smixer != "None") {
-					mixer = "--mixer " + "'"+ smixer +"'";
-				} else { mixer = ""
-				}
-				*/
 				if (smixer == "None") {
 					mixer = ""
 				}else if (smixer =="undefined") {
@@ -349,7 +374,21 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 				if (smixer == "SoftMaster") {
 					var smindex = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
 					mindex = "--mixer_device_index " + smindex ;
-				}else if (smixer == "None") {
+				}else if (outdev == "Loopback") {
+					var datan = fs.readFileSync('/tmp/vconfig.json', 'utf8', function(err, data) {
+    						if (!err) {
+						 } else {
+      						  console.log(err)
+   						 }
+ 						 	console.log(routn +' <---aaaaaaaaaaaaaaaaaaaazzz') 
+						})
+							var obj = JSON.parse(datan);
+							var outputdevicen = obj.outputdevice;
+							var outn = JSON.stringify(outputdevicen);		
+							var outdn = outn.split('"')
+							routn = (outdn[7])
+					mindex = ("--mixer_device_index " + routn)
+ 				}else if (smixer == "None") {
 					mindex = ""
 				}else if (smixer == "undefined") {
 					mindex = ""
@@ -461,3 +500,9 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
 
     return defer.promise;
 }
+/*
+ControllerVolspotconnect.prototype.getAdditionalConf = function(type, controller, data) {
+  var self = this;
+  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+ }
+*/

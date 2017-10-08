@@ -1,4 +1,4 @@
-September 30th th 2017
+October 8th th 2017
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -31,6 +31,10 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+October 8th
+
+Now works with volsimpleequal and brutefir plugin
 
 September 30th
 
