@@ -73,13 +73,13 @@
    if (error) {
     self.logger.info('failed to bridge ' + error);
    } else {
-    self.commandRouter.pushConsoleMessage('bridge ok');
+    self.commandRouter.pushConsoleMessage('Alsaloop bridge ok');
     defer.resolve();
    }
   });
 
    return defer.promise;
-  }, 3500)
+  }, 6500)
  };
 
  //here we save the volumio config for the next plugin start

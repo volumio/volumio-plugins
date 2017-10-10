@@ -1,4 +1,4 @@
-26th september 2017
+10th October 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,6 +31,9 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
+10th October
+
+- small timer adjustement for alsaloop bridge to avoid the 'no sound' problem at start time
 
 25th september
 
