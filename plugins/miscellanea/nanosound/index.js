@@ -56,9 +56,9 @@ nanosound.prototype.onStart = function() {
  	var device = self.getAdditionalConf("system_controller", "system", "device");
  	
 	//Now done by install.sh
-	//if (device == "Raspberry PI") {
- 	//    self.enablePIOverlay();
-	//}
+	if (device == "Raspberry PI") {
+ 	    self.enablePIOverlay();
+	}
 
 	//-------------- START OF LIRC SETUP --------------------
 	//setup LIRC hardware.conf

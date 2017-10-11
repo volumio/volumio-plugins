@@ -48,9 +48,6 @@ sudo grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules
 sudo sed --in-place '/lirc_rpi/d' /etc/modules
 sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
 
-sudo cp /boot/config.txt /boot/config_nanosound.txt
-sudo sed --in-place '/dtoverlay=lirc-rpi/d' /boot/config.txt
-sudo echo "dtoverlay=lirc-rpi,gpio_in_pin=17" >> /boot/config.txt
 
 echo "To complete installation, Reboot Pi then enable NanoSound under Plugins"
 
