@@ -46,7 +46,7 @@
   var self = this;
   var defer = libQ.defer();
 
-  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7", {
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -429,55 +429,6 @@
 
  };
 
- ControllerBrutefir.prototype.getLabelForSelectedCard = function(cards, key) {
-  var n = cards.length;
-  for (var i = 0; i < n; i++) {
-   if (cards[i].id == key)
-    return cards[i].name;
-  }
-
-  return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
- };
-
- ControllerBrutefir.prototype.getAlsaCards = function() {
-  var cards = [];
-
-  var soundCardDir = '/proc/asound/';
-  var idFile = '/id';
-  var regex = /card(\d+)/;
-  var carddata = fs.readJsonSync(('/volumio/app/plugins/audio_interface/alsa_controller/cards.json'), 'utf8', {
-   throws: false
-  });
-
-  var soundFiles = fs.readdirSync(soundCardDir);
-
-  for (var i = 0; i < soundFiles.length; i++) {
-   var fileName = soundFiles[i];
-   var matches = regex.exec(fileName);
-   var idFileName = soundCardDir + fileName + idFile;
-   if (matches && fs.existsSync(idFileName)) {
-    var id = matches[1];
-    var content = fs.readFileSync(idFileName);
-    var rawname = content.toString().trim();
-    var name = rawname;
-    for (var n = 0; n < carddata.cards.length; n++) {
-     var cardname = carddata.cards[n].name.toString().trim();
-     if (cardname === rawname) {
-      var name = carddata.cards[n].prettyname;
-     }
-    }
-    cards.push({
-     id: id,
-     name: name
-    });
-
-   }
-  }
-
-  return cards;
- };
-
-
  ControllerBrutefir.prototype.setUIConfig = function(data) {
   var self = this;
 
@@ -510,7 +461,6 @@
 
     var value;
     var devicevalue;
-    var cards = self.getAlsaCards();
     var sbauer;
     var input_device = 'Loopback,1';
     var filter_path = "/data/INTERNAL/brutefirfilters/";
@@ -843,16 +793,16 @@
   var defer = libQ.defer();
   var outputp
   outputp = self.config.get('alsa_outputdevicename')
-     setTimeout(function() {
-  var stri = {
-   "output_device": {
-    "value": "Loopback",
-    "label": (outputp + " through brutefir")
+  setTimeout(function() {
+   var stri = {
+    "output_device": {
+     "value": "Loopback",
+     "label": (outputp + " through brutefir")
+    }
    }
-  }
-  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 2500);
+   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+  }, 3500);
 
   return defer.promise;
  };

@@ -1,4 +1,4 @@
-20th september 2017
+18th october 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -53,6 +53,12 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+18th October
+
+- possible fix with volumio > 2.286
+- Loopback load now only 2 pcm_substream
+- code cleaning
 
 21th september
 
