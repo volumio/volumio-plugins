@@ -1,4 +1,4 @@
-18th october 2017
+2Oth october 2017
 	BRUTEFIR2 PLUGIN
 
 
@@ -35,7 +35,7 @@ First, you must have a working configuration with volumio, the dac you want to u
 1) download brutefir.zip file and install it through volumio plugin management UI.
 2) Enable the plugin
 4) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
-
+Have look at the wiki : [wiki](https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze)
 
 - What is working :
 
@@ -53,6 +53,11 @@ Equalizer appears on several lines
 
 
 - Last changes
+
+20th October
+
+- update node module
+- reference to the wiki in readme.md
 
 18th October
 
