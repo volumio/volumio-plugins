@@ -108,6 +108,24 @@
 					"updated": "25-05-2017"
 				},
 				{
+					"prettyName": "Backup & Restore Data",
+					"icon": "fa-floppy-o",
+					"name": "backup_restore",
+					"version": "0.7.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
+					"license": "ISC",
+					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
+					"details":"<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
+					"author": "macmpi",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "10-8-2017"
+				},
+				{
 					"prettyName": "Amplifier Switch",
 					"icon": "fa-lightbulb-o",
 					"name": "ampswitch",
