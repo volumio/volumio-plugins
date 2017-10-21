@@ -1,0 +1,18 @@
+{
+  "page": {
+    "label": "TRANSLATE.AUTO_PLAY_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "no_setting",
+      "element": "section",
+      "label": "TRANSLATE.HEADING",
+      "icon": "fa-plug",
+      "content": [
+        {
+        }
+      ]
+    }
+  ]
+
+}

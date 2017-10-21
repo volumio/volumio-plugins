@@ -1,0 +1,34 @@
+{
+  "page": {
+    "label": "TRANSLATE.YOUTUBE_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.YOUTUBE_SETTINGS",
+      "icon": "fa-wrench",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/youtube",
+        "method": "updateSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.YOUTUBE_SAVE",
+        "data": [
+          "results_limit"
+        ]
+      },
+      "content": [
+        {
+          "id": "results_limit",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.YOUTUBE_RESULTS_LIMIT_DOC",
+          "label": "TRANSLATE.YOUTUBE_RESULTS_LIMIT",
+          "value": 50
+        }
+      ]
+    }
+  ]
+}
