@@ -1,44 +1,44 @@
 {
-  "categories": [
-    {
-      "prettyName": "Music Services",
-      "name": "music_service",
-      "id": "cat1",
-      "description": "Plugins for Adding Music Sources to Volumio",
-      "plugins": [
-        {
-          "prettyName": "Spotify",
-          "icon": "fa-spotify",
-          "name": "spop",
-          "version": "1.3.2",
-          "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/spop/spop.zip",
-          "license": "Free for non commercial USE",
-          "description": "Spotify plugin for Volumio2",
-          "details": "<h4>Spotify Plugin for Volumio</h4><br>Adds Spotify Playback capabilites to Volumio<br>Features:<br><ul><li>Playlists</li></ul><br><strong>Note:</strong> Requires Spotify premium account.",
-          "author": "Volumio Team",
-          "screenshots": [
-            {
-              "image": "",
-              "thumb": ""
-            }
-          ],
-          "updated": "27-7-2017"
-        }
-      ]
-    },
-    {
-      "prettyName": "Miscelleanea",
-      "name": "miscelleanea",
-      "id": "cat2",
-      "description": "Things that cannot go in other categories",
-      "plugins": []
-    },
-    {
-      "prettyName": "System Tools",
-      "name": "system_controller",
-      "id": "cat3",
-      "description": "Volumio System Tools",
-      "plugins": []
-    }
-  ]
+	"categories": [
+		{
+			"prettyName": "Music Services",
+			"name": "music_service",
+			"id": "cat1",
+			"description": "Plugins for Adding Music Sources to Volumio",
+			"plugins": [
+				{
+					"prettyName": "Spotify",
+					"icon": "fa-spotify",
+					"name": "spop",
+					"version": "1.3.4",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/spop/spop.zip",
+					"license": "Free for non commercial USE",
+					"description": "Spotify plugin for Volumio2",
+					"details": "<h4>Spotify Plugin for Volumio</h4><br>Adds Spotify Playback capabilites to Volumio<br>Features:<br><ul><li>Playlists</li></ul><br><strong>Note:</strong> Requires Spotify premium account.",
+					"author": "Volumio Team",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "21-10-2017"
+				}
+			]
+		},
+		{
+			"prettyName": "Miscelleanea",
+			"name": "miscelleanea",
+			"id": "cat2",
+			"description": "Things that cannot go in other categories",
+			"plugins": []
+		},
+		{
+			"prettyName": "System Tools",
+			"name": "system_controller",
+			"id": "cat3",
+			"description": "Volumio System Tools",
+			"plugins": []
+		}
+	]
 }
