@@ -5,5 +5,7 @@
   "PORT_DOC": "Output port on your device",
   "INVERTED": "Inverted",
   "INVERTED_DOC": "If output is inverted, ON will be low, OFF will be high",
+  "DELAY": "Delay",
+  "DELAY_DOC": "Wait for xx ms after pause/stop to turn OFF",
   "SAVE":"Save"
 }

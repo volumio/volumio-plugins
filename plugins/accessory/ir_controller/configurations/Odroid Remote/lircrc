@@ -7,11 +7,15 @@ begin
 prog = irexec
 button = KEY_VOLUMEUP
 config = /usr/local/bin/volumio volume plus
+delay=2
+repeat=3
 end
 begin
 prog = irexec
 button = KEY_VOLUMEDOWN
 config = /usr/local/bin/volumio volume minus
+delay=2
+repeat=3
 end
 begin
 prog = irexec
@@ -27,17 +31,20 @@ begin
 prog = irexec
 button = KEY_MUTE
 config = /usr/local/bin/volumio volume toggle
-repeat = 0
 end
 begin
 prog = irexec
 button = KEY_UP
 config = /usr/local/bin/volumio seek plus
+delay=2
+repeat=3
 end
 begin
 prog = irexec
 button = KEY_DOWN
 config = /usr/local/bin/volumio seek minus
+delay=2
+repeat=3
 end
 begin
 prog = irexec
@@ -48,4 +55,9 @@ begin
 prog = irexec
 button = KEY_MENU
 config = /usr/local/bin/volumio random
+end
+begin
+prog = irexec
+button = KEY_POWER
+config = /sbin/shutdown -h now
 end

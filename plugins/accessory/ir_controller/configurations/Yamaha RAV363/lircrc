@@ -1,0 +1,109 @@
+    ## irexec
+    begin irexec
+      begin
+         prog = irexec
+         button = KEY_POWER
+         config = shutdown -h -P now
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_1
+         config = (arecord -f cd -D hw:rpiReceiver,1 | aplay -D hw:rpiReceiver,0) & (sleep 1) && (cat /dev/radio0) &
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_2
+         config = v4l2-ctl -d /dev/radio0 --freq-seek=dir=1,wrap=1
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_3
+         config = killall arecord ; killall aplay ; killall cat
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_CHANNELDOWN
+         config = mpc consume off;mpc prev
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_CHANNELUP
+         config = mpc:consume off;mpc next
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_VOLUMEUP
+         config = amixer -crpiReceiver sset Master 2%+
+         repeat = 1
+      end
+
+      begin
+         prog = irexec
+         button = KEY_VOLUMEDOWN
+         config = amixer -crpiReceiver sset Master 2%-
+         repeat = 1
+      end
+
+      begin
+         prog = irexec
+         button = KEY_RIGHT
+         config = mpc toggle;mpc seek +1%;sleep 0.1;mpc toggle
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_LEFT
+         config = mpc toggle;mpc seek -1%;sleep 0.1;mpc toggle
+         repeat = 0
+      end
+     
+      begin
+         prog = irexec
+         button = KEY_MUTE
+         config = mpc toggle
+         repeat = 0
+      end
+
+      begin
+         prog = irexec
+         button = KEY_EXIT
+         config = mpc stop;mpc play
+         repeat = 0
+      end
+     
+      begin
+         prog = irexec
+         button = KEY_BACK
+         config = mpc stop;mpc clear
+         repeat = 0
+      end
+     
+       begin
+         prog = irexec
+         button = KEY_INFO
+         config = mpc shuffle
+         repeat = 0
+       end   
+       
+       begin
+         prog = irexec
+         button = KEY_ENTER
+         config = mpc consume off;mpc play
+         repeat = 0
+       end   
+           
+    end irexec
+

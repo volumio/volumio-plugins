@@ -2,7 +2,7 @@
 Description = Allo Relay attenuator Service
 
 [Service]
-ExecStart=/usr/bin/r_attenu
+ExecStart=/usr/bin/r_attenu -l
 ExecStop=/usr/bin/killall r_attenu
 Restart=always
 StandardOutput=syslog

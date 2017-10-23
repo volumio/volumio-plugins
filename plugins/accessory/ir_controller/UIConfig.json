@@ -8,7 +8,7 @@
       "element": "section",
       "label": "TRANSLATE.IR_CONFIGURATION",
       "icon": "fa-magic",
-      "onSave": {"type":"controller", "endpoint":"system_controller/ir_controller", "method":"saveIROptions"},
+      "onSave": {"type":"controller", "endpoint":"accessory/ir_controller", "method":"saveIROptions"},
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [

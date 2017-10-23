@@ -13,7 +13,8 @@
                  "label": "TRANSLATE.SAVE",
                  "data": [
                           "port_setting",
-                          "inverted_setting"
+                          "inverted_setting",
+                          "delay_setting"
                           ]
                  },
                  "content": [
@@ -139,7 +140,15 @@
                              "label": "TRANSLATE.INVERTED",
                              "doc": "TRANSLATE.INVERTED_DOC",
                              "value": false
-                             }
+                             },
+							               {
+							               "id": "delay_setting",
+                             "element": "input",
+							               "type": "number",
+                             "label": "TRANSLATE.DELAY",
+                             "doc": "TRANSLATE.DELAY_DOC",
+                             "value": 1000
+							                }
                              ]
                  }
                  ]
