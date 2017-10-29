@@ -19,10 +19,9 @@
 					"enablemyeq",
 					"eqprofile",
 					"coef"
-					]
+				]
 			},
-			"content": 
-			[
+			"content": [
 				{
 					"id": "enablemyeq",
 					"element": "switch",
@@ -34,11 +33,10 @@
 					"element": "select",
 					"doc": "choose between setting you like",
 					"label": "Equalization profile",
-		
 					"value": {
 						"value": "flat",
 						"label": "flat"
-						},
+					},
 					"options": [
 						{
 							"value": "flat",
@@ -81,7 +79,7 @@
 							"label": "my preset 3"
 						}
 					],
-						"visibleIf": {
+					"visibleIf": {
 						"field": "enablemyeq",
 						"value": false
 					}
@@ -104,7 +102,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--31Hz"],
+								"ticksLabels": [
+									"--31Hz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -112,7 +112,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--63Hz"],
+								"ticksLabels": [
+									"--63Hz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -120,7 +122,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--125Hz"],
+								"ticksLabels": [
+									"--125Hz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -128,7 +132,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--250Hz"],
+								"ticksLabels": [
+									"--250Hz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -136,7 +142,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--500Hz"],
+								"ticksLabels": [
+									"--500Hz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -144,7 +152,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--1KHz"],
+								"ticksLabels": [
+									"--1KHz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -152,7 +162,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--2KHz"],
+								"ticksLabels": [
+									"--2KHz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -160,7 +172,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--4KHz"],
+								"ticksLabels": [
+									"--4KHz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -168,7 +182,9 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--8KHz"],
+								"ticksLabels": [
+									"--8KHz"
+								],
 								"tooltip": "show"
 							},
 							{
@@ -176,18 +192,84 @@
 								"max": 100,
 								"step": "5",
 								"value": 0,
-								"ticksLabels": ["--16KHz"],
+								"ticksLabels": [
+									"--16KHz"
+								],
 								"tooltip": "show"
 							}
 						]
 					}
 				}
-						
 			]
-				
-			
+		},
+		{
+			"id": "advanced",
+			"element": "section",
+			"label": "advanced equalizer preset",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "miscellanea/volsimpleequal",
+				"method": "saveequalizerpreset"
+			},
+			"saveButton": {
+				"label": "save",
+				"data": [
+					"mypreset1",
+					"mypreset2",
+					"mypreset3"
+				]
+			},
+			"content": [
+				{
+					"id": "enabled",
+					"element": "switch",
+					"label": "preset settings",
+					"value": false
+				},
+				{
+					"id": "mypreset1",
+					"element": "input",
+					"label": "mypreset1",
+					"value": {
+						"value": "60,60,60,60,60,60,60,60,60,60",
+						"label": "60,60,60,60,60,60,60,60,60,60"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "mypreset2",
+					"element": "input",
+					"label": "mypreset2",
+					"value": {
+						"value": "60,60,60,60,60,60,60,60,60,60",
+						"label": "60,60,60,60,60,60,60,60,60,60"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "mypreset3",
+					"element": "input",
+					"label": "mypreset3",
+					"value": {
+						"value": "60,60,60,60,60,60,60,60,60,60",
+						"label": "60,60,60,60,60,60,60,60,60,60"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				}
+			]
 		}
-]
+	]
 }
-
-	

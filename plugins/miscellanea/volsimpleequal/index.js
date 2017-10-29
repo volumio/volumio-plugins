@@ -269,7 +269,11 @@
     for (var i in coefarray) {
      uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
-
+	//here we get values for preset
+   // uiconf.sections[1].content[0].value = self.config.get('enablepreset');
+    uiconf.sections[1].content[1].value = self.config.get('mypreset1');
+    uiconf.sections[1].content[2].value = self.config.get('mypreset2');
+    uiconf.sections[1].content[3].value = self.config.get('mypreset3');
     defer.resolve(uiconf);
    })
    .fail(function() {
@@ -360,6 +364,20 @@ setTimeout(function() {
   self.logger.info('Equalizer Configurations have been set');
   self.commandRouter.pushToastMessage('success', "Configuration update", 'Alsaequal new equalizer successfully applied');
   self.sendequal(defer);
+  return defer.promise;
+ };
+
+//here we save the equalizer preset
+ ControllerVolsimpleequal.prototype.saveequalizerpreset = function(data) {
+  var self = this;
+  var defer = libQ.defer();
+  //self.config.set('enablepreset', data['enablepreset']);
+  self.config.set('mypreset1', data['mypreset1']);
+  self.config.set('mypreset2', data['mypreset2']);
+  self.config.set('mypreset3', data['mypreset3']);
+  self.logger.info('Equalizer preset saved');
+  self.commandRouter.pushToastMessage('success', "Configuration update", 'Preset successfully saved');
+  //self.sendequal(defer);
   return defer.promise;
  };
 

@@ -33,8 +33,8 @@ What is not working
 
 29th October
 
-- add 3 custom preset (you have to change values via ssh in /data/configuration/miscellanea/volsimpleequal/config.json
-
+- 
+- add 3 custom preset in webUI !
 10th October
 
 - small timer adjustement for alsaloop bridge to avoid the 'no sound' problem at start time
