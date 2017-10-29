@@ -145,7 +145,13 @@
     scoef = "31,36,40,51,63,79,73,67,53,52"
   else if (self.config.get('eqprofile') === 'soundtrack')
     scoef = "65,75,70,60,60,70,70,70,60,70"
-  } else scoef = self.config.get('coef')
+  else if (self.config.get('eqprofile') === 'mypreset1')
+    scoef = self.config.get('mypreset1')
+  else if (self.config.get('eqprofile') === 'mypreset2')
+    scoef = self.config.get('mypreset2')
+  else if (self.config.get('eqprofile') === 'mypreset3')
+    scoef = self.config.get('mypreset3')
+   } else scoef = self.config.get('coef')
 
   //   console.log(' raw values are %j', scoef);
   var values = scoef.split(',');

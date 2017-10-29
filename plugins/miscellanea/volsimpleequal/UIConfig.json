@@ -67,6 +67,18 @@
 						{
 							"value": "soundtrack",
 							"label": "soundtrack"
+						},
+						{
+							"value": "mypreset1",
+							"label": "my preset 1"
+						},
+						{
+							"value": "mypreset2",
+							"label": "my preset 2"
+						},
+						{
+							"value": "mypreset3",
+							"label": "my preset 3"
 						}
 					],
 						"visibleIf": {
