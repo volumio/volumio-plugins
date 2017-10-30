@@ -33,6 +33,7 @@ What is not working
 
 30th October
 
+- install removes previous config
 - preset setting with sliders in webUI!
 
 29th October

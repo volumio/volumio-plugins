@@ -3,6 +3,15 @@
 echo "Installing volsimpleequal dependencies"
 echo "unload Loopback module if exists"
 sudo rmmod snd_aloop
+echo "remove previous configuration"
+if [ ! -f "/data/configuration/miscellanea/volsimpleequal/config.json" ];
+	then
+		echo "file doesn't exist, nothing to do"
+	else
+		echo "File exists removing it"
+		sudo rm /data/configuration/miscellanea/volsimpleequal/config.json
+fi
+
 
 sudo apt-get update
 sudo apt-get -y install libasound2-plugin-equal
