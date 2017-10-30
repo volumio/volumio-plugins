@@ -11,6 +11,14 @@
     "type": "string",
     "value": ""
   },
+  "lastfmusername": {
+    "type": "string",
+    "value": ""
+  },
+  "lastfmpassword": {
+    "type": "string",
+    "value": ""
+  },
   "bitrate": {
     "type": "boolean",
     "value": true

@@ -14,6 +14,8 @@
         "data": [
           "username",
           "password",
+          "lastfmusername",
+          "lastfmpassword",
           "bitrate"
         ]
       },
@@ -32,6 +34,22 @@
           "element": "input",
           "doc": "This is the password of your Spotify account",
           "label": "TRANSLATE.SPOTIFY_PASSWORD",
+          "value": ""
+        },
+        {
+          "id": "lastfmusername",
+          "type":"text",
+          "element": "input",
+          "doc": "This is the username of your Last.fm account",
+          "label": "TRANSLATE.LAST_FM_USERNAME",
+          "value": ""
+        },
+        {
+          "id": "lastfmpassword",
+          "type":"password",
+          "element": "input",
+          "doc": "This is the password of your Last.fm account",
+          "label": "TRANSLATE.LAST_FM_PASSWORD",
           "value": ""
         },
         {

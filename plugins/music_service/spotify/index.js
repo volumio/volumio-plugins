@@ -1104,7 +1104,9 @@ ControllerSpop.prototype.getUIConfig = function() {
 
 			uiconf.sections[0].content[0].value = self.config.get('username');
 			uiconf.sections[0].content[1].value = self.config.get('password');
-			uiconf.sections[0].content[2].value = self.config.get('bitrate');
+			uiconf.sections[0].content[2].value = self.config.get('lastfmusername');
+			uiconf.sections[0].content[3].value = self.config.get('lastfmpassword');
+			uiconf.sections[0].content[4].value = self.config.get('bitrate');
 
 			defer.resolve(uiconf);
 		})
@@ -1726,10 +1728,12 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 
 			var conf1 = data.replace("${username}", self.config.get('username'));
 			var conf2 = conf1.replace("${password}", self.config.get('password'));
-			var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
-			var conf4 = conf3.replace("${outdev}", hwdev);
+			var conf3 = conf2.replace("${lastfmusername}", self.config.get('lastfmusername'));
+			var conf4 = conf3.replace("${lastfmpassword}", self.config.get('lastfmpassword'));
+			var conf5 = conf4.replace("${bitrate}", self.config.get('bitrate'));
+			var conf6 = conf5.replace("${outdev}", hwdev);
 
-			fs.writeFile("/etc/spopd.conf", conf4, 'utf8', function (err) {
+			fs.writeFile("/etc/spopd.conf", conf6, 'utf8', function (err) {
 				if (err)
 					defer.reject(new Error(err));
 				else defer.resolve();
@@ -1756,6 +1760,8 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 
 	self.config.set('username', data['username']);
 	self.config.set('password', data['password']);
+	self.config.set('lastfmusername', data['lastfmusername']);
+	self.config.set('lastfmpassword', data['lastfmpassword']);
 	self.config.set('bitrate', data['bitrate']);
 
 	self.rebuildSPOPDAndRestartDaemon()

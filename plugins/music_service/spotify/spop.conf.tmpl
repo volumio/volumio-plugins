@@ -8,6 +8,12 @@ audio_output = sox
 pretty_json = true
 search_results = 50
 cache_path =/run/shm
+plugins = scrobble
+
+[scrobble]
+api_endpoint = http://post.audioscrobbler.com:80/
+username = ${lastfmusername}
+password = ${lastfmpassword}
 
 [sox]
 output_type = alsa
