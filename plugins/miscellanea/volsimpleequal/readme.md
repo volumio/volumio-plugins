@@ -1,4 +1,4 @@
-29th October 2017
+30th October 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,10 +31,15 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
+30th October
+
+- preset setting with sliders in webUI!
+
 29th October
 
 - 
 - add 3 custom preset in webUI !
+
 10th October
 
 - small timer adjustement for alsaloop bridge to avoid the 'no sound' problem at start time

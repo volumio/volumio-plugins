@@ -269,10 +269,41 @@
     for (var i in coefarray) {
      uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
+
+    //for equalizer custom mypreset1
+    // we retrieve the coefficient configuration
+    var cmypreset1 = self.config.get('mypreset1');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp1 = cmypreset1.split(',');
+    //console.log(coefarrayp1)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp1) {
+     uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
+    }
+ //for equalizer custom mypreset2
+    // we retrieve the coefficient configuration
+    var cmypreset2 = self.config.get('mypreset2');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp2 = cmypreset2.split(',');
+    //console.log(coefarrayp2)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp2) {
+     uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
+    }
+//for equalizer custom mypreset3
+    // we retrieve the coefficient configuration
+    var cmypreset3= self.config.get('mypreset3');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp3 = cmypreset3.split(',');
+    //console.log(coefarrayp3)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp3) {
+     uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
+    }
 	//here we get values for preset
    // uiconf.sections[1].content[0].value = self.config.get('enablepreset');
-    uiconf.sections[1].content[1].value = self.config.get('mypreset1');
-    uiconf.sections[1].content[2].value = self.config.get('mypreset2');
+ //   uiconf.sections[1].content[1].value = self.config.get('mypreset1');
+  //  uiconf.sections[1].content[2].value = self.config.get('mypreset2');
     uiconf.sections[1].content[3].value = self.config.get('mypreset3');
     defer.resolve(uiconf);
    })
