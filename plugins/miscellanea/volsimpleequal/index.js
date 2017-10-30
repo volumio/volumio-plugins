@@ -304,7 +304,7 @@
    // uiconf.sections[1].content[0].value = self.config.get('enablepreset');
  //   uiconf.sections[1].content[1].value = self.config.get('mypreset1');
   //  uiconf.sections[1].content[2].value = self.config.get('mypreset2');
-    uiconf.sections[1].content[3].value = self.config.get('mypreset3');
+  //  uiconf.sections[1].content[3].value = self.config.get('mypreset3');
     defer.resolve(uiconf);
    })
    .fail(function() {
