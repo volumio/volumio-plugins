@@ -132,17 +132,17 @@
 
   if (self.config.get('enablemyeq') == false) {
    if (self.config.get('eqprofile') === 'flat')
-    scoef = "60,60,60,60,60,60,60,60,60,60"
+    scoef = "60,60,60,60,60,60,60,60,60,60,60,60,60,60,60"
    else if (self.config.get('eqprofile') === 'loudness')
-    scoef = "67,60,50,50,42,50,46,39,65,50"
+    scoef = "67,60,50,50,42,50,46,39,65,50,55,60,60,60,60"
    else if (self.config.get('eqprofile') === 'rock')
-    scoef = "67,62,60,55,49,46,53,58,62,64"
+    scoef = "67,62,60,55,49,46,53,58,62,64,60,60,56;50,50"
    else if (self.config.get('eqprofile') === 'classic')
-    scoef = "66,62,60,59,45,49,58,60,62"
+    scoef = "66,62,60,59,45,49,58,60,62,50,50,60,65,60,60"
    else if (self.config.get('eqprofile') === 'bass')
-    scoef = "68,67,69,60,46,50,51,53,52"
+    scoef = "68,67,69,60,46,50,51,53,52,48,50,50,53,56,58"
    else if (self.config.get('eqprofile') === 'voice')
-    scoef = "31,36,40,51,63,79,73,67,53,52"
+    scoef = "31,36,40,51,63,79,73,67,53,52,40,40,42,44,45"
   else if (self.config.get('eqprofile') === 'soundtrack')
     scoef = "65,75,70,60,60,70,70,70,60,70"
   else if (self.config.get('eqprofile') === 'mypreset1')

@@ -11,10 +11,17 @@ if [ ! -f "/data/configuration/miscellanea/volsimpleequal/config.json" ];
 		echo "File exists removing it"
 		sudo rm /data/configuration/miscellanea/volsimpleequal/config.json
 fi
+if [ ! -f "/home/volumio/.alsaequal.bin" ];
+	then
+		echo "file doesn't exist, nothing to do"
+	else
+		echo "File exists removing it"
+		sudo rm home/volumio/.alsaequal.bin
+fi
 
 
 sudo apt-get update
-sudo apt-get -y install libasound2-plugin-equal
+sudo apt-get -y install libasound2-plugin-equal swh-plugins
 
 echo "Checking if volsimpleequal services exist"
 if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
@@ -32,6 +39,6 @@ if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
 		sudo tar -xvf volsimpleequal.tar.gz
 		rm /volsimpleequal.tar.gz
 fi
-
+sudo systemctl daemon-reload
 #required to end the plugin install
 echo "plugininstallend"

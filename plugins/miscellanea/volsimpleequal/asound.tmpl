@@ -1,16 +1,17 @@
- 
-pcm.!default { 
- type plug 
- slave.pcm plugequal; 
-} 
+
 ctl.equal { 
- type equal; 
+ type equal
+library "/usr/lib/ladspa/mbeq_1197.so"
+    module "mbeq"
 } 
-pcm.plugequal { 
- type equal; 
+pcm.plugequal1 { 
+ type equal
+ library "/usr/lib/ladspa/mbeq_1197.so"
+    module "mbeq"
+#slave.pcm "plug:dmix"
  slave.pcm "plughw:${hwout},0"; 
 }
 pcm.equal {
  type plug;
- slave.pcm plugequal;
+ slave.pcm plugequal1;
  }

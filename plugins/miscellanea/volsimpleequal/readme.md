@@ -1,9 +1,10 @@
-30th October 2017
+01st November 2017
 
 
 		Volsimpleequal volumio simple equalizer
 A simple Equalizer plugin for Volumio2.
-Based on alsaequal https://github.com/raedwulf/alsaequal
+Since version 0.3.0 the plugin uses mbeq and 15 bands equalizer https://github.com/swh/ladspa
+previous version based on alsaequal https://github.com/raedwulf/alsaequal
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
 
@@ -31,9 +32,12 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
+01st November
+
+- now the plugin uses mbeq, a 15 bands equalizer based on FFT. CPU hungry... but quality is here !
+
 30th October
 
-- install removes previous config
 - preset setting with sliders in webUI!
 
 29th October
