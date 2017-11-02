@@ -1,4 +1,4 @@
-01st November 2017
+02nd November 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -32,9 +32,14 @@ What is not working
  Equalizer appears on several lines
  It still a beta version, need feedback !
 
+02nd november
+
+- reduce range of sliders from 0/100 step 5 to 30/70 step 1
+- hard preset now stored in config.json
+
 01st November
 
-- now the plugin uses mbeq, a 15 bands equalizer based on FFT. CPU hungry... but quality is here !
+- now the plugin uses mbeq, a 15 bands equalizer
 
 30th October
 

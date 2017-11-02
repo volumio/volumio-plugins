@@ -132,19 +132,19 @@
 
   if (self.config.get('enablemyeq') == false) {
    if (self.config.get('eqprofile') === 'flat')
-    scoef = "60,60,60,60,60,60,60,60,60,60,60,60,60,60,60"
+    scoef = self.config.get('flat')
    else if (self.config.get('eqprofile') === 'loudness')
-    scoef = "67,60,50,50,42,50,46,39,65,50,55,60,60,60,60"
+    scoef = self.config.get('loudness')
    else if (self.config.get('eqprofile') === 'rock')
-    scoef = "67,62,60,55,49,46,53,58,62,64,60,60,56;50,50"
+    scoef = self.config.get('rock')
    else if (self.config.get('eqprofile') === 'classic')
-    scoef = "66,62,60,59,45,49,58,60,62,50,50,60,65,60,60"
+    scoef = self.config.get('classic')
    else if (self.config.get('eqprofile') === 'bass')
-    scoef = "68,67,69,60,46,50,51,53,52,48,50,50,53,56,58"
+    scoef = self.config.get('bass')
    else if (self.config.get('eqprofile') === 'voice')
-    scoef = "31,36,40,51,63,79,73,67,53,52,40,40,42,44,45"
+    scoef = self.config.get('voice')
   else if (self.config.get('eqprofile') === 'soundtrack')
-    scoef = "65,75,70,60,60,70,70,70,60,70"
+    scoef = self.config.get('soundtrack')
   else if (self.config.get('eqprofile') === 'mypreset1')
     scoef = self.config.get('mypreset1')
   else if (self.config.get('eqprofile') === 'mypreset2')
@@ -406,6 +406,13 @@ setTimeout(function() {
   self.config.set('mypreset1', data['mypreset1']);
   self.config.set('mypreset2', data['mypreset2']);
   self.config.set('mypreset3', data['mypreset3']);
+  self.config.set('flat', data['flat']);
+  self.config.set('loudness', data['loudness']);
+  self.config.set('rock', data['rock']);
+  self.config.set('classic', data['classic']);
+  self.config.set('bass', data['bass']);
+  self.config.set('voice', data['voice']);
+  self.config.set('soundtrack', data['soundtrack']);
   self.logger.info('Equalizer preset saved');
   self.commandRouter.pushToastMessage('success', "Configuration update", 'Preset successfully saved');
   //self.sendequal(defer);
