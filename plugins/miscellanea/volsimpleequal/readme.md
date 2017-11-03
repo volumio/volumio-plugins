@@ -1,4 +1,4 @@
-02nd November 2017
+03rd November 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,6 +31,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+03rd november
+
+- redefine sliders ranges from -10/10 step 1 with an offset 60
 
 02nd november
 

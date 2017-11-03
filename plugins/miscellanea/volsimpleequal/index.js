@@ -160,15 +160,21 @@
   var alsaequalcmd
   var i
   var j
+ var x
+var k
+//equalizer offset
+  var z = 60;
   var coefarray = scoef.split(',');
   //console.log(coefarray)
   // for every value that we put in array, we set the according bar value
   for (var i in coefarray) {
    j = i
    i = ++i
-
-   console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + coefarray[j])
-   exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + coefarray[j], {
+   k = parseInt(coefarray[j], 10);
+x = k + z;
+//console.log("aaaaaaaaa----"+ x ) 
+   console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + x )
+   exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + x , {
     uid: 1000,
     gid: 1000
    }, function(error, stdout, stderr) {})
