@@ -16,13 +16,13 @@ if [ ! -f "/home/volumio/.alsaequal.bin" ];
 		echo "file doesn't exist, nothing to do"
 	else
 		echo "File exists removing it"
-		sudo rm home/volumio/.alsaequal.bin
+		sudo rm /home/volumio/.alsaequal.bin
 fi
 
 
 sudo apt-get update
-sudo apt-get -y install libasound2-plugin-equal swh-plugins
-
+sudo apt-get -y install swh-plugins
+#libasound2-plugin-equal 
 echo "Checking if volsimpleequal services exist"
 if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
 	then
