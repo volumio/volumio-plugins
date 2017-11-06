@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Sélectionner Sauvegarde ou Restauration",
+  "BACKUP_LABEL":"Options de sauvegarde",
+  "BACKUP_DESC":"Le fichier volumio_data.tgz sera créé à la racine du partage SMB: vous pouvez le copier au même endroit sur un autre appareil. ATTENTION: Chaque nouvelle sauvegarde efface la précédente.",
+  "BACKUP_DO":"Sauvegarder",
+  "RESTORE_LABEL":"Restauration",
+  "RESTORE_DESC":"Utilise le ficher volumio_data.tgz de la racine du partage SMB pour restaurer les données: assurez-vous de sa présence !  Redémarrer après la restauration.",
+  "RESTORE_DO":"Restaurer",
+  "QUEUE":"Queue",
+  "QUEUE_DOC":"Sélectionnez si vous souhaitez sauvegarder la queue",
+  "PLAYLIST":"Playlist",
+  "PLAYLIST_DOC":"Sélectionnez si vous souhaitez sauvegarder les playlists",
+  "FAVOURITES":"Favoris",
+  "FAVOURITES_DOC":"Sélectionnez si vous souhaitez sauvegarder les Favoris (inclus mes Web Radios, etc...)",
+  "CONFIGURATION":"Réglages",
+  "CONFIGURATION_DOC":"Sélectionnez si vous souhaitez sauvegarder les Réglages. Cela sauvegarde aussi les réglages des plugins. Après restauration sur une image vierge les plugins devront être ré-installés, mais leurs réglages seront conservés. Certains réglages devront être ré-appliqués depuis l'interface pour être actifs.",
+  "ALBUMART":"Pochettes",
+  "ALBUMART_DOC":"Sélectionnez si vous souhaitez sauvegarder les Pochettes"
+}
+
+
