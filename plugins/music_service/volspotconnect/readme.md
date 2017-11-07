@@ -34,6 +34,7 @@ Last changes
 
 November 7th
 
+correction
 possible fix for the no sound problem...
 
 October 8th

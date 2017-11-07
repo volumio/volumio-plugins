@@ -5,6 +5,7 @@ var libNet = require('net');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
+ var execSync = require('child_process').execSync;
 
 const SpotConnCtrl = require('./SpotConnController');
 var routn = {};
@@ -449,28 +450,38 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
      defer.reject(new Error(err));
      return console.log(err);
     }
-    var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
-
+    var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
+    var conf1 = data.replace("${hwout}", ("hw:"+outdev));
+console.log("zzzzzzzzzzzzzzzzzzz---"+ ("hw:"+outdev));
 
     fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
-      //self.logger.info('Cannot write /etc/asound.conf: '+err)
+      self.logger.info('Cannot write /etc/asound.conf: '+err)
      } else {
+//try {
       self.logger.info('asound.conf file written');
-      var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
+/*      var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
+
        uid: 1000,
        gid: 1000,
        encoding: 'utf8'
       });
+*/
+ fs.copy('/home/volumio/asoundrc', '/etc/asound.conf', 'utf8', function (err) {
+            if (err) return console.error(err);
+            console.log("copied with success")
+               })
       var apply = execSync('/usr/sbin/alsactl -L -R nrestore', {
        uid: 1000,
        gid: 1000,
        encoding: 'utf8'
       });
       defer.resolve();
-     }
-    });
+     
+//} catch (err) {}
+  
+}  });
 
    });
   } catch (err) {}
