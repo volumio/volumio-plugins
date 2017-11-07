@@ -1,4 +1,4 @@
-October 8th th 2017
+november 7th th 2017
 	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 IMPORTANT
@@ -31,6 +31,10 @@ To install
 - First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
 
 Last changes
+
+November 7th
+
+possible fix for the no sound problem...
 
 October 8th
 

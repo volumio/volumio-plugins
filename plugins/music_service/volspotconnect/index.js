@@ -412,7 +412,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		var conf2 = conf1.replace("${password}", self.config.get('password'));
 		var conf3 = conf2.replace("${rate}", rate);
 		var conf4 = conf3.replace("${devicename}",devicename);
-		var conf5 = conf4.replace("${outdev}", hwdev);
+		var conf5 = conf4.replace("${outdev}", 'spotout');
 		var conf6 = conf5.replace("${mixer}", mixer);
 		var conf7 = conf6.replace("${mixind}", mindex);
 		var conf8 = conf7.replace("${familyshare}", family);
@@ -436,6 +436,48 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
     return defer.promise;
 
 };
+
+ ControllerVolspotconnect.prototype.createASOUNDrcFile = function() {
+  var self = this;
+
+  var defer = libQ.defer();
+
+  try {
+
+   fs.readFile(__dirname + "/asound.tmpl", 'utf8', function(err, data) {
+    if (err) {
+     defer.reject(new Error(err));
+     return console.log(err);
+    }
+    var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
+
+
+    fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
+     if (err) {
+      defer.reject(new Error(err));
+      //self.logger.info('Cannot write /etc/asound.conf: '+err)
+     } else {
+      self.logger.info('asound.conf file written');
+      var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
+       uid: 1000,
+       gid: 1000,
+       encoding: 'utf8'
+      });
+      var apply = execSync('/usr/sbin/alsactl -L -R nrestore', {
+       uid: 1000,
+       gid: 1000,
+       encoding: 'utf8'
+      });
+      defer.resolve();
+     }
+    });
+
+   });
+  } catch (err) {}
+setTimeout(function() {
+  return defer.promise;
+  }, 2000);
+ };
 
 ControllerVolspotconnect.prototype.createASOUNDFile = function () {
     var self = this;
@@ -479,6 +521,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = function () {
     var self=this;
     var defer=libQ.defer();
+self.createASOUNDrcFile()
    self.createASOUNDFile()
 //console.log('toto')
     self.createVOLSPOTCONNECTFile()
