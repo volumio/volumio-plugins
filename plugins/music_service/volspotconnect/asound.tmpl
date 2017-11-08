@@ -3,7 +3,8 @@ pcm.spotout
 type dmix
 slave {
 pcm ${hwout}
+rate 44100
         }
 ipc_key 1024
 }
-
+defaults.pcm.rate_converter "speexrate_high"

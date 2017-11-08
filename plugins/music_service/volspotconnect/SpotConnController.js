@@ -18,7 +18,7 @@ class SpotConnEvents extends EventEmitter {
     })
   }
 
-  parseData(data) {
+    parseData(data) {
     // Quick and dirty JSON check
     try {
       const metadata = JSON.parse(data);
@@ -37,15 +37,15 @@ class SpotConnEvents extends EventEmitter {
           this.emit('DInactive', '')
           break;
 
-        case 'SInactive':
-          this.emit('kSpPlaybackNotifyBecameInactive')
+        case 'kSpPlaybackNotifyBecameInactive':
+          this.emit('SInactive')
           break;
 
         default:
           this.emit('unknown', data)
       };
     }
-  }
+}
 
   sendmsg(msg) {
     // Attempting to send a message back via udp
