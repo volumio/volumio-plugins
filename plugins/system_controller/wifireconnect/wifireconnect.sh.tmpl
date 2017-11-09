@@ -4,7 +4,8 @@
 SERVER=${serverip}
 NINTERFACE=${interface}
 
-ping -c2 ${SERVER} > /dev/null
+ wget -q --tries=10 --timeout=20 --spider ${SERVER} > /dev/null 2>&1
+#ping -c2 ${SERVER} > /dev/null
 
 if [ $? != 0 ]
 then
