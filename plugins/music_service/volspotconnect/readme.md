@@ -34,6 +34,7 @@ Last changes
 
 November 11th
 
+correction for no sound for arm6 (rpi 0 rpi B)
 correct display for sample rate
 works with volspimpleequal and softvol
 

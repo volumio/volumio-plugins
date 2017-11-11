@@ -509,15 +509,15 @@ ControllerVolspotconnect.prototype.createASOUNDFile = function() {
  var self = this;
  var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
  var defer = libQ.defer();
- if (outdev = 'softvolume') {
-  console.log(outdev)
+ // console.log(outdev)
+try {
   fs.copy('/etc/asound.conf', '/data/plugins/music_service/volspotconnect/spotify-connect-web/etc/asound.conf', 'utf8', function(err) {
    if (err) return console.error(err);
    console.log("copied with success")
-  })
- };
 
-};
+  })
+ }
+ };
 
 
 ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function(data) {
