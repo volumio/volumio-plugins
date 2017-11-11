@@ -35,6 +35,7 @@ Last changes
 November 11th
 
 correct display for sample rate
+works with volspimpleequal and softvol
 
 November 8th
 
