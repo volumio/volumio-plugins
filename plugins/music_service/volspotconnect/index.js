@@ -119,9 +119,12 @@ ControllerVolspotconnect.prototype.onStart = function() {
 //For metadata
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  	var self = this;
- 	self.servicename = 'volspotconnect';
+ 	var rate
+ 	self.servicename = 'Volspotconnect';
  	self.displayname = 'Volspotconnect';
-
+		if(self.config.get('bitrate')===true)
+                    rate="HQ";
+		else rate="SQ";
 	self.state = {
         status: 'stop',
         service: self.servicename,
@@ -133,11 +136,10 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
         trackType: self.servicename,
         seek: 0,
         duration: 0,
-        samplerate: '44.1 KHz',
-        bitdepth: 16,
+        samplerate: "Spotify",
+        bitdepth: rate,
         channels: 2
 	};
-
 	const nHost = ''; // blank = localhost
 	const nPort = 5000;
 
