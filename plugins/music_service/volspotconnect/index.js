@@ -516,7 +516,7 @@ try {
    console.log("copied with success")
 
   })
- }
+ }catch (err) {}
  };
 
 
