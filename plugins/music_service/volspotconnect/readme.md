@@ -34,6 +34,7 @@ Last changes
 
 November 12th
 
+possible fix for some dac / board (kali+piano)
 correction for UI not login after install
 
 November 11th
