@@ -414,9 +414,11 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
     hwdev = "softvolume"
    } else if (outdev == "Loopback") {
     hwdev = "plughw:" + outdev
+} else if (outdev == "0") {
+//console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ" + outdev)
+    hwdev = "plughw:" + outdev
    } else {
     hwdev = "spotout";
-    console.log("9999999999999999999999999999999999999999999999" + hwdev)
    }
 
 
@@ -460,11 +462,11 @@ ControllerVolspotconnect.prototype.createASOUNDrcFile = function() {
 
  var defer = libQ.defer();
  var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
- if (outdev != "softvolume" && outdev != "Loopback")
+ if (outdev != "softvolume" && outdev != "Loopback" && outdev !="0")
  //if (!(outdev in [,"softvolume","Loopback"]))
  {
   try {
-   console.log("7777777777777777777777777777777è" + outdev)
+ //  console.log("7777777777777777777777777777777è" + outdev)
 
    fs.readFile(__dirname + "/asound.tmpl", 'utf8', function(err, data) {
     if (err) {
@@ -473,7 +475,7 @@ ControllerVolspotconnect.prototype.createASOUNDrcFile = function() {
     }
     var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
     var conf1 = data.replace("${hwout}", ("hw:" + outdev));
-    console.log("zzzzzzzzzzzzzzzzzzz---" + ("hw:" + outdev));
+  //  console.log("zzzzzzzzzzzzzzzzzzz---" + ("hw:" + outdev));
 
     fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
      if (err) {
