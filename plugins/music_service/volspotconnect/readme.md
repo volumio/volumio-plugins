@@ -34,7 +34,7 @@ Last changes
 
 November 14th
 
-fix for jack output (maybe hdmi ?)
+fix for jack output (maybe hdmi ?) 
 
 November 12th
 
