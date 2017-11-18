@@ -412,14 +412,15 @@ setTimeout(function() {
   self.config.set('mypreset1', data['mypreset1']);
   self.config.set('mypreset2', data['mypreset2']);
   self.config.set('mypreset3', data['mypreset3']);
-  self.config.set('flat', data['flat']);
+ /* self.config.set('flat', data['flat']);
   self.config.set('loudness', data['loudness']);
   self.config.set('rock', data['rock']);
   self.config.set('classic', data['classic']);
   self.config.set('bass', data['bass']);
   self.config.set('voice', data['voice']);
   self.config.set('soundtrack', data['soundtrack']);
-  self.logger.info('Equalizer preset saved');
+*/ 
+ self.logger.info('Equalizer preset saved');
   self.commandRouter.pushToastMessage('success', "Configuration update", 'Preset successfully saved');
   //self.sendequal(defer);
   return defer.promise;

@@ -1,4 +1,4 @@
-04th November 2017
+18th November 2017
 
 
 		Volsimpleequal volumio simple equalizer
@@ -31,6 +31,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+18th november
+
+- correction when mypreset are saved (previous overwrited preset)
 
 04th november
 
