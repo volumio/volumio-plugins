@@ -4,8 +4,8 @@
 SERVER=${serverip}
 NINTERFACE=${interface}
 
- wget -q --tries=10 --timeout=20 --spider ${SERVER} > /dev/null 2>&1
-#ping -c2 ${SERVER} > /dev/null
+# wget -nv --tries=10 --timeout=20 --spider ${SERVER}
+ping -c2 ${SERVER} > /dev/null
 
 if [ $? != 0 ]
 then
@@ -16,7 +16,9 @@ then
 	#systemctl stop wireless.service
 	#sleep 2
         #systemctl start wireless.service
-	/sbin/ifdown --force ${NINTERFACE}
- 	systemctl restart wireless
+	sudo /sbin/ifdown --force ${NINTERFACE}
+	sudo /bin/ip link set ${NINTERFACE} up
+
+ 	#systemctl restart wireless
 fi
 
