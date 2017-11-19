@@ -21,7 +21,7 @@ fi
 
 
 sudo apt-get update
-sudo apt-get -y install swh-plugins libasound2-plugin-equal 
+sudo apt-get -y install libasound2-plugin-equal 
 echo "Checking if volsimpleequal services exist"
 if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
 	then

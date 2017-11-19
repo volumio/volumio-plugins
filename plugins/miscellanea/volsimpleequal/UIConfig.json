@@ -98,104 +98,64 @@
 						"orientation": "vertical",
 						"bars": [
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--50Hz"
+									"--31Hz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--100Hz"
+									"--63Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--156Hz"
+									"--125Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--220Hz"
+									"--250Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--311Hz"
+									"--500Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--440Hz"
+									"--1KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
@@ -204,45 +164,36 @@
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--3,5KHz"
+									"--4KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--5KHz"
+									"--8KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
+									"--16KHz"
 								],
 								"tooltip": "show"
 							}
+							
 						]
 					}
 				}
@@ -287,104 +238,64 @@
 						"orientation": "vertical",
 						"bars": [
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--50Hz"
+									"--31Hz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--100Hz"
+									"--63Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--156Hz"
+									"--125Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--220Hz"
+									"--250Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--311Hz"
+									"--500Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--440Hz"
+									"--1KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
@@ -393,42 +304,32 @@
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--3,5KHz"
+									"--4KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--5KHz"
+									"--8KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
+									"--16KHz"
 								],
 								"tooltip": "show"
 							}
@@ -449,104 +350,64 @@
 						"orientation": "vertical",
 						"bars": [
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--50Hz"
+									"--31Hz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--100Hz"
+									"--63Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--156Hz"
+									"--125Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--220Hz"
+									"--250Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--311Hz"
+									"--500Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--440Hz"
+									"--1KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
@@ -555,42 +416,32 @@
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--3,5KHz"
+									"--4KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--5KHz"
+									"--8KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
+									"--16KHz"
 								],
 								"tooltip": "show"
 							}
@@ -611,104 +462,64 @@
 						"orientation": "vertical",
 						"bars": [
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--50Hz"
+									"--31Hz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--100Hz"
+									"--63Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--156Hz"
+									"--125Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--220Hz"
+									"--250Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--311Hz"
+									"--500Hz"
 								],
 								"tooltip": "show"
 							},{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--440Hz"
+									"--1KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
@@ -717,42 +528,32 @@
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--3,5KHz"
+									"--4KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--5KHz"
+									"--8KHz"
 								],
 								"tooltip": "show"
 							},
 							{
-								"min": -10,
-								"max": 10,
+								"min": -15,
+								"max": 15,
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -10,
-								"max": 10,
-								"step": "1",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
+									"--16KHz"
 								],
 								"tooltip": "show"
 							}

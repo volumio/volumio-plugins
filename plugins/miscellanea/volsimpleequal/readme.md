@@ -3,7 +3,10 @@
 
 		Volsimpleequal volumio simple equalizer
 A simple Equalizer plugin for Volumio2.
-Since version 0.3.0 the plugin uses mbeq and 15 bands equalizer https://github.com/swh/ladspa
+
+#WARNING !!! I reverted to alsaequal, waiting for a fix for the frying sound with mbeq
+
+
 previous version based on alsaequal https://github.com/raedwulf/alsaequal
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
@@ -31,6 +34,10 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+19th november
+
+- revert (temporary) to alsaequal (10bands) against mbeq (15bands)
 
 18th november
 
