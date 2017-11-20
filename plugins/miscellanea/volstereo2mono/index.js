@@ -148,7 +148,7 @@
    .then(self.modprobeLoopBackDevice())
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
-   .then(self.setalsastereo2monooutput())
+   .then(self.setstereo2monooutput())
    .then(self.setVolumeParameters())
    .then(self.restoreVolumioconfig())
    .then(self.bridgeLoopBack())
@@ -347,7 +347,7 @@ setTimeout(function() {
  };
 
  //here we set the Loopback output
- ControllerVolstereo2mono.prototype.setalsastereo2monooutput = function() {
+ ControllerVolstereo2mono.prototype.setstereo2monooutput = function() {
   var self = this;
   var defer = libQ.defer();
 var outputp
