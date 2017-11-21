@@ -1,4 +1,4 @@
-20th November 2017
+21th November 2017
 
 
 		Volstereo2mono Downmix stereo to mono
@@ -16,13 +16,10 @@ How to install ?
 
 note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
 
-What is working ?
+21 th november
 
--
+- set volume to 0.7 in asound to avoid saturation
 
-What is not working
-
--
 20th november
 
 - first commit

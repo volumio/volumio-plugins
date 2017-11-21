@@ -3,9 +3,9 @@ pcm.monoout {
     type route
     slave.pcm "plughw:${hwout},0"
     ttable {
-        0.0 1    # in-channel 0, out-channel 0, 100% volume
-        1.0 1    # in-channel 1, out-channel 0, 100% volume
-	0.1 1	 # in-channel 0, out-channel 1, 100% volume
-	1.1 1 	# in-channel 0, out-channel 1, 100% volume
+        0.0 0.7	# in-channel 0, out-channel 0, 70% volume
+        1.0 0.7	# in-channel 1, out-channel 0, 70% volume
+	0.1 0.7	# in-channel 0, out-channel 1, 70% volume
+	1.1 0.7	# in-channel 0, out-channel 1, 70% volume
     }
 }
