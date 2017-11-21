@@ -10,14 +10,14 @@ echo "Checking if volstereo2mono services exist"
 if [ ! -f "/etc/systemd/system/volstereo2mono.service" ];
 	then
 		echo "file volstereo2mono.service doesn't exist, creating"
-		cp /data/plugins/miscellanea/volstereo2mono/volstereo2mono.tar.gz /
+		cp /data/plugins/audio_interface/volstereo2mono/volstereo2mono.tar.gz /
 		cd /
 		sudo tar -xvf volstereo2mono.tar.gz
 		rm /volstereo2mono.tar.gz
 	else
 		echo "volstereo2monot.service removing to install new version !"
 		sudo rm /etc/systemd/system/volstereo2mono.service
-		cp /data/plugins/miscellanea/volstereo2mono/volstereo2mono.tar.gz /
+		cp /data/plugins/audio_interface/volstereo2mono/volstereo2mono.tar.gz /
 		cd /
 		sudo tar -xvf volstereo2mono.tar.gz
 		rm /volstereo2mono.tar.gz

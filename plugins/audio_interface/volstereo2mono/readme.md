@@ -18,6 +18,7 @@ note : if no sound don't change anything in volumio settings. Reboot and try to 
 
 21 th november
 
+- move to audio_interface category
 - set volume to 0.7 in asound to avoid saturation
 
 20th november
