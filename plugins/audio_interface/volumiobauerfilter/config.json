@@ -1,0 +1,19 @@
+{
+   "frequency": {
+    "type": "string",
+    "value": "700"
+  },
+ 
+  "attenuation": {
+      "type": "string",
+      "value": "4.5"
+  },
+"alsa_device":{"type": "string","value": "0"},
+"alsa_outputdevicename":{"type": "string","value": "0"},
+"alsa_mixer":{"type": "string","value": ""},
+"alsa_mixer_type":{"type": "string","value": ""},
+"alsa_volumemax":{"type": "string","value": "100"},
+"alsa_volumecurvemode":{"type" : "string","value":"logarithmic"},
+"alsa_volumestart":{"type": "string","value": "disabled"},
+"alsa_volumesteps":{"type": "string","value": "10"}
+}

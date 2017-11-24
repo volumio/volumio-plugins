@@ -1,0 +1,18 @@
+pcm.bs2b {
+  type ladspa
+  slave.pcm "plughw:${hwout}"
+  path "/usr/lib/ladspa"
+  plugins [
+    {
+      label bs2b
+      input {
+        controls [ ${frequency} ${attenuation} ]
+      }
+    }
+  ]
+}
+
+pcm.outbauer {
+  type plug
+  slave.pcm "bs2b"
+}

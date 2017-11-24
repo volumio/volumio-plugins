@@ -1,0 +1,62 @@
+{
+  "page": {
+    "label": "Volumio binaural filter Configuration"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "Volumio binaural filter settings",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"audio_interface/volbinauralfilter", "method":"saveBauerfilter"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "frequency",
+           "attenuation"
+        ]
+      },
+    "content": 
+					[
+						
+						{
+							"id": "frequency",
+							"element": "equalizer",
+							"label": "frequency",
+							"description":"",
+							
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "200",
+										"max": "1200",
+										"step": "50",
+										"value": "700",
+										"tooltip":"always"
+									}
+								]
+							}
+						},
+						{
+							"id": "attenuation",
+							"element": "equalizer",
+							"label": "attenuation",
+							"description":"",
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min":"1",
+										"max":"15",
+										"step":"0.5",
+										"value":"5",
+										"tooltip":"always"
+									}
+								]
+							}
+						}
+					]  
+   }
+  ]
+}
