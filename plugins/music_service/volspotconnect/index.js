@@ -383,7 +383,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
    var smindex = self.commandRouter.sharedVars.get('alsa.outputdevice');
    if (smixer == "SoftMaster") {
     var smindex = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
-    mindex = "--mixer_device_index " + "0"; //smindex ;
+    mindex = "--mixer_device_index " + smindex ;
    } else if (outdev == "Loopback") {
     var datan = fs.readFileSync('/tmp/vconfig.json', 'utf8', function(err, data) {
      if (!err) {} else {
