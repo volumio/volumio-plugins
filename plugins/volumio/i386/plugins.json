@@ -39,6 +39,33 @@
 			"id": "cat3",
 			"description": "Volumio System Tools",
 			"plugins": []
-		}
-	]
+		},
+		 {
+                        "prettyName": "Accessories",
+                        "name": "accessory",
+                        "id": "cat3",
+                        "description": "Plugins for Volumio Accessories",
+                        "plugins": [
+				{
+                                        "prettyName": "Backup & Restore Data",
+                                        "icon": "fa-lightbulb-o",
+                                        "name": "backup_restore",
+                                        "version": "0.7.2",
+                                        "url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/system_controller/backup_restore/backup_restore.zip",
+                                        "license": "ISC",
+                                        "description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
+                                        "details": "This plugin allows to backup settings, albumarts, queue, playlists, favourites and restore them. ",
+                                        "author": "macmpi",
+                                        "screenshots": [
+                                                {
+                                                        "image": "",
+                                                        "thumb": ""
+                                                }
+                                        ],
+                                        "updated": "18-11-2017"
+                                }
+	
+		]
+}
+]
 }
