@@ -1,6 +1,11 @@
 {
- 
- "FREQUENCY":"frequency",
- "ATTENUATION":"attenuation"
+ "VOLUMIO_BINAURAL":"Volumio Binaural Filter Configuration",
+ "BINAURAL_SETTINGS":"Binaural filter settings",
+ "ENABLE_FILTER":"Enable filter=on or disable filter=off",
+ "FREQUENCY":"frequency Hz",
+ "FREQUENCY_DESC":"Cut-off frequency in Hz",
+ "ATTENUATION":"attenuation dB",
+ "ATTENUATION_DESC":"Crossfeed level in dB",
+ "APPLY":"APPLY"
  
 }

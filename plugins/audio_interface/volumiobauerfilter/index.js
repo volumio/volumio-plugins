@@ -198,8 +198,9 @@
     __dirname + '/i18n/strings_en.json',
     __dirname + '/UIConfig.json')
    .then(function(uiconf) {
- 	uiconf.sections[0].content[0].config.bars[0].value = self.config.get('frequency');
-    	uiconf.sections[0].content[1].config.bars[0].value = self.config.get('attenuation');
+    	uiconf.sections[0].content[0].value = self.config.get('enablefilter');
+ 	uiconf.sections[0].content[1].config.bars[0].value = self.config.get('frequency');
+    	uiconf.sections[0].content[2].config.bars[0].value = self.config.get('attenuation');
 	var value;
             defer.resolve(uiconf);
             })
@@ -248,12 +249,20 @@
      defer.reject(new Error(err));
      return console.log(err);
     }
+	var  hwouts;
+		if (self.config.get('enablefilter') == true)
+{
+			hwouts = "pcm.bs2b"
+	}
+		else  hwouts = 'plughw:' + (self.config.get('alsa_device'));
+	
 	var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
 	var conf2 = conf1.replace("${frequency}", self.config.get('frequency'));
 	var conf3 = conf2.replace("${attenuation}", self.config.get('attenuation'));
+	var conf4 = conf3.replace("${hwouts}", hwouts);
 		
 
-    fs.writeFile("/home/volumio/asoundrc", conf3, 'utf8', function(err) {
+    fs.writeFile("/home/volumio/asoundrc", conf4, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
       //self.logger.info('Cannot write /etc/asound.conf: '+err)
@@ -284,6 +293,7 @@ ControllerVolbinauralfilter.prototype.saveBauerfilter = function(data) {
   var self = this;
 
   var defer = libQ.defer();
+	self.config.set('enablefilter', data['enablefilter']);
 	self.config.set('frequency', data['frequency']);
 	self.config.set('attenuation', data['attenuation']);
 	self.logger.info('Configurations of filter have been set');

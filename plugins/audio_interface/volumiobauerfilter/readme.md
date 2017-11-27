@@ -1,4 +1,4 @@
-24th November 2017
+27th November 2017
 	VOLUMIO BAUER FILTER PLUGIN
 
 
@@ -14,6 +14,11 @@ But you can change the default value of cut-off frequency and crossfeed level
 
 
 Last change
+
+27th november
+
+- translation
+- switch to enable/disable filter
 
 24th november 17
 

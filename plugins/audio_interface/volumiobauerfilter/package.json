@@ -1,6 +1,6 @@
 {
   "name": "volbinauralfilter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Volbinauralfilter plugin for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio binaural filtering 0.0.1",
+    "prettyName": "Volumio binaural filtering 0.0.2",
     "plugin_type": "audio_interface",
     "icon":"fa-sliders fa-rotate-90",
     "boot_priority":10
