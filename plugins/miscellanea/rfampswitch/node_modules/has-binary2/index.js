@@ -14,7 +14,9 @@ var withNativeFile = typeof global.File === 'function' || toString.call(global.F
  * Module exports.
  */
 
-module.exports = hasBinary;
+module.exports = function hasBinaryCircular (obj) {
+  return hasBinary(obj, []);
+};
 
 /**
  * Checks for binary data.
@@ -25,14 +27,20 @@ module.exports = hasBinary;
  * @api public
  */
 
-function hasBinary (obj) {
+function hasBinary (obj, known) {
   if (!obj || typeof obj !== 'object') {
     return false;
   }
 
+  if (known.indexOf(obj) >= 0) {
+    return false;
+  }
+
+  known.push(obj);
+
   if (isArray(obj)) {
     for (var i = 0, l = obj.length; i < l; i++) {
-      if (hasBinary(obj[i])) {
+      if (hasBinary(obj[i], known)) {
         return true;
       }
     }
@@ -48,12 +56,12 @@ function hasBinary (obj) {
   }
 
   // see: https://github.com/Automattic/has-binary/pull/4
-  if (obj.toJSON && typeof obj.toJSON === 'function' && arguments.length === 1) {
-    return hasBinary(obj.toJSON(), true);
+  if (obj.toJSON && typeof obj.toJSON === 'function') {
+    return hasBinary(obj.toJSON(), known);
   }
 
   for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key])) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && hasBinary(obj[key], known)) {
       return true;
     }
   }
