@@ -1,5 +1,5 @@
 {
- "VOLUMIO_PARAMETRIC":"Volumio Paremetric equalizer",
+ "VOLUMIO_PARAMETRIC":"Volumio Parametric equalizer",
  "PARAMETRIC_SETTINGS":"Equalizer settings (EqFA4p)",
  "MG":"Master Gain",
  "MG_DESC":"Master Gain of the equalizer. Reduce the value to prevent clipping",
