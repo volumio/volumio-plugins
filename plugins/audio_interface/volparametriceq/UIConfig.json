@@ -37,6 +37,7 @@
 										"max": "24",
 										"step": "1",
 										"value": "0",
+										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
 									}
 									]
@@ -56,7 +57,7 @@
 										"max":"1",
 										"step":"1",
 										"value":"1",
-										"ticksLabels": ["--0/1"],
+										"ticksLabels": ["--   0/1"],
 										"tooltip":"always"
 									},									
 									{
@@ -64,7 +65,7 @@
 										"max":"125",
 										"step":"5",
 										"value":"30",
-										"ticksLabels": ["--Hz"	],
+										"ticksLabels": ["--   Hz"	],
 										"tooltip":"always"
 									},
 									{
@@ -72,7 +73,7 @@
 										"max":"8",
 										"step":"0.1",
 										"value":"0",
-										"ticksLabels": ["--Q"],
+										"ticksLabels": ["--   Q"],
 										"tooltip":"always"
 									},
 									{
@@ -80,7 +81,7 @@
 										"max":"24",
 										"step":"1",
 										"value":"0",
-										"ticksLabels": ["--dB"],
+										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
 									}
 									]
@@ -100,7 +101,7 @@
 										"max":"1",
 										"step":"1",
 										"value":"1",
-										"ticksLabels": ["--0/1"],
+										"ticksLabels": ["--   0/1"],
 										"tooltip":"always"
 									},									
 									{
@@ -108,7 +109,7 @@
 										"max":"2000",
 										"step":"100",
 										"value":"200",
-										"ticksLabels": ["--Hz"],
+										"ticksLabels": ["--   Hz"],
 										"tooltip":"always"
 									},
 									{
@@ -116,7 +117,7 @@
 										"max":"8",
 										"step":"0.1",
 										"value":"0",
-										"ticksLabels": ["--Q"],
+										"ticksLabels": ["--   Q"],
 										"tooltip":"always"
 									},
 									{
@@ -124,7 +125,7 @@
 										"max":"24",
 										"step":"1",
 										"value":"0",
-										"ticksLabels": ["--dB"],
+										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
 									}
 									]
@@ -144,7 +145,7 @@
 										"max":"1",
 										"step":"1",
 										"value":"1",
-										"ticksLabels": ["--0/1"],
+										"ticksLabels": ["--   0/1"],
 										"tooltip":"always"
 									},	
 									{
@@ -152,7 +153,7 @@
 										"max":"9000",
 										"step":"500",
 										"value":"2000",
-										"ticksLabels": ["--Hz"],
+										"ticksLabels": ["--   Hz"],
 										"tooltip":"always"
 									},
 									{
@@ -160,7 +161,7 @@
 										"max":"8",
 										"step":"0.1",
 										"value":"0",
-										"ticksLabels": ["--Q"],
+										"ticksLabels": ["--   Q"],
 										"tooltip":"always"
 									},
 									{
@@ -168,7 +169,7 @@
 										"max":"24",
 										"step":"1",
 										"value":"0",
-										"ticksLabels": ["--dB"],
+										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
 									}
 									]
@@ -188,7 +189,7 @@
 										"max":"1",
 										"step":"1",
 										"value":"1",
-										"ticksLabels": ["--0/1"],
+										"ticksLabels": ["--   0/1"],
 										"tooltip":"always"
 									},	
 									{
@@ -196,7 +197,7 @@
 										"max":"14000",
 										"step":"1000",
 										"value":"10000",
-										"ticksLabels": ["--Hz"],
+										"ticksLabels": ["--   Hz"],
 										"tooltip":"always"
 									},
 									{
@@ -204,7 +205,7 @@
 										"max":"8",
 										"step":"0.1",
 										"value":"0",
-										"ticksLabels": ["--Q"],
+										"ticksLabels": ["--   Q"],
 										"tooltip":"always"
 									},
 									{
@@ -212,7 +213,7 @@
 										"max":"24",
 										"step":"1",
 										"value":"0",
-										"ticksLabels": ["--dB"],
+										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
 									}
 									]
