@@ -1,7 +1,7 @@
-02nd December 2017
+03nd December 2017
 	VOLUMIO PARAMETRIC EQUALIZER
 
-DO NOT USE YET!
+
 
 This plugin is designed to provide a parametric equalizer to Volumio
 It uses caps ladspa plugin
@@ -10,12 +10,15 @@ More info : http://bs2b.sourceforge.net/
 
 ![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
 How to install
-Just download volparametriceq.zip and drop it in the plugin installation page in volumio.
+
+- Just download volparametriceq.zip and drop it in the plugin installation page in volumio.
 Enable it. That it !
 
 
 Last change
-
+03rd december 17
+- update readme
+ 
 29th november 17
 - second commit (cosmetic)
 - first commit
