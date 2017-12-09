@@ -1,4 +1,4 @@
-03nd December 2017
+09th December 2017
 	VOLUMIO PARAMETRIC EQUALIZER
 
 
@@ -14,8 +14,19 @@ How to install
 - Just download volparametriceq.zip and drop it in the plugin installation page in volumio.
 Enable it. That it !
 
+NOT compatible with softvol!
+
+Tested on :
+RPI2
+PINE64
+
 
 Last change
+
+09th december 17
+
+- localization
+
 03rd december 17
 - update readme
  
