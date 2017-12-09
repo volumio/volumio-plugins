@@ -395,7 +395,7 @@ setTimeout(function() {
   self.config.set('eqprofile', data['eqprofile'].value);
   self.config.set('coef', data['coef']);
   self.logger.info('Equalizer Configurations have been set');
-  self.commandRouter.pushToastMessage('success', 'volsimplequal',self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+  self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE"));
   self.sendequal(defer);
   return defer.promise;
  };

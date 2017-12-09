@@ -1,13 +1,14 @@
 09th december 2017
 
 
-		Volsimpleequal volumio simple equalizer
-A simple Equalizer plugin for Volumio2.
+	Volsimpleequal volumio simple equalizer
+
+A simple 10 bands graphic Equalizer plugin for Volumio2.
 
 #WARNING !!! I reverted to alsaequal, waiting for a fix for the frying sound with mbeq
 
 
-previous version based on alsaequal https://github.com/raedwulf/alsaequal
+Based on alsaequal https://github.com/raedwulf/alsaequal
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
 
@@ -38,6 +39,7 @@ What is not working
 09th december
 
 - localization
+- cosmetic improvement...
 
 19th november
 

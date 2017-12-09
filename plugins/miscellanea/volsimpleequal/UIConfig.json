@@ -39,6 +39,18 @@
 					},
 					"options": [
 						{
+							"value": "mypreset1",
+							"label": "TRANSLATE.LABELPS1"
+						},
+						{
+							"value": "mypreset2",
+							"label": "TRANSLATE.LABELPS2"
+						},
+						{
+							"value": "mypreset3",
+							"label": "TRANSLATE.LABELPS3"
+						},
+						{
 							"value": "flat",
 							"label": "flat"
 						},
@@ -65,19 +77,8 @@
 						{
 							"value": "soundtrack",
 							"label": "soundtrack"
-						},
-						{
-							"value": "mypreset1",
-							"label": "TRANSLATE.LABELPS1"
-						},
-						{
-							"value": "mypreset2",
-							"label": "TRANSLATE.LABELPS2"
-						},
-						{
-							"value": "mypreset3",
-							"label": "TRANSLATE.LABELPS3"
 						}
+						
 					],
 					"visibleIf": {
 						"field": "enablemyeq",
@@ -369,7 +370,8 @@
 									"--63Hz"
 								],
 								"tooltip": "show"
-							},{
+							},
+							{
 								"min": -15,
 								"max": 15,
 								"step": "1",
