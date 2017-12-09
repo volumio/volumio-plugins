@@ -1,6 +1,6 @@
 {
   "name": "volsimpleequal",
-  "version": "0.3.7",
+  "version": "0.3.6",
   "description": "Volsimpleequal plugin for Volumio2. Provide an 15 bands equalizer",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   "author": "Balbuze",
   "license": "",
   "volumio_info": {
-    "prettyName": "Volumio simple equalizer 0.3.7",
-    "plugin_type": "miscellanea",
+    "prettyName": "Volumio simple equalizer 0.3.6",
+    "plugin_type": "audio_interface",
     "icon":"fa-sliders fa-rotate-90",
     "boot_priority":10
   },

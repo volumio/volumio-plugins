@@ -120,7 +120,7 @@
    resolve();
   });
  };
-
+/*
  //here we send equalizer settings
  ControllerVolsimpleequal.prototype.sendequal = function(defer) {
   var self = this;
@@ -180,7 +180,7 @@ x = k + z;
    }, function(error, stdout, stderr) {})
   }
  };
-
+*/
  ControllerVolsimpleequal.prototype.onStop = function() {
   var self = this;
   var defer = libQ.defer();
@@ -306,7 +306,11 @@ x = k + z;
     for (var i in coefarrayp3) {
      uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
     }
-
+	//here we get values for preset
+   // uiconf.sections[1].content[0].value = self.config.get('enablepreset');
+ //   uiconf.sections[1].content[1].value = self.config.get('mypreset1');
+  //  uiconf.sections[1].content[2].value = self.config.get('mypreset2');
+  //  uiconf.sections[1].content[3].value = self.config.get('mypreset3');
     defer.resolve(uiconf);
    })
    .fail(function() {
@@ -348,7 +352,39 @@ x = k + z;
   var self = this;
 
   var defer = libQ.defer();
+  var scoef
+  console.log('myeq or preset =' + enablemyeq)
 
+  if (self.config.get('enablemyeq') == false) {
+   if (self.config.get('eqprofile') === 'flat')
+    scoef = self.config.get('flat')
+   else if (self.config.get('eqprofile') === 'loudness')
+    scoef = self.config.get('loudness')
+   else if (self.config.get('eqprofile') === 'rock')
+    scoef = self.config.get('rock')
+   else if (self.config.get('eqprofile') === 'classic')
+    scoef = self.config.get('classic')
+   else if (self.config.get('eqprofile') === 'bass')
+    scoef = self.config.get('bass')
+   else if (self.config.get('eqprofile') === 'voice')
+    scoef = self.config.get('voice')
+  else if (self.config.get('eqprofile') === 'soundtrack')
+    scoef = self.config.get('soundtrack')
+  else if (self.config.get('eqprofile') === 'mypreset1')
+    scoef = self.config.get('mypreset1')
+  else if (self.config.get('eqprofile') === 'mypreset2')
+    scoef = self.config.get('mypreset2')
+  else if (self.config.get('eqprofile') === 'mypreset3')
+    scoef = self.config.get('mypreset3')
+   } else scoef = self.config.get('coef')
+
+var scoefr	
+//	var p11 = self.config.get('p11');
+	p11r = p11.coef(/,/g, " ");
+console.log(scoefr);
+var  hwouts;
+		
+		var	hwouts = "pcm.equal"
   try {
 
    fs.readFile(__dirname + "/asound.tmpl", 'utf8', function(err, data) {
@@ -357,15 +393,17 @@ x = k + z;
      return console.log(err);
     }
     var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
+    var conf1 = data.replace("${scoefr}", scoefr);
+    var conf1 = data.replace("${hwouts}", hwouts);
 
 
-    fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
+    fs.writeFile("/home/volumio/asoundrc", conf3, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
       //self.logger.info('Cannot write /etc/asound.conf: '+err)
      } else {
       self.logger.info('asound.conf file written');
-
+      //self.commandRouter.pushToastMessage('success', "Bauer binaural filter", 'parameter applied');
       var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
        uid: 1000,
        gid: 1000,
@@ -395,8 +433,9 @@ setTimeout(function() {
   self.config.set('eqprofile', data['eqprofile'].value);
   self.config.set('coef', data['coef']);
   self.logger.info('Equalizer Configurations have been set');
-  self.commandRouter.pushToastMessage('success', 'volsimplequal',self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
-  self.sendequal(defer);
+  self.commandRouter.pushToastMessage('success', "Configuration update", 'Alsaequal new equalizer successfully applied');
+ // self.sendequal(defer);
+self.creatASOUNDFile();
   return defer.promise;
  };
 
@@ -417,7 +456,7 @@ setTimeout(function() {
   self.config.set('soundtrack', data['soundtrack']);
 */ 
  self.logger.info('Equalizer preset saved');
-  self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+  self.commandRouter.pushToastMessage('success', "Configuration update", 'Preset successfully saved');
   //self.sendequal(defer);
   return defer.promise;
  };

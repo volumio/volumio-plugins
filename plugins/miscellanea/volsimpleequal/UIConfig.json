@@ -6,7 +6,7 @@
 		{
 			"id": "equalizer",
 			"element": "section",
-			"label": "TRANSLATE.VOLSPIMPLEEQUAL_EQUALIZER_SETTINGS",
+			"label": "TRANSLATE.VOLSIMPLEEQUAL_EQUALIZER_SETTINGS",
 			"icon": "fa-sliders fa-rotate-90",
 			"onSave": {
 				"type": "plugin",
@@ -25,14 +25,14 @@
 				{
 					"id": "enablemyeq",
 					"element": "switch",
-					"label": "custom equalizer=on or preset=off",
+					"label": "TRANSLATE.EQORPRESET",
 					"value": true
 				},
 				{
 					"id": "eqprofile",
 					"element": "select",
-					"doc": "choose between setting you like",
-					"label": "Equalization profile",
+					"doc": "TRANSLATE.DOCEQPROFILE",
+					"label": "TRANSLATE.EQPROFILE",
 					"value": {
 						"value": "flat",
 						"label": "flat"
@@ -68,15 +68,15 @@
 						},
 						{
 							"value": "mypreset1",
-							"label": "my preset 1"
+							"label": "TRANSLATE.LABELPS1"
 						},
 						{
 							"value": "mypreset2",
-							"label": "my preset 2"
+							"label": "TRANSLATE.LABELPS2"
 						},
 						{
 							"value": "mypreset3",
-							"label": "my preset 3"
+							"label": "TRANSLATE.LABELPS3"
 						}
 					],
 					"visibleIf": {
@@ -89,7 +89,7 @@
 					"element": "equalizer",
 					"label": "TRANSLATE.GAIN_EQUALIZER",
 					"description": "",
-					"doc": "Create your own equalizer",
+					"doc": "TRANSLATE.DOCEQ",
 					"visibleIf": {
 						"field": "enablemyeq",
 						"value": true
@@ -202,7 +202,7 @@
 		{
 			"id": "advanced",
 			"element": "section",
-			"label": "advanced equalizer preset",
+			"label": "TRANSLATE.ADVEQSET",
 			"icon": "fa-cogs",
 			"onSave": {
 				"type": "plugin",
@@ -210,7 +210,7 @@
 				"method": "saveequalizerpreset"
 			},
 			"saveButton": {
-				"label": "save",
+				"label": "TRANSLATE.SAVE",
 				"data": [
 					"mypreset1",
 					"mypreset2",
@@ -221,15 +221,16 @@
 				{
 					"id": "enabled",
 					"element": "switch",
-					"label": "preset settings",
+					"label": "TRANSLATE.PRESSETTING",
+					"doc":"TRANSLATE.DOCPRESETTINGS",
 					"value": false
 				},
 				{
 					"id": "mypreset1",
 					"element": "equalizer",
-					"label": "mypreset1",
+					"label": "TRANSLATE.LABELPS1",
 					"description": "",
-					"doc": "choose values for mypreset1",
+					"doc": "TRANSLATE.DOCCHOPRESET1",
 					"visibleIf": {
 						"field": "enabled",
 						"value": true
@@ -339,9 +340,9 @@
 				{
 					"id": "mypreset2",
 					"element": "equalizer",
-					"label": "mypreset2",
+					"label": "TRANSLATE.LABELPS2",
 					"description": "",
-					"doc": "choose values for mypreset2",
+					"doc": "TRANSLATE.DOCCHOPRESET2",
 					"visibleIf": {
 						"field": "enabled",
 						"value": true
@@ -451,9 +452,9 @@
 				{
 					"id": "mypreset3",
 					"element": "equalizer",
-					"label": "mypreset3",
+					"label": "TRANSLATE.LABELPS3",
 					"description": "",
-					"doc": "choose values for mypreset3",
+					"doc": "TRANSLATE.DOCCHOPRESET3",
 					"visibleIf": {
 						"field": "enabled",
 						"value": true
