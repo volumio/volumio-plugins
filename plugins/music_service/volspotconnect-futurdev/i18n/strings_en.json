@@ -5,8 +5,6 @@
  "USERNAME":"username",
  "PASSWORD":"password",
  "HIGHBITRATE":"stream bitrate",
- "DEVICENAME":"device name",
- "OUTPUT_DEVICE":"Output device",
  "SHAREDDEVICE":"Multi-user device",
  "SAVE":"Save",
  "INITVOL":"Initial volume",
