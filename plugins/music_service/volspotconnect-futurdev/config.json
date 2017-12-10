@@ -1,4 +1,8 @@
 {
+ "initvol": {
+      "type": "string",
+      "value": "33"
+},
    "shareddevice": {
     "type": "boolean",
     "value": true

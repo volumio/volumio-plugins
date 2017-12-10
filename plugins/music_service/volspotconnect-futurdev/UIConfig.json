@@ -12,13 +12,33 @@
       "saveButton": {
         "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
         "data": [
+	"initvol",
 	"shareddevice",
 	"username",
 	"password"
                 ]
       },
       "content": [
+						{
        
+							"id": "initvol",
+							"element": "equalizer",
+							"label": "TRANSLATE.VOLSPOTCONNECT.INITVOL",
+							"doc":"TRANSLATE.VOLSPOTCONNECT.DESCINITVOL",
+							
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "0",
+										"max": "100",
+										"step": "5",
+										"value": "30",
+										"tooltip":"always"
+									}
+									]
+							}
+						},
 	
 	{
           "id":"shareddevice",

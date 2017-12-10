@@ -9,7 +9,7 @@ if [ $cpu = "armv6l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2-futurdev/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -23,7 +23,7 @@ elif [ $cpu = "armv7l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2-futurdev/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -37,7 +37,7 @@ elif [ $cpu = "aarch64" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2-futurdev/arch/armhf/librespot-armhf.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -51,7 +51,7 @@ elif [ $cpu = "i686" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2-futurdev/arch/x86/librespot-x86.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"

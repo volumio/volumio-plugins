@@ -19,23 +19,6 @@ function ControllerVolspotconnect(context) {
 	self.commandRouter = self.context.coreCommand;
 	self.logger=self.commandRouter.logger;
 
- this.obj={
-        status: 'play',
-        service:'airplay',
-        title: '',
-        artist: '',
-        album: '',
-        albumart: '/albumart',
-        uri: '',
-        trackType: 'airplay',
-        seek: 0,
-        duration: 0,
-        samplerate: '',
-        bitdepth: '',
-        channels: 2
-    };
-
-
 }
 
 ControllerVolspotconnect.prototype.onVolumioStart = function()
@@ -148,10 +131,10 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
                 __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
- //uiconf.sections[0].content[0].value = self.config.get('bitrate');
- uiconf.sections[0].content[0].value = self.config.get('shareddevice');
- uiconf.sections[0].content[1].value = self.config.get('username');
- uiconf.sections[0].content[2].value = self.config.get('password');
+ uiconf.sections[0].content[0].config.bars[0].value = self.config.get('initvol');
+ uiconf.sections[0].content[1].value = self.config.get('shareddevice');
+ uiconf.sections[0].content[2].value = self.config.get('username');
+ uiconf.sections[0].content[3].value = self.config.get('password');
 
             defer.resolve(uiconf);
             })
@@ -216,8 +199,9 @@ console.log(shared)
 		var conf1 = data.replace("${shared}", shared);
 		var conf2 = conf1.replace("${devicename}", devicename);
 		var conf3 = conf2.replace("${outdev}", hwdev);
+		var conf4 = conf3.replace("${initvol}", self.config.get("initvol"));
 							
-	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf3, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf4, 'utf8', function (err) {
                 
                if (err)
                     defer.reject(new Error(err));
@@ -236,29 +220,7 @@ console.log(shared)
 
 };
 
-ControllerVolspotconnect.prototype.getlibrespotmetadata = function () {
-var self = this;
-var librespotmeta = /tmp/librespotmeta
 
-        self.context.coreCommand.volumioStop();
-        self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
-        self.context.coreCommand.pushConsoleMessage("Sptofity connect started streaming");
-
-        self.obj.status='play';
-        self.obj.title="";
-        self.obj.artist="";
-        self.obj.album="";
-        self.obj.seek=0;
-        self.obj.duration=0;
-        self.obj.albumart="/albumart";
-
-        self.context.coreCommand.stateMachine.setVolatile({
-            service:"spotify connect",
-            callback: self.unsetVol.bind(self)
-        });
-
-
-};
 
 ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     var self = this;
@@ -269,6 +231,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
    	self.config.set('shareddevice', data['shareddevice']);
    	self.config.set('username', data['username']);
    	self.config.set('password', data['password']);
+   	self.config.set('initvol', data['initvol']);
 
 	self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){

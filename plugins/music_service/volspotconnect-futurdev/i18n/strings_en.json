@@ -8,6 +8,8 @@
  "DEVICENAME":"device name",
  "OUTPUT_DEVICE":"Output device",
  "SHAREDDEVICE":"Multi-user device",
- "SAVE":"Save"
+ "SAVE":"Save",
+ "INITVOL":"Initial volume",
+ "DESCINITVOL":"Spotify volume when starts"
 }
 }
