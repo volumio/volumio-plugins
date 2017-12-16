@@ -6,9 +6,10 @@
  var exec = require('child_process').exec;
  var execSync = require('child_process').execSync;
  var libQ = require('kew');
+var config = new (require('v-conf'))();
  // var libNet = require('net');
  // var net = require('net');
- var config = new(require('v-conf'))();
+
 
 
  // Define the ControllerVolsimpleequal class
@@ -29,6 +30,7 @@
  ControllerVolsimpleequal.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+ this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   return libQ.resolve();
@@ -93,7 +95,6 @@
    try {
     var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
 
-    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
 
    } catch (err) {
     self.logger.info('config.txt does not exist');
@@ -105,7 +106,8 @@
  //here we define the volumio restore config
  ControllerVolsimpleequal.prototype.restoreVolumioconfig = function() {
   var self = this;
-  return new Promise(function(resolve, reject) {
+  var defer = libQ.defer();
+  //return new Promise(function(resolve, reject) {
    setTimeout(function() {
 
     var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
@@ -117,8 +119,10 @@
     }
 
    }, 8000)
-   resolve();
-  });
+ defer.resolve()
+  return defer.promise;
+//   resolve();
+//  });
  };
 
  //here we send equalizer settings
@@ -208,9 +212,9 @@ x = k + z;
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.setalsaequaloutput())
-   .then(self.setVolumeParameters())
-   .then(self.restoreVolumioconfig())
-   .then(self.bridgeLoopBackequal())
+ //  .then(self.setVolumeParameters())
+ //  .then(self.restoreVolumioconfig())
+ //  .then(self.bridgeLoopBackequal())
   .catch(function(err) {
    console.log(err);
   });
@@ -500,6 +504,18 @@ setTimeout(function() {
   return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
  };
 
+ ControllerVolsimpleequal.prototype.outputDeviceCallback = function() {
+  var self = this;
+  var defer = libQ.defer();
+    self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
+	self.setVolumeParameters()
+ 
+self.restoreVolumioconfig()
+   .then(self.bridgeLoopBackequal())
+ defer.resolve()
+  return defer.promise;
+ };
+
  //here we set the Loopback output
  ControllerVolsimpleequal.prototype.setalsaequaloutput = function() {
   var self = this;
@@ -516,9 +532,9 @@ outputp = self.config.get('alsa_outputdevicename')
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 2500);
+  }, 4500);
 
-  return defer.promise;
+ // return defer.promise;
  };
 
  //here we restore config of volumio when the plugin is disabled

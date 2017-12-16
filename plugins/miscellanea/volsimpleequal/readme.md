@@ -1,4 +1,4 @@
-09th december 2017
+16th december 2017
 
 
 	Volsimpleequal volumio simple equalizer
@@ -35,6 +35,9 @@ What is not working
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+16th december
+- miscellanea fixes for autoconfig. Should work for rpi0...
 
 09th december
 
