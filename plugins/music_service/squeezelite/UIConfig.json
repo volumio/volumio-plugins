@@ -1,0 +1,92 @@
+{
+	"page": {
+		"label": "TRANSLATE.SQUEEZELITE.SQUEEZELITECONF"
+	},
+	"sections": [
+		{
+			"id": "section_serverconf",
+			"element": "section",
+			"label": "TRANSLATE.SQUEEZELITE.SERVER",
+			"description": "TRANSLATE.SQUEEZELITE.D_SERVER",
+			"icon": "fa-server",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/squeezelite",
+				"method": "updateSqueezeliteServerConfig"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SQUEEZELITE.SAVE",
+				"data": [
+					"enabled",
+					"name"
+				]
+			},
+			"content": [
+				{
+					"id": "enabled",
+					"element": "switch",
+					"doc": "TRANSLATE.SQUEEZELITE.D_PLAYER_ENABLED",
+					"label": "TRANSLATE.SQUEEZELITE.PLAYER_ENABLED",
+					"value": true
+				},
+				{
+					"id": "name",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.INSTANCE_NAME",
+					"doc": "TRANSLATE.SQUEEZELITE.D_INSTANCE_NAME",
+					"value": "Volumio"
+				}
+			]
+		},
+		{
+			"id": "section_audioconf",
+			"element": "section",
+			"label": "TRANSLATE.SQUEEZELITE.AUDIO",
+			"description": "TRANSLATE.SQUEEZELITE.D_AUDIO",
+			"icon": "fa-volume-up",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/squeezelite",
+				"method": "updateSqueezeliteAudioConfig"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SQUEEZELITE.SAVE",
+				"data": [
+					"output_device",
+					"alsa_params",
+					"extra_params"
+				]
+			},
+			"content": [
+				{
+					"id": "output_device",
+					"element": "select",
+					"label": "TRANSLATE.SQUEEZELITE.OUTPUT_DEVICE",
+					"doc": "TRANSLATE.SQUEEZELITE.D_OUTPUT_DEVICE",					
+					"value": {
+						"value": "default",
+						"label": "default"
+					},
+					"options": []
+				},
+				{
+					"id": "alsa_params",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.ALSAPARAMS",
+					"doc": "TRANSLATE.SQUEEZELITE.D_ALSAPARAMS",
+					"value": "80:4::"
+				},
+				{
+					"id": "extra_params",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.EXTRAPARAMS",
+					"doc": "TRANSLATE.SQUEEZELITE.D_EXTRAPARAMS",
+					"value": ""
+				}
+			]
+		}
+	]
+}

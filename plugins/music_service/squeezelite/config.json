@@ -1,0 +1,22 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value":true
+  },
+  "name": {
+    "type": "string",
+    "value": "Volumio"
+  },
+  "output_device": {
+    "type": "string",
+    "value": "default"
+  },
+  "alsa_params": {
+    "type": "string",
+    "value": "80:4::"
+  },
+  "extra_params": {
+    "type": "string",
+    "value": ""
+  }
+}
