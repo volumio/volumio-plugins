@@ -1,0 +1,10 @@
+# input
+KERNEL=="mouse*|mice|event*",   MODE="0660",   GROUP="input"
+KERNEL=="ts[0-9]*|uinput",      MODE="0660",   GROUP="input"
+KERNEL=="js[0-9]*",             MODE="0660",   GROUP="input"
+# tty
+KERNEL=="tty[0-9]*",            MODE="0666",   GROUP="tty"
+# vchiq / vcio / vc-sm
+SUBSYSTEM=="vchiq",             MODE="0660",   GROUP="video"
+SUBSYSTEM=="bcm2708_vcio",      MODE="0660",   GROUP="video"
+SUBSYSTEM=="vc-sm",             MODE="0660",   GROUP="video"
