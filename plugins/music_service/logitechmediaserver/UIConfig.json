@@ -1,0 +1,46 @@
+{
+	"page": {
+		"label": "TRANSLATE.LMS.LMSCONF"
+	},
+	"sections": [{
+			"id": "section_account_logout",
+			"element": "section",
+			"label": "TRANSLATE.LMS.NAVIGATE_TO_SERVER",
+			"description": "TRANSLATE.LMS.D_NAVIGATE_TO_SERVER",
+			"icon": "fa-windows-maximize",
+			"content": [
+			{
+				"id": "open_webconfig",
+				"element": "button",
+				"label": "Logitech Media Server",
+				"description": "Open the LMS webconsole",
+				"onClick": {
+					"type": "openUrl",
+					"url": "https://localhost:9000"
+				}
+			}]			
+		},
+		{
+		"id": "section_lmsconf",
+		"element": "section",
+		"label": "TRANSLATE.LMS.SERVER",
+		"description": "TRANSLATE.LMS.D_SERVER",
+		"icon": "fa-server",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "music_service/lms",
+			"method": "updateLMSConfiguration"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.LMS.SAVE",
+			"data": ["enabled"]
+		},
+		"content": [{
+			"id": "enabled",
+			"element": "switch",
+			"doc": "TRANSLATE.LMS.D_SERVER_ENABLED",
+			"label": "TRANSLATE.LMS.SERVER_ENABLED",
+			"value": true
+			}]
+		}]
+}
