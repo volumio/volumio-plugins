@@ -160,6 +160,24 @@
 						}
 					],
 					"updated": "18-12-2017"
+				},
+				{
+					"prettyName": "Squeezelite player",
+					"icon": "fa-lightbulb-o",
+					"name": "squeezelite",
+					"version": "1.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/squeezelite/squeezelite.zip",
+					"license": "GPL-3.0",
+					"description": "Squeezelite player",
+					"details": "Squeezelite plugin for Volumio",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-12-2017"
 				}
 			]
 		},
