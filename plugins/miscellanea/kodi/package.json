@@ -1,7 +1,7 @@
 {
   "name": "Kodi",
-  "version": "2.2.6",
-  "description": "Kodi",
+  "version": "2.2.7",
+  "description": "Kodi installation script",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Saiyato",
   "license": "",
   "volumio_info": {
-    "prettyName": "Kodi",
+    "prettyName": "Kodi Krypton RC1",
     "icon": "fa fa-tv",
     "plugin_type": "miscellanea"
   },

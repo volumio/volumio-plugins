@@ -74,6 +74,9 @@ if [ ! -f $INSTALLING ]; then
 		chown kodi:kodi -R /data/configuration/miscellanea/Kodi/Configuration
 		chown kodi:kodi -R /home/kodi
 
+		# Link tvservice binary
+		ln -fs /opt/vc/bin/tvservice /usr/bin/tvservice
+		
 		# Add input rules
 		echo "Adding input rules"
 		wget -O /etc/udev/rules.d/99-input.rules https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/policies/99-input.rules
