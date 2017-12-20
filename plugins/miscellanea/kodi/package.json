@@ -1,7 +1,7 @@
 {
-  "name": "Kodi",
-  "version": "2.2.7",
-  "description": "Kodi installation script",
+  "name": "kodi",
+  "version": "2.2.9",
+  "description": "Installs Kodi Krypton on top of Volumio.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
