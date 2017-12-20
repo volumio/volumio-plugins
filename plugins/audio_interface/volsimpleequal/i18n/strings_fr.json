@@ -1,0 +1,27 @@
+{
+
+ "VOLUMIO_DSP":"Volumio simple Equalizer",
+ "VOLSIMPLEEQUAL_EQUALIZER_SETTINGS":"Egaliseur",
+ "EQORPRESET":"Egaliseur=on ou préréglages=off",
+ "DOCEQPROFILE":"Choisissez le réglage de votre choix",
+ "EQPROFILE":"Profil d'égalisation",
+ "GAIN_EQUALIZER":"Egaliseur",
+ "EQUALIZER_SETTINGS":"Réglage de l'égaliseur",
+ "APPLY":"Appliquer",
+ "DOCEQ":"Créez votre égaliseur",
+ "ADVEQSET":"Réglages avancés",
+ "PRESSETTING":"Définition des préréglages",
+ "DOCPRESETTINGS":"Ici vous définissez vos préréglages",
+ "DOCCHOPREST1":"Définissez les valeurs pour le préréglage 1",
+ "DOCCHOPREST2":"Définissez les valeurs pour le préréglage 2",
+ "DOCCHOPREST3":"Définissez les valeurs pour le préréglage 3",
+ "LABELPS1":"Mon réglage 1",
+ "LABELPS2":"Mon réglage 2",
+ "LABELPS3":"Mon réglage 3",
+ "SAVE":"Sauver",
+ "TOASTSUCCESSAPPLY":"Nouvel égaliseur appliqué",
+ "TOASTSUCCESSPRESSET":"Préréglages enregistrés"
+
+ 
+
+}
