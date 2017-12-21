@@ -65,15 +65,18 @@ if [ ! -f $INSTALLING ]; then
 		usermod -aG audio,video,input,dialout,plugdev,tty kodi
 		
 		# Link to /data/configuration/miscellanea/Kodi/Configuration
-		mkdir /data/configuration/miscellanea/Kodi
-		mkdir /data/configuration/miscellanea/Kodi/Configuration
-		mkdir /data/configuration/miscellanea/Kodi/Configuration/userdata
-		chown volumio:volumio -R /data/configuration/miscellanea/Kodi
+		mkdir /data/configuration/miscellanea/kodi
+		mkdir /data/configuration/miscellanea/kodi/Configuration
+		mkdir /data/configuration/miscellanea/kodi/Configuration/userdata
+		chown volumio:volumio -R /data/configuration/miscellanea/kodi
 		
-		ln -fs /data/configuration/miscellanea/Kodi/Configuration /home/kodi/.kodi
-		chown kodi:kodi -R /data/configuration/miscellanea/Kodi/Configuration
+		ln -fs /data/configuration/miscellanea/kodi/Configuration /home/kodi/.kodi
+		chown kodi:kodi -R /data/configuration/miscellanea/kodi/Configuration
 		chown kodi:kodi -R /home/kodi
 
+		# Link tvservice binary
+		ln -fs /opt/vc/bin/tvservice /usr/bin/tvservice
+		
 		# Add input rules
 		echo "Adding input rules"
 		wget -O /etc/udev/rules.d/99-input.rules https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/policies/99-input.rules
