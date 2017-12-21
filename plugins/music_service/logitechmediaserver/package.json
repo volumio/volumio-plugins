@@ -1,7 +1,7 @@
 {
   "name": "lms",
   "version": "1.0.11",
-  "description": "Logitech Media Server integration",
+  "description": "Installs the Logitech Media Server application and web client",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
