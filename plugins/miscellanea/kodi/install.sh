@@ -73,9 +73,6 @@ if [ ! -f $INSTALLING ]; then
 		ln -fs /data/configuration/miscellanea/kodi/Configuration /home/kodi/.kodi
 		chown kodi:kodi -R /data/configuration/miscellanea/kodi/Configuration
 		chown kodi:kodi -R /home/kodi
-
-		# Link tvservice binary
-		ln -fs /opt/vc/bin/tvservice /usr/bin/tvservice
 		
 		# Add input rules
 		echo "Adding input rules"
