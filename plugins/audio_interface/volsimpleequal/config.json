@@ -1,0 +1,23 @@
+{
+"mypreset1":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"mypreset2":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"mypreset3":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"flat":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"loudness":{"type":"string","value": "7,0,-10,-10,-18,-10,-14,-21,5,-10"},
+"rock":{"type":"string","value": "-7,2,0,-5,-1,-14,-7,-2,2,4"},
+"classic":{"type":"string","value": "6,2,0,-1,-15,-11,-2,0,2,2"},
+"bass":{"type":"string","value": "8,7,9,0,-14,-10,-9,-7,-8,5"},
+"voice":{"type":"string","value": "-29,-24,-20,-9,3,19,13,7,-7,-8"},
+"soundtrack":{"type":"string","value": "5,15,10,0,0,10,10,10,0,10"},
+"enablemyeq":{"type":"boolean","value":true},
+"eqprofile":{"type":"string","value":"flat"},
+"coef":{"type":"string","value": "0,0,0,0,0,0,0,0,0,0"},
+"alsa_device":{"type": "string","value": "0"},
+"alsa_outputdevicename":{"type": "string","value": "0"},
+"alsa_mixer":{"type": "string","value": ""},
+"alsa_mixer_type":{"type": "string","value": ""},
+"alsa_volumemax":{"type": "string","value": "100"},
+"alsa_volumecurvemode":{"type" : "string","value":"logarithmic"},
+"alsa_volumestart":{"type": "string","value": "disabled"},
+"alsa_volumesteps":{"type": "string","value": "10"}
+}
