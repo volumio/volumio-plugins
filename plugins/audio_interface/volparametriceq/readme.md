@@ -27,6 +27,7 @@ Last change
 
 - correction for unsaved parameter for mid high db
 - change index.js for autoconfig
+- switch to enable /disable eq
 
 09th december 17
 
