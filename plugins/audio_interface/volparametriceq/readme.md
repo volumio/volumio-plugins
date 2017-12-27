@@ -1,4 +1,4 @@
-09th December 2017
+27th December 2017
 	VOLUMIO PARAMETRIC EQUALIZER
 
 
@@ -22,6 +22,11 @@ PINE64
 
 
 Last change
+
+27th december 17
+
+- correction for unsaved parameter for mid high db
+- change index.js for autoconfig
 
 09th december 17
 

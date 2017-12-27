@@ -29,6 +29,7 @@
  Controllervolparametriceq.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this)); 
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   return libQ.resolve();
@@ -105,7 +106,8 @@
  //here we define the volumio restore config
  Controllervolparametriceq.prototype.restoreVolumioconfig = function() {
   var self = this;
-  return new Promise(function(resolve, reject) {
+  var defer = libQ.defer();
+ // return new Promise(function(resolve, reject) {
    setTimeout(function() {
 
     var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
@@ -117,8 +119,10 @@
     }
 
    }, 8000)
-   resolve();
-  });
+ //  defer.resolve()
+ return defer.promise;resolve();
+ // });
+
  };
 
 
@@ -149,9 +153,9 @@
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.volparametricoutput())
-   .then(self.setVolumeParameters())
-   .then(self.restoreVolumioconfig())
-   .then(self.bridgeLoopBack())
+ //  .then(self.setVolumeParameters())
+ //  .then(self.restoreVolumioconfig())
+ //  .then(self.bridgeLoopBack())
   .catch(function(err) {
    console.log(err);
   });
@@ -159,6 +163,16 @@
   return defer.promise;
  };
 
+Controllervolparametriceq.prototype.outputDeviceCallback = function() {
+  var self = this;
+  var defer = libQ.defer();
+	self.setVolumeParameters()
+ 
+self.restoreVolumioconfig()
+   .then(self.bridgeLoopBack())
+ defer.resolve()
+ return defer.promise;
+ };
 
  Controllervolparametriceq.prototype.onStart = function() {
   var self = this;
@@ -222,7 +236,7 @@ var coefconfp3 = self.config.get('p31');
     var coefarrayp3 = coefconfp3.split(',');
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
-    for (var i in coefarrayp4) {
+    for (var i in coefarrayp3) {
      uiconf.sections[0].content[3].config.bars[i].value = coefarrayp3[i]
     }
 var coefconfp4 = self.config.get('p41');
@@ -490,9 +504,9 @@ outputp = self.config.get('alsa_outputdevicename')
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 2500);
+  }, 4500);
 
-  return defer.promise;
+ // return defer.promise;
  };
 
  //here we restore config of volumio when the plugin is disabled
