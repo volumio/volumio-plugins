@@ -212,8 +212,8 @@ self.restoreVolumioconfig()
     __dirname + '/i18n/strings_en.json',
     __dirname + '/UIConfig.json')
    .then(function(uiconf) {
-    	uiconf.sections[0].content[0].value = self.config.get('enableeq');
- 	uiconf.sections[0].content[1].config.bars[0].value = self.config.get('mg');
+
+ 	uiconf.sections[0].content[0].config.bars[0].value = self.config.get('mg');
 
  var coefconfp1 = self.config.get('p11');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -221,7 +221,7 @@ self.restoreVolumioconfig()
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarrayp1) {
-     uiconf.sections[0].content[2].config.bars[i].value = coefarrayp1[i]
+     uiconf.sections[0].content[1].config.bars[i].value = coefarrayp1[i]
     }
 var coefconfp2 = self.config.get('p21');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -229,7 +229,7 @@ var coefconfp2 = self.config.get('p21');
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarrayp2) {
-     uiconf.sections[0].content[3].config.bars[i].value = coefarrayp2[i]
+     uiconf.sections[0].content[2].config.bars[i].value = coefarrayp2[i]
     }
 var coefconfp3 = self.config.get('p31');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -237,7 +237,7 @@ var coefconfp3 = self.config.get('p31');
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarrayp3) {
-     uiconf.sections[0].content[4].config.bars[i].value = coefarrayp3[i]
+     uiconf.sections[0].content[3].config.bars[i].value = coefarrayp3[i]
     }
 var coefconfp4 = self.config.get('p41');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -245,13 +245,11 @@ var coefconfp4 = self.config.get('p41');
     //console.log(coefarray)
     // for every value that we put in array, we set the according bar value
     for (var i in coefarrayp4) {
-     uiconf.sections[0].content[5].config.bars[i].value = coefarrayp4[i]
-    }
+     uiconf.sections[0].content[4].config.bars[i].value = coefarrayp4[i]
 
-   /* 	uiconf.sections[0].content[2].config.bars[0].value = self.config.get('p21');
-    	uiconf.sections[0].content[3].config.bars[0].value = self.config.get('p31');
-    	uiconf.sections[0].content[4].config.bars[0].value = self.config.get('p41');
-*/
+    }
+    	uiconf.sections[0].content[5].value = self.config.get('enableeq');
+
 	var value;
             defer.resolve(uiconf);
             })
@@ -363,12 +361,13 @@ Controllervolparametriceq.prototype.savevolparametriceq = function(data) {
   var self = this;
 
   var defer = libQ.defer();
-	self.config.set('enableeq', data['enableeq']);
+
 	self.config.set('mg', data['mg']);
 	self.config.set('p11', data['p11']);
 	self.config.set('p21', data['p21']);
 	self.config.set('p31', data['p31']);
 	self.config.set('p41', data['p41']);
+	self.config.set('enableeq', data['enableeq']);
 	self.logger.info('Configurations of equalizer have been set');
 
   self.rebuildvolparametriceq()

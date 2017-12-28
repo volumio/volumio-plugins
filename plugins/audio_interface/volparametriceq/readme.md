@@ -1,4 +1,4 @@
-27th December 2017
+28th December 2017
 	VOLUMIO PARAMETRIC EQUALIZER
 
 
@@ -22,6 +22,9 @@ PINE64
 
 
 Last change
+
+28th december 17
+- move switch to the bottom of the page
 
 27th december 17
 

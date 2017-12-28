@@ -12,22 +12,17 @@
       "saveButton": {
         "label": "TRANSLATE.APPLY",
         "data": [
-	"enableeq",
 	"mg",
 	"p11",
 	"p21",
 	"p31",
-	"p41"
+	"p41",
+	"enableeq"
         ]
       },
     "content": 
 					[
-{
-					"id": "enableeq",
-					"element": "switch",
-					"label": "TRANSLATE.ENABLEEQ",
-					"value": true
-				},
+
 						
 						{
 							"id": "mg",
@@ -221,6 +216,12 @@
 									}
 									]
 								}
+						},
+						{
+						"id": "enableeq",
+						"element": "switch",
+						"label": "TRANSLATE.ENABLEEQ",
+						"value": true
 						}
 					]  
    }
