@@ -1,15 +1,15 @@
 {
   "name": "volparametriceq",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Parametric equalizer plugin for Volumio2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Balbuze",
-  "license": "",
+  "license": "GPL 3.0",
   "volumio_info": {
-    "prettyName": "Volumio parametric equalizer 0.0.6",
+    "prettyName": "Volumio parametric equalizer 0.0.7",
     "plugin_type": "audio_interface",
     "icon":"fa-sliders fa-rotate-90",
     "boot_priority":10

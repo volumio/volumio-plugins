@@ -1,40 +1,40 @@
 16th december 2017
 
-
-	Volsimpleequal volumio simple equalizer
+#Volsimpleequal volumio simple equalizer
 
 A simple 10 bands graphic Equalizer plugin for Volumio2.
 
-#WARNING !!! I reverted to alsaequal, waiting for a fix for the frying sound with mbeq
+##WARNING !!! I reverted to alsaequal, waiting for a fix for the frying sound with mbeq
 
 
 Based on alsaequal https://github.com/raedwulf/alsaequal
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
 
+##Can't work with softvol !!!!
 
-Can't work with softvol !!!!
-
-Requirement
+##Requirement
 
  A working well configured volumio > 2.041
 
-How to install ?
+##How to install ?
 
  Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
  Enable it and... enjoy
 
 note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
 
-What is working ?
+##What is working ?
 
  Install, equalizer settings, presets settings
 
-What is not working
+##What is not working
 
  May not work with some source / output.
  Equalizer appears on several lines
  It still a beta version, need feedback !
+
+ ##Last changes
 
 16th december
 - miscellanea fixes for autoconfig. Should work for rpi0...
@@ -75,7 +75,7 @@ What is not working
 
 29th October
 
-- 
+-
 - add 3 custom preset in webUI !
 
 10th October
@@ -145,5 +145,5 @@ timer to make it work with last volumio dev 2.279
 2nd July
 - working version ! But Presets non working...
 
-01st July 
+01st July
 - nearly working - but output mdp doesn't work

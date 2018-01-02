@@ -25,7 +25,7 @@ var config = new (require('v-conf'))();
   this.commandRouter = this.context.coreCommand;
   this.logger = this.context.logger;
   this.configManager = this.context.configManager;
- };
+};
 
  ControllerVolsimpleequal.prototype.onVolumioStart = function() {
   var self = this;
@@ -41,7 +41,7 @@ var config = new (require('v-conf'))();
  };
 
  // Plugin methods -----------------------------------------------------------------------------
- //here we load snd_aloop module to provide a Loopback device 
+ //here we load snd_aloop module to provide a Loopback device
  ControllerVolsimpleequal.prototype.modprobeLoopBackDevice = function() {
   var self = this;
   var defer = libQ.defer();
@@ -176,7 +176,7 @@ var k
    i = ++i
    k = parseInt(coefarray[j], 10);
 x = k + z;
-//console.log("aaaaaaaaa----"+ x ) 
+//console.log("aaaaaaaaa----"+ x )
    console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + x )
    exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + x , {
     uid: 1000,
@@ -268,7 +268,7 @@ x = k + z;
     value = self.config.get('eqprofile');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-	
+
     //for coef in equalizer
     // we retrieve the coefficient configuration
     var coefconf = self.config.get('coef');
@@ -419,7 +419,7 @@ setTimeout(function() {
   self.config.set('bass', data['bass']);
   self.config.set('voice', data['voice']);
   self.config.set('soundtrack', data['soundtrack']);
-*/ 
+*/
  self.logger.info('Equalizer preset saved');
   self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
   //self.sendequal(defer);
@@ -433,7 +433,7 @@ setTimeout(function() {
   // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
   // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before equalizer is enabled
   setTimeout(function() {
-   //  return new Promise(function(resolve, reject) { 
+   //  return new Promise(function(resolve, reject) {
    //var defer = libQ.defer();
    var settings = {
     // need to set the device that equalizer wants to control volume to
@@ -457,7 +457,7 @@ setTimeout(function() {
     // once completed, uncomment
 
    return self.commandRouter.volumioUpdateVolumeSettings(settings)
-    //setTimeout(function() {      
+    //setTimeout(function() {
     //resolve();
   }, 5000);
   //});
@@ -509,7 +509,7 @@ setTimeout(function() {
   var defer = libQ.defer();
     self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
 	self.setVolumeParameters()
- 
+
 self.restoreVolumioconfig()
    .then(self.bridgeLoopBackequal())
  defer.resolve()
