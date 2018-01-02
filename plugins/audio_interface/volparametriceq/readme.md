@@ -8,9 +8,9 @@ More info : http://bs2b.sourceforge.net/
 
 ![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
 
-##NOT compatible with softvol!
+## NOT compatible with softvol!
 
-##How to install
+## How to install
 
 - Just download volparametriceq.zip and drop it in the plugin installation page in volumio.
 Enable it. That it !
@@ -21,7 +21,7 @@ RPI2
 PINE64
 
 
-##Last changes
+## Last changes
 
 02nd January 18
 - update readme.md
