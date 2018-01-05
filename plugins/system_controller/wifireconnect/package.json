@@ -1,16 +1,17 @@
 {
   "name": "wifireconnect",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Wifireconnect reconnect wifi after a network fail",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Balbuze",
-  "license": "",
+  "license": "GPL 3.0",
   "volumio_info": {
-    "prettyName": "Wifireconnect ver0.1.1",
-    "plugin_type": "system_controller"
+    "prettyName": "Wifireconnect ver0.1.2",
+    "plugin_type": "system_controller",
+    "icon":"fa-wifi"
   },
    "dependencies": {
     "fs-extra": "^0.28.0",

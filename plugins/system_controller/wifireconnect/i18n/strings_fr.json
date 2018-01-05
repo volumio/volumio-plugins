@@ -1,0 +1,11 @@
+{
+ "WIFIRECONNECT":{
+ "WIFIRECONNECTT":"Wifireconnect Interface",
+ "WIFRECONNECTCONF":"Configuration de Wifireconnect",
+ "SERVERIP":"Adresse IP à interroger",
+ "SERVERIPDOC":"Entrez l'adresse IP à tester. Par défaut 8.8.8.8 (google dns)",
+ "INTERFACE":"Interface wifi à surveiller",
+ "INTERFACEDOC":"Entrez le nom de l'interface wifi à surveiller. Par défaut wlan0",
+ "SAVE":"Sauver"
+}
+}

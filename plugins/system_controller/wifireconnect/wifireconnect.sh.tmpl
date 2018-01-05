@@ -16,9 +16,9 @@ then
 	#systemctl stop wireless.service
 	#sleep 2
         #systemctl start wireless.service
-	sudo /sbin/ifdown --force ${NINTERFACE}
-	sudo /bin/ip link set ${NINTERFACE} up
+	#sudo /sbin/ifdown --force ${NINTERFACE}
+	#sudo /bin/ip link set ${NINTERFACE} up
 
- 	#systemctl restart wireless
+ 	systemctl restart wireless
 fi
 

@@ -3,7 +3,9 @@
  "WIFIRECONNECTT":"Wifireconnect Interface",
  "WIFRECONNECTCONF":"Wifireconnect Configuration",
  "SERVERIP":"Server IP adress to reach",
+ "SERVERIPDOC":"server to be reached. default 8.8.8.8 (google dns)",
  "INTERFACE":"Interface to be monitored",
+ "INTERFACEDOC":"Wifi Interface to be surveyed. Default wlan0",
  "SAVE":"Save"
 }
 }

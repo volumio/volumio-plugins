@@ -1,4 +1,6 @@
-19th november 2017
+05th January 18
+
+# Wifi reconnect plugin
 
 This plugin is supposed to reactivate wifi when a router has been reboot...
 It uses a bash script to reach a server and a systemd timer to launch the script every minute (it could be changed but a short delay is convenient to test).
@@ -7,6 +9,18 @@ the principle : every X minutes ping send a request to a server (8.8.8.8 google 
 If no response, the interface is restarted.
 
 The plugin UI  allows to set the IP and the interface to check.
+
+## How to install
+
+- Just download the wifireconnect.zip file and drop it in the plugin installation page of volumio.
+- Enable it and change the settings if needed to match your config, save.
+
+05th January 18
+
+- use of "systemctl restart wireless"
+- translation
+- licence
+- icon wifi
 
 19 th november
 

@@ -21,7 +21,7 @@
           "id":"serverip",
           "type":"text",
           "element": "input",
-          "doc": "server to be reached",
+          "doc": "TRANSLATE.WIFIRECONNECT.SERVERIPDOC",
           "label": "TRANSLATE.WIFIRECONNECT.SERVERIP",
           "value": "8.8.8.8"
         },
@@ -29,7 +29,7 @@
           "id":"interface",
           "type":"text",
           "element": "input",
-          "doc": "Interface to be surveyed",
+          "doc": "TRANSLATE.WIFIRECONNECT.INTERFACEDOC",
           "label": "TRANSLATE.WIFIRECONNECT.INTERFACE",
           "value": "wlan0"
         }

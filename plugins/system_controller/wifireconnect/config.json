@@ -1,7 +1,7 @@
 {
    "serverip": {
       "type": "string",
-      "value": "www.google.com"
+      "value": "8.8.8.8"
   },
   "interface": {
     "type": "string",
