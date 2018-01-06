@@ -29,6 +29,7 @@
  ControllerVolstereo2mono.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   return libQ.resolve();
@@ -149,9 +150,9 @@
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.setstereo2monooutput())
-   .then(self.setVolumeParameters())
-   .then(self.restoreVolumioconfig())
-   .then(self.bridgeLoopBack())
+//   .then(self.setVolumeParameters())
+//   .then(self.restoreVolumioconfig())
+//   .then(self.bridgeLoopBack())
   .catch(function(err) {
    console.log(err);
   });
@@ -190,7 +191,7 @@
   //Perform your installation tasks here
  };
 
-/* ControllerVolstereo2mono.prototype.getUIConfig = function() {
+ ControllerVolstereo2mono.prototype.getUIConfig = function() {
   var self = this;
   var defer = libQ.defer();
   var lang_code = this.commandRouter.sharedVars.get('language_code');
@@ -198,7 +199,17 @@
     __dirname + '/i18n/strings_en.json',
     __dirname + '/UIConfig.json')
    .then(function(uiconf) {
-*/
+    	uiconf.sections[0].content[0].value = self.config.get('enablefilter');
+var value;
+            defer.resolve(uiconf);
+            })
+                .fail(function()
+            {
+                defer.reject(new Error());
+        });
+        return defer.promise;
+};
+
  
  ControllerVolstereo2mono.prototype.getLabelForSelect = function(options, key) {
   var n = options.length;
@@ -238,10 +249,18 @@
      defer.reject(new Error(err));
      return console.log(err);
     }
+	var  hwouts;
+		if (self.config.get('enablefilter') == true)
+	{
+			hwouts = "pcm.monoouts"
+	}
+		else  hwouts = 'plughw:' + (self.config.get('alsa_device'));
+	
     var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
+    var conf2 = conf1.replace("${hwouts}", hwouts);
 
 
-    fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
+    fs.writeFile("/home/volumio/asoundrc", conf2, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
       //self.logger.info('Cannot write /etc/asound.conf: '+err)
@@ -266,6 +285,53 @@
 setTimeout(function() {
   return defer.promise;
   }, 2000);
+ };
+
+ControllerVolstereo2mono.prototype.savevolstereo2mono = function(data) {
+  var self = this;
+
+  var defer = libQ.defer();
+	self.config.set('enablefilter', data['enablefilter']);
+	
+  self.rebuildvolstereo2mono()
+   .then(function(e) {
+    //  self.commandRouter.pushToastMessage('success', "volmono2strereo Configuration updated");
+    defer.resolve({});
+   })
+   .fail(function(e) {
+       defer.reject(new Error('error'));
+  //  self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+   })
+
+
+  return defer.promise;
+
+ };
+
+ControllerVolstereo2mono.prototype.rebuildvolstereo2mono = function() {
+  var self = this;
+  var defer = libQ.defer();
+  self.createASOUNDFile()
+ //  .then(function(e) {
+{
+    var edefer = libQ.defer();
+    exec("/usr/bin/sudo /bin/systemctl restart volstereo2mono.service", {
+     uid: 1000,
+     gid: 1000
+    }, function(error, stdout, stderr) {
+     if (error) {
+      self.commandRouter.pushToastMessage('error', 'a problem occurs');
+
+     } else {
+
+      self.commandRouter.pushToastMessage('success', 'filter applied');
+     }
+     edefer.resolve();
+    });
+
+    return edefer.promise;
+   }
+//)
  };
 
  ControllerVolstereo2mono.prototype.setVolumeParameters = function() {
@@ -346,6 +412,18 @@ setTimeout(function() {
   return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
  };
 
+ControllerVolstereo2mono.prototype.outputDeviceCallback = function() {
+  var self = this;
+  var defer = libQ.defer();
+   // self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
+	self.setVolumeParameters()
+ 
+self.restoreVolumioconfig()
+   .then(self.bridgeLoopBack())
+ defer.resolve()
+  return defer.promise;
+ };
+
  //here we set the Loopback output
  ControllerVolstereo2mono.prototype.setstereo2monooutput = function() {
   var self = this;
@@ -362,7 +440,7 @@ outputp = self.config.get('alsa_outputdevicename')
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 2500);
+  }, 4500);
 
   return defer.promise;
  };

@@ -1,20 +1,26 @@
-21th November 2017
+ 06th January 18
 
 
-		Volstereo2mono Downmix stereo to mono
+# Volstereo2mono Downmixes stereo to mono
 
-Can't work with softvol !!!!
+## Can't work with softvol !!!!
 
 Requirement
 
  A working well configured volumio > 2.041
 
-How to install ?
+## How to install ?
 
  Download volstereo2mono.zip and drop it in the "updload a plugin" zone of volumio.
  Enable it and... enjoy
 
 note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
+
+## Last changes
+
+06th January 18
+
+- add a switch to toggle streo / mono
 
 21 th november
 

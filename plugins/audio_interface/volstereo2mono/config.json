@@ -1,4 +1,5 @@
 {
+"enablefilter":{"type": "boolean","value": "true"},
 "alsa_device":{"type": "string","value": "0"},
 "alsa_outputdevicename":{"type": "string","value": "0"},
 "alsa_mixer":{"type": "string","value": ""},

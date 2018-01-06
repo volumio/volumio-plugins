@@ -1,2 +1,30 @@
 {
+  "page": {
+    "label": "TRANSLATE.VOLUMIO_VOLSTREO2MONO"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.VOLSTERE2MONOSETTINGS",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"audio_interface/volstereo2mono", "method":"savevolstereo2mono"},
+      "saveButton": {
+        "label": "APPLY",
+        "data": [
+	"enablefilter"
+                  ]
+      },
+    "content": 
+					[
+					{
+					"id": "enablefilter",
+					"element": "switch",
+					"label": "mono=on or stereo=off",
+					"value": true
+					}
+						
+					]  
+   }
+  ]
 }
