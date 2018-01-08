@@ -196,6 +196,24 @@
 						}
 					],
 					"updated": "18-12-2017"
+				},
+				{
+					"prettyName": "FritzCallMute",
+					"icon": "fa-lightbulb-o",
+					"name": "fritzcallmute",
+					"version": "0.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
+					"license": "ISC",
+					"description": "Mutes on phone calls via FritzBox router",
+					"details": "This plugin works together with the popular german router FritzBox. On incoming or outgoing calls playing is paused, after hangup its resumed. Callmonitor function on FritzBox must be activated before. This can be done e.g. by calling #96*5* on a connected phone.",
+					"author": "clmtrapp",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "8-1-2018"
 				}
 			]
 		},
