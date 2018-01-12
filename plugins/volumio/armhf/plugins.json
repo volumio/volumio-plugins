@@ -250,6 +250,24 @@
 						}
 					],
 					"updated": "12-1-2018"
+				},
+				{
+					"prettyName": "MotionEye",
+					"icon": "fa-lightbulb-o",
+					"name": "motioneye",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/motioneye/motioneye.zip",
+					"license": "ISC",
+					"description": "Install MotionEye on Volumio. Use it with VolumioIP:8765",
+					"details": "",
+					"author": "Pavol Grohol",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "12-1-2018"
 				}
 			]
 		},

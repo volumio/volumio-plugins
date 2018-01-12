@@ -28,7 +28,7 @@ echo "Copying motioneye.systemd-unit-local ..."
 sudo cp /usr/local/share/motioneye/extra/motioneye.systemd-unit-local /etc/systemd/system/motioneye.service
 echo "Reloading systemctl ..."
 sudo systemctl daemon-reload
-# systemctl enable motioneye
+sudo systemctl enable motioneye
 # systemctl start motioneye
 
 
