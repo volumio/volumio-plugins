@@ -34,10 +34,16 @@ motioneye.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    self.commandRouter.pushToastMessage('info', "index.js", "onStart = function....");
-
-    // Once the Plugin has successfull started resolve the promise
-    defer.resolve();
+    exec("/usr/bin/sudo /bin/systemctl start motioneye", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+		if (error !== null) {
+			self.commandRouter.pushConsoleMessage('The following error occurred while starting MotionEye: ' + error);
+			defer.reject();
+		}
+		else {
+			self.commandRouter.pushConsoleMessage('MotionEye Daemon Started');
+			defer.resolve();
+		}
+	});
 
     return defer.promise;
 };
@@ -46,10 +52,16 @@ motioneye.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-    self.commandRouter.pushToastMessage('info', "index.js", "onStop = function....");
-
-    // Once the Plugin has successfull stopped resolve the promise
-    defer.resolve();
+    exec("/usr/bin/sudo /bin/systemctl stop motioneye", {uid:1000,gid:1000}, function (error, stdout, stderr) {
+                if (error !== null) {
+                        self.commandRouter.pushConsoleMessage('The following error occurred while stopping MotionEye: ' + error);
+                        defer.reject();
+                }
+                else {
+                        self.commandRouter.pushConsoleMessage('MotionEye Daemon Stopped');
+                        defer.resolve();
+                }
+        });
 
     return libQ.resolve();
 };
