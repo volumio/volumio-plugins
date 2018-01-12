@@ -32,11 +32,12 @@ motioneye.prototype.onVolumioStart = function()
 
 motioneye.prototype.onStart = function() {
     var self = this;
-	var defer=libQ.defer();
+    var defer=libQ.defer();
 
+    self.commandRouter.pushToastMessage('info', "index.js", "onStart = function....");
 
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+    // Once the Plugin has successfull started resolve the promise
+    defer.resolve();
 
     return defer.promise;
 };
@@ -44,6 +45,8 @@ motioneye.prototype.onStart = function() {
 motioneye.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
+
+    self.commandRouter.pushToastMessage('info', "index.js", "onStop = function....");
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
