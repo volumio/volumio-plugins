@@ -1,0 +1,21 @@
+{
+	"name": "motioneye",
+	"version": "1.0.0",
+	"description": "Install MotionEye on Volumio. Use it with VolumioIP:8765",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Pavol Grohol",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "MotionEye",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
