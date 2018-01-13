@@ -14,8 +14,8 @@ It provides :
 - The use of custom filters - for DRC digital room correction
 
 - A 30 bands equalizer (1/3 octave)
-	with gain for each band can be set by step of 0.5 (+/-15dB)
-	several equalizer preset such as loudness, bass, voice, rock, flat etc...
+	with gain for each band can be set by step of 0.5 (+/-15db)
+	several equalizer preset such as loudness, bass, voice, rock, flat etc.. and 3 custom presets.
 - Filters (left and right) will be set through webUI by giving the name of the file to use.
 
 
@@ -38,20 +38,26 @@ First, you must have a working configuration with volumio, the dac you want to u
 4) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
 Have look at the wiki : [wiki](https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze)
 
-- What is working :
-
+## What is working :
+ 
 
 Gain Equalizer
 Access to webUI and save configuration
 Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fill the field in brutefir plugin advanced settings) 
 
-- What is not working :
+## What is not working :
 
+- Equalizer appears on several lines
+- slow to load interface UI
+- support only file with sample set in advanced settings.
+- need to save advanced setting each boot....
 
-Equalizer appears on several lines
+## Last changes
 
+13th January
 
-- Last changes
+- better translation support
+- 3 custom presets
 
 10th January
 

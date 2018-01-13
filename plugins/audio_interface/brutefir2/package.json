@@ -1,7 +1,7 @@
 {
   "name": "brutefir",
-  "version": "0.4.6",
-  "description": "Brutefir2 plugin for Volumio2. Provide an equalizer, and the use of custom filters",
+  "version": "0.4.7",
+  "description": "Brutefir2 plugin for Volumio2. Provide an 30 bands equalizer, and the use of custom filters for DRC",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "GPL 3.0",
   "volumio_info": {
-    "prettyName": "Brutefir for Volumio 0.4.6",
+    "prettyName": "Brutefir for Volumio 0.4.7",
     "plugin_type": "audio_interface",
     "icon":"fa-sliders fa-rotate-90"
   },

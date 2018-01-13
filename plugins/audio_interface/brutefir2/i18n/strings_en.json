@@ -1,7 +1,9 @@
 {
- "BRUTEFIR":{
  "VOLUMIO_DSP":"Volumio DSP center",
  "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir Equalizer",
+ "EQORPRESET":"Equalizer=on ou preset=off",
+ "EQPROFILE":"Equalization profil",
+ "DOCEQPROFILE":"Choose the equalization profile you want to use",
  "EQUALIZER":"Equalizer",
  "EQUALIZER_SETTINGS":"Equalizer settings",
  "EQUALIZER_MODE":"On= Gain Settings / Off= Phase Settings",
@@ -22,12 +24,17 @@
  "INPUT_DEVICE":"Input device hw:",
  "SAVE":"Save",
  "APPLY":"Apply",
- "OUTPUT_DEVICE":"Output device hw:"
-},
- "BAUER":{
- "BAUER_TITLE":"Bauer Stereo to binaural filter May conflict with softvol!!!",
- "BAUER_FILTER_SETTINGS":"Enabling Bauer filter",
- "FCUT":"Frequency cut (Hz)",
- "FLEVEL":"Level feed (dB)"
-}
+ "OUTPUT_DEVICE":"Output device hw:",
+ "DOCPRESETTINGS":"Here you define your 3 presets",
+ "DOCCHOPREST1":"Choose value for mypreset1",
+ "DOCCHOPREST2":"Choose value for mypreset2",
+ "DOCCHOPREST3":"Choose value for mypreset3",
+ "LABELPS1":"my preset 1",
+ "LABELPS2":"my preset 2",
+ "LABELPS3":"my preset 3",
+ "DOCEQ":"Create your own equalizer",
+ "ADVEQSET":"Advanced equalizer preset",
+ "PRESSETTING":"Preset settings",
+ "DOCPRESETTINGS":"Here you define your 3 presets"
+
 }

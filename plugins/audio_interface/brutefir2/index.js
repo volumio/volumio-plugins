@@ -35,6 +35,7 @@
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   self.autoconfig
+  //self.rebuildBRUTEFIRAndRestartDaemon()
   return libQ.resolve();
  };
 
@@ -138,21 +139,29 @@
    var scoef
    console.log('myeq or preset =' + enablemyeq)
 
-   if (self.config.get('enablemyeq') == false) {
-    if (self.config.get('eqprofile') === 'flat')
-     scoef = "0,0,0,0,0,0,0,0,0,0"
-    else if (self.config.get('eqprofile') === 'loudness')
-     scoef = "4,3,0,0,-1,0,-1,-2,3,0"
-    else if (self.config.get('eqprofile') === 'rock')
-     scoef = "4,3,2,0,-1,-1,0,1,2,3"
-    else if (self.config.get('eqprofile') === 'classic')
-     scoef = "4,3,2,1,-1,-1,0,1,2,3"
-    else if (self.config.get('eqprofile') === 'bass')
-     scoef = "0,6,7,6,5,0,0,0,0,0"
-    else if (self.config.get('eqprofile') === 'voice')
-     scoef = "-3,-1,0,1,2,3,3,2,3,1"
+if (self.config.get('enablemyeq') == false) {
+   if (self.config.get('eqprofile') === 'flat')
+    scoef = self.config.get('flat')
+   else if (self.config.get('eqprofile') === 'loudness')
+    scoef = self.config.get('loudness')
+   else if (self.config.get('eqprofile') === 'rock')
+    scoef = self.config.get('rock')
+   else if (self.config.get('eqprofile') === 'classic')
+    scoef = self.config.get('classic')
+   else if (self.config.get('eqprofile') === 'bass')
+    scoef = self.config.get('bass')
+   else if (self.config.get('eqprofile') === 'voice')
+    scoef = self.config.get('voice')
+  else if (self.config.get('eqprofile') === 'soundtrack')
+    scoef = self.config.get('soundtrack')
+  else if (self.config.get('eqprofile') === 'mypreset1')
+    scoef = self.config.get('mypreset1')
+  else if (self.config.get('eqprofile') === 'mypreset2')
+    scoef = self.config.get('mypreset2')
+  else if (self.config.get('eqprofile') === 'mypreset3')
+    scoef = self.config.get('mypreset3')
    } else scoef = self.config.get('coef')
-
+  
    //   console.log(' raw values are %j', scoef);
    var values = scoef.split(',');
 
@@ -225,7 +234,7 @@
   self.autoconfig()
 
   self.rebuildBRUTEFIRAndRestartDaemon()
-   // .then( self.startBrutefirDaemon() )
+   .then( self.startBrutefirDaemon() )
 
   .then(function(e) {
     setTimeout(function() {
@@ -294,12 +303,36 @@ else
     for (var i in coefarray) {
      uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
     }
-/*
-    //bauer section
-    uiconf.sections[1].content[0].value = self.config.get('sbauer');
-    uiconf.sections[1].content[1].config.bars[0].value = self.config.get('levelfcut');
-    uiconf.sections[1].content[2].config.bars[0].value = self.config.get('levelfeed');
-*/
+   //for equalizer custom mypreset1
+    // we retrieve the coefficient configuration
+    var cmypreset1 = self.config.get('mypreset1');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp1 = cmypreset1.split(',');
+    //console.log(coefarrayp1)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp1) {
+     uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
+    }
+ //for equalizer custom mypreset2
+    // we retrieve the coefficient configuration
+    var cmypreset2 = self.config.get('mypreset2');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp2 = cmypreset2.split(',');
+    //console.log(coefarrayp2)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp2) {
+     uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
+    }
+//for equalizer custom mypreset3
+    // we retrieve the coefficient configuration
+    var cmypreset3= self.config.get('mypreset3');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarrayp3 = cmypreset3.split(',');
+    //console.log(coefarrayp3)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarrayp3) {
+     uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
+	}
     //advanced settings option
 
     //
@@ -318,37 +351,35 @@ else
 
 
 
+//advanced settings for brutefir
 
-
-
-
-    uiconf.sections[1].content[2].value = self.config.get('leftfilter');
-    uiconf.sections[1].content[3].value = self.config.get('rightfilter');
+    uiconf.sections[2].content[2].value = self.config.get('leftfilter');
+    uiconf.sections[2].content[3].value = self.config.get('rightfilter');
 
     value = self.config.get('attenuation');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[1].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[1].options'), value));
     value = self.config.get('filter_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[4].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[4].options'), value));
     value = self.config.get('filter_size');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[5].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[5].options'), value));
     value = self.config.get('numb_part');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[6].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[6].options'), value));
     value = self.config.get('fl_bits');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[7].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[7].options'), value));
     value = self.config.get('smpl_rate');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[8].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[8].options'), value));
     value = self.config.get('input_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[9].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[9].options'), value));
     value = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[10].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[10].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[10].options'), value));
     var value;
 
 
@@ -528,7 +559,6 @@ else
     });
     self.checkifleftfilterexits()
     self.checkifrightfilterexits()
-   // self.createBAUERFILTERFile()
    });
 
 
@@ -559,17 +589,27 @@ else
   return defer.promise;
  };
 
+//here we save the equalizer preset
+ ControllerBrutefir.prototype.saveequalizerpreset = function(data) {
+  var self = this;
+  var defer = libQ.defer();
+ // self.config.set('enablepreset', data['enablepreset']);
+  self.config.set('mypreset1', data['mypreset1']);
+  self.config.set('mypreset2', data['mypreset2']);
+  self.config.set('mypreset3', data['mypreset3']);
+  self.logger.info('Equalizer preset saved');
+  self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+  return defer.promise;
+ };
+
+
  //here we save the brutefir config.json
  ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
   var self = this;
   var output_device
   var input_device = "Loopback,1";
 
-output_device = self.config.get('alsa_device');
-
-  //var alsa_device =self.commandRouter.sharedVars.get('device')
-  //var alsa_outputdevice =self.commandRouter.sharedVars.get('alsa.outputdevicename')
-  console.log('output_device');
+  output_device = self.config.get('alsa_device');
   var defer = libQ.defer();
   self.config.set('attenuation', data['attenuation'].value);
   self.config.set('smpl_rate', data['smpl_rate'].value);
