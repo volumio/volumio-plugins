@@ -13,12 +13,11 @@ It provides :
 
 - The use of custom filters - for DRC digital room correction
 
-- A 10 bands equalizer
+- A 30 bands equalizer (1/3 octave)
 	with gain for each band can be set by step of 0.5 (+/-10db)
 	several equalizer preset such as loudness, bass, voice, rock, flat etc...
 - Filters (left and right) will be set through webUI by giving the name of the file to use.
 
-- A stereo to binaural filtering using BAUER alsa ladspa plugin
 
 ![Alt text](volumiobrutefir.png?raw=true "Brutefir plugin settings")
 
