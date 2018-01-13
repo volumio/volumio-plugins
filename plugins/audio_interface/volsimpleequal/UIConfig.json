@@ -207,7 +207,7 @@
 			"icon": "fa-cogs",
 			"onSave": {
 				"type": "plugin",
-				"endpoint": "miscellanea/volsimpleequal",
+				"endpoint": "audio_interface/volsimpleequal",
 				"method": "saveequalizerpreset"
 			},
 			"saveButton": {
