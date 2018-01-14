@@ -1,4 +1,4 @@
-13th January 18
+14th January 18
 
 
 #	BRUTEFIR2 PLUGIN
@@ -47,12 +47,17 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 
 ## What is not working :
 
+
 - Equalizer appears on several lines
-- slow to load interface UI
+- slow to load interface UI (warning in some web browser for script to slow)
 - support only file with sample set in advanced settings.
 - need to save advanced setting each boot....
 
 ## Last changes
+
+14th january
+
+- correction for no sound at boot time
 
 13th January
 

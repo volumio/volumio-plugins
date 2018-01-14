@@ -35,6 +35,7 @@
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   self.autoconfig
+ // .then(self.rebuildBRUTEFIRAndRestartDaemon())
   //self.rebuildBRUTEFIRAndRestartDaemon()
   return libQ.resolve();
  };
@@ -234,7 +235,7 @@ if (self.config.get('enablemyeq') == false) {
   self.autoconfig()
 
   self.rebuildBRUTEFIRAndRestartDaemon()
-   .then( self.startBrutefirDaemon() )
+  // .then( self.startBrutefirDaemon() )
 
   .then(function(e) {
     setTimeout(function() {
@@ -313,7 +314,7 @@ else
     for (var i in coefarrayp1) {
      uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
     }
- //for equalizer custom mypreset2
+    //for equalizer custom mypreset2
     // we retrieve the coefficient configuration
     var cmypreset2 = self.config.get('mypreset2');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -323,7 +324,7 @@ else
     for (var i in coefarrayp2) {
      uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
     }
-//for equalizer custom mypreset3
+    //for equalizer custom mypreset3
     // we retrieve the coefficient configuration
     var cmypreset3= self.config.get('mypreset3');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -333,9 +334,8 @@ else
     for (var i in coefarrayp3) {
      uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
 	}
-    //advanced settings option
-
-    //
+  
+  //advanced settings option
 
     var filterfolder = "/data/INTERNAL/brutefirfilters";
     var itemslist //var filterl = [];
@@ -765,6 +765,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
 	self.setVolumeParameters()
   }, 2500);
  	self.restoreVolumioconfig()
+//  self.rebuildBRUTEFIRAndRestartDaemon()
  defer.resolve()
   return defer.promise;
  };
