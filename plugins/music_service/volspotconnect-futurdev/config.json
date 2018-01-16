@@ -3,7 +3,11 @@
       "type": "string",
       "value": "33"
 },
-   "shareddevice": {
+"normalvolume": {
+    "type": "boolean",
+    "value": true
+  },
+    "shareddevice": {
     "type": "boolean",
     "value": true
   },
