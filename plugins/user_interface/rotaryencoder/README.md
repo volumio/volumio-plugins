@@ -4,8 +4,8 @@ Volumio 2 plugin to configure two simple rotary encoders.
 ## Quick start
 1. Connect your rotary encoder(s) and write down the pins you have used
 
-CLK = pin A
-DT = pin B
+* CLK = pin A
+* DT = pin B
 
 ![Alt text](/images/rotary_encoder.jpg?raw=true "Rotary encoder")
 
@@ -13,8 +13,8 @@ The rest of the pins is self explanatory.
 
 2. Install the plugin
 3. Configure your encoder(s) using the pins you wrote down.
-a) Configure CLK to 0 (zero) to disable the encoder
-b) Configure SW to 0 (zero) to disable the (push) button on the encoder
+   * Configure CLK to 0 (zero) to disable the encoder
+   * Configure SW to 0 (zero) to disable the (push) button on the encoder
 4. Choose your logic (KY040 or gray coding)
 
 ![Alt text](/images/rotary_logic.png?raw=true "Rotary encoder")
