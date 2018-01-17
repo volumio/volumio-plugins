@@ -214,7 +214,11 @@ rotaryencoder.prototype.setConf = function(varName, varValue) {
 
 
 // Configuration ---------------------------------------------------------------------------------------
-rotaryencoder.prototype.determineAPICommand = function(buttionAction) {
+rotaryencoder.prototype.determineAPICommand = function(buttonAction) {
+	var self = this;
+	if(self.config.get('enable_debug_logging'))
+		self.logger.info('Button action type: ' + self.config.get('first_encoder_buttonActionType'));
+	
 	switch(buttonAction)
 	{
 		case buttonActionType.PLAY:
@@ -300,7 +304,7 @@ rotaryencoder.prototype.constructFirstEncoder = function ()
 				if(pressState == 0)
 				{
 					if(self.config.get('first_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-						socket.emit(self.determineAPICommand('first_encoder_buttonActionType'));
+						socket.emit(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
 					else
 						socket.emit('volume', 'toggle');
 					
@@ -326,7 +330,7 @@ rotaryencoder.prototype.constructSecondEncoder = function ()
 		this.firstEncoder.on('rotation', direction => {
 			if (direction > 0) 
 			{
-				if(self.config.get('enable_debug_logging'))
+				if(self.config.get('enable_debug_logging') == true)
 					self.logger.info('[Rotary encoder] Encoder #2 rotated right');
 								
 				if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
@@ -355,7 +359,7 @@ rotaryencoder.prototype.constructSecondEncoder = function ()
 				if(pressState == 0)
 				{					
 					if(self.config.get('second_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-						socket.emit(self.determineAPICommand('second_encoder_buttonActionType'));
+						socket.emit(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
 					else
 						socket.emit('volume', 'toggle');
 					
@@ -369,12 +373,12 @@ rotaryencoder.prototype.updateFirstEncoder = function (data)
 	var self = this;
 	var defer=libQ.defer();
 
-	self.config.set('first_encoder_CLK', data['first_encoder_CLK'].value);
-	self.config.set('first_encoder_DT', data['first_encoder_DT']);
-	self.config.set('first_encoder_SW', data['first_encoder_SW']);
-	self.config.set('first_encoder_encoding', data['first_encoder_encoding']);
-	self.config.set('first_encoder_detentActionType', data['first_encoder_detentActionType']);
-	self.config.set('first_encoder_buttonActionType', data['first_encoder_buttonActionType']);
+	self.config.set('first_encoder_CLK', parseInt(data['first_encoder_CLK']));
+	self.config.set('first_encoder_DT', parseInt(data['first_encoder_DT']));
+	self.config.set('first_encoder_SW', parseInt(data['first_encoder_SW']));
+	self.config.set('first_encoder_encoding', parseInt(data['first_encoder_encoding'].value));
+	self.config.set('first_encoder_detentActionType', parseInt(data['first_encoder_detentActionType'].value));
+	self.config.set('first_encoder_buttonActionType', parseInt(data['first_encoder_buttonActionType'].value));
 	
 	self.constructFirstEncoder();
 	defer.resolve();
@@ -391,12 +395,12 @@ rotaryencoder.prototype.updateSecondEncoder = function (data)
 	var self = this;
 	var defer=libQ.defer();
 
-	self.config.set('second_encoder_CLK', data['second_encoder_CLK'].value);
-	self.config.set('second_encoder_DT', data['second_encoder_DT']);
-	self.config.set('second_encoder_SW', data['second_encoder_SW']);
-	self.config.set('second_encoder_encoding', data['second_encoder_encoding']);
-	self.config.set('second_encoder_detentActionType', data['second_encoder_detentActionType']);
-	self.config.set('second_encoder_buttonActionType', data['second_encoder_buttonActionType']);
+	self.config.set('second_encoder_CLK', parseInt(data['second_encoder_CLK']));
+	self.config.set('second_encoder_DT', parseInt(data['second_encoder_DT']));
+	self.config.set('second_encoder_SW', parseInt(data['second_encoder_SW']));
+	self.config.set('second_encoder_encoding', parseInt(data['second_encoder_encoding'].value));
+	self.config.set('second_encoder_detentActionType', parseInt(data['second_encoder_detentActionType'].value));
+	self.config.set('second_encoder_buttonActionType', parseInt(data['second_encoder_buttonActionType'].value));
 	
 	self.constructSecondEncoder();
 	defer.resolve();
@@ -413,7 +417,7 @@ rotaryencoder.prototype.updateDebugSettings = function (data)
 	var self = this;
 	var defer=libQ.defer();
 
-	self.config.set('enable_debug_logging', data['enable_debug_logging'].value);
+	self.config.set('enable_debug_logging', data['enable_debug_logging']);
 	defer.resolve();
 	
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved debug settings.");
