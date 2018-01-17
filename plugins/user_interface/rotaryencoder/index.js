@@ -39,10 +39,10 @@ rotaryencoder.prototype.onStart = function() {
 	var defer=libQ.defer();
 	
 	if(self.config.get('first_encoder_CLK') !== 0)
-		self.constructFirstEncoder();
+		self.constructFirstEncoder(true);
 	
 	if(self.config.get('second_encoder_CLK') != 0)
-		self.constructSecondEncoder();
+		self.constructSecondEncoder(true);
 
 	if(self.config.get('enable_debug_logging'))
 		self.logger.info('[Rotary encoder] Loaded configuration: ' + JSON.stringify(self.config.data));
@@ -258,114 +258,111 @@ rotaryencoder.prototype.determineAPICommand = function(buttonAction) {
 	}
 };
 
-rotaryencoder.prototype.constructFirstEncoder = function ()
+rotaryencoder.prototype.constructFirstEncoder = function (initialize = false)
 {
 	var self = this;
-	var configured_1 = false;
-		try
+	try
+	{
+		self.firstEncoder = rotaryEncoder(self.config.get('first_encoder_CLK'), self.config.get('first_encoder_DT'), self.config.get('first_encoder_SW'), self.config.get('first_encoder_encoding'));
+	}
+	catch (ex)
+	{
+		self.logger.info('Could not initiate rotary encoder #1 with error: ' + ex);
+	}
+	
+	self.firstEncoder.on('rotation', direction => {
+		if (direction > 0) 
 		{
-			this.firstEncoder = rotaryEncoder(self.config.get('first_encoder_CLK'), self.config.get('first_encoder_DT'), self.config.get('first_encoder_SW'), self.config.get('first_encoder_encoding'));
-			configured_1 = true;
-		}
-		catch (ex)
-		{
-			self.logger.info('Could not initiate rotary encoder #1 with error: ' + ex);
-		}
-		
-		this.firstEncoder.on('rotation', direction => {
-			if (direction > 0) 
-			{
-				if(self.config.get('enable_debug_logging'))
-					self.logger.info('[Rotary encoder] Encoder #1 rotated right');
-								
-				if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
-					socket.emit('next');
-				else
-					socket.emit('volume', '+');				
-			}
+			if(self.config.get('enable_debug_logging'))
+				self.logger.info('[Rotary encoder] Encoder #1 rotated right');
+							
+			if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
+				socket.emit('next');
 			else
-			{
-				if(self.config.get('enable_debug_logging'))
-					self.logger.info('[Rotary encoder] Encoder #1 rotated left');
+				socket.emit('volume', '+');				
+		}
+		else
+		{
+			if(self.config.get('enable_debug_logging'))
+				self.logger.info('[Rotary encoder] Encoder #1 rotated left');
+			
+			if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
+				socket.emit('prev');
+			else
+				socket.emit('volume', '-');
+		}
+	});
+	
+	if(self.config.get('first_encode_SW') !== 0 && initialize)
+	{
+		self.firstEncoder.on('click', pressState => {
+			if(self.config.get('enable_debug_logging'))
+					self.logger.info('[Rotary encoder] Encoder #1 button pressed; press state = ' + (pressState == 0 ? 'pressed' : 'released'));
 				
-				if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
-					socket.emit('prev');
+			if(pressState == 0)
+			{
+				if(self.config.get('first_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
+					socket.emit(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
 				else
-					socket.emit('volume', '-');
+					socket.emit('volume', 'toggle');
+				
 			}
 		});
-		
-		if(self.config.get('first_encode_SW') !== 0)
-		{
-			this.firstEncoder.on('click', pressState => {
-				if(self.config.get('enable_debug_logging'))
-						self.logger.info('[Rotary encoder] Encoder #1 button pressed; press state = ' + (pressState == 0 ? 'pressed' : 'released'));
-					
-				if(pressState == 0)
-				{
-					if(self.config.get('first_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-						socket.emit(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
-					else
-						socket.emit('volume', 'toggle');
-					
-				}
-			});
-		}
+	}
+	
 };
 
-rotaryencoder.prototype.constructSecondEncoder = function ()
+rotaryencoder.prototype.constructSecondEncoder = function (initialize = false)
 {
 	var self = this;
-	var configured_2 = false;
-		try
+	try
+	{
+		this.secondEncoder = rotaryEncoder(self.config.get('second_encoder_CLK'), self.config.get('second_encoder_DT'), self.config.get('second_encoder_SW'), self.config.get('second_encoder_encoding'));
+	}
+	catch (ex)
+	{
+		self.logger.info('Could not initiate rotary encoder #2 with error: ' + ex);
+	}
+	
+	this.secondEncoder.on('rotation', direction => {
+		if (direction > 0) 
 		{
-			this.secondEncoder = rotaryEncoder(self.config.get('second_encoder_CLK'), self.config.get('second_encoder_DT'), self.config.get('second_encoder_SW'), self.config.get('second_encoder_encoding'));
-			configured_2 = true;
-		}
-		catch (ex)
-		{
-			self.logger.info('Could not initiate rotary encoder #2 with error: ' + ex);
-		}
-		
-		this.firstEncoder.on('rotation', direction => {
-			if (direction > 0) 
-			{
-				if(self.config.get('enable_debug_logging') == true)
-					self.logger.info('[Rotary encoder] Encoder #2 rotated right');
-								
-				if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
-					socket.emit('next');
-				else
-					socket.emit('volume', '+');				
-			}
+			if(self.config.get('enable_debug_logging') == true)
+				self.logger.info('[Rotary encoder] Encoder #2 rotated right');
+							
+			if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
+				socket.emit('next');
 			else
-			{
-				if(self.config.get('enable_debug_logging'))
-					self.logger.info('[Rotary encoder] Encoder #2 rotated left');
+				socket.emit('volume', '+');				
+		}
+		else
+		{
+			if(self.config.get('enable_debug_logging'))
+				self.logger.info('[Rotary encoder] Encoder #2 rotated left');
+			
+			if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
+				socket.emit('prev');
+			else
+				socket.emit('volume', '-');
+		}
+	});
+	
+	if(self.config.get('second_encode_SW') !== 0 && initialize)
+	{
+		this.secondEncoder.on('click', pressState => {
+			if(self.config.get('enable_debug_logging'))
+					self.logger.info('[Rotary encoder] Encoder #2 button pressed; press state = ' + (pressState == 0 ? 'pressed' : 'released'));
 				
-				if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
-					socket.emit('prev');
+			if(pressState == 0)
+			{					
+				if(self.config.get('second_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
+					socket.emit(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
 				else
-					socket.emit('volume', '-');
+					socket.emit('volume', 'toggle');
+				
 			}
 		});
-		
-		if(self.config.get('second_encode_SW') !== 0)
-		{
-			this.firstEncoder.on('click', pressState => {
-				if(self.config.get('enable_debug_logging'))
-						self.logger.info('[Rotary encoder] Encoder #2 button pressed; press state = ' + (pressState == 0 ? 'pressed' : 'released'));
-					
-				if(pressState == 0)
-				{					
-					if(self.config.get('second_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-						socket.emit(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
-					else
-						socket.emit('volume', 'toggle');
-					
-				}
-			});
-		}
+	}
 };
 
 rotaryencoder.prototype.updateFirstEncoder = function (data)
