@@ -1,0 +1,14 @@
+{"buttonActionTypes":[
+  {"label":"Play","type": 0},
+  {"label":"Pause","type": 1},
+  {"label":"Toggle play/pause","type": 2},
+  {"label":"Stop","type": 3},
+  {"label":"Repeat","type": 4},
+  {"label":"Random","type": 5},
+  {"label":"Start Airplay","type": 6},
+  {"label":"Stop Airplay","type": 7},
+  {"label":"Clear queue","type": 8},
+  {"label":"Mute","type": 9},
+  {"label":"Unmute","type": 10},
+  {"label":"Toggle mute/unmute","type": 11}
+]}
