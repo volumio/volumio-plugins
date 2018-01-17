@@ -10,7 +10,7 @@
 		"icon": "fa-cog",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "user_interface/rotaryEncoder",
+			"endpoint": "user_interface/rotaryencoder",
 			"method": "updateFirstEncoder"
 		},
 		"saveButton": {
@@ -94,7 +94,7 @@
 		"icon": "fa-cog",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "user_interface/rotaryEncoder",
+			"endpoint": "user_interface/rotaryencoder",
 			"method": "updateSecondEncoder"
 		},
 		"saveButton": {
@@ -178,7 +178,7 @@
 		"icon": "fa-bug",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "user_interface/rotaryEncoder",
+			"endpoint": "user_interface/rotaryencoder",
 			"method": "updateDebugSettings"
 		},
 		"saveButton": {
