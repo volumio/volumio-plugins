@@ -5,10 +5,8 @@
   {"label":"Stop","type": 3},
   {"label":"Repeat","type": 4},
   {"label":"Random","type": 5},
-  {"label":"Start Airplay","type": 6},
-  {"label":"Stop Airplay","type": 7},
-  {"label":"Clear queue","type": 8},
-  {"label":"Mute","type": 9},
-  {"label":"Unmute","type": 10},
-  {"label":"Toggle mute/unmute","type": 11}
+  {"label":"Clear queue","type": 6},
+  {"label":"Mute","type": 7},
+  {"label":"Unmute","type": 8},
+  {"label":"Toggle mute/unmute","type": 9}
 ]}

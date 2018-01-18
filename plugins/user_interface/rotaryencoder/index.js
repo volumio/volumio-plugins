@@ -5,12 +5,12 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-var io = require('socket.io-client');
-var socket = io.connect('http://localhost:3000');
+//var io = require('socket.io-client');
+//var socket = io.connect('http://localhost:3000');
 
 //const rotaryLogic = Object.freeze({"GRAY": 0, "KY040": 1 });
-const detentActionType = Object.freeze({"VOLUME": 0, "PREVNEXT": 1 });
-const buttonActionType = Object.freeze({"PLAY": 0, "PAUSE": 1, "PLAYPAUSE": 2, "STOP": 3, "REPEAT": 4, "RANDOM": 5, "STARTAIRPLAY": 6, "STOPAIRPLAY": 7, "CLEARQUEUE": 8, "MUTE": 9, "UNMUTE": 10, "TOGGLEMUTE": 11 });
+const detentActionType = Object.freeze({"VOLUME": 0, "PREVNEXT": 1, "SEEK": 2 });
+const buttonActionType = Object.freeze({"PLAY": 0, "PAUSE": 1, "PLAYPAUSE": 2, "STOP": 3, "REPEAT": 4, "RANDOM": 5, "CLEARQUEUE": 6, "MUTE": 7, "UNMUTE": 8, "TOGGLEMUTE": 9 });
 
 var rotaryEncoder = require('onoff-rotary');
 
@@ -228,8 +228,10 @@ rotaryencoder.prototype.determineAPICommand = function(buttonAction) {
 			return 'pause';
 			break;
 		case buttonActionType.PLAYPAUSE:
-		case buttonActionType.TOGGLEMUTE:
 			return 'toggle';
+			break;
+		case buttonActionType.TOGGLEMUTE:
+			return 'volume toggle';
 			break;
 		case buttonActionType.STOP:
 			return 'stop';
@@ -240,20 +242,14 @@ rotaryencoder.prototype.determineAPICommand = function(buttonAction) {
 		case buttonActionType.RANDOM:
 			return 'random';
 			break;
-		case buttonActionType.STARTAIRPLAY:
-			return 'startAirplay';
-			break;
-		case buttonActionType.STOPAIRPLAY:
-			return 'stopAirplay';
-			break;
 		case buttonActionType.CLEARQUEUE:
-			return 'clearQueue';
+			return 'clear';
 			break;
 		case buttonActionType.MUTE:
-			return 'mute';
+			return 'volume mute';
 			break;
 		case buttonActionType.UNMUTE:
-			return 'unmute';
+			return 'volume unmute';
 			break;
 	}
 };
@@ -276,20 +272,41 @@ rotaryencoder.prototype.constructFirstEncoder = function (initialize = false)
 			if(self.config.get('enable_debug_logging'))
 				self.logger.info('[Rotary encoder] Encoder #1 rotated right');
 							
-			if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
-				socket.emit('next');
+			if(self.config.get('first_encoder_detentActionType') == detentActionType.VOLUME)
+			{
+				//socket.emit('volume', '+');
+				self.executeCommand('volume plus');
+			}
+			else if(self.config.get('first_encoder_detentActionType') == detentActionType.SEEK)
+			{
+				
+				self.executeCommand('seek plus');
+			}
 			else
-				socket.emit('volume', '+');				
+			{
+				//socket.emit('next');
+				self.executeCommand('next');
+			}
 		}
 		else
 		{
 			if(self.config.get('enable_debug_logging'))
 				self.logger.info('[Rotary encoder] Encoder #1 rotated left');
 			
-			if(self.config.get('first_encoder_detentActionType') != detentActionType.VOLUME)
-				socket.emit('prev');
+			if(self.config.get('first_encoder_detentActionType') == detentActionType.VOLUME)
+			{
+				//socket.emit('volume', '-');
+				self.executeCommand('volume minus');
+			}
+			else if(self.config.get('first_encoder_detentActionType') == detentActionType.SEEK)
+			{
+				self.executeCommand('seek minus');
+			}
 			else
-				socket.emit('volume', '-');
+			{
+				//socket.emit('prev');
+				self.executeCommand('previous');	
+			}
 		}
 	});
 	
@@ -302,10 +319,15 @@ rotaryencoder.prototype.constructFirstEncoder = function (initialize = false)
 			if(pressState == 0)
 			{
 				if(self.config.get('first_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-					socket.emit(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
+				{
+					//socket.emit(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
+					self.executeCommand(self.determineAPICommand(self.config.get('first_encoder_buttonActionType')));
+				}
 				else
-					socket.emit('volume', 'toggle');
-				
+				{
+					//socket.emit('volume', 'toggle');
+					self.executeCommand('volume toggle');
+				}
 			}
 		});
 	}
@@ -330,20 +352,41 @@ rotaryencoder.prototype.constructSecondEncoder = function (initialize = false)
 			if(self.config.get('enable_debug_logging') == true)
 				self.logger.info('[Rotary encoder] Encoder #2 rotated right');
 							
-			if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
-				socket.emit('next');
+			if(self.config.get('second_encoder_detentActionType') == detentActionType.VOLUME)
+			{
+				//socket.emit('volume', '+');
+				self.executeCommand('volume plus');
+			}
+			else if(self.config.get('second_encoder_detentActionType') == detentActionType.SEEK)
+			{
+				
+				self.executeCommand('seek plus');
+			}
 			else
-				socket.emit('volume', '+');				
+			{
+				//socket.emit('next');
+				self.executeCommand('next');
+			}			
 		}
 		else
 		{
 			if(self.config.get('enable_debug_logging'))
 				self.logger.info('[Rotary encoder] Encoder #2 rotated left');
 			
-			if(self.config.get('second_encoder_detentActionType') != detentActionType.VOLUME)
-				socket.emit('prev');
+			if(self.config.get('second_encoder_detentActionType') == detentActionType.VOLUME)
+			{
+				//socket.emit('volume', '-');
+				self.executeCommand('volume minus');
+			}
+			else if(self.config.get('second_encoder_detentActionType') == detentActionType.SEEK)
+			{
+				self.executeCommand('seek minus');
+			}
 			else
-				socket.emit('volume', '-');
+			{
+				//socket.emit('prev');
+				self.executeCommand('previous');	
+			}
 		}
 	});
 	
@@ -356,13 +399,33 @@ rotaryencoder.prototype.constructSecondEncoder = function (initialize = false)
 			if(pressState == 0)
 			{					
 				if(self.config.get('second_encoder_buttonActionType') != buttonActionType.TOGGLEMUTE)
-					socket.emit(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
+				{
+					//socket.emit(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
+					self.executeCommand(self.determineAPICommand(self.config.get('second_encoder_buttonActionType')));
+				}
 				else
-					socket.emit('volume', 'toggle');
-				
+				{
+					//socket.emit('volume', 'toggle');
+					self.executeCommand('volume toggle');
+				}
 			}
 		});
 	}
+};
+
+rotaryencoder.prototype.executeCommand = function (cmd)
+{
+	var self = this;
+	var defer = libQ.defer();
+	
+	exec('/usr/local/bin/volumio ' + cmd, {uid:1000, gid:1000}, function (error, stout, stderr) {
+		if(error)
+			self.logger.error(stderr);
+		
+		defer.resolve();
+	});
+	
+	return defer.promise;
 };
 
 rotaryencoder.prototype.updateFirstEncoder = function (data)
