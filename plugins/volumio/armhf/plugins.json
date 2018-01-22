@@ -214,6 +214,24 @@
 						}
 					],
 					"updated": "22-1-2018"
+				},
+				{
+					"prettyName": "Personal Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "personal_radio",
+					"version": "0.0.6",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
+					"license": "ISC",
+					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
+					"author": "Chris Song <ckchrisong@gmail.com>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "22-1-2018"
 				}
 			]
 		},
