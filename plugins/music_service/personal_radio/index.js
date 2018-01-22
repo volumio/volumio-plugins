@@ -585,7 +585,11 @@ ControllerPersonalRadio.prototype.loadRadioI18nStrings = function () {
   var self=this;
   var language_code = this.commandRouter.sharedVars.get('language_code');
 
-  self.i18nStrings=fs.readJsonSync(__dirname+'/i18n/strings_'+language_code+".json");
+    self.i18nStrings=fs.readJsonSync(__dirname+'/i18n/strings_'+language_code+".json");
+	} catch(e) {
+		self.i18nStrings=fs.readJsonSync(__dirname+'/i18n/strings_en.json');
+	}
+
   self.i18nStringsDefaults=fs.readJsonSync(__dirname+'/i18n/strings_en.json');
 };
 
