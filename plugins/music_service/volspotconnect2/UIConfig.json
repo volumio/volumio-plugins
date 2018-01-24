@@ -12,13 +12,41 @@
       "saveButton": {
         "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
         "data": [
+	"initvol",
+	"normalvolume",
 	"shareddevice",
 	"username",
 	"password"
                 ]
       },
       "content": [
+						{
        
+							"id": "initvol",
+							"element": "equalizer",
+							"label": "TRANSLATE.VOLSPOTCONNECT.INITVOL",
+							"doc":"TRANSLATE.VOLSPOTCONNECT.DESCINITVOL",
+							
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "0",
+										"max": "100",
+										"step": "5",
+										"value": "30",
+										"tooltip":"always"
+									}
+									]
+							}
+						},
+	{
+          "id":"normalvolume",
+          "element": "switch",
+          "doc": "Volume normalisation",
+          "label": "Volume normalisation",
+          "value": false
+        },
 	
 	{
           "id":"shareddevice",
@@ -27,7 +55,7 @@
           "label": "TRANSLATE.VOLSPOTCONNECT.SHAREDDEVICE",
           "value": true
         },
-	{
+		{
           "id": "username",
           "type":"text",
           "element": "input",

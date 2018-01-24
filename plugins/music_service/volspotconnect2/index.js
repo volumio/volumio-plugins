@@ -131,10 +131,11 @@ ControllerVolspotconnect.prototype.getUIConfig = function() {
                 __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
- //uiconf.sections[0].content[0].value = self.config.get('bitrate');
- uiconf.sections[0].content[0].value = self.config.get('shareddevice');
- uiconf.sections[0].content[1].value = self.config.get('username');
- uiconf.sections[0].content[2].value = self.config.get('password');
+ uiconf.sections[0].content[0].config.bars[0].value = self.config.get('initvol');
+ uiconf.sections[0].content[1].value = self.config.get('normalvolume');
+ uiconf.sections[0].content[2].value = self.config.get('shareddevice');
+ uiconf.sections[0].content[3].value = self.config.get('username');
+ uiconf.sections[0].content[4].value = self.config.get('password');
 
             defer.resolve(uiconf);
             })
@@ -188,7 +189,12 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 		    shared = " --disable-discovery " + "-u " + username + " -p " + password;
 console.log(shared)
 	} else shared="";
-             
+       
+	var normalvolume
+	if(self.config.get('normalvolume')===false) {
+		    normalvolume = "";
+	} else normalvolume=" --enable-volume-normalization";
+      
 					
 		var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
 		var devicename = self.commandRouter.sharedVars.get('system.name');
@@ -197,10 +203,12 @@ console.log(shared)
 					hwdev = "softvolume"
 					}
 		var conf1 = data.replace("${shared}", shared);
-		var conf2 = conf1.replace("${devicename}", devicename);
-		var conf3 = conf2.replace("${outdev}", hwdev);
+		var conf2 = conf1.replace("${normalvolume}", normalvolume);
+		var conf3 = conf2.replace("${devicename}", devicename);
+		var conf4 = conf3.replace("${outdev}", hwdev);
+		var conf5 = conf4.replace("${initvol}", self.config.get("initvol"));
 							
-	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf3, 'utf8', function (err) {
+	            fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf5, 'utf8', function (err) {
                 
                if (err)
                     defer.reject(new Error(err));
@@ -227,9 +235,12 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
     var defer = libQ.defer();
     
    //	self.config.set('bitrate', data['bitrate']);
+   	self.config.set('initvol', data['initvol']);
+   	self.config.set('normalvolume', data['normalvolume']);
    	self.config.set('shareddevice', data['shareddevice']);
    	self.config.set('username', data['username']);
    	self.config.set('password', data['password']);
+
 
 	self.rebuildVOLSPOTCONNECTAndRestartDaemon()
         .then(function(e){

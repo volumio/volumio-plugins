@@ -1,5 +1,13 @@
 {
-   "shareddevice": {
+ "initvol": {
+      "type": "string",
+      "value": "33"
+},
+"normalvolume": {
+    "type": "boolean",
+    "value": true
+  },
+    "shareddevice": {
     "type": "boolean",
     "value": true
   },

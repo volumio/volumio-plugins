@@ -5,9 +5,9 @@
  "USERNAME":"Nom utilisateur",
  "PASSWORD":"Mot de passe",
  "HIGHBITRATE":"Haute qualité",
- "DEVICENAME":"Nom du périphérique",
- "OUTPUT_DEVICE":"Output device",
- "SHAREDDEVICE":"Périphérique partagé entre plusieurs utilisateur",
- "SAVE":"Sauver"
+ "SHAREDDEVICE":"Périphérique partagé entre plusieurs utilisateurs",
+ "SAVE":"Sauver",
+ "INITVOL":"Volume initial",
+ "DESCINITVOL":"Volume par défaut pour Spotify"
 }
 }

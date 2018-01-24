@@ -1,7 +1,9 @@
-September 28th 2017
-	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
+16th January 2018
+#	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
+and some fork...
+
 It is still in dev and some feature are missing.
 
 
@@ -14,19 +16,29 @@ Tested on :
 - PINE64
 - x86 laptop
 
-
-IMPORTANT
+ 
+## IMPORTANT
 
 - Requires a Premium or Family account
 
-To install
+## To install
 
 - You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
 - Enable the plugin. That it !
 
 
-Last changes
+## Last changes
+
+16th January 18
+
+merge of volspotconnect-futurdev:
+- add volume normalization
+- add initial spotify volume
+- add metadata (not yet in webUI)
+- add shuffle and repeat
+- onstart uses curl instead of wget
+- no x86 yet....
 
 September 28th
 
