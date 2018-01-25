@@ -5,7 +5,7 @@
 },
 "normalvolume": {
     "type": "boolean",
-    "value": true
+    "value": false
   },
     "shareddevice": {
     "type": "boolean",
