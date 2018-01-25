@@ -1,4 +1,4 @@
-16th January 2018
+25th January 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version use librespot https://github.com/plietar/librespot
@@ -29,6 +29,10 @@ Tested on :
 
 
 ## Last changes
+
+25th January 18
+
+- correct install.sh
 
 16th January 18
 
