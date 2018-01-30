@@ -1,4 +1,4 @@
-02nd January 18
+030th January 18
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -22,6 +22,9 @@ PINE64
 
 
 ## Last changes
+
+30th January 18
+- more precise step for more precise settings....
 
 02nd January 18
 - update readme.md
