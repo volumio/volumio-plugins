@@ -1,15 +1,15 @@
 {
   "first_encoder_CLK": {
     "type": "int",
-    "value": 23
+    "value": 0
   },
   "first_encoder_DT": {
     "type": "int",
-    "value": 24
+    "value": 0
   },
   "first_encoder_SW": {
     "type": "int",
-    "value": 27
+    "value": 0
   },
   "first_encoder_encoding": {
     "type": "int",

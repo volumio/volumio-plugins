@@ -2,11 +2,8 @@
 
 var libQ = require('kew');
 var fs=require('fs-extra');
-var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-//var io = require('socket.io-client');
-//var socket = io.connect('http://localhost:3000');
 
 //const rotaryLogic = Object.freeze({"GRAY": 0, "KY040": 1 });
 const detentActionType = Object.freeze({"VOLUME": 0, "PREVNEXT": 1, "SEEK": 2 });
@@ -27,9 +24,9 @@ function rotaryencoder(context) {
 rotaryencoder.prototype.onVolumioStart = function()
 {
 	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
+	var configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 
     return libQ.resolve();
 };
@@ -38,10 +35,10 @@ rotaryencoder.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 	
-	if(self.config.get('first_encoder_CLK') !== 0)
+	if(self.config.get('first_encoder_CLK') !== undefined && self.config.get('first_encoder_CLK') !== 0)
 		self.constructFirstEncoder(true);
 	
-	if(self.config.get('second_encoder_CLK') != 0)
+	if(self.config.get('second_encoder_CLK') !== undefined && self.config.get('second_encoder_CLK') !== 0)
 		self.constructSecondEncoder(true);
 
 	if(self.config.get('enable_debug_logging'))
@@ -68,6 +65,10 @@ rotaryencoder.prototype.onRestart = function() {
     // Optional, use if you need it
 };
 
+rotaryencoder.prototype.getConfigurationFiles = function()
+{
+	return ['config.json'];
+};
 
 // Configuration Methods -----------------------------------------------------------------------------
 
