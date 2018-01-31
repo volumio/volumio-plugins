@@ -80,7 +80,7 @@
 									{
 										"min":"-24",
 										"max":"24",
-										"step":"1",
+										"step":"0.1",
 										"value":"0",
 										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
@@ -123,7 +123,7 @@
 									{
 										"min":"-24",
 										"max":"24",
-										"step":"1",
+										"step":"0.1",
 										"value":"0",
 										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
@@ -166,7 +166,7 @@
 									{
 										"min":"-24",
 										"max":"24",
-										"step":"1",
+										"step":"0.1",
 										"value":"0",
 										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
@@ -209,7 +209,7 @@
 									{
 										"min":"-24",
 										"max":"24",
-										"step":"1",
+										"step":"0.1",
 										"value":"0",
 										"ticksLabels": ["--   dB"],
 										"tooltip":"always"
