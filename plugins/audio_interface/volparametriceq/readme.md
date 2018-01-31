@@ -1,10 +1,10 @@
-1st febuary 18
+31th January 18
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
 It uses caps ladspa plugin
 http://quitte.de/dsp/caps.html#EqFA4p
-More info : http://bs2b.sourceforge.net/
+
 
 ![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
 
@@ -23,7 +23,7 @@ PINE64
 
 ## Last changes
 
-1st febuary
+31th january
 - gainstep is now 0.1dB
 
 
