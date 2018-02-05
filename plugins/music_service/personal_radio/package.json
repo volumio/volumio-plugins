@@ -1,6 +1,6 @@
 {
 	"name": "personal_radio",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
 	"main": "index.js",
 	"scripts": {
