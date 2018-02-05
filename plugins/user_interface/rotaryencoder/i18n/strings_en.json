@@ -1,0 +1,29 @@
+{
+	"ROTARYENCODER":
+	{
+		"PLUGINCONF":"Rotary Encoder Plugin Configuration",
+		"CONFIG_FIRST":"First Rotary Encoder",
+		"D_CONFIG_FIRST":"Configure all needed pins for the first rotary encoder, you can setup actions for the rotation and button press.",
+		"CONFIG_SECOND":"Second Rotary Encoder",
+		"D_CONFIG_SECOND":"Configure all needed pins for the second rotary encoder, you can setup actions for the rotation and button press.",
+			"CLK":"CLK pin number",
+			"D_CLK":"Configure the GPIO pin number connected to the CLK pin on the rotary encoder.",
+			"DD_CLK":"Set this option to 0 (zero) to disable this rotary encoder.",
+			"DT":"DT pin number",
+			"D_DT":"Configure the GPIO pin number connected to the DT pin on the rotary encoder.",
+			"SW":"SW (switch) pin number",
+			"D_SW":"Configure the GPIO pin number connected to the SW (switch) pin on the rotary encoder. If there is no switch on the encoder please use 0; this will ignore switch functionality.",
+			"CODING":"Choose coding",
+			"D_CODING":"The coding determines when and which rotation is detected based on inputs from the rotary encoder. It is still advised to HW (hardware) debounce the encoder.",
+			"DD_CODING":"Use HW (hardware) debouncing if and when possible.",
+			"DETENT_ACTION":"Detent action",
+			"D_DETENT_ACTION":"Configure the action you want for each detent (slight click when you rotate the encoder).",
+			"BUTTON_ACTION":"Button action",
+			"D_BUTTON_ACTION":"Configure the action you want for button clicks.",
+			"DEBUGSETTINGS":"Debug settings",
+			"D_DEBUGSETTINGS":"Configure debug settings for the rotary encoder plugin.",
+			"ENABLE_DEBUG_LOGGING":"Enable debug logging",
+			"D_ENABLE_DEBUG_LOGGING":"This option enables debug logging, needed to find bugs.",
+		"SAVE":"Save"
+	}
+}

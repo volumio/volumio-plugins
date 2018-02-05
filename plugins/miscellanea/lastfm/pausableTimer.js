@@ -83,7 +83,7 @@ Timer.prototype.stop = function()  {
 	self.timer = null;
 };
 
-Timer.prototype.addMilliseconds = function(milliseconds)  {
+Timer.prototype.addMilliseconds = function(milliseconds, newCallback)  {
 	var self = this;
 	if(self.timer)
 	{
@@ -94,7 +94,7 @@ Timer.prototype.addMilliseconds = function(milliseconds)  {
 		self.timeRemaining += milliseconds;
 		
 		self.timerStarted = new Date().getTime();
-		self.timer = setTimeout(self.cb, self.timeRemaining);
+		self.timer = setTimeout(newCallback, self.timeRemaining);
 		self.isActive = true;
 		//if(self.debug_mode)
 			console.log('-------------------------------------------------// Adding ' + milliseconds + ' milliseconds to a total of ' + self.timeRemaining + '.');

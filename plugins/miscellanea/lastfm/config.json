@@ -34,15 +34,7 @@
   "webradioScrobbleThreshold": {
     "type": "string",
     "value": "30"
-  },
-  "scrobbleLMS": {
-    "type": "boolean",
-    "value": false
-  },
-  "LMS_server": {
-    "type": "string",
-    "value": "127.0.0.1"
-  },
+  }
   "enable_debug_logging": {
     "type": "boolean",
     "value": false
