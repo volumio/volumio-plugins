@@ -41,6 +41,42 @@
 						}
 					],
 					"updated": "27-7-2017"
+				},
+				{
+					"prettyName": "Squeezelite player",
+					"icon": "fa-lightbulb-o",
+					"name": "squeezelite",
+					"version": "1.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/squeezelite/squeezelite.zip",
+					"license": "GPL-3.0",
+					"description": "Squeezelite player",
+					"details": "Squeezelite plugin for Volumio",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-12-2017"
+				},
+				{
+					"prettyName": "Logitech Media Server",
+					"icon": "fa-lightbulb-o",
+					"name": "lms",
+					"version": "1.0.11",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/lms/lms.zip",
+					"license": "GPL-3.0",
+					"description": "Logitech Media Server integration",
+					"details": "Logitech Media Server (LMS) Plugin for Volumio",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-12-2017"
 				}
 			]
 		},
@@ -80,32 +116,24 @@
 						}
 					],
 					"updated": "10-10-2017"
-				}
-			]
-		},
-		{
-			"prettyName": "System Tools",
-			"name": "system_controller",
-			"id": "cat3",
-			"description": "Volumio System Tools",
-			"plugins": [
+				},
 				{
-					"prettyName": "GPIO Buttons",
-					"icon": "fa-microchip",
-					"name": "gpio-buttons",
-					"version": "0.8.0",
-					"url": "http://tomatpasser.dk/gpio-buttons.zip",
+					"prettyName": "FritzCallMute",
+					"icon": "fa-lightbulb-o",
+					"name": "fritzcallmute",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
 					"license": "ISC",
-					"description": "With this Plugin you can control basic playback functions by connecting buttons to Raspberry Pi GPIOs",
-					"details": "<h4>GPIO Buttons</h4><br>Control basic playback functions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
-					"author": "tomatpasser",
+					"description": "Mutes on phone calls via FritzBox router",
+					"details": "The germany polular router FritzBox has a build in callmonitor. This plugin pauses playing if callmonitor signals an incoming call. After hangup playing is resumed. ",
+					"author": "clmtrapp",
 					"screenshots": [
 						{
-							"image": "http://tomatpasser.dk/gpio-buttons2.png",
-							"thumb": "http://tomatpasser.dk/gpio-buttons2.png"
+							"image": "",
+							"thumb": ""
 						}
 					],
-					"updated": "25-05-2017"
+					"updated": "5-2-2018"
 				},
 				{
 					"prettyName": "Amplifier Switch",
@@ -142,42 +170,32 @@
 						}
 					],
 					"updated": "18-12-2017"
-				},
+				}
+			]
+		},
+		{
+			"prettyName": "System Tools",
+			"name": "system_controller",
+			"id": "cat3",
+			"description": "Volumio System Tools",
+			"plugins": [
 				{
-					"prettyName": "Squeezelite player",
-					"icon": "fa-lightbulb-o",
-					"name": "squeezelite",
-					"version": "1.0.9",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/squeezelite/squeezelite.zip",
-					"license": "GPL-3.0",
-					"description": "Squeezelite player",
-					"details": "Squeezelite plugin for Volumio",
-					"author": "Saiyato",
+					"prettyName": "GPIO Buttons",
+					"icon": "fa-microchip",
+					"name": "gpio-buttons",
+					"version": "0.8.0",
+					"url": "http://tomatpasser.dk/gpio-buttons.zip",
+					"license": "ISC",
+					"description": "With this Plugin you can control basic playback functions by connecting buttons to Raspberry Pi GPIOs",
+					"details": "<h4>GPIO Buttons</h4><br>Control basic playback functions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
+					"author": "tomatpasser",
 					"screenshots": [
 						{
-							"image": "",
-							"thumb": ""
+							"image": "http://tomatpasser.dk/gpio-buttons2.png",
+							"thumb": "http://tomatpasser.dk/gpio-buttons2.png"
 						}
 					],
-					"updated": "18-12-2017"
-				},
-				{
-					"prettyName": "Logitech Media Server",
-					"icon": "fa-lightbulb-o",
-					"name": "lms",
-					"version": "1.0.11",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/lms/lms.zip",
-					"license": "GPL-3.0",
-					"description": "Logitech Media Server integration",
-					"details": "Logitech Media Server (LMS) Plugin for Volumio",
-					"author": "Saiyato",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "18-12-2017"
+					"updated": "25-05-2017"
 				},
 				{
 					"prettyName": "NanoSound by Nanomesher",
@@ -224,24 +242,6 @@
 					"description": "Autoplay plugin - Enable this plugin in order to let volumio start playing the last entry in the queue after a reboot.",
 					"details": "This plugin starts automatically playback on Volumio start",
 					"author": "Thomas Doerr",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "5-2-2018"
-				},
-				{
-					"prettyName": "FritzCallMute",
-					"icon": "fa-lightbulb-o",
-					"name": "fritzcallmute",
-					"version": "1.0.0",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
-					"license": "ISC",
-					"description": "Mutes on phone calls via FritzBox router",
-					"details": "The germany polular router FritzBox has a build in callmonitor. This plugin pauses playing if callmonitor signals an incoming call. After hangup playing is resumed. ",
-					"author": "clmtrapp",
 					"screenshots": [
 						{
 							"image": "",
@@ -305,7 +305,7 @@
 			]
 		},
 		{
-			"prettyName": "audio interface",
+			"prettyName": "Audio interface",
 			"name": "audio_interface",
 			"id": "cat5",
 			"description": "",
