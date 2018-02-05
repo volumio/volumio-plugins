@@ -82,7 +82,7 @@
 					"prettyName": "Personal Radio",
 					"icon": "fa-lightbulb-o",
 					"name": "personal_radio",
-					"version": "0.0.6",
+					"version": "0.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
 					"license": "ISC",
 					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
@@ -94,7 +94,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "22-1-2018"
+					"updated": "5-2-2018"
 				}
 			]
 		},
