@@ -101,7 +101,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
         duration: 0,
         samplerate: '44.1 KHz',
         bitdepth: 16,
-        channels: 2
+        channels: 2,
+				Streaming: true,
 	};
 
 	const nHost = ''; // blank = localhost
@@ -131,7 +132,11 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 	});
 
 	self.SpotConn.on('DInactive',function(data){
-		self.DeactivatedState();
+		self.logger.SpConDebug('Init DInactive timer');
+		clearTimeout(self.DeactivatedState_timer);
+		self.DeactivatedState_timer = setTimeout(function () {
+			self.DeactivatedState();
+		}, 850); // This is a hack to get rid the play - pause - play cycle at track end
 	})
 
 	self.SpotConn.on('SInactive',function(data){
@@ -140,13 +145,13 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
 	// Update metadata
 	self.SpotConn.on('metadata',function(meta){
-		// self.state.uri       = meta.track_uri;
+		self.state.uri       = "spotify:track:" + meta.track_id;
 		self.state.title  	 = meta.track_name;
 		self.state.artist 	 = meta.artist_name;
 		self.state.album  	 = meta.album_name;
-		// self.state.duration  = Math.ceil(meta.duration/1000);
+		self.state.duration  = Math.ceil(meta.duration/1000);
 		// self.state.volume    = meta.volume;
-		// self.state.albumart  = meta.albumart;
+		self.state.albumart  = "https://i.scdn.co/image/" + meta.albumartId_LARGE;
 
 		self.pushState();
 	});

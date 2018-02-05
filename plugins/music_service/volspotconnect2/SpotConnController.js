@@ -19,7 +19,6 @@ class SpotConnEvents extends EventEmitter {
 
   parseData(data) {
     // Quick and dirty JSON check
-    console.log(data);
     try {
       const metadata = JSON.parse(data);
       this.emit('metadata', metadata);
