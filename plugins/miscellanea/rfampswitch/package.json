@@ -9,10 +9,10 @@
 	"author": "apz",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "rfampswitch",
+		"prettyName": "RF Amp Switch",
 		"icon": "fa-power-off",
 		"plugin_type": "miscellanea",
-		"boot_priority": 1
+		"boot_priority": 10
 	},
 	"dependencies": {
 		"kew": "^0.7.0",
