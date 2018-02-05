@@ -175,10 +175,10 @@
 					"prettyName": "LastFM Scrobbler",
 					"icon": "fa-lightbulb-o",
 					"name": "lastfm",
-					"version": "1.1.10",
+					"version": "1.1.11",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfm/lastfm.zip",
 					"license": "GPL-3.0",
-					"description": "LastFM Scrobbler",
+					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info",
 					"details": "This plugin enables lastFM scrobbling",
 					"author": "Saiyato",
 					"screenshots": [
@@ -187,7 +187,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-12-2017"
+					"updated": "5-2-2018"
 				}
 			]
 		},
