@@ -77,6 +77,24 @@
 						}
 					],
 					"updated": "18-12-2017"
+				},
+				{
+					"prettyName": "Personal Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "personal_radio",
+					"version": "0.0.6",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
+					"license": "ISC",
+					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
+					"author": "Chris Song <ckchrisong@gmail.com>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "22-1-2018"
 				}
 			]
 		},
@@ -198,42 +216,6 @@
 					"updated": "25-05-2017"
 				},
 				{
-					"prettyName": "NanoSound by Nanomesher",
-					"icon": "fa-lightbulb-o",
-					"name": "nanosound",
-					"version": "1.1.2",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
-					"license": "ISC",
-					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
-					"details": "",
-					"author": "Nanomesher",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "22-1-2018"
-				},
-				{
-					"prettyName": "Personal Radio",
-					"icon": "fa-lightbulb-o",
-					"name": "personal_radio",
-					"version": "0.0.6",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
-					"license": "ISC",
-					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
-					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
-					"author": "Chris Song <ckchrisong@gmail.com>",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "22-1-2018"
-				},
-				{
 					"prettyName": "Autoplay",
 					"icon": "fa-lightbulb-o",
 					"name": "auto_play",
@@ -249,6 +231,24 @@
 						}
 					],
 					"updated": "5-2-2018"
+				},
+				{
+					"prettyName": "Backup & Restore Data",
+					"icon": "fa-lightbulb-o",
+					"name": "backup_restore",
+					"version": "0.7.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
+					"license": "ISC",
+					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
+					"details": "This plugin allows to backup settings, albumarts, queue, playlists, favourites and restore them. ",
+					"author": "macmpi",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-11-2017"
 				}
 			]
 		},
@@ -285,22 +285,22 @@
 					"updated": "11-11-2016"
 				},
 				{
-					"prettyName": "Backup & Restore Data",
+					"prettyName": "NanoSound by Nanomesher",
 					"icon": "fa-lightbulb-o",
-					"name": "backup_restore",
-					"version": "0.7.2",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
+					"name": "nanosound",
+					"version": "1.1.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
 					"license": "ISC",
-					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
-					"details": "This plugin allows to backup settings, albumarts, queue, playlists, favourites and restore them. ",
-					"author": "macmpi",
+					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
+					"details": "",
+					"author": "Nanomesher",
 					"screenshots": [
 						{
 							"image": "",
 							"thumb": ""
 						}
 					],
-					"updated": "18-11-2017"
+					"updated": "22-1-2018"
 				}
 			]
 		},
