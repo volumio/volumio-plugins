@@ -231,6 +231,24 @@
 						}
 					],
 					"updated": "5-2-2018"
+				},
+				{
+					"prettyName": "FritzCallMute",
+					"icon": "fa-lightbulb-o",
+					"name": "fritzcallmute",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
+					"license": "ISC",
+					"description": "Mutes on phone calls via FritzBox router",
+					"details": "The germany polular router FritzBox has a build in callmonitor. This plugin pauses playing if callmonitor signals an incoming call. After hangup playing is resumed. ",
+					"author": "clmtrapp",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "5-2-2018"
 				}
 			]
 		},
