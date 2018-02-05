@@ -126,24 +126,6 @@
 					"updated": "8-10-2017"
 				},
 				{
-					"prettyName": "NanoSound by Nanomesher",
-					"icon": "fa-lightbulb-o",
-					"name": "nanosound",
-					"version": "1.1.1",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
-					"license": "ISC",
-					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
-					"details": "",
-					"author": "Nanomesher",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "14-10-2017"
-				},
-				{
 					"prettyName": "LastFM Scrobbler",
 					"icon": "fa-lightbulb-o",
 					"name": "lastfm",
@@ -198,22 +180,40 @@
 					"updated": "18-12-2017"
 				},
 				{
-					"prettyName": "FritzCallMute",
+					"prettyName": "NanoSound by Nanomesher",
 					"icon": "fa-lightbulb-o",
-					"name": "fritzcallmute",
-					"version": "0.0.1",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
+					"name": "nanosound",
+					"version": "1.1.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
 					"license": "ISC",
-					"description": "Mutes on phone calls via FritzBox router",
-					"details": "This plugin works together with the popular german router FritzBox. On incoming or outgoing calls playing is paused, after hangup its resumed. Callmonitor function on FritzBox must be activated before. This can be done e.g. by calling #96*5* on a connected phone.",
-					"author": "clmtrapp",
+					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
+					"details": "",
+					"author": "Nanomesher",
 					"screenshots": [
 						{
 							"image": "",
 							"thumb": ""
 						}
 					],
-					"updated": "8-1-2018"
+					"updated": "22-1-2018"
+				},
+				{
+					"prettyName": "Personal Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "personal_radio",
+					"version": "0.0.6",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
+					"license": "ISC",
+					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
+					"author": "Chris Song <ckchrisong@gmail.com>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "22-1-2018"
 				}
 			]
 		},
