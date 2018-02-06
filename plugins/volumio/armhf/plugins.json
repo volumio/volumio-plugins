@@ -329,6 +329,32 @@
 					"updated": "5-2-2018"
 				}
 			]
+		},
+		{
+			"prettyName": "user interface",
+			"name": "user_interface",
+			"id": "cat6",
+			"description": "",
+			"plugins": [
+				{
+					"prettyName": "Rotary Encoder",
+					"icon": "fa-lightbulb-o",
+					"name": "rotaryencoder",
+					"version": "1.0.6",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder/rotaryencoder.zip",
+					"license": "MIT",
+					"description": "Provides a rotary encoder interface for use in Volumio 2.x",
+					"details": "",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "6-2-2018"
+				}
+			]
 		}
 	]
 }
