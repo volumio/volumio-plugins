@@ -166,13 +166,13 @@ ControllerVolspotconnect.prototype.ActivedState = function() {
 	self.context.coreCommand.volumioStop();
 	self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
 
-	// Push state with metadata
-	self.commandRouter.servicePushState(self.state, self.servicename);
-
 	self.context.coreCommand.stateMachine.setVolatile({
 					 service:  self.servicename,
 					 callback: self.unsetVol.bind(self)
 				 });
+				 
+  // Push state with metadata
+ 	self.commandRouter.servicePushState(self.state, self.servicename);
 
 }
 
@@ -192,6 +192,10 @@ ControllerVolspotconnect.prototype.pushState = function() {
 	self.commandRouter.servicePushState(self.state, self.servicename);
 }
 
+	// Dummy plugin methods to satisfy the Volumio state machine
+ControllerVolspotconnect.prototype.stop = function () {
+	var self = this;
+}
 
 ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
@@ -308,7 +312,6 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function () {
 	var password = (self.config.get('password'));
 	if(self.config.get('shareddevice')===false) {
 		    shared = " --disable-discovery " + "-u " + username + " -p " + password;
-console.log(shared)
 	} else shared="";
 
 	var normalvolume
