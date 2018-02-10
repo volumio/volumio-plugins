@@ -170,7 +170,7 @@ ControllerVolspotconnect.prototype.ActivedState = function() {
 					 service:  self.servicename,
 					 callback: self.unsetVol.bind(self)
 				 });
-				 
+
   // Push state with metadata
  	self.commandRouter.servicePushState(self.state, self.servicename);
 
@@ -200,7 +200,8 @@ ControllerVolspotconnect.prototype.stop = function () {
 ControllerVolspotconnect.prototype.onStop = function() {
 	var self = this;
 
-	self.logger.info("Killing Spotify-connect-web daemon");
+	self.DeactivatedState();
+	self.logger.info("Killing Spotify-Connect daemon");
 	exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", function (error, stdout, stderr) {
 	if(error){
 		self.logger.info('Error in killing Voslpotconnect')
