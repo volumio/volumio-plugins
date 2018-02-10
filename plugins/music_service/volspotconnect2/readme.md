@@ -27,6 +27,10 @@ Tested on :
 - From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
 - Enable the plugin. That it !
 
+## Issues
+
+Time is reseted when changing volume in UI
+Volumio UI restart the first time a track is played from spotify after a change in plugin setting
 
 ## Last changes
 
@@ -198,8 +202,4 @@ January 20th
 
 - First commit
 
-Issues : 
 
-Todo
-
-- Add album art and working button in volumio UI
