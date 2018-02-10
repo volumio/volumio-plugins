@@ -1,8 +1,8 @@
-25th January 2018
+10th Febuary 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
-This new version use librespot https://github.com/plietar/librespot
-and some fork...
+This new version is based librespot https://github.com/librespot-org/librespot
+and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
 It is still in dev and some feature are missing.
 
@@ -29,6 +29,10 @@ Tested on :
 
 
 ## Last changes
+
+10th Febuary 18
+
+- metadat in volumioUI
 
 25th January 18
 

@@ -1,15 +1,15 @@
 {
   "name": "volspotconnect2",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Balbuze",
-  "license": "",
+  "author": "Balbuze & Ashthespy",
+  "license": "GPL 3.0",
   "volumio_info": {
-    "prettyName": "Volumio Spotify Connect2  ver0.4.9",
+    "prettyName": "Volumio Spotify Connect2  ver0.5.0",
     "icon": "fa-spotify",
     "plugin_type": "music_service"
   },
