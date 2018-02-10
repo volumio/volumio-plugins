@@ -36,7 +36,8 @@ Volumio UI restart the first time a track is played from spotify after a change 
 
 10th Febuary 18
 
-- metadat in volumioUI
+- metadata in volumioUI
+- on stop adjustment
 
 25th January 18
 
