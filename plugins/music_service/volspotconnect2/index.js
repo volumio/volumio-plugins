@@ -385,6 +385,8 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
     var self=this;
     var defer=libQ.defer();
 
+    // Deactive state
+		self.DeactivatedState();
     self.createVOLSPOTCONNECTFile()
         .then(function(e)
         {
