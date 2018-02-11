@@ -135,11 +135,12 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  });
 
  self.SpotConn.on('DInactive', function(data) {
-  self.logger.SpConDebug('Init DInactive timer');
-  clearTimeout(self.DeactivatedState_timer);
-  self.DeactivatedState_timer = setTimeout(function() {
-   self.DeactivatedState();
-  }, 850); // This is a hack to get rid the play - pause - play cycle at track end
+self.DeactivatedState();
+ // self.logger.SpConDebug('Init DInactive timer');
+ // clearTimeout(self.DeactivatedState_timer);
+ //self.DeactivatedState_timer = setTimeout(function() {
+ //self.DeactivatedState();
+ //}, 850); // This is a hack to get rid the play - pause - play cycle at track end
  })
 
  self.SpotConn.on('SInactive', function(data) {
@@ -247,7 +248,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
 
 ControllerVolspotconnect.prototype.onUninstall = function() {
  var self = this;
- self.logger.info("Killing Spotify-connect-web daemon");
+ self.logger.info("Killing daemon");
  exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {
   uid: 1000,
   gid: 1000
@@ -393,7 +394,8 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function(data) {
 ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = function() {
  var self = this;
  var defer = libQ.defer();
-
+// Deactive state
+ self.DeactivatedState();
  self.createVOLSPOTCONNECTFile()
   .then(function(e) {
    var edefer = libQ.defer();
