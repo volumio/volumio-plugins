@@ -1,0 +1,13 @@
+{
+ "VOLSPOTCONNECT":{
+ "VOLSPOTCONNECTCONF":"Volumio Spotify connect Configuration",
+ "VOLSPOTCONNECTACCOUNT":"Spotify account",
+ "USERNAME":"username",
+ "PASSWORD":"password",
+ "HIGHBITRATE":"stream bitrate",
+ "SHAREDDEVICE":"Multi-user device",
+ "SAVE":"Save",
+ "INITVOL":"Initial volume",
+ "DESCINITVOL":"Spotify volume when starts"
+}
+}
