@@ -1,4 +1,4 @@
-1th Febuary 2018
+11th Febuary 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
