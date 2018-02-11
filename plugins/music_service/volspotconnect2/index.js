@@ -132,11 +132,12 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 	});
 
 	self.SpotConn.on('DInactive',function(data){
-		self.logger.SpConDebug('Init DInactive timer');
-		clearTimeout(self.DeactivatedState_timer);
-		self.DeactivatedState_timer = setTimeout(function () {
-			self.DeactivatedState();
-		}, 850); // This is a hack to get rid the play - pause - play cycle at track end
+		self.DeactivatedState();
+		// self.logger.SpConDebug('Init DInactive timer');
+		// clearTimeout(self.DeactivatedState_timer);
+		// self.DeactivatedState_timer = setTimeout(function () {
+		// 	self.DeactivatedState();
+		// }, 850); // This is a hack to get rid the play - pause - play cycle at track end
 	})
 
 	self.SpotConn.on('SInactive',function(data){
