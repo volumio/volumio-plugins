@@ -1,0 +1,17 @@
+{
+ "VOLUMIO_PARAMETRIC":"Volumio Parametric equalizer",
+ "PARAMETRIC_SETTINGS":"Equalizer settings (EqFA4p)",
+ "ENABLEEQ":"enable equalizer=on or disable =off",
+ "MG":"Master Gain",
+ "MG_DESC":"Master Gain of the equalizer. Reduce the value to prevent clipping",
+ "P11":"Low band",
+ "P11_DESC":"Low band to be set (30-125Hz)",
+ "P21":"Mid Low band",
+ "P21_DESC":"Mid Low band to be set (200-2000Hz)",
+ "P31":"Mid high band",
+ "P31_DESC":"Mid High band to be set (1500-9000Hz)",
+ "P41":"High band",
+ "P41_DESC":"High band to be set (8000-14000Hz)",
+  "APPLY":"Apply"
+ 
+}
