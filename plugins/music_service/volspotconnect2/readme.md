@@ -36,7 +36,8 @@ Volumio UI restart the first time a track is played from spotify after a change 
 
 11th Febuary
 
-- PR in volumio plugins
+- PR for volumio plugins
+- correction for webUI hanging problem
 
 10th Febuary 18
 
