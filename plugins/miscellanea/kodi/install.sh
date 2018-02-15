@@ -36,7 +36,7 @@ if [ ! -f $INSTALLING ]; then
 		elif [ $cpu = "armv7l" ]; then
 			echo "Continuing installation, this may take a while, you can grab a cup of coffee (or more)"
 		
-		# unsupported device (afaik)
+		# Unsupported device (afaik)
 		else
 			echo "Sorry, your device is not (yet) supported!"
 			echo "Exiting now..."
@@ -60,7 +60,7 @@ if [ ! -f $INSTALLING ]; then
 		# Prepare usergroups and configure user
 		echo "Preparing the Kodi user and groups"
 		addgroup --system input
-		#adduser kodi
+		# Add user kodi
 		useradd --create-home kodi
 		usermod -aG audio,video,input,dialout,plugdev,tty kodi
 		
@@ -76,11 +76,11 @@ if [ ! -f $INSTALLING ]; then
 		
 		# Add input rules
 		echo "Adding input rules"
-		wget -O /etc/udev/rules.d/99-input.rules https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/policies/99-input.rules
+		wget -O /etc/udev/rules.d/99-input.rules https://raw.githubusercontent.com/volumio/volumio-plugins/master/plugins/miscellanea/kodi/policies/99-input.rules
 
 		# Add input permissions
 		echo "Adding input permissions"
-		wget -O /etc/udev/rules.d/10-permissions.rules https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/policies/10-permissions.rules
+		wget -O /etc/udev/rules.d/10-permissions.rules https://raw.githubusercontent.com/volumio/volumio-plugins/master/plugins/miscellanea/kodi/policies/10-permissions.rules
 
 		# Map the EGL libraries
 		chown root:video /dev/vchiq /dev/vcio /dev/vcsm
@@ -109,15 +109,15 @@ if [ ! -f $INSTALLING ]; then
 #ENDOFKODI" >> /etc/asound.conf
 		
 		# Add the systemd unit
-		wget -O /etc/systemd/system/kodi.service https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/unit/kodi.service
+		wget -O /etc/systemd/system/kodi.service https://raw.githubusercontent.com/volumio/volumio-plugins/master/plugins/miscellanea/kodi/unit/kodi.service
 		echo "Added the systemd unit"
 
-		wget -O /etc/polkit-1/localauthority/50-local.d/50-kodi-actions.pkla https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/policies/50-kodi-actions.pkla
+		wget -O /etc/polkit-1/localauthority/50-local.d/50-kodi-actions.pkla https://raw.githubusercontent.com/volumio/volumio-plugins/master/plugins/miscellanea/kodi/policies/50-kodi-actions.pkla
 		echo "Added policykit actions for kodi (access usb drives, reboot)"
 		
 		# Let's throw in some repo URLs
 		echo "Adding file links to easily install repos, use at your own discretion, I do not own any of these! Nor can I be held responsible in any way, the information is readily available on the internet."
-		wget -O /home/kodi/.kodi/userdata/guisettings.xml https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/kodi_configuration/guisettings.xml
+		wget -O /home/kodi/.kodi/userdata/guisettings.xml https://raw.githubusercontent.com/volumio/volumio-plugins/master/plugins/miscellanea/kodi/kodi_configuration/guisettings.xml
 		wget -O /home/kodi/.kodi/userdata/sources.xml https://raw.githubusercontent.com/Saiyato/volumio-kodi-plugin/master/kodi_configuration/sources.xml
 		
 		chown kodi:kodi /home/kodi/.kodi/userdata/guisettings.xml

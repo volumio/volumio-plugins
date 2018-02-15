@@ -79,7 +79,7 @@
 				"label": "TRANSLATE.ROTARYENCODER.BUTTON_ACTION",
 				"doc": "TRANSLATE.ROTARYENCODER.D_BUTTON_ACTION",
 				"value": {
-					"value": 11,
+					"value": 10,
 					"label": "Toggle mute/unmute"
 				},
 				"options": []
