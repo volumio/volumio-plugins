@@ -89,7 +89,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  self.state = {
   status: 'stop',
-  //   service: self.servicename,
+  service: self.servicename,
   title: '',
   artist: '',
   album: '',
@@ -254,7 +254,7 @@ ControllerVolspotconnect.prototype.onUninstall = function() {
   gid: 1000
  }, function(error, stdout, stderr) {
   if (error) {
-   self.logger.info('Error in killing Voslpotconnect')
+   self.logger.info('Error in killing Voslpotconnect2')
   }
  });
 
