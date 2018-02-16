@@ -1,4 +1,4 @@
-11th Febuary 2018
+16th Febuary 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -34,9 +34,13 @@ Volumio UI restart the first time a track is played from spotify after a change 
 
 ## Last changes
 
+16th Febuary
+- remove // for   service: self.servicename
+
 11th Febuary
 
-- PR in volumio plugins
+- PR for volumio plugins
+- correction for webUI hanging problem
 
 10th Febuary 18
 
