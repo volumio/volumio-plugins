@@ -26,6 +26,7 @@ function ControllerVolspotconnect(context) {
 
  // Volatile for metadata
  self.unsetVol = function() {
+  //TODO This function should be refactored: it should stop volspotconnect
   var self = this;
  };
 }
@@ -84,8 +85,8 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
 //For metadata
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  var self = this;
- self.servicename = 'Volspotconnect2';
- self.displayname = 'Volspotconnect2';
+ self.servicename = 'volspotconnect2';
+ self.displayname = 'volspotconnect2';
 
  self.state = {
   status: 'stop',
@@ -99,8 +100,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
   trackType: 'spotify',
   seek: 0,
   duration: 0,
-  samplerate: 'Volspotconnect2',
-  bitdepth: 'HQ',
+  //samplerate: 'Volspotconnect2',
+  //bitdepth: 'HQ',
   channels: 2,
   Streaming: true,
  };
@@ -416,3 +417,39 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
 
  return defer.promise;
 }
+
+
+ControllerVolspotconnect.prototype.pause = function() {
+    var self = this;
+    var defer = libQ.defer();
+
+    self.logger.info('Volspot connect received pause');
+    //TODO Implement pause method
+
+    defer.resolve('')
+    return defer.promise;
+}
+
+ControllerVolspotconnect.prototype.next = function() {
+    var self = this;
+    var defer = libQ.defer();
+
+    self.logger.info('Volspot connect received next');
+    //TODO Implement next method
+
+    defer.resolve('')
+    return defer.promise;
+}
+
+ControllerVolspotconnect.prototype.previous = function() {
+    var self = this;
+    var defer = libQ.defer();
+
+    self.logger.info('Volspot connect received previous');
+    //TODO Implement prev method
+
+    defer.resolve('')
+    return defer.promise;
+}
+
+
