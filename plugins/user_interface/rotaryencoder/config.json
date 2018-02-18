@@ -21,7 +21,7 @@
   },
   "first_encoder_buttonActionType": {
     "type": "int",
-    "value": 11
+    "value": 0
   },
   "second_encoder_CLK": {
     "type": "int",
@@ -41,11 +41,11 @@
   },
   "second_encoder_detentActionType": {
     "type": "int",
-    "value": 1
+    "value": 0
   },
   "second_encoder_buttonActionType": {
     "type": "int",
-    "value": 2
+    "value": 0
   },
   "enable_debug_logging": {
     "type": "boolean",
