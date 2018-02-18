@@ -28,7 +28,7 @@
 					"prettyName": "Youtube Playback",
 					"icon": "fa-youtube",
 					"name": "youtube",
-					"version": "0.0.5",
+					"version": "0.0.6",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/youtube/youtube.zip",
 					"license": "ISC",
 					"description": "Youtube playback and public sharing for the Volumio",
@@ -40,7 +40,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "27-7-2017"
+					"updated": "18-2-2018"
 				},
 				{
 					"prettyName": "Volumio Spotify Connect2",
