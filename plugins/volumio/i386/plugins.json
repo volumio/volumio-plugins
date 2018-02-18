@@ -31,7 +31,26 @@
 			"name": "miscelleanea",
 			"id": "cat2",
 			"description": "Things that cannot go in other categories",
-			"plugins": []
+			"plugins": [
+				{
+					"prettyName": "Personal Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "personal_radio",
+					"version": "0.0.7",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/personal_radio/personal_radio.zip",
+					"license": "ISC",
+					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"details": "",
+					"author": "Chris Song <ckchrisong@gmail.com>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-2-2018"
+				}
+			]
 		},
 		{
 			"prettyName": "System Tools",
