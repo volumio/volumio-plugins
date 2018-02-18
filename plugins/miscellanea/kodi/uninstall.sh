@@ -18,6 +18,7 @@ rm /etc/systemd/system/kodi.service
 systemctl daemon-reload
 
 apt-get purge --auto-remove gdb kodi --yes
+userdel -r kodi
 
 # The end...
 echo "pluginuninstallend"
