@@ -46,7 +46,7 @@
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-lightbulb-o",
 					"name": "volspotconnect2",
-					"version": "0.5.2",
+					"version": "0.5.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
 					"license": "GPL 3.0",
 					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
@@ -58,7 +58,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "11-2-2018"
+					"updated": "18-2-2018"
 				},
 				{
 					"prettyName": "Squeezelite player",
@@ -258,7 +258,7 @@
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
 					"license": "ISC",
 					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
-					"details":"<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
+					"details": "<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
 					"author": "macmpi",
 					"screenshots": [
 						{
