@@ -15,7 +15,7 @@
 		"boot_priority": 10
 	},
 	"dependencies": {
-		"ytdl-core": "0.11.1",
+		"ytdl-core": "^0.20.1",
 		"kew": "0.7.0",
 		"googleapis": "19.0.0",
 		"iso8601-duration": "1.0.6",
