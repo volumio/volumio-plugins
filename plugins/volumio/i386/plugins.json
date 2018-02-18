@@ -23,15 +23,7 @@
 						}
 					],
 					"updated": "18-2-2018"
-				}
-			]
-		},
-		{
-			"prettyName": "Miscelleanea",
-			"name": "miscelleanea",
-			"id": "cat2",
-			"description": "Things that cannot go in other categories",
-			"plugins": [
+				},
 				{
 					"prettyName": "Personal Radio",
 					"icon": "fa-lightbulb-o",
@@ -68,6 +60,15 @@
 					],
 					"updated": "18-2-2018"
 				}
+			]
+		},
+		{
+			"prettyName": "Miscelleanea",
+			"name": "miscelleanea",
+			"id": "cat2",
+			"description": "Things that cannot go in other categories",
+			"plugins": [
+				
 			]
 		},
 		{
