@@ -10,7 +10,7 @@
 					"prettyName": "Spotify",
 					"icon": "fa-spotify",
 					"name": "spop",
-					"version": "1.3.4",
+					"version": "1.3.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/spop/spop.zip",
 					"license": "Free for non commercial USE",
 					"description": "Spotify plugin for Volumio2",
@@ -22,7 +22,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "21-10-2017"
+					"updated": "18-2-2018"
 				}
 			]
 		},
@@ -47,7 +47,7 @@
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
 					"license": "ISC",
 					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
-					"details":"<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
+					"details": "<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
 					"author": "macmpi",
 					"screenshots": [
 						{
@@ -59,12 +59,12 @@
 				}
 			]
 		},
-		 {
-                        "prettyName": "Accessories",
-                        "name": "accessory",
-                        "id": "cat3",
-                        "description": "Plugins for Volumio Accessories",
-                        "plugins": []
-}
-]
+		{
+			"prettyName": "Accessories",
+			"name": "accessory",
+			"id": "cat3",
+			"description": "Plugins for Volumio Accessories",
+			"plugins": []
+		}
+	]
 }
