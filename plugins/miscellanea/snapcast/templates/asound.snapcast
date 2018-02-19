@@ -1,0 +1,22 @@
+#SNAPCAST
+pcm.!snapcast {
+	type plug
+	slave.pcm snapConverter
+}
+
+pcm.snapConverter {
+	type rate
+	slave {
+		pcm writeFile # Direct to the plugin which will write to a file
+		format S16_LE
+		rate ${SAMPLE_RATE}
+	}
+}
+
+pcm.writeFile {
+	type file
+	slave.pcm null
+	file "${OUTPUT_PIPE}"
+	format "raw"
+}	
+#ENDOFSNAPCAST
