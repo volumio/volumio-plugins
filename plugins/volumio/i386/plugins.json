@@ -67,7 +67,26 @@
 			"name": "miscelleanea",
 			"id": "cat2",
 			"description": "Things that cannot go in other categories",
-			"plugins": []
+			"plugins": [
+				{
+					"prettyName": "LastFM Scrobbler",
+					"icon": "fa-lightbulb-o",
+					"name": "lastfm",
+					"version": "1.1.11",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/lastfm/lastfm.zip",
+					"license": "GPL-3.0",
+					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info",
+					"details": "",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-2-2018"
+				}
+			]
 		},
 		{
 			"prettyName": "System Tools",
