@@ -1,0 +1,155 @@
+{
+  "page": {
+    "label": "TRANSLATE.KODI.KODICONF"
+  },
+  "sections": [
+    {
+      "id": "section_bootconf",
+      "element": "section",
+      "label": "TRANSLATE.KODI.KODITITLE",
+      "icon": "fa-cogs",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"updateBootConfig"},
+      "saveButton": {
+        "label": "TRANSLATE.KODI.SAVE",
+        "data": [
+          "gpu_mem_1024",
+          "gpu_mem_512",
+          "gpu_mem_256",
+          "hdmihotplug"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpu_mem_1024",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.GPUMEM1024",
+          "doc": "TRANSLATE.KODI.D_GPUMEM1024",
+          "value": "256"
+        },
+        {
+          "id": "gpu_mem_512",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.GPUMEM512",
+          "doc": "TRANSLATE.KODI.D-GPUMEM512",
+          "value": "144"
+        },
+        {
+          "id": "gpu_mem_256",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.GPUMEM256",
+          "doc": "TRANSLATE.KODI.D_GPUMEM256",
+          "value": "112"
+        },
+        {
+          "id":"hdmihotplug",
+          "element": "switch",
+          "label": "TRANSLATE.KODI.HDMIHOTPLUG",
+          "doc": "TRANSLATE.KODI.D_HDMIHOTPLUG",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "section_dacconf",
+      "element": "section",
+      "label": "TRANSLATE.KODI.KODISOUNDTITLE",
+      "icon": "fa-volume-up",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"updateSoundConfig"},
+      "saveButton": {
+        "label": "TRANSLATE.KODI.SAVE",
+        "data": [
+          "usedac",
+          "audiodelay"
+        ]
+      },
+      "content": [
+        {
+          "id":"usedac",
+          "element": "switch",
+          "label": "TRANSLATE.KODI.USEDAC",
+          "doc": "TRANSLATE.KODI.D_USEDAC",
+          "description": "TRANSLATE.KODI.DD_USEDAC",
+          "value": false
+        },
+        {
+          "id":"audiodelay",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.AUDIODELAY",
+          "description": "e.g. Kali = 0.700000",
+          "doc": "TRANSLATE.KODI.D_AUDIODELAY",
+          "value": "0.000000"
+        }
+      ]
+    },
+    {
+      "id": "section_optimiseconf",
+      "element": "section",
+      "label": "TRANSLATE.KODI.KODI_SETTINGS",
+      "icon": "fa-wrench",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"optimiseKodi"},
+      "saveButton": {
+        "label": "TRANSLATE.KODI.SAVE",
+        "data": [
+          "kodi_gui_sounds",
+          "kodi_audio_keepalive",
+          "kodi_enable_webserver",
+          "kodi_webserver_port",
+          "kodi_webserver_username",
+          "kodi_webserver_password"
+        ]
+      },
+      "content": [
+        {
+          "id":"kodi_gui_sounds",
+          "element": "switch",
+          "label": "TRANSLATE.KODI.KODI_GUI_SOUNDS",
+          "doc": "TRANSLATE.KODI.D_KODI_GUI_SOUNDS",
+          "value": false
+        },
+        {
+          "id":"kodi_audio_keepalive",
+          "element": "switch",
+          "label": "TRANSLATE.KODI.KODI_AUDIO_KEEPALIVE",
+          "doc": "TRANSLATE.KODI.D_KODI_AUDIO_KEEPALIVE",
+          "value": false
+        },
+        {
+          "id":"kodi_enable_webserver",
+          "element": "switch",
+          "doc": "Whether or not to keep the audio device alive",
+          "label": "TRANSLATE.KODI.KODI_ENABLE_WEBSERVER",
+          "doc": "TRANSLATE.KODI.D_KODI_ENABLE_WEBSERVER",
+          "value": true
+        },
+        {
+          "id":"kodi_webserver_port",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.KODI_WEBSERVER_PORT",
+          "doc": "TRANSLATE.KODI.D_KODI_WEBSERVER_PORT",
+          "value": "8080"
+        },
+        {
+          "id":"kodi_webserver_username",
+          "type":"text",
+          "element": "input",
+          "label": "TRANSLATE.KODI.KODI_WEBSERVER_USERNAME",
+          "doc": "TRANSLATE.KODI.D_KODI_WEBSERVER_USERNAME",
+          "value": "kodi"
+        },
+        {
+          "id":"kodi_webserver_password",
+          "type":"password",
+          "element": "input",
+          "label": "TRANSLATE.KODI.KODI_WEBSERVER_PASSWORD",
+          "doc": "TRANSLATE.KODI.D_KODI_WEBSERVER_PASSWORD",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

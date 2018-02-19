@@ -1,0 +1,17 @@
+{
+ "VOLUMIO_PARAMETRIC":"Volumio Egaliseur parametrique",
+ "PARAMETRIC_SETTINGS":"Réglages de l'égaliseur (EqFA4p)",
+ "ENABLEEQ":"Activer egaliseur=on ou désactiver =off",
+ "MG":"Gain global",
+ "MG_DESC":"Gain global de l'égaliseur. Reduire la valeur pour éviter les saturations",
+ "P11":"Grave",
+ "P11_DESC":"Bande de fréquence grave à régler (30-125Hz)",
+ "P21":"Grave-Médium",
+ "P21_DESC":"Bande de fréquence grave-médium à régler (200-2000Hz)",
+ "P31":"Médium-Aigu",
+ "P31_DESC":"Bande de fréquence médium-aigu à régler  (1500-9000Hz)",
+ "P41":"Aigu",
+ "P41_DESC":"Bande de fréquence aigu à régler  (8000-14000Hz)",
+  "APPLY":"Appliquer"
+ 
+}

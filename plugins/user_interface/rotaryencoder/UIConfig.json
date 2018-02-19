@@ -1,0 +1,200 @@
+{
+	"page": {
+		"label": "TRANSLATE.ROTARYENCODER.PLUGINCONF"
+	},
+	"sections": [{
+		"id": "section_firstEncoder",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER.CONFIG_FIRST",
+		"description": "TRANSLATE.ROTARYENCODER.D_CONFIG_FIRST",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder",
+			"method": "updateFirstEncoder"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER.SAVE",
+			"data": [
+				"first_encoder_CLK",
+				"first_encoder_DT",
+				"first_encoder_SW",
+				"first_encoder_encoding",
+				"first_encoder_detentActionType",
+				"first_encoder_buttonActionType"
+			]
+		},
+		"content": [
+			{
+				"id":"first_encoder_CLK",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.CLK",
+				"doc": "TRANSLATE.ROTARYENCODER.D_CLK",
+				"description": "TRANSLATE.ROTARYENCODER.DD_CLK",
+				"value": ""
+			},
+			{
+				"id":"first_encoder_DT",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.DT",
+				"doc": "TRANSLATE.ROTARYENCODER.D_DT",
+				"value": ""
+			},
+			{
+				"id":"first_encoder_SW",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.SW",
+				"doc": "TRANSLATE.ROTARYENCODER.D_SW",
+				"value": ""
+			},
+			{
+				"id": "first_encoder_encoding",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.CODING",
+				"doc": "TRANSLATE.ROTARYENCODER.D_CODING",
+				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
+				"value": {
+					"value": 0,
+					"label": "Gray encoding"
+				},
+				"options": []
+			},
+			{
+				"id": "first_encoder_detentActionType",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.DETENT_ACTION",
+				"doc": "TRANSLATE.ROTARYENCODER.D_DETENT_ACTION",
+				"value": {
+					"value": 0,
+					"label": "Control volume"
+				},
+				"options": []
+			},
+			{
+				"id": "first_encoder_buttonActionType",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.BUTTON_ACTION",
+				"doc": "TRANSLATE.ROTARYENCODER.D_BUTTON_ACTION",
+				"value": {
+					"value": 10,
+					"label": "Toggle mute/unmute"
+				},
+				"options": []
+			}
+		]
+	},
+	{
+		"id": "section_secondEncoder",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER.CONFIG_SECOND",
+		"description": "TRANSLATE.ROTARYENCODER.D_CONFIG_SECOND",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder",
+			"method": "updateSecondEncoder"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER.SAVE",
+			"data": [
+				"second_encoder_CLK",
+				"second_encoder_DT",
+				"second_encoder_SW",
+				"second_encoder_encoding",
+				"second_encoder_detentActionType",
+				"second_encoder_buttonActionType"
+			]
+		},
+		"content": [
+			{
+				"id":"second_encoder_CLK",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.CLK",
+				"doc": "TRANSLATE.ROTARYENCODER.D_CLK",
+				"description": "TRANSLATE.ROTARYENCODER.DD_CLK",
+				"value": ""
+			},
+			{
+				"id":"second_encoder_DT",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.DT",
+				"doc": "TRANSLATE.ROTARYENCODER.D_DT",
+				"value": ""
+			},
+			{
+				"id":"second_encoder_SW",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.ROTARYENCODER.SW",
+				"doc": "TRANSLATE.ROTARYENCODER.D_SW",
+				"value": ""
+			},
+			{
+				"id": "second_encoder_encoding",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.CODING",
+				"doc": "TRANSLATE.ROTARYENCODER.D_CODING",
+				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
+				"value": {
+					"value": 0,
+					"label": "Gray encoding"
+				},
+				"options": []
+			},
+			{
+				"id": "second_encoder_detentActionType",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.DETENT_ACTION",
+				"doc": "TRANSLATE.ROTARYENCODER.D_DETENT_ACTION",
+				"value": {
+					"value": 0,
+					"label": "Control volume"
+				},
+				"options": []
+			},
+			{
+				"id": "second_encoder_buttonActionType",
+				"element": "select",
+				"label": "TRANSLATE.ROTARYENCODER.BUTTON_ACTION",
+				"doc": "TRANSLATE.ROTARYENCODER.D_BUTTON_ACTION",
+				"value": {
+					"value": 11,
+					"label": "Toggle mute/unmute"
+				},
+				"options": []
+			}
+		]
+	},
+	{
+		"id": "section_debugsettings",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER.DEBUGSETTINGS",
+		"description": "TRANSLATE.ROTARYENCODER.D_DEBUGSETTINGS",
+		"icon": "fa-bug",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder",
+			"method": "updateDebugSettings"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER.SAVE",
+			"data": [
+				"enable_debug_logging"
+			]
+		},
+		"content": [
+			{
+			  "id":"enable_debug_logging",
+			  "element": "switch",
+			  "label": "TRANSLATE.ROTARYENCODER.ENABLE_DEBUG_LOGGING",
+			  "doc": "TRANSLATE.ROTARYENCODER.D_ENABLE_DEBUG_LOGGING",
+			  "value": false
+			}
+		]
+	}]
+}

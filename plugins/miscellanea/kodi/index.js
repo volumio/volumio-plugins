@@ -452,8 +452,7 @@ ControllerKodi.prototype.patchAsoundConfig = function(useDac)
 {
 	var self = this;
 	var defer = libQ.defer();
-	var pluginName = "Kodi";
-	var pluginCategory = "miscellanea";
+	var pluginName = "kodi";
 	
 	var cardIndex = useDac == true ? "1" : "0";
 	
@@ -500,7 +499,7 @@ ControllerKodi.prototype.patchAsoundConfig = function(useDac)
 	})
 	.then(function (copy_new_config) {
 		var edefer = libQ.defer();
-		var cmd = "/bin/echo volumio | /usr/bin/sudo -S /bin/cat /data/plugins/" + pluginCategory + "/" + pluginName + "/asound.section >> /etc/asound.conf";
+		var cmd = "/bin/echo volumio | /usr/bin/sudo -S /bin/cat " + __dirname + "/asound.section >> /etc/asound.conf";
 		fs.writeFile(__dirname + "/" + pluginName.toLowerCase() + "_asound_patch.sh", cmd, 'utf8', function (err) {
 			if (err)
 			{

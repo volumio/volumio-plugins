@@ -37,6 +37,8 @@ XMLHttpRequest.XMLHttpRequest = XMLHttpRequest;
 function XMLHttpRequest(opts) {
   "use strict";
 
+  opts = opts || {};
+
   /**
    * Private variables
    */
@@ -378,10 +380,7 @@ function XMLHttpRequest(opts) {
       headers["Content-Length"] = 0;
     }
 
-    var agent = false;
-    if (opts && opts.agent) {
-      agent = opts.agent;
-    }
+    var agent = opts.agent || false;
     var options = {
       host: host,
       port: port,

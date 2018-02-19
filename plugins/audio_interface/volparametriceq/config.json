@@ -1,0 +1,16 @@
+{
+"mg":{"type": "string","value": "0"}, 
+"p11":{"type": "string","value": "1,30,0.9,2"}, 
+"p21":{"type": "string","value": "1,500,0.9,2"}, 
+"p31":{"type": "string","value": "1,2000,0.9,2"}, 
+"p41":{"type": "string","value": "1,10000,0.9,2"},
+"enableeq":{"type":"boolean","value":true}, 
+"alsa_device":{"type": "string","value": "0"},
+"alsa_outputdevicename":{"type": "string","value": "0"},
+"alsa_mixer":{"type": "string","value": ""},
+"alsa_mixer_type":{"type": "string","value": ""},
+"alsa_volumemax":{"type": "string","value": "100"},
+"alsa_volumecurvemode":{"type" : "string","value":"logarithmic"},
+"alsa_volumestart":{"type": "string","value": "disabled"},
+"alsa_volumesteps":{"type": "string","value": "10"}
+}

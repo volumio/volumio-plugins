@@ -84,9 +84,7 @@
 				"scrobbleThreshold",
 				"pushToastOnScrobble",
 				"tryScrobbleWebradio",
-				"webradioScrobbleThreshold",
-				"scrobbleLMS",
-				"LMS_server"
+				"webradioScrobbleThreshold"
 			]
 		},
 		"content": [
@@ -124,26 +122,6 @@
 				"value": "30",
 				"visibleIf": {
 					"field": "tryScrobbleWebradio",
-					"value": true
-				}
-			},
-			{
-			  "id":"scrobbleLMS",
-			  "element": "switch",
-			  "label": "TRANSLATE.LASTFM.SCROBBLE_LMS",
-			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_LMS",
-			  "description": "Not yet supported!",
-			  "value": false
-			},
-			{
-				"id": "LMS_server",
-				"element": "input",
-				"type": "text",
-				"doc": "TRANSLATE.LASTFM.D_LMS_SERVER",
-				"label": "TRANSLATE.LASTFM.LMS_SERVER",
-				"value": "127.0.0.1",
-				"visibleIf": {
-					"field": "scrobbleLMS",
 					"value": true
 				}
 			}
