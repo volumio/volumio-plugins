@@ -85,6 +85,24 @@
 						}
 					],
 					"updated": "19-2-2018"
+				},
+				{
+					"prettyName": "FritzCallMute",
+					"icon": "fa-lightbulb-o",
+					"name": "fritzcallmute",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/fritzcallmute/fritzcallmute.zip",
+					"license": "ISC",
+					"description": "Mutes on phone calls via FritzBox router",
+					"details": "",
+					"author": "clmtrapp",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-2-2018"
 				}
 			]
 		},
@@ -120,32 +138,6 @@
 			"id": "cat3",
 			"description": "Plugins for Volumio Accessories",
 			"plugins": []
-		},
-		{
-			"prettyName": "miscellanea",
-			"name": "miscellanea",
-			"id": "cat5",
-			"description": "",
-			"plugins": [
-				{
-					"prettyName": "FritzCallMute",
-					"icon": "fa-lightbulb-o",
-					"name": "fritzcallmute",
-					"version": "1.0.0",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/fritzcallmute/fritzcallmute.zip",
-					"license": "ISC",
-					"description": "Mutes on phone calls via FritzBox router",
-					"details": "",
-					"author": "clmtrapp",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "18-2-2018"
-				}
-			]
 		}
 	]
 }
