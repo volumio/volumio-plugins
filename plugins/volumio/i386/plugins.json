@@ -41,24 +41,6 @@
 						}
 					],
 					"updated": "18-2-2018"
-				},
-				{
-					"prettyName": "Squeezelite player",
-					"icon": "fa-lightbulb-o",
-					"name": "squeezelite",
-					"version": "1.0.9",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/squeezelite/squeezelite.zip",
-					"license": "GPL-3.0",
-					"description": "Installs the Squeezelite player you can use in combination with the Logitech Media Server",
-					"details": "",
-					"author": "Saiyato",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "18-2-2018"
 				}
 			]
 		},
