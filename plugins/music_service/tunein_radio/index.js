@@ -6,6 +6,7 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var TuneIn = require('node-tunein');
+var axios = require('axios');
 
 
 module.exports = tuneinRadio;
@@ -123,6 +124,8 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
   if (curUri.startsWith('tunein')) {
     if (curUri == 'tunein') {
       response = self.browseRoot(curUri);
+    } else if (curUri == 'tunein/local') {
+      response = self.browseLocal(curUri);
     } else {
       self.logger.error('Unknown URI: ' + curUri);
     }
@@ -190,7 +193,30 @@ tuneinRadio.prototype.explodeUri = function(uri) {
   var self = this;
   var defer = libQ.defer();
 
-  // Mandatory: retrieve all info for a given URI
+  var explodedUri = {
+    service: 'webradio',
+    type: 'track',
+  }
+
+
+  axios.get(uri, {
+    params: {
+      render: 'json'
+    }
+  }).then(function (response) {
+
+    self.logger.info(response.data)
+
+    explodedUri.uri = response.data.body[0].url
+    explodedUri.name = response.data.body[0].url
+
+    self.logger.info(explodedUri);
+    defer.resolve(explodedUri);
+  })
+  .catch(function (error) {
+    self.logger.error(error);
+    defer.resolve(explodedUri);
+  });
 
   return defer.promise;
 };
@@ -297,7 +323,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
     for (var i in body) {
       if (body[i].type == 'link') {
         response.navigation.lists[0].items.push({
-          service: 'tunein',
+          service: 'tunein_radio',
           type: body[i].key,
           title: body[i].text,
           artist: '',
@@ -315,6 +341,60 @@ tuneinRadio.prototype.browseRoot = function(uri) {
     .catch(function(err) {
       self.logger.error(err);
       defer.reject(new Error('Cannot list main categories: ' + err));
+    });
+
+  return defer.promise;
+}
+
+tuneinRadio.prototype.browseLocal = function(uri) {
+  var self = this;
+  var defer = libQ.defer();
+
+  self.logger.info('TuneIn: browseLocal');
+  self.logger.info('TuneIn: Parsing Results For ' + uri);
+
+  var tuneinRoot = self.tuneIn.browse('local');
+  tuneinRoot.then(function(results) {
+    var response = {
+      navigation: {
+        lists: [
+          {
+            availableListViews: [
+              'list',
+            ],
+            items: [
+            ],
+          },
+        ],
+        prev: {
+          url: 'tunein',
+        },
+      },
+    };
+
+    var radios = results.body[0].children;
+    self.logger.info(radios);
+    for (var i in radios) {
+      if (radios[i].type == 'audio') {
+        response.navigation.lists[0].items.push({
+          service: 'tunein_radio',
+          type: 'webradio',
+          title: radios[i].text,
+          artist: '',
+          album: '',
+          icon: radios[i].image,
+          uri: radios[i].URL.href,
+        });
+        self.logger.info('Added new entry ' + radios[i].preset_id + ' => ' + radios[i].text + ' => ' + radios[i].URL.href);
+      } else {
+        self.logger.warn('Unknown element type ' + radios[i].type + ' ignored');
+      }
+    }
+    defer.resolve(response);
+  })
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot list local radios: ' + err));
     });
 
   return defer.promise;
