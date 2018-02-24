@@ -14,6 +14,7 @@ var dur = require("iso8601-duration");
 var OAuth2Client = gapis.auth.OAuth2;
 var querystring = require('querystring');
 var https = require('https');
+var omx = require('node-omxplayer');
 
 var secrets = require('./auth.json');
 var token = require('./authToken.json');
@@ -32,6 +33,7 @@ function Youtube(context) {
   self.addQueue = [];
   self.state = {};
   self.stateMachine = self.commandRouter.stateMachine;
+  self.omxPlayer = null;
 
   self.yt = gapis.youtube({
     version: 'v3',
@@ -362,20 +364,26 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
 
   var deferred = libQ.defer();
   ytdl.getInfo("https://youtube.com/watch?v=" + track.uri, {
-    filter: "audioonly"
+    filter: "audioandvideo"
   }, function (err, info) {
     if (err) {
       console.log("Error opening Youtube stream, video is probably not valid.");
     } else {
+      var youtubeAudio = ytdl.filterFormats(info.formats, 'audioonly');
+      var youtubeVideo = ytdl.filterFormats(info.formats, 'videoonly');
       self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
+          if (self.omxPlayer !== null)
+            self.omxPlayer.quit();
+          self.omxPlayer = null;
+
           return self.mpdPlugin.sendMpdCommand('clear', []);
         })
         .then(function (values) {
-          return self.mpdPlugin.sendMpdCommand('load "' + info["formats"][0]["url"] + '"', []);
+          return self.mpdPlugin.sendMpdCommand('load "' + youtubeAudio[0].url + '"', []);
         })
         .fail(function (data) {
-          return self.mpdPlugin.sendMpdCommand('add "' + info["formats"][0]["url"] + '"', []);
+          return self.mpdPlugin.sendMpdCommand('add "' + youtubeAudio[0].url + '"', []);
         })
         .then(function () {
           //self.commandRouter.stateMachine.setConsumeUpdateService('youtube', true);
@@ -390,6 +398,17 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
           });
           return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
             self.commandRouter.pushConsoleMessage("Youtube::After Play");
+
+            self.logger.info("VIDEO:YouTubeURL:"+youtubeVideo[0].url);
+            self.omxPlayer = omx(youtubeVideo[0].url);
+
+            /*
+            exec('/usr/local/bin/omxplayer ' + '"'+ youtubeVideo[0].url + '"',
+                function (error, stdout, stderr) {
+                  self.logger.info("ControllerKoreanTV::omxplayer:YouTube:running");
+                });
+            */
+
             return self.mpdPlugin.getState().then(function (state) {
               state.trackType = "Fucking Youtube!!!!";
               self.commandRouter.pushConsoleMessage("Youtube: " + JSON.stringify(state));
@@ -410,6 +429,10 @@ Youtube.prototype.stop = function () {
 
   //self.commandRouter.stateMachine.setConsumeUpdateService('youtube');
   return self.mpdPlugin.stop().then(function () {
+    if (self.omxPlayer !== null)
+      self.omxPlayer.quit();
+    self.omxPlayer = null;
+
     return self.mpdPlugin.getState().then(function (state) {
       state.trackType = "Fucking Youtube!!!!";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
@@ -957,7 +980,7 @@ Youtube.prototype.getAccessToken = function () {
     });
   });
 
-  codeReq.on('error', (e) => {
+  codeReq.on('error', function (e) {
     deferred.reject(e);
   });
 
@@ -1019,7 +1042,7 @@ Youtube.prototype.pollPermissions = function () {
     });
   });
 
-  codeReq.on('error', (e) => {
+  codeReq.on('error', function (e)  {
     deferred.reject(e);
   });
 
@@ -1087,7 +1110,7 @@ Youtube.prototype.refreshAuthToken = function () {
     });
   });
 
-  codeReq.on('error', (e) => {
+  codeReq.on('error', function (e) {
     deferred.reject(e);
   });
 
