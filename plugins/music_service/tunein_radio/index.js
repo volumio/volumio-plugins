@@ -5,7 +5,7 @@ var fs = require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-var TuneIn = require('node-tunein');
+var TuneIn = require('node-tunein-radio');
 var axios = require('axios');
 
 
@@ -143,6 +143,8 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
   if (curUri.startsWith('tunein')) {
     if (curUri == 'tunein') {
       response = self.browseRoot(curUri);
+    } else if (curUri == 'tunein/local') {
+      response = self.browseLocal(curUri);
     } else {
       var l1Exp = '^tunein\/([a-z]+)$';
       var l1Match = curUri.match(l1Exp);
@@ -379,6 +381,57 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   return defer.promise;
 }
 
+tuneinRadio.prototype.browseLocal = function(uri) {
+  var self = this;
+  var defer = libQ.defer();
+
+  self.logger.info('[TuneIn] Parsing Results For ' + uri);
+
+  var tuneinRoot = self.tuneIn.browse_local();
+  tuneinRoot.then(function(results) {
+    var response = {
+      navigation: {
+        lists: [
+          {
+            availableListViews: [
+              'list',
+            ],
+            items: [
+            ],
+          },
+        ],
+        prev: {
+          uri: 'tunein',
+        },
+      },
+    };
+
+    let stationList = results.body[0].children;
+    for (var i in stationList) {
+      if (stationList[i].type == 'audio') {
+        response.navigation.lists[0].items.push({
+          service: 'tunein_radio',
+          type: 'webradio',
+          title: stationList[i].text,
+          artist: '',
+          album: '',
+          icon: stationList[i].image,
+          uri: stationList[i].URL,
+        });
+        self.logger.info('[TuneIn] Added new radio entry ' + stationList[i].preset_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
+      } else {
+        self.logger.warn('[TuneIn] Unknown element type ' + stationList[i].type + ' ignored for local radios');
+      }
+    }
+    defer.resolve(response);
+  })
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot list local radios: ' + err));
+  });
+  return defer.promise;
+}
+
 tuneinRadio.prototype.browseL1 = function(uri) {
   var self = this;
   var defer = libQ.defer();
@@ -403,6 +456,12 @@ tuneinRadio.prototype.browseL1 = function(uri) {
         },
       },
     };
+
+    self.logger.info("[TuneIn] " + results);
+
+    if (results.head.status != 200) {
+      self.logger.error("[TuneIn] Got error status: " + results.head);
+    }
 
     if (results.body[0].children) {
       var radios = results.body[0].children;

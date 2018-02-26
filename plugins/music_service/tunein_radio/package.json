@@ -16,7 +16,7 @@
 	"dependencies": {
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
-		"node-tunein": "^1.0.1",
+		"node-tunein-radio": "latest",
 		"v-conf": "^1.4.0",
 		"axios": "^0.17.1"
 	},
