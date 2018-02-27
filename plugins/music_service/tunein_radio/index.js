@@ -143,17 +143,14 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
   if (curUri.startsWith('tunein')) {
     if (curUri == 'tunein') {
       response = self.browseRoot(curUri);
-    } else if (curUri == 'tunein/local') {
-      response = self.browseLocal(curUri);
     } else {
       var l1Exp = '^tunein\/([a-z]+)$';
       var l1Match = curUri.match(l1Exp);
 
       if (l1Match != null) {
-        response = self.browseL1(l1Match[1]);
+        response = self.browseCategory(l1Match[1]);
         return response;
-      }
-
+      } // Else if here
       self.logger.error('Unknown URI: ' + curUri);
     }
   } else {
@@ -381,132 +378,112 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   return defer.promise;
 }
 
-tuneinRadio.prototype.browseLocal = function(uri) {
+tuneinRadio.prototype.browseCategory = function(category) {
+  var self = this;
+  var defer = libQ.defer();
+  var response;
+  var tuneinRoot;
+
+  self.logger.info('[TuneIn] Parsing Results For ' + category);
+
+  if (category == 'local') {
+    tuneinRoot = self.tuneIn.browse_local();
+  } else if (category == 'music') {
+    tuneinRoot = self.tuneIn.browse_music();
+  } else if (category == 'talk') {
+    tuneinRoot = self.tuneIn.browse_talk();
+  } else if (category == 'sports') {
+    tuneinRoot = self.tuneIn.browse_sports();
+  } else if (category == 'location') {
+    tuneinRoot = self.tuneIn.browse_locations();
+  } else if (category == 'language') {
+    tuneinRoot = self.tuneIn.browse_langs();
+  } else if (category == 'podcast') {
+    tuneinRoot = self.tuneIn.browse_podcast();
+  } else {
+    defer.reject(new Error('Unknown category list: ' + category));
+  }
+
+  tuneinRoot.then(function(results) {
+    response = self.parseResults(results, category);
+    defer.resolve(response);
+  })
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot list category items for ' + category + ': ' + err));
+    });
+
+  return defer.promise;
+}
+
+tuneinRadio.prototype.parseResults = function(results, category) {
   var self = this;
   var defer = libQ.defer();
 
-  self.logger.info('[TuneIn] Parsing Results For ' + uri);
-
-  var tuneinRoot = self.tuneIn.browse_local();
-  tuneinRoot.then(function(results) {
-    var response = {
-      navigation: {
-        lists: [
-          {
-            availableListViews: [
-              'list',
-            ],
-            items: [
-            ],
-          },
-        ],
-        prev: {
-          uri: 'tunein',
+  var response = {
+    navigation: {
+      lists: [
+        {
+          availableListViews: [
+            'list',
+          ],
+          items: [
+          ],
         },
+      ],
+      prev: {
+        uri: 'tunein',
       },
-    };
+    },
+  };
+
+
+  if (results.body[0].children) {
+    let servType;
+    let icon;
 
     let stationList = results.body[0].children;
     for (var i in stationList) {
       if (stationList[i].type == 'audio') {
-        response.navigation.lists[0].items.push({
-          service: 'tunein_radio',
-          type: 'webradio',
-          title: stationList[i].text,
-          artist: '',
-          album: '',
-          icon: stationList[i].image,
-          uri: stationList[i].URL,
-        });
-        self.logger.info('[TuneIn] Added new radio entry ' + stationList[i].preset_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
+        let servType = 'webradio';
+        let icon = stationList[i].image;
+      } else if (stationList[i].type == 'link') {
+        servType = category;
+        icon = 'fa fa-folder-open-o';
       } else {
         self.logger.warn('[TuneIn] Unknown element type ' + stationList[i].type + ' ignored for local radios');
+        continue;
+      }
+      response.navigation.lists[0].items.push({
+        service: 'tunein_radio',
+        type: servType,
+        title: stationList[i].text,
+        artist: '',
+        album: '',
+        icon: icon,
+        uri: stationList[i].URL,
+      });
+      self.logger.info('[TuneIn] Added new radio entry ' + stationList[i].preset_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
+    }
+  } else {
+    var body = results.body;
+    for (var i in body) {
+      self.logger.info(body[i]);
+      if (body[i].type == 'link') {
+        response.navigation.lists[0].items.push({
+          service: 'tunein_radio',
+          type: category,
+          title: body[i].text,
+          artist: '',
+          album: '',
+          icon: 'fa fa-folder-open-o',
+          uri: body[i].URL,
+        });
+        self.logger.info('[TuneIn] Added new ' + category + ' entry ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
+      } else {
+        self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
       }
     }
-    defer.resolve(response);
-  })
-    .catch(function(err) {
-      self.logger.error(err);
-      defer.reject(new Error('Cannot list local radios: ' + err));
-  });
-  return defer.promise;
-}
-
-tuneinRadio.prototype.browseL1 = function(uri) {
-  var self = this;
-  var defer = libQ.defer();
-
-  self.logger.info('[TuneIn] Parsing Results For ' + uri);
-
-  var tuneinRoot = self.tuneIn.browse(uri);
-  tuneinRoot.then(function(results) {
-    var response = {
-      navigation: {
-        lists: [
-          {
-            availableListViews: [
-              'list',
-            ],
-            items: [
-            ],
-          },
-        ],
-        prev: {
-          uri: 'tunein',
-        },
-      },
-    };
-
-    self.logger.info("[TuneIn] " + results);
-
-    if (results.head.status != 200) {
-      self.logger.error("[TuneIn] Got error status: " + results.head);
-    }
-
-    if (results.body[0].children) {
-      var radios = results.body[0].children;
-      for (var i in radios) {
-        if (radios[i].type == 'audio') {
-          response.navigation.lists[0].items.push({
-            service: 'tunein_radio',
-            type: 'webradio',
-            title: radios[i].text,
-            artist: '',
-            album: '',
-            icon: radios[i].image,
-            uri: radios[i].URL.href,
-          });
-          self.logger.info('[TuneIn] Added new radio entry ' + radios[i].preset_id + ' => ' + radios[i].text + ' => ' + radios[i].URL.href);
-        } else {
-          self.logger.warn('[TuneIn] Unknown element type ' + radios[i].type + ' ignored for radios');
-        }
-      }
-    } else {
-      var body = results.body;
-      for (var i in body) {
-        self.logger.info(body[i]);
-        if (body[i].type == 'link') {
-          response.navigation.lists[0].items.push({
-            service: 'tunein_radio',
-            type: uri,
-            title: body[i].text,
-            artist: '',
-            album: '',
-            icon: 'fa fa-folder-open-o',
-            uri: uri + '/' + body[i].guide_id
-          });
-          self.logger.info('[TuneIn] Added new ' + uri + ' entry ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL.href);
-        } else {
-          self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
-        }
-      }
-    }
-    defer.resolve(response);
-  })
-    .catch(function(err) {
-      self.logger.error(err);
-      defer.reject(new Error('Cannot list local radios: ' + err));
-    });
-
-  return defer.promise;
+  }
+  return(response);
 }
