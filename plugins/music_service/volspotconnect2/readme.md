@@ -1,4 +1,4 @@
-16th Febuary 2018
+27th Febuary 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -33,6 +33,9 @@ Time is reseted when changing volume in UI
 Volumio UI restart the first time a track is played from spotify after a change in plugin setting
 
 ## Last changes
+
+27t Febuary
+- change port of socket to avoid conflict with airplay (port 5030 now)
 
 16th Febuary
 - remove // for   service: self.servicename

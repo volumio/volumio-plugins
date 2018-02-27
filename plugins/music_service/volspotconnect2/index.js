@@ -106,7 +106,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  };
 
  const nHost = ''; // blank = localhost
- const nPort = 5000;
+ const nPort = 5030;
 
  self.SpotConn = new SpotConnCtrl({
   address: nHost,
