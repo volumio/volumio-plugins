@@ -123,7 +123,7 @@ tuneinRadio.prototype.addToBrowseSources = function() {
   // Use this function to add your music service plugin to music sources
   self.logger.info('TuneIn addToBrowseSources');
   var data = {
-    albumart: '/albumart?sourceicon=music_service/webradio/icon.svg',
+    albumart: '/albumart?sourceicon=music_service/tunein_radio/tunein_radio_logo.svg ',
     icon: 'fa fa-microphone',
     name: 'TuneIn Radio',
     uri: 'tunein',
