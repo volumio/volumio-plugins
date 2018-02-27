@@ -290,7 +290,43 @@ tuneinRadio.prototype.search = function(query) {
   var self = this;
   var defer = libQ.defer();
 
-  // Mandatory, search. You can divide the search in sections using following functions
+  var response = {
+    "title": 'TuneIn Radio',
+    "icon": "fa icon",
+    "availableListViews": [
+      "list"
+    ],
+    "items": [
+
+    ]
+  };
+
+  let tuneinSearch = self.tuneIn.search(query.value);
+  tuneinSearch.then(function(results) {
+    var body = results.body;
+    for (var i in body) {
+      if (body[i].type == 'audio') {
+        response.items.push({
+          service: 'tunein_radio',
+          type: 'webradio',
+          title: body[i].text,
+          artist: '',
+          album: '',
+          albumart: body[i].image,
+          uri: body[i].URL,
+        });
+        self.logger.info('[TuneIn] Added new search result ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
+      } else {
+        self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
+      }
+    }
+
+    defer.resolve(response);
+  })
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot list category items for ' + category + ': ' + err));
+    });
 
   return defer.promise;
 };
