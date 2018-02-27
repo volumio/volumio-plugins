@@ -439,14 +439,15 @@ tuneinRadio.prototype.parseResults = function(results, category) {
 
 
   if (results.body[0].children) {
-    let servType;
-    let icon;
+    let servType = '';
+    let icon = '';
+    let albumart = '';
 
     let stationList = results.body[0].children;
     for (var i in stationList) {
       if (stationList[i].type == 'audio') {
-        let servType = 'webradio';
-        let icon = stationList[i].image;
+        servType = 'webradio';
+        albumart = stationList[i].image;
       } else if (stationList[i].type == 'link') {
         servType = category;
         icon = 'fa fa-folder-open-o';
@@ -460,6 +461,7 @@ tuneinRadio.prototype.parseResults = function(results, category) {
         title: stationList[i].text,
         artist: '',
         album: '',
+        albumart: albumart,
         icon: icon,
         uri: stationList[i].URL,
       });
