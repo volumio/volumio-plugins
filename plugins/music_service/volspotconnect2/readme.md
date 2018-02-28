@@ -1,4 +1,4 @@
-27th Febuary 2018
+28th Febuary 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -34,7 +34,10 @@ Volumio UI restart the first time a track is played from spotify after a change 
 
 ## Last changes
 
-27t Febuary
+28th Febuary
+- new librespot for arm.
+
+27th Febuary
 - change port of socket to avoid conflict with airplay (port 5030 now)
 
 16th Febuary
