@@ -35,7 +35,8 @@ Volumio UI restart the first time a track is played from spotify after a change 
 ## Last changes
 
 28th Febuary
-- new librespot for arm.
+- new librespot for arm
+- use of spotifyweb api.
 
 27th Febuary
 - change port of socket to avoid conflict with airplay (port 5030 now)
