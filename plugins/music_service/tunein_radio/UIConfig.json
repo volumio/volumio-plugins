@@ -1,7 +1,37 @@
 {
   "page": {
-    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+    "label": "TuneIn Radio Configuration"
   },
   "sections": [
+    {
+      "id": "section_main_menu",
+      "element": "section",
+      "label": "TuneIn main categories",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/tunein_radio", "method":"saveMainCategories"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "popular",
+          "best"
+        ]
+      },
+      "content": [
+        {
+          "id": "popular",
+          "element": "switch",
+          "doc": "Popular Radios Category",
+          "label": "Enable the Popular Radios Category in Main Menu",
+          "value": false
+        },
+        {
+          "id": "best",
+          "element": "switch",
+          "doc": "Best Radios Category",
+          "label": "Enable the Best Radios Category in Main Menu",
+          "value": false
+        }
+      ]
+    }
   ]
 }

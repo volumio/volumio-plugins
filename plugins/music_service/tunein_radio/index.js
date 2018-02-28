@@ -25,7 +25,27 @@ tuneinRadio.prototype.onVolumioStart = function() {
   this.config = new (require('v-conf'))();
   this.config.loadFile(configFile);
 
+  self.refreshConfig();
   return libQ.resolve();
+}
+
+tuneinRadio.prototype.refreshConfig = function() {
+  var self = this;
+
+  if (self.config.get('popular') === true) {
+    self.enablePopular = true;
+  } else {
+    self.enablePopular = false;
+  }
+  if (self.config.get('best') === true) {
+    self.enableBest = true;
+  } else {
+    self.enableBest = false;
+  }
+}
+
+tuneinRadio.prototype.getConfigurationFiles = function() {
+  return ['config.json'];
 }
 
 tuneinRadio.prototype.onStart = function() {
@@ -42,7 +62,6 @@ tuneinRadio.prototype.onStart = function() {
   var navTreeRoot = self.initNavTree();
   self.logger.info(navTreeRoot);
   navTreeRoot.then(function(results) {
-    self.logger.info('[TuneIn] Got elements: ' + results.length);
     results.forEach (function(item) {
       self.logger.info('[TuneIn] Element: ' + item.key);
       var el = {
@@ -51,7 +70,6 @@ tuneinRadio.prototype.onStart = function() {
         URL: item.URL,
       }
       self.navTree[item.key] = el;
-      self.logger.info('[TuneIn] Added element: ' + el);
     });
     defer.resolve(self.navTree);
   })
@@ -91,6 +109,9 @@ tuneinRadio.prototype.getUIConfig = function() {
       __dirname + '/i18n/strings_en.json',
       __dirname + '/UIConfig.json')
   .then(function(uiconf) {
+    uiconf.sections[0].content[0].value = self.config.get('popular');
+    uiconf.sections[0].content[1].value = self.config.get('best');
+
     defer.resolve(uiconf);
   })
   .fail(function() {
@@ -113,8 +134,18 @@ tuneinRadio.prototype.getConf = function(varName) {
 
 tuneinRadio.prototype.setConf = function(varName, varValue) {
   var self = this;
-  // Perform your installation tasks here
 };
+
+tuneinRadio.prototype.saveMainCategories = function(data) {
+  var self = this;
+  var defer = libQ.defer();
+
+  self.config.set('popular', data['popular']);
+  self.config.set('best', data['best']);
+  self.refreshConfig();
+  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Configuration Saved');
+  return defer.promise;
+}
 
 // Playback Controls --------------------------------------------------------
 // If your plugin is not a music_sevice don't use this part and delete it
@@ -150,8 +181,15 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
       if (l1Match != null) {
         response = self.browseCategory(l1Match[1]);
         return response;
-      } // Else if here
-      self.logger.error('Unknown URI: ' + curUri);
+      } else {
+        let l2Exp = '^tunein\/browse\/([0-9a-z]+)$'
+        let l2Match = curUri.match(l2Exp);
+        if (l2Match != null) {
+          response = self.browseList(l2Match[1]);
+          return response;
+        }
+        self.logger.error('Unknown URI: ' + curUri);
+      }
     }
   } else {
     self.logger.error('Unknown URI: ' + curUri);
@@ -225,7 +263,7 @@ tuneinRadio.prototype.explodeUri = function(uri) {
 
   axios.get(uri, {
     params: {
-      render: 'json'
+      render: 'json',
     }
   }).then(function (response) {
 
@@ -331,27 +369,6 @@ tuneinRadio.prototype.search = function(query) {
   return defer.promise;
 };
 
-tuneinRadio.prototype._searchArtists = function(results) {
-
-};
-
-tuneinRadio.prototype._searchAlbums = function(results) {
-
-};
-
-tuneinRadio.prototype._searchPlaylists = function(results) {
-
-
-};
-
-tuneinRadio.prototype._searchTracks = function(results) {
-
-};
-
-tuneinRadio.prototype.listCountries = function(results) {
-
-};
-
 tuneinRadio.prototype.initNavTree = function(uri) {
   var self = this;
   var defer = libQ.defer();
@@ -410,7 +427,51 @@ tuneinRadio.prototype.browseRoot = function(uri) {
     self.logger.info('[TuneIn] Added new entry ' + el + ' => ' + self.navTree[el].text);
   }
 
+  if (self.enablePopular === true) {
+    rootTree.navigation.lists[0].items.push({
+      service: 'tunein_radio',
+      type: 'popular',
+      title: 'Popular',
+      artist: '',
+      album: '',
+      icon: 'fa fa-folder-open-o',
+      uri: 'tunein/popular',
+    });
+  }
+  if (self.enableBest === true) {
+    rootTree.navigation.lists[0].items.push({
+      service: 'tunein_radio',
+      type: 'best',
+      title: 'Best',
+      artist: '',
+      album: '',
+      icon: 'fa fa-folder-open-o',
+      uri: 'tunein/best',
+    });
+  }
+
   defer.resolve(rootTree);
+  return defer.promise;
+}
+
+tuneinRadio.prototype.browseList = function(id) {
+  var self = this;
+  var defer = libQ.defer();
+  var response;
+  var tuneinRoot;
+
+  self.logger.info('[TuneIn] Parsing Results For ' + id);
+
+  tuneinRoot = self.tuneIn.browse({id: id});
+  tuneinRoot.then(function(results) {
+    response = self.parseResults(results, id);
+    defer.resolve(response);
+  })
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot list category items for ' + id + ': ' + err));
+    });
+
   return defer.promise;
 }
 
@@ -436,6 +497,10 @@ tuneinRadio.prototype.browseCategory = function(category) {
     tuneinRoot = self.tuneIn.browse_langs();
   } else if (category == 'podcast') {
     tuneinRoot = self.tuneIn.browse_podcast();
+  } else if (category == 'popular') {
+    tuneinRoot = self.tuneIn.browse_popular();
+  } else if (category == 'best') {
+    tuneinRoot = self.tuneIn.browse_best();
   } else {
     defer.reject(new Error('Unknown category list: ' + category));
   }
@@ -478,30 +543,51 @@ tuneinRadio.prototype.parseResults = function(results, category) {
     let servType = '';
     let icon = '';
     let albumart = '';
+    let uri = '';
 
-    let stationList = results.body[0].children;
-    for (var i in stationList) {
-      if (stationList[i].type == 'audio') {
-        servType = 'webradio';
-        albumart = stationList[i].image;
-      } else if (stationList[i].type == 'link') {
-        servType = category;
-        icon = 'fa fa-folder-open-o';
+    let lists = results.body;
+
+    for (var i in lists) {
+      let stationList = lists[i].children;
+      if (i == 0) {
+        response.navigation.lists[i].title = lists[i].text;
+        response.navigation.lists[i].icon = 'fa icon';
       } else {
-        self.logger.warn('[TuneIn] Unknown element type ' + stationList[i].type + ' ignored for local radios');
-        continue;
+        response.navigation.lists.push({
+          title: lists[i].text,
+          icon: "fa icon",
+          availableListViews: [
+            'list',
+          ],
+          items: [
+          ],
+        })
       }
-      response.navigation.lists[0].items.push({
-        service: 'tunein_radio',
-        type: servType,
-        title: stationList[i].text,
-        artist: '',
-        album: '',
-        albumart: albumart,
-        icon: icon,
-        uri: stationList[i].URL,
-      });
-      self.logger.info('[TuneIn] Added new radio entry ' + stationList[i].preset_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
+      for (var j in stationList) {
+        if (stationList[j].type == 'audio') {
+          servType = 'webradio';
+          albumart = stationList[j].image;
+          uri = stationList[j].URL;
+        } else if (stationList[j].type == 'link') {
+          servType = category;
+          icon = 'fa fa-folder-open-o';
+          uri = 'tunein/browse/' + stationList[j].guide_id;
+        } else {
+          self.logger.warn('[TuneIn] Unknown element type ' + stationList[j].type + ' ignored for local radios');
+          continue;
+        }
+        response.navigation.lists[i].items.push({
+          service: 'tunein_radio',
+          type: servType,
+          title: stationList[j].text,
+          artist: '',
+          album: '',
+          albumart: albumart,
+          icon: icon,
+          uri: uri,
+        });
+        self.logger.info('[TuneIn] Added new radio entry ' + stationList[j].preset_id + ' => ' + stationList[j].text + ' => ' + stationList[j].URL);
+      }
     }
   } else {
     var body = results.body;
@@ -515,7 +601,7 @@ tuneinRadio.prototype.parseResults = function(results, category) {
           artist: '',
           album: '',
           icon: 'fa fa-folder-open-o',
-          uri: body[i].URL,
+          uri: 'tunein/browse/' + body[i].guide_id,
         });
         self.logger.info('[TuneIn] Added new ' + category + ' entry ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
       } else {
@@ -523,5 +609,6 @@ tuneinRadio.prototype.parseResults = function(results, category) {
       }
     }
   }
+
   return(response);
 }
