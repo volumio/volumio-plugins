@@ -17,34 +17,41 @@ class SpotConnEvents extends EventEmitter {
     })
   }
 
-  parseData(data) {
-    // Quick and dirty JSON check
-    try {
-      const metadata = JSON.parse(data);
-      this.emit('metadata', metadata);
-    } catch (e) {
-      switch (data) {
-        case 'kSpPlaybackNotifyBecameActive':
-          this.emit('SActive', '')
-          break;
+  parseData(msg) {
+      try {
+        const data = JSON.parse(msg);
+        switch (true) {
+          case 'metadata' in data:
+            this.emit('metadata', data.metadata);
+            break;
+          case 'token' in data:
+            this.emit('token', data.token);
+          default:
+            this.emit('unknown', data)
+        }
+      } catch (e) {
+        switch (msg) {
+          case 'kSpPlaybackNotifyBecameActive':
+            this.emit('SActive', '')
+            break;
 
-        case 'kSpDeviveActive':
-          this.emit('DActive', '')
-          break;
+          case 'kSpDeviveActive':
+            this.emit('DActive', '')
+            break;
 
-        case 'kSpDeviveInactive':
-          this.emit('DInactive', '')
-          break;
+          case 'kSpDeviveInactive':
+            this.emit('DInactive', '')
+            break;
 
-        case 'kSpPlaybackNotifyBecameInactive':
-          this.emit('SInactive')
-          break;
+          case 'kSpPlaybackNotifyBecameInactive':
+            this.emit('SInactive')
+            break;
 
-        default:
-          this.emit('unknown', data)
-      };
+          default:
+            this.emit('unknown', msg)
+        };
+      }
     }
-  }
 
   sendmsg(msg){
     // Attempting to send a message back via udp
