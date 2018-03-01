@@ -58,7 +58,7 @@
 				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
 				"value": {
 					"value": 0,
-					"label": "Gray encoding"
+					"label": "Default"
 				},
 				"options": []
 			},
@@ -142,7 +142,7 @@
 				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
 				"value": {
 					"value": 0,
-					"label": "Gray encoding"
+					"label": "Default"
 				},
 				"options": []
 			},
