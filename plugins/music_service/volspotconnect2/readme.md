@@ -1,4 +1,4 @@
-28th Febuary 2018
+01st march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -30,9 +30,13 @@ Tested on :
 ## Issues
 
 Time is reseted when changing volume in UI
-Volumio UI restart the first time a track is played from spotify after a change in plugin setting
+
 
 ## Last changes
+
+01st march
+- new librespot for x86
+- now working play/pause next previous buttons ! thank you @Ashthespy !
 
 28th Febuary
 - new librespot for arm
