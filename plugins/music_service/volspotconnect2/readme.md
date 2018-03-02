@@ -36,6 +36,7 @@ Time is reseted when changing volume in UI
 
 02nd march
 - seek function
+- password management for complex password
 
 
 01st march
