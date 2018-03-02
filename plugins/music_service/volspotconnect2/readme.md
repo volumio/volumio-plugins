@@ -36,7 +36,7 @@ Time is reseted when changing volume in UI
 
 02nd march
 - seek function
-- password management
+
 
 01st march
 - new librespot for x86
