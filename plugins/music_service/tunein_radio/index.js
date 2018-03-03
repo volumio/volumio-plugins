@@ -7,6 +7,7 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var TuneIn = require('node-tunein-radio');
 var axios = require('axios');
+var url = require('url');
 
 module.exports = tuneinRadio;
 function tuneinRadio(context) {
@@ -95,8 +96,6 @@ tuneinRadio.prototype.onStart = function() {
 
   self.addToBrowseSources();
   self.tuneIn = new TuneIn();
-
-  self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
   self.navTree = {};
 
@@ -225,10 +224,10 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
         response = self.browseCategory(l1Match[1]);
         return response;
       } else {
-        let l2Exp = '^tunein\/browse\/([0-9a-z]+)$'
+        var l2Exp = /^tunein\/browse\/\?+([=0-9a-z&]+)$/
         let l2Match = curUri.match(l2Exp);
         if (l2Match != null) {
-          response = self.browseList(l2Match[1]);
+          response = self.browseList(curUri);
           return response;
         }
         self.logger.error('Unknown URI: ' + curUri);
@@ -497,22 +496,23 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   return defer.promise;
 }
 
-tuneinRadio.prototype.browseList = function(id) {
+tuneinRadio.prototype.browseList = function(uri) {
   var self = this;
   var defer = libQ.defer();
   var response;
   var tuneinRoot;
 
-  self.logger.info('[TuneIn] Parsing Results For ' + id);
+  self.logger.info('[TuneIn] Fetching Results For ' + uri);
 
-  tuneinRoot = self.tuneIn.browse({id: id});
+  let parsedUrl = url.parse(uri, true);
+  tuneinRoot = self.tuneIn.browse(parsedUrl.query)
   tuneinRoot.then(function(results) {
-    response = self.parseResults(results, id);
+    response = self.parseResults(results, parsedUrl.search);
     defer.resolve(response);
   })
     .catch(function(err) {
       self.logger.error(err);
-      defer.reject(new Error('Cannot list category items for ' + id + ': ' + err));
+      defer.reject(new Error('Cannot list category items for ' + uri + ': ' + err));
     });
 
   return defer.promise;
@@ -563,10 +563,6 @@ tuneinRadio.prototype.browseCategory = function(category) {
 tuneinRadio.prototype.parseResults = function(results, category) {
   var self = this;
   var defer = libQ.defer();
-  let servType = '';
-  let icon = '';
-  let albumart = '';
-  let uri = '';
 
   self.logger.info('[TuneIn] Parsing results for: ' + category);
 
@@ -606,60 +602,62 @@ tuneinRadio.prototype.parseResults = function(results, category) {
         })
       }
       for (var j in stationList) {
-        if (stationList[j].type == 'audio') {
-          servType = 'webradio';
-          albumart = stationList[j].image;
-          uri = stationList[j].URL;
-        } else if (stationList[j].type == 'link') {
-          servType = category;
-          icon = 'fa fa-folder-open-o';
-          uri = 'tunein/browse/' + stationList[j].guide_id;
-        } else {
-          self.logger.warn('[TuneIn] Unknown element type ' + stationList[j].type + ' ignored for local radios');
-          continue;
+        let item = self.getNavigationItem(stationList[j], category);
+        if (item) {
+          response.navigation.lists[i].items.push(item);
         }
-        response.navigation.lists[i].items.push({
-          service: 'tunein_radio',
-          type: servType,
-          title: stationList[j].text,
-          artist: '',
-          album: '',
-          albumart: albumart,
-          icon: icon,
-          uri: uri,
-        });
-        self.logger.info('[TuneIn] Added new radio entry ' + stationList[j].preset_id + ' => ' + stationList[j].text + ' => ' + stationList[j].URL);
+        //self.logger.info('[TuneIn] Added new radio entry ' + stationList[j].preset_id + ' => ' + stationList[j].text + ' => ' + stationList[j].URL);
       }
     }
   } else {
     let stationList = results.body;
     for (var i in stationList) {
-      if (stationList[i].type == 'audio') {
-        servType = 'webradio';
-        albumart = stationList[i].image;
-        uri = stationList[i].URL;
-      } else if (stationList[i].type == 'link') {
-        servType = category;
-        icon = 'fa fa-folder-open-o';
-        uri = 'tunein/browse/' + stationList[i].guide_id;
-      } else {
-        self.logger.warn('[TuneIn] Unknown element type ' + stationList[i].type + ' ignored for local radios');
-        continue;
+      let item = self.getNavigationItem(stationList[i], category);
+      if (item) {
+        response.navigation.lists[0].items.push(item);
       }
-
-      response.navigation.lists[0].items.push({
-        service: 'tunein_radio',
-        type: servType,
-        title: stationList[i].text,
-        artist: '',
-        album: '',
-        albumart: albumart,
-        icon: icon,
-        uri: uri,
-      });
-      self.logger.info('[TuneIn] Added new ' + category + ' entry ' + stationList[i].guide_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
+      //self.logger.info('[TuneIn] Added new ' + category + ' entry ' + uri + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
     }
   }
 
   return(response);
+}
+
+// TODO Do we really need a custom service Type, hence passing
+// around the category string?
+tuneinRadio.prototype.getNavigationItem = function(node, category) {
+  var self = this;
+
+  let servType = '';
+  let albumart = '';
+  let icon = '';
+  let uri = '';
+
+  if (node.type == 'audio') {
+    servType = 'webradio';
+    albumart = node.image;
+    uri = node.URL;
+  } else if (node.type == 'link') {
+    servType = category;
+    icon = 'fa fa-folder-open-o';
+    uri = 'tunein/browse/' + node.URLObj.search;
+  } else {
+    self.logger.warn('[TuneIn] Unknown element type ' + node.type + ' ignored for local radios');
+    return null;
+  }
+
+  var item = {
+    service: 'tunein_radio',
+    type: servType,
+    title: node.text,
+    artist: '',
+    album: '',
+    albumart: albumart,
+    icon: icon,
+    uri: uri,
+  };
+
+  self.logger.info('[TuneIn] Added new ' + category + ' entry ' + uri + ' => ' + node.text + ' => ' + node.URL);
+
+  return item;
 }
