@@ -223,7 +223,7 @@ ControllerSpop.prototype.onStop = function() {
 	exec("/usr/bin/sudo /usr/bin/killall spopd", function (error, stdout, stderr) {
 		if(error){
 			self.logger.info('Cannot kill spop Daemon')
-            defer.reject();
+            defer.resolve();
 		} else {
 			defer.resolve()
 		}
