@@ -8,7 +8,6 @@ var execSync = require('child_process').execSync;
 var TuneIn = require('node-tunein-radio');
 var axios = require('axios');
 
-
 module.exports = tuneinRadio;
 function tuneinRadio(context) {
   var self = this;
@@ -17,6 +16,48 @@ function tuneinRadio(context) {
   this.commandRouter = this.context.coreCommand;
   this.logger = this.context.logger;
   this.configManager = this.context.configManager;
+
+  self.resetHistory();
+}
+
+tuneinRadio.prototype.resetHistory = function() {
+  var self = this;
+
+  self.urlHistory = [];
+  self.historyIndex = -1;
+}
+
+tuneinRadio.prototype.historyAdd = function(uri) {
+  var self = this;
+
+  // If the new url is equal to the previous one
+  // this means it's a "Back" action
+  if (self.urlHistory[self.historyIndex - 1] == uri) {
+    self.historyPop()
+  } else {
+    self.urlHistory.push(uri);
+    self.historyIndex++;
+  }
+}
+
+tuneinRadio.prototype.historyPop = function(uri) {
+  var self = this;
+
+  self.urlHistory.pop();
+  self.historyIndex--;
+}
+
+tuneinRadio.prototype.getPrevUri = function() {
+  var self = this;
+  var url;
+
+  if (self.historyIndex >= 0) {
+    url = self.urlHistory[self.historyIndex - 1];
+  } else {
+    url = '/';
+  }
+
+  return url;
 }
 
 tuneinRadio.prototype.onVolumioStart = function() {
@@ -154,7 +195,7 @@ tuneinRadio.prototype.addToBrowseSources = function() {
   // Use this function to add your music service plugin to music sources
   self.logger.info('TuneIn addToBrowseSources');
   var data = {
-    albumart: '/albumart?sourceicon=music_service/tunein_radio/tunein_radio_logo.svg ',
+    albumart: '/albumart?sourceicon=music_service/tunein_radio/tunein.svg ',
     icon: 'fa fa-microphone',
     name: 'TuneIn Radio',
     uri: 'tunein',
@@ -168,13 +209,15 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
   var self = this;
   var response;
 
-  self.logger.info('TuneIn handleBrowseUri');
-  self.logger.info(curUri);
+  self.logger.info('TuneIn handleBrowseUri: ' + curUri);
 
   if (curUri.startsWith('tunein')) {
     if (curUri == 'tunein') {
+      self.resetHistory();
+      self.historyAdd(curUri);
       response = self.browseRoot(curUri);
     } else {
+      self.historyAdd(curUri);
       var l1Exp = '^tunein\/([a-z]+)$';
       var l1Match = curUri.match(l1Exp);
 
@@ -329,14 +372,14 @@ tuneinRadio.prototype.search = function(query) {
   var defer = libQ.defer();
 
   var response = {
-    "title": 'TuneIn Radio',
-    "icon": "fa icon",
-    "availableListViews": [
-      "list"
+    title: 'TuneIn Radio',
+    icon: 'fa icon',
+    availableListViews: [
+      'list',
     ],
-    "items": [
+    items: [
 
-    ]
+    ],
   };
 
   let tuneinSearch = self.tuneIn.search(query.value);
@@ -387,7 +430,7 @@ tuneinRadio.prototype.initNavTree = function(uri) {
   })
   .catch(function(err) {
     self.logger.error(err);
-    defer.reject(new Error('Cannot list navTree Root nodes: ' + err));
+    defer.reject(new Error('[TuneIn] Cannot list navTree Root nodes: ' + err));
   });
 
   return defer.promise;
@@ -481,7 +524,7 @@ tuneinRadio.prototype.browseCategory = function(category) {
   var response;
   var tuneinRoot;
 
-  self.logger.info('[TuneIn] Parsing Results For ' + category);
+  self.logger.info('[TuneIn] Calling browse function for: ' + category);
 
   if (category == 'local') {
     tuneinRoot = self.tuneIn.browse_local();
@@ -520,6 +563,12 @@ tuneinRadio.prototype.browseCategory = function(category) {
 tuneinRadio.prototype.parseResults = function(results, category) {
   var self = this;
   var defer = libQ.defer();
+  let servType = '';
+  let icon = '';
+  let albumart = '';
+  let uri = '';
+
+  self.logger.info('[TuneIn] Parsing results for: ' + category);
 
   var response = {
     navigation: {
@@ -533,20 +582,13 @@ tuneinRadio.prototype.parseResults = function(results, category) {
         },
       ],
       prev: {
-        uri: 'tunein',
+        uri: self.getPrevUri(),
       },
     },
   };
 
-
   if (results.body[0].children) {
-    let servType = '';
-    let icon = '';
-    let albumart = '';
-    let uri = '';
-
     let lists = results.body;
-
     for (var i in lists) {
       let stationList = lists[i].children;
       if (i == 0) {
@@ -555,7 +597,7 @@ tuneinRadio.prototype.parseResults = function(results, category) {
       } else {
         response.navigation.lists.push({
           title: lists[i].text,
-          icon: "fa icon",
+          icon: 'fa icon',
           availableListViews: [
             'list',
           ],
@@ -590,23 +632,32 @@ tuneinRadio.prototype.parseResults = function(results, category) {
       }
     }
   } else {
-    var body = results.body;
-    for (var i in body) {
-      self.logger.info(body[i]);
-      if (body[i].type == 'link') {
-        response.navigation.lists[0].items.push({
-          service: 'tunein_radio',
-          type: category,
-          title: body[i].text,
-          artist: '',
-          album: '',
-          icon: 'fa fa-folder-open-o',
-          uri: 'tunein/browse/' + body[i].guide_id,
-        });
-        self.logger.info('[TuneIn] Added new ' + category + ' entry ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
+    let stationList = results.body;
+    for (var i in stationList) {
+      if (stationList[i].type == 'audio') {
+        servType = 'webradio';
+        albumart = stationList[i].image;
+        uri = stationList[i].URL;
+      } else if (stationList[i].type == 'link') {
+        servType = category;
+        icon = 'fa fa-folder-open-o';
+        uri = 'tunein/browse/' + stationList[i].guide_id;
       } else {
-        self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
+        self.logger.warn('[TuneIn] Unknown element type ' + stationList[i].type + ' ignored for local radios');
+        continue;
       }
+
+      response.navigation.lists[0].items.push({
+        service: 'tunein_radio',
+        type: servType,
+        title: stationList[i].text,
+        artist: '',
+        album: '',
+        albumart: albumart,
+        icon: icon,
+        uri: uri,
+      });
+      self.logger.info('[TuneIn] Added new ' + category + ' entry ' + stationList[i].guide_id + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
     }
   }
 

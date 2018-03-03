@@ -1,6 +1,6 @@
 {
 	"name": "tunein_radio",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Support radio streaming from the TuneIn Radio service",
 	"main": "index.js",
 	"scripts": {
