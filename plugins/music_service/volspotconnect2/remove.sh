@@ -2,7 +2,7 @@
 # this script removes last file in volspotconnect2 cache when cachesize limit is reached
 ucachesize=64 #cache size Mo
 cfolder=/tmp/files #folder where cache files are stored
-
+test
 
 cd $cfolder
 checkedsize=$(du -sm $cfolder)
