@@ -224,7 +224,7 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
         response = self.browseCategory(l1Match[1]);
         return response;
       } else {
-        var l2Exp = /^tunein\/browse\/\?+([=0-9a-z&:\~]+)$/
+        var l2Exp = /^tunein\/browse\/\?+([=0-9a-zA-Z&:~]+)$/
         let l2Match = curUri.match(l2Exp);
         if (l2Match != null) {
           response = self.browseList(curUri);
