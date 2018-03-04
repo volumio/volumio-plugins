@@ -224,7 +224,7 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
         response = self.browseCategory(l1Match[1]);
         return response;
       } else {
-        var l2Exp = /^tunein\/browse\/\?+([=0-9a-z&]+)$/
+        var l2Exp = /^tunein\/browse\/\?+([=0-9a-z&:\~]+)$/
         let l2Match = curUri.match(l2Exp);
         if (l2Match != null) {
           response = self.browseList(curUri);
@@ -568,59 +568,70 @@ tuneinRadio.prototype.parseResults = function(results, category) {
 
   var response = {
     navigation: {
-      lists: [
-        {
-          availableListViews: [
-            'list',
-          ],
-          items: [
-          ],
-        },
-      ],
+      lists: [ ],
       prev: {
         uri: self.getPrevUri(),
       },
     },
   };
 
-  if (results.body[0].children) {
-    let lists = results.body;
-    for (var i in lists) {
-      let stationList = lists[i].children;
-      if (i == 0) {
-        response.navigation.lists[i].title = lists[i].text;
-        response.navigation.lists[i].icon = 'fa icon';
-      } else {
-        response.navigation.lists.push({
-          title: lists[i].text,
-          icon: 'fa icon',
+  // TODO Rewrite by using calls to recursive function(s)
+  let body = results.body;
+  let curList = 0;
+
+  for (var i in body) {
+    if (body[i].children) {
+      // This is a list, parse it properly
+      let childList = self.getNavigationList(body[i], category);
+      if (childList) {
+        response.navigation.lists.push(childList)
+        curList++;
+      }
+    } else {
+      if (response.navigation.lists[curList] == undefined) {
+        let firstList = {
           availableListViews: [
             'list',
           ],
-          items: [
-          ],
-        })
+          items: [],
+        };
+        response.navigation.lists.push(firstList);
       }
-      for (var j in stationList) {
-        let item = self.getNavigationItem(stationList[j], category);
-        if (item) {
-          response.navigation.lists[i].items.push(item);
-        }
-        //self.logger.info('[TuneIn] Added new radio entry ' + stationList[j].preset_id + ' => ' + stationList[j].text + ' => ' + stationList[j].URL);
-      }
-    }
-  } else {
-    let stationList = results.body;
-    for (var i in stationList) {
-      let item = self.getNavigationItem(stationList[i], category);
+      let item = self.getNavigationItem(body[i], category);
       if (item) {
-        response.navigation.lists[0].items.push(item);
+        response.navigation.lists[curList].items.push(item);
       }
-      //self.logger.info('[TuneIn] Added new ' + category + ' entry ' + uri + ' => ' + stationList[i].text + ' => ' + stationList[i].URL);
     }
   }
 
   return(response);
+}
+
+tuneinRadio.prototype.getNavigationList = function(nodeList, category) {
+  var self = this;
+
+  var list = {
+    availableListViews: [
+      'list',
+    ],
+    items: [
+    ],
+  };
+
+  if (nodeList.text) {
+    list.title = nodeList.text;
+  }
+  list.icon = 'fa icon';
+
+  let children = nodeList.children;
+  for (var i in children) {
+    let item = self.getNavigationItem(children[i], category);
+    if (item) {
+      list.items.push(item);
+    }
+  }
+
+  return list;
 }
 
 // TODO Do we really need a custom service Type, hence passing
@@ -640,9 +651,14 @@ tuneinRadio.prototype.getNavigationItem = function(node, category) {
   } else if (node.type == 'link') {
     servType = category;
     icon = 'fa fa-folder-open-o';
-    uri = 'tunein/browse/' + node.URLObj.search;
+    if (node.URLObj) {
+      uri = 'tunein/browse/' + node.URLObj.search;
+    } else {
+      let urlObj = url.parse(node.URL);
+      uri = 'tunein/browse/' + urlObj.search;
+    }
   } else {
-    self.logger.warn('[TuneIn] Unknown element type ' + node.type + ' ignored for local radios');
+    self.logger.warn('[TuneIn] Unknown element type ' + node.type + ' ignored for ' + category + ':' + node);
     return null;
   }
 
