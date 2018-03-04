@@ -13,22 +13,30 @@
         "label": "Save",
         "data": [
           "popular",
-          "best"
+          "best",
+          "experimental"
         ]
       },
       "content": [
         {
           "id": "popular",
           "element": "switch",
-          "doc": "Popular Radios Category",
-          "label": "Enable the Popular Radios Category in Main Menu",
+          "doc": "Enable the Popular Radios Category in Main Menu, which is a meta category of Popular radios in your area",
+          "label": "Enable Popular Radios Category",
           "value": false
         },
         {
           "id": "best",
           "element": "switch",
-          "doc": "Best Radios Category",
-          "label": "Enable the Best Radios Category in Main Menu",
+          "doc": "Enable the Best Radios Category in Main Menu, which is a meta category of high quality radios in your area",
+          "label": "Enable Best Radios Category",
+          "value": false
+        },
+        {
+          "id": "experimental",
+          "element": "switch",
+          "doc": "Turn this on if you are willing to test experimental features and provide feedback. Do not enable unless you want to be in for a bumpy ride.",
+          "label": "Enable Experimental features",
           "value": false
         }
       ]

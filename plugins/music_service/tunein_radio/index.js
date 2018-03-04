@@ -84,6 +84,11 @@ tuneinRadio.prototype.refreshConfig = function() {
   } else {
     self.enableBest = false;
   }
+  if (self.config.get('experimental') === true) {
+    self.enableExperimental = true;
+  } else {
+    self.enableExperimental = false;
+  }
 }
 
 tuneinRadio.prototype.getConfigurationFiles = function() {
@@ -103,6 +108,11 @@ tuneinRadio.prototype.onStart = function() {
   self.logger.info(navTreeRoot);
   navTreeRoot.then(function(results) {
     results.forEach (function(item) {
+      if (self.enableExperimental == false) {
+        if (item.key == 'podcast') {
+          return;
+        }
+      }
       self.logger.info('[TuneIn] Element: ' + item.key);
       var el = {
         type: item.type,
@@ -151,6 +161,7 @@ tuneinRadio.prototype.getUIConfig = function() {
   .then(function(uiconf) {
     uiconf.sections[0].content[0].value = self.config.get('popular');
     uiconf.sections[0].content[1].value = self.config.get('best');
+    uiconf.sections[0].content[2].value = self.config.get('experimental');
 
     defer.resolve(uiconf);
   })
@@ -182,6 +193,7 @@ tuneinRadio.prototype.saveMainCategories = function(data) {
 
   self.config.set('popular', data['popular']);
   self.config.set('best', data['best']);
+  self.config.set('experimental', data['experimental']);
   self.refreshConfig();
   self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Configuration Saved');
   return defer.promise;
