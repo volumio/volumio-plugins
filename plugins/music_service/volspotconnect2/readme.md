@@ -1,4 +1,4 @@
-02nd march 2018
+04nd march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -34,7 +34,7 @@ Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http:
 Now you can connect to Volumio with username `volumio` and password `volumio`.
 
 ```
-ssh volumio@volumio.local
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP adress.
 ```
 
 ### 2. Download and install the plugin
@@ -42,9 +42,10 @@ ssh volumio@volumio.local
 Type the following commands to download and install plugin:
 
 ```
-cd /data/INTERNAL
 wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/volspotconnect2.zip
-miniunzip volspotconnect2.zip
+mkdir ./volspotconnect2
+miniunzip volspotconnect2.zip -d ./volspotconnect2
+cd ./volspotconnect2
 volumio plugin install
 ```
 
@@ -54,6 +55,11 @@ Time is reseted when changing volume in UI
 
 
 ## Last changes
+
+04th march
+- update readme for installation (thanks to kayue)
+- renable onstart1.sh
+- add version in plugin configuration
 
 02nd march
 - seek function
