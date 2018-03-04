@@ -23,9 +23,30 @@ Tested on :
 
 ## To install
 
-- You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
-- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
-- Enable the plugin. That it !
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
+
+### 1. Enable SSH and connect to Volumio
+
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+cd /data/INTERNAL
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/volspotconnect2.zip
+miniunzip volspotconnect2.zip
+volumio plugin install
+```
 
 ## Issues
 
