@@ -1,0 +1,8 @@
+{
+  "PLUGIN_CONFIGURATION":"RemotePi Configuration",
+  "REMOTEPI_CONF":"IR receiver settings",
+  "REMOTEPI_DESC":"In order to use the IR receiver of the RemotePI for more than powering on/off LIRC has also to be set up. The plugin \"IR Remote Controller\" does this and also offers configurations for various remote controls. As powering on and off by IR remote control is handled by the RemotePi board directly KEY_POWER keys have to be removed from the lircd.conf files which are provided by the \"IR Remote Controller\" plugin.",
+  "GPIO17":"Use GPIO port 17 for IR receiver",
+  "GPIO17_DOC":"This option needs to be enabled if the RemotePi board has been modified to use GPIO port 17 for the IR receiver instead of GPIO port 18.",
+  "SAVE":"Save"
+}
