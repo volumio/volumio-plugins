@@ -1,4 +1,4 @@
-02nd march 2018
+04nd march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based librespot https://github.com/librespot-org/librespot
@@ -23,9 +23,31 @@ Tested on :
 
 ## To install
 
-- You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
-- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
-- Enable the plugin. That it !
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
+
+### 1. Enable SSH and connect to Volumio
+
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP adress.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/volspotconnect2.zip
+mkdir ./volspotconnect2
+miniunzip volspotconnect2.zip -d ./volspotconnect2
+cd ./volspotconnect2
+volumio plugin install
+```
 
 ## Issues
 
@@ -33,6 +55,11 @@ Time is reseted when changing volume in UI
 
 
 ## Last changes
+
+04th march
+- update readme for installation (thanks to kayue)
+- renable onstart1.sh
+- add version in plugin configuration
 
 02nd march
 - seek function
