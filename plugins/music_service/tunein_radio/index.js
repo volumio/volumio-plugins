@@ -99,8 +99,14 @@ tuneinRadio.prototype.onStart = function() {
   var self = this;
   var defer = libQ.defer();
 
+  var tuneinOptions = {
+    protocol: 'https',
+    cacheRequests: true,
+    cacheTTL: 1000 * 60 * 60,
+  };
+
   self.addToBrowseSources();
-  self.tuneIn = new TuneIn();
+  self.tuneIn = new TuneIn(tuneinOptions);
 
   self.navTree = {};
 
