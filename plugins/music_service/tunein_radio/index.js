@@ -242,10 +242,10 @@ tuneinRadio.prototype.handleBrowseUri = function(curUri) {
         response = self.browseCategory(l1Match[1]);
         return response;
       } else {
-        var l2Exp = /^tunein\/browse\/\?+([=0-9a-zA-Z&:~]+)$/
+        var l2Exp = /^tunein\/(browse|show)\/\?+([=0-9a-zA-Z&:~]+)$/
         let l2Match = curUri.match(l2Exp);
         if (l2Match != null) {
-          response = self.browseList(curUri);
+          response = self.browseList(curUri, l2Match[1]);
           return response;
         }
         self.logger.error('Unknown URI: ' + curUri);
@@ -514,16 +514,20 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   return defer.promise;
 }
 
-tuneinRadio.prototype.browseList = function(uri) {
+tuneinRadio.prototype.browseList = function(uri, listType) {
   var self = this;
   var defer = libQ.defer();
   var response;
   var tuneinRoot;
 
-  self.logger.info('[TuneIn] Fetching Results For ' + uri);
+  self.logger.info('[TuneIn] Fetching (' + listType + ') results For ' + uri);
 
   let parsedUrl = url.parse(uri, true);
-  tuneinRoot = self.tuneIn.browse(parsedUrl.query)
+  if (listType == 'show') {
+    tuneinRoot = self.tuneIn.browse_show(parsedUrl.query);
+  } else {
+    tuneinRoot = self.tuneIn.browse(parsedUrl.query);
+  }
   tuneinRoot.then(function(results) {
     response = self.parseResults(results, parsedUrl.search);
     defer.resolve(response);
@@ -593,7 +597,6 @@ tuneinRadio.prototype.parseResults = function(results, category) {
     },
   };
 
-  // TODO Rewrite by using calls to recursive function(s)
   let body = results.body;
   let curList = 0;
 
@@ -667,13 +670,24 @@ tuneinRadio.prototype.getNavigationItem = function(node, category) {
     albumart = node.image;
     uri = node.URL;
   } else if (node.type == 'link') {
+    let urlBase = 'tunein/browse/';
+    if (node.item == 'show') {
+      if (self.enableExperimental === false) {
+        self.logger.info('Experimental fetaures disabled, skipping podcast item ' + node);
+        return null;
+      } else {
+        urlBase = 'tunein/show/';
+      }
+    }
+
     servType = category;
     icon = 'fa fa-folder-open-o';
+    // XXX To be fixed in node-tunein-radio
     if (node.URLObj) {
-      uri = 'tunein/browse/' + node.URLObj.search;
+      uri = urlBase + node.URLObj.search;
     } else {
       let urlObj = url.parse(node.URL);
-      uri = 'tunein/browse/' + urlObj.search;
+      uri = urlBase + urlObj.search;
     }
   } else {
     self.logger.warn('[TuneIn] Unknown element type ' + node.type + ' ignored for ' + category + ':' + node);
