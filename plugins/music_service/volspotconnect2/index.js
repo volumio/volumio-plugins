@@ -104,10 +104,10 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
  }, function(error, stdout, stderr) {
   //		exec("/bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", function (error, stdout, stderr) {
   if (error !== null) {
-   self.logger.info('The following error occurred while starting VOLSPOTCONNECT: ' + error);
+   self.logger.info('The following error occurred while starting VOLSPOTCONNECT2: ' + error);
    defer.reject();
   } else {
-   self.logger.info('Volspotconnect Daemon Started');
+   self.logger.info('Volspotconnect2 Daemon Started');
    defer.resolve();
   }
  });
@@ -150,7 +150,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  // Register callbacks from the daemon
  self.SpotConn.on('error', function(err) {
-  self.logger.SpConDebug('Error connecting to daemon')
+  self.logger.SpConDebug('Error connecting to metadata daemon')
   self.logger.info(err);
   // Is this still needed?
   try {
@@ -256,7 +256,7 @@ ControllerVolspotconnect.prototype.onStop = function() {
  self.logger.info("Killing daemon")
  exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", function(error, stdout, stderr) {
   if (error) {
-   self.logger.info('Error in killing Voslpotconnect')
+   self.logger.info('Error in killing Voslpotconnect2')
   }
  });
 
@@ -271,7 +271,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
 
  self.startVolspotconnectDaemon()
   .then(function(e) {
-   self.logger.SpConDebug('Volspotconnect Started');
+   self.logger.SpConDebug('Volspotconnect2 Started');
    self.logger.SpConDebug('Starting metadata listener');
    self.volspotconnectDaemonConnect(defer)
    defer.resolve();
@@ -488,4 +488,3 @@ ControllerVolspotconnect.prototype.seek = function(position) {
     self.logger.SpConDebug('Received seek to: ' + position);
     return self.spotifyApi.seek(position);
 }
-

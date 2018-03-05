@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Installing spotify-connect-web dependencies"
+echo "Installing Volspotconnect2 dependencies"
 libpath=/data/plugins/music_service/volspotconnect2
 #removing previous config if exists
 if [ ! -f "/data/configuration/music_service/volspotconnect2/config.json" ];
@@ -9,7 +9,7 @@ if [ ! -f "/data/configuration/music_service/volspotconnect2/config.json" ];
 		echo "File exists removing it"
 		sudo rm /data/configuration/music_service/volspotconnect2/config.json
 fi
-derrormess="Failed to download. Stopping installation now. Check your connection. Thanks your ISP, check DNS settings in Volumio as it may be the cause"
+derrormess="Failed to download. Stopping installation now. Check your connection. Thanks to your ISP, check DNS settings in Volumio as it may be the cause"
 echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 
@@ -26,7 +26,7 @@ then
 		else
 			echo "$derrormess"
 			exit -1
-		fi	
+		fi
 elif [ $cpu = "armv7l" ]
 then
 	cd $libpath

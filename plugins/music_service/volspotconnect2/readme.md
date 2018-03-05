@@ -1,14 +1,14 @@
-04nd march 2018
+04th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
-This new version is based librespot https://github.com/librespot-org/librespot
+This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
 and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
 It is still in dev and some feature are missing.
 
 
 Tested on :
-- RPI 0 
+- RPI 0
 - RPI B
 - RPI B+
 - RPI2
@@ -16,7 +16,7 @@ Tested on :
 - PINE64
 - x86 laptop
 
- 
+
 ## IMPORTANT
 
 - Requires a Premium or Family account
@@ -34,7 +34,7 @@ Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http:
 Now you can connect to Volumio with username `volumio` and password `volumio`.
 
 ```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP adress.
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
 ```
 
 ### 2. Download and install the plugin
@@ -51,14 +51,14 @@ volumio plugin install
 
 ## Issues
 
-Time is reseted when changing volume in UI
+Time is reset when changing volume in UI
 
 
 ## Last changes
 
 04th march
 - update readme for installation (thanks to kayue)
-- renable onstart1.sh
+- re enable onstart1.sh
 - add version in plugin configuration
 
 02nd march
@@ -68,7 +68,7 @@ Time is reseted when changing volume in UI
 
 01st march
 - new librespot for x86
-- now working play/pause next previous buttons ! thank you @Ashthespy !
+- now working play/pause next previous buttons ! thank you @ashthespy !
 
 28th Febuary
 - new librespot for arm
@@ -92,16 +92,16 @@ Time is reseted when changing volume in UI
 
 25th January 18
 
-- correct install.sh
+- correct `install.sh`
 
 16th January 18
 
 merge of volspotconnect-futurdev:
 - add volume normalization
-- add initial spotify volume
+- add initial Spotify volume
 - add metadata (not yet in webUI)
 - add shuffle and repeat
-- onstart uses curl instead of wget
+- `onstart.sh` uses curl instead of wget
 - no x86 yet....
 
 September 28th
@@ -192,7 +192,7 @@ Febuary 28th
 Febuary 27th
 
 - option to share or no the device
-- remove stream rate selector - default is now 320kbps 
+- remove stream rate selector - default is now 320kbps
 
 Febuary 26th
 - correct librespot x86
@@ -223,7 +223,7 @@ Febuary 15th
 
 New librespot libirary
 Cache is now set to 64Mo with auto purge
-  
+
 Febuary 11th
 
 New librespot version
@@ -253,5 +253,3 @@ remove x bit on service
 January 20th
 
 - First commit
-
-
