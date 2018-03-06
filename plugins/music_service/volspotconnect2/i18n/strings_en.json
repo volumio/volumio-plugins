@@ -1,6 +1,6 @@
 {
  "VOLSPOTCONNECT":{
- "VOLSPOTCONNECTCONF":"Volumio Spotify connect Configuration ver 0.6.3",
+ "VOLSPOTCONNECTCONF":"Volumio Spotify connect Configuration ver 0.6.4",
  "VOLSPOTCONNECTACCOUNT":"Spotify account",
  "USERNAME":"username",
  "PASSWORD":"password",

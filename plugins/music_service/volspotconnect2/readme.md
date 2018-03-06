@@ -1,4 +1,4 @@
-04th march 2018
+06th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -55,6 +55,9 @@ Time is reset when changing volume in UI
 
 
 ## Last changes
+
+06th march
+- miscellanea spelling fix
 
 04th march
 - update readme for installation (thanks to kayue)
