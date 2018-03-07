@@ -9,8 +9,8 @@
 	"author": "Ben Mitchell",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "onkyo_control",
-		"icon": "fa-lightbulb-o",
+		"prettyName": "Volumio Onkyo Control",
+		"icon": "fa-volume-up",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
