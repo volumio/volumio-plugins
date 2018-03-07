@@ -7,8 +7,8 @@ https://www.npmjs.com/package/eiscp
 ## TODO
 
 - [ ] Implement power on when starting playback
-- [ ] Implement power off when stopping playback
-- [ ] Config options
+- [ ] Implement power off when stopping playback (Optional? If not resumed after X seconds?)
+- [ ] Config options (IP / Port with defaults, power off time, output channel)
 - [ ] Discover receivers on the network for config option drop down
 - [ ] Change receiver to "Line 1" channel (or configured option) after power on
 
