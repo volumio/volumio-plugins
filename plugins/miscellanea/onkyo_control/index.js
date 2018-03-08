@@ -129,3 +129,37 @@ onkyoControl.prototype.setConf = function(varName, varValue) {
     var self = this;
     //Perform your installation tasks here
 };
+
+onkyoControl.prototype.saveConnectionConfig = function (data)
+{
+    var self = this;
+    var defer=libQ.defer();
+
+    // e.g
+    //self.config.set('API_KEY', data['API_KEY']);
+
+    self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
+    
+    defer.resolve();
+    
+    self.commandRouter.pushToastMessage('success', "TRANSLATE.SETTINGS_SAVED", "TRANSLATE.SETTINGS_SAVED_CONNECTION");
+
+    return defer.promise;
+};
+
+onkyoControl.prototype.saveActionConfig = function (data)
+{
+    var self = this;
+    var defer=libQ.defer();
+
+    self.logger.info("ONKYO-CONTROL: saveActionConfig() data: " + JSON.stringify(data));
+    
+    // e.g
+    //self.config.set('API_KEY', data['API_KEY']);
+    
+    defer.resolve();
+    
+    self.commandRouter.pushToastMessage('success', "TRANSLATE.SETTINGS_SAVED", "TRANSLATE.SETTINGS_SAVED_ACTION");
+
+    return defer.promise;
+};

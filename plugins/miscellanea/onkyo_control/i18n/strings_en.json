@@ -1,4 +1,6 @@
 {
   "PLUGIN_CONFIGURATION":"Volumio Onkyo Control Plugin Configuration",
+
+  "CONNECTION_CONFIGURATION":"Connection Configuration",
   "SAVE":"Save"
 }
