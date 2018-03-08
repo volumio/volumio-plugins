@@ -56,8 +56,7 @@ function ControllerVolspotconnect(context) {
  self.unsetVol = function() {
   //TODO This function should be refactored: it should stop volspotconnect
   var self = this;
-  // Release the sink
-  // self.spotifyApi.pause();
+     self.spotConnUnsetVolatile();
  };
 
  // SpotifyWebApi
@@ -159,7 +158,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  });
 
  self.SpotConn.on('SActive', function(data) {
-  self.logger.SpConDebug('Session is active!')
+  self.logger.SpConDebug('Session is active!');
+  self.volumioStop();
  });
 
  self.SpotConn.on('DActive', function(data) {
@@ -214,17 +214,18 @@ ControllerVolspotconnect.prototype.initWebApi = function() {
 ControllerVolspotconnect.prototype.ActivedState = function() {
  var self = this;
  // Session is active, lets tell Volumio!
- self.logger.SpConDebug('SpotConn is playing')
- self.context.coreCommand.volumioStop();
- self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
+ self.logger.SpConDebug('SpotConn is playing');
 
- self.context.coreCommand.stateMachine.setVolatile({
-  service: self.servicename,
-  callback: self.unsetVol.bind(self)
- });
+    self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
 
- // Push state with metadata
- self.commandRouter.servicePushState(self.state, self.servicename);
+    self.context.coreCommand.stateMachine.setVolatile({
+        service: self.servicename,
+        callback: self.unsetVol.bind(self)
+    });
+
+    // Push state with metadata
+    self.commandRouter.servicePushState(self.state, self.servicename);
+
 
 }
 
@@ -241,11 +242,27 @@ ControllerVolspotconnect.prototype.DeactivatedState = function() {
   self.context.coreCommand.volumioStop.bind(self.commandRouter));
 }
 
+ControllerVolspotconnect.prototype.spotConnUnsetVolatile = function() {
+    var self = this;
+
+    self.stop();
+    self.device === undefined ? self.logger.SpConDebug("Killing Volumio State") : self.logger.SpConDebug("Killing Volumio state, Spotify session: " + self.device.is_active);
+}
+
 ControllerVolspotconnect.prototype.pushState = function() {
  var self = this;
 
  // Push state
  self.commandRouter.servicePushState(self.state, self.servicename);
+}
+
+ControllerVolspotconnect.prototype.volumioStop = function() {
+    var self = this;
+
+    var state = self.commandRouter.volumioGetState()
+    if (state != undefined && state.service != undefined && state.service != 'volspotconnect2') {
+        self.commandRouter.volumioStop();
+    }
 }
 
 
