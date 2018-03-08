@@ -2,5 +2,26 @@
   "PLUGIN_CONFIGURATION":"Volumio Onkyo Control Plugin Configuration",
 
   "CONNECTION_CONFIGURATION":"Connection Configuration",
+  "ACTION_CONFIGURATION":"Action Configuration",
+
+  "AUTOLOCATE":"Automatically locate receiver",
+  "AUTOLOCATE_DOC":"Automatically locate your receiver on the network. If you have more than one receiver or your receiver is not automatically found, you may wish to enter the IP and Port manually.",
+
+  "RECEIVER_IP":"IP/Hostname",
+  "RECEIVER_IP_DOC":"The IP or hostname of the Onkyo receiver you wish to control.",
+
+  "RECEIVER_PORT":"Port",
+  "RECEIVER_PORT_DOC":"The Port you wish to control the receiver with.",
+
+  "POWERON":"Power on",
+  "POWERON_DOC":"Power on the receiver when playback begins.",
+
+  "STANDBY":"Standby",
+  "STANDBY_DOC":"Put the receiver into a standby state when playback ends.",
+
+  "STANDBY_DELAY":"Stanby Delay time (seconds)",
+  "STANDBY_DELAY_DOC":"The time (in seconds) to wait before putting the receiver in a standby state. If playback is resumed within this time, this command is cancelled",
+
+
   "SAVE":"Save"
 }

@@ -6,7 +6,7 @@
     {
       "id": "section_connection",
       "element": "section",
-      "label": "TRANSLATE.CONECTION_CONFIGURATION",
+      "label": "TRANSLATE.CONNECTION_CONFIGURATION",
       "icon": "fa-plug",
       "onSave": {
         "type": "controller",
@@ -35,7 +35,11 @@
           "element": "input",
           "doc": "TRANSLATE.RECEIVER_IP_DOC",
           "label": "TRANSLATE.RECEIVER_IP",
-          "value": ""
+          "value": "",
+          "visibleIf": {
+            "field": "autolocate",
+            "value": false
+          }
         },
         {
           "id": "receiverPort",
@@ -43,7 +47,12 @@
           "element": "input",
           "doc": "TRANSLATE.RECEIVER_PORT_DOC",
           "label": "TRANSLATE.RECEIVER_PORT",
-          "value": "60128"
+          "value": "60128",
+          "visibleIf": {
+            "field": "autolocate",
+            "value": false
+          }
+
         }
       ]
     },
