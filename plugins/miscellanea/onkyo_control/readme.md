@@ -12,6 +12,12 @@ https://www.npmjs.com/package/eiscp
 - [ ] Config options (IP / Port with defaults, power off time, output channel)
 - [ ] Discover receivers on the network for config option drop down
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
+- [ ] Tidy logging
+
+## Known issues
+
+- [ ] Power off on song stop
+- [ ] Toast i18n messages not working
 
 
 
