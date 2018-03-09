@@ -44,7 +44,7 @@
 				},
 				{
 					"prettyName": "Volumio Spotify Connect2",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-spotify",
 					"name": "volspotconnect2",
 					"version": "0.6.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
@@ -62,7 +62,7 @@
 				},
 				{
 					"prettyName": "Squeezelite player",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa fa-music",
 					"name": "squeezelite",
 					"version": "1.0.9",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/squeezelite/squeezelite.zip",
@@ -98,7 +98,7 @@
 				},
 				{
 					"prettyName": "Personal Radio",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "personal_radio",
 					"version": "0.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
@@ -155,7 +155,7 @@
 				},
 				{
 					"prettyName": "FritzCallMute",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-phone",
 					"name": "fritzcallmute",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
@@ -173,7 +173,7 @@
 				},
 				{
 					"prettyName": "Amplifier Switch",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-power-off",
 					"name": "ampswitch",
 					"version": "0.1.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/ampswitch/ampswitch.zip",
@@ -191,7 +191,7 @@
 				},
 				{
 					"prettyName": "LastFM Scrobbler",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-lastfm",
 					"name": "lastfm",
 					"version": "1.1.11",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfm/lastfm.zip",
@@ -209,7 +209,7 @@
 				},
 				{
 					"prettyName": "Kodi Krypton",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa fa-tv",
 					"name": "kodi",
 					"version": "2.2.11",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/kodi/kodi.zip",
@@ -348,7 +348,7 @@
 			"plugins": [
 				{
 					"prettyName": "Volumio simple equalizer 0.4.1",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-sliders fa-rotate-90",
 					"name": "volsimpleequal",
 					"version": "0.4.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volsimpleequal/volsimpleequal.zip",
@@ -374,7 +374,7 @@
 			"plugins": [
 				{
 					"prettyName": "Rotary Encoder",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-circle-o-notch",
 					"name": "rotaryencoder",
 					"version": "1.0.6",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder/rotaryencoder.zip",
