@@ -1,4 +1,4 @@
-06th march 2018
+09th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -55,6 +55,10 @@ Time is reset when changing volume in UI
 
 
 ## Last changes
+
+09th march
+- add dutch translation. Thank you @LeonCB
+- re enable volumio stop when spotify starts playing.
 
 06th march
 - miscellanea spelling fix
