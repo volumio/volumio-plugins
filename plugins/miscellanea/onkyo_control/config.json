@@ -1,3 +1,32 @@
 {
- 
+  "autolocate":{
+    "type":"boolean",
+    "value":true
+  },
+
+  "receiverIP":{
+    "type":"string",
+    "value":""
+  },
+
+  "receiverPort":{
+    "type":"string",
+    "value":"60128"
+  },
+
+  "poweron":{
+    "type":"boolean",
+    "value":true
+  },
+
+  "standby":{
+    "type":"boolean",
+    "value":true
+  },
+
+  "standbyDelay":{
+    "type":"int",
+    "value":5
+  }
+
 }

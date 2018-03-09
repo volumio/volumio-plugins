@@ -26,6 +26,7 @@ onkyoControl.prototype.onVolumioStart = function() {
     var self = this;
     var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
     this.config = new(require('v-conf'))();
+            self.logger.info("ONKYO-CONTROL:  CONFIG FILE: " + configFile);
     this.config.loadFile(configFile);
 
     return libQ.resolve();
@@ -60,11 +61,12 @@ onkyoControl.prototype.onStart = function() {
 
     socket.on('pushState', function(state) {
 
-        if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
             self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state));
-            self.logger.info("ONKYO-CONTROL: eiscp not connected. Connecting... ");
+        if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
+            self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
             eiscp.connect({ port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false });
+            self.logger.info("ONKYO-CONTROL: eiscp connected ");
         }
         self.currentState = state.status;
 
@@ -135,8 +137,9 @@ onkyoControl.prototype.saveConnectionConfig = function (data)
     var self = this;
     var defer=libQ.defer();
 
-    // e.g
-    //self.config.set('API_KEY', data['API_KEY']);
+    self.config.set('autolocate', data['autolocate']);
+    self.config.set('receiverIP', data['receiverIP']);
+    self.config.set('receiverPort', data['receiverPort']);
 
     self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
     
@@ -154,8 +157,9 @@ onkyoControl.prototype.saveActionConfig = function (data)
 
     self.logger.info("ONKYO-CONTROL: saveActionConfig() data: " + JSON.stringify(data));
     
-    // e.g
-    //self.config.set('API_KEY', data['API_KEY']);
+    self.config.set('poweron', data['poweron']);
+    self.config.set('standby', data['standby']);
+    self.config.set('standbyDelay', data['standbyDelay']);
     
     defer.resolve();
     

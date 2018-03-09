@@ -95,7 +95,7 @@
           "element": "input",
           "doc": "TRANSLATE.STANDBY_DELAY_DOC",
           "label": "TRANSLATE.STANDBY_DELAY",
-          "value": 0,
+          "value": 5,
           "visibleIf": {
             "field": "standby",
             "value": true
