@@ -64,9 +64,23 @@ onkyoControl.prototype.onStart = function() {
             self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state));
         if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
-            self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
-            eiscp.connect({ port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false });
-            self.logger.info("ONKYO-CONTROL: eiscp connected ");
+
+            if (state.status === 'play' && self.config.get('poweron')) {
+		clearTimeout(self.standbyTimout);
+		self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
+	        eiscp.connect({ port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false });
+        	self.logger.info("ONKYO-CONTROL: eiscp connected ");
+
+            } else if (state.status === 'stop' && self.config.get('standby')) {
+		self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay')*1000 + " seconds");
+		    self.standbyTimout = setTimeout(function() {
+		    self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
+                    eiscp.connect({ port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false });
+                    self.logger.info("ONKYO-CONTROL: eiscp connected ");
+		}, self.config.get('standbyDelay')*1000);
+
+	    }
+
         }
         self.currentState = state.status;
 
@@ -93,6 +107,11 @@ onkyoControl.prototype.onRestart = function() {
 };
 
 
+onkyoControl.prototype.getConfigurationFiles = function()
+{
+	return ['config.json'];
+}
+
 // Configuration Methods -----------------------------------------------------------------------------
 
 onkyoControl.prototype.getUIConfig = function() {
@@ -105,6 +124,14 @@ onkyoControl.prototype.getUIConfig = function() {
             __dirname + '/i18n/strings_en.json',
             __dirname + '/UIConfig.json')
         .then(function(uiconf) {
+	    
+	    uiconf.sections[0].content[2].value = self.config.get('autolocate');
+	    uiconf.sections[0].content[1].value = self.config.get('receiverIP');
+	    uiconf.sections[0].content[2].value = self.config.get('receiverPort');
+
+	    uiconf.sections[1].content[0].value = self.config.get('poweron');
+	    uiconf.sections[1].content[1].value = self.config.get('standby');
+	    uiconf.sections[1].content[2].value = self.config.get('standbyDelay');
 
 
             defer.resolve(uiconf);
@@ -159,7 +186,12 @@ onkyoControl.prototype.saveActionConfig = function (data)
     
     self.config.set('poweron', data['poweron']);
     self.config.set('standby', data['standby']);
-    self.config.set('standbyDelay', data['standbyDelay']);
+
+    if (data['standbyDelay'] <= 0) {
+	self.config.set('standbyDelay', 0);
+    } else {
+	self.config.set('standbyDelay', data['standbyDelay']);
+    }
     
     defer.resolve();
     
