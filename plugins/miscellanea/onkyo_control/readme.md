@@ -16,7 +16,7 @@ https://www.npmjs.com/package/eiscp
 
 ## Known issues
 
-- [ ] Power off on song stop
+- [ ] Power off on song end
 - [ ] Toast i18n messages not working
 
 
