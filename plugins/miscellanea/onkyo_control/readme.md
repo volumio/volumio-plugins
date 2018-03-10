@@ -8,16 +8,18 @@ https://www.npmjs.com/package/eiscp
 
 - [X] Implement power on when starting playback
 - [X] Implement power off when stopping playback
-- [ ] Timeout when powering off (Wait X seconds for state to change to play, or power off)
-- [ ] Config options (IP / Port with defaults, power off time, output channel)
+- [X] Timeout when powering off (Wait X seconds for state to change to play, or power off)
+- [X] Config options (IP / Port with defaults, power off time, output channel)
+- [X] I18N
 - [ ] Discover receivers on the network for config option drop down
+- [ ] Manual hostname / ip / port entry
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
 - [ ] Tidy logging
 
 ## Known issues
 
-- [ ] Power off on song end
-- [ ] Toast i18n messages not working
+- [X] ~~Power off on song end~~
+- [X] ~~Toast i18n messages not working~~
 
 
 
