@@ -22,7 +22,7 @@
   "STANDBY_DELAY":"Stanby Delay time (seconds)",
   "STANDBY_DELAY_DOC":"The time (in seconds) to wait before putting the receiver in a standby state. If playback is resumed within this time, this command is cancelled",
 
-  "TRANSLATE.SETTINGS_SAVED":"Settings Saved",
+  "SETTINGS_SAVED":"Settings Saved",
   "SETTINGS_SAVED_CONNECTION":"Connection settings have been saved.",
   "SETTINGS_SAVED_ACTION":"Action settings have been saved.",
 

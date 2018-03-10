@@ -36,9 +36,7 @@ onkyoControl.prototype.onStart = function() {
     var self = this;
     var defer = libQ.defer();
 
-
-    // Once the Plugin has successfull started resolve the promise
-    defer.resolve();
+    self.load18nStrings();
 
 
     eiscp.on('connect', function() {
@@ -72,7 +70,7 @@ onkyoControl.prototype.onStart = function() {
         	self.logger.info("ONKYO-CONTROL: eiscp connected ");
 
             } else if (state.status === 'stop' && self.config.get('standby')) {
-		self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay')*1000 + " seconds");
+		self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay') + " seconds");
 		    self.standbyTimout = setTimeout(function() {
 		    self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                     eiscp.connect({ port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false });
@@ -87,6 +85,8 @@ onkyoControl.prototype.onStart = function() {
     });
 
     self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STARTED ********");
+    // Once the Plugin has successfull started resolve the promise
+    defer.resolve();
 
     return defer.promise;
 };
@@ -172,7 +172,7 @@ onkyoControl.prototype.saveConnectionConfig = function (data)
     
     defer.resolve();
     
-    self.commandRouter.pushToastMessage('success', "TRANSLATE.SETTINGS_SAVED", "TRANSLATE.SETTINGS_SAVED_CONNECTION");
+    self.commandRouter.pushToastMessage('success', self.getI18nString("SETTINGS_SAVED"), self.getI18nString("SETTINGS_SAVED_CONNECTION"));
 
     return defer.promise;
 };
@@ -195,7 +195,31 @@ onkyoControl.prototype.saveActionConfig = function (data)
     
     defer.resolve();
     
-    self.commandRouter.pushToastMessage('success', "TRANSLATE.SETTINGS_SAVED", "TRANSLATE.SETTINGS_SAVED_ACTION");
+    self.commandRouter.pushToastMessage('success', self.getI18nString("SETTINGS_SAVED"), self.getI18nString("SETTINGS_SAVED_ACTION"));
 
     return defer.promise;
+};
+
+// Internationalisation Methods -----------------------------------------------------------------------------
+
+onkyoControl.prototype.load18nStrings = function () {
+  var self=this;
+
+  try {
+    var language_code = this.commandRouter.sharedVars.get('language_code');
+    self.i18nStrings=fs.readJsonSync(__dirname+'/i18n/strings_'+language_code+".json");
+	} catch(e) {
+		self.i18nStrings=fs.readJsonSync(__dirname+'/i18n/strings_en.json');
+	}
+
+  self.i18nStringsDefaults=fs.readJsonSync(__dirname+'/i18n/strings_en.json');
+};
+
+onkyoControl.prototype.getI18nString = function (key) {
+  var self=this;
+
+  if (self.i18nStrings[key] !== undefined)
+    return self.i18nStrings[key];
+  else
+    return self.i18nStringsDefaults[key];
 };
