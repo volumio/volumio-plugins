@@ -4,37 +4,10 @@ var libQ = require('kew');
 var fs = require('fs-extra');
 var config = new(require('v-conf'))();
 var exec = require('child_process').exec;
-const SpotifyWebApi = require('spotify-web-api-node'),
-	AuthenticationRequest = require('./node_modules/spotify-web-api-node/src/authentication-request'),
-	WebApiRequest = require('./node_modules/spotify-web-api-node/src/webapi-request'),
-	HttpManager = require('./node_modules/spotify-web-api-node/src/http-manager');
+const SpotifyWebApi = require('spotify-web-api-node');
 const SpotConnCtrl = require('./SpotConnController');
 
-//  Workaround for seek until
-// https://github.com/thelinmichael/spotify-web-api-node/pull/156 is merged
-SpotifyWebApi.prototype["seek"] = function(position, callback) {
-    const request = WebApiRequest.builder()
-        .withPath('/v1/me/player/seek')
-        .withHeaders({ 'Content-Type' : 'application/json' })
-        .withQueryParameters({
-            'position_ms': Math.floor(position)
-        })
-        .build();
 
-    this._addAccessToken(request, this.getAccessToken());
-
-    const promise = this._performRequest(HttpManager.put, request);
-
-    if (callback) {
-        return promise.then((data) => {
-            callback(null, data);
-        }, (err) => {
-            callback(err);
-        });
-    }
-
-    return promise;
-};
 
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
