@@ -59,7 +59,7 @@ onkyoControl.prototype.onStart = function() {
     });
 
     eiscp.on('error', function(error) {
-        self.logger.info("ONKYO-CONTROL:  An error occurred trying to comminicate with the receiver: " + error);
+        self.logger.error("ONKYO-CONTROL:  An error occurred trying to comminicate with the receiver: " + error);
     });
 
     socket.on('pushState', function(state) {
@@ -77,7 +77,7 @@ onkyoControl.prototype.onStart = function() {
             }
         } else {
             connectionOptions.port = 60128;
-            connectionOptions.host = undefined;
+            connectionOptions.host = '';
         }
 
         self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
