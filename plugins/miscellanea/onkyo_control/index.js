@@ -40,6 +40,7 @@ onkyoControl.prototype.onStart = function() {
 
 
     eiscp.on('connect', function() {
+        self.logger.info("ONKYO-CONTROL: eiscp connected ");
         if (self.currentState === 'play') {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('system-power=on')");
             eiscp.command('system-power=on', function() {
@@ -58,7 +59,7 @@ onkyoControl.prototype.onStart = function() {
     });
 
     eiscp.on('error', function(error) {
-        self.logger.info("ONKYO-CONTROL:  An error occurred trying to connect to the receiver: " + error);
+        self.logger.info("ONKYO-CONTROL:  An error occurred trying to comminicate with the receiver: " + error);
     });
 
     socket.on('pushState', function(state) {
@@ -67,32 +68,29 @@ onkyoControl.prototype.onStart = function() {
 
         if (!self.config.get('autolocate')) {
             if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
-                self.logger.info("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
                 connectionOptions.port = self.config.get('receiverPort');
+                self.logger.info("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
             }
             if (self.config.get('receiverIP') && self.config.get('receiverIP') !== '') {
-                self.logger.info("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
                 connectionOptions.host = self.config.get('receiverIP');
+                self.logger.info("ONKYO-CONTROL: Overriding default connection host / ip: " + JSON.stringify(connectionOptions));
             }
         }
 
-
         self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
-        self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state));
+        self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
         if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
 
             if (state.status === 'play' && self.config.get('poweron')) {
                 clearTimeout(self.standbyTimout);
                 self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                 eiscp.connect(connectionOptions);
-                self.logger.info("ONKYO-CONTROL: eiscp connected ");
-
+      
             } else if (state.status === 'stop' && self.config.get('standby')) {
                 self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay') + " seconds");
                 self.standbyTimout = setTimeout(function() {
                     self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                     eiscp.connect(connectionOptions);
-                    self.logger.info("ONKYO-CONTROL: eiscp connected ");
                 }, self.config.get('standbyDelay') * 1000);
 
             }
