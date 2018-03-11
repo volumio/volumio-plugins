@@ -61,7 +61,7 @@ onkyoControl.prototype.onStart = function() {
 
         var connectionOptions = { port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false };
 
-        if (self.config.get('autolocate')) {
+        if (!self.config.get('autolocate')) {
             if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
                 connectionOptions.port = self.config.get('receiverPort');
             }
