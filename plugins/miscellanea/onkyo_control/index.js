@@ -136,7 +136,7 @@ onkyoControl.prototype.getUIConfig = function() {
             __dirname + '/UIConfig.json')
         .then(function(uiconf) {
 
-            uiconf.sections[0].content[2].value = self.config.get('autolocate');
+            uiconf.sections[0].content[0].value = self.config.get('autolocate');
             uiconf.sections[0].content[1].value = self.config.get('receiverIP');
             uiconf.sections[0].content[2].value = self.config.get('receiverPort');
 
