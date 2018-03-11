@@ -62,7 +62,7 @@ onkyoControl.prototype.onStart = function() {
         var connectionOptions = { port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false };
 
         if (self.config.get('autolocate')) {
-            if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && isNaN(self.config.get('receiverPort'))) {
+            if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
                 connectionOptions.port = self.config.get('receiverPort');
             }
             if (self.config.get('receiverIP') && self.config.get('receiverIP') !== '') {
@@ -177,7 +177,7 @@ onkyoControl.prototype.saveConnectionConfig = function(data) {
     self.config.set('autolocate', data['autolocate']);
     self.config.set('receiverIP', data['receiverIP']);
 
-    if (!data['receiverPort'] || data['receiverPort'] === '' || !isNaN(data['receiverPort'])) {
+    if (!data['receiverPort'] || data['receiverPort'] === '' || isNaN(data['receiverPort'])) {
         self.config.set('receiverPort', '60128');
     } else {
         self.config.set('receiverPort', data['receiverPort']);
