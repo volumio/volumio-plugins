@@ -57,6 +57,10 @@ onkyoControl.prototype.onStart = function() {
         }
     });
 
+    eiscp.on('error', function(error) {
+        self.logger.info("ONKYO-CONTROL:  An error occurred trying to connect to the receiver: " + error);
+    });
+
     socket.on('pushState', function(state) {
 
         var connectionOptions = { port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false };
