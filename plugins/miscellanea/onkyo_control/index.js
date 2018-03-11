@@ -75,6 +75,9 @@ onkyoControl.prototype.onStart = function() {
                 connectionOptions.host = self.config.get('receiverIP');
                 self.logger.info("ONKYO-CONTROL: Overriding default connection host / ip: " + JSON.stringify(connectionOptions));
             }
+        } else {
+            connectionOptions.port = 60128;
+            connectionOptions.host = undefined;
         }
 
         self.logger.info("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
@@ -85,7 +88,7 @@ onkyoControl.prototype.onStart = function() {
                 clearTimeout(self.standbyTimout);
                 self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                 eiscp.connect(connectionOptions);
-      
+
             } else if (state.status === 'stop' && self.config.get('standby')) {
                 self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay') + " seconds");
                 self.standbyTimout = setTimeout(function() {
