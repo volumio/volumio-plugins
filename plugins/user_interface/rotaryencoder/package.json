@@ -34,7 +34,7 @@
 		"net": "^1.0.2",
 		"once": "^1.4.0",
 		"onoff": "^1.1.9",
-		"onoff-rotary": "https://github.com/Saiyato/onoff-rotary/tarball/ebfbc16a0806762b2e08ab40a539f0fcd3302506",
+		"onoff-rotary": "https://github.com/Saiyato/onoff-rotary/tarball/b0f750b70c25e6c4a1c8d6fc42a4bfcbdba994ff",
 		"path-is-absolute": "^1.0.1",
 		"rimraf": "^2.6.2",
 		"slide": "^1.1.6",
