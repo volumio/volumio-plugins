@@ -63,9 +63,11 @@ onkyoControl.prototype.onStart = function() {
 
         if (!self.config.get('autolocate')) {
             if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
+                self.logger.info("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
                 connectionOptions.port = self.config.get('receiverPort');
             }
             if (self.config.get('receiverIP') && self.config.get('receiverIP') !== '') {
+                self.logger.info("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
                 connectionOptions.host = self.config.get('receiverIP');
             }
         }
