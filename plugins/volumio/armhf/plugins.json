@@ -100,10 +100,10 @@
 					"prettyName": "Personal Radio",
 					"icon": "fa-headphones",
 					"name": "personal_radio",
-					"version": "0.0.7",
+					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
 					"license": "ISC",
-					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"description": "Personal Radio Plugin for Volumio2 (KBS,MBC,SBS Korean Radios & Linn)",
 					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
 					"author": "Chris Song <ckchrisong@gmail.com>",
 					"screenshots": [
@@ -112,7 +112,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "12-3-2018"
 				},
 				{
 					"prettyName": "TuneIn Radio",
