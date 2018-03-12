@@ -181,18 +181,14 @@ onkyoControl.prototype.getUIConfig = function () {
                 if(err) {
                     self.logger.info("ONKYO-CONTROL: Error discovering receivers: " + results);
                 } else {
-                    self.logger.info("ONKYO-CONTROL: Found these receivers on the local network: " + results);
+                    self.logger.info("ONKYO-CONTROL: Found these receivers on the local network: " + JSON.stringify(results));
                     results.forEach(function(receiver) {
                         uiconf.sections[0].content[1].options.push({"value":receiver.host, "label":receiver.model})
                     });
                 }
+                defer.resolve(uiconf);
             });
 
-
-
-
-
-            defer.resolve(uiconf);
         })
         .fail(function () {
             defer.reject(new Error());
