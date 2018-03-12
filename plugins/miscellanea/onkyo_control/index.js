@@ -61,7 +61,7 @@ onkyoControl.prototype.onStart = function () {
             commands.push('system-power=standby');
         }
 
-        commands.forEach(function(command, index) {
+        commands.forEach(function(command, index, array) {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('" + command + "')");
 
             if (index < array.length - 1) {
