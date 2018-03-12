@@ -175,7 +175,7 @@
 					"prettyName": "FritzCallMute",
 					"icon": "fa-phone",
 					"name": "fritzcallmute",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
 					"license": "ISC",
 					"description": "Mutes on phone calls via FritzBox router",
@@ -187,7 +187,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "12-3-2018"
 				},
 				{
 					"prettyName": "Amplifier Switch",
