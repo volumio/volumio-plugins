@@ -477,7 +477,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   for (var el in self.navTree) {
     rootTree.navigation.lists[0].items.push({
       service: 'tunein_radio',
-      type: el,
+      type: 'streaming-category',
       title: self.navTree[el].text,
       artist: '',
       album: '',
@@ -490,7 +490,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   if (self.enablePopular === true) {
     rootTree.navigation.lists[0].items.push({
       service: 'tunein_radio',
-      type: 'popular',
+      type: 'streaming-category',
       title: 'Popular',
       artist: '',
       album: '',
@@ -501,7 +501,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   if (self.enableBest === true) {
     rootTree.navigation.lists[0].items.push({
       service: 'tunein_radio',
-      type: 'best',
+      type: 'streaming-category',
       title: 'Best',
       artist: '',
       album: '',
