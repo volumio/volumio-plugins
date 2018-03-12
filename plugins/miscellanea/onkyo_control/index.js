@@ -61,7 +61,7 @@ onkyoControl.prototype.onStart = function () {
             commands.push('system-power=standby');
         }
 
-        commands.forEach(function(command, index, array) {
+        commands.forEach(function (command, index, array) {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('" + command + "')");
 
             if (index < array.length - 1) {
@@ -177,15 +177,18 @@ onkyoControl.prototype.getUIConfig = function () {
             uiconf.sections[1].content[4].value = self.config.get('setVolumeValue');
 
             eiscp.discover({timeout: 5}, function (err, results) {
-
-                if(err) {
+                if (err) {
                     self.logger.info("ONKYO-CONTROL: Error discovering receivers: " + results);
                 } else {
                     self.logger.info("ONKYO-CONTROL: Found these receivers on the local network: " + JSON.stringify(results));
-                    results.forEach(function(receiver) {
-                        uiconf.sections[0].content[1].options.push({"value":receiver.host, "label":receiver.model})
+                    results.forEach(function (receiver) {
+                        uiconf.sections[0].content[1].options.push({"value": receiver.host, "label": receiver.model})
                     });
                 }
+                uiconf.sections[0].content[1].options.push({
+                    "value": "manual",
+                    "label": self.getI18nString("TRANSLATE.SELECT_RECEIVER_MANUAL")
+                })
                 defer.resolve(uiconf);
             });
 
@@ -218,14 +221,20 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
     var defer = libQ.defer();
 
     self.config.set('autolocate', data['autolocate']);
-    self.config.set('receiverIP', data['receiverIP']);
     self.config.set('receiverSelect', data['receiverSelect']);
 
-    if (!data['receiverPort'] || data['receiverPort'] === '' || isNaN(data['receiverPort'])) {
+    if (data['receiverSelect'].value !== "manual") {
+        self.config.set('receiverIP', data['receiverSelect'].value);
         self.config.set('receiverPort', '60128');
     } else {
-        self.config.set('receiverPort', data['receiverPort']);
+        self.config.set('receiverIP', data['receiverIP']);
+        if (!data['receiverPort'] || data['receiverPort'] === '' || isNaN(data['receiverPort'])) {
+            self.config.set('receiverPort', '60128');
+        } else {
+            self.config.set('receiverPort', data['receiverPort']);
+        }
     }
+
 
     self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
 
