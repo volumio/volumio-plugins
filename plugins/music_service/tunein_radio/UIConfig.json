@@ -1,0 +1,45 @@
+{
+  "page": {
+    "label": "TuneIn Radio Configuration"
+  },
+  "sections": [
+    {
+      "id": "section_main_menu",
+      "element": "section",
+      "label": "TuneIn main categories",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/tunein_radio", "method":"saveMainCategories"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "popular",
+          "best",
+          "experimental"
+        ]
+      },
+      "content": [
+        {
+          "id": "popular",
+          "element": "switch",
+          "doc": "Enable the Popular Radios Category in Main Menu, which is a meta category of Popular radios in your area",
+          "label": "Enable Popular Radios Category",
+          "value": false
+        },
+        {
+          "id": "best",
+          "element": "switch",
+          "doc": "Enable the Best Radios Category in Main Menu, which is a meta category of high quality radios in your area",
+          "label": "Enable Best Radios Category",
+          "value": false
+        },
+        {
+          "id": "experimental",
+          "element": "switch",
+          "doc": "Turn this on if you are willing to test experimental features and provide feedback. Do not enable unless you want to be in for a bumpy ride.",
+          "label": "Enable Experimental features",
+          "value": false
+        }
+      ]
+    }
+  ]
+}
