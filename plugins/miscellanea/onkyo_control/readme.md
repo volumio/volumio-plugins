@@ -2,7 +2,7 @@
 
 (Hopefully) A simple plugin that is able to turn an Onkyo receiver on the network on and off when playback begins and ends using eISCP.
 
-https://www.npmjs.com/package/eiscp
+https://github.com/tillbaks/node-eiscp
 
 ## TODO
 
@@ -11,8 +11,9 @@ https://www.npmjs.com/package/eiscp
 - [X] Timeout when powering off (Wait X seconds for state to change to play, or power off)
 - [X] Config options (IP / Port with defaults, power off time, output channel)
 - [X] I18N
+- [X] Manual hostname / ip / port entry
 - [ ] Discover receivers on the network for config option drop down
-- [ ] Manual hostname / ip / port entry
+- [ ] Change receiver volume after power on
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
 - [ ] Tidy logging
 
@@ -20,6 +21,7 @@ https://www.npmjs.com/package/eiscp
 
 - [X] ~~Power off on song end~~
 - [X] ~~Toast i18n messages not working~~
+- [X] ~~Autolocate does not work after an incorrect host/ip has been attempted to be used.~~
 
 
 
