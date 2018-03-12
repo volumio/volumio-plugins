@@ -61,15 +61,27 @@ onkyoControl.prototype.onStart = function () {
             commands.push('system-power=standby');
         }
 
-        commands.forEach(function(command, index, array) {
+        commands.reverse();
+
+        var lastCommand;
+
+        commands.forEach(function(command, index) {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('" + command + "')");
 
-            if (index < array.length - 1) {
-                eiscp.command(command);
+            if (index == 0) {
+                lastCommand = function() {
+                    eiscp.command(command, disconnectCallback);
+                };
             } else {
-                eiscp.command(command, disconnectCallback);
+                lastCommand = function() {
+                    eiscp.command(command, lastCommand);
+                };
             }
         });
+
+        if (lastCommand) {
+            lastCommand();
+        }
 
     });
 
