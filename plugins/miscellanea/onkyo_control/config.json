@@ -4,8 +4,8 @@
     "value": true
   },
   "receiverSelect": {
-    "type": "select",
-    "value": {"value": 1 ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"}
+    "type": "string",
+    "value": "manual"
   },
   "receiverIP": {
     "type": "string",

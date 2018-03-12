@@ -166,7 +166,6 @@ onkyoControl.prototype.getUIConfig = function () {
             self.logger.info("ONKYO-CONTROL: getUIConfig()");
 
             uiconf.sections[0].content[0].value = self.config.get('autolocate');
-            uiconf.sections[0].content[1].value = self.config.get('receiverSelect');
             uiconf.sections[0].content[2].value = self.config.get('receiverIP');
             uiconf.sections[0].content[3].value = self.config.get('receiverPort');
 
@@ -182,8 +181,16 @@ onkyoControl.prototype.getUIConfig = function () {
                 } else {
                     self.logger.info("ONKYO-CONTROL: Found these receivers on the local network: " + JSON.stringify(results));
                     results.forEach(function (receiver) {
-                        uiconf.sections[0].content[1].options.push({"value": receiver.host, "label": receiver.model})
+                        var option = {"value": receiver.host, "label": receiver.model};
+                        uiconf.sections[0].content[1].options.push(option)
+
+                        if (receiver.host === self.config.get('receiverSelect')) {
+                            uiconf.sections[0].content[1].value = option;
+                        }
                     });
+                }
+                if (!uiconf.sections[0].content[1].value) {
+                    uiconf.sections[0].content[1].value = {"value": "manual", "label": self.getI18nString("SELECT_RECEIVER_MANUAL")};
                 }
                 defer.resolve(uiconf);
             });
