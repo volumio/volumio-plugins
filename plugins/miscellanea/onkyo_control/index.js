@@ -1,6 +1,6 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
-var config = new(require('v-conf'))();
+var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
@@ -22,35 +22,35 @@ function onkyoControl(context) {
 
 }
 
-onkyoControl.prototype.onVolumioStart = function() {
+onkyoControl.prototype.onVolumioStart = function () {
     var self = this;
     var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-    this.config = new(require('v-conf'))();
+    this.config = new (require('v-conf'))();
     self.logger.info("ONKYO-CONTROL:  CONFIG FILE: " + configFile);
     this.config.loadFile(configFile);
 
     return libQ.resolve();
 }
 
-onkyoControl.prototype.onStart = function() {
+onkyoControl.prototype.onStart = function () {
     var self = this;
     var defer = libQ.defer();
 
     self.load18nStrings();
 
 
-    eiscp.on('connect', function() {
+    eiscp.on('connect', function () {
         self.logger.info("ONKYO-CONTROL: eiscp connected ");
         if (self.currentState === 'play') {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('system-power=on')");
-            eiscp.command('system-power=on', function() {
+            eiscp.command('system-power=on', function () {
                 self.logger.info("ONKYO-CONTROL:  eiscp.disconnect()");
                 eiscp.disconnect();
                 self.logger.info("ONKYO-CONTROL:  eiscp.disconnect() finished");
             });
         } else if (self.currentState === 'stop') {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('system-power=standby')");
-            eiscp.command('system-power=standby', function() {
+            eiscp.command('system-power=standby', function () {
                 self.logger.info("ONKYO-CONTROL:  eiscp.disconnect()");
                 eiscp.disconnect();
                 self.logger.info("ONKYO-CONTROL:  eiscp.disconnect() finished");
@@ -58,13 +58,20 @@ onkyoControl.prototype.onStart = function() {
         }
     });
 
-    eiscp.on('error', function(error) {
+    eiscp.on('error', function (error) {
         self.logger.error("ONKYO-CONTROL:  An error occurred trying to comminicate with the receiver: " + error);
     });
 
-    socket.on('pushState', function(state) {
+    socket.on('pushState', function (state) {
 
-        var connectionOptions = { port: 60128, reconnect: false, reconnect_sleep: 5, modelsets: [], send_delay: 500, verify_commands: false };
+        var connectionOptions = {
+            port: 60128,
+            reconnect: false,
+            reconnect_sleep: 5,
+            modelsets: [],
+            send_delay: 500,
+            verify_commands: false
+        };
 
         if (!self.config.get('autolocate')) {
             if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
@@ -91,7 +98,7 @@ onkyoControl.prototype.onStart = function() {
 
             } else if (state.status === 'stop' && self.config.get('standby')) {
                 self.logger.info("ONKYO-CONTROL: Starting standby timeout: " + self.config.get('standbyDelay') + " seconds");
-                self.standbyTimout = setTimeout(function() {
+                self.standbyTimout = setTimeout(function () {
                     self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                     eiscp.connect(connectionOptions);
                 }, self.config.get('standbyDelay') * 1000);
@@ -110,7 +117,7 @@ onkyoControl.prototype.onStart = function() {
     return defer.promise;
 };
 
-onkyoControl.prototype.onStop = function() {
+onkyoControl.prototype.onStop = function () {
     var self = this;
     var defer = libQ.defer();
 
@@ -120,28 +127,28 @@ onkyoControl.prototype.onStop = function() {
     return libQ.resolve();
 };
 
-onkyoControl.prototype.onRestart = function() {
+onkyoControl.prototype.onRestart = function () {
     var self = this;
     // Optional, use if you need it
 };
 
 
-onkyoControl.prototype.getConfigurationFiles = function() {
+onkyoControl.prototype.getConfigurationFiles = function () {
     return ['config.json'];
 }
 
 // Configuration Methods -----------------------------------------------------------------------------
 
-onkyoControl.prototype.getUIConfig = function() {
+onkyoControl.prototype.getUIConfig = function () {
     var defer = libQ.defer();
     var self = this;
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
     self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
-            __dirname + '/i18n/strings_en.json',
-            __dirname + '/UIConfig.json')
-        .then(function(uiconf) {
+        __dirname + '/i18n/strings_en.json',
+        __dirname + '/UIConfig.json')
+        .then(function (uiconf) {
 
             uiconf.sections[0].content[0].value = self.config.get('autolocate');
             uiconf.sections[0].content[1].value = self.config.get('receiverIP');
@@ -154,7 +161,7 @@ onkyoControl.prototype.getUIConfig = function() {
 
             defer.resolve(uiconf);
         })
-        .fail(function() {
+        .fail(function () {
             defer.reject(new Error());
         });
 
@@ -162,22 +169,22 @@ onkyoControl.prototype.getUIConfig = function() {
 };
 
 
-onkyoControl.prototype.setUIConfig = function(data) {
+onkyoControl.prototype.setUIConfig = function (data) {
     var self = this;
     //Perform your installation tasks here
 };
 
-onkyoControl.prototype.getConf = function(varName) {
+onkyoControl.prototype.getConf = function (varName) {
     var self = this;
     //Perform your installation tasks here
 };
 
-onkyoControl.prototype.setConf = function(varName, varValue) {
+onkyoControl.prototype.setConf = function (varName, varValue) {
     var self = this;
     //Perform your installation tasks here
 };
 
-onkyoControl.prototype.saveConnectionConfig = function(data) {
+onkyoControl.prototype.saveConnectionConfig = function (data) {
     var self = this;
     var defer = libQ.defer();
 
@@ -199,7 +206,7 @@ onkyoControl.prototype.saveConnectionConfig = function(data) {
     return defer.promise;
 };
 
-onkyoControl.prototype.saveActionConfig = function(data) {
+onkyoControl.prototype.saveActionConfig = function (data) {
     var self = this;
     var defer = libQ.defer();
 
@@ -223,7 +230,7 @@ onkyoControl.prototype.saveActionConfig = function(data) {
 
 // Internationalisation Methods -----------------------------------------------------------------------------
 
-onkyoControl.prototype.load18nStrings = function() {
+onkyoControl.prototype.load18nStrings = function () {
     var self = this;
 
     try {
@@ -236,7 +243,7 @@ onkyoControl.prototype.load18nStrings = function() {
     self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };
 
-onkyoControl.prototype.getI18nString = function(key) {
+onkyoControl.prototype.getI18nString = function (key) {
     var self = this;
 
     if (self.i18nStrings[key] !== undefined)
