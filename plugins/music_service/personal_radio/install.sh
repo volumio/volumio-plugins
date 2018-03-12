@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Installing KBS Plugin Dependencies"
+echo "Installing PersonalRadio Plugin Dependencies"
 # sudo apt-get update
 # Install the required packages via apt-get
 # sudo apt-get -y install
@@ -10,4 +10,4 @@ echo "Installing KBS Plugin Dependencies"
 # Then use it to differentiate your install
 
 #requred to end the plugin install
-echo "KBS plugin installend"
+echo "PersonalRadio plugin installed"
