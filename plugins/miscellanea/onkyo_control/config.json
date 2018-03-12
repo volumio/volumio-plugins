@@ -3,6 +3,10 @@
     "type": "boolean",
     "value": true
   },
+  "receiverSelect": {
+    "type": "select",
+    "value": {"value": 1 ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"}
+  },
   "receiverIP": {
     "type": "string",
     "value": ""

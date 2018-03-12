@@ -17,6 +17,7 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "autolocate",
+          "eceiverSelect",
           "receiverIP",
           "receiverPort"
         ]

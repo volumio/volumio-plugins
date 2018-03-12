@@ -216,6 +216,8 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
     var self = this;
     var defer = libQ.defer();
 
+    self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
+
     self.config.set('autolocate', data['autolocate']);
     self.config.set('receiverSelect', data['receiverSelect']);
 
@@ -232,7 +234,6 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
     }
 
 
-    self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
 
     defer.resolve();
 
