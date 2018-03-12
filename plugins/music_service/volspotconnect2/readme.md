@@ -1,14 +1,14 @@
-16th Febuary 2018
+06th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
-This new version is based librespot https://github.com/librespot-org/librespot
+This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
 and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
 It is still in dev and some feature are missing.
 
 
 Tested on :
-- RPI 0 
+- RPI 0
 - RPI B
 - RPI B+
 - RPI2
@@ -16,23 +16,69 @@ Tested on :
 - PINE64
 - x86 laptop
 
- 
+
 ## IMPORTANT
 
 - Requires a Premium or Family account
 
 ## To install
 
-- You only need to download volspotconnect2.zip. Take care to download the "raw" file, not only html from github...
-- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
-- Enable the plugin. That it !
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
+
+### 1. Enable SSH and connect to Volumio
+
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/volspotconnect2.zip
+mkdir ./volspotconnect2
+miniunzip volspotconnect2.zip -d ./volspotconnect2
+cd ./volspotconnect2
+volumio plugin install
+```
 
 ## Issues
 
-Time is reseted when changing volume in UI
-Volumio UI restart the first time a track is played from spotify after a change in plugin setting
+Time is reset when changing volume in UI
+
 
 ## Last changes
+
+06th march
+- miscellanea spelling fix
+
+04th march
+- update readme for installation (thanks to kayue)
+- re enable onstart1.sh
+- add version in plugin configuration
+
+02nd march
+- seek function
+- password management for complex password
+
+
+01st march
+- new librespot for x86
+- now working play/pause next previous buttons ! thank you @ashthespy !
+
+28th Febuary
+- new librespot for arm
+- use of spotifyweb api.
+
+27th Febuary
+- change port of socket to avoid conflict with airplay (port 5030 now)
 
 16th Febuary
 - remove // for   service: self.servicename
@@ -49,16 +95,16 @@ Volumio UI restart the first time a track is played from spotify after a change 
 
 25th January 18
 
-- correct install.sh
+- correct `install.sh`
 
 16th January 18
 
 merge of volspotconnect-futurdev:
 - add volume normalization
-- add initial spotify volume
+- add initial Spotify volume
 - add metadata (not yet in webUI)
 - add shuffle and repeat
-- onstart uses curl instead of wget
+- `onstart.sh` uses curl instead of wget
 - no x86 yet....
 
 September 28th
@@ -149,7 +195,7 @@ Febuary 28th
 Febuary 27th
 
 - option to share or no the device
-- remove stream rate selector - default is now 320kbps 
+- remove stream rate selector - default is now 320kbps
 
 Febuary 26th
 - correct librespot x86
@@ -180,7 +226,7 @@ Febuary 15th
 
 New librespot libirary
 Cache is now set to 64Mo with auto purge
-  
+
 Febuary 11th
 
 New librespot version
@@ -210,5 +256,3 @@ remove x bit on service
 January 20th
 
 - First commit
-
-
