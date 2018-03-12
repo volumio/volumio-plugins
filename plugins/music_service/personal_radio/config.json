@@ -1,0 +1,30 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "linnJazzUrl": {
+    "type": "string",
+    "value": "http://radio.linnrecords.com:8000/stream"
+  },
+  "linnJazzName": {
+    "type": "string",
+    "value": "Linn Jazz"
+  },
+  "linnRadioUrl": {
+    "type": "string",
+    "value": "http://radio.linnrecords.com:8003/stream"
+  },
+  "linnRadioName": {
+    "type": "string",
+    "value": "Linn Radio"
+  },
+  "linnClassicUrl": {
+    "type": "string",
+    "value": "http://radio.linnrecords.com:8004/stream"
+  },
+  "linnClassicName": {
+    "type": "string",
+    "value": "Linn Classic"
+  }
+}

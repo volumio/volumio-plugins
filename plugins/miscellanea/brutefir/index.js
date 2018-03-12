@@ -58,52 +58,65 @@ self.logger.info('brutefir failed to start. Check your configuration '+error);
 ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
  var self = this;
 
-var client = new net.Socket();
-client.connect(3002, '127.0.0.1', function(error, stdout, stderr) {
-	defer.resolve();
-	console.log('Connected to brutefir');
-if 
-('error', function() { console.log("error writing brutefir"); });
+try  {
+    var client = new net.Socket();
+    client.connect(3002, '127.0.0.1', function(error, stdout, stderr) {
+        defer.resolve();
+        console.log('Connected to brutefir');
+        if (error != undefined) {
+            console.log('BRUTEFIR ERROR: Cannot connect to brutefir ')
+        }  else {
 
-var eqprofile = self.config.get('eqprofile')
-var coef = self.config.get('coef');
-var enablemyeq = self.config.get('enablemyeq')
-var scoef
-console.log('myeq or preset =' + enablemyeq)
+            var eqprofile = self.config.get('eqprofile')
+            var coef = self.config.get('coef');
+            var enablemyeq = self.config.get('enablemyeq')
+            var scoef
+            console.log('myeq or preset =' + enablemyeq)
 
-if (self.config.get('enablemyeq')==false){
-	if (self.config.get('eqprofile')==='flat')
+            if (self.config.get('enablemyeq')==false){
+                if (self.config.get('eqprofile')==='flat')
                     scoef="0,0,0,0,0,0,0,0,0,0"
-	else if (self.config.get('eqprofile')==='loudness')
+                else if (self.config.get('eqprofile')==='loudness')
                     scoef="4,3,0,0,-1,0,-1,-2,3,0"
-	else if (self.config.get('eqprofile')==='rock')
+                else if (self.config.get('eqprofile')==='rock')
                     scoef="4,3,2,0,-1,-1,0,1,2,3"
-	else if (self.config.get('eqprofile')==='classic')
+                else if (self.config.get('eqprofile')==='classic')
                     scoef="4,3,2,1,-1,-1,0,1,2,3"
-	else if (self.config.get('eqprofile')==='bass')
+                else if (self.config.get('eqprofile')==='bass')
                     scoef="0,6,7,6,5,0,0,0,0,0"
-	else if (self.config.get('eqprofile')==='voice')
+                else if (self.config.get('eqprofile')==='voice')
                     scoef="-3,-1,0,1,2,3,3,2,3,1"
-	}
-else	scoef = self.config.get('coef')
+            }
+            else	scoef = self.config.get('coef')
 
-console.log(' raw values are %j', scoef);
-var values = scoef.split(',');
+            console.log(' raw values are %j', scoef);
+            var values = scoef.split(',');
 
-console.log('splitted coef values are %j', values);
-var brutefircmd	
+            console.log('splitted coef values are %j', values);
+            var brutefircmd
 //here we compose brutefir command
-brutefircmd = ('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
+            brutefircmd = ('lmc eq 0 mag 31/'+values[0]+', 63/'+values[1]+', 125/'+values[2]+', 250/'+values[3]+', 500/'+values[4]+', 1000/'+values[5]+', 2000/'+values[6]+', 4000/'+values[7]+', 8000/'+values[8]+', 16000/'+values[9]);
 
 //here we send the command to brutefir
-client.write(brutefircmd);
+            client.write(brutefircmd);
 
-console.log('cmd sent to brutefir = ' + brutefircmd);
-});
-client.on('data', function(data) {
-	console.log('Received: ' + data);
-	client.destroy(); // kill client after server's response
-});
+            console.log('cmd sent to brutefir = ' + brutefircmd);
+
+
+
+            client.on('data', function(data) {
+                console.log('Received: ' + data);
+                client.destroy(); // kill client after server's response
+            });
+        }
+
+    });
+} catch (e) {
+
+}
+
+
+
 
 };
 

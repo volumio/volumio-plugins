@@ -99,7 +99,7 @@ nanosound.prototype.onStart = function() {
 	self.restartLirc(true);
 
 	//---------------- End of LIRC setup -------------------
-
+	self.restartNSLirc(true);
 
 	//---------------- Start of GPIO setup -----------------
 
@@ -118,13 +118,15 @@ nanosound.prototype.onStart = function() {
 										 exec('/usr/bin/sudo /bin/systemctl start nanosound_oled', {uid:1000,gid:1000},
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
-                                		                                                self.logger.info('Error starting NanoSound OLED ' + error);
+                                		                                                self.logger.info('Error starting NanoSound OLED' + error);
                                                 		                                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with starting NanoSound OLED:' + error);
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound OLED daemon started');
                                                                                			self.commandRouter.pushToastMessage('success', 'nanosound', 'NanoSound OLED daemon started');
 
 		                                                                        }
+																				
+
                 		                  });
 
 
@@ -258,8 +260,18 @@ nanosound.prototype.onStop = function() {
 								self.logger.info('Cannot stop NanoSound OLED service: '+error);
 							} else {
 								self.logger.info('NanoSound OLED stopped');
-								defer.resolve();
+
 							}
+							
+							exec('usr/bin/sudo /bin/systemctl stop nanosound_lirc.service', {uid:1000,gid:1000},
+							function (error, stdout, stderr) {
+								if(error != null) {
+									self.logger.info('Cannot stop NanoSound LIRC service: '+error);
+								} else {
+									self.logger.info('NanoSound LIRC stopped');
+									defer.resolve();
+								}
+							});
 						});
 
 
@@ -531,6 +543,34 @@ nanosound.prototype.restartLirc = function (message) {
                 self.logger.info('lirc correctly started');
                 if (message){
                     self.commandRouter.pushToastMessage('success', 'NanoSound', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                }
+            }
+        });
+            },1000)
+    });
+}
+
+nanosound.prototype.restartNSLirc = function (message) {
+	var self = this;
+
+    exec('usr/bin/sudo /bin/systemctl stop nanosound_lirc', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Cannot kill irexec: '+error);
+            }
+            setTimeout(function(){
+
+	exec('usr/bin/sudo /bin/systemctl start nanosound_lirc', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error restarting NanoSound LIRC: '+error);
+                if (message){
+                    self.commandRouter.pushToastMessage('error', 'NanoSound', "NanoSound LIRC cannot start");
+                }
+            } else {
+                self.logger.info('NanoSound lirc correctly started');
+                if (message){
+                    self.commandRouter.pushToastMessage('success', 'NanoSound', "NanoSound LIRC started");
                 }
             }
         });

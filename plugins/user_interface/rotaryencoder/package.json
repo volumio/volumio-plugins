@@ -54,7 +54,7 @@
 		"volumio"
 	],
 	"bugs": {
-	"url": "https://github.com/Saiyato/volumio-rotary-encoder-plugin/issues"
+		"url": "https://github.com/Saiyato/volumio-rotary-encoder-plugin/issues"
 	},
 	"homepage": "https://github.com/Saiyato/volumio-rotary-encoder-plugin#readme"
 }
