@@ -61,27 +61,15 @@ onkyoControl.prototype.onStart = function () {
             commands.push('system-power=standby');
         }
 
-        commands.reverse();
-
-        var lastCommand;
-
         commands.forEach(function(command, index) {
             self.logger.info("ONKYO-CONTROL:  eiscp.command('" + command + "')");
 
-            if (index == 0) {
-                lastCommand = function() {
-                    eiscp.command(command, disconnectCallback);
-                };
+            if (index < array.length - 1) {
+                eiscp.command(command);
             } else {
-                lastCommand = function() {
-                    eiscp.command(command, lastCommand);
-                };
+                eiscp.command(command, disconnectCallback);
             }
         });
-
-        if (lastCommand) {
-            lastCommand();
-        }
 
     });
 
@@ -92,10 +80,7 @@ onkyoControl.prototype.onStart = function () {
     socket.on('pushState', function (state) {
 
         var connectionOptions = {
-            port: 60128,
             reconnect: false,
-            reconnect_sleep: 5,
-            modelsets: [],
             send_delay: 500,
             verify_commands: false
         };
