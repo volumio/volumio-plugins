@@ -162,15 +162,34 @@ onkyoControl.prototype.getUIConfig = function () {
         __dirname + '/UIConfig.json')
         .then(function (uiconf) {
 
+
+            self.logger.info("ONKYO-CONTROL: getUIConfig()");
+
             uiconf.sections[0].content[0].value = self.config.get('autolocate');
-            uiconf.sections[0].content[1].value = self.config.get('receiverIP');
-            uiconf.sections[0].content[2].value = self.config.get('receiverPort');
+            uiconf.sections[0].content[1].value = self.config.get('receiverSelect');
+            uiconf.sections[0].content[2].value = self.config.get('receiverIP');
+            uiconf.sections[0].content[3].value = self.config.get('receiverPort');
 
             uiconf.sections[1].content[0].value = self.config.get('poweron');
             uiconf.sections[1].content[1].value = self.config.get('standby');
             uiconf.sections[1].content[2].value = self.config.get('standbyDelay');
             uiconf.sections[1].content[3].value = self.config.get('setVolume');
             uiconf.sections[1].content[4].value = self.config.get('setVolumeValue');
+
+            eiscp.discover({timeout: 5}, function (err, results) {
+
+                if(err) {
+                    self.logger.info("ONKYO-CONTROL: Error discovering receivers: " + results);
+                } else {
+                    self.logger.info("ONKYO-CONTROL: Found these receivers on the local network: " + results);
+                    result.forEach(function(receiver) {
+                        uiconf.sections[0].content[1].options.push({"value":receiver.host, "label":receiver.model})
+                    });
+                }
+            });
+
+
+
 
 
             defer.resolve(uiconf);
@@ -204,6 +223,7 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
 
     self.config.set('autolocate', data['autolocate']);
     self.config.set('receiverIP', data['receiverIP']);
+    self.config.set('receiverSelect', data['receiverSelect']);
 
     if (!data['receiverPort'] || data['receiverPort'] === '' || isNaN(data['receiverPort'])) {
         self.config.set('receiverPort', '60128');

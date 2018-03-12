@@ -30,6 +30,23 @@
           "value": true
         },
         {
+          "id": "receiverSelect",
+          "element": "select",
+          "label": "TRANSLATE.SELECT_RECEIVER",
+          "doc": "TRANSLATE.SELECT_RECEIVER_DOC",
+          "value": {"value": 1 ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
+          "options": [
+            {
+              "value": "manual",
+              "label": "TRANSLATE.SELECT_RECEIVER_MANUAL"
+            }
+          ],
+          "visibleIf": {
+            "field": "autolocate",
+            "value": false
+          }
+        },
+        {
           "id": "receiverIP",
           "type": "text",
           "element": "input",
@@ -84,25 +101,6 @@
           "value": true
         },
         {
-          "id": "standby",
-          "element": "switch",
-          "label": "TRANSLATE.STANDBY",
-          "doc": "TRANSLATE.STANDBY_DOC",
-          "value": true
-        },
-        {
-          "id": "standbyDelay",
-          "type": "number",
-          "element": "input",
-          "label": "TRANSLATE.STANDBY_DELAY",
-          "doc": "TRANSLATE.STANDBY_DELAY_DOC",
-          "value": 5,
-          "visibleIf": {
-            "field": "standby",
-            "value": true
-          }
-        },
-        {
           "id": "setVolume",
           "element": "switch",
           "label": "TRANSLATE.SET_VOLUME",
@@ -118,6 +116,25 @@
           "value": 20,
           "visibleIf": {
             "field": "setVolume",
+            "value": true
+          }
+        },
+        {
+          "id": "standby",
+          "element": "switch",
+          "label": "TRANSLATE.STANDBY",
+          "doc": "TRANSLATE.STANDBY_DOC",
+          "value": true
+        },
+        {
+          "id": "standbyDelay",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.STANDBY_DELAY",
+          "doc": "TRANSLATE.STANDBY_DELAY_DOC",
+          "value": 5,
+          "visibleIf": {
+            "field": "standby",
             "value": true
           }
         }
