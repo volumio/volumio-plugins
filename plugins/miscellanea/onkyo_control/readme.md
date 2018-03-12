@@ -2,7 +2,7 @@
 
 (Hopefully) A simple plugin that is able to turn an Onkyo receiver on the network on and off when playback begins and ends using eISCP.
 
-https://www.npmjs.com/package/eiscp
+https://github.com/tillbaks/node-eiscp
 
 ## TODO
 
