@@ -41,21 +41,36 @@ onkyoControl.prototype.onStart = function () {
 
     eiscp.on('connect', function () {
         self.logger.info("ONKYO-CONTROL: eiscp connected ");
+
+        var disconnectCallback = function () {
+            self.logger.info("ONKYO-CONTROL:  eiscp.disconnect()");
+            eiscp.disconnect();
+            self.logger.info("ONKYO-CONTROL:  eiscp.disconnect() finished");
+        };
+
+        var commands = [];
+
         if (self.currentState === 'play') {
-            self.logger.info("ONKYO-CONTROL:  eiscp.command('system-power=on')");
-            eiscp.command('system-power=on', function () {
-                self.logger.info("ONKYO-CONTROL:  eiscp.disconnect()");
-                eiscp.disconnect();
-                self.logger.info("ONKYO-CONTROL:  eiscp.disconnect() finished");
-            });
+            if (self.config.get('poweron')) {
+                commands.push('system-power=on');
+            }
+            if (self.config.get('setVolume') && !isNaN(self.config.get('setVolumeValue'))) {
+                commands.push('volume=' + self.config.get('setVolumeValue'));
+            }
         } else if (self.currentState === 'stop') {
-            self.logger.info("ONKYO-CONTROL:  eiscp.command('system-power=standby')");
-            eiscp.command('system-power=standby', function () {
-                self.logger.info("ONKYO-CONTROL:  eiscp.disconnect()");
-                eiscp.disconnect();
-                self.logger.info("ONKYO-CONTROL:  eiscp.disconnect() finished");
-            });
+            commands.push('system-power=standby');
         }
+
+        commands.forEach(function(command, index, array) {
+            self.logger.info("ONKYO-CONTROL:  eiscp.command('" + command + "')");
+
+            if (index < array.length - 1) {
+                eiscp.command(command);
+            } else {
+                eiscp.command(command, disconnectCallback);
+            }
+        });
+
     });
 
     eiscp.on('error', function (error) {
@@ -91,7 +106,7 @@ onkyoControl.prototype.onStart = function () {
         self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
         if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
 
-            if (state.status === 'play' && self.config.get('poweron')) {
+            if (state.status === 'play' && (self.config.get('poweron') || self.config.get('setVolume'))) {
                 clearTimeout(self.standbyTimout);
                 self.logger.info("ONKYO-CONTROL: eiscp connecting... ");
                 eiscp.connect(connectionOptions);
@@ -157,6 +172,8 @@ onkyoControl.prototype.getUIConfig = function () {
             uiconf.sections[1].content[0].value = self.config.get('poweron');
             uiconf.sections[1].content[1].value = self.config.get('standby');
             uiconf.sections[1].content[2].value = self.config.get('standbyDelay');
+            uiconf.sections[1].content[3].value = self.config.get('setVolume');
+            uiconf.sections[1].content[4].value = self.config.get('setVolumeValue');
 
 
             defer.resolve(uiconf);
@@ -219,6 +236,14 @@ onkyoControl.prototype.saveActionConfig = function (data) {
         self.config.set('standbyDelay', 0);
     } else {
         self.config.set('standbyDelay', data['standbyDelay']);
+    }
+
+    self.config.set('setVolume', data['setVolume']);
+
+    if (data['setVolumeValue'] <= 0) {
+        self.config.set('setVolumeValue', 0);
+    } else {
+        self.config.set('setVolumeValue', data['setVolumeValue']);
     }
 
     defer.resolve();

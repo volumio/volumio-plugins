@@ -22,5 +22,13 @@
   "standbyDelay": {
     "type": "int",
     "value": 5
+  },
+  "setVolume": {
+    "type": "boolean",
+    "value": false
+  },
+  "setVolumeValue": {
+    "type": "int",
+    "value": 20
   }
 }

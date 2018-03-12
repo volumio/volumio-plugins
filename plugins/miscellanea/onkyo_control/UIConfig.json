@@ -25,16 +25,16 @@
         {
           "id": "autolocate",
           "element": "switch",
-          "doc": "TRANSLATE.AUTOLOCATE_DOC",
           "label": "TRANSLATE.AUTOLOCATE",
+          "doc": "TRANSLATE.AUTOLOCATE_DOC",
           "value": true
         },
         {
           "id": "receiverIP",
           "type": "text",
           "element": "input",
-          "doc": "TRANSLATE.RECEIVER_IP_DOC",
           "label": "TRANSLATE.RECEIVER_IP",
+          "doc": "TRANSLATE.RECEIVER_IP_DOC",
           "value": "",
           "visibleIf": {
             "field": "autolocate",
@@ -45,8 +45,8 @@
           "id": "receiverPort",
           "type": "text",
           "element": "input",
-          "doc": "TRANSLATE.RECEIVER_PORT_DOC",
           "label": "TRANSLATE.RECEIVER_PORT",
+          "doc": "TRANSLATE.RECEIVER_PORT_DOC",
           "value": "60128",
           "visibleIf": {
             "field": "autolocate",
@@ -77,26 +77,45 @@
         {
           "id": "poweron",
           "element": "switch",
-          "doc": "TRANSLATE.POWERON_DOC",
           "label": "TRANSLATE.POWERON",
+          "doc": "TRANSLATE.POWERON_DOC",
           "value": true
         },
         {
           "id": "standby",
           "element": "switch",
-          "doc": "TRANSLATE.STANDBY_DOC",
           "label": "TRANSLATE.STANDBY",
+          "doc": "TRANSLATE.STANDBY_DOC",
           "value": true
         },
         {
           "id": "standbyDelay",
           "type": "number",
           "element": "input",
-          "doc": "TRANSLATE.STANDBY_DELAY_DOC",
           "label": "TRANSLATE.STANDBY_DELAY",
+          "doc": "TRANSLATE.STANDBY_DELAY_DOC",
           "value": 5,
           "visibleIf": {
             "field": "standby",
+            "value": true
+          }
+        },
+        {
+          "id": "setVolume",
+          "element": "switch",
+          "label": "TRANSLATE.SET_VOLUME",
+          "doc": "TRANSLATE.SET_VOLUME_DOC",
+          "value": false
+        },
+        {
+          "id": "setVolumeValue",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.SET_VOLUME_VAL",
+          "doc": "TRANSLATE.SET_VOLUME_VAL_DOC",
+          "value": 20,
+          "visibleIf": {
+            "field": "setVolume",
             "value": true
           }
         }
