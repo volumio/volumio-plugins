@@ -12,7 +12,7 @@ https://www.npmjs.com/package/eiscp
 - [X] Config options (IP / Port with defaults, power off time, output channel)
 - [X] I18N
 - [ ] Discover receivers on the network for config option drop down
-- [ ] Manual hostname / ip / port entry
+- [X] Manual hostname / ip / port entry
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
 - [ ] Tidy logging
 
@@ -20,6 +20,7 @@ https://www.npmjs.com/package/eiscp
 
 - [X] ~~Power off on song end~~
 - [X] ~~Toast i18n messages not working~~
+- [ ] Autolocate does not work after an incorrect host/ip has been attempted to be used.
 
 
 
