@@ -481,7 +481,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
       title: self.navTree[el].text,
       artist: '',
       album: '',
-      icon: 'fa fa-folder-open-o',
+      icon: self.getNavigationItemIcon(self.navTree[el].text),
       uri: 'tunein/' + el,
     });
     self.logger.info('[TuneIn] Added new entry ' + el + ' => ' + self.navTree[el].text);
@@ -708,4 +708,31 @@ tuneinRadio.prototype.getNavigationItem = function(node, category) {
   self.logger.info('[TuneIn] Added new ' + category + ' entry ' + uri + ' => ' + node.text + ' => ' + node.URL);
 
   return item;
+}
+
+tuneinRadio.prototype.getNavigationItemIcon = function(text) {
+  var self = this;
+    switch(text) {
+        case 'Local Radio':
+            return 'fa fa-map-marker'
+            break;
+        case 'Music':
+            return 'fa fa-music'
+            break;
+        case 'Talk':
+            return 'fa fa-comments-o'
+            break;
+        case 'Sports':
+            return 'fa fa-heartbeat'
+            break;
+        case 'By Location':
+            return 'fa fa-globe'
+            break;
+        case 'By Language':
+            return 'fa fa-map-signs'
+            break;
+        default:
+            return 'fa fa-folder-open-o'
+    }
+
 }
