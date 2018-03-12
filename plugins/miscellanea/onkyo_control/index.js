@@ -185,10 +185,6 @@ onkyoControl.prototype.getUIConfig = function () {
                         uiconf.sections[0].content[1].options.push({"value": receiver.host, "label": receiver.model})
                     });
                 }
-                uiconf.sections[0].content[1].options.push({
-                    "value": "manual",
-                    "label": self.getI18nString("TRANSLATE.SELECT_RECEIVER_MANUAL")
-                })
                 defer.resolve(uiconf);
             });
 
