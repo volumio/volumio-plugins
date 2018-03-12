@@ -70,7 +70,9 @@
         "data": [
           "poweron",
           "standby",
-          "standbyDelay"
+          "standbyDelay",
+          "setVolume",
+          "setVolumeValue"
         ]
       },
       "content": [
