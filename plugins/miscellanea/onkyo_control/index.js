@@ -81,7 +81,7 @@ onkyoControl.prototype.onStart = function () {
 
         var connectionOptions = {
             reconnect: false,
-            send_delay: 500,
+            send_delay: 3000,
             verify_commands: false
         };
 
