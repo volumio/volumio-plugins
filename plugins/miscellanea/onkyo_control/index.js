@@ -170,10 +170,10 @@ onkyoControl.prototype.getUIConfig = function () {
             uiconf.sections[0].content[3].value = self.config.get('receiverPort');
 
             uiconf.sections[1].content[0].value = self.config.get('poweron');
-            uiconf.sections[1].content[1].value = self.config.get('standby');
-            uiconf.sections[1].content[2].value = self.config.get('standbyDelay');
-            uiconf.sections[1].content[3].value = self.config.get('setVolume');
-            uiconf.sections[1].content[4].value = self.config.get('setVolumeValue');
+            uiconf.sections[1].content[1].value = self.config.get('setVolume');
+            uiconf.sections[1].content[2].value = self.config.get('setVolumeValue');
+            uiconf.sections[1].content[3].value = self.config.get('standby');
+            uiconf.sections[1].content[4].value = self.config.get('standbyDelay');
 
             eiscp.discover({timeout: 5}, function (err, results) {
                 if (err) {
