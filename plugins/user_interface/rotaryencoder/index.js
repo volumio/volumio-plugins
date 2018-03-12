@@ -443,7 +443,8 @@ rotaryencoder.prototype.destroyFirstEncoder = function ()
 	var defer = libQ.defer();
 	try
 	{
-		this.firstEncoder.destroy();
+		if(this.firstEncoder != undefined)
+			this.firstEncoder.destroy();
 		defer.resolve();
 	}
 	catch (ex)
@@ -461,7 +462,8 @@ rotaryencoder.prototype.destroySecondEncoder = function ()
 	var defer = libQ.defer();
 	try
 	{
-		this.secondEncoder.destroy();
+		if(this.secondEncoder != undefined)
+			this.secondEncoder.destroy();
 		defer.resolve();
 	}
 	catch (ex)
@@ -506,6 +508,7 @@ rotaryencoder.prototype.updateFirstEncoder = function (data)
 		self.config.set('first_encoder_encoding', parseInt(data['first_encoder_encoding'].value));
 		self.config.set('first_encoder_detentActionType', parseInt(data['first_encoder_detentActionType'].value));
 		self.config.set('first_encoder_buttonActionType', parseInt(data['first_encoder_buttonActionType'].value));
+		defer.resolve(updateConf);
 	})
 	.then(function(rebuild)
 	{
