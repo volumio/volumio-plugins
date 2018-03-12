@@ -226,7 +226,7 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
     self.logger.info("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
 
     self.config.set('autolocate', data['autolocate']);
-    self.config.set('receiverSelect', data['receiverSelect']);
+    self.config.set('receiverSelect', data['receiverSelect'].value);
 
     if (data['receiverSelect'].value !== "manual") {
         self.config.set('receiverIP', data['receiverSelect'].value);
