@@ -12,10 +12,11 @@ https://github.com/tillbaks/node-eiscp
 - [X] Config options (IP / Port with defaults, power off time, output channel)
 - [X] I18N
 - [X] Manual hostname / ip / port entry
-- [ ] Discover receivers on the network for config option drop down
-- [ ] Change receiver volume after power on
+- [X] Discover receivers on the network for config option drop down
+- [X] Change receiver volume after power on
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
 - [ ] Tidy logging
+- [ ] Improve host/ip config UI if possible
 
 ## Known issues
 
