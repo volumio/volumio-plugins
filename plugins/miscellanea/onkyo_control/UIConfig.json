@@ -97,8 +97,8 @@
         {
           "id": "powerOn",
           "element": "switch",
-          "label": "TRANSLATE.POWERON",
-          "doc": "TRANSLATE.POWERON_DOC",
+          "label": "TRANSLATE.POWER_ON",
+          "doc": "TRANSLATE.POWER_ON_DOC",
           "value": true
         },
         {
