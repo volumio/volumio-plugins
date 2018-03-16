@@ -23,6 +23,7 @@ Tested on :
 
 ## To install
 Before intalling the dev version, please remove, if exists, the plugin from your system using the webUI plugins page.
+
 Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
