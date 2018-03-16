@@ -1,6 +1,6 @@
 {
 	"name": "remotepi",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "The plugin enables support for the RemotePi board.",
 	"main": "index.js",
 	"scripts": {
