@@ -14,8 +14,8 @@ https://github.com/tillbaks/node-eiscp
 - [X] Manual hostname / ip / port entry
 - [X] Discover receivers on the network for config option drop down
 - [X] Change receiver volume after power on
+- [X] Tidy logging
 - [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
-- [ ] Tidy logging
 - [ ] Improve host/ip config UI if possible
 
 ## Known issues
