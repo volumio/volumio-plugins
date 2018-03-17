@@ -29,7 +29,8 @@ function ControllerVolspotconnect(context) {
  self.unsetVol = function() {
   var self = this;
   this.logger.SpConDebug('unSetVolatile called');
-	self.spotConnUnsetVolatile();
+
+	return self.spotConnUnsetVolatile();
  };
 
  // SpotifyWebApi
@@ -93,7 +94,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  var self = this;
  self.servicename = 'volspotconnect2';
  self.displayname = 'volspotconnect2';
- self.token = '';
+ self.accessToken = '';
  self.active = false;
  self.state = {
   status: 'stop',
@@ -133,17 +134,19 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  self.SpotConn.on('SessionActive', function(data) {
   self.logger.SpConDebug('Session is active!');
-  self.volumioStop();
-  self.state.status = 'pause';
-  self.ActiveState();
+  self.volumioStop().then( () => {
+    self.state.status = 'pause';
+    self.ActiveState();
+  });
  });
 
  self.SpotConn.on('DeviceActive', function(data) {
   // SpotConn is active playback device
   self.logger.SpConDebug('Device is active!');
-  self.volumioStop();
-  self.state.status = 'play';
-  self.ActiveState();
+  self.volumioStop().then( () => {
+    self.state.status = 'play';
+    self.ActiveState();
+  });
  });
 
  self.SpotConn.on('DeviceInactive', function(data) {
@@ -174,7 +177,6 @@ self.SpotConn.on('seek', function(position_ms) {
  // Update metadata
  self.SpotConn.on('metadata', function(meta) {
   const albumartId = meta.albumartId[2] === undefined ? meta.albumartId[0] : meta.albumartId[2];
-  self.logger.SpConDebug(`albumartId: ${albumartId}`);
   self.state.uri 	    = "spotify:track:" + meta.track_id;
   self.state.title    = meta.track_name;
   self.state.artist   = meta.artist_name;
@@ -248,7 +250,7 @@ ControllerVolspotconnect.prototype.spotConnUnsetVolatile = function() {
 
     self.device === undefined ? self.logger.SpConDebug("Killing Volumio State") : self.logger.SpConDebug("Killing Volumio state, Spotify session: " + self.device.is_active);
     // TODO: wait for confirmation from the SinkInactive event?
-    Promise.resolve(self.stop());
+    return self.stop();
 }
 
 ControllerVolspotconnect.prototype.pushState = function() {
@@ -262,8 +264,9 @@ ControllerVolspotconnect.prototype.volumioStop = function() {
     var self = this;
     if (!self.iscurrService()) {
       self.logger.SpConDebug('Stopping currently active service');
-      Promise.resolve(self.commandRouter.volumioStop());
+      return self.commandRouter.volumioStop();
     }
+    return Promise.resolve(true);
 }
 
 ControllerVolspotconnect.prototype.iscurrService = function() {
