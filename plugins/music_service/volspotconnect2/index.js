@@ -27,7 +27,6 @@ function ControllerVolspotconnect(context) {
 
  // Volatile for metadata
  self.unsetVol = function() {
-  //TODO This function should be refactored: it should stop volspotconnect
   var self = this;
   this.logger.SpConDebug('unSetVolatile called');
 	self.spotConnUnsetVolatile();
@@ -134,21 +133,21 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  self.SpotConn.on('SessionActive', function(data) {
   self.logger.SpConDebug('Session is active!');
-  self.state.status = 'pause';
   self.volumioStop();
+  self.state.status = 'pause';
   self.ActiveState();
  });
 
  self.SpotConn.on('DeviceActive', function(data) {
   // SpotConn is active playback device
   self.logger.SpConDebug('Device is active!');
-	self.state.status = 'play';
   self.volumioStop();
+  self.state.status = 'play';
   self.ActiveState();
  });
 
  self.SpotConn.on('DeviceInactive', function(data) {
-  // self.DeactivateState();
+  self.DeactivateState();
   self.logger.SpConDebug('Device is inactive!');
 });
 
@@ -174,6 +173,8 @@ self.SpotConn.on('seek', function(position_ms) {
 
  // Update metadata
  self.SpotConn.on('metadata', function(meta) {
+  const albumartId = meta.albumartId[2] === undefined ? meta.albumartId[0] : meta.albumartId[2];
+  self.logger.SpConDebug(`albumartId: ${albumartId}`);
   self.state.uri 	    = "spotify:track:" + meta.track_id;
   self.state.title    = meta.track_name;
   self.state.artist   = meta.artist_name;
@@ -181,7 +182,7 @@ self.SpotConn.on('seek', function(position_ms) {
   self.state.duration = Math.ceil(meta.duration_ms / 1000);
 	self.state.seek     = meta.position_ms;
   // self.state.volume    = meta.volume;
-  self.state.albumart =   `https://i.scdn.co/image/${meta.albumartId_LARGE}`;
+  self.state.albumart =   `https://i.scdn.co/image/${albumartId}`;
 	self.logger.SpConDebug(`Pushing metadata::Vollibrespot:${self.active}`);
   // This will not succeed if volspotconnect2 isn't the current active service
   self.pushState();
@@ -235,16 +236,19 @@ ControllerVolspotconnect.prototype.DeactivateState = function() {
 
  // Session is done, update state
  self.logger.SpConDebug('SpotConn is done!')
- self.context.coreCommand.stateMachine.unSetVolatile();
- self.context.coreCommand.stateMachine.resetVolumioState().then(
-  self.context.coreCommand.volumioStop.bind(self.commandRouter));
+ if (self.iscurrService()) {
+   self.context.coreCommand.stateMachine.unSetVolatile();
+   self.context.coreCommand.stateMachine.resetVolumioState().then(
+     self.context.coreCommand.volumioStop.bind(self.commandRouter));
+   }
 }
 
 ControllerVolspotconnect.prototype.spotConnUnsetVolatile = function() {
     var self = this;
 
     self.device === undefined ? self.logger.SpConDebug("Killing Volumio State") : self.logger.SpConDebug("Killing Volumio state, Spotify session: " + self.device.is_active);
-    self.stop();
+    // TODO: wait for confirmation from the SinkInactive event?
+    Promise.resolve(self.stop());
 }
 
 ControllerVolspotconnect.prototype.pushState = function() {
@@ -258,7 +262,7 @@ ControllerVolspotconnect.prototype.volumioStop = function() {
     var self = this;
     if (!self.iscurrService()) {
       self.logger.SpConDebug('Stopping currently active service');
-      self.commandRouter.volumioStop();
+      Promise.resolve(self.commandRouter.volumioStop());
     }
 }
 
