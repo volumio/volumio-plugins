@@ -6,7 +6,6 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var TuneIn = require('node-tunein-radio');
-var axios = require('axios');
 var url = require('url');
 
 module.exports = tuneinRadio;
@@ -320,25 +319,24 @@ tuneinRadio.prototype.explodeUri = function(uri) {
     type: 'track',
   }
 
+  let parsedUrl = url.parse(uri, true);
+  let streamId = parsedUrl.query.id;
 
-  axios.get(uri, {
-    params: {
-      render: 'json',
-    }
-  }).then(function (response) {
+  let streamUrl = self.tuneIn.tune_radio(streamId);
+  let streamDescribe = self.tuneIn.describe(streamId);
 
-    self.logger.info(response.data)
+  self.logger.error('[TuneIn] Fetching details for stream: ' + streamId);
+  Promise.all([streamUrl, streamDescribe]).then(function(results) {
+    explodedUri.uri = results[0].body[0].url;
+    explodedUri.name = results[1].body[0].name;
+    explodedUri.albumart = results[1].body[0].logo;
 
-    explodedUri.uri = response.data.body[0].url
-    explodedUri.name = response.data.body[0].url
-
-    self.logger.info(explodedUri);
     defer.resolve(explodedUri);
   })
-  .catch(function (error) {
-    self.logger.error(error);
-    defer.resolve(explodedUri);
-  });
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot retrieve details for stram ' + uri + ': ' + err));
+    });
 
   return defer.promise;
 };
