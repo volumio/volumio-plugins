@@ -401,31 +401,21 @@ tuneinRadio.prototype.search = function(query) {
   tuneinSearch.then(function(results) {
     var body = results.body;
     for (var i in body) {
-      if (body[i].type == 'audio') {
-        response.items.push({
-          service: 'tunein_radio',
-          type: 'webradio',
-          title: body[i].text,
-          artist: '',
-          album: '',
-          albumart: body[i].image,
-          uri: body[i].URL,
-        });
-        self.logger.info('[TuneIn] Added new search result ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
-      } else {
-        self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
+      let item = self.getNavigationItem(body[i], 'tunein_radio');
+      if (item) {
+        response.items.push(item);
       }
     }
-
     defer.resolve(response);
   })
     .catch(function(err) {
       self.logger.error(err);
-      defer.reject(new Error('Cannot list category items for ' + category + ': ' + err));
+      defer.reject(new Error('Cannot search for ' + query.value + ': ' + err));
     });
 
   return defer.promise;
 };
+
 
 tuneinRadio.prototype.initNavTree = function(uri) {
   var self = this;
