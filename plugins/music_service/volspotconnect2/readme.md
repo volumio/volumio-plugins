@@ -1,10 +1,10 @@
-09th march 2018
+18th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
 and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
-It is still in dev and some feature are missing.
+It is still in dev and some features are missing.
 
 
 Tested on :
@@ -22,9 +22,9 @@ Tested on :
 - Requires a Premium or Family account
 
 ## To install
-Before intalling the dev version, please remove, if exists, the plugin from your system using the webUI plugins page.
+Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
 
@@ -53,9 +53,15 @@ volumio plugin install
 ## Issues
 
 Time is reset when changing volume in UI
+UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+18 th march
+- new librespot (@ashthespy)
+- better UI handling (@ashthespy)
+- miscellaneaous changes
 
 09th march
 - add dutch translation. Thank you @LeonCB
