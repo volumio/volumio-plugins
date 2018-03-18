@@ -12,7 +12,7 @@
 		"prettyName": "AutoStart",
 		"icon": "fa-play-circle-o",
 		"plugin_type": "miscellanea",
-		"boot_priority": 10
+		"boot_priority": 100
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",

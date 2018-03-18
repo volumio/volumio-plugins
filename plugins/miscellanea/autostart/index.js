@@ -24,15 +24,17 @@ function autostart(context) {
 autostart.prototype.onVolumioStart = function () {
   var self = this;
 
-//  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-//  this.config = new (require('v-conf'))();
-//  this.config.loadFile(configFile);
-
   var mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
+  if (!mpdPlugin) {
+
+    self.logger.error('AutoStart - unable to start, mpdPlugin is not defined!');
+    return libQ.resolve();
+  }
+
   var mpdHost = mpdPlugin.getConfigParam('nHost');
   var mpdPort = mpdPlugin.getConfigParam('nPort');
 
-  self.logger.info('ControllerAutoPlay - connecting mpd on host: ' + mpdHost + '; port: ' + mpdPort);
+  self.logger.info('AutoStart - connecting mpd on host: ' + mpdHost + '; port: ' + mpdPort);
 
   var client = mpd.connect({
     host : mpdHost,
@@ -40,14 +42,18 @@ autostart.prototype.onVolumioStart = function () {
   });
 
   client.on('ready', function() {
-    self.logger.info('ControllerAutoPlay - mpd ready');
+    self.logger.info('AutoStart - mpd ready');
 
     setTimeout(function () {
-      self.logger.info('ControllerAutoPlay - getting queue');
+      self.logger.info('AutoStart - getting queue');
       var queue = self.commandRouter.volumioGetQueue();
       if (queue && queue.length > 0) {
-        self.logger.info('ControllerAutoPlay - start playing -> queue is not empty');
-        self.commandRouter.volumioPlay();
+        self.logger.info('AutoStart - start playing -> queue is not empty');
+        try {
+          self.commandRouter.volumioPlay();
+        } catch(err) {
+          this.logger.error('AutoStart - unable to start play - volumio: ' + err);
+        }
       }
     }, 5000);
   });
