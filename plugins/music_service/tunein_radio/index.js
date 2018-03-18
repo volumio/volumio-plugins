@@ -166,7 +166,7 @@ tuneinRadio.prototype.getUIConfig = function() {
   .then(function(uiconf) {
     uiconf.sections[0].content[0].value = self.config.get('popular');
     uiconf.sections[0].content[1].value = self.config.get('best');
-    uiconf.sections[0].content[2].value = self.config.get('experimental');
+    uiconf.sections[1].content[0].value = self.config.get('experimental');
 
     defer.resolve(uiconf);
   })
@@ -192,17 +192,27 @@ tuneinRadio.prototype.setConf = function(varName, varValue) {
   var self = this;
 };
 
-tuneinRadio.prototype.saveMainCategories = function(data) {
+tuneinRadio.prototype.saveMainCategoriesConf = function(data) {
   var self = this;
   var defer = libQ.defer();
 
   self.config.set('popular', data['popular']);
   self.config.set('best', data['best']);
+  self.refreshConfig();
+  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Main Categories Configuration Saved');
+  return defer.promise;
+};
+
+tuneinRadio.prototype.saveTestingConf = function(data) {
+  var self = this;
+  var defer = libQ.defer();
+
   self.config.set('experimental', data['experimental']);
   self.refreshConfig();
-  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Configuration Saved');
+  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Testing Configuration Saved');
   return defer.promise;
-}
+};
+
 
 // Playback Controls --------------------------------------------------------
 // If your plugin is not a music_sevice don't use this part and delete it
