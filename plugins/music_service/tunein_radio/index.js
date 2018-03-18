@@ -113,11 +113,6 @@ tuneinRadio.prototype.onStart = function() {
   self.logger.info(navTreeRoot);
   navTreeRoot.then(function(results) {
     results.forEach (function(item) {
-      if (self.enableExperimental == false) {
-        if (item.key == 'podcast') {
-          return;
-        }
-      }
       self.logger.info('[TuneIn] Element: ' + item.key);
       var el = {
         type: item.type,
@@ -473,6 +468,10 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   };
 
   for (var el in self.navTree) {
+    if (el == 'podcast' && self.enableExperimental === false) {
+        continue;
+    }
+
     rootTree.navigation.lists[0].items.push({
       service: 'tunein_radio',
       type: 'streaming-category',
