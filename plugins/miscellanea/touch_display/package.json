@@ -1,6 +1,6 @@
 {
   "name": "touch_display",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Enables touch display controller",
   "main": "index.js",
   "scripts": {
