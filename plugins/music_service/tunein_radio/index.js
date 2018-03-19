@@ -73,17 +73,17 @@ tuneinRadio.prototype.onVolumioStart = function() {
 tuneinRadio.prototype.refreshConfig = function() {
   var self = this;
 
-  if (self.config.get('popular') === true) {
+  if (self.config.get('popular', false) === true) {
     self.enablePopular = true;
   } else {
     self.enablePopular = false;
   }
-  if (self.config.get('best') === true) {
+  if (self.config.get('best', false) === true) {
     self.enableBest = true;
   } else {
     self.enableBest = false;
   }
-  if (self.config.get('experimental') === true) {
+  if (self.config.get('experimental', false) === true) {
     self.enableExperimental = true;
   } else {
     self.enableExperimental = false;
@@ -159,9 +159,9 @@ tuneinRadio.prototype.getUIConfig = function() {
       __dirname + '/i18n/strings_en.json',
       __dirname + '/UIConfig.json')
   .then(function(uiconf) {
-    uiconf.sections[0].content[0].value = self.config.get('popular');
-    uiconf.sections[0].content[1].value = self.config.get('best');
-    uiconf.sections[1].content[0].value = self.config.get('experimental');
+    uiconf.sections[0].content[0].value = self.config.get('popular', false);
+    uiconf.sections[0].content[1].value = self.config.get('best', false);
+    uiconf.sections[1].content[0].value = self.config.get('experimental', false);
 
     defer.resolve(uiconf);
   })
@@ -491,7 +491,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
       title: 'Popular',
       artist: '',
       album: '',
-      icon: 'fa fa-folder-open-o',
+      icon: 'fa fa-thumbs-o-up',
       uri: 'tunein/popular',
     });
   }
@@ -502,7 +502,7 @@ tuneinRadio.prototype.browseRoot = function(uri) {
       title: 'Best',
       artist: '',
       album: '',
-      icon: 'fa fa-folder-open-o',
+      icon: 'fa fa-diamond',
       uri: 'tunein/best',
     });
   }
