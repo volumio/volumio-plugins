@@ -118,7 +118,7 @@
 					"prettyName": "TuneIn Radio",
 					"icon": "fa-lightbulb-o",
 					"name": "tunein_radio",
-					"version": "1.0.0",
+					"version": "1.1.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/tunein_radio/tunein_radio.zip",
 					"license": "ISC",
 					"description": "Support radio streaming from the TuneIn Radio service",
@@ -130,7 +130,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "12-3-2018"
+					"updated": "19-3-2018"
 				}
 			]
 		},
