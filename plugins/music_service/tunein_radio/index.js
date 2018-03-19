@@ -6,7 +6,6 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var TuneIn = require('node-tunein-radio');
-var axios = require('axios');
 var url = require('url');
 
 module.exports = tuneinRadio;
@@ -114,11 +113,6 @@ tuneinRadio.prototype.onStart = function() {
   self.logger.info(navTreeRoot);
   navTreeRoot.then(function(results) {
     results.forEach (function(item) {
-      if (self.enableExperimental == false) {
-        if (item.key == 'podcast') {
-          return;
-        }
-      }
       self.logger.info('[TuneIn] Element: ' + item.key);
       var el = {
         type: item.type,
@@ -167,7 +161,7 @@ tuneinRadio.prototype.getUIConfig = function() {
   .then(function(uiconf) {
     uiconf.sections[0].content[0].value = self.config.get('popular');
     uiconf.sections[0].content[1].value = self.config.get('best');
-    uiconf.sections[0].content[2].value = self.config.get('experimental');
+    uiconf.sections[1].content[0].value = self.config.get('experimental');
 
     defer.resolve(uiconf);
   })
@@ -193,17 +187,27 @@ tuneinRadio.prototype.setConf = function(varName, varValue) {
   var self = this;
 };
 
-tuneinRadio.prototype.saveMainCategories = function(data) {
+tuneinRadio.prototype.saveMainCategoriesConf = function(data) {
   var self = this;
   var defer = libQ.defer();
 
   self.config.set('popular', data['popular']);
   self.config.set('best', data['best']);
+  self.refreshConfig();
+  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Main Categories Configuration Saved');
+  return defer.promise;
+};
+
+tuneinRadio.prototype.saveTestingConf = function(data) {
+  var self = this;
+  var defer = libQ.defer();
+
   self.config.set('experimental', data['experimental']);
   self.refreshConfig();
-  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Configuration Saved');
+  self.commandRouter.pushToastMessage('success', 'TuneIn Radio', 'Testing Configuration Saved');
   return defer.promise;
-}
+};
+
 
 // Playback Controls --------------------------------------------------------
 // If your plugin is not a music_sevice don't use this part and delete it
@@ -320,25 +324,24 @@ tuneinRadio.prototype.explodeUri = function(uri) {
     type: 'track',
   }
 
+  let parsedUrl = url.parse(uri, true);
+  let streamId = parsedUrl.query.id;
 
-  axios.get(uri, {
-    params: {
-      render: 'json',
-    }
-  }).then(function (response) {
+  let streamUrl = self.tuneIn.tune_radio(streamId);
+  let streamDescribe = self.tuneIn.describe(streamId);
 
-    self.logger.info(response.data)
+  self.logger.error('[TuneIn] Fetching details for stream: ' + streamId);
+  Promise.all([streamUrl, streamDescribe]).then(function(results) {
+    explodedUri.uri = results[0].body[0].url;
+    explodedUri.name = results[1].body[0].name;
+    explodedUri.albumart = results[1].body[0].logo;
 
-    explodedUri.uri = response.data.body[0].url
-    explodedUri.name = response.data.body[0].url
-
-    self.logger.info(explodedUri);
     defer.resolve(explodedUri);
   })
-  .catch(function (error) {
-    self.logger.error(error);
-    defer.resolve(explodedUri);
-  });
+    .catch(function(err) {
+      self.logger.error(err);
+      defer.reject(new Error('Cannot retrieve details for stram ' + uri + ': ' + err));
+    });
 
   return defer.promise;
 };
@@ -403,31 +406,21 @@ tuneinRadio.prototype.search = function(query) {
   tuneinSearch.then(function(results) {
     var body = results.body;
     for (var i in body) {
-      if (body[i].type == 'audio') {
-        response.items.push({
-          service: 'tunein_radio',
-          type: 'webradio',
-          title: body[i].text,
-          artist: '',
-          album: '',
-          albumart: body[i].image,
-          uri: body[i].URL,
-        });
-        self.logger.info('[TuneIn] Added new search result ' + body[i].guide_id + ' => ' + body[i].text + ' => ' + body[i].URL);
-      } else {
-        self.logger.warn('[TuneIn] Unknown element type (' + body[i].type + ') ignored');
+      let item = self.getNavigationItem(body[i], 'tunein_radio');
+      if (item) {
+        response.items.push(item);
       }
     }
-
     defer.resolve(response);
   })
     .catch(function(err) {
       self.logger.error(err);
-      defer.reject(new Error('Cannot list category items for ' + category + ': ' + err));
+      defer.reject(new Error('Cannot search for ' + query.value + ': ' + err));
     });
 
   return defer.promise;
 };
+
 
 tuneinRadio.prototype.initNavTree = function(uri) {
   var self = this;
@@ -475,6 +468,10 @@ tuneinRadio.prototype.browseRoot = function(uri) {
   };
 
   for (var el in self.navTree) {
+    if (el == 'podcast' && self.enableExperimental === false) {
+        continue;
+    }
+
     rootTree.navigation.lists[0].items.push({
       service: 'tunein_radio',
       type: 'streaming-category',
