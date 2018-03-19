@@ -211,7 +211,7 @@
 					"prettyName": "LastFM Scrobbler",
 					"icon": "fa-lastfm",
 					"name": "lastfm",
-					"version": "1.1.11",
+					"version": "1.1.12",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfm/lastfm.zip",
 					"license": "GPL-3.0",
 					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info",
@@ -223,7 +223,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "19-3-2018"
 				},
 				{
 					"prettyName": "Kodi Krypton",
