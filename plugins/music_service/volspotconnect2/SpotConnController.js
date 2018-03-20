@@ -18,42 +18,54 @@ class SpotConnEvents extends EventEmitter {
   }
 
   parseData(msg) {
-      try {
-        const data = JSON.parse(msg);
-        switch (true) {
-          case 'metadata' in data:
-            this.emit('metadata', data.metadata);
-            break;
-          case 'token' in data:
-            this.emit('token', data.token);
-          default:
-            this.emit('unknown', data)
-        }
-      } catch (e) {
-        switch (msg) {
-          case 'kSpPlaybackNotifyBecameActive':
-            this.emit('SActive', '')
-            break;
-
-          case 'kSpDeviveActive':
-            this.emit('DActive', '')
-            break;
-
-          case 'kSpDeviveInactive':
-            this.emit('DInactive', '')
-            break;
-
-          case 'kSpPlaybackNotifyBecameInactive':
-            this.emit('SInactive')
-            break;
-
-          default:
-            this.emit('unknown', msg)
-        };
+    try {
+      const data = JSON.parse(msg);
+      switch (true) {
+        case 'metadata' in data:
+          this.emit('metadata', data.metadata);
+          break;
+        case 'token' in data:
+          this.emit('token', data.token);
+          break;
+        case 'position_ms' in data:
+          this.emit('seek', data.position_ms);
+          break;
+        default:
+          this.emit('unknown', data)
       }
-    }
+    } catch (e) {
+      switch (msg) {
+        case 'kSpPlaybackNotifyBecameActive':
+          this.emit('SessionActive', '')
+          break;
 
-  sendmsg(msg){
+        case 'kSpDeviceActive':
+          this.emit('DeviceActive', '')
+          break;
+
+        case 'kSpSinkActive':
+          this.emit('SinkActive', '')
+          break;
+
+        case 'kSpDeviceInactive':
+          this.emit('DeviceInactive', '')
+          break;
+
+        case 'kSpSinkInactive':
+          this.emit('SinkInactive', '')
+          break;
+
+        case 'kSpPlaybackNotifyBecameInactive':
+          this.emit('SessionInactive')
+          break;
+
+        default:
+          this.emit('unknown', msg)
+      };
+    }
+  }
+
+  sendmsg(msg) {
     // Attempting to send a message back via udp
     self._udpsource.send(msg)
 
@@ -65,4 +77,3 @@ class SpotConnEvents extends EventEmitter {
 
 
 module.exports = SpotConnEvents
-
