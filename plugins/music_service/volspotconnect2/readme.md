@@ -6,7 +6,6 @@ and the great addition from @ashthespy https://github.com/ashthespy for metadata
 
 It is still in dev and some feature are missing.
 
-
 Tested on :
 - RPI 0
 - RPI B
