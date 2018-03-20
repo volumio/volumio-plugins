@@ -111,7 +111,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
   //samplerate: 'Volspotconnect2',
   //bitdepth: 'HQ',
   channels: 2,
-  Streaming: true,
+  streaming: true,
+  disableUiControls: true
  };
 
  const nHost = ''; // blank = localhost
