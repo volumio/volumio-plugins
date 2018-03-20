@@ -306,23 +306,6 @@
 					"updated": "25-05-2017"
 				},
 				{
-					"prettyName": "Autoplay",
-					"icon": "fa-lightbulb-o",
-					"name": "auto_play",
-					"version": "1.0.0",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/auto_play/auto_play.zip",
-					"description": "Autoplay plugin - Enable this plugin in order to let volumio start playing the last entry in the queue after a reboot.",
-					"details": "This plugin starts automatically playback on Volumio start",
-					"author": "Thomas Doerr",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "5-2-2018"
-				},
-				{
 					"prettyName": "Backup & Restore Data",
 					"icon": "fa-floppy-o",
 					"name": "backup_restore",
