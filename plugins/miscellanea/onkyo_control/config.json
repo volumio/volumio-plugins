@@ -1,5 +1,5 @@
 {
-  "autolocate": {
+  "autoDiscovery": {
     "type": "boolean",
     "value": true
   },
@@ -15,7 +15,7 @@
     "type": "string",
     "value": "60128"
   },
-  "poweron": {
+  "powerOn": {
     "type": "boolean",
     "value": true
   },

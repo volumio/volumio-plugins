@@ -16,7 +16,7 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "autolocate",
+          "autoDiscovery",
           "receiverSelect",
           "receiverIP",
           "receiverPort"
@@ -24,10 +24,10 @@
       },
       "content": [
         {
-          "id": "autolocate",
+          "id": "autoDiscovery",
           "element": "switch",
-          "label": "TRANSLATE.AUTOLOCATE",
-          "doc": "TRANSLATE.AUTOLOCATE_DOC",
+          "label": "TRANSLATE.AUTO_DISCOVERY",
+          "doc": "TRANSLATE.AUTO_DISCOVERY_DOC",
           "value": true
         },
         {
@@ -43,7 +43,7 @@
             }
           ],
           "visibleIf": {
-            "field": "autolocate",
+            "field": "autoDiscovery",
             "value": false
           }
         },
@@ -55,7 +55,7 @@
           "doc": "TRANSLATE.RECEIVER_IP_DOC",
           "value": "",
           "visibleIf": {
-            "field": "autolocate",
+            "field": "autoDiscovery",
             "value": false
           }
         },
@@ -67,7 +67,7 @@
           "doc": "TRANSLATE.RECEIVER_PORT_DOC",
           "value": "60128",
           "visibleIf": {
-            "field": "autolocate",
+            "field": "autoDiscovery",
             "value": false
           }
         }
@@ -86,7 +86,7 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "poweron",
+          "powerOn",
           "standby",
           "standbyDelay",
           "setVolume",
@@ -95,10 +95,10 @@
       },
       "content": [
         {
-          "id": "poweron",
+          "id": "powerOn",
           "element": "switch",
-          "label": "TRANSLATE.POWERON",
-          "doc": "TRANSLATE.POWERON_DOC",
+          "label": "TRANSLATE.POWER_ON",
+          "doc": "TRANSLATE.POWER_ON_DOC",
           "value": true
         },
         {
