@@ -43,13 +43,14 @@ ControllerVolspotconnect.prototype.onVolumioStart = function() {
  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
  this.config = new(require('v-conf'))();
  this.config.loadFile(configFile);
- self.createVOLSPOTCONNECTFile()
+/* self.createVOLSPOTCONNECTFile()
   .then(function(e) {
    defer.resolve({});
   })
   .fail(function(e) {
    defer.reject(new Error());
   })
+*/
  return libQ.resolve();
 }
 
@@ -111,7 +112,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
   //samplerate: 'Volspotconnect2',
   //bitdepth: 'HQ',
   channels: 2,
-  Streaming: true,
+  streaming: true,
+  disableUiControls: true
  };
 
  const nHost = ''; // blank = localhost

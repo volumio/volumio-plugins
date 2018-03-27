@@ -1,4 +1,4 @@
-18th march 2018
+27th march 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -57,6 +57,10 @@ UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+27th march
+
+- better compatibility with audio_intrface plugins ( volstereo2mono, volsimpleequalizer, volbauerfilter, volparametriceq )
 
 18 th march
 - new librespot (@ashthespy)
