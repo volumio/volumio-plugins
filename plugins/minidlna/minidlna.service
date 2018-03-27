@@ -1,0 +1,16 @@
+[Unit]
+Description=MiniDLNA UPnP-A/V and DLNA media server
+After=syslog.target var-run.mount nss-lookup.target network.target remote-fs.target local-fs.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/minidlna/minidlnad.pid
+ExecStart=/usr/bin/minidlnad -P /var/run/minidlna/minidlnad.pid -f /etc/minidlna.conf
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+User=root
+Group=volumio
+
+[Install]
+WantedBy=multi-user.target
