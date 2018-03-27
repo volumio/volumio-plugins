@@ -1,0 +1,21 @@
+{
+	"name": "minidlna",
+	"version": "1.0.0",
+	"description": "The plugin installs and configures a miniDLNA server.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "gvolt",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "miniDLNA",
+		"icon": "fa-share-alt",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
