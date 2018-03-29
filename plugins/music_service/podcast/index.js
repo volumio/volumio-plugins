@@ -161,6 +161,10 @@ ControllerPodcast.prototype.addPodcast = function(data) {
   );
 
   var rssParser = new RssParser({
+    headers: {
+      'Accept': '*/*',
+      'User-Agent': 'Mozilla/5.0'
+    },
     feed: {
       channel: ['image']
     }
@@ -168,25 +172,24 @@ ControllerPodcast.prototype.addPodcast = function(data) {
 
   rssParser.parseURL(rssUrl,
     function (err, feed) {
-      var podcastImage, podcastItem;
+      var imageUrl, podcastItem;
 
       if (err) {
         self.showDialogMessage(self.getPodcastI18nString('PODCAST_URL_PARSING_PROBLEM'));
         return;
       }
 
-      podcastImage = "";
-      if (feed.itunes !== undefined)
-        podcastImage = feed.itunes.image;
-      if (feed.image !== undefined)
-        podcastImage = feed.image.url;
+      if ( (feed.image !== undefined) && (feed.image.url !== undefined) )
+        imageUrl = feed.image.url;
+      else if ( (feed.itunes !== undefined)  && (feed.itunes.image !== undefined) )
+        imageUrl = feed.itunes.image;
 
       podcastItem = {
         id: Math.random().toString(36).substring(2, 10) +
             Math.random().toString(36).substring(2, 10),
         title: feed.title,
         url: rssUrl,
-        image: podcastImage
+        image: imageUrl
       };
 
       self.podcasts.items.push(podcastItem);
@@ -322,12 +325,17 @@ ControllerPodcast.prototype.getRootContent = function() {
   };
 
   self.podcasts.items.forEach(function (entry, index) {
+    var imageUrl;
+
+    imageUrl = entry.image;
+    if (imageUrl === undefined)
+      imageUrl = '/albumart?sourceicon=music_service/podcast/default.jpg';
     var podcast = {
       service: self.serviceName,
       type: 'folder',
       title: entry.title,
       uri: 'podcast/' + index,
-      albumart: entry.image
+      albumart: imageUrl
     };
     response.navigation.lists[0].items.push(podcast);
   });
@@ -366,7 +374,11 @@ ControllerPodcast.prototype.getPodcastContent = function(uri) {
   );
 
   var rssParser = new RssParser({
-    customFields: {
+    headers: {
+      'Accept': '*/*',
+      'User-Agent': 'Mozilla/5.0'
+    },
+    feed: {
       channel: ['image']
     }
   });
