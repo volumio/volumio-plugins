@@ -46,7 +46,7 @@
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-spotify",
 					"name": "volspotconnect2",
-					"version": "0.6.5",
+					"version": "0.7.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
 					"license": "GPL 3.0",
 					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
@@ -58,7 +58,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "8-3-2018"
+					"updated": "20-3-2018"
 				},
 				{
 					"prettyName": "Squeezelite player",
@@ -100,10 +100,10 @@
 					"prettyName": "Personal Radio",
 					"icon": "fa-headphones",
 					"name": "personal_radio",
-					"version": "0.0.7",
+					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/personal_radio/personal_radio.zip",
 					"license": "ISC",
-					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"description": "Personal Radio Plugin for Volumio2 (KBS,MBC,SBS Korean Radios & Linn)",
 					"details": "KBS(Korean Broadcasting System), MBC(Munhwa Broadcasting Corporation), Linn Radio plugin for Volumio",
 					"author": "Chris Song <ckchrisong@gmail.com>",
 					"screenshots": [
@@ -112,7 +112,25 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "12-3-2018"
+				},
+				{
+					"prettyName": "TuneIn Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "tunein_radio",
+					"version": "1.1.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/tunein_radio/tunein_radio.zip",
+					"license": "ISC",
+					"description": "Support radio streaming from the TuneIn Radio service",
+					"details": "Support radio streaming from the TuneIn Radio service",
+					"author": "Piffio",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-3-2018"
 				}
 			]
 		},
@@ -157,7 +175,7 @@
 					"prettyName": "FritzCallMute",
 					"icon": "fa-phone",
 					"name": "fritzcallmute",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fritzcallmute/fritzcallmute.zip",
 					"license": "ISC",
 					"description": "Mutes on phone calls via FritzBox router",
@@ -169,7 +187,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "12-3-2018"
 				},
 				{
 					"prettyName": "Amplifier Switch",
@@ -193,7 +211,7 @@
 					"prettyName": "LastFM Scrobbler",
 					"icon": "fa-lastfm",
 					"name": "lastfm",
-					"version": "1.1.11",
+					"version": "1.1.12",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfm/lastfm.zip",
 					"license": "GPL-3.0",
 					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info",
@@ -205,7 +223,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-2-2018"
+					"updated": "19-3-2018"
 				},
 				{
 					"prettyName": "Kodi Krypton",
@@ -224,6 +242,42 @@
 						}
 					],
 					"updated": "18-2-2018"
+				},
+				{
+					"prettyName": "RemotePi",
+					"icon": "fa-power-off",
+					"name": "remotepi",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/remotepi/remotepi.zip",
+					"license": "",
+					"description": "The plugin enables support for the RemotePi board.",
+					"details": "",
+					"author": "gvolt",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-3-2018"
+				},
+				{
+					"prettyName": "AutoStart",
+					"icon": "fa-lightbulb-o",
+					"name": "autostart",
+					"version": "1.1.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/autostart/autostart.zip",
+					"license": "ISC",
+					"description": "Ths plugin starts the first entry in the queue after rebooting volumio.",
+					"details": "",
+					"author": "Thomas Doerr",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-3-2018"
 				}
 			]
 		},
@@ -250,23 +304,6 @@
 						}
 					],
 					"updated": "25-05-2017"
-				},
-				{
-					"prettyName": "Autoplay",
-					"icon": "fa-lightbulb-o",
-					"name": "auto_play",
-					"version": "1.0.0",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/auto_play/auto_play.zip",
-					"description": "Autoplay plugin - Enable this plugin in order to let volumio start playing the last entry in the queue after a reboot.",
-					"details": "This plugin starts automatically playback on Volumio start",
-					"author": "Thomas Doerr",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "5-2-2018"
 				},
 				{
 					"prettyName": "Backup & Restore Data",
