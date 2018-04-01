@@ -59,6 +59,7 @@ mkdir ./brutefir
 miniunzip brutefir.zip -d ./brutefir
 cd ./brutefir
 volumio plugin install
+```
 
 In webUI, enbable the plugin and wait about 10seconds.
 
