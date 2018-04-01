@@ -1,4 +1,4 @@
-14th January 18
+01st April January 18
 
 
 #	BRUTEFIR2 PLUGIN
@@ -30,12 +30,39 @@ Base scheme
 
 ## INSTALLATION WARNING 
 
-
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
-1) download brutefir.zip file and install it through volumio plugin management UI.
-2) Enable the plugin
-4) Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
+## To install
+Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
+
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
+
+### 1. Enable SSH and connect to Volumio
+
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir2/brutefir.zip
+mkdir ./brutefir
+miniunzip brutefir.zip -d ./brutefir
+cd ./brutefir
+volumio plugin install
+
+In webUI, enbable the plugin and wait about 10seconds.
+
+Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
 Have look at the wiki : [wiki](https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze)
 
 ## What is working :
@@ -52,8 +79,13 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 - slow to load interface UI (warning in some web browser for script to slow)
 - support only file with sample set in advanced settings.
 - need to save advanced setting each boot....
+- factory preset not functionnal
 
 ## Last changes
+
+01st April
+
+- correction in brutefir.conf.tmpl
 
 14th january
 
