@@ -61,6 +61,8 @@ cd ./brutefir
 volumio plugin install
 ```
 
+### 3. Using the plugin
+
 In webUI, enbable the plugin and wait about 10seconds.
 
 Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
@@ -82,7 +84,7 @@ Use of custom filter (just drop your filter in /INTERNAL/brutefirfilters and fil
 - need to save advanced setting each boot....
 - factory preset not functionnal
 
-## Last changes
+### 4. Last changes
 
 01st April
 
