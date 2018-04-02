@@ -154,6 +154,18 @@ ControllerPodcast.prototype.addPodcast = function(data) {
     return;
   }
 
+  var findItem = _.find(self.podcasts.items, function(item) {
+    return item.url === rssUrl;
+  });
+  if (findItem !== undefined) {
+    self.commandRouter.pushToastMessage(
+        'info',
+        self.getPodcastI18nString('PLUGIN_NAME'),
+        self.getPodcastI18nString('DUPLICATED_PODCAST')
+    );
+    return;
+  }
+
   self.commandRouter.pushToastMessage(
       'info',
       self.getPodcastI18nString('PLUGIN_NAME'),
@@ -198,7 +210,7 @@ ControllerPodcast.prototype.addPodcast = function(data) {
       message = self.getPodcastI18nString('ADD_PODCAST_COMPLETION');
       message = message.replace('{0}', feed.title);
       self.commandRouter.pushToastMessage(
-          'info',
+          'success',
           self.getPodcastI18nString('PLUGIN_NAME'),
           message
       );
@@ -250,7 +262,7 @@ ControllerPodcast.prototype.deletePodcastConfirm = function(data) {
   var message = self.getPodcastI18nString('DELETE_PODCAST_COMPLETION');
   message = message.replace('{0}', data[1]);
   self.commandRouter.pushToastMessage(
-      'info',
+      'success',
       self.getPodcastI18nString('PLUGIN_NAME'),
       message
   );

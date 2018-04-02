@@ -12,6 +12,7 @@
   "DELETE_PODCAST_COMPLETION": "{0} 팟캐스트 항목이 삭제되엇습니다.",
   "DELETE_CONFIRM_MESSAGE": "{0} 팟캐스트를 삭제 하시겠습니까?",
   "ADD_PODCAST_PROCESSING": "팟캐스트 항목이 추가되기까지 기다려주세요.",
+  "DUPLICATED_PODCAST": "이미 동일한 팟캐스트가 존재합니다.",
   "CONFIG": {
     "TITLE": "팟캐스트 설정",
     "PODCAST": "팟캐스트",

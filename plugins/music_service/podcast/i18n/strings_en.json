@@ -12,6 +12,7 @@
   "DELETE_PODCAST_COMPLETION": "{0} podcast item is removed.",
   "DELETE_CONFIRM_MESSAGE": "Do you want to delete {0} podcast?",
   "ADD_PODCAST_PROCESSING": "Please wait for a while podcast item to be added.",
+  "DUPLICATED_PODCAST": "Added podcast is duplicated.",
   "CONFIG": {
     "TITLE": "Podcast Configuration",
     "PODCAST": "Podcast",
