@@ -25,8 +25,26 @@
 					"updated": "18-2-2018"
 				},
 				{
+					"prettyName": "Volumio Spotify Connect2",
+					"icon": "fa-spotify",
+					"name": "volspotconnect2",
+					"version": "0.7.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
+					"license": "GPL 3.0",
+					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
+					"details": "Spotify Connect for Volumio",
+					"author": "Balbuze & Ashthespy",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "20-3-2018"
+				},
+				{
 					"prettyName": "Personal Radio",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "personal_radio",
 					"version": "0.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/personal_radio/personal_radio.zip",
