@@ -1,0 +1,59 @@
+{
+  "page": {
+    "label": "TRANSLATE.CONFIGURATION.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_main_categories",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.S_CATEGORIES_LABEL",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/tunein_radio", "method":"saveMainCategoriesConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.S_CATEGORIES_SAVE",
+        "data": [
+          "popular",
+          "best"
+        ]
+      },
+      "content": [
+        {
+          "id": "popular",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.S_CATEGORIES_C_POPULAR_DOC",
+          "label": "TRANSLATE.CONFIGURATION.S_CATEGORIES_C_POPULAR_LABEL",
+          "value": false
+        },
+        {
+          "id": "best",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.S_CATEGORIES_C_BEST_DOC",
+          "label": "TRANSLATE.CONFIGURATION.S_CATEGORIES_C_BEST_LABEL",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "section_testing",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.S_TESTING_LABEL",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/tunein_radio", "method":"saveTestingConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.S_TESTING_SAVE",
+        "data": [
+          "experimental"
+        ]
+      },
+      "content": [
+        {
+          "id": "experimental",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.S_TESTING_C_EXPERIMENTAL_DOC",
+          "label": "TRANSLATE.CONFIGURATION.S_TESTING_C_EXPERIMENTAL_LABEL",
+          "value": false
+        }
+      ]
+    }
+  ]
+}

@@ -17,36 +17,55 @@ class SpotConnEvents extends EventEmitter {
     })
   }
 
-  parseData(data) {
-    // Quick and dirty JSON check
+  parseData(msg) {
     try {
-      const metadata = JSON.parse(data);
-      this.emit('metadata', metadata);
+      const data = JSON.parse(msg);
+      switch (true) {
+        case 'metadata' in data:
+          this.emit('metadata', data.metadata);
+          break;
+        case 'token' in data:
+          this.emit('token', data.token);
+          break;
+        case 'position_ms' in data:
+          this.emit('seek', data.position_ms);
+          break;
+        default:
+          this.emit('unknown', data)
+      }
     } catch (e) {
-      switch (data) {
+      switch (msg) {
         case 'kSpPlaybackNotifyBecameActive':
-          this.emit('SActive', '')
+          this.emit('SessionActive', '')
           break;
 
-        case 'kSpDeviveActive':
-          this.emit('DActive', '')
+        case 'kSpDeviceActive':
+          this.emit('DeviceActive', '')
           break;
 
-        case 'kSpDeviveInactive':
-          this.emit('DInactive', '')
+        case 'kSpSinkActive':
+          this.emit('SinkActive', '')
+          break;
+
+        case 'kSpDeviceInactive':
+          this.emit('DeviceInactive', '')
+          break;
+
+        case 'kSpSinkInactive':
+          this.emit('SinkInactive', '')
           break;
 
         case 'kSpPlaybackNotifyBecameInactive':
-          this.emit('SInactive')
+          this.emit('SessionInactive')
           break;
 
         default:
-          this.emit('unknown', data)
+          this.emit('unknown', msg)
       };
     }
   }
 
-  sendmsg(msg){
+  sendmsg(msg) {
     // Attempting to send a message back via udp
     self._udpsource.send(msg)
 
@@ -58,4 +77,3 @@ class SpotConnEvents extends EventEmitter {
 
 
 module.exports = SpotConnEvents
-
