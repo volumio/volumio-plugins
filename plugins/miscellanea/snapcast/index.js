@@ -894,7 +894,7 @@ ControllerSnapCast.prototype.updateSpotifyImplementation = function()
 	}
 	else if (imp == "volspotconnect2")
 	{
-		self.replaceStringInFile("--backend", "--backend pipe --device " + self.config.get('spotify_pipe') + " --disable-audio-cache --onstart ./onstart1.sh", "/data/plugins/music_service/volspotconnect2/volspotconnect2.tmpl");
+		self.replaceStringInFile("--backend", "--backend pipe --device " + self.config.get('spotify_pipe') + " --disable-audio-cache --initial-volume $\\{initvol\\}", "/data/plugins/music_service/volspotconnect2/volspotconnect2.tmpl");
 		defer.resolve();
 	}
 	else if (imp == "spop")
