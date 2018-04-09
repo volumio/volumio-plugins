@@ -4,6 +4,7 @@ var libQ = require('kew');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
+var path = require('path');
 var os = require('os');
 var Gpio = require('onoff').Gpio;
 var sleep = require('sleep');
@@ -55,7 +56,7 @@ remotepi.prototype.onVolumioShutdown = function() {
     shutdownCtrl.write(1);
     sleep.sleep(4);
 
-    return libQ.resolve();  
+    return libQ.resolve();
 };
 
 remotepi.prototype.onStart = function() {
@@ -65,7 +66,7 @@ remotepi.prototype.onStart = function() {
     self.dtctHwShutdown();
     initShutdown = new Gpio(15, "out");
     self.writeBootStr();
-    defer.resolve()
+    defer.resolve();
 
     return defer.promise;
 };
@@ -109,6 +110,65 @@ remotepi.prototype.getConfigurationFiles = function() {
     return ["config.json"];
 };
 
+remotepi.prototype.getI18nFile = function(lang_code) {
+    var supportedLanguages = fs.readdirSync(__dirname + "/i18n");
+
+    // determine supported languages
+    for (var i = 0; i < supportedLanguages.length; ++i) {
+        if (supportedLanguages[i].startsWith("strings_") && supportedLanguages[i].endsWith(".json")) {
+            supportedLanguages[i] = supportedLanguages[i].replace("strings_", "").replace(".json", "");
+        } else {
+            supportedLanguages.splice(i, 1);
+        }
+    }
+    if (supportedLanguages.includes(lang_code)) {
+        return path.join(__dirname, "i18n", "strings_" + lang_code + ".json");
+    }
+
+    // return default i18n file
+    return path.join(__dirname, "i18n", "strings_en.json");
+};
+
+remotepi.prototype.saveConf = function(data) {
+    var self = this;
+    var responseData;
+
+    if (self.config.get("enable_gpio17") != data.gpio17) {
+        self.config.set("enable_gpio17", data.gpio17);
+        self.writeBootStr();
+        responseData = {
+            title: self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"),
+            message: self.commandRouter.getI18nString("REMOTEPI.REBOOT_MSG"),
+            size: "lg",
+            buttons: [{
+                        name: self.commandRouter.getI18nString("COMMON.RESTART"),
+                        class: "btn btn-default",
+                        emit: "reboot",
+                        payload: ""
+                      },
+                      {
+                        name: self.commandRouter.getI18nString("COMMON.CONTINUE"),
+                        class: "btn btn-info",
+                        emit: "callMethod",
+                        payload: {"endpoint":"miscellanea/remotepi", "method":"closeModals"}
+                      }
+            ]
+        }
+        self.commandRouter.broadcastMessage("openModal", responseData);
+    } else {
+        self.commandRouter.pushToastMessage("info", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.NO_CHANGES"));
+    }
+};
+
+remotepi.prototype.closeModals = function() {
+    var self = this;
+
+    self.commandRouter.closeModals();
+};
+
+
+// Plugin Methods ------------------------------------------------------------------------------------
+
 remotepi.prototype.dtctHwShutdown = function() {
     var self = this;
 
@@ -143,7 +203,7 @@ remotepi.prototype.writeBootStr = function() {
     fs.readFile(configFile, "utf8", function (error, configTxt) {
         if (error) {
             self.logger.error("Error reading " + configFile + ": " + error);
-            self.commandRouter.pushToastMessage("error", "RemotePi", "Error reading " + configFile + ": " + error);
+            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.ERR_READ") + configFile + ": " + error);
         } else {
             newConfigTxt = configTxt.replace(searchexp, lircOverlayBanner + bootstring);
             if (configTxt == newConfigTxt && configTxt.search(lircOverlayBanner + bootstring) == -1) {
@@ -152,7 +212,7 @@ remotepi.prototype.writeBootStr = function() {
             fs.writeFile(configFile, newConfigTxt, "utf8", function (error) {
                 if (error) {
                     self.logger.error("Error writing " + configFile + ": " + error);
-                    self.commandRouter.pushToastMessage("error", "RemotePi", "Error writing " + configFile + ": " + error);
+                    self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.ERR_WRITE") + configFile + ": " + error);
                 }
             });
         }
@@ -167,23 +227,15 @@ remotepi.prototype.rmBootStr = function() {
     fs.readFile(configFile, "utf8", function (error, configTxt) {
         if (error) {
             self.logger.error("Error reading" + configFile + ": " + error);
-            self.commandRouter.pushToastMessage("error", "RemotePi", "Error reading " + configFile + ": " + error);
+            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.ERR_READ") + configFile + ": " + error);
         } else {
             configTxt = configTxt.replace(searchexp, os.EOL);
             fs.writeFile(configFile, configTxt, "utf8", function (error) {
                 if (error) {
                     self.logger.error("Error writing" + configFile + ": " + error);
-                    self.commandRouter.pushToastMessage("error", "RemotePi", "Error writing " + configFile + ": " + error);
+                    self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.ERR_WRITE") + configFile + ": " + error);
                 }
             });
         }
     });
-};
-
-remotepi.prototype.saveConf = function(data) {
-    var self = this;
-
-    self.config.set("enable_gpio17", data.gpio17);
-    self.writeBootStr();
-    self.commandRouter.pushToastMessage("info", "RemotePi", "A reboot is required for the change to take effect.");
 };
