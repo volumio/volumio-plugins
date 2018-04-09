@@ -15,7 +15,6 @@ function ControllerPodcast(context) {
   self.commandRouter = this.context.coreCommand;
   self.logger = this.context.logger;
   self.configManager = this.context.configManager;
-  self.stateMachine = self.commandRouter.stateMachine;
 
   self.logger.info("ControllerPodcast::constructor");
 }
@@ -187,7 +186,8 @@ ControllerPodcast.prototype.addPodcast = function(data) {
       var imageUrl, podcastItem;
 
       if (err) {
-        self.showDialogMessage(self.getPodcastI18nString('PODCAST_URL_PARSING_PROBLEM'));
+        self.showDialogMessage(
+            self.getPodcastI18nString('PODCAST_URL_PARSING_PROBLEM'));
         return;
       }
 
@@ -427,7 +427,8 @@ ControllerPodcast.prototype.explodeUri = function (uri) {
     uri: uriInfo[1],
     trackType: self.getPodcastI18nString('PLUGIN_NAME'),
     name: uriInfo[2],
-    albumart: self.podcasts.items[uris[1]].image
+    albumart: self.podcasts.items[uris[1]].image,
+    serviceName: self.serviceName
   };
   defer.resolve(response);
 
@@ -452,18 +453,17 @@ ControllerPodcast.prototype.clearAddPlayTrack = function(track) {
 
       self.mpdPlugin.clientMpd.on('system', function (status) {
         if (status !== 'playlist' && status !== undefined) {
-          self.mpdPlugin.getState().then(function (state) {
+          self.getState().then(function (state) {
             if (state.status === 'play') {
-              return self.commandRouter.stateMachine.syncState(state,
-                  self.serviceName);
+              return self.pushState(state);
             }
           });
         }
       });
 
       return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-        return self.mpdPlugin.getState().then(function (state) {
-          return self.commandRouter.stateMachine.syncState(state, self.serviceName);
+        return self.getState().then(function (state) {
+          return self.pushState(state);
         });
       });
 
@@ -471,6 +471,42 @@ ControllerPodcast.prototype.clearAddPlayTrack = function(track) {
     .fail(function (e) {
       return defer.reject(new Error());
     });
+};
+
+ControllerPodcast.prototype.getState = function () {
+  var self = this;
+
+  return self.mpdPlugin.sendMpdCommand('status', [])
+  .then(function (objState) {
+    var collectedState = self.mpdPlugin.parseState(objState);
+
+    // If there is a track listed as currently playing, get the track info
+    if (collectedState.position !== null) {
+      var trackinfo=self.commandRouter.stateMachine.getTrack(self.commandRouter.stateMachine.currentPosition);
+      collectedState.isStreaming = trackinfo.isStreaming != undefined ? trackinfo.isStreaming : false;
+      collectedState.title = trackinfo.title;
+      collectedState.artist = trackinfo.artist;
+      collectedState.album = trackinfo.album;
+      collectedState.uri = trackinfo.uri;
+      collectedState.trackType = trackinfo.trackType.split('?')[0];
+      collectedState.serviceName = trackinfo.serviceName;
+      return collectedState;
+    } else {
+      collectedState.isStreaming = false;
+      collectedState.title = null;
+      collectedState.artist = null;
+      collectedState.album = null;
+      collectedState.uri = null;
+      return collectedState;
+    }
+  });
+};
+
+ControllerPodcast.prototype.pushState = function (state) {
+  var self = this;
+
+  if (state.serviceName === self.serviceName)
+    return self.commandRouter.servicePushState(state, self.serviceName);
 };
 
 ControllerPodcast.prototype.seek = function (position) {
@@ -489,8 +525,8 @@ ControllerPodcast.prototype.stop = function() {
   );
 
   return self.mpdPlugin.stop().then(function () {
-    return self.mpdPlugin.getState().then(function (state) {
-      return self.commandRouter.stateMachine.syncState(state, self.serviceName);
+    return self.getState().then(function (state) {
+      return self.pushState(state);
     });
   });
 };
@@ -499,8 +535,8 @@ ControllerPodcast.prototype.pause = function() {
   var self = this;
 
   return self.mpdPlugin.pause().then(function () {
-    return self.mpdPlugin.getState().then(function (state) {
-      return self.commandRouter.stateMachine.syncState(state, self.serviceName);
+    return self.getState().then(function (state) {
+      return self.pushState(state);
     });
   });
 };
@@ -509,8 +545,8 @@ ControllerPodcast.prototype.resume = function() {
   var self = this;
 
   return self.mpdPlugin.resume().then(function () {
-    return self.mpdPlugin.getState().then(function (state) {
-      return self.commandRouter.stateMachine.syncState(state, self.serviceName);
+    return self.getState().then(function (state) {
+      return self.pushState(state);
     });
   });
 };
