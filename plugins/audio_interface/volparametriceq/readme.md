@@ -1,4 +1,4 @@
-31th January 18
+09th April 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -8,20 +8,45 @@ http://quitte.de/dsp/caps.html#EqFA4p
 
 ![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
 
-## NOT compatible with softvol!
+## NOT compatible with softvol or volstereo2mono !
 
 ## How to install
 
-- Just download volparametriceq.zip and drop it in the plugin installation page in volumio.
-Enable it. That it !
+### 1. Enable SSH and connect to Volumio
+
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volparametriceq
+mkdir ./volparametriceq
+miniunzip volparametriceq.zip -d ./volparametriceq
+cd ./volparametriceq
+volumio plugin install
+```
 
 
-Tested on :
+## Tested on :
 RPI2
 PINE64
+x86 (virtual)
 
 
 ## Last changes
+
+08th April
+- first support for x86
 
 31th january
 - gainstep is now 0.1dB
