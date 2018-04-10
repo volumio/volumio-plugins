@@ -479,6 +479,9 @@ ControllerPodcast.prototype.getState = function () {
     // If there is a track listed as currently playing, get the track info
     if (collectedState.position !== null) {
       var trackinfo=self.commandRouter.stateMachine.getTrack(self.commandRouter.stateMachine.currentPosition);
+      if (collectedState.samplerate) trackinfo.samplerate = collectedState.samplerate;
+      if (collectedState.bitdepth) trackinfo.bitdepth = collectedState.bitdepth;
+
       collectedState.isStreaming = trackinfo.isStreaming != undefined ? trackinfo.isStreaming : false;
       collectedState.title = trackinfo.title;
       collectedState.artist = trackinfo.artist;
