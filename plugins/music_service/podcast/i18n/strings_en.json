@@ -1,6 +1,5 @@
 {
   "PLUGIN_NAME": "Podcast",
-  "WAIT_PODCAST_CHANNEL":"Please wait for podcast channel",
   "WAIT_PODCAST_ITEMS": "Please wait for {0} podcast items",
   "STOP_PODCAST": "Stopped podcast channel",
   "PODCAST_URL_PROBLEM": "illegal podcast RSS link url",

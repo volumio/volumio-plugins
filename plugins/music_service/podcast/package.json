@@ -1,6 +1,6 @@
 {
   "name": "podcast",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Podcast for Volumio2",
   "main": "index.js",
   "scripts": {

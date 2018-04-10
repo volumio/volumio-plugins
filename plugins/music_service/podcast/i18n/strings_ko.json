@@ -1,6 +1,5 @@
 {
   "PLUGIN_NAME": "팟캐스트",
-  "WAIT_PODCAST_CHANNEL":"팟캐스트 재생 준비중. 잠시 기다려 주세요.",
   "WAIT_PODCAST_ITEMS": "{0} 팟캐스트 목록 조회중입니다.",
   "STOP_PODCAST": "팟캐스트 재생을 중지합니다.",
   "PODCAST_URL_PROBLEM": "팟캐스트 RSS url 오류",

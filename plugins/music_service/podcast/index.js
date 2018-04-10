@@ -447,10 +447,6 @@ ControllerPodcast.prototype.clearAddPlayTrack = function(track) {
         return self.mpdPlugin.sendMpdCommand('add "'+track.uri+'"',[]);
     })
     .then(function () {
-      self.commandRouter.pushToastMessage('info',
-        self.getPodcastI18nString('PLUGIN_NAME'),
-        self.getPodcastI18nString('WAIT_PODCAST_CHANNEL'));
-
       self.mpdPlugin.clientMpd.on('system', function (status) {
         if (status !== 'playlist' && status !== undefined) {
           self.getState().then(function (state) {
