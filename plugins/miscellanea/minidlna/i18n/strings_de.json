@@ -1,7 +1,7 @@
 {
   "MINIDLNA":{
     "PLUGIN_NAME":"miniDLNA",
-    "CONF_UPDATED":"Die miniDLNA-Konfiguration wurde aktulisiert.",
+    "CONF_UPDATED":"Die miniDLNA-Konfiguration wurde aktualisiert.",
     "ERR_CREATE":"Fehler beim Erstellen von ",
     "ERR_WRITE":"Fehler beim Schreiben von ",
     "ERR_READ":"Fehler beim Lesen von ",
@@ -16,7 +16,7 @@
     "PICTURE_FOLDER":"Bilddatei-Verzeichnis",
     "PICTURE_FOLDER_DOC":"Pfad zum Verzeichnis, das die Bilddateien enthält.",
     "VIDEO_FOLDER":"Videodatei-Verzeichnis",
-    "VIDEO_FOLDER_DOC":"Pfad zum Verzeichnis, das die Videodateien enthät.",
+    "VIDEO_FOLDER_DOC":"Pfad zum Verzeichnis, das die Videodateien enthält.",
     "DB_DIR":"Datenbankverzeichnis",
     "DB_DIR_DOC":"Pfad zum Verzeichnis, das die Datenbank und den Cache für Albumcover enthalten soll.",
     "LOG_DIR":"Log-Verzeichnis",
