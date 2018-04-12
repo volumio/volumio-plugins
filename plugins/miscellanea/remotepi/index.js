@@ -63,6 +63,7 @@ remotepi.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
+    self.commandRouter.loadI18nStrings();
     self.dtctHwShutdown();
     initShutdown = new Gpio(15, "out");
     self.writeBootStr();
