@@ -37,6 +37,7 @@ minidlna.prototype.onStart = function() {
     var self = this;
     var defer = libQ.defer();
 
+    self.commandRouter.loadI18nStrings();
     self.initialConf()
         .then(function(e) {
             self.logger.info("Starting minidlna.service");
