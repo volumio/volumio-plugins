@@ -41,7 +41,7 @@ ssh volumio@volumio.local (if you changed the name of your device, replace the s
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/system_controller/volsmartpower.zip
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/system_controller/volsmartpower/volsmartpower.zip
 mkdir ./volsmartpower
 miniunzip volsmartpower.zip -d ./volsmartpower
 cd ./volsmartpower
