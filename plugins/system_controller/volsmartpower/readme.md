@@ -14,6 +14,11 @@ and
 
 https://github.com/audiophonics/Raspberry-pwr-management
 
+It provides :
+- GPIO setting for shutdown button
+- GPIO setting for reboot button
+- GPIO setting for boot ok signal led
+
 ![Alt text](volsmartpower.jpg?raw=true " Volumio Smart power")
 
 
@@ -52,3 +57,4 @@ volumio plugin install
 19th April 18
 
 - first commit
+- second commit
