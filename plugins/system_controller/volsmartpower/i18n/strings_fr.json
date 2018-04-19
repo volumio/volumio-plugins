@@ -1,0 +1,12 @@
+{
+  "TITLE":"Réglages de Volumio smart power",
+  "SUBTITLE":"Affectation de PIN du GPIO",
+  "SUBTITLEWARN":"ATTENTION !!! Une selection érronée peut endommager votre périphérique ! Vérifiez votre choix. Nous déclinons toutes responsabilités en cas de problème...",
+  "SAVE":"Sauver",
+  "ENABLESHUTDOWN":"Activer shutdown",
+  "DESCENABLESHUTDOWN":"Eteind le périphérique quand activé",
+  "ENABLEBOOTOK":"Activer BootOK signal",
+  "DESCENABLEBOOTOK":"Activer la sortie sur ce pin quand le périphérique est prèt",
+  "ENABLESOFTSD":"Activer Soft reboot",
+  "DESCENABLEDSOFTSD":"Reboot le périphérique quand ce pin est activé"
+}

@@ -1,0 +1,17 @@
+{
+    "ShutDown":{
+    "enabled": {"value": false, "type": "boolean"},
+    "pin": {"value":17 ,"type":"number"},
+    "value": {"value": 0, "type": "number"}
+  },
+  "BootOK":{
+    "enabled": {"value": false, "type": "boolean"},
+    "pin": {"value": 22,"type":"number"},
+    "value": {"value": 0, "type": "number"}
+  },
+  "SoftSD":{
+    "enabled": {"value": false, "type": "boolean"},
+    "pin": {"value": 4,"type":"number"},
+    "value": {"value": 0, "type": "number"}
+  }
+}
