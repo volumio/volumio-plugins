@@ -59,7 +59,7 @@ volumio plugin install
 April 22th
 
 - functionnal play next previous buttons (@ash !)
-- update readme
+- update readme 
 
 November 26th
 
