@@ -1,12 +1,12 @@
-november 26th th 2017
-	VOLUMIO SPOTIFY CONNECT PLUGIN
+22th April 2018
+#	VOLUMIO SPOTIFY CONNECT PLUGIN
 
-IMPORTANT
+## IMPORTANT
 
 - Requires a Premium or Family account
 
 
-IMPORTANT 2
+## IMPORTANT 2
 
 - Now the plugin works with armv6 RPI (previvous to RPI 2) even if just tested on RPI B...And of course with armv7 device (RPI 2, RPI3, Sparky ) 
 
@@ -17,22 +17,51 @@ Base on this work : https://github.com/Fornoth/spotify-connect-web
 With the great work of ashthespy for the webUI integration!
 Thank you to all developpers !
 
-To start, it is a very basic plugin.
-It just allow you tou install and configure spotify connect-web in Volumio 2
-It will not (for the moment) display album art, title or allow changing track from volumio.
 But from a external device and the offcial Spotify app, you'll be able to send your music to your device.
 
 - This version supports Family account : every member can use the device !
 
+## To install
+Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-To install
-- You only need to download volspotconnect.zip. Take care to download the "raw" file, not only html from github...
-- From Volumio UI choose "plugins" in setting, then "upload plugin" and select the file you have downloaded
-- First start may take several seconds, especially with armv6 because the chroot structure is built a this moment. 
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
-Last changes
+### 1. Enable SSH and connect to Volumio
 
-November 26yh
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect/volspotconnect.zip
+mkdir ./volspotconnect
+miniunzip volspotconnect.zip -d ./volspotconnect
+cd ./volspotconnect2
+volumio plugin install
+```
+
+## Issues
+
+- Possible problem with softvol...
+
+## Last changes
+
+April 22th
+
+- functionnal play next previous buttons (@ash !)
+- update readme
+
+November 26th
 
 possible fix for softvol with i2s dac
 
