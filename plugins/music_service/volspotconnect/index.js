@@ -8,6 +8,7 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 const SpotConnCtrl = require('./SpotConnController');
+const http = require('http')
 var routn = {};
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
@@ -28,6 +29,7 @@ function ControllerVolspotconnect(context) {
  //
  self.unsetVol = function() {
   var self = this;
+  return this.pause()
  };
 
 }
@@ -118,7 +120,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
 ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer) {
  var self = this;
  var rate
- self.servicename = 'Volspotconnect';
+ self.servicename = 'volspotconnect';
  self.displayname = 'Volspotconnect';
  if (self.config.get('bitrate') === true)
   rate = "HQ";
@@ -329,12 +331,12 @@ ControllerVolspotconnect.prototype.getoutputdevicenumberfromfile = function(file
 		var outdn = outn.split('"')
 
 		var routn = (outdn[7])
-   console.log(routn +'wwwwwwwwwwwwwwwwwwwwwwwwwww'); 
+   console.log(routn +'wwwwwwwwwwwwwwwwwwwwwwwwwww');
 
     } else {
         console.log(err)
     }
- 
+
 }
  );
 };
@@ -389,7 +391,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
      if (!err) {} else {
       console.log(err)
      }
-     //console.log(routn +' <---aaaaaaaaaaaaaaaaaaaazzz') 
+     //console.log(routn +' <---aaaaaaaaaaaaaaaaaaaazzz')
     })
     var obj = JSON.parse(datan);
     var outputdevicen = obj.outputdevice;
@@ -486,7 +488,7 @@ ControllerVolspotconnect.prototype.createASOUNDrcFile = function() {
 
       fs.copy('/home/volumio/asoundrc', '/etc/asound.conf', 'utf8', function(err) {
        if (err) return console.error(err);
-       console.log("copied with success")
+      self.logger.VolSpotCon("copied asoundrc successfully")
       })
       var apply = execSync('/usr/sbin/alsactl -L -R nrestore', {
        uid: 1000,
@@ -503,7 +505,7 @@ ControllerVolspotconnect.prototype.createASOUNDrcFile = function() {
   }, 2000);
 
  } else {
-  console.log("nothing to do")
+  self.logger.VolSpotCon("no need to update asoundrc")
  }
 };
 
@@ -515,7 +517,7 @@ ControllerVolspotconnect.prototype.createASOUNDFile = function() {
 try {
   fs.copy('/etc/asound.conf', '/data/plugins/music_service/volspotconnect/spotify-connect-web/etc/asound.conf', 'utf8', function(err) {
    if (err) return console.error(err);
-   console.log("copied with success")
+   self.logger.VolSpotCon("copied asound.conf successfully")
 
   })
  }catch (err) {}
@@ -577,3 +579,40 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
    return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
   }
  */
+
+ ControllerVolspotconnect.prototype.connectAPIRequest = function(cmd) {
+   var self = this;
+   return new Promise((resolve, reject) => {
+     const apirequest = http.get(`http://localhost:4000/api/playback/${cmd}`,
+       res => res.status == 204? resolve() : reject('Spotify-connect-web Api failed'));
+     apirequest.on('error', reject);
+     apirequest.end();
+  })
+ }
+
+ // Plugin methods for the Volumio state machine
+
+ ControllerVolspotconnect.prototype.pause = function() {
+     var self = this;
+     self.logger.VolSpotCon('Received pause');
+
+     return self.connectAPIRequest('pause');
+ }
+
+ ControllerVolspotconnect.prototype.next = function() {
+     var self = this;
+     self.logger.VolSpotCon('Received next');
+     return self.connectAPIRequest('next');
+ }
+
+ ControllerVolspotconnect.prototype.previous = function() {
+     var self = this;
+     self.logger.VolSpotCon('Received previous');
+     return self.connectAPIRequest('prev');
+ }
+
+ ControllerVolspotconnect.prototype.seek = function(position) {
+     var self = this;
+     self.logger.VolSpotCon(`Received seek to: ${position} but can't!`);
+     return Promise.resolve()
+ }
