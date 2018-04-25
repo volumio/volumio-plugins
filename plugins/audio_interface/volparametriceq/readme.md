@@ -29,13 +29,13 @@ ssh volumio@volumio.local (if you changed the name of your device, replace the s
 Type the following commands to download and install plugin:
 
 ```
-https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volparametriceq/volparametriceq.zip
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volparametriceq/volparametriceq.zip
 mkdir ./volparametriceq
 miniunzip volparametriceq.zip -d ./volparametriceq
 cd ./volparametriceq
 volumio plugin install
 ```
-
+If the installation fails, remove all file (if any) related to the plugin before retry.
 
 ## Tested on :
 RPI2
