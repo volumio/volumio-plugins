@@ -62,8 +62,13 @@
         },
     "PDPA":{
         "LABEL":"Power Amplifier Power Down",
-        "DESC":"Power Amplifier Power Down, disable audio amplifier.  Default = Off",
-        "DOC":"Power Amplifier Power Down, disable audio amplifier.  On = shuts down audio amplifer (no audio transmitted).  Off = turns on audio amplifier, Default = Off."
+        "DESC":"Power Amplifier Power Down, disable RF output.  Default = Off",
+        "DOC":"Power Amplifier Power Down, disable RF output.  On = shuts down transmitter.  Off = turns on transmitter, Default = Off."
+        },
+    "STARTUP":{
+        "LABEL":"Transmit on Volumio start up",
+        "DESC":"Begin transmitting immediately after Volumio starts.  Default = Off",
+        "DOC":"Begin transmitting immediately after Volumio starts.  If off you must save settings from here to start broadcasting.  Off = Do not transmit.  On = Transmit.  Default = Off."
         }
 
     }

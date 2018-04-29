@@ -5,15 +5,15 @@
   },
     "I2C_ADDRESS": {
     "type": "text",
-    "value": "3E"
+    "value": "3e"
   },
     "Freq": {
     "type": "number",
-    "value": "94.5"
+    "value": "94"
   },
     "BaseBoost": {
     "type": "number",
-    "value": "0"
+    "value": "2"
   },
     "RFGain": {
     "type": "number",
@@ -25,7 +25,7 @@
   }, 
     "MonoAudio": {
     "type": "boolean",
-    "value": "false"
+    "value": false
   },
     "PGAMod": {
     "type": "number",
@@ -33,7 +33,7 @@
   },
     "PGAmp": {
     "type": "number",
-    "value": "0"
+    "value": "12"
   },
     "PltAdj": {
     "type": "number",
@@ -44,7 +44,11 @@
     "value": "0"
   },
     "PDPA": {
-    "type": "number",
-    "value": "1"
+    "type": "boolean",
+    "value": false
+  },
+   "StartUp": {
+    "type": "boolean",
+    "value": false
   }
 }

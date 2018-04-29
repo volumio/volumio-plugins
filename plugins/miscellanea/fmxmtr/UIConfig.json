@@ -29,7 +29,8 @@
                 "PGAmp",
                 "PltAdj",
                 "PhTCnst",
-                "PDPA"
+                "PDPA",
+                "StartUp"
             ]
 	    },
         "content": [
@@ -279,6 +280,14 @@
                 "label": "TRANSLATE.PDPA.LABEL",
                 "description": "TRANSLATE.PDPA.DESC",
                 "doc": "TRANSLATE.PDPA.DOC",
+                "value": false
+            },
+            {
+                "id": "StartUp",
+                "element": "switch",
+                "label": "TRANSLATE.STARTUP.LABEL",
+                "description": "TRANSLATE.STARTUP.DESC",
+                "doc": "TRANSLATE.STARTUP.DOC",
                 "value": false
             }
      
