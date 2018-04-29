@@ -283,7 +283,7 @@
 					"prettyName": "FM Transmitter",
 					"icon": "fa-lightbulb-o",
 					"name": "fmxmtr",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fmxmtr/fmxmtr.zip",
 					"license": "ISC",
 					"description": "Set up and control I2C FM transmitter module by Electhouse based on KT-0803K fm transmitter chip",
