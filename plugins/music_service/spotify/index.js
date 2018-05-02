@@ -1460,7 +1460,7 @@ ControllerSpop.prototype.getPlaylistTracks = function(userId, playlistId) {
 						samplerate: self.samplerate,
 						bitdepth: '16 bit',
 						trackType: 'spotify',
-						albumart: track.album.images[0].url,
+						albumart: (track.album.hasOwnProperty('images') && track.album.images.length > 0 ? track.album.images[0].url : ''),
 						duration: Math.trunc(track.duration_ms / 1000)
 					};
 					response.push(item);
