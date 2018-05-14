@@ -1,4 +1,4 @@
-27th march 2018
+14th may 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -57,6 +57,10 @@ UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+14th may 2018
+
+- comment   //disableUiControls: true
 
 27th march
 

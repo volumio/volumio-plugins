@@ -113,7 +113,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
   //bitdepth: 'HQ',
   channels: 2,
   streaming: true,
-  disableUiControls: true
+  //disableUiControls: true
  };
 
  const nHost = ''; // blank = localhost
