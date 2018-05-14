@@ -1,0 +1,50 @@
+{
+  "baseNavigation": {
+    "navigation": {
+      "lists": [
+        {
+          "availableListViews": [
+            "list"
+          ],
+          "items": [
+          ]
+        }
+      ]
+    }
+  },
+
+  "stations": {
+    "rparadise": [
+      {
+        "title": "Radio Paradise (FLAC)",
+        "uri": "webrp/0",
+        "url": "https://apps.radioparadise.com/blocks/chan/0/4/1687836-1687837.flac?src=alexa"
+      },
+      {
+        "title": "Radio Paradise (AAC 320k)",
+        "uri": "webrp/1",
+        "url": "http://stream-eu1.radioparadise.com/aac-320"
+      },
+      {
+        "title": "Radio Paradise (AAC 128k)",
+        "uri": "webrp/2",
+        "url": "http://stream-uk1.radioparadise.com/aac-128"
+      },
+      {
+        "title": "Radio Paradise (AAC 64k)",
+        "uri": "webrp/3",
+        "url": "http://stream-uk1.radioparadise.com/aac-64"
+      },
+      {
+        "title": "Radio Paradise (MP3 192k)",
+        "uri": "webrp/4",
+        "url": "http://stream-eu1.radioparadise.com:80/mp3-192"
+      },
+      {
+        "title": "Radio Paradise (MP3 128k)",
+        "uri": "webrp/5",
+        "url": "http://stream-uk1.radioparadise.com/mp3-128"
+      }
+    ]
+  }
+}
