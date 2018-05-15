@@ -7,7 +7,6 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var SpotifyWebApi = require('spotify-web-api-node');
-var nodetools = require('nodetools');
 
 // Define the ControllerSpop class
 module.exports = ControllerSpop;
@@ -1667,7 +1666,7 @@ ControllerSpop.prototype.getAlbumArt = function (data, path) {
 			album = data.album;
 		else album = data.artist;
 
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
+		web = '?web=' + encodeURIComponent(artist) + '/' + encodeURIComponent(album) + '/large'
 	}
 
 	var url = '/albumart';
@@ -1681,7 +1680,7 @@ ControllerSpop.prototype.getAlbumArt = function (data, path) {
 		url = url + '?';
 
 	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
+		url = url + 'path=' + encodeURIComponent(path);
 
 	return url;
 };
