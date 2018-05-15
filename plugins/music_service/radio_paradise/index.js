@@ -3,8 +3,8 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
 var config = new (require('v-conf'))();
-var unirest = require('unirest');
 var NanoTimer = require('nanotimer');
+const https = require('https');
 
 var rpApiBaseUrl = 'https://api.radioparadise.com/api/get_block?bitrate=4&info=true';
 var nextEventApiUrl;
@@ -387,19 +387,31 @@ ControllerRadioParadise.prototype.addRadioResource = function () {
 ControllerRadioParadise.prototype.getStream = function (url) {
     var self = this;
     self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] getStream started with url ' + url);
-    var defer = libQ.defer();
-
-    var Request = unirest.get(url);
-    Request
-    .end(function (response) {
-        if (response.status === 200) {
-            defer.resolve(response.body);
-        }
-        else {
-            defer.resolve(null);
-            self.errorToast(station, 'ERROR_STREAM_SERVER');
-        }
-    });
+    var defer = libQ.defer();    
+    
+    https.get(url, (resp) => {
+    	if (resp.statusCode < 200 || resp.statusCode > 299) {
+        	self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
+        	defer.resolve(null);
+        	self.errorToast(station, 'ERROR_STREAM_SERVER');
+		}
+  		let data = '';
+  
+  		// A chunk of data has been recieved.
+  		resp.on('data', (chunk) => {
+    		data += chunk;
+  		});
+  
+  		// The whole response has been received.
+  		resp.on('end', () => {
+    		defer.resolve(data);
+  		});
+	}).on("error", (err) => {
+		self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
+  		defer.resolve(null);
+        self.errorToast(station, 'ERROR_STREAM_SERVER');
+	});
+    
     return defer.promise;
 };
 
