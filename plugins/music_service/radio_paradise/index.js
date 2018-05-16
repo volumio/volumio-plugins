@@ -4,9 +4,9 @@ var libQ = require('kew');
 var fs = require('fs-extra');
 var config = new (require('v-conf'))();
 var NanoTimer = require('nanotimer');
-const https = require('https');
+const http = require('http');
 
-var rpApiBaseUrl = 'https://api.radioparadise.com/api/get_block?bitrate=4&info=true';
+var rpApiBaseUrl = 'http://api.radioparadise.com/api/get_block?bitrate=4&info=true';
 var nextEventApiUrl;
 var streamUrl;
 var songsOfNextEvent;
@@ -167,7 +167,7 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         self.timer.clear();
     }
 
-    if (!track.uri.startsWith("https://apps.radioparadise.com")) {
+    if (!track.uri.includes("apps.radioparadise.com")) {
         // normal radio streams
         return self.mpdPlugin.sendMpdCommand('stop', [])
             .then(function () {
@@ -389,7 +389,7 @@ ControllerRadioParadise.prototype.getStream = function (url) {
     self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] getStream started with url ' + url);
     var defer = libQ.defer();    
     
-    https.get(url, (resp) => {
+    http.get(url, (resp) => {
     	if (resp.statusCode < 200 || resp.statusCode > 299) {
         	self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
         	defer.resolve(null);
@@ -554,6 +554,9 @@ ControllerRadioParadise.prototype.setSongs = function (rpUri) {
 ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, streamUrl, lengthOfEvent, endEvent, firstSongOffset, lastSongOffset) {
     var self = this;
     var response = [];
+    if(streamUrl.match('^https://')) {
+    	streamUrl = streamUrl.replace("https://","http://")
+	}
     for (var i = 0; i < songsArray.length; i++) {
         var song = songsArray[i];
         var duration = song.duration;
