@@ -199,9 +199,19 @@
     __dirname + '/UIConfig.json')
    .then(function(uiconf) {
     	uiconf.sections[0].content[0].value = self.config.get('enablefilter');
- 	uiconf.sections[0].content[1].config.bars[0].value = self.config.get('frequency');
-    	uiconf.sections[0].content[2].config.bars[0].value = self.config.get('attenuation');
+ 	uiconf.sections[0].content[1].value = self.config.get('mysetting');
+value = self.config.get('filterprofile');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
 	var value;
+    var myprofileset = self.config.get('myprofile');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarraymyprofile = myprofileset.split(',');
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarraymyprofile) {
+     uiconf.sections[0].content[3].config.bars[i].value = coefarraymyprofile[i]
+    }
+    	
             defer.resolve(uiconf);
             })
                 .fail(function()
@@ -249,6 +259,28 @@
      defer.reject(new Error(err));
      return console.log(err);
     }
+	
+var myprofile
+  var enablemyeq = self.config.get('enablemyeq')	
+    if (self.config.get('mysetting') == false) {
+	if (self.config.get('filterprofile') === 'bauer')
+	    myprofile = self.config.get('bauer')
+//console.log(myprofile + 'bauer');
+	else if (self.config.get('filterprofile') === 'chumoy')
+	    myprofile = self.config.get('chumoy')
+//console.log(myprofile + 'chumoy');
+        else if (self.config.get('filterprofile') === 'janmeier')
+            myprofile = self.config.get('janmeier')
+//console.log(myprofile + 'janmeier');
+
+   } else myprofile = self.config.get('myprofile')
+//console.log(myprofile + 'myprofile')
+	var myprofiler
+	//var myprofiler = self.config.get('myprofile');
+var myprofiler = myprofile
+	myprofiler = myprofile.replace(/,/g, " ");
+
+
 	var  hwouts;
 		if (self.config.get('enablefilter') == true)
 {
@@ -257,12 +289,11 @@
 		else  hwouts = 'plughw:' + (self.config.get('alsa_device'));
 	
 	var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
-	var conf2 = conf1.replace("${frequency}", self.config.get('frequency'));
-	var conf3 = conf2.replace("${attenuation}", self.config.get('attenuation'));
-	var conf4 = conf3.replace("${hwouts}", hwouts);
+	var conf2 = conf1.replace("${myprofile}", myprofiler);
+	var conf3 = conf2.replace("${hwouts}", hwouts);
 		
 
-    fs.writeFile("/home/volumio/asoundrc", conf4, 'utf8', function(err) {
+    fs.writeFile("/home/volumio/asoundrc", conf3, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
       //self.logger.info('Cannot write /etc/asound.conf: '+err)
@@ -294,8 +325,9 @@ ControllerVolbinauralfilter.prototype.saveBauerfilter = function(data) {
 
   var defer = libQ.defer();
 	self.config.set('enablefilter', data['enablefilter']);
-	self.config.set('frequency', data['frequency']);
-	self.config.set('attenuation', data['attenuation']);
+	self.config.set('mysetting', data['mysetting']);
+	self.config.set('filterprofile', data['filterprofile'].value);
+	self.config.set('myprofile', data['myprofile']);
 	self.logger.info('Configurations of filter have been set');
 
   self.rebuildvolbinauralfilter()

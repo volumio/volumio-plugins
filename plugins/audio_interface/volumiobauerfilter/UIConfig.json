@@ -13,26 +13,63 @@
         "label": "TRANSLATE.APPLY",
         "data": [
 	"enablefilter",
-          "frequency",
-           "attenuation"
+        "mysetting",
+	"filterprofile",
+	"myprofile"
+
         ]
       },
     "content": 
 					[
-{
+				{
 					"id": "enablefilter",
 					"element": "switch",
-					"label": "enable filter=on or disable filter=off",
+					"label": "TRANSLATE.ENABLE_FILTER",
 					"value": true
 				},
+{
+					"id": "mysetting",
+					"element": "switch",
+					"label": "TRANSLATE.MYSETTINGORPRESET",
+					"value": true
+				},
+					{
+					"id": "filterprofile",
+					"element": "select",
+					"doc": "TRANSLATE.DOCFILTERPROFILE",
+					"label": "TRANSLATE.FILTERPROFILE",
+					"value": {
+						"value": "bauer",
+						"label": "bauer"
+					},
+					"options": [
+						{
+							"value": "bauer",
+							"label": "TRANSLATE.LABELPS1"
+						},
+						{
+							"value": "chumoy",
+							"label": "TRANSLATE.LABELPS2"
+						},
+						{
+							"value": "janmeier",
+							"label": "TRANSLATE.LABELPS3"
+						}
+						
+					],
+					"visibleIf": {
+						"field": "mysetting",
+						"value": false
+					}
+				},	
 						
 						{
-							"id": "frequency",
+							"id": "myprofile",
 							"element": "equalizer",
-							"label": "TRANSLATE.FREQUENCY",
-							"description":"TRANSLATE.FREQUENCY_DESC",
+							"label": "TRANSLATE.MYSETTING",
+							"doc":"TRANSLATE.MYSETTING_DESC",
 							"visibleIf": {
-									"field": "enablefilter",
+									"field": "mysetting",
 									"value": true
 									},
 							"config": {
@@ -41,30 +78,17 @@
 									{
 										"min": "200",
 										"max": "1200",
-										"step": "50",
+										"step": "20",
 										"value": "700",
+										"ticksLabels": ["Hz"	],
 										"tooltip":"always"
-									}
-									]
-							}
-						},
-						{
-							"id": "attenuation",
-							"element": "equalizer",
-							"label": "TRANSLATE.ATTENUATION",
-							"description":"TRANSLATE.ATTENUATION_DESC",
-							"visibleIf": {
-									"field": "enablefilter",
-									"value": true
 									},
-							"config": {
-								"orientation": "horizontal",
-								"bars": [
 									{
 										"min":"1",
 										"max":"15",
 										"step":"0.5",
 										"value":"5",
+										"ticksLabels": ["dB"	],
 										"tooltip":"always"
 									}
 									]

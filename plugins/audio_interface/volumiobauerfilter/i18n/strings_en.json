@@ -6,6 +6,13 @@
  "FREQUENCY_DESC":"Cut-off frequency in Hz",
  "ATTENUATION":"attenuation dB",
  "ATTENUATION_DESC":"Crossfeed level in dB",
- "APPLY":"APPLY"
- 
+ "APPLY":"APPLY",
+ "FILTERPROFILE":"filter profile",
+ "DOCFILTERPROFILE":"Choose a profile of filtering. More info 'http://bs2b.sourceforge.net' ",
+ "LABELPS1":"Bauer 700Hz/4.5dB",
+ "LABELPS2":"Chu Moy 700Hz/6dB",
+ "LABELPS3":"Jan Meier 650Hz/9.5dB",
+ "MYSETTING":"My setting",
+ "MYSETTING_DESC":"Set your values here" ,
+ "MYSETTINGORPRESET":"mysetting=on or preset=off"
 }

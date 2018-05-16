@@ -1,14 +1,11 @@
 {
-   "frequency": {
-    "type": "string",
-    "value": "700"
-  },
- 
-  "attenuation": {
-      "type": "string",
-      "value": "4.5"
-  },
-"enablefilter":{"type":"boolean","value":true},
+"enablefilter":{"type":"boolean","value":"true"},
+"mysetting":{"type": "boolean","value": "true"}, 
+"filterprofile":{"type":"string","value":"bauer"},
+"bauer":{"type": "string","value": "700,4.5"}, 
+"chumoy":{"type": "string","value": "700,6.0"}, 
+"janmeier":{"type": "string","value": "650,9.5"},
+"myprofile":{"type": "string","value": "700,4.5"},
 "alsa_device":{"type": "string","value": "0"},
 "alsa_outputdevicename":{"type": "string","value": "0"},
 "alsa_mixer":{"type": "string","value": ""},

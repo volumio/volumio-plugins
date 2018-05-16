@@ -1,0 +1,18 @@
+{
+ "VOLUMIO_BINAURAL":"Configuration du filtre Binaural",
+ "BINAURAL_SETTINGS":"Configuration",
+ "ENABLE_FILTER":"Filtre activé =on ou désactivé=off",
+ "FREQUENCY":"frequence Hz",
+ "FREQUENCY_DESC":"Cut-off frequency in Hz",
+ "ATTENUATION":"attenuation dB",
+ "ATTENUATION_DESC":"Crossfeed level in dB",
+ "APPLY":"Appliquer",
+ "FILTERPROFILE":"Profile de filtrage",
+ "DOCFILTERPROFILE":"Choisissez un profil de filtrage Info 'http://bs2b.sourceforge.net' ",
+ "LABELPS1":"Bauer 700Hz/4.5dB",
+ "LABELPS2":"Chu Moy 700Hz/6dB",
+ "LABELPS3":"Jan Meier 650Hz/9.5dB",
+ "MYSETTING":"Mon réglage",
+ "MYSETTING_DESC":"Réglez votre filtre ici",
+ "MYSETTINGORPRESET":"Mon réglage=on ou Préreglages=off"
+}
