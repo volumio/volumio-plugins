@@ -296,6 +296,24 @@
 						}
 					],
 					"updated": "19-3-2018"
+				},
+				{
+					"prettyName": "FM Transmitter",
+					"icon": "fa-lightbulb-o",
+					"name": "fmxmtr",
+					"version": "1.0.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/fmxmtr/fmxmtr.zip",
+					"license": "ISC",
+					"description": "Set up and control I2C FM transmitter module by Electhouse based on KT-0803K fm transmitter chip",
+					"details": "Volumio plug-in to configure Elechouse I2C FM transmitter module based on the KT-0803 series of FM tranmitter IC chip.  For Raspberry Pi.  Requires I2C tools for Raspberry Pi and npm shelljs.  Configures broadcast frequency, power level, turn on/off transmiller, mutes audio, etc...",
+					"author": "Randy Bancroft",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "30-4-2018"
 				}
 			]
 		},
