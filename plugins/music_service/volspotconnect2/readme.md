@@ -1,4 +1,4 @@
-14th may 2018
+18th may 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -49,6 +49,8 @@ miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
 ```
+## Save setting of the plugin even if you change nothing to generate correct config file.
+
 
 ## Issues
 
@@ -57,6 +59,10 @@ UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+18th may 2018
+
+- fix from @ash :Fix #169 -- Add `kUnknown` enum 
 
 14th may 2018
 
