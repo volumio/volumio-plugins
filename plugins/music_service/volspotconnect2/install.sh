@@ -17,12 +17,12 @@ if [ $cpu = "armv6l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf5030-dev.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-armhf5030-dev.tar.xz # -C /
-			rm librespot-armhf5030-dev.tar.xz
+			sudo tar -xf librespot-armhf-5030-dev.tar.xz # -C /
+			rm librespot-armhf-5030-dev.tar.xz
 		else
 			echo "$derrormess"
 			exit -1
@@ -31,12 +31,12 @@ elif [ $cpu = "armv7l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf5030-dev.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-armhf5030-dev.tar.xz #-C /
-			rm librespot-armhf5030-dev.tar.xz
+			sudo tar -xf librespot-armhf-5030-dev.tar.xz #-C /
+			rm librespot-armhf-5030-dev.tar.xz
 		else
 			echo "$derrormess"
 			exit -1
@@ -45,12 +45,12 @@ elif [ $cpu = "aarch64" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf5030-dev.tar.xz
+	wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
-			sudo tar -xf librespot-armhf5030-dev.tar.xz #-C $libpath
-			rm librespot-armhf5030-dev.tar.xz
+			sudo tar -xf librespot-armhf-5030-dev.tar.xz #-C $libpath
+			rm librespot-armhf-5030-dev.tar.xz
 		else
 			echo "$derrormess"
 			exit -1
