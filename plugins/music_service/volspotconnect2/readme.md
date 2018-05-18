@@ -6,6 +6,7 @@ and the great addition from @ashthespy https://github.com/ashthespy for metadata
 
 It is still in dev and some features are missing.
 
+![Alt text](volspotconnect2.jpg?raw=true "Spotify/volumio playing through volspotconnect2")
 
 Tested on :
 - RPI 0
