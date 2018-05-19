@@ -1,0 +1,23 @@
+{
+  "name": "raspdac",
+  "version": "0.0.3",
+  "description": "Provide Audiophonics Raspdac power button and OLED configuration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JedS",
+  "license": "MIT",
+  "volumio_info": {
+    "plugin_type": "user_interface",
+    "prettyName": "Raspdac",
+    "boot_priority":1
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^0.10.0",
+    "onoff": "^1.1.1",
+    "lcd": "^1.1.4"
+  }
+}
