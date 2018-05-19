@@ -1,6 +1,6 @@
 {
   "name": "raspdac",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Provide Audiophonics Raspdac power button and OLED configuration",
   "main": "index.js",
   "scripts": {
