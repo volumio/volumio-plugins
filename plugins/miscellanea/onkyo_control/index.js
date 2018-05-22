@@ -43,7 +43,7 @@ onkyoControl.prototype.onVolumioStart = function () {
         var commands = [];
 
         if (self.currentState === 'play') {
-            if (self.config.get('poweron')) {
+            if (self.config.get('powerOn')) {
                 commands.push('system-power=on');
             }
             if (self.config.get('setVolume') && !isNaN(self.config.get('setVolumeValue'))) {
@@ -77,7 +77,7 @@ onkyoControl.prototype.onVolumioStart = function () {
                 verify_commands: false
             };
 
-            if (!self.config.get('autolocate')) {
+            if (!self.config.get('autoDiscovery')) {
                 if (self.config.get('receiverPort') && self.config.get('receiverPort') !== '' && !isNaN(self.config.get('receiverPort'))) {
                     connectionOptions.port = self.config.get('receiverPort');
                     self.logger.debug("ONKYO-CONTROL: Overriding default connection port: " + JSON.stringify(connectionOptions));
@@ -95,7 +95,7 @@ onkyoControl.prototype.onVolumioStart = function () {
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
             if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
 
-                if (state.status === 'play' && (self.config.get('poweron') || self.config.get('setVolume'))) {
+                if (state.status === 'play' && (self.config.get('powerOn') || self.config.get('setVolume'))) {
                     clearTimeout(self.standbyTimout);
                     self.logger.debug("ONKYO-CONTROL: eiscp connecting... ");
                     eiscp.connect(connectionOptions);
@@ -171,11 +171,11 @@ onkyoControl.prototype.getUIConfig = function () {
 
             self.logger.debug("ONKYO-CONTROL: getUIConfig()");
 
-            uiconf.sections[0].content[0].value = self.config.get('autolocate');
+            uiconf.sections[0].content[0].value = self.config.get('autoDiscovery');
             uiconf.sections[0].content[2].value = self.config.get('receiverIP');
             uiconf.sections[0].content[3].value = self.config.get('receiverPort');
 
-            uiconf.sections[1].content[0].value = self.config.get('poweron');
+            uiconf.sections[1].content[0].value = self.config.get('powerOn');
             uiconf.sections[1].content[1].value = self.config.get('setVolume');
             uiconf.sections[1].content[2].value = self.config.get('setVolumeValue');
             uiconf.sections[1].content[3].value = self.config.get('standby');
@@ -234,7 +234,7 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
 
     self.logger.debug("ONKYO-CONTROL: saveConnectionConfig() data: " + JSON.stringify(data));
 
-    self.config.set('autolocate', data['autolocate']);
+    self.config.set('autoDiscovery', data['autoDiscovery']);
     self.config.set('receiverSelect', data['receiverSelect'].value);
 
     if (data['receiverSelect'].value !== "manual") {
@@ -263,7 +263,7 @@ onkyoControl.prototype.saveActionConfig = function (data) {
 
     self.logger.debug("ONKYO-CONTROL: saveActionConfig() data: " + JSON.stringify(data));
 
-    self.config.set('poweron', data['poweron']);
+    self.config.set('powerOn', data['powerOn']);
     self.config.set('standby', data['standby']);
 
     if (data['standbyDelay'] <= 0) {
