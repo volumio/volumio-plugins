@@ -109,8 +109,8 @@
 			{
 			  "id":"scrobbleFromStream",
 			  "element": "switch",
-			  "label": "TRANSLATE.LASTFM.SCROBBLE_WEBRADIO",
-			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_WEBRADIO",
+			  "label": "TRANSLATE.LASTFM.SCROBBLE_STREAM",
+			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_STREAM",
 			  "value": false
 			},
 			{
