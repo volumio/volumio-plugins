@@ -17,7 +17,6 @@ Tested on :
 - PINE64
 - x86 laptop
 
-
 ## IMPORTANT
 
 - Requires a Premium or Family account
