@@ -82,6 +82,9 @@ ControllerExamplePlugin.prototype.getUIConfig = function() {
     return defer.promise;
 };
 
+ControllerExamplePlugin.prototype.getConfigurationFiles = function() {
+	return ['config.json'];
+}
 
 ControllerExamplePlugin.prototype.setUIConfig = function(data) {
 	var self = this;
