@@ -1,0 +1,30 @@
+{
+  "page": {
+	  "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+	  },
+  "sections": [
+		{
+		"id": "remotepi_conf",
+		"element": "section",
+		"label": "TRANSLATE.REMOTEPI_CONF",
+		"description": "TRANSLATE.REMOTEPI_DESC",
+		"icon": "fa-plug",
+		"onSave": {"type":"controller", "endpoint":"miscellanea/remotepi", "method":"saveConf"},
+		"saveButton": {
+			      "label": "TRANSLATE.SAVE",
+			      "data": [
+				      "gpio17"
+				      ]
+			      },
+		"content": [
+			     {
+			     "id": "gpio17",
+			     "element": "switch",
+			     "doc": "TRANSLATE.GPIO17_DOC",
+			     "label": "TRANSLATE.GPIO17",
+			     "value": false
+			     }
+			   ]
+		}
+	      ]
+}

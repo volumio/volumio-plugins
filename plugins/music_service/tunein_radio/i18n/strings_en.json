@@ -1,0 +1,19 @@
+{
+  "CONFIGURATION": {
+    "PLUGIN_CONFIGURATION": "TuneIn Radio Plugin Configuration",
+    "S_CATEGORIES_LABEL": "Main Categories Configuration",
+    "S_CATEGORIES_SAVE":"Save",
+
+    "S_CATEGORIES_C_POPULAR_DOC": "Enable the Popular Radios Category in Main Menu, which is a meta category of Popular radios in your area",
+    "S_CATEGORIES_C_POPULAR_LABEL": "Enable Popular Radios Category",
+
+    "S_CATEGORIES_C_BEST_DOC": "Enable the Best Radios Category in Main Menu, which is a meta category of high quality radios in your area",
+    "S_CATEGORIES_C_BEST_LABEL": "Enable Best Radios Category",
+
+    "S_TESTING_LABEL": "Help Testing New Features",
+    "S_TESTING_SAVE":"Save",
+
+    "S_TESTING_C_EXPERIMENTAL_DOC": "Turn this on if you are willing to test experimental features and provide feedback. Do not enable unless you want to be in for a bumpy ride.",
+    "S_TESTING_C_EXPERIMENTAL_LABEL": "Enable Experimental features"
+ }
+}

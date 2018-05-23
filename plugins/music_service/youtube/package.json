@@ -1,6 +1,6 @@
 {
 	"name": "youtube",
-	"version": "0.0.7",
+	"version": "0.0.9",
 	"description": "Youtube playback and public sharing for the Volumio",
 	"main": "index.js",
 	"scripts": {

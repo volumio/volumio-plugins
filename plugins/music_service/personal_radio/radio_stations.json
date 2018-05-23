@@ -1,0 +1,132 @@
+{
+  "baseNavigation": {
+    "navigation": {
+      "lists": [
+        {
+          "availableListViews": [
+            "list"
+          ],
+          "items": [
+          ]
+        }
+      ],
+      "prev": {
+        "uri": "kradio"
+      }
+    }
+  },
+
+  "rootStations": {
+    "kbs": {
+      "title": "Korean KBS",
+      "uri": "kradio/kbs"
+    },
+    "sbs": {
+      "title": "Korean SBS",
+      "uri": "kradio/sbs"
+    },
+    "mbc": {
+      "title": "Korean MBC",
+      "uri": "kradio/mbc"
+    },
+    "linn": {
+      "title": "Linn",
+      "uri": "kradio/linn"
+    }
+  },
+
+  "stations": {
+    "linn": [
+      {
+        "title": "Linn Jazz",
+        "uri": "weblinn/0",
+        "url": "http://radio.linnrecords.com:8000/stream"
+      },
+      {
+        "title": "Linn Radio",
+        "uri": "weblinn/1",
+        "url": "http://radio.linnrecords.com:8003/stream"
+      },
+      {
+        "title": "Linn Classic",
+        "uri": "weblinn/2",
+        "url": "http://radio.linnrecords.com:8004/stream"
+      }
+    ],
+    "kbs": [
+      {
+        "title": "KBS1 FM",
+        "uri": "webkbs/0"
+      },
+      {
+        "title": "KBS2 FM",
+        "uri": "webkbs/1"
+      },
+      {
+        "title": "KBS1 Radio",
+        "uri": "webkbs/2"
+      },
+      {
+        "title": "KBS2 Radio",
+        "uri": "webkbs/3"
+      },
+      {
+        "title": "KBS3 Radio",
+        "uri": "webkbs/4"
+      },
+      {
+        "title": "KBS DMB",
+        "uri": "webkbs/5"
+      },
+      {
+        "title": "KBS UNION",
+        "uri": "webkbs/6"
+      },
+      {
+        "title": "KBS World",
+        "uri": "webkbs/7"
+      }
+    ],
+    "mbc": [
+      {
+        "title": "MBC Standard",
+        "uri": "webmbc/0",
+        "channel": "sfm"
+      },
+      {
+        "title": "MBC FM4U",
+        "uri": "webmbc/1",
+        "channel": "mfm"
+      },
+      {
+        "title": "MBC Channel M",
+        "uri": "webmbc/2",
+        "channel": "chm"
+      }
+    ],
+    "sbs": [
+      {
+        "title": "SBS Power FM",
+        "uri": "websbs/0",
+        "channel": "RA01"
+      },
+      {
+        "title": "SBS Love FM",
+        "uri": "websbs/1",
+        "channel": "RA02"
+      },
+      {
+        "title": "SBS Internet Radio",
+        "uri": "websbs/2",
+        "channel": "RA03"
+      }
+    ]
+  },
+  "encodedRadio":
+    {
+      "radioKeyUrl": "https://raw.githubusercontent.com/ChrisPanda/volumio-kradio-key/master/radiokey.json",
+      "kbs": "cac4d4e664757c065285538ec8eed223e745230cf4c9fa5942b5db7a2d4b09fbddaf6892570dbc20b48a8a2091950f289a",
+      "mbc": "cac4d4e664757c0054855dd0cfedd823ed476f04a885f95d1b87e1680d4306fbfad247d45710ba3d",
+      "sbs": "cac4d4e664757c0c4d82478ed0eed223e745230cf4c9e65c55a9a96b31435faf81b0249d5911b724b4b5823d8cc91a2187f3"
+    }
+}
