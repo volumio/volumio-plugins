@@ -53,7 +53,7 @@ ControllerPydPiper.prototype.onStop = function() {
 	})
 	.fail(function(e)
 	{
-		self.commandRouter.pushToastMessage('error', "Stopping failed", "Could not stop the LMS plugin in a fashionable manner, error: " + e);
+		self.commandRouter.pushToastMessage('error', "Stopping failed", "Could not stop the pydPiper plugin in a fashionable manner, error: " + e);
 		defer.reject(new error());
 	});
 
@@ -71,7 +71,7 @@ ControllerPydPiper.prototype.stop = function() {
 	})
 	.fail(function(e)
 	{
-		self.commandRouter.pushToastMessage('error', "Stopping failed", "Could not stop the LMS plugin in a fashionable manner, error: " + e);
+		self.commandRouter.pushToastMessage('error', "Stopping failed", "Could not stop the pydPiper plugin in a fashionable manner, error: " + e);
 		defer.reject(new error());
 	});
 
@@ -89,8 +89,8 @@ ControllerPydPiper.prototype.onStart = function() {
 	})
 	.fail(function(e)
 	{
-		self.commandRouter.pushToastMessage('error', "Startup failed", "Could not start the LMS plugin in a fashionable manner.");
-		self.logger.info("Could not start the LMS plugin in a fashionable manner.");
+		self.commandRouter.pushToastMessage('error', "Startup failed", "Could not start the pydPiper plugin in a fashionable manner.");
+		self.logger.info("Could not start the pydPiper plugin in a fashionable manner.");
 		defer.reject(new error());
 	});
 
@@ -416,14 +416,14 @@ ControllerPydPiper.prototype.updateUnitFile = function ()
 	else
 		template +=  " --i2caddress " + self.config.get('i2caddress') + " --i2cport " + self.config.get('i2cport');
 	
-	template += " --timezone " + self.config.get('timezone');
+	template += " --timezone \'" + self.config.get('timezone') + "\'";
 	
 	if(self.config.get('use_weather'))
-		template += " --wapi " + self.config.get('wapi') + " --wlocale " + self.config.get('wlocale') + " --temperature " + self.config.get('units');
+		template += " --wapi " + self.config.get('wapi') + " --wlocale '" + self.config.get('wlocale') + "' --temperature " + self.config.get('units');
 	
 	template += " --pages " + self.config.get('pages_file');
 	
-	var command = "/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -- 's|ExecStart.*|" + template + "|g' /etc/systemd/system/pydpiper.service";
+	var command = "/bin/sed -i -- 's|ExecStart=/usr/bin/docker run.*|" + template + "|g' " + __dirname + "/unit/pydpiper.service";
 	exec(command, {uid:1000, gid:1000}, function (error, stout, stderr) {
 		if(error)
 			console.log(stderr);

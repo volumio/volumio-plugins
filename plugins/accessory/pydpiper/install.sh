@@ -23,7 +23,9 @@ if [ ! -f $INSTALLING ]; then
 	wget -O /home/volumio/pydPiper/pages_weh_80x16_volumio.py https://raw.githubusercontent.com/Saiyato/volumio-pydpiper-plugin/master/templates/pages_weh_80x16_volumio.py
 	wget -O /home/volumio/pydPiper/pydPiper.py https://raw.githubusercontent.com/Saiyato/volumio-pydpiper-plugin/master/templates/pydPiper.py
 	
-	wget -O /etc/systemd/system/pydpiper.service https://raw.githubusercontent.com/Saiyato/volumio-pydpiper-plugin/master/unit/pydpiper.service
+	# Delete, link, reload and disable auto-start for the service
+	rm /etc/systemd/system/pydpiper.service
+	ln -fs /data/plugins/accessory/pydpiper/unit/pydpiper.service /etc/systemd/system/pydpiper.service
 	systemctl daemon-reload
 
 	rm $INSTALLING
