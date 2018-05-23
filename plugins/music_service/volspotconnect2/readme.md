@@ -1,4 +1,4 @@
-18th may 2018
+23th may 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -16,6 +16,7 @@ Tested on :
 - SPARKY
 - PINE64
 - x86 laptop
+
 
 ## IMPORTANT
 
@@ -59,6 +60,10 @@ UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+23th may 2018
+
+- autoconfig enabled when plugin is activated
 
 18th may 2018
 
