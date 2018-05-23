@@ -26,6 +26,9 @@ miniunzip onkyo_control.zip -d ./onkyo_control
 cd onkyo_control
 volumio plugin install
 ```
+## Settings
+
+![Alt text](settings.jpg?raw=true "Settings and configuration")
 
 ## TODO
 
