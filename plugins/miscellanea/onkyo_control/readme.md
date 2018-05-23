@@ -4,6 +4,29 @@
 
 https://github.com/tillbaks/node-eiscp
 
+## Features
+
+- Automatically or manually detect compatible Onkyo receivers on the network .
+- Send a power on or power off command to an Onkyo receiver when Volumio playback begins or ends.
+- Set the volume on the receiver to a set value when Volumio playback begins.
+- Delay the power off command to the receiver (to allow for pausing music without shutting down).
+
+## Manual Installation of latest version
+
+1. Enable SSH following the instructions found here:
+```
+https://volumio.github.io/docs/User_Manual/SSH.html
+```
+2. Connect via ssh using putty or the command line ```ssh volumio@volumio.local```
+3. Download and install the plugin using the following commands:
+```
+wget https://github.com/orderoftheflame/volumio-plugins/blob/master/plugins/miscellanea/onkyo_control/onkyo_control.zip?raw
+mkdir onkyo_connect
+miniunzip onkyo_connect.zip -d ./onkyo_connect
+cd onkyo_connect
+volumio plugin install
+```
+
 ## TODO
 
 - [X] Implement power on when starting playback
