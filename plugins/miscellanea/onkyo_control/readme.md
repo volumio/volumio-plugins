@@ -20,10 +20,8 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 2. Connect via ssh using putty or the command line ```ssh volumio@volumio.local```
 3. Download and install the plugin using the following commands:
 ```
-wget https://github.com/orderoftheflame/volumio-plugins/raw/master/plugins/miscellanea/onkyo_control/onkyo_control.zip
-mkdir onkyo_control
-miniunzip onkyo_control.zip -d ./onkyo_control
-cd onkyo_control
+git clone https://github.com/orderoftheflame/volumio-plugins.git
+cd volumio-plugins/plugins/miscellanea/onkyo_control
 volumio plugin install
 ```
 ## Settings
