@@ -10,11 +10,11 @@ derrormess="Failed to extract caps"
 echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 
-if [ "$cpu" = "armv6l" ] || [ "$cpu" = "armv7l" ] || ["$cpu" = "aarch64" ];
+if [ "$cpu" = "armv6l" ] || [ "$cpu" = "armv7l" ] || ["$cpu" = "aarch64" ] || ["$cpu" = "i686"];
 then
 	cd $libpath
         echo "Cpu is $cpu, installing required caps version."
-	sudo cp /data/plugins/audio_interface/volparametriceq/caps.tar /
+	sudo cp /data/plugins/audio_interface/volparametriceq/caps-$cpu.tar /caps.tar
 	cd /
 	sudo tar xvf caps.tar
 	sudo rm /caps.tar
@@ -25,21 +25,10 @@ then
 			echo "$derrormess"
 			exit -1
 		fi
-elif [ $cpu = "i686" ]
-then
-cd $libpath
-        echo "Cpu is $cpu, installing required caps version."
-	sudo cp /data/plugins/audio_interface/volparametriceq/caps-x86.tar /
-	cd /
-	sudo tar xvf caps-x86.tar
-	sudo rm /caps-x86.tar
-	if [ $? -eq 0 ]
-		then
-			echo "Extracting data"
-		else
-			echo "$derrormess"
-			exit -1
-		fi
+
+else
+	echo "Unsupported cpu ($cpu)"
+	exit -1
 fi
 
 if [ ! -f "/data/configuration/audio_interface/volparametriceq/config.json" ];
