@@ -1,4 +1,4 @@
-09th April 2018
+29th May 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -41,9 +41,14 @@ If the installation fails, remove all file (if any) related to the plugin before
 RPI2
 PINE64
 x86 (virtual)
+RPI0
 
 
 ## Last changes
+
+29th May
+
+- support for armv6 (rpi0 rpi B). Thank you https://github.com/PieVo !
 
 08th April
 - first support for x86
