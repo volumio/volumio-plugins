@@ -506,7 +506,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	var now = d.getTime();
 
-	// Plus in your Spotify Refresh token below - not the access token - the refresh token!
+	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
 	var refreshToken = 'xxxxxxxxx';
 
