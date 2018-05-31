@@ -316,9 +316,9 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
 		}
 		else if (curUri.startsWith('spotify/playlists')) {
 			if (curUri == 'spotify/playlists')
-				response = self.listPlaylists();
+				response = self.getMyPlaylists(curUri); // use the Spotify Web API instead of the spop service
 			else {
-				response = self.listPlaylist(curUri);
+				response = self.listWebPlaylist(curUri); // use the function to list playlists returned from the Spotify Web API
 			}
 		}
 		else if (curUri.startsWith('spotify/featuredplaylists')) {
@@ -478,9 +478,9 @@ ControllerSpop.prototype.spotifyApiConnect=function()
 	var d = new Date();
 
 	self.spotifyApi= new SpotifyWebApi({
-		clientId : '7160366cc0944645bb1f32a7b81dd1ee',
-		clientSecret : 'ab4691ab353b4da6a35b151eb73dfd59',
-		redirectUri : 'http://localhost'
+		clientId : 'a52cd8838b26488186753ad0047bf86a',
+		clientSecret : '18c98110c7a84543afd65ce73186cdae',
+		redirectUri : 'http://localhost:8888'
 	});
 
 	// Retrieve an access token
@@ -506,18 +506,38 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	var now = d.getTime();
 
+	// hard-coded token from Spotify Web Developer Tools console - lasts one hour so plug in a new one here for testing until we figure out a way to grab it
+
+	var refreshToken = 'AQDbh5clmtOwmNWoNLzlu2L0jFK69b_9cglPufpU5qopALJeYVCvfuJwqmfNtuWHyxAjdPcsasPlcYEPt1WTn9uSbUrdRP2AqKgid_RjywhiroqsEi8lAU0cxY9vKsULFiM';
+
+	self.spotifyApi.setRefreshToken(refreshToken);
+    self.spotifyApi.refreshAccessToken()
+        .then(function(data) {
+            self.spotifyAccessToken = data.body['access_token'];
+            self.spotifyApi.setAccessToken(data.body['access_token']);
+            self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+            self.logger.info('New access token = ' + self.spotifyAccessToken);
+            defer.resolve();
+        }, function(err) {
+                self.logger.info('Spotify credentials grant failed with ' + err);
+
+			});
+
 	// Retrieve an access token
-	self.spotifyApi.clientCredentialsGrant()
-		.then(function(data) {
-			self.spotifyApi.setAccessToken(data.body['access_token']);
-			self.spotifyAccessToken = data.body['access_token'];
-			self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
-			self.logger.info('Spotify access token expires at ' + self.spotifyAccessTokenExpiration);
-			self.logger.info('Spotify access token is ' + data.body['access_token']);
-			defer.resolve();
-		}, function(err) {
-			self.logger.info('Spotify credentials grant failed with ' + err);
-		});
+	// self.spotifyApi.clientCredentialsGrant()
+    // 	// 	.then(function(data) {
+    //      //        self.spotifyApi.setAccessToken(accessToken);
+    // 	// 		self.spotifyAccessToken = accessToken;
+    // 	// 		self.spotifyApi.setRefreshToken(refreshToken);
+    //      //        self.spotifyRefreshToken = refreshToken;
+    // 	// 		self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+    // 	// 		self.logger.info('Spotify access token expires at ' + self.spotifyAccessTokenExpiration);
+    // 	// 		self.logger.info('Spotify access token is ' + accessToken);
+    //      //        self.logger.info('Spotify refresh token is ' + refreshToken);
+    // 	// 		defer.resolve();
+    // 	// 	}, function(err) {
+    // 	// 		self.logger.info('Spotify credentials grant failed with ' + err);
+    // 	// 	});
 
 	return defer.promise;
 }
@@ -534,16 +554,70 @@ ControllerSpop.prototype.spotifyCheckAccessToken=function()
 
 	if (self.spotifyAccessTokenExpiration < now)
 	{
-		self.spotifyClientCredentialsGrant()
+		self.spotifyApi.refreshAccessToken()
 			.then(function(data) {
-				self.logger.info('Refreshed Spotify access token');
-			});
+				self.spotifyAccessToken = data.body['access_token'];
+                self.spotifyApi.setAccessToken(data.body['access_token']);
+				self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+                self.logger.info('New access token = ' + self.spotifyAccessToken);
+            });
 	}
 
 	defer.resolve();
 
 	return defer.promise;
 
+};
+
+// New function that uses the Spotify Web API to get a user's playlists.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getMyPlaylists=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi.getUserPlaylists({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var playlist = results.body.items[i];
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'playlist',
+                            title: playlist.name,
+                            albumart: playlist.images[0].url,
+                            uri: playlist.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify my playlists ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
 };
 
 ControllerSpop.prototype.featuredPlaylists=function(curUri)
@@ -1581,42 +1655,8 @@ ControllerSpop.prototype.explodeUri = function(uri) {
 
 	if (uri.startsWith('spotify/playlists')) {
 		// TODO replace this with SpotifyAPI when we have Oauth support
-
-		uriSplitted=uri.split('/');
-
-		var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
-		commandDefer.then(function(results){
-			var resJson=JSON.parse(results);
-
-			var response=[];
-			for(var i in resJson.tracks)
-			{
-				var albumart=self.getAlbumArt({artist:resJson.tracks[i].artist,album:resJson.tracks[i].album},"");
-
-				var item={
-					uri: resJson.tracks[i].uri,
-					service: 'spop',
-					type: 'song',
-					name: resJson.tracks[i].title,
-					title: resJson.tracks[i].title,
-					artist:resJson.tracks[i].artist,
-					album: resJson.tracks[i].album,
-					duration: resJson.tracks[i].duration/1000,
-					albumart: albumart,
-					samplerate: self.samplerate,
-					bitdepth: '16 bit',
-					trackType: 'spotify'
-
-				};
-
-				response.push(item);
-			}
-			defer.resolve(response);
-		})
-			.fail(function()
-			{
-				defer.fail(new Error('An error occurred while listing playlists'));
-			});
+        response = self.getMyPlaylists();
+        defer.resolve(response);
 	}
 	else if(uri.startsWith('spotify:artist:'))
 	{
@@ -1727,8 +1767,9 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 			var conf2 = conf1.replace("${password}", self.config.get('password'));
 			var conf3 = conf2.replace("${bitrate}", self.config.get('bitrate'));
 			var conf4 = conf3.replace("${outdev}", hwdev);
+            var conf5 = conf4.replace("${refresh_token}", self.config.get('refresh_token'));
 
-			fs.writeFile("/etc/spopd.conf", conf4, 'utf8', function (err) {
+			fs.writeFile("/etc/spopd.conf", conf5, 'utf8', function (err) {
 				if (err)
 					defer.reject(new Error(err));
 				else defer.resolve();
@@ -1756,6 +1797,7 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 	self.config.set('username', data['username']);
 	self.config.set('password', data['password']);
 	self.config.set('bitrate', data['bitrate']);
+    self.config.set('refresh_token', data['refresh_token']);
 
 	self.rebuildSPOPDAndRestartDaemon()
 		.then(function(e){
