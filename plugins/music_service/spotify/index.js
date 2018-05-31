@@ -506,9 +506,9 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	var now = d.getTime();
 
-	// hard-coded token from Spotify Web Developer Tools console - lasts one hour so plug in a new one here for testing until we figure out a way to grab it
+	// Plus in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'AQDbh5clmtOwmNWoNLzlu2L0jFK69b_9cglPufpU5qopALJeYVCvfuJwqmfNtuWHyxAjdPcsasPlcYEPt1WTn9uSbUrdRP2AqKgid_RjywhiroqsEi8lAU0cxY9vKsULFiM';
+	var refreshToken = 'xxxxxxxxx';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
