@@ -11,7 +11,7 @@ echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "$cpu is the cpu"
 
-if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "i686"];
+if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "i686" ];
 then
 	cd $libpath
         echo "Cpu is $cpu, installing required caps version."
