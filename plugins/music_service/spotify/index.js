@@ -281,7 +281,7 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
                                 {
                                     service: 'spop',
                                     type: 'spotify-category',
-                                    title: 'My Albums',
+                                    title: 'My Saved Albums',
                                     artist: '',
                                     album: '',
                                     icon: 'fa fa-folder-open-o',
@@ -290,7 +290,7 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
                                 {
                                     service: 'spop',
                                     type: 'spotify-category',
-                                    title: 'My Tracks',
+                                    title: 'My Saved Tracks',
                                     artist: '',
                                     album: '',
                                     icon: 'fa fa-folder-open-o',
@@ -299,11 +299,29 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
                                 {
                                     service: 'spop',
                                     type: 'spotify-category',
-                                    title: 'My Artists',
+                                    title: 'My Top Artists',
                                     artist: '',
                                     album: '',
                                     icon: 'fa fa-folder-open-o',
-                                    uri: 'spotify/myartists'
+                                    uri: 'spotify/mytopartists'
+                                },
+                                {
+                                    service: 'spop',
+                                    type: 'spotify-category',
+                                    title: 'My Top Tracks',
+                                    artist: '',
+                                    album: '',
+                                    icon: 'fa fa-folder-open-o',
+                                    uri: 'spotify/mytoptracks'
+                                },
+                                {
+                                    service: 'spop',
+                                    type: 'spotify-category',
+                                    title: 'My Recently Played Tracks',
+                                    artist: '',
+                                    album: '',
+                                    icon: 'fa fa-folder-open-o',
+                                    uri: 'spotify/myrecentlyplayedtracks'
                                 },
 								{
 									service: 'spop',
@@ -354,8 +372,14 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
         else if (curUri.startsWith('spotify/mytracks')) {
             response = self.getMyTracks(curUri);
         }
-        else if (curUri.startsWith('spotify/myartists')) {
-            response = self.getMyArtists(curUri);
+        else if (curUri.startsWith('spotify/mytopartists')) {
+            response = self.getTopArtists(curUri);
+        }
+        else if (curUri.startsWith('spotify/mytoptracks')) {
+            response = self.getTopTracks(curUri);
+        }
+        else if (curUri.startsWith('spotify/myrecentlyplayedtracks')) {
+            response = self.getRecentTracks(curUri);
         }
 		else if (curUri.startsWith('spotify/featuredplaylists')) {
 			response = self.featuredPlaylists(curUri);
@@ -383,127 +407,6 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
 	return response;
 };
 
-ControllerSpop.prototype.listPlaylists=function()
-{
-	var self=this;
-
-	var defer=libQ.defer();
-	var commandDefer=self.sendSpopCommand('ls',[]);
-	commandDefer.then(function(results){
-		var resJson=JSON.parse(results);
-		//   self.logger.info(JSON.stringify(resJson));
-
-		//	self.commandRouter.logger.info(resJson);
-		var response={
-			navigation: {
-				"prev": {
-					uri: 'spotify'
-				},
-				"lists": [
-					{
-						"availableListViews": [
-							"list"
-						],
-						"items": [
-
-						]
-					}
-				]
-			}
-		};
-
-		for(var i in resJson.playlists)
-		{
-			if(resJson.playlists[i].hasOwnProperty('name') && resJson.playlists[i].name !== '')
-			{
-				if(resJson.playlists[i].type == 'playlist')
-				{
-					response.navigation.lists[0].items.push({
-						service: 'spop',
-						type: 'folder',
-						title: resJson.playlists[i].name,
-						icon: 'fa fa-list-ol',
-						uri: 'spotify/playlists/'+resJson.playlists[i].index
-					});
-				}
-				else if(resJson.playlists[i].type == 'folder')
-				{
-					for(var j in resJson.playlists[i].playlists)
-					{
-						response.navigation.lists[0].items.push({
-							service: 'spop',
-							type: 'folder',
-							title: resJson.playlists[i].playlists[j].name,
-							icon: 'fa fa-list-ol',
-							uri: 'spotify/playlists/'+resJson.playlists[i].playlists[j].index
-						});
-					}
-				}
-			}
-		}
-
-		defer.resolve(response);
-
-	})
-		.fail(function()
-		{
-			defer.fail(new Error('An error occurred while listing playlists'));
-		});
-
-	return defer.promise;
-};
-
-ControllerSpop.prototype.listPlaylist=function(curUri)
-{
-	var self=this;
-
-	var uriSplitted=curUri.split('/');
-
-	var defer=libQ.defer();
-	var commandDefer=self.sendSpopCommand('ls',[uriSplitted[2]]);
-	commandDefer.then(function(results){
-		var resJson=JSON.parse(results);
-
-		var response={
-			navigation: {
-				prev: {
-					uri: 'spotify/playlists'
-				},
-				"lists": [
-					{
-						"availableListViews": [
-							"list"
-						],
-						"items": [
-
-						]
-					}
-				]
-			}
-		};
-
-		for(var i in resJson.tracks)
-		{
-			response.navigation.lists[0].items.push({
-				service: 'spop',
-				type: 'song',
-				title: resJson.tracks[i].title,
-				artist:resJson.tracks[i].artist,
-				album: resJson.tracks[i].album,
-				icon: 'fa fa-spotify',
-				uri: resJson.tracks[i].uri
-			});
-		}
-
-		defer.resolve(response);
-	})
-		.fail(function()
-		{
-			defer.fail(new Error('An error occurred while listing playlists'));
-		});
-
-	return defer.promise;
-};
 
 ControllerSpop.prototype.spotifyApiConnect=function()
 {
@@ -743,7 +646,7 @@ ControllerSpop.prototype.getMyTracks=function(curUri)
 };
 
 // New function that uses the Spotify Web API to get a user's artists.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
-ControllerSpop.prototype.getMyArtists=function(curUri)
+ControllerSpop.prototype.getTopArtists=function(curUri)
 {
 
     var self=this;
@@ -786,6 +689,108 @@ ControllerSpop.prototype.getMyArtists=function(curUri)
                     defer.resolve(response);
                 }, function (err) {
                     self.logger.info('An error occurred while listing Spotify my artists ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
+};
+
+// New function that uses the Spotify Web API to get a user's tracks.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getTopTracks=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi. getMyTopTracks({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var track = results.body.items[i];
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'song',
+                            title: track.name,
+                            albumart: track.album.images[0].url,
+                            uri: track.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify top tracks ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
+};
+
+// New function that uses the Spotify Web API to get a user's tracks.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getRecentTracks=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi. getMyRecentlyPlayedTracks({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var track = results.body.items[i].track;
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'song',
+                            title: track.name,
+                            albumart: track.album.images[0].url,
+                            uri: track.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify recent tracks ' + err);
                 });
             }
         );
