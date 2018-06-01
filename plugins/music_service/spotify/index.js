@@ -278,6 +278,33 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
 									icon: 'fa fa-folder-open-o',
 									uri: 'spotify/playlists'
 								},
+                                {
+                                    service: 'spop',
+                                    type: 'spotify-category',
+                                    title: 'My Albums',
+                                    artist: '',
+                                    album: '',
+                                    icon: 'fa fa-folder-open-o',
+                                    uri: 'spotify/myalbums'
+                                },
+                                {
+                                    service: 'spop',
+                                    type: 'spotify-category',
+                                    title: 'My Tracks',
+                                    artist: '',
+                                    album: '',
+                                    icon: 'fa fa-folder-open-o',
+                                    uri: 'spotify/mytracks'
+                                },
+                                {
+                                    service: 'spop',
+                                    type: 'spotify-category',
+                                    title: 'My Artists',
+                                    artist: '',
+                                    album: '',
+                                    icon: 'fa fa-folder-open-o',
+                                    uri: 'spotify/myartists'
+                                },
 								{
 									service: 'spop',
 									type: 'spotify-category',
@@ -321,6 +348,15 @@ ControllerSpop.prototype.handleBrowseUri = function (curUri) {
 				response = self.listWebPlaylist(curUri); // use the function to list playlists returned from the Spotify Web API
 			}
 		}
+        else if (curUri.startsWith('spotify/myalbums')) {
+            response = self.getMyAlbums(curUri);
+        }
+        else if (curUri.startsWith('spotify/mytracks')) {
+            response = self.getMyTracks(curUri);
+        }
+        else if (curUri.startsWith('spotify/myartists')) {
+            response = self.getMyArtists(curUri);
+        }
 		else if (curUri.startsWith('spotify/featuredplaylists')) {
 			response = self.featuredPlaylists(curUri);
 		}
@@ -508,7 +544,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'xxxxxxxxx';
+	var refreshToken = 'AQCx_LwXkJFA3k62tvpdrU5_9jgGCZtuUopDDtSbM2_4994fw5GGYlyb9pl1jKpWNhMHTsYsQ0AyxcCMAxZwyyFeZ3zDSDJiPE3r1w8fh3djwHDarAubMTdh9p0Gc55cEmw';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
@@ -522,22 +558,6 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
                 self.logger.info('Spotify credentials grant failed with ' + err);
 
 			});
-
-	// Retrieve an access token
-	// self.spotifyApi.clientCredentialsGrant()
-    // 	// 	.then(function(data) {
-    //      //        self.spotifyApi.setAccessToken(accessToken);
-    // 	// 		self.spotifyAccessToken = accessToken;
-    // 	// 		self.spotifyApi.setRefreshToken(refreshToken);
-    //      //        self.spotifyRefreshToken = refreshToken;
-    // 	// 		self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
-    // 	// 		self.logger.info('Spotify access token expires at ' + self.spotifyAccessTokenExpiration);
-    // 	// 		self.logger.info('Spotify access token is ' + accessToken);
-    //      //        self.logger.info('Spotify refresh token is ' + refreshToken);
-    // 	// 		defer.resolve();
-    // 	// 	}, function(err) {
-    // 	// 		self.logger.info('Spotify credentials grant failed with ' + err);
-    // 	// 	});
 
 	return defer.promise;
 }
@@ -613,6 +633,159 @@ ControllerSpop.prototype.getMyPlaylists=function(curUri)
                     defer.resolve(response);
                 }, function (err) {
                     self.logger.info('An error occurred while listing Spotify my playlists ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
+};
+
+// New function that uses the Spotify Web API to get a user's albums.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getMyAlbums=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi. getMySavedAlbums({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var album = results.body.items[i].album;
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'folder',
+                            title: album.name,
+                            albumart: album.images[0].url,
+                            uri: album.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify my albums ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
+};
+
+// New function that uses the Spotify Web API to get a user's tracks.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getMyTracks=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi. getMySavedTracks({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var track = results.body.items[i].track;
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'song',
+                            title: track.name,
+                            albumart: track.album.images[0].url,
+                            uri: track.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify my tracks ' + err);
+                });
+            }
+        );
+
+    return defer.promise;
+};
+
+// New function that uses the Spotify Web API to get a user's artists.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
+ControllerSpop.prototype.getMyArtists=function(curUri)
+{
+
+    var self=this;
+
+    var defer=libQ.defer();
+
+    self.spotifyCheckAccessToken()
+        .then(function(data) {
+                var spotifyDefer = self.spotifyApi. getMyTopArtists({limit : 50});
+                spotifyDefer.then(function (results) {
+                    var response = {
+                        navigation: {
+                            prev: {
+                                uri: 'spotify'
+                            },
+                            "lists": [
+                                {
+                                    "availableListViews": [
+                                        "list",
+                                        "grid"
+                                    ],
+                                    "items": [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+
+                    for (var i in results.body.items) {
+                        var artist = results.body.items[i];
+                        response.navigation.lists[0].items.push({
+                            service: 'spop',
+                            type: 'folder',
+                            title: artist.name,
+                            albumart: artist.images[0].url,
+                            uri: artist.uri
+                        });
+                    }
+                    defer.resolve(response);
+                }, function (err) {
+                    self.logger.info('An error occurred while listing Spotify my artists ' + err);
                 });
             }
         );
