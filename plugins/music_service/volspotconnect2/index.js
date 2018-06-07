@@ -396,7 +396,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
    var username = (self.config.get('username'));
    var password = (self.config.get('password'));
    if (self.config.get('shareddevice') === false) {
-    shared = " --disable-discovery " + "-u " + username + " -p " + "'" + password + "'" ;
+     shared = `--disable-discovery --username ${username} --password '${password}'`
    } else shared = "";
 
    var normalvolume
