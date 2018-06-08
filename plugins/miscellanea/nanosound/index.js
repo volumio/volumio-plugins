@@ -48,6 +48,17 @@ nanosound.prototype.getConfigurationFiles = function()
 	return ['config.json'];
 }
 
+nanosound.prototype.saveConfig = function(data) {
+	var self = this;
+    var defer = libQ.defer();
+	self.logger.debug("data: " +  data['oledDisplay']);
+	self.config.set('OLEDDisplay', data['oledDisplay']);
+	defer.resolve();
+
+    self.commandRouter.pushToastMessage('success', "Saved", "NanoSound settings saved");
+
+    return defer.promise;
+}
 
 nanosound.prototype.onStart = function() {
     var self = this;

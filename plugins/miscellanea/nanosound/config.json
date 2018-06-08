@@ -1,3 +1,6 @@
 {
- 
+ "OLEDDisplay": {
+    "type": "number",
+    "value": 1
+  }
 }
