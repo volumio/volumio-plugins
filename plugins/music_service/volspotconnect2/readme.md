@@ -50,20 +50,26 @@ miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
 ```
-## Save setting of the plugin even if you change nothing to generate correct config file.
+
+### 3.Enable the plugin
+
+In volumio webUI, go in plugin section, installed plugin.You should see volspotconnect2 now ! Enable it and play ! You can go in the plugin settings to tweak some details.
+Enjoy !
 
 
 ## Issues
 
 Time is reset when changing volume in UI
-UI may hangs sometimes when pressing buttons.
+UI may hangs sometimes when pressing buttons to fast.
+A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
 
 09th june 2018
 
--  Expand credentials command parameters (@ash)
+- Expand credentials command parameters (@ash)
+- Update readme
 
 23th may 2018
 
