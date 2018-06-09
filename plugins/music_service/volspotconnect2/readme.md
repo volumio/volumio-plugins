@@ -61,6 +61,10 @@ UI may hangs sometimes when pressing buttons.
 
 ## Last changes
 
+09th june 2018
+
+-  Expand credentials command parameters (@ash)
+
 23th may 2018
 
 - autoconfig enabled when plugin is activated
