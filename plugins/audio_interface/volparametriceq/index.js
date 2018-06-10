@@ -249,7 +249,19 @@ var coefconfp4 = self.config.get('p41');
 
     }
     	uiconf.sections[0].content[5].value = self.config.get('enableeq');
-
+//advanced settings
+	uiconf.sections[1].content[1].value = self.config.get('p11lf');
+    	uiconf.sections[1].content[2].value = self.config.get('p11hf');
+    	uiconf.sections[1].content[3].value = self.config.get('p11s');	
+	uiconf.sections[1].content[4].value = self.config.get('p21lf');
+    	uiconf.sections[1].content[5].value = self.config.get('p21hf');
+    	uiconf.sections[1].content[6].value = self.config.get('p21s');
+	uiconf.sections[1].content[7].value = self.config.get('p31lf');
+    	uiconf.sections[1].content[8].value = self.config.get('p31hf');
+    	uiconf.sections[1].content[9].value = self.config.get('p31s');
+	uiconf.sections[1].content[10].value = self.config.get('p41lf');
+    	uiconf.sections[1].content[11].value = self.config.get('p41hf');
+    	uiconf.sections[1].content[12].value = self.config.get('p41s');
 	var value;
             defer.resolve(uiconf);
             })
@@ -357,6 +369,60 @@ setTimeout(function() {
   }, 2000);
  };
 
+//here we save the asound.conf file config
+ Controllervolparametriceq.prototype.createUIFile = function() {
+  var self = this;
+
+  var defer = libQ.defer();
+
+  try {
+
+   fs.readFile(__dirname + "/UIConfig.tmpl", 'utf8', function(err, data) {
+    if (err) {
+     defer.reject(new Error(err));
+     return console.log(err);
+    }
+
+		
+	var conf1 = data.replace("${p11lf}", self.config.get('p11lf'));
+	var conf2 = conf1.replace("${p11hf}", self.config.get('p11hf'));
+	var conf3 = conf2.replace("${p11lf2}", self.config.get('p11lf'));
+	var conf4 = conf3.replace("${p11hf2}", self.config.get('p11hf'));
+	var conf5 = conf4.replace("${p11s}", self.config.get('p11s'));
+	var conf6 = conf5.replace("${p21lf}", self.config.get('p21lf'));
+	var conf7 = conf6.replace("${p21hf}", self.config.get('p21hf'));
+	var conf8 = conf7.replace("${p21lf2}", self.config.get('p21lf'));
+	var conf9 = conf8.replace("${p21hf2}", self.config.get('p21hf'));	
+	var conf10 = conf9.replace("${p21s}", self.config.get('p21s'));
+	var conf11 = conf10.replace("${p31lf}", self.config.get('p31lf'));
+	var conf12 = conf11.replace("${p31hf}", self.config.get('p31hf'));
+	var conf13 = conf12.replace("${p31lf2}", self.config.get('p31lf'));
+	var conf14 = conf13.replace("${p31hf2}", self.config.get('p31hf'));
+	var conf15 = conf14.replace("${p31s}", self.config.get('p31s'));
+	var conf16 = conf15.replace("${p41lf}", self.config.get('p41lf'));
+	var conf17 = conf16.replace("${p41hf}", self.config.get('p41hf'));
+	var conf18 = conf17.replace("${p41lf2}", self.config.get('p41lf'));
+	var conf19 = conf18.replace("${p41hf2}", self.config.get('p41hf'));
+	var conf20 = conf19.replace("${p41s}", self.config.get('p41s'));
+
+    fs.writeFile("/data/plugins/audio_interface/volparametriceq/UIConfig.json", conf20, 'utf8', function(err) {
+     if (err) {
+      defer.reject(new Error(err));
+      self.logger.info('Cannot write UIConfig'+err)
+     } else {
+      self.logger.info('UIconfig.json file written');
+  
+      defer.resolve();
+     }
+    });
+
+   });
+  } catch (err) {}
+setTimeout(function() {
+  return defer.promise;
+  }, 200);
+ };
+
 Controllervolparametriceq.prototype.savevolparametriceq = function(data) {
   var self = this;
 
@@ -384,7 +450,39 @@ Controllervolparametriceq.prototype.savevolparametriceq = function(data) {
   return defer.promise;
 
  };
+Controllervolparametriceq.prototype.saveAdvanced = function(data) {
+  var self = this;
 
+  var defer = libQ.defer();
+
+	self.config.set('p11lf', data['p11lf']);
+	self.config.set('p11hf', data['p11hf']);
+	self.config.set('p11s', data['p11s']);
+	self.config.set('p21lf', data['p21lf']);
+	self.config.set('p21hf', data['p21hf']);
+	self.config.set('p21s', data['p21s']);
+	self.config.set('p31lf', data['p31lf']);
+	self.config.set('p31hf', data['p31hf']);
+	self.config.set('p31s', data['p31s']);
+	self.config.set('p41lf', data['p41lf']);
+	self.config.set('p41hf', data['p41hf']);
+	self.config.set('p41s', data['p41s']);
+	self.logger.info('New bands of equalizer have been set');
+
+  self.createUIFile()
+ //  .then(function(e) {
+      self.commandRouter.pushToastMessage('success', "Configuration updated");
+ /*   defer.resolve({});
+   })
+   .fail(function(e) {
+       defer.reject(new Error('error'));
+    self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+   })
+
+*/
+  return defer.promise;
+
+ };
 Controllervolparametriceq.prototype.rebuildvolparametriceq = function() {
   var self = this;
   var defer = libQ.defer();

@@ -1,4 +1,4 @@
-29th May 2018
+10th June 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -37,14 +37,30 @@ volumio plugin install
 ```
 If the installation fails, remove all file (if any) related to the plugin before retry.
 
+### 3. Enable the plugin
+
+In volumio webUI, go in plugin section and enable it!
+
 ## Tested on :
 RPI2
 PINE64
 x86 (virtual)
 RPI0
 
+### 4. To do list
+
+Cosmetics
+
+reset button
+
+...
+
 
 ## Last changes
+
+10th June  2018
+
+- customisable frequencies and step for each band
 
 29th May
 
