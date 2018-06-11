@@ -167,6 +167,7 @@ onedriveMusicLibrary.prototype.handleBrowseUri = function (curUri) {
                     // self.logger.info("[ elmar-onedrive ] " + item.name);
                     if (item.folder) {
                         folderItems.push({
+                            "service": "onedrive_music_library",
                             "type": "folder",
                             "title": item.name,
                             "icon": "fa fa-folder-open-o",
@@ -238,23 +239,23 @@ onedriveMusicLibrary.prototype.clearAddPlayTrack = function(track) {
     var self = this;
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'onedriveMusicLibrary::clearAddPlayTrack');
 
-    return self.mpdPlugin.sendMpdCommand('stop',[])
-        .then(function()
-        {
-            return self.mpdPlugin.sendMpdCommand('clear',[]);
-        })
-        .then(function()
-        {
-            return self.mpdPlugin.sendMpdCommand('load "'+track.downloadUri+'"',[]);
-        })
-        .fail(function (e) {
-            return self.mpdPlugin.sendMpdCommand('add "'+track.downloadUri+'"',[]);
-        })
-        .then(function()
-        {
-            self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-            return self.mpdPlugin.sendMpdCommand('play',[]);
-        });
+	return self.mpdPlugin.sendMpdCommand('stop',[])
+		.then(function()
+		{
+			return self.mpdPlugin.sendMpdCommand('clear',[]);
+		})
+		.then(function()
+    {
+        return self.mpdPlugin.sendMpdCommand('load "'+track.downloadUri+'"',[]);
+    })
+    .fail(function (e) {
+        return self.mpdPlugin.sendMpdCommand('add "'+track.downloadUri+'"',[]);
+    })
+		.then(function()
+		{
+			self.commandRouter.stateMachine.setConsumeUpdateService('mpd', false, false);
+			return self.mpdPlugin.sendMpdCommand('play',[]);
+		});
 };
 
 // Spop stop
@@ -297,11 +298,37 @@ onedriveMusicLibrary.prototype.explodeUri = function(uri) {
 
     var graphPath = this.getGraphPath(uri);
     self.commandRouter.pushConsoleMessage("getting data from: " + graphPath);
-    this.graphClient.api(graphPath).get().then(
-        (item) => {
-            self.commandRouter.pushConsoleMessage(item);
+    
 
-            defer.resolve({
+        this.graphClient.api(graphPath).get().then((item) => {
+        // If folder, return all items in the folder as tracks:
+        if (item.folder){
+            var graphChildrenPath = graphPath + ":/children";
+            this.graphClient.api(graphChildrenPath).get().then((fileItems) => {
+                var tracks = [];
+                for (var fileItem of fileItems["value"]) {
+                    if (fileItem.audio) {
+                        tracks.push(this.getTrackFromOnedriveFileItem(fileItem, uri));
+                    }
+                }
+                defer.resolve(tracks);
+            });
+        }
+        else {
+            // Else, simply return the file as a track.
+
+            self.commandRouter.pushConsoleMessage(item);
+            defer.resolve([this.getTrackFromOnedriveFileItem(item, uri)]);
+        }
+    });
+
+
+
+    return defer.promise;
+};
+
+onedriveMusicLibrary.prototype.getTrackFromOnedriveFileItem = function(item, uri) {
+    return {
                 uri: uri,
                 service: 'onedrive_music_library',
                 type: "track",
@@ -313,14 +340,8 @@ onedriveMusicLibrary.prototype.explodeUri = function(uri) {
                 album: item.audio ? item.audio.album : "",
                 tracknumber: item.audio ? item.audio.track : null,
                 duration: item.audio ? item.audio.duration: null
-            });
-        }
-    )
-
-
-
-    return defer.promise;
-};
+            }
+}
 
 onedriveMusicLibrary.prototype.connectMSGraph = function () {
     var self = this;

@@ -1,6 +1,6 @@
 {
 	"name": "onedrive_music_library",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Allows to play music stored on Onedrive cloud storage service. Note that this is a beta version with limited functionality. Most prominently this version does not yet support adding music files to playlists or queue.",
 	"main": "index.js",
 	"scripts": {
