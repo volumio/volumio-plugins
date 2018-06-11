@@ -11,7 +11,11 @@ https://github.com/tillbaks/node-eiscp
 - Set the volume on the receiver to a set value when Volumio playback begins.
 - Delay the power off command to the receiver (to allow for pausing music without shutting down).
 
-## Manual Installation of latest version
+## Installation
+
+The latest released version is available for installation through the Volumio Plugins UI.
+
+## Manual Installation of latest dev version
 
 1. Enable SSH following the instructions found here:
 ```
