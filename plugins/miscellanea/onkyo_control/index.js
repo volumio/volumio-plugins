@@ -302,7 +302,7 @@ onkyoControl.prototype.saveActionConfig = function (data) {
 
     self.config.set('setInput', data['setInput']);
     if (data['setInputValue']) {
-        self.config.set('setInputValue', data['setInputValue']);
+        self.config.set('setInputValue', data['setInputValue'].value);
     } else {
         self.config.set('setInputValue', 'line1');
     }
