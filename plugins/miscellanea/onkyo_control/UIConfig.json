@@ -35,7 +35,7 @@
           "element": "select",
           "label": "TRANSLATE.SELECT_RECEIVER",
           "doc": "TRANSLATE.SELECT_RECEIVER_DOC",
-          "value": {"value": 1 ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
+          "value": {"value": "manual" ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
           "options": [
             {
               "value": "manual",
@@ -131,11 +131,16 @@
         },
         {
           "id": "setInputValue",
-          "type": "text",
-          "element": "input",
+          "element": "select",
           "label": "TRANSLATE.SET_INPUT_VAL",
           "doc": "TRANSLATE.SET_INPUT_VAL_DOC",
-          "value": "line1",
+          "value": {"value": "line1" ,"label": "line1"},
+          "options": [
+            {
+              "value": "line1",
+              "label": "line1"
+            }
+          ],
           "visibleIf": {
             "field": "setInput",
             "value": true
