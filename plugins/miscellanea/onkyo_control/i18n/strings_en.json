@@ -24,7 +24,7 @@
   "SET_INPUT": "Set Input Channel on Play",
   "SET_INPUT_DOC": "Set the input channel of the receiver on playback start.",
   "SET_INPUT_VAL": "Input Channel Value",
-  "SET_INPUT_VAL_DOC": "The input channel to change to on the receiver.",
+  "SET_INPUT_VAL_DOC": "The input channel to change to on the receiver. Some channels may not be available on your receiver.",
   "SETTINGS_SAVED": "Settings Saved",
   "SETTINGS_SAVED_CONNECTION": "Connection settings have been saved.",
   "SETTINGS_SAVED_ACTION": "Action settings have been saved.",

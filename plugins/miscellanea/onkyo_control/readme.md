@@ -49,7 +49,7 @@ volumio plugin install
 - Set Input Channel on Play
     - Set the input channel of the receiver on playback start.
 - Input Channel Value
-    - The input channel to change to on the receiver.
+    - The input channel to change to on the receiver. Some channels may not be available on your receiver.
 - Standby On Stop
     - Put the receiver into the standby state when playback ends.
 - Standby Delay Time (Seconds)
