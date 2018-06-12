@@ -121,6 +121,25 @@
           }
         },
         {
+          "id": "setInput",
+          "element": "switch",
+          "label": "TRANSLATE.SET_INPUT",
+          "doc": "TRANSLATE.SET_INPUT_DOC",
+          "value": false
+        },
+        {
+          "id": "setInputValue",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.SET_INPUT_VAL",
+          "doc": "TRANSLATE.SET_INPUT_VAL_DOC",
+          "value": "line1",
+          "visibleIf": {
+            "field": "setInput",
+            "value": true
+          }
+        },
+        {
           "id": "standby",
           "element": "switch",
           "label": "TRANSLATE.STANDBY",

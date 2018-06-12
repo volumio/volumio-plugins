@@ -26,6 +26,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 ```
 git clone https://github.com/orderoftheflame/volumio-plugins.git
 cd volumio-plugins/plugins/miscellanea/onkyo_control
+npm install
 volumio plugin install
 ```
 ## Settings
@@ -64,7 +65,8 @@ volumio plugin install
 - [X] Discover receivers on the network for config option drop down
 - [X] Change receiver volume after power on
 - [X] Tidy logging
-- [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
+- [ ] Change receiver to "Line 1" channel after power on
+- [ ] Input from dropdown
 - [ ] Improve host/ip config UI if possible
 
 ## Known issues

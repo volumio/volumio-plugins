@@ -49,6 +49,9 @@ onkyoControl.prototype.onVolumioStart = function () {
             if (self.config.get('setVolume') && !isNaN(self.config.get('setVolumeValue'))) {
                 commands.push('volume=' + self.config.get('setVolumeValue'));
             }
+            if (self.config.get('setInput') && self.config.get('setInputValue')) {
+                commands.push('input-selector=' + self.config.get('setInputValue'));
+            }
         } else if (self.currentState === 'stop') {
             commands.push('system-power=standby');
         }
@@ -95,7 +98,12 @@ onkyoControl.prototype.onVolumioStart = function () {
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
             if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
 
-                if (state.status === 'play' && (self.config.get('powerOn') || self.config.get('setVolume'))) {
+                if (state.status === 'play' && (
+                        self.config.get('powerOn') 
+                        || self.config.get('setVolume')
+                        || self.config.get('setInput')
+                    )) {
+                    
                     clearTimeout(self.standbyTimout);
                     self.logger.debug("ONKYO-CONTROL: eiscp connecting... ");
                     eiscp.connect(connectionOptions);
@@ -178,8 +186,10 @@ onkyoControl.prototype.getUIConfig = function () {
             uiconf.sections[1].content[0].value = self.config.get('powerOn');
             uiconf.sections[1].content[1].value = self.config.get('setVolume');
             uiconf.sections[1].content[2].value = self.config.get('setVolumeValue');
-            uiconf.sections[1].content[3].value = self.config.get('standby');
-            uiconf.sections[1].content[4].value = self.config.get('standbyDelay');
+            uiconf.sections[1].content[3].value = self.config.get('setInput');
+            uiconf.sections[1].content[4].value = self.config.get('setInputValue');
+            uiconf.sections[1].content[5].value = self.config.get('standby');
+            uiconf.sections[1].content[6].value = self.config.get('standbyDelay');
 
             eiscp.discover({timeout: 5}, function (err, results) {
                 if (err) {
@@ -279,6 +289,14 @@ onkyoControl.prototype.saveActionConfig = function (data) {
     } else {
         self.config.set('setVolumeValue', data['setVolumeValue']);
     }
+
+    self.config.set('setInput', data['setInput']);
+    if (data['setInputValue']) {
+        self.config.set('setInputValue', data['setInputValue']);
+    } else {
+        self.config.set('setInputValue', 'line1');
+    }
+
 
     defer.resolve();
 
