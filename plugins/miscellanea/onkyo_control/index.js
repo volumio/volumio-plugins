@@ -198,7 +198,7 @@ onkyoControl.prototype.getUIConfig = function () {
                     self.logger.debug("ONKYO-CONTROL: Found these receivers on the local network: " + JSON.stringify(results));
                     results.forEach(function (receiver) {
                         var option = {"value": receiver.host, "label": receiver.model};
-                        uiconf.sections[0].content[1].options.push(option)
+                        uiconf.sections[0].content[1].options.push(option);
 
                         if (receiver.host === self.config.get('receiverSelect')) {
                             uiconf.sections[0].content[1].value = option;

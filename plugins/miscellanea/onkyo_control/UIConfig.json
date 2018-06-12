@@ -90,7 +90,9 @@
           "standby",
           "standbyDelay",
           "setVolume",
-          "setVolumeValue"
+          "setVolumeValue",
+          "setInput",
+          "setInputValue"
         ]
       },
       "content": [
