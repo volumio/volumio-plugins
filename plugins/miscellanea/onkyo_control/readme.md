@@ -43,9 +43,13 @@ volumio plugin install
 - Power On
     - Power on the receiver when playback begins.
 - Set Volume On Play
-    - Set the volume of the receiver on playback.
+    - Set the volume of the receiver on playback start.
 - Volume Value
     - The value to set the volume to on the receiver.
+- Set Input Channel on Play
+    - Set the input channel of the receiver on playback start.
+- Input Channel Value
+    - The input channel to change to on the receiver.
 - Standby On Stop
     - Put the receiver into the standby state when playback ends.
 - Standby Delay Time (Seconds)
@@ -65,8 +69,9 @@ volumio plugin install
 - [X] Discover receivers on the network for config option drop down
 - [X] Change receiver volume after power on
 - [X] Tidy logging
-- [ ] Change receiver to "Line 1" channel after power on
-- [ ] Input from dropdown
+- [X] Change receiver to "Line 1" channel after power on
+- [X] Input from dropdown
+- [ ] Prevent the power/volume/input command from being sent on track change (delay check for new state?)
 - [ ] Improve host/ip config UI if possible
 
 ## Known issues

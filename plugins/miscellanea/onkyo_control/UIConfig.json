@@ -135,12 +135,7 @@
           "label": "TRANSLATE.SET_INPUT_VAL",
           "doc": "TRANSLATE.SET_INPUT_VAL_DOC",
           "value": {"value": "line1" ,"label": "line1"},
-          "options": [
-            {
-              "value": "line1",
-              "label": "line1"
-            }
-          ],
+          "options": [],
           "visibleIf": {
             "field": "setInput",
             "value": true
