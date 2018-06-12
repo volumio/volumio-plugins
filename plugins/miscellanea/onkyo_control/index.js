@@ -96,7 +96,7 @@ onkyoControl.prototype.onVolumioStart = function () {
 
             self.logger.debug("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
-            if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
+            if (self.currentState && state.status !== self.currentState) {
 
                 if (state.status === 'play' && (
                         self.config.get('powerOn') 
