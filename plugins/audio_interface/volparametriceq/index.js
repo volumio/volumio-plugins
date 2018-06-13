@@ -6,10 +6,7 @@
  var exec = require('child_process').exec;
  var execSync = require('child_process').execSync;
  var libQ = require('kew');
- // var libNet = require('net');
- // var net = require('net');
- var config = new(require('v-conf'))();
-
+  var config = new(require('v-conf'))();
 
  // Define the Controllervolparametriceq class
  module.exports = Controllervolparametriceq;
@@ -18,11 +15,8 @@
   var self = this;
   self.context = context;
   self.commandRouter = self.context.coreCommand;
-  self.logger = self.commandRouter.logger;
+  self.logger = self.context.logger;
 
-  this.context = context;
-  this.commandRouter = this.context.coreCommand;
-  this.logger = this.context.logger;
   this.configManager = this.context.configManager;
  };
 
@@ -94,8 +88,6 @@
    try {
     var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
 
-    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-
    } catch (err) {
     self.logger.info('config.txt does not exist');
    }
@@ -124,7 +116,6 @@
  // });
 
  };
-
 
  Controllervolparametriceq.prototype.onStop = function() {
   var self = this;
@@ -179,7 +170,6 @@ self.restoreVolumioconfig()
 
   var defer = libQ.defer();
   self.autoconfig()
-//  self.createASOUNDFile()
    .then(function(e) {
     self.logger.info('volparametriceq Started');
     defer.resolve();
@@ -418,8 +408,10 @@ setTimeout(function() {
 
    });
   } catch (err) {}
+
 setTimeout(function() {
   return defer.promise;
+
   }, 200);
  };
 
@@ -469,20 +461,23 @@ Controllervolparametriceq.prototype.saveAdvanced = function(data) {
 	self.config.set('p41s', data['p41s']);
 	self.logger.info('New bands of equalizer have been set');
 
-  self.createUIFile()
- //  .then(function(e) {
-      self.commandRouter.pushToastMessage('success', "Configuration updated");
- /*   defer.resolve({});
+  self.createUIFile();
+self.reloadUi();
+ /* .then(function(e) {
+ //     self.commandRouter.pushToastMessage('success', "Configuration updated");
+
+   defer.resolve({});
    })
    .fail(function(e) {
        defer.reject(new Error('error'));
-    self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+  //  self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
    })
-
 */
+
   return defer.promise;
 
  };
+
 Controllervolparametriceq.prototype.rebuildvolparametriceq = function() {
   var self = this;
   var defer = libQ.defer();
@@ -634,4 +629,13 @@ outputp = self.config.get('alsa_outputdevicename')
  Controllervolparametriceq.prototype.getAdditionalConf = function(type, controller, data) {
   var self = this;
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+ };
+
+
+ Controllervolparametriceq.prototype.reloadUi = function() {
+  var self = this;
+ self.logger.info('Ui has changed, forcing UI Reload');
+      self.commandRouter.pushToastMessage('info', "Please reload the page, in order to see last changes");
+//return self.commandRouter.reloadUi(); 
+//return self.commandRouter.catPluginsConf(); 
  }

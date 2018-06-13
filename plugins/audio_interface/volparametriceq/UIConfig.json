@@ -49,7 +49,7 @@
 				{
 					"id": "p11",
 					"element": "equalizer",
-					"label": ["TRANSLATE.P11","25Hz-133Hz"],
+					"label": "25Hz-133Hz",
 					"description": "TRANSLATE.P11_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -99,7 +99,7 @@
 				{
 					"id": "p21",
 					"element": "equalizer",
-					"label": ["TRANSLATE.P21","125Hz-450Hz"],
+					"label": "125Hz-450Hz",
 					"description": "TRANSLATE.P21_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -149,7 +149,7 @@
 				{
 					"id": "p31",
 					"element": "equalizer",
-					"label": ["TRANSLATE.P31","1500Hz-9000Hz"],
+					"label": "500Hz-10000Hz",
 					"description": "TRANSLATE.P31_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -164,8 +164,8 @@
 								]
 							},
 							{
-								"min": "1500",
-								"max": "9000",
+								"min": "500",
+								"max": "10000",
 								"step": "20",
 								"value": "2000",
 								"ticksLabels": [
@@ -199,7 +199,7 @@
 				{
 					"id": "p41",
 					"element": "equalizer",
-					"label": ["TRANSLATE.P41","8000Hz-14000Hz"],
+					"label": "9500Hz-14000Hz",
 					"description": "TRANSLATE.P41_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -214,7 +214,7 @@
 								]
 							},
 							{
-								"min": "8000",
+								"min": "9500",
 								"max": "14000",
 								"step": "50",
 								"value": "10000",
@@ -277,7 +277,6 @@
 					"p41s"
 				]
 			},
-
 			"content": [
 				{
 					"id": "enabled",
