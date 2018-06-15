@@ -31,6 +31,8 @@
  "HIGHFREQDOC4":"Fourth band High frequency 20Hz-14000Hz",
  "STEPDOC":"Incrément de réglage",
  "STEP":"Incrément",
+ "SPECIAL":"Spécial",
  "APPLY":"Appliquer",
+ "RESTORE":"Restaurer paramètres d'origine",
  "SAVE":"Sauver"
 }

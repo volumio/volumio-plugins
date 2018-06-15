@@ -1,4 +1,4 @@
-13th June 2018
+15th June 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -57,6 +57,10 @@ reset button
 
 
 ## Last changes
+
+15th June 2018
+
+- add a button to restore default settings
 
 13th June 2018
 

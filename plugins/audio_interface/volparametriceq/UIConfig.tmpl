@@ -218,7 +218,9 @@
 								"max": "${p41hf2}",
 								"step": "${p41s}",
 								"value": "10000",
-								"ticksLabels": ["--   Hz"],
+								"ticksLabels": [
+									"--   Hz"
+								],
 								"tooltip": "always"
 							},
 							{
@@ -226,7 +228,9 @@
 								"max": "8",
 								"step": "0.03",
 								"value": "0",
-								"ticksLabels": ["--   Q"],
+								"ticksLabels": [
+									"--   Q"
+								],
 								"tooltip": "always"
 							},
 							{
@@ -465,6 +469,33 @@
 					}
 				}
 			]
+		},
+		{
+			"id": "restore",
+			"element": "section",
+			"label": "TRANSLATE.SPECIAL",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "audio_interface/volparametriceq",
+				"method": "restoredefaultsettings"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.RESTORE",
+				"data": [
+					"restore"
+				]
+			},
+ "content": 
+					[
+					{
+					"id": "",
+					"element": "",
+					"label": "",
+					"value": true
+					}
+						
+					] 
 		}
 	]
 }

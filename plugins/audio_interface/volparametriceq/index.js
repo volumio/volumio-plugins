@@ -631,11 +631,25 @@ outputp = self.config.get('alsa_outputdevicename')
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
  };
 
+ Controllervolparametriceq.prototype.restoredefaultsettings = function() {
+  var self = this;
+
+//  return new Promise(function(resolve, reject) {
+ try {
+    var cp = execSync('/bin/cp /data/plugins/audio_interface/volparametriceq/UIConfig.json.ori /data/plugins/audio_interface/volparametriceq/UIConfig.json')
+       self.commandRouter.pushToastMessage('info', "Default Settings restored, Please reload the page");
+
+   } catch (err) {
+    self.logger.info('UIConfig.json.ori does not exist');
+   }
+   //  resolve();
+ // });
+ };
 
  Controllervolparametriceq.prototype.reloadUi = function() {
   var self = this;
  self.logger.info('Ui has changed, forcing UI Reload');
       self.commandRouter.pushToastMessage('info', "Please reload the page, in order to see last changes");
 //return self.commandRouter.reloadUi(); 
-//return self.commandRouter.catPluginsConf(); 
+
  }
