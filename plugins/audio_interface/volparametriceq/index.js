@@ -644,12 +644,13 @@ outputp = self.config.get('alsa_outputdevicename')
    }
    //  resolve();
  // });
+return self.commandRouter.reloadUi(); 
  };
 
  Controllervolparametriceq.prototype.reloadUi = function() {
   var self = this;
  self.logger.info('Ui has changed, forcing UI Reload');
       self.commandRouter.pushToastMessage('info', "Please reload the page, in order to see last changes");
-//return self.commandRouter.reloadUi(); 
+return self.commandRouter.reloadUi(); 
 
  }
