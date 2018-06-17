@@ -6,9 +6,9 @@ It uses caps ladspa plugin
 http://quitte.de/dsp/caps.html#EqFA4p
 
 
-![Alt text](parametric equalizer.jpg?raw=true "Parametric Equalizer")
+![Alt text](parametric-equalizer.jpg?raw=true "Parametric Equalizer")
 
-![Alt text](parametric equalizer ranges setting.jpg?raw=true "Parametric Equalizer ranges setting")
+![Alt text](parametric-equalizer-ranges-setting.jpg?raw=true "Parametric Equalizer ranges setting")
 
 ## NOT compatible with softvol or volstereo2mono !
 
