@@ -1,4 +1,4 @@
-16th June 2018
+17th June 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -6,7 +6,9 @@ It uses caps ladspa plugin
 http://quitte.de/dsp/caps.html#EqFA4p
 
 
-![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
+![Alt text](parametric equalizer.jpg?raw=true "Parametric Equalizer")
+
+![Alt text](parametric equalizer ranges setting.jpg?raw=true "Parametric Equalizer ranges setting")
 
 ## NOT compatible with softvol or volstereo2mono !
 
@@ -49,14 +51,17 @@ RPI0
 
 ### 4. To do list
 
-Cosmetics
 
-reset button
 
 ...
 
 
 ## Last changes
+
+17th June 2018
+
+- new pictures for readme.md
+- small typo correction for strings_fr.json
 
 16th june 2018
 
