@@ -1,0 +1,297 @@
+{
+    "page": {
+	    "label": "FMXmtr CONFIGURATION"
+	},
+    "sections": [
+	{
+        "id": "fmxmtr",
+	    "element": "switch",
+	    "label": "TRANSLATE.FMXMTR.LABEL",
+	    "icon": "volume-off",
+	    "description": "TRANSLATE.FMXMTR.DESC",
+	    "value": true,
+	    "onSave": {
+            "type":"controller", 
+            "endpoint":"miscellanea/fmxmtr", 
+            "method":"SaveFMXmtrOptions"
+	    },
+	    "saveButton": {
+            "label": "TRANSLATE.SAVE",
+            "data": [
+                "I2C_BUS",
+                "I2C_ADDRESS",
+                "Freq",
+                "BaseBoost",
+                "RFGain",
+                "MuteAudio",
+                "MonoAudio",
+                "PGAMod",
+                "PGAmp",
+                "PltAdj",
+                "PhTCnst",
+                "PDPA",
+                "StartUp"
+            ]
+	    },
+        "content": [
+            {
+                "id": "I2C_BUS",
+                "element": "select",
+                "label": "TRANSLATE.I2CBUS.LABEL",
+                "description": "TRANSLATE.I2CBUS.DESC",
+                "doc": "TRANSLATE.I2CBUS.DOC",
+                "value": {"value": 1 ,"label": "1 - Default"},
+                "options": [
+                     {
+                       "value": 1,
+                       "label": "1 - Default"
+                     },
+                     {
+                       "value": 0,
+                       "label": "0 - Alternate bus"
+                     }
+                   ]
+            },
+            {
+                "id": "I2C_ADDRESS",
+                "element": "input",
+                "type": "text",
+                "label": "TRANSLATE.I2CADDRESS.LABEL",
+                "description": "TRANSLATE.I2CADDRESS.DESC",
+                "doc": "TRANSLATE.I2CADDRESS.DOC",
+                "attributes": [
+                      {"placeholder": "3E"}, {"maxlength": 2}
+                    ],
+                "value": "3E"
+            },
+            {
+                "id": "Freq",
+                "element": "equalizer",
+                "label": "TRANSLATE.FREQ.LABEL",
+                "description": "TRANSLATE.FREQ.DESC",
+                "doc": "TRANSLATE.FREQ.DOC",
+                "config": {
+                    "orientation": "horizontal",
+                    "bars": [
+                        {
+                        "min": 70.1,
+                        "max": 107.9,
+                        "step": ".2",
+                        "value": "94.5",
+                        "tooltip": "always"
+                        }
+                    ] 
+                 }
+            },
+            {
+                "id": "BaseBoost",
+                "element": "select",
+                "label": "TRANSLATE.BASEBOOST.LABEL",
+                "description": "TRANSLATE.BASEBOOST.DESC",
+                "doc": "TRANSLATE.BASEBOOST.DOC",
+                "value": {"value": 0 ,"label": "0 = 0db - Default"},
+                "options": [
+                    {
+                       "value": 0,
+                       "label": "0 = 0db - Default"
+                    },
+                    {
+                       "value": 1,
+                       "label": "1 = 5db"
+                    },
+                    {
+                       "value": 2,
+                       "label": "2 = 11db"
+                    },
+                    {
+                       "value": 3,
+                       "label": "3 = 17db"
+                     }
+                   ]
+            },
+            {
+                "id": "RFGain",
+                "element": "select",
+                "label": "TRANSLATE.RFGAIN.LABEL",
+                "description": "TRANSLATE.RFGAIN.DESC",
+                "doc": "TRANSLATE.RFGAIN.DOC",
+                "value": {"value": 15 ,"label": "15 = 108 dBuV - Default"},
+                "options": [
+                    {
+                       "value": 0,
+                       "label": "0 = 95.5 dBuV"
+                    },
+                    {
+                       "value": 1,
+                       "label": "1 = 96.5 dBuV"
+                    },
+                    {
+                       "value": 2,
+                       "label": "2 = 97.5 dBuV"
+                    },
+                    {
+                       "value": 3,
+                       "label": "3 = 98.2 dBuV"
+                     },
+                    {
+                       "value": 4,
+                       "label": "4 = 98.9 dBuV"
+                    },
+                    {
+                       "value": 5,
+                       "label": "5 = 100 dBuV"
+                    },
+                    {
+                       "value": 6,
+                       "label": "6 = 101.5 dBuV"
+                    },
+                    {
+                       "value": 7,
+                       "label": "7 = 102.8 dBuV"
+                    },
+                    {
+                       "value": 8,
+                       "label": "8 = 105.1 dBuV"
+                    },
+                    {
+                       "value": 9,
+                       "label": "9 = 105.6 dBuV"
+                    },
+                    {
+                       "value": 10,
+                       "label": "10 = 106.2 dBuV"
+                    },
+                    {
+                       "value": 11,
+                       "label": "11 = 106.5 dBuV"
+                    },
+                    {
+                       "value": 12,
+                       "label": "12 = 107 dBuV"
+                    },
+                    {
+                       "value": 13,
+                       "label": "13 = 107.4 dBuV"
+                    },
+                    {
+                       "value": 14,
+                       "label": "14 = 107.7 dBuV"
+                    },
+                    {
+                       "value": 15,
+                       "label": "15 = 108 dBuV - Default"
+                    }
+                ]
+            },
+            {
+                "id": "MuteAudio",
+                "element": "switch",
+                "label": "TRANSLATE.MUTE.LABEL",
+                "description": "TRANSLATE.MUTE.DESC",
+                "doc": "TRANSLATE.MUTE.DOC",
+                "value": false
+            },
+            {
+                "id": "MonoAudio",
+                "element": "switch",
+                "label": "TRANSLATE.MONO.LABEL",
+                "description": "TRANSLATE.MONO.DESC",
+                "doc": "TRANSLATE.MONO.DOC",
+                "value": false
+            },
+            {
+                "id": "PGAMod",
+                "element": "select",
+                "label": "TRANSLATE.PGAMOD.LABEL",
+                "description": "TRANSLATE.PGAMOD.DESC",
+                "doc": "TRANSLATE.PGAMOD.DOC",
+                "value": {"value": 0 ,"label": "0 = 4db - Default"},
+                "options": [
+                     {
+                        "value": 0,
+                        "label": "0 = 4db - Default"
+                     },
+                     {
+                        "value": 1,
+                        "label": "1 = 1db"
+                     }
+                   ]
+            },
+            {
+                "id": "PGAmp",
+                "element": "equalizer",
+                "label": "TRANSLATE.PGAMP.LABEL",
+                "description": "TRANSLATE.PGAMP.DESC",
+                "doc": "TRANSLATE.PGAMP.DOC",
+                "config": {
+                    "orientation": "horizontal",
+                    "bars": [
+                        {
+                        "min": -15,
+                        "max": 15,
+                        "step": "1",
+                        "value": "0",
+                        "tooltip": "always"
+                        }
+                    ]
+                        
+                }
+            },
+            {
+                "id": "PltAdj",
+                "element": "select",
+                "label": "TRANSLATE.PLTADJ.LABEL",
+                "description": "TRANSLATE.PLTADJ.DESC",
+                "doc": "TRANSLATE.PLTADJ.DOC",
+                "value": {"value": 0 ,"label": "0 (Low) - Default"},
+                "options": [
+                     {
+                        "value": 0,
+                        "label": "0 = Low - Default"
+                     },
+                     {
+                        "value": 1,
+                        "label": "1 = High"
+                     }
+                   ]
+            },
+            {
+                "id": "PhTCnst",
+                "element": "select",
+                "label": "TRANSLATE.PHTCNST.LABEL",
+                "description": "TRANSLATE.PHTCNST.DESC",
+                "doc": "TRANSLATE.PHTCNST.DOC",
+                "value": {"value": 0 ,"label": "0 = 75 µs US - Default"},
+                "options": [
+                     {
+                        "value": 0,
+                        "label": "0 = 75 µs US - Default"
+                     },
+                                      {
+                        "value": 1,
+                        "label": "1 = 50 µs"
+                     }
+
+                   ]
+            },
+            {
+                "id": "PDPA",
+                "element": "switch",
+                "label": "TRANSLATE.PDPA.LABEL",
+                "description": "TRANSLATE.PDPA.DESC",
+                "doc": "TRANSLATE.PDPA.DOC",
+                "value": false
+            },
+            {
+                "id": "StartUp",
+                "element": "switch",
+                "label": "TRANSLATE.STARTUP.LABEL",
+                "description": "TRANSLATE.STARTUP.DESC",
+                "doc": "TRANSLATE.STARTUP.DOC",
+                "value": false
+            }
+     
+        ]
+	}
+    ]
+}
