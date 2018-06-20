@@ -345,10 +345,10 @@
 					"prettyName": "GPIO Buttons",
 					"icon": "fa-microchip",
 					"name": "gpio-buttons",
-					"version": "0.8.0",
+					"version": "0.8.1",
 					"url": "http://tomatpasser.dk/gpio-buttons.zip",
 					"license": "ISC",
-					"description": "With this Plugin you can control basic playback functions by connecting buttons to Raspberry Pi GPIOs",
+					"description": "GPIO button-listener plugin for Volumio2",
 					"details": "<h4>GPIO Buttons</h4><br>Control basic playback functions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
 					"author": "tomatpasser",
 					"screenshots": [
@@ -357,7 +357,7 @@
 							"thumb": "http://tomatpasser.dk/gpio-buttons2.png"
 						}
 					],
-					"updated": "25-05-2017"
+					"updated": "20-6-2018"
 				},
 				{
 					"prettyName": "Backup & Restore Data",
