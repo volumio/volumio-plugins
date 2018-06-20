@@ -43,14 +43,14 @@ ControllerVolspotconnect.prototype.onVolumioStart = function() {
  var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
  this.config = new(require('v-conf'))();
  this.config.loadFile(configFile);
-/* self.createVOLSPOTCONNECTFile()
+self.createVOLSPOTCONNECTFile()
   .then(function(e) {
    defer.resolve({});
   })
   .fail(function(e) {
    defer.reject(new Error());
   })
-*/
+
  return libQ.resolve();
 }
 
@@ -76,8 +76,7 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
   uid: 1000,
   gid: 1000
  }, function(error, stdout, stderr) {
-  //		exec("/bin/systemctl start volspotconnect2.service volspotconnect22.service volspotconnect2purgecache.timer", function (error, stdout, stderr) {
-  if (error !== null) {
+    if (error !== null) {
    self.logger.info('The following error occurred while starting VOLSPOTCONNECT2: ' + error);
    defer.reject();
   } else {
@@ -309,9 +308,19 @@ ControllerVolspotconnect.prototype.onStart = function() {
    self.volspotconnectDaemonConnect(defer)
    defer.resolve();
   })
+ 
+
+/*
+
+ self.createVOLSPOTCONNECTFile()
+  .then(function(e) {
+   defer.resolve({});
+*/
+  
   .fail(function(e) {
    defer.reject(new Error());
-  });
+  })
+
 
  return defer.promise;
 
@@ -384,7 +393,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
  var self = this;
 
  var defer = libQ.defer();
-
+setTimeout(function() {
  try {
 
   fs.readFile(__dirname + "/volspotconnect2.tmpl", 'utf8', function(err, data) {
@@ -430,7 +439,7 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
  } catch (err) {
 
  }
-
+  }, 10000)
  return defer.promise;
 
 };
