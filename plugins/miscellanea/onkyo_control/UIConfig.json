@@ -35,7 +35,7 @@
           "element": "select",
           "label": "TRANSLATE.SELECT_RECEIVER",
           "doc": "TRANSLATE.SELECT_RECEIVER_DOC",
-          "value": {"value": 1 ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
+          "value": {"value": "manual" ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
           "options": [
             {
               "value": "manual",
@@ -90,7 +90,9 @@
           "standby",
           "standbyDelay",
           "setVolume",
-          "setVolumeValue"
+          "setVolumeValue",
+          "setInput",
+          "setInputValue"
         ]
       },
       "content": [
@@ -117,6 +119,25 @@
           "value": 20,
           "visibleIf": {
             "field": "setVolume",
+            "value": true
+          }
+        },
+        {
+          "id": "setInput",
+          "element": "switch",
+          "label": "TRANSLATE.SET_INPUT",
+          "doc": "TRANSLATE.SET_INPUT_DOC",
+          "value": false
+        },
+        {
+          "id": "setInputValue",
+          "element": "select",
+          "label": "TRANSLATE.SET_INPUT_VAL",
+          "doc": "TRANSLATE.SET_INPUT_VAL_DOC",
+          "value": {"value": "line1" ,"label": "line1"},
+          "options": [],
+          "visibleIf": {
+            "field": "setInput",
             "value": true
           }
         },
