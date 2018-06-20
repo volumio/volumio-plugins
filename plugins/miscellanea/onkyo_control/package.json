@@ -1,6 +1,6 @@
 {
 	"name": "onkyo_control",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Turn Onkyo amplifier on the network on and off when playback begins and ends",
 	"main": "index.js",
 	"scripts": {

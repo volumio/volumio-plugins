@@ -11,7 +11,11 @@ https://github.com/tillbaks/node-eiscp
 - Set the volume on the receiver to a set value when Volumio playback begins.
 - Delay the power off command to the receiver (to allow for pausing music without shutting down).
 
-## Manual Installation of latest version
+## Installation
+
+The latest released version is available for installation through the Volumio Plugins UI.
+
+## Manual Installation of latest dev version
 
 1. Enable SSH following the instructions found here:
 ```
@@ -20,13 +24,37 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 2. Connect via ssh using putty or the command line ```ssh volumio@volumio.local```
 3. Download and install the plugin using the following commands:
 ```
-wget https://github.com/orderoftheflame/volumio-plugins/raw/master/plugins/miscellanea/onkyo_control/onkyo_control.zip
-mkdir onkyo_control
-miniunzip onkyo_control.zip -d ./onkyo_control
-cd onkyo_control
+git clone https://github.com/orderoftheflame/volumio-plugins.git
+cd volumio-plugins/plugins/miscellanea/onkyo_control
+npm install
 volumio plugin install
 ```
 ## Settings
+##### Connection Configuration
+- Automatically Discover Receiver
+    - Automatically use the first receiver on the network. If you have more than one receiver or your receiver is not automatically found, you may wish disable this and pick from the dropdown.
+- Select Receiver
+    - Pick your target receiver from the list of those found on the network, or select 'Manual entry' to define your IP and Port.
+- Manual IP/Hostname
+    - The IP or hostname of the Onkyo receiver you wish to control.
+- Port
+    - The Port you wish to control the receiver with.
+##### Action Configuration
+- Power On
+    - Power on the receiver when playback begins.
+- Set Volume On Play
+    - Set the volume of the receiver on playback start.
+- Volume Value
+    - The value to set the volume to on the receiver.
+- Set Input Channel on Play
+    - Set the input channel of the receiver on playback start.
+- Input Channel Value
+    - The input channel to change to on the receiver. Some channels may not be available on your receiver.
+- Standby On Stop
+    - Put the receiver into the standby state when playback ends.
+- Standby Delay Time (Seconds)
+    - The time (in seconds) to wait before putting the receiver in a standby state. If playback is resumed within this time, this command is cancelled.
+
 
 ![Alt text](settings.jpg?raw=true "Settings and configuration")
 
@@ -41,7 +69,10 @@ volumio plugin install
 - [X] Discover receivers on the network for config option drop down
 - [X] Change receiver volume after power on
 - [X] Tidy logging
-- [ ] Change receiver to "Line 1" channel (or configured option? Drop down?) after power on
+- [X] Change receiver to "Line 1" channel after power on
+- [X] Input from dropdown
+- [ ] Prevent the power/volume/input command from being sent on track change (delay check for new state?)
+- [ ] Filter list of input channels to be more relevant
 - [ ] Improve host/ip config UI if possible
 
 ## Known issues

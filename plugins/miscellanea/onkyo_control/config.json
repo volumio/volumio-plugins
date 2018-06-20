@@ -34,5 +34,13 @@
   "setVolumeValue": {
     "type": "int",
     "value": 20
+  },
+  "setInput": {
+    "type": "boolean",
+    "value": false
+  },
+  "setInputValue": {
+    "type": "string",
+    "value": "line1"
   }
 }
