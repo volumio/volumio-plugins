@@ -319,7 +319,7 @@
 					"prettyName": "Volumio Onkyo Control",
 					"icon": "fa-lightbulb-o",
 					"name": "onkyo_control",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/onkyo_control/onkyo_control.zip",
 					"license": "ISC",
 					"description": "Turn Onkyo amplifier on the network on and off when playback begins and ends",
@@ -331,7 +331,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "23-5-2018"
+					"updated": "20-6-2018"
 				},
 				{
 					"prettyName": "NanoSound by Nanomesher",
