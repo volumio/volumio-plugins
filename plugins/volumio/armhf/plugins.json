@@ -149,6 +149,24 @@
 						}
 					],
 					"updated": "22-5-2018"
+				},
+				{
+					"prettyName": "Podcast",
+					"icon": "fa-lightbulb-o",
+					"name": "podcast",
+					"version": "0.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/podcast/podcast.zip",
+					"license": "ISC",
+					"description": "Podcast for Volumio2",
+					"details": "",
+					"author": "Chris Song",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "20-6-2018"
 				}
 			]
 		},
