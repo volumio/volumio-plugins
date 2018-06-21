@@ -11,6 +11,10 @@
     "type": "string",
     "value": "default"
   },
+  "soundcard_timeout": {
+	"type": "string",
+	"value": "2"
+  },
   "alsa_params": {
     "type": "string",
     "value": "80:4::"

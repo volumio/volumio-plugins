@@ -134,6 +134,7 @@ ControllerSqueezelite.prototype.getUIConfig = function() {
 		}
 	}
 	//self.logger.info('Cards: ' + JSON.stringify(cards));
+	var seconds = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_' + lang_code + '.json',
 		__dirname + '/i18n/strings_en.json',
@@ -163,8 +164,22 @@ ControllerSqueezelite.prototype.getUIConfig = function() {
 				uiconf.sections[1].content[0].value.label = oLabel;
 			}
 		}
-		uiconf.sections[1].content[1].value = self.config.get('alsa_params');
-		uiconf.sections[1].content[2].value = self.config.get('extra_params');
+		
+		for (var s in seconds)
+		{
+			self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
+				value: s,
+				label: s
+			});
+			
+			if(self.config.get('soundcard_timeout') == s)
+			{
+				uiconf.sections[1].content[1].value.value = self.config.get('soundcard_timeout');
+				uiconf.sections[1].content[1].value.label = self.config.get('soundcard_timeout');
+			}
+		}		
+		uiconf.sections[1].content[2].value = self.config.get('alsa_params');
+		uiconf.sections[1].content[3].value = self.config.get('extra_params');
 		self.logger.info("2/2 Squeezelite settings sections loaded");
 
 		self.logger.info("Populated config screen.");
@@ -239,6 +254,7 @@ ControllerSqueezelite.prototype.updateSqueezeliteAudioConfig = function (data)
 	var defer = libQ.defer();
 	
 	self.config.set('output_device', data['output_device'].value);
+	self.config.set('soundcard_timeout', data['soundcard_timeout'].value);
 	self.config.set('alsa_params', data['alsa_params']);
 	self.config.set('extra_params', data['extra_params']);
 	
@@ -365,6 +381,7 @@ ControllerSqueezelite.prototype.constructUnit = function(unitTemplate, unitFile)
 	var replacementDictionary = [
 		{ placeholder: "${NAME}", replacement: self.config.get('name') },
 		{ placeholder: "${OUTPUT_DEVICE}", replacement: self.config.get('output_device') },
+		{ placeholder: "${SOUNDCARD_TIMEOUT}", replacement: self.config.get('soundcard_timeout') },
 		{ placeholder: "${ALSA_PARAMS}", replacement: self.config.get('alsa_params') },
 		{ placeholder: "${EXTRA_PARAMS}", replacement: self.config.get('extra_params') }
 	];
@@ -384,12 +401,12 @@ ControllerSqueezelite.prototype.constructUnit = function(unitTemplate, unitFile)
 				else
 					replacementDictionary[rep].replacement = "-o default";
 			}
+			else if (replacementDictionary[rep].placeholder == "${SOUNDCARD_TIMEOUT}")
+				replacementDictionary[rep].replacement = "-C " + replacementDictionary[rep].replacement;
 			else if (replacementDictionary[rep].placeholder == "${ALSA_PARAMS}" && self.config.get('alsa_params') != '')
 				replacementDictionary[rep].replacement = "-a " + replacementDictionary[rep].replacement;
 		}
 	}
-	
-	//self.logger.info('### Replacement dictionary: ' + JSON.stringify(replacementDictionary));
 	
 	self.replaceStringsInFile(unitTemplate, unitFile, replacementDictionary)
 	.then(function(activate)
