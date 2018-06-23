@@ -1,6 +1,6 @@
 {
- "OLEDDisplay": {
-    "type": "number",
-    "value": 1
+ "oledDisplay": {
+    "type": "string",
+    "value": "1"
   }
 }

@@ -12,7 +12,7 @@
       "saveButton": {
         "label": "Save",
         "data": [
-          "OLEDDisplay"
+          "oledDisplay"
         ]
       },
       "content": [
@@ -20,17 +20,17 @@
           "id": "oledDisplay",
           "element": "select",
           "label": "OLED Display",
-          "value": {"value": 1,
+          "value": {"value": "1",
                     "label": "1.3inch OLED"
           },
 
           "options": [
             {
-              "value": 1,
+              "value": "1",
               "label": "1.3inch OLED"
             },
             {
-              "value": 2,
+              "value": "2",
               "label": "0.96inch OLED"
             }
           ]
