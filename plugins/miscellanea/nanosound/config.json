@@ -1,3 +1,6 @@
 {
- 
+ "oledDisplay": {
+    "type": "string",
+    "value": "1"
+  }
 }
