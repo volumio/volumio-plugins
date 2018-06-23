@@ -1,0 +1,13 @@
+{
+ "VOLSPOTCONNECT":{
+ "VOLSPOTCONNECTCONF":"Configuration Volumio Spotify connect",
+ "VOLSPOTCONNECTACCOUNT":"Compte Spotify",
+ "USERNAME":"Nom utilisateur",
+ "PASSWORD":"Mot de passe",
+ "HIGHBITRATE":"Haute qualité",
+ "SHAREDDEVICE":"Périphérique partagé entre plusieurs utilisateurs",
+ "SAVE":"Sauver",
+ "INITVOL":"Volume initial",
+ "DESCINITVOL":"Volume par défaut pour Spotify"
+}
+}

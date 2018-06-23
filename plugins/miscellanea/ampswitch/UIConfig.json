@@ -13,7 +13,11 @@
                  "label": "TRANSLATE.SAVE",
                  "data": [
                           "port_setting",
-                          "inverted_setting"
+                          "inverted_setting",
+                          "delay_setting",
+                          "latched_setting",
+                          "on_pulse_width_setting",
+                          "off_pulse_width_setting"
                           ]
                  },
                  "content": [
@@ -139,6 +143,46 @@
                              "label": "TRANSLATE.INVERTED",
                              "doc": "TRANSLATE.INVERTED_DOC",
                              "value": false
+                             },
+							               {
+							               "id": "delay_setting",
+                             "element": "input",
+							               "type": "number",
+                             "label": "TRANSLATE.DELAY",
+                             "doc": "TRANSLATE.DELAY_DOC",
+                             "value": 1000
+                             },
+                             {
+                             "id": "latched_setting",
+                             "element": "switch",
+                             "label": "TRANSLATE.LATCHED",
+                             "doc": "TRANSLATE.LATCHED_DOC",
+                             "value": false
+                             },
+                             {
+                             "id": "on_pulse_width_setting",
+                             "element": "input",
+                             "type": "number",
+                             "label": "TRANSLATE.ON_PULSE_WIDTH",
+                             "doc": "TRANSLATE.ON_PULSE_WIDTH_DOC",
+                             "value": 500,
+                             "options": [],
+                                     "visibleIf": {
+                                       "field": "latched_setting",
+                                       "value": true
+                                     }
+                             },
+                             {"id": "off_pulse_width_setting",
+                             "element": "input",
+                             "type": "number",
+                             "label": "TRANSLATE.OFF_PULSE_WIDTH",
+                             "doc": "TRANSLATE.OFF_PULSE_WIDTH_DOC",
+                             "value": 500,
+                             "options": [],
+                                     "visibleIf": {
+                                       "field": "latched_setting",
+                                       "value": true
+                                     }
                              }
                              ]
                  }

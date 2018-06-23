@@ -1,1 +1,24 @@
-{"name":"youtube","version":"0.0.5","description":"Youtube playback and public sharing for the Volumio","main":"index.js","scripts":{"test":"echo \"Error: no test specified\" && exit 1"},"author":"Cris Pintea <cris@pintea.net>, Stefan Laesser <sla89@gmx-topmail.de>","license":"MIT","volumio_info":{"prettyName":"Youtube Playback","plugin_type":"music_service","icon":"fa-youtube","boot_priority":10},"dependencies":{"ytdl-core":"0.11.1","kew":"0.7.0","googleapis":"19.0.0","iso8601-duration":"1.0.6","v-conf":"^1.4.0"}}
+{
+	"name": "youtube",
+	"version": "0.0.9",
+	"description": "Youtube playback and public sharing for the Volumio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Cris Pintea <cris@pintea.net>, Stefan Laesser <sla89@gmx-topmail.de>",
+	"license": "MIT",
+	"volumio_info": {
+		"prettyName": "Youtube Playback",
+		"plugin_type": "music_service",
+		"icon": "fa-youtube",
+		"boot_priority": 10
+	},
+	"dependencies": {
+		"ytdl-core": "^0.20.1",
+		"kew": "0.7.0",
+		"googleapis": "19.0.0",
+		"iso8601-duration": "1.0.6",
+		"v-conf": "^1.4.0"
+	}
+}

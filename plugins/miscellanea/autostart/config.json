@@ -1,0 +1,18 @@
+{
+    "enabled": {
+      "type": "boolean",
+      "value": false
+    },
+    "playFromLastPosition": {
+      "type": "boolean",
+      "value": false
+    },
+    "lastPosition": {
+      "type": "number",
+      "value": -1
+    },
+    "autostartDelay": { 
+      "type": "number",
+      "value": 10000
+    }
+}

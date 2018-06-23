@@ -1,0 +1,19 @@
+{
+  "PLUGIN_CONFIGURATION":"Wähle Sichern oder Wiederherstellen",
+  "BACKUP_LABEL":"Sicherungsoptionen",
+  "BACKUP_DESC":"Die Datei volumio_data.tgz wird im Wurzelverzeichnis der SMB-Freigabe angelegt: Du kannst sie auf ein anderes Gerät an die gleiche Stelle kopieren. WARNUNG: Eine neue Sicherung löscht die vorherige.",
+  "BACKUP_DO":"Sichern",
+  "RESTORE_LABEL":"Wiederherstellen",
+  "RESTORE_DESC":"Die Datei volumio_data.tgz aus dem Wurzelverzeichnis der SMB-Freigabe wird zum Wiederherstellen benötigt: Stelle sicher, dass die Datei vorhanden ist! Es wird empfohlen, nach dem Wiederherstellungsvorgang neu zu starten.",
+  "RESTORE_DO":"Wiederherstellen",
+  "QUEUE":"Warteschlange",
+  "QUEUE_DOC":"Auswählen, wenn die aktuelle Warteschlange gesichert werden soll.",
+  "PLAYLIST":"Playlist",
+  "PLAYLIST_DOC":"Auswählen, wenn die Wiedergabelisten gesichert werden sollen.",
+  "FAVOURITES":"Favoriten",
+  "FAVOURITES_DOC":"Auswählen, wenn die Favoriten (einschließlich \"Meine Radiosender\" etc.) gesichert werden sollen.",
+  "CONFIGURATION":"Konfiguration",
+  "CONFIGURATION_DOC":"Auswählen, wenn alle Einstellungen gesichert werden sollen. Hierbei werden auch die Einstellungen der Plugins gesichert. Bei der Wiederherstellung auf einer neuen Installation müssen die Plugins neu installiert werden, aber ihre Einstellungen werden beibehalten. Einige der Einstellungen müssen ggf. über die Benutzeroberfläche neu vorgenommen werden, damit sie sich auswirken.",
+  "ALBUMART":"Albumcover",
+  "ALBUMART_DOC":"Auswählen, wenn Albumcover gesichert werden sollen."
+}

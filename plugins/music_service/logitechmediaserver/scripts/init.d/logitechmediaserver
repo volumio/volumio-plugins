@@ -1,0 +1,146 @@
+#!/bin/sh
+#
+# $Id$
+#
+# logitechmediaserver	initscript for slimserver.pl
+#			This file should be placed in /etc/init.d.
+#
+# Original Author: Mattias Holmlund
+#
+# Updated By: Dan Sully, Michael Herger
+
+#
+### BEGIN INIT INFO
+# Provides:          	logitechmediaserver
+# Required-Start:    	$all
+# Required-Stop:     	$all
+# Should-Start:      	$all
+# Should-Stop:       	$all
+# Default-Start:     	2 3 4 5
+# Default-Stop:      	0 1 6
+# Short-Description:	Startup script for the Logitech Media Server
+# Description:		Logitech Media Server powers the Squeezebox, Transporter and SLIMP3 network music \
+#			players and is the best software to stream your music to any software MP3 \
+#			player. It supports MP3, AAC, WMA, FLAC, Ogg Vorbis, WAV and more! \
+#			As of version 7.7 it also supports UPnP clients, serving pictures and movies too!"
+### END INIT INFO
+#
+
+set -e
+. /lib/lsb/init-functions
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DESC="Logitech Media Server"
+NAME=squeezeboxserver
+NEWNAME=logitechmediaserver
+DAEMON=/usr/sbin/$NAME
+DAEMON_SAFE=/usr/sbin/${NAME}_safe
+PIDFILE=/var/run/$NEWNAME.pid
+SCRIPTNAME=/etc/init.d/$NEWNAME
+SLIMUSER=$NAME
+PREFSDIR=/var/lib/$NAME/prefs
+LOGDIR=/var/log/$NAME/
+CACHEDIR=/var/lib/$NAME/cache
+CHARSET=utf8
+
+## if you want to add additional options
+## use /usr/sbin/squeezeboxserver --help 
+## for the supported options and place them
+## into the configfile  /etc/default/logitechmediaserver
+
+
+# Read config file if it is present.
+if [ -r /etc/default/$NEWNAME ]; then
+	. /etc/default/$NEWNAME
+elif [ -r /etc/default/$NAME ]; then
+	. /etc/default/$NAME
+fi
+
+#
+#	Function that starts the daemon/service.
+#
+d_start() {
+        # Use squeezeboxserver_safe to restart the daemon when
+        # it dies. This must be done to handle mysql restarts.
+	start-stop-daemon --start --quiet \
+                --chuid $SLIMUSER \
+                --pidfile $PIDFILE \
+		--exec $DAEMON_SAFE \
+                --background \
+                --make-pidfile \
+                -- \
+                $DAEMON \
+                --prefsdir $PREFSDIR \
+                --logdir $LOGDIR \
+                --cachedir $CACHEDIR \
+		--charset=$CHARSET \
+                $SLIMOPTIONS
+}
+
+d_start_direct() {
+	start-stop-daemon --start --quiet \
+                --chuid $SLIMUSER \
+                --pidfile $PIDFILE \
+		--exec $DAEMON \
+                -- \
+                --pidfile $PIDFILE \
+                --daemon \
+                --prefsdir $PREFSDIR \
+                --logdir $LOGDIR \
+                --cachedir $CACHEDIR \
+		--charset=$CHARSET \
+                $SLIMOPTIONS
+}
+
+#	Function that stops the daemon/service.
+#
+d_stop() {
+
+	## This is a bug in the start-stop-daemon that checks the PID name from the /proc/PID/stat filesystem...
+	## Unfortunately this cuts-off the name of the daemon because its longer now, and then it doesnt get 
+	## caught by the start-stop-daemon. The daemon actually reports it as squeezeboxserve instead of 
+	## squeezeboxserver_safe.
+	start-stop-daemon --oknodo --stop --pidfile $PIDFILE --retry=TERM/30/KILL/5
+}
+
+#
+#	Function that sends a SIGHUP to the daemon/service.
+#
+d_reload() {
+	start-stop-daemon --stop --quiet --pidfile $PIDFILE --signal 1
+}
+
+case "$1" in
+  start)
+	echo -n "Making sure that $DESC is not running first: "
+	d_stop
+	echo -n "Starting $DESC"
+	d_start
+	echo "."
+	;;
+  stop)
+	echo -n "Stopping $DESC"
+	d_stop
+	echo "."
+	;;
+  restart|force-reload)
+	#
+	#	If the "reload" option is implemented, move the "force-reload"
+	#	option to the "reload" entry above. If not, "force-reload" is
+	#	just the same as "restart".
+	#
+	echo -n "Restarting $NAME"
+	d_stop
+	d_start
+	echo "."
+	;;
+  status)  
+	status_of_proc /usr/bin/$NEWNAME $NEWNAME
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|status}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

@@ -1,0 +1,28 @@
+{
+
+ "VOLUMIO_DSP":"Volumio simple Equalizer",
+ "VOLSIMPLEEQUAL_EQUALIZER_SETTINGS":"Equalizer",
+ "EQORPRESET":"custom equalizer=on or preset=off",
+ "DOCEQPROFILE":"Choose setting you like",
+ "EQPROFILE":"Equalization profile",
+ "EQUALIZER":"Equalizer",
+ "EQUALIZER_SETTINGS":"Equalizer settings",
+ "APPLY":"Apply",
+ "GAIN_EQUALIZER":"Equalizer",
+ "DOCEQ":"Create your own equalizer",
+ "ADVEQSET":"Advanced equalizer preset",
+ "PRESSETTING":"Preset settings",
+ "DOCPRESETTINGS":"Here you define your 3 presets",
+ "DOCCHOPREST1":"Choose value for mypreset1",
+ "DOCCHOPREST2":"Choose value for mypreset2",
+ "DOCCHOPREST3":"Choose value for mypreset3",
+ "LABELPS1":"my preset 1",
+ "LABELPS2":"my preset 2",
+ "LABELPS3":"my preset 3",
+ "SAVE":"Save",
+ "TOASTSUCCESSAPPLY":"New equalizer successfully applied"
+
+
+ 
+
+}

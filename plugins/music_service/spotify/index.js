@@ -7,7 +7,6 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var SpotifyWebApi = require('spotify-web-api-node');
-var nodetools = require('nodetools');
 
 // Define the ControllerSpop class
 module.exports = ControllerSpop;
@@ -223,7 +222,7 @@ ControllerSpop.prototype.onStop = function() {
 	exec("/usr/bin/sudo /usr/bin/killall spopd", function (error, stdout, stderr) {
 		if(error){
 			self.logger.info('Cannot kill spop Daemon')
-            defer.reject();
+            defer.resolve();
 		} else {
 			defer.resolve()
 		}
@@ -1460,7 +1459,7 @@ ControllerSpop.prototype.getPlaylistTracks = function(userId, playlistId) {
 						samplerate: self.samplerate,
 						bitdepth: '16 bit',
 						trackType: 'spotify',
-						albumart: track.album.images[0].url,
+						albumart: (track.album.hasOwnProperty('images') && track.album.images.length > 0 ? track.album.images[0].url : ''),
 						duration: Math.trunc(track.duration_ms / 1000)
 					};
 					response.push(item);
@@ -1667,7 +1666,7 @@ ControllerSpop.prototype.getAlbumArt = function (data, path) {
 			album = data.album;
 		else album = data.artist;
 
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
+		web = '?web=' + encodeURIComponent(artist) + '/' + encodeURIComponent(album) + '/large'
 	}
 
 	var url = '/albumart';
@@ -1681,7 +1680,7 @@ ControllerSpop.prototype.getAlbumArt = function (data, path) {
 		url = url + '?';
 
 	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
+		url = url + 'path=' + encodeURIComponent(path);
 
 	return url;
 };
@@ -1714,7 +1713,10 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 				return console.log(err);
 			}
 			var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-			var hwdev = 'hw:' + outdev;
+            var hwdev = 'hw:' + outdev;
+			if (outdev === 'softvolume') {
+                hwdev = 'softvolume';
+			}
 			var  bitrate = self.config.get('bitrate');
 			var bitratevalue = 'true';
 			if (bitrate == false ) {

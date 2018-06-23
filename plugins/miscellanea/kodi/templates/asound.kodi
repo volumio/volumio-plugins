@@ -1,0 +1,4 @@
+#KODI
+	defaults.ctl.card ${CTL_CARD_INDEX}
+	defaults.pcm.card ${PCM_CARD_INDEX}
+#ENDOFKODI

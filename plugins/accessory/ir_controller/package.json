@@ -1,21 +1,21 @@
 {
-  "name": "ir_controller",
-  "version": "1.0.1",
-  "description": "Volumio IR Remote plugin",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Volumio Team",
-  "license": "ISC",
-  "volumio_info": {
-    "prettyName": "IR Remote Controller",
-    "icon": "fa-magic",
-    "plugin_type": "accessory"
-  },
-  "dependencies": {
-    "fs-extra": "^0.28.0",
-    "kew": "^0.7.0",
-    "v-conf": "^1.4.0"
-  }
+	"name": "ir_controller",
+	"version": "1.2.0",
+	"description": "Volumio IR Remote plugin",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Volumio Team",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "IR Remote Controller",
+		"icon": "fa-magic",
+		"plugin_type": "accessory"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
 }

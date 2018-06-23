@@ -1,0 +1,33 @@
+{
+	"LASTFM":{
+	"PLUGINCONF":"LastFM Scrobbler Configuration",
+		"CONFIG":"LastFM Credentials",
+		"D_CONFIG":"Fill in your authentication settings.",
+			"API_KEY":"LastFM API key",
+			"D_API_KEY":"Fill in the API key you received from Last.fm",
+			"API_SECRET":"LastFM API secret",
+			"D_API_SECRET":"Fill in the API secret, matching your key, you received from Last.fm",
+			"USERNAME":"LastFM username",
+			"D_USERNAME":"Fill in your LastFM username",
+			"PASSWORD":"LastFM password",
+			"D_PASSWORD":"Fill in your LastFM password",
+			"STORE_PASSWORD":"Store the password in the config file",			
+			"D_STORE_PASSWORD":"From a security awareness point of view this is advised against. A authentication token will be stored, which is hashed and suffices to log into LastFM.",
+			"DD_STORE_PASSWORD":"Don't just store your password, read the info.",
+		"SCROBBLESETTINGS":"LastFM scrobble settings",
+		"D_SCROBBLESETTINGS":"Fill in your authentication settings.",
+			"SCROBBLE_THRESHOLD":"Scrobble threshold",
+			"D_SCROBBLE_THRESHOLD":"Select the percentage of the song that has to be played before it will get scrobbled.",
+			"TOAST":"Push toast message on scrobble",
+			"D_TOAST":"Have volumio push a toast notification if a song gets scrobbled.",
+			"SCROBBLE_WEBRADIO":"Scrobble webradio",
+			"D_SCROBBLE_WEBRADIO":"If the webradio provides song info, try to scrobble it.",
+			"WEBRADIOSCROBBLETHRESHOLD":"Webradio scrobble threshold (in seconds)",
+			"D_WEBRADIOSCROBBLETHRESHOLD":"Fill in the amount of seconds a webradio song needs to have played before trying to scrobble it.",
+		"DEBUGSETTINGS":"LastFM plugin debug settings",
+		"D_DEBUGSETTINGS":"Configure the debug settings for the plugin.",
+			"ENABLE_DEBUG_LOGGING":"Debug logging",
+			"D_ENABLE_DEBUG_LOGGING":"En- or disable debug logging, this means extended logging will be available for debugging purposes.",
+	"SAVE": "Save"
+	}
+}

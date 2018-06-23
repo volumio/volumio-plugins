@@ -1,0 +1,86 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [ 
+   {
+      "id": "section_backup",
+      "element": "section",
+      "label": "TRANSLATE.BACKUP_LABEL",
+      "description": "TRANSLATE.BACKUP_DESC",
+      "icon": "fa-sign-out",
+      "onSave": {"type":"controller", "endpoint":"system_controller/backup_restore", "method":"backup"},
+      "saveButton": {
+        "label": "TRANSLATE.BACKUP_DO",
+        "description": "TRANSLATE.BACKUP_DOC",
+        "data": [
+          "queue",
+          "playlist",
+          "favourites",
+          "configuration",
+          "albumart"
+        ]
+      },
+      "content": [
+        {
+          "id": "queue",
+          "label": "TRANSLATE.QUEUE",
+          "doc": "TRANSLATE.QUEUE_DOC",
+          "element": "switch",
+          "value": true
+        },
+        {
+          "id": "playlist",
+          "label": "TRANSLATE.PLAYLIST",
+          "doc": "TRANSLATE.PLAYLIST_DOC",
+          "element": "switch",
+          "value": true
+        },
+		{
+          "id":"favourites",
+          "label": "TRANSLATE.FAVOURITES",
+          "doc": "TRANSLATE.FAVOURITES_DOC",
+          "element": "switch",
+          "value": true
+        },
+        {
+          "id":"configuration",
+          "label": "TRANSLATE.CONFIGURATION",
+          "doc": "TRANSLATE.CONFIGURATION_DOC",
+          "element": "switch",
+          "value": false
+        },
+        {
+          "id":"albumart",
+          "label": "TRANSLATE.ALBUMART",
+          "doc": "TRANSLATE.ALBUMART_DOC",
+          "element": "switch",
+          "value": false
+        }
+      ]
+   },
+   {
+      "id": "section_restore",
+      "element": "section",
+      "label": "TRANSLATE.RESTORE_LABEL",
+      "description": "TRANSLATE.RESTORE_DESC",
+      "icon": "fa-sign-in",
+      "onSave": {"type":"controller", "endpoint":"system_controller/backup_restore", "method":"restore"},
+      "saveButton": {
+        "label": "TRANSLATE.RESTORE_DO",
+        "data": [
+          "dummy"
+        ]
+      },
+      "content": [
+        {
+          "id": "dummy",
+          "element": "none",
+          "value": "",
+          "hidden": true
+        }
+      ]  
+     
+   }
+  ]
+}

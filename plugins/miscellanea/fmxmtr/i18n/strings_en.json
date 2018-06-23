@@ -1,0 +1,74 @@
+{
+    "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
+    "SAVE":"Save",
+    "FMXMTR":{
+        "LABEL":"Configure I2C FM Transmitter module by Elechouse",
+        "DESC":"Settings"
+        },
+    "I2CBUS":{
+        "LABEL":"I2C BUS",
+        "DESC":"Select I2C bus. Options 0 or 1. Default = 1",
+        "DOC":"Selects which I2C bus Transmitter Module is attach to"
+        },
+    "I2CADDRESS":{
+        "LABEL":"I2C Address 0x",
+        "DESC":"Select I2C address of Module. Enter in Hex. Default = 3E",
+        "DOC":"Selects I2C address on bus selected above for module. Default = 3E"
+        },
+    "FREQ":{
+        "LABEL":"FM Channel",
+        "DESC":"Enter the desired FM channel.  Default = 94.5",
+        "DOC":"Selects transmission frequency. Range of transmitter is 70.1Mhz to 107.9.0Mhz in .2Mhz steps.  US FM band range is 88.0Mhz to 108.0Mhz. Default = 94.5"
+        },
+    "BASEBOOST":{
+        "LABEL":"Base Boost",
+        "DESC":"Amplify audio base frequencies. Default = 0 (0db)",
+        "DOC":"Amplify audio base frequencies. Options 0, 5, 11 and 17db. Default = 0db"
+        },
+    "RFGAIN":{
+        "LABEL":"RF Gain",
+        "DESC":"Select transmitter output power level. Default = 15 (108 dBuV)",
+        "DOC":"Select transmitter output power level. Options 0 - 95.5 dBuV (.071 milliwatts) to 15 - 108 dBuV (1.3 milliwatts) in 15 increments. Default = 15 (108 dBuV)"
+        },
+    "MUTE":{
+        "LABEL":"Mute Audio",
+        "DESC":"Mute audio output",
+        "DOC":"Silences audio output.  Still transmitting, but channel is silent."
+        },
+    "MONO":{
+        "LABEL":"Mono Audio",
+        "DESC":"Selects Mono or Stereo audio mode.  Default = Off (Stereo mode)",
+        "DOC":"Selects Mono or Stereo audio mode.  On = Mono, Off = Stereo. Default = Off (Stereo mode)"
+        },
+    "PGAMOD":{
+        "LABEL":"PGA Mode",
+        "DESC":"Select Programmable Amplifier mode. Default = 0 (4db-increments).  Must save and exit config screen to change mode.",
+        "DOC":"Select Programmable Amplifier mode. 1db or 4db increments.  Default = 0 (4db-increments).  Must save and exit config screen to change mode."
+        },
+    "PGAMP":{
+        "LABEL":"Programmable Amplifier",
+        "DESC":"Programmable Amplifier acts as a volume control for the transmitter.  Default = 0 (no change to audio volume)",
+        "DOC":"Programmable Amplifier acts as a volume control for the transmitter. PGAMod = 0 (Range is -15 to +15 in increments of 5).  PGAMod = 1 (Range is -15 to +15 in increments of 1). Default = 0 (no change to audio volume)"
+        },
+    "PLTADJ":{
+        "LABEL":"Pilot Tone Adjust",
+        "DESC":"Select Pilot Tone signal strength. Default = 0 (Low)",
+        "DOC":"In FM stereo broadcasting, a pilot tone of 19 kHz indicates that there is stereophonic information at 38 kHz (19×2, the second harmonic of the pilot). The receiver doubles the frequency of the pilot tone and uses it as a frequency and phase reference to demodulate the stereo information.  Range is 1 (high) or 0 (low).  Default = 0 (Low)"
+        },
+    "PHTCNST":{
+        "LABEL":"Pre-emphasis Time-Constant Set.",
+        "DESC":"Select Pre-emphasis Time-Constant Set timing. Default = 0 (75 µs US)",
+        "DOC":"In most of the world a 50 µs time constant is used. In the Americas, Japan and South Korea, 75 µs is used.  Range is 0 (75 µs) or 1 (50 µs) .  Default = 0 (75 µs US)."
+        },
+    "PDPA":{
+        "LABEL":"Power Amplifier Power Down",
+        "DESC":"Power Amplifier Power Down, disable RF output.  Default = Off",
+        "DOC":"Power Amplifier Power Down, disable RF output.  On = shuts down transmitter.  Off = turns on transmitter, Default = Off."
+        },
+    "STARTUP":{
+        "LABEL":"Transmit on Volumio start up",
+        "DESC":"Begin transmitting immediately after Volumio starts.  Default = Off",
+        "DOC":"Begin transmitting immediately after Volumio starts.  If off you must save settings from here to start broadcasting.  Off = Do not transmit.  On = Transmit.  Default = Off."
+        }
+
+    }

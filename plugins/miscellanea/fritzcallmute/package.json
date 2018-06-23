@@ -1,0 +1,22 @@
+{
+	"name": "fritzcallmute",
+	"version": "1.0.1",
+	"description": "Mutes on phone calls via FritzBox router",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "clmtrapp",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "FritzCallMute",
+		"icon": "fa-phone",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"node-fritzbox-callmonitor": "^1.1.0"
+	}
+}

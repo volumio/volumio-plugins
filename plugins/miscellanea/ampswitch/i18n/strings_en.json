@@ -5,5 +5,13 @@
   "PORT_DOC": "Output port on your device",
   "INVERTED": "Inverted",
   "INVERTED_DOC": "If output is inverted, ON will be low, OFF will be high",
+  "DELAY": "Delay",
+  "DELAY_DOC": "Wait for xx ms after pause/stop to turn OFF",
+  "LATCHED": "Latching Relay",
+  "LATCHED_DOC": "For latching (aka pulsed,bistable) relays",
+  "ON_PULSE_WIDTH": "On Pulse width",
+  "ON_PULSE_WIDTH_DOC": "Duration of pulse in ms",
+  "OFF_PULSE_WIDTH": "Off Pulse width",
+  "OFF_PULSE_WIDTH_DOC": "Duration of pulse in ms",
   "SAVE":"Save"
 }

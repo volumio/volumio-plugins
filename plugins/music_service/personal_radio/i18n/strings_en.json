@@ -1,0 +1,32 @@
+{
+  "PLUGIN_NAME": "Personal Radio",
+  "WAIT_FOR_RADIO_CHANNEL":"Please Wait for radio channel....",
+  "STOP_RADIO_CHANNEL": "Stopped personal radio channel",
+  "ERROR_STREAM_SERVER":  "There is a problem in {0} radio streaming server.",
+  "INCORRECT_RESPONSE":  "There is incorrect response from {0} radio streaming server.",
+  "ERROR_SECRET_KEY_SERVER": "There is a problem in Korean radio secret key server.",
+  "ERROR_SECRET_KEY": "Plugin can't get secretKey for Korean Radio URL",
+  "STOP_RADIO_STATION": "Please stop running radio station(SBS, MBC) and play again at MAIN radio menu to use changed radio protocol",
+  "KBS": "KBS (Korean)",
+  "MBC": "MBC (Korean)",
+  "SBS": "SBS (Korean)",
+  "KBS1_RADIO": "KBS1 Radio",
+  "KBS2_RADIO": "KBS2 Radio",
+  "KBS3_RADIO": "KBS3 Radio",
+  "KBS_UNION": "KBS Union",
+  "KBS_WORLD": "KBS World (English)",
+  "MBC_STANDARD": "MBC Standard FM",
+  "MBC_FM4U": "MBC FM4U",
+  "MBC_CHANNEL_M": "MBC Channel M",
+  "SBS_POWER_FM": "SBS PowerFM",
+  "SBS_LOVE_FM": "SBS LoveFM",
+  "SBS_INTERNET_RADIO": "SBS Internet Radio",
+  "CONFIG": {
+    "TITLE": "Radio Configuration",
+    "RADIO_PROTOCOL": "Radio Protocol",
+    "PROTOCOL_SETUP_GUIDE": "Setup Guide: If you hear some clipping sound from radio plugin, please enable bellowing HTTP option. (default value is enabling HTTP)",
+    "SAVE": "Save",
+    "SBS_ENABLE_HTTP": "enable SBS HTTP",
+    "MBC_ENABLE_HTTP": "enable MBC HTTP"
+  }
+}

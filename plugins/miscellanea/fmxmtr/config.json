@@ -1,0 +1,54 @@
+{
+    "I2C_BUS": {
+    "type": "number",
+    "value": "1"
+  },
+    "I2C_ADDRESS": {
+    "type": "text",
+    "value": "3e"
+  },
+    "Freq": {
+    "type": "number",
+    "value": "94"
+  },
+    "BaseBoost": {
+    "type": "number",
+    "value": "2"
+  },
+    "RFGain": {
+    "type": "number",
+    "value": "15"
+  },
+    "MuteAudio": {
+    "type": "boolean",
+    "value": false
+  }, 
+    "MonoAudio": {
+    "type": "boolean",
+    "value": false
+  },
+    "PGAMod": {
+    "type": "number",
+    "value": "0"
+  },
+    "PGAmp": {
+    "type": "number",
+    "value": "12"
+  },
+    "PltAdj": {
+    "type": "number",
+    "value": "0"
+  },
+    "PhTCnst": {
+    "type": "number",
+    "value": "0"
+  },
+    "PDPA": {
+    "type": "boolean",
+    "value": false
+  },
+   "StartUp": {
+    "type": "boolean",
+    "value": false
+  }
+}

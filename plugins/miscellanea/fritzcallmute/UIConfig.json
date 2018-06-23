@@ -1,0 +1,53 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.SETTINGS",
+      "description": "TRANSLATE.DESC",
+      "icon": "fa-wrench",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/fritzcallmute",
+        "method": "updateSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "ip",
+          "port",
+          "waitafterhangupsec"
+        ]
+      },
+      "content": [
+        {
+          "id": "ip",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.IPDOC",
+          "label": "TRANSLATE.IP",
+          "value": "192.168.178.1"
+        },
+        {
+          "id": "port",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.PORTDOC",
+          "label": "TRANSLATE.PORT",
+          "value": 1012
+        },
+        {
+          "id": "waitafterhangupsec",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.WAITDOC",
+          "label": "TRANSLATE.WAIT",
+          "value": 10
+        }
+      ]
+    }
+  ]
+}

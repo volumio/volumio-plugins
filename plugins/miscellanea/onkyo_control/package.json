@@ -1,0 +1,23 @@
+{
+	"name": "onkyo_control",
+	"version": "1.0.1",
+	"description": "Turn Onkyo amplifier on the network on and off when playback begins and ends",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Ben Mitchell",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Volumio Onkyo Control",
+		"icon": "fa-volume-up",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"eiscp": "orderoftheflame/node-eiscp",
+		"socket.io-client": "^1.4.8"
+	}
+}

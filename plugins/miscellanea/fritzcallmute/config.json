@@ -1,0 +1,14 @@
+{
+  "ip": {
+    "type": "text",
+    "value": "fritz.box"
+  },
+  "port": {
+    "type": "number",
+    "value": 1012
+  },
+  "waitafterhangupsec": {
+    "type": "number",
+    "value": 5
+  }
+}

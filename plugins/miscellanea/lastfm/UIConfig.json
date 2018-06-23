@@ -1,0 +1,157 @@
+{
+	"page": {
+		"label": "TRANSLATE.LASTFM.PLUGINCONF"
+	},
+	"sections": [{
+		"id": "section_credentials",
+		"element": "section",
+		"label": "TRANSLATE.LASTFM.CONFIG",
+		"description": "TRANSLATE.LASTFM.D_CONFIG",
+		"icon": "fa-lastfm",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/lastfm",
+			"method": "updateCredentials"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.LASTFM.SAVE",
+			"data": [
+				"API_KEY",
+				"API_SECRET",
+				"username",
+				"password",
+				"storePassword"
+			]
+		},
+		"content": [
+			{
+				"id":"API_KEY",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.LASTFM.API_KEY",
+				"doc": "TRANSLATE.LASTFM.D_API_KEY",
+				"value": ""
+			},
+			{
+				"id":"API_SECRET",
+				"type":"text",
+				"element": "input",
+				"doc": "Whether or not to keep the audio device alive",
+				"label": "TRANSLATE.LASTFM.API_SECRET",
+				"doc": "TRANSLATE.LASTFM.D_API_SECRET",
+				"value": ""
+			},
+			{
+				"id":"username",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.LASTFM.USERNAME",
+				"doc": "TRANSLATE.LASTFM.D_USERNAME",
+				"value": ""
+			},
+			{
+				"id":"password",
+				"type":"password",
+				"element": "input",
+				"label": "TRANSLATE.LASTFM.PASSWORD",
+				"doc": "TRANSLATE.LASTFM.D_PASSWORD",				
+				"value": ""
+			},
+			{
+			  "id":"storePassword",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.STORE_PASSWORD",
+			  "doc": "TRANSLATE.LASTFM.D_STORE_PASSWORD",
+			  "description": "TRANSLATE.LASTFM.DD_STORE_PASSWORD",
+			  "value": false
+			}
+		]
+	},
+	{
+		"id": "section_scrobblesettings",
+		"element": "section",
+		"label": "TRANSLATE.LASTFM.SCROBBLESETTINGS",
+		"description": "TRANSLATE.LASTFM.D_SCROBBLESETTINGS",
+		"icon": "fa-cogs",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/lastfm",
+			"method": "updateScrobbleSettings"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.LASTFM.SAVE",
+			"data": [
+				"scrobbleThreshold",
+				"pushToastOnScrobble",
+				"tryScrobbleWebradio",
+				"webradioScrobbleThreshold"
+			]
+		},
+		"content": [
+			{
+				"id": "scrobbleThreshold",
+				"element": "select",
+				"label": "TRANSLATE.LASTFM.SCROBBLE_THRESHOLD",
+				"doc": "TRANSLATE.LASTFM.D_SCROBBLE_THRESHOLD",
+				"value": {
+					"value": 75,
+					"label": "75% of the song"
+				},
+				"options": []
+			},
+			{
+			  "id":"pushToastOnScrobble",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.TOAST",
+			  "doc": "TRANSLATE.LASTFM.D_TOAST",
+			  "value": true
+			},
+			{
+			  "id":"tryScrobbleWebradio",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.SCROBBLE_WEBRADIO",
+			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_WEBRADIO",
+			  "value": false
+			},
+			{
+				"id":"webradioScrobbleThreshold",
+				"type":"text",
+				"element": "input",
+				"label": "TRANSLATE.LASTFM.WEBRADIOSCROBBLETHRESHOLD",
+				"doc": "TRANSLATE.LASTFM.D_WEBRADIOSCROBBLETHRESHOLD",
+				"value": "30",
+				"visibleIf": {
+					"field": "tryScrobbleWebradio",
+					"value": true
+				}
+			}
+		]
+	},
+	{
+		"id": "section_debugsettings",
+		"element": "section",
+		"label": "TRANSLATE.LASTFM.DEBUGSETTINGS",
+		"description": "TRANSLATE.LASTFM.D_DEBUGSETTINGS",
+		"icon": "fa-bug",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/lastfm",
+			"method": "updateDebugSettings"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.LASTFM.SAVE",
+			"data": [
+				"enable_debug_logging"
+			]
+		},
+		"content": [
+			{
+			  "id":"enable_debug_logging",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.ENABLE_DEBUG_LOGGING",
+			  "doc": "TRANSLATE.LASTFM.D_ENABLE_DEBUG_LOGGING",
+			  "value": false
+			}
+		]
+	}]
+}

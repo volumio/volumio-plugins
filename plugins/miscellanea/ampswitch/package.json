@@ -1,24 +1,24 @@
 {
-  "name": "ampswitch",
-  "version": "0.1.0",
-  "description": "Status based power management of external amplifier",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Tim Lange",
-  "license": "ISC",
-  "volumio_info": {
-    "prettyName": "Amplifier Switch",
-    "icon": "fa-power-off",
-    "plugin_type": "miscellanea",
-    "boot_priority": 1
-  },
-  "dependencies": {
-      "fs-extra": "^0.28.0",
-      "kew": "^0.7.0",
-      "v-conf": "^0.10.0",
-      "onoff": "^1.1.1",
-      "socket.io-client": "^1.4.5"
-  }
+	"name": "ampswitch",
+	"version": "0.1.1",
+	"description": "Status based power management of external amplifier",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Tim Lange",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Amplifier Switch",
+		"icon": "fa-power-off",
+		"plugin_type": "miscellanea",
+		"boot_priority": 1
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^0.10.0",
+		"onoff": "^1.1.1",
+		"socket.io-client": "^1.4.5"
+	}
 }

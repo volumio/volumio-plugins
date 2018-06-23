@@ -1,0 +1,23 @@
+{
+	"name": "volspotconnect2",
+	"version": "0.7.4",
+	"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Balbuze & Ashthespy",
+	"license": "GPL 3.0",
+	"volumio_info": {
+		"prettyName": "Volumio Spotify Connect2 0.7.4",
+		"icon": "fa-spotify",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"net": "^1.0.2",
+		"spotify-web-api-node": "https://github.com/ashthespy/spotify-web-api-node",
+		"v-conf": "^0.10.0"
+	}
+}

@@ -1,0 +1,89 @@
+{
+  "page": {
+    "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTCONF"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTACCOUNT",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/volspotconnect2", "method":"saveVolspotconnectAccount"},
+      "saveButton": {
+        "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
+        "data": [
+	"initvol",
+	"normalvolume",
+	"shareddevice",
+	"username",
+	"password"
+                ]
+      },
+      "content": [
+						{
+       
+							"id": "initvol",
+							"element": "equalizer",
+							"label": "TRANSLATE.VOLSPOTCONNECT.INITVOL",
+							"doc":"TRANSLATE.VOLSPOTCONNECT.DESCINITVOL",
+							
+							"config": {
+								"orientation": "horizontal",
+								"bars": [
+									{
+										"min": "0",
+										"max": "100",
+										"step": "5",
+										"value": "30",
+										"tooltip":"always"
+									}
+									]
+							}
+						},
+	{
+          "id":"normalvolume",
+          "element": "switch",
+          "doc": "Volume normalisation",
+          "label": "Volume normalisation",
+          "value": false
+        },
+	
+	{
+          "id":"shareddevice",
+          "element": "switch",
+          "doc": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+          "label": "TRANSLATE.VOLSPOTCONNECT.SHAREDDEVICE",
+          "value": true
+        },
+		{
+          "id": "username",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTACCOUNT",
+          "label": "TRANSLATE.VOLSPOTCONNECT.USERNAME",
+          "value": "",
+	"options": [],
+					"visibleIf": {
+						"field": "shareddevice",
+						"value": false
+					}
+        },
+	
+        {
+          "id": "password",
+          "type":"password",
+          "element": "input",
+          "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTPASSWD",
+          "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
+          "value": "",
+	"options": [],
+					"visibleIf": {
+						"field": "shareddevice",
+						"value": false
+					}
+        }
+        
+      ]
+   }
+  ]
+}

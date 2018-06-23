@@ -9,7 +9,7 @@ var socket = io.connect('http://localhost:3000');
 
 
 //declare global status variable
-var status = 'stop';
+var status = 'na';
 
 // Define the AmpSwitchController class
 module.exports = AmpSwitchController;
@@ -21,11 +21,16 @@ function AmpSwitchController(context) {
 	// Save a reference to the parent commandRouter
 	self.context = context;
 	self.commandRouter = self.context.coreCommand;
-	self.logger=self.commandRouter.logger;
+	self.logger = self.commandRouter.logger;
 	this.configManager = this.context.configManager;
 
-    //define shutdown variable
-    self.shutdown;
+	// Setup Debugger
+  self.logger.ASdebug = function(data) {
+    self.logger.info('[ASDebug] ' + data);
+  };
+
+  //define shutdown variable
+  self.shutdown;
 
 }
 
@@ -33,7 +38,7 @@ function AmpSwitchController(context) {
 AmpSwitchController.prototype.onVolumioStart = function()
 {
     var self = this;
-    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
 
@@ -49,7 +54,7 @@ AmpSwitchController.prototype.getConfigurationFiles = function()
 // define behaviour on plugin activation
 AmpSwitchController.prototype.onStart = function() {
 	var self = this;
-	var defer=libQ.defer();
+	var defer = libQ.defer();
 
     // initialize output port
     self.ampGPIOInit();
@@ -70,8 +75,11 @@ AmpSwitchController.prototype.onStart = function() {
 // define behaviour on plugin deactivation.
 AmpSwitchController.prototype.onStop = function() {
     var self = this;
-    var defer=libQ.defer();
+    var defer = libQ.defer();
 
+		self.logger.ASdebug('Port: ' + self.config.get('port'));
+		self.logger.ASdebug('Inverted: ' + self.config.get('inverted'));
+		self.logger.ASdebug('Delay: ' + self.config.get('delay'));
     // we don't have to claim GPIOs any more
     self.freeGPIO();
 
@@ -82,8 +90,12 @@ AmpSwitchController.prototype.onStop = function() {
 AmpSwitchController.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
-    self.logger.info('Port: ' + self.config.get('port'));
-    self.logger.info('Inverted: ' + self.config.get('inverted'))
+		self.logger.ASdebug('Setting UI defaults')
+		self.logger.ASdebug('Port: ' + self.config.get('port'));
+    self.logger.ASdebug('Inverted: ' + self.config.get('inverted'))
+		self.logger.ASdebug('Latched: ' + self.config.get('latched'))
+		self.logger.ASdebug('On pulse width: ' + self.config.get('on_pulse_width'))
+		self.logger.ASdebug('Off pulse width: ' + self.config.get('off_pulse_width'))
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
@@ -95,13 +107,17 @@ AmpSwitchController.prototype.getUIConfig = function() {
           uiconf.sections[0].content[0].value.value = self.config.get('port');
           uiconf.sections[0].content[0].value.label = self.config.get('port').toString();
           uiconf.sections[0].content[1].value = self.config.get('inverted');
+					uiconf.sections[0].content[2].value = self.config.get('delay');
+					uiconf.sections[0].content[3].value = self.config.get('latched');
+					uiconf.sections[0].content[4].value = self.config.get('on_pulse_width')
+					uiconf.sections[0].content[5].value = self.config.get('off_pulse_width')
           defer.resolve(uiconf);
           })
     .fail(function()
           {
           defer.reject(new Error());
           });
-    
+
     return defer.promise;
 };
 
@@ -109,12 +125,23 @@ AmpSwitchController.prototype.getUIConfig = function() {
 AmpSwitchController.prototype.saveOptions = function(data) {
     var self = this;
     var successful = true;
-    var old_setting = self.config.get('port');
+    var old_port = self.config.get('port');
 
     // save port setting to our config
-    self.logger.info('Set inverter to ' + data['inverted_setting'])
+		self.logger.ASdebug('Saving Settings: Port: ' + data['port_setting']['value']);
+	  self.logger.ASdebug('Saving Settings: Inverted: ' + data['inverted_setting']);
+	  self.logger.ASdebug('Saving Settings: Delay: ' + data['delay_setting']);
+	  self.logger.ASdebug('Saving Settings: Latched: ' + data['latched_setting']);
+		self.logger.ASdebug('Saving Settings: On Pulse width: ' + data['on_pulse_width_setting'])
+		self.logger.ASdebug('Saving Settings: Off Pulse width: ' + data['off_pulse_width_setting'])
+
     self.config.set('port', data['port_setting']['value']);
     self.config.set('inverted', data['inverted_setting']);
+		self.config.set('delay', data['delay_setting']);
+		self.config.set('latched', data['latched_setting']);
+		self.config.set('on_pulse_width', data['on_pulse_width_setting'])
+		self.config.set('off_pulse_width', data['off_pulse_width_setting'])
+
     // unexport GPIOs before constructing new GPIO object
     self.freeGPIO();
     try{
@@ -124,11 +151,11 @@ AmpSwitchController.prototype.saveOptions = function(data) {
     }
     if(successful){
         // output message about successful saving to the UI
-        self.commandRouter.pushToastMessage('Success','Settings', 'saved');
+        self.commandRouter.pushToastMessage('success', 'Amplifier Switch Settings', 'Saved');
     } else {
         // save port setting to old config
-        self.config.set('port', old_setting);
-        self.commandRouter.pushToastMessage('Failure','Port not accessible', '');
+        self.config.set('port', old_port);
+        self.commandRouter.pushToastMessage('error','Port not accessible', '');
     }
 
 };
@@ -144,13 +171,19 @@ AmpSwitchController.prototype.ampGPIOInit = function() {
 // switch output port on or off respectively
 AmpSwitchController.prototype.parseStatus = function(state) {
     var self = this;
+		var delay = self.config.get('delay');
+		self.logger.ASdebug('CurState: ' + state.status + ' PrevState: ' + status);
 
+		clearTimeout(self.OffTimerID);
     if(state.status=='play' && state.status!=status){
         status=state.status;
-        self.on();
+				self.config.get('latched')? self.pulse(self.config.get('on_pulse_width')) : self.on();
     } else if((state.status=='pause' || state.status=='stop') && (status!='pause' && status!='stop')){
-        status=state.status;
-        self.off();
+				self.logger.ASdebug('InitTimeout - Amp off in: ' + delay + ' ms');
+				self.OffTimerID = setTimeout(function() {
+					status=state.status;
+					self.config.get('latched')? self.pulse(self.config.get('off_pulse_width')) : self.off();
+				}, delay);
     }
 
 };
@@ -159,6 +192,7 @@ AmpSwitchController.prototype.parseStatus = function(state) {
 AmpSwitchController.prototype.on = function() {
     var self = this;
 
+		self.logger.ASdebug('Togle GPIO: ON');
     if(!self.config.get('inverted')){
         self.shutdown.writeSync(1);
     } else {
@@ -170,12 +204,24 @@ AmpSwitchController.prototype.on = function() {
 AmpSwitchController.prototype.off = function() {
     var self = this;
 
+		self.logger.ASdebug('Togle GPIO: OFF');
     if(!self.config.get('inverted')){
         self.shutdown.writeSync(0);
     } else {
         self.shutdown.writeSync(1);
     }
 };
+
+// Pulse output port
+AmpSwitchController.prototype.pulse = function (pulse_width) {
+		var self = this;
+		self.logger.ASdebug('Pulsing GPIO for ' + pulse_width + 'ms');
+		self.on();
+		clearTimeout(self.pulseTimerID);
+		self.pulseTimerID = setTimeout(function() {
+ 			 self.off();
+		}, pulse_width);
+}
 
 // stop claiming output port
 AmpSwitchController.prototype.freeGPIO = function() {

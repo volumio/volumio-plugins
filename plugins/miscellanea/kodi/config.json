@@ -1,0 +1,50 @@
+{
+  "gpu_mem_1024": {
+    "type": "string",
+    "value": "256"
+  },
+  "gpu_mem_512": {
+    "type": "string",
+    "value": "144"
+  },
+  "gpu_mem_256": {
+    "type": "string",
+    "value": "112"
+  },
+ "hdmihotplug": {
+    "type": "boolean",
+    "value": true
+  },
+ "usedac": {
+    "type": "boolean",
+    "value": false
+  },
+ "audiodelay": {
+    "type": "string",
+    "value": "0.700000"
+  },
+ "kodi_gui_sounds": {
+    "type": "boolean",
+    "value": false
+  },
+ "kodi_audio_keepalive": {
+    "type": "boolean",
+    "value": false
+  },
+ "kodi_enable_webserver": {
+    "type": "boolean",
+    "value": true
+  },
+ "kodi_webserver_port": {
+    "type": "string",
+    "value": "8080"
+  },
+ "kodi_webserver_username": {
+    "type": "string",
+    "value": "kodi"
+  },
+ "kodi_webserver_password": {
+    "type": "string",
+    "value": ""
+  }  
+}

@@ -1,0 +1,22 @@
+{
+	"name": "kodi",
+	"version": "2.2.11",
+	"description": "Installs Kodi Krypton on top of Volumio.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Saiyato",
+	"license": "",
+	"volumio_info": {
+		"prettyName": "Kodi Krypton",
+		"icon": "fa fa-tv",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"net": "^1.0.2",
+		"v-conf": "^0.10.0"
+	}
+}

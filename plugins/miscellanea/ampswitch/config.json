@@ -1,10 +1,26 @@
 {
     "port":{
         "type": "number" ,
-        "value": 14
+        "value": 24
     },
     "inverted":{
         "type": "boolean",
         "value": false
+    },
+    "delay":{
+        "type": "number",
+        "value": 720
+    },
+    "latched":{
+        "type": "boolean",
+        "value": false
+    },
+    "on_pulse_width":{
+        "type": "number",
+        "value": 500
+    },
+    "off_pulse_width":{
+        "type": "number",
+        "value": 500
     }
 }

@@ -1,0 +1,42 @@
+{
+  "API_KEY": {
+    "type": "string",
+    "value": ""
+  },
+  "API_SECRET": {
+    "type": "string",
+    "value": ""
+  },
+  "username": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "authToken": {
+    "type": "string",
+    "value": ""
+  },
+  "scrobbleThreshold": {
+    "type": "int",
+    "value": 75
+  },
+  "pushToastOnScrobble": {
+    "type": "boolean",
+    "value": true
+  },
+  "tryScrobbleWebradio": {
+    "type": "boolean",
+    "value": false
+  },
+  "webradioScrobbleThreshold": {
+    "type": "string",
+    "value": "30"
+  },
+  "enable_debug_logging": {
+    "type": "boolean",
+    "value": false
+  }
+}

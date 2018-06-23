@@ -1,0 +1,13 @@
+{
+  "PLUGIN_CONFIGURATION":"FritzCallMute Configuration",
+  "DESC":"The german popular router FritzBox has a build in callmonitor. This plugin pauses playing if callmonitor signals an incoming call. After hangup playing is resumed. Before you can use this plugin, the callmonitor must be activated on FritzBox router. This can be done e.g. by calling #96*5*",
+  "SAVE":"Save",
+  "SETTINGS" : "Settings",
+  "IPDOC" : "IP or DNS-name of FritzBox router at local network",
+  "PORTDOC" : "Port of callmonitor on FritzBox router at local network",
+  "IP" : "IP",
+  "PORT" : "Port",
+  "WAITDOC" : "Time to wait in seconds before resume playing after hangup",
+  "WAIT" : "Waittime",
+  "SETTING_SAVED": "Settings saved and callmonitor restarted"
+}

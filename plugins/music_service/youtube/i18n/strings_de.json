@@ -1,0 +1,15 @@
+{
+  "YOUTUBE_CONFIGURATION":"Konfiguration YouTube-Plugin",
+  "YOUTUBE_SETTINGS":"Einstellungen",
+  "YOUTUBE_RESULTS_LIMIT": "Maximale Anzahl Suchergebnisse",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Dies legt die maximale Anzahl der Suchergebnisse bei einer YouTube-Suche fest. Playlists werden immer vollständig angezeigt. Der Standardwert ist 50.",
+  "YOUTUBE_SAVE": "Speichern",
+	"YOUTUBE_ACCOUNT": "YouTube-Konto",
+	"YOUTUBE_LOGIN": "Login",
+	"YOUTUBE_LOGOUT": "Logout",
+	"YOUTUBE_USERNAME": "Benutzername",
+	"YOUTUBE_USERNAME_DOC": "Der Benutzername deines YouTube-Kontos",
+	"YOUTUBE_GRANT_ACCESS": "Mit diesem Code kannst du Volumio Lesezugriff auf dein YouTube-Konto erteilen. Gib dazu diesen Code ein unter {0}:",
+	"YOUTUBE_ACCESS_CODE":"Code:",
+	"YOUTUBE_ACCESS_CODE_DOC":"Dieser Code muss unter https://www.google.com/device deinem YouTube-Konto hinzugefügt werden."
+}

@@ -10,11 +10,11 @@ module.exports = IrController;
 
 
 function IrController(context) {
-	var self = this;
-	// Save a reference to the parent commandRouter
-	self.context = context;
-	self.commandRouter = self.context.coreCommand;
-	self.logger=self.commandRouter.logger;
+    var self = this;
+    // Save a reference to the parent commandRouter
+    self.context = context;
+    self.commandRouter = self.context.coreCommand;
+    self.logger=self.commandRouter.logger;
     self.configManager = self.context.configManager;
 
 
@@ -22,22 +22,22 @@ function IrController(context) {
 
 IrController.prototype.onVolumioStart = function()
 {
-	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
-	
-	return libQ.resolve();
+    var self = this;
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
+
+    return libQ.resolve();
 
 }
 
 IrController.prototype.getConfigurationFiles = function()
 {
-	return ['config.json'];
+    return ['config.json'];
 }
 
 IrController.prototype.onStop = function() {
-	var self = this;
+    var self = this;
 
     var defer = libQ.defer();
 
@@ -55,21 +55,21 @@ IrController.prototype.onStop = function() {
 };
 
 IrController.prototype.onStart = function() {
-	var self = this;
+    var self = this;
 
     var defer = libQ.defer();
 
-	var defer = libQ.defer();
+    var defer = libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
     if (device == "Raspberry PI") {
         self.enablePIOverlay();
     }
 
     var ir_profile = self.config.get('ir_profile', "JustBoom IR Remote");
-	self.saveIROptions({"ir_profile":{"value": ir_profile, "notify":false}});
+    self.saveIROptions({"ir_profile":{"value": ir_profile, "notify":false}});
     defer.resolve();
 
-	return defer.promise;
+    return defer.promise;
 };
 
 IrController.prototype.getAdditionalConf = function (type, controller, data) {
@@ -79,7 +79,7 @@ IrController.prototype.getAdditionalConf = function (type, controller, data) {
 };
 
 IrController.prototype.createHardwareConf = function(device){
-	var self = this;
+    var self = this;
 
     exec('/usr/bin/sudo /bin/chmod 777 /etc/lirc/hardware.conf', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
@@ -90,7 +90,7 @@ IrController.prototype.createHardwareConf = function(device){
             }
         });
 
-	try{
+    try{
         fs.readFile(__dirname + "/hardware.conf.tmpl", 'utf8', function (err, data) {
             if (err) {
                 return self.logger.error(err);
@@ -109,14 +109,14 @@ IrController.prototype.createHardwareConf = function(device){
                 if (err) return self.logger.error(err);
             });
         });
-	}
-	catch (err){
-		callback(err);
-	}
+    }
+    catch (err){
+        callback(err);
+    }
 }
 
 IrController.prototype.restartLirc = function (message) {
-	var self = this;
+    var self = this;
 
     exec('usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
@@ -125,7 +125,7 @@ IrController.prototype.restartLirc = function (message) {
             }
             setTimeout(function(){
 
-	exec('usr/bin/sudo /bin/systemctl start lirc.service', {uid:1000,gid:1000},
+    exec('usr/bin/sudo /bin/systemctl start lirc.service', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
                 self.logger.info('Error restarting LIRC: '+error);
@@ -144,11 +144,11 @@ IrController.prototype.restartLirc = function (message) {
 }
 
 IrController.prototype.saveIROptions = function (data) {
-	var self = this;
+    var self = this;
 
-	self.config.set("ir_profile", data.ir_profile.value);
+    self.config.set("ir_profile", data.ir_profile.value);
 
-	var deviceName = self.getAdditionalConf("system_controller", "system", "device");
+    var deviceName = self.getAdditionalConf("system_controller", "system", "device");
     self.createHardwareConf(deviceName);
     var profileFolder = data.ir_profile.value.replace(/ /g, '\\ ');
 
@@ -168,7 +168,8 @@ IrController.prototype.saveIROptions = function (data) {
                             self.logger.info('lirc correctly updated');
                             self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
                             setTimeout(function(){
-                                if (data.ir_profile.notify == undefined){
+
+                                if (data.ir_profile.notify == undefined || data.ir_profile.notify == false){
                                     self.restartLirc(true);
                                 }
 
@@ -182,18 +183,18 @@ IrController.prototype.saveIROptions = function (data) {
 }
 
 IrController.prototype.getUIConfig = function() {
-	var defer = libQ.defer();
-	var self = this;
+    var defer = libQ.defer();
+    var self = this;
 
-	var lang_code = this.commandRouter.sharedVars.get('language_code');
+    var lang_code = this.commandRouter.sharedVars.get('language_code');
     var dirs = fs.readdirSync(__dirname + "/configurations");
 
-	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-		__dirname+'/i18n/strings_en.json',
-		__dirname + '/UIConfig.json')
-		.then(function(uiconf)
-		{
-			var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
+    self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+        __dirname+'/i18n/strings_en.json',
+        __dirname + '/UIConfig.json')
+        .then(function(uiconf)
+        {
+            var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
             uiconf.sections[0].content[0].value.value = activeProfile;
             uiconf.sections[0].content[0].value.label = activeProfile;
 
@@ -205,30 +206,34 @@ IrController.prototype.getUIConfig = function() {
             }
 
             defer.resolve(uiconf);
-		})
-		.fail(function()
-		{
-			defer.reject(new Error());
-		});
+        })
+        .fail(function()
+        {
+            defer.reject(new Error());
+        });
 
-	return defer.promise;
+    return defer.promise;
 };
 
 IrController.prototype.enablePIOverlay = function() {
     var defer = libQ.defer();
     var self = this;
 
-    exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Error enabling lirc-rpi overlay: '+error);
-                defer.reject();
-            } else {
-                self.logger.info('lirc-rpi overlay enabled');
-                defer.resolve();
-            }
-        });
-
+    if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
+        self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
+        exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', {uid:1000,gid:1000},
+            function (error, stdout, stderr) {
+                if(error != null) {
+                    self.logger.info('Error enabling lirc-rpi overlay: '+error);
+                    defer.reject();
+                } else {
+                    self.logger.info('lirc-rpi overlay enabled');
+                    defer.resolve();
+                }
+            });
+    } else {
+        self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
+    }
     return defer.promise;
 };
 
