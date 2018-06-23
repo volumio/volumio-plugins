@@ -337,10 +337,10 @@
 					"prettyName": "NanoSound by Nanomesher",
 					"icon": "fa-lightbulb-o",
 					"name": "nanosound",
-					"version": "1.1.3",
+					"version": "1.1.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
 					"license": "ISC",
-					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
+					"description": "Companion plugin for Nano Sound products",
 					"details": "",
 					"author": "Nanomesher",
 					"screenshots": [
@@ -349,7 +349,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-6-2018"
+					"updated": "23-6-2018"
 				}
 			]
 		},
