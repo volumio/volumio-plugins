@@ -1,7 +1,7 @@
 {
 	"name": "nanosound",
 	"version": "1.1.5",
-	"description": "All-in-one Audio Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote.",
+	"description": "All-in-one Audio Board for Raspberry Pi with HiFi DAC,LDO Voltage Regulator,OLED Display,Power Switch,Control Buttons and Infrared Remote",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
