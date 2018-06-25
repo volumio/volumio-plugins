@@ -1,0 +1,53 @@
+[Unit]
+Description=pydPiper container
+Requires=docker.service
+After=volumio.service
+
+[Service]
+Restart=always
+
+# Generic command to start pydPiper
+#
+#ExecStart=/usr/bin/docker run --network=host --privileged -v /var/log:/var/log:rw dhrone/pydpiper:latest python /app/pydPiper.py --<musicdistro> --driver <driver> --width <width> --height <height> --i2caddress <i2caddress> --i2cport <i2cport> --rs <rs> --e <e> --d4 <d4> --d5 <d5> --d6 <d6> --d7 <d7> --timezone <timezone> --temperature <temperature> --lmsplayer <lmsplayer> --pages <pagefile>
+#
+# Definitions for command line Parameters
+#
+# <driver> -- Driver for your display.  Possible values are 'winstar_weg', 'hd44780', 'hd44780_i2c', 'ssd1306_i2c'
+#
+# <musicdistro> -- Sets the type of music player pydPiper is installed on.  Possible values are 'volumio', 'rune', 'lms'
+#
+# <width> -- width of your display in pixels.  If you are using a character display, each column is 5 pixels wide
+# <height> -- height of your display in pixels.  If you are using a character display, each line is 8 pixels high
+#
+# For I2C displays
+# <i2caddress> -- The I2C address your display is installed on.  Normally 0x27.
+# <i2cport> -- The I2C port your display is attached to.  Normally 1.
+#
+# For parallel interface displays
+# <e>, <rs>, <d4>, <d5>, <d6>, <d7> -- The GPIO pins your display is connected to
+#
+# timezone -- Sets what timezone is local for this system (e.g. 'US/Eastern', 'France/Paris')
+# temperature -- Sets whether to use fahrenheit or celcius
+#
+# If using a logitech media server player
+# lmsplayer -- The MAC address for the player.  Should be the localhost's MAC address if running Squeezeplayer on the same system as pydPiper.  Example: 'b8:27:eb:f9:88:1e'
+#
+# If using Weather Underground services
+# wapi -- weather underground API key.  Go to https://www.wunderground.com/weather/api/ to request a key.
+# wlocale -- location to pull weather for.  General format is Zipcode, State/City, Country/City, or Latitude,Longitude (e.g. '20001', 'CA/San_Francisco', 'France/Paris', '37.77,-122.39').
+#
+# Page files have been created for
+#   HD44780 style LCDs (16x2 and 20x4 dimensions) -- pages_lcd_16x2.py, pages_lcd_20x4.py
+#   Winstar WEH style OLEDs (16x2 dimensions) -- pages_weh_80x16.py
+#   Winstar WEG style OLEDS (100x16 pixel dimensions) -- pages_weg_100x16.py
+#   SSD1306 style OLEDs (128x64 pixel dimensions) -- pages_ssd1306.py
+# <pagefile> -- The name of the pages file to use for your display
+
+#ExecStart=/usr/bin/docker run --network=host --privileged -v /var/log:/var/log:rw dhrone/pydpiper:latest python /app/pydPiper.py --volumio --driver winstar_weg --width 80 --height 16 --rs 7 --e 8 --d4 25 --d5 24 --d6 23 --d7 27 --timezone 'Europe/Amsterdam' --temperature celsius --pages pages_weh_80x16.py
+ExecStart=/usr/bin/docker run --network=host --privileged -v /var/log:/var/log:rw -v /home/volumio/pydPiper:/app:ro dhrone/pydpiper:latest python /app/pydPiper.py --volumio --driver winstar_weg --width 80 --height 16 --rs 7 --e 8 --d4 25 --d5 24 --d6 23 --d7 27 --timezone 'Europe/Amsterdam' --temperature celsius --pages pages_weh_80x16_volumio.py
+#ExecStart=/usr/bin/docker run --network=host --privileged -v /var/log:/var/log:rw -v /home/volumio/pydPiper:/app:ro dhrone/pydpiper:latest python /app/pydPiper.py --volumio --driver hd44780_i2c --width 80 --height 16 --i2caddress 0x3F --i2cport 1 --timezone Europe/Amsterdam --pages pages_lcd_16x2_volumio.py
+
+ExecStop=/usr/bin/docker stop -t 2 dhrone/pydpiper:latest
+
+[Install]
+WantedBy=multi-user.target

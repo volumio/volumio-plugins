@@ -11,6 +11,8 @@
 	"D_AUDIO":"Sound output can be controlled with the below settings.",
 		"OUTPUT_DEVICE":"Output device",
 		"D_OUTPUT_DEVICE":"Choose the output device you want to use for this Squeezelite instance.",
+		"SOUNDCARD_TIMEOUT":"Close soundcard after x seconds",
+		"D_SOUNDCARD_TIMEOUT":"Close output device when idle after timeout seconds, default is to keep it open while player is 'on'",
 		"ALSAPARAMS":"ALSA Parameters",		
 		"D_ALSAPARAMS":"Fill in the ALSA parameters, don't change them if you have no idea what you are doing (default = 80:4::). <br /><br />Formatting is as follows: <b>b:p:f:m</b> <ul><li>b: is the buffer time in milliseconds (values less than 500)  or  size  in bytes  (default 40ms)</li><li>p: is the period count (values less than 50) or size in bytes (default 4  periods)</li><li>f: is  the  sample format  (possible values: 16, 24, 24_3 or 32)</li><li>m: use mmap (0 | 1)</li></ul>",
 		"EXTRAPARAMS":"Extra Parameters",

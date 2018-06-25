@@ -1,0 +1,14 @@
+[Unit]
+Description=pydPiper service
+Requires=docker.service
+After=volumio.service
+
+[Service]
+Restart=always
+
+ExecStart=/usr/bin/python /data/plugins/accessory/pydpiper/start_screen.py
+
+ExecStop=/usr/bin/docker stop -t 2 dhrone/pydpiper:latest
+
+[Install]
+WantedBy=multi-user.target

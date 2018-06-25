@@ -54,6 +54,7 @@
 				"label": "TRANSLATE.SQUEEZELITE.SAVE",
 				"data": [
 					"output_device",
+					"soundcard_timeout",
 					"alsa_params",
 					"extra_params"
 				]
@@ -67,6 +68,17 @@
 					"value": {
 						"value": "default",
 						"label": "default"
+					},
+					"options": []
+				},
+				{
+					"id": "soundcard_timeout",
+					"element": "select",
+					"label": "TRANSLATE.SQUEEZELITE.SOUNDCARD_TIMEOUT",
+					"doc": "TRANSLATE.SQUEEZELITE.D_SOUNDCARD_TIMEOUT",					
+					"value": {
+						"value": "2",
+						"label": "2"
 					},
 					"options": []
 				},
