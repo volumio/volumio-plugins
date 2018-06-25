@@ -28,7 +28,7 @@
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-spotify",
 					"name": "volspotconnect2",
-					"version": "0.7.0",
+					"version": "0.7.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
 					"license": "GPL 3.0",
 					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
@@ -40,7 +40,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-3-2018"
+					"updated": "25-6-2018"
 				},
 				{
 					"prettyName": "Personal Radio",
@@ -95,6 +95,42 @@
 						}
 					],
 					"updated": "19-3-2018"
+				},
+				{
+					"prettyName": "Radio Paradise",
+					"icon": "fa-lightbulb-o",
+					"name": "radio_paradise",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/radio_paradise/radio_paradise.zip",
+					"license": "ISC",
+					"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC version)",
+					"details": "",
+					"author": "marco79cgn",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "Podcast",
+					"icon": "fa-lightbulb-o",
+					"name": "podcast",
+					"version": "0.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/podcast/podcast.zip",
+					"license": "ISC",
+					"description": "Podcast for Volumio2",
+					"details": "",
+					"author": "Chris Song",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-6-2018"
 				}
 			]
 		},
