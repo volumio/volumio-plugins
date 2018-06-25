@@ -364,7 +364,7 @@
 					"icon": "fa-microchip",
 					"name": "gpio-buttons",
 					"version": "0.8.1",
-					"url": "http://tomatpasser.dk/gpio-buttons.zip",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/gpio-buttons/gpio-buttons.zip",
 					"license": "ISC",
 					"description": "GPIO button-listener plugin for Volumio2",
 					"details": "<h4>GPIO Buttons</h4><br>Control basic playback functions by connecting buttons to Raspberry Pi GPIOs<br>Features:<br><ul><li>Play/pause</li><li>Next/previous</li><li>Volume +/-</li><li>Shutdown</li></ul><br><strong><a href=\"https://volumio.org/forum/gpio-buttons-control-volumio2-with-buttons-t4437.html\" target=\"blank\">Click here for infos and wiring instructions</a></strong>",
