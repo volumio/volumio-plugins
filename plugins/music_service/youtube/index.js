@@ -249,8 +249,6 @@ Youtube.prototype.handleBrowseUri = function (uri) {
       return self.getUserPlaylists();
     } else if (uri.startsWith('youtube/root/likedVideos')) {
       return self.getUserLikedVideos();
-    } else if (uri.startsWith('youtube/root/activities')) {
-      return self.getActivities();
     } else if (uri.startsWith('youtube/playlist/')) {
       return self.getPlaylistItems(uri.split('/').pop());
     } else if (uri.startsWith('youtube/channel/')) {
@@ -503,52 +501,39 @@ Youtube.prototype.getRootContent = function () {
     return self.getTrend();
   }
 
-  return libQ.resolve(
-    {
-      navigation: {
-        prev: {
-          uri: '/'
+  var deferred = self.getActivities()
+    .then(function (activities) {
+      activities.navigation.lists.unshift({
+        title: 'My Youtube',
+        icon: 'fa fa-youtube',
+        availableListViews: ['list', 'grid'],
+        items: [{
+          service: 'youtube',
+          type: 'folder',
+          title: 'Subscriptions',
+          icon: 'fa fa-folder-open-o',
+          uri: 'youtube/root/subscriptions'
         },
-        lists:
-          [
-            {
-              title: 'My Youtube',
-              icon: 'fa fa-youtube',
-              availableListViews: ['list', 'grid'],
-              items: [
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: ' Activities',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/activities'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'Subscriptions',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/subscriptions'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'My Playlists',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/playlists'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'Liked Videos',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/likedVideos'
-                }
-              ]
-            }
-          ]
-      }
+        {
+          service: 'youtube',
+          type: 'folder',
+          title: 'My Playlists',
+          icon: 'fa fa-folder-open-o',
+          uri: 'youtube/root/playlists'
+        },
+        {
+          service: 'youtube',
+          type: 'folder',
+          title: 'Liked Videos',
+          icon: 'fa fa-folder-open-o',
+          uri: 'youtube/root/likedVideos'
+        }
+        ]
+      });
+      return activities;
     });
+
+  return deferred;
 }
 
 Youtube.prototype.getUserSubscriptions = function () {
@@ -622,7 +607,7 @@ Youtube.prototype.getActivities = function () {
     apiFunc: self.yt.activities.list,
     apiRequest: request,
     loadAll: true,
-    prevUri: 'youtube',
+    prevUri: '/',
     title: 'Youtube activities',
   });
 }

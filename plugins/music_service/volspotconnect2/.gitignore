@@ -1,3 +1,1 @@
-# Local gitignore for Volspotconnect2
-# We don't need this, and will negate credential issues ;)
-startconnect.sh
+node_modules

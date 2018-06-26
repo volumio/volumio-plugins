@@ -67,9 +67,13 @@ ControllerLastFM.prototype.onVolumioStart = function()
 		}
 		
 		var scrobbleThresholdInMilliseconds = 0;
+<<<<<<< HEAD
 		if(supportedSongServices.indexOf(state.service) != -1)
+=======
+		if(state.service == 'mpd' || state.service == 'airplay' || state.service == 'spop')
+>>>>>>> 7971eaf0b9e88b655fcbd77044d455bec3f0004b
 			scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
-		else if(supportedStreamServices.indexOf(state.service) != -1)
+		if(supportedStreamServices.indexOf(state.service) != -1)
 			scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
 		
 		var previousTitle = 'null';
@@ -97,11 +101,16 @@ ControllerLastFM.prototype.onVolumioStart = function()
 				self.logger.info('Not scrobbling from: ' + state.service);
 		}
 		
+<<<<<<< HEAD
 		if(state.status == 'play' && ((supportedSongServices.indexOf(state.service)) != -1 || (supportedStreamServices.indexOf(state.service) != -1 && self.config.get('scrobbleFromStream'))))
 		{
 			if(self.config.get('enable_debug_logging'))
 				self.logger.info('Playback detected, evaluating parameters for scrobbling...');
 			
+=======
+		{					
+		if (state.status == 'play' && (state.service == 'mpd' || state.service == 'airplay' || state.service == 'spop' || (state.service == 'webradio' && self.config.get('tryScrobbleWebradio'))))
+>>>>>>> 7971eaf0b9e88b655fcbd77044d455bec3f0004b
 			if((self.previousState.artist == state.artist) && (self.previousState.title == state.title) && ((self.previousState.status == 'pause' || self.previousState == 'stop') || initialize) || (self.currentTimer && !self.currentTimer.isPaused()) && (self.previousScrobble.artist != state.artist && self.previousScrobble.title != state.title))
 			{
 				if(self.config.get('enable_debug_logging'))

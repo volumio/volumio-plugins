@@ -110,9 +110,9 @@ fritzcallmute.prototype.initCallMonitor = function() {
 
 fritzcallmute.prototype.onStop = function() {
     var self = this;
-    var defer=libQ.defer();
+    var defer=libQ.defer();self.initCallMonitor();
 
-    self.stopCallMonitor();
+		self.stopCallMonitor();
     // Once the Plugin has successfull stopped rinvertedesolve the promise
     defer.resolve();
 
