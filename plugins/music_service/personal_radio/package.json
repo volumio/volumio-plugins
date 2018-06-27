@@ -1,13 +1,13 @@
 {
 	"name": "personal_radio",
-	"version": "1.1.2",
-	"description": "Personal Radio Plugin for Volumio2 (KBS,MBC,SBS Korean Radios & Linn)",
+	"version": "0.0.7",
+	"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"pack": "rm -R node_modules || npm install --production && zip -r -X build.zip ./ || npm install"
 	},
-	"author": "Chris Song",
+	"author": "Chris Song <ckchrisong@gmail.com>",
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "Personal Radio",
@@ -26,8 +26,6 @@
 	},
 	"keywords": [
 		"KBS",
-		"MBC",
-		"SBS",
 		"Linn",
 		"Radio",
 		"volumio"

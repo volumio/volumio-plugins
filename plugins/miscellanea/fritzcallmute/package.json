@@ -1,6 +1,6 @@
 {
 	"name": "fritzcallmute",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Mutes on phone calls via FritzBox router",
 	"main": "index.js",
 	"scripts": {

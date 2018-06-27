@@ -20,7 +20,7 @@
 			"D_SCROBBLE_THRESHOLD":"Select the percentage of the song that has to be played before it will get scrobbled.",
 			"TOAST":"Push toast message on scrobble",
 			"D_TOAST":"Have volumio push a toast notification if a song gets scrobbled.",
-			"SCROBBLE_STREAM":"Scrobble stream",
+			"SCROBBLE_STREAM":"Scrobble streams",
 			"D_SCROBBLE_STREAM":"If the stream provides song info, try to scrobble it.",
 			"STREAMSCROBBLETHRESHOLD":"Stream scrobble threshold (in seconds)",
 			"D_STREAMSCROBBLETHRESHOLD":"Fill in the amount of seconds a song in a stream (e.g. webradio) needs to have played before trying to scrobble it.",
