@@ -1,4 +1,4 @@
-22th April 2018
+01st July 2018
 #	VOLUMIO SPOTIFY CONNECT PLUGIN
 
 ## IMPORTANT
@@ -55,6 +55,10 @@ volumio plugin install
 - Possible problem with softvol...
 
 ## Last changes
+
+July 1st 2018
+
+- add dutch tanslation.Thank you @LeonCB https://github.com/LeonCB
 
 April 22th
 
