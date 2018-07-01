@@ -1,0 +1,62 @@
+{
+  "volumeLevel": {
+    "type": "number",
+    "value": 90
+  },
+  "balance": {
+    "type": "number",
+    "value": 0
+  },
+  "balanceNote": {
+    "type": "string",
+    "value": "balanced"
+  },
+  "channel": {
+    "type": "boolean",
+    "value": true
+  },
+  "channelLabel": {
+    "type": "string",
+    "value": "Left/Right"
+  },
+  "fir": {
+    "type": "number",
+    "value": 1
+  },
+  "firLabel": {
+    "type": "string",
+    "value": "Fast Roll Off"
+  },
+  "iir": {
+    "type": "number",
+    "value": 0
+  },
+  "iirLabel": {
+    "type": "string",
+    "value": "47K"
+  },
+  "deemphasis": {
+    "type": "number",
+    "value": 66
+  },
+  "deemphasisLabel": {
+    "type": "string",
+    "value": "Off"
+  },
+  "i2sDPLL": {
+    "type": "number",
+    "value": 80
+  },
+  "i2sLabelDPLL": {
+    "type": "string",
+    "value": "05"
+  },
+  "dsdDPLL": {
+    "type": "number",
+    "value": 10
+  },
+  "dsdLabelDPLL": {
+    "type": "string",
+    "value": "10"
+  }
+}
