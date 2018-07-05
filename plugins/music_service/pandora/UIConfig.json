@@ -13,7 +13,8 @@
         "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
         "data": [
           "email",
-          "password"
+          "password",
+          "station"
         ]
     },
     "content": [
@@ -31,6 +32,14 @@
         "element": "input",
         "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
         "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
+        "value": ""
+      },
+      {
+        "id": "station",
+        "type": "text",
+        "element": "input",
+        "doc": "TRANSLATE.CONFIGURATION.PANDORA_STATION_DOC",
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_STATION_LABEL",
         "value": ""
       }
     ]

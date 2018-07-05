@@ -38,10 +38,13 @@ ControllerPandora.prototype.onStart = function() {
 
     self.servicename = 'pandora';
 
-    self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service','mpd');
-
     var credential_email = self.config.get('email');
     var credential_password = self.config.get('password');
+    var current_station = self.config.get('station');
+    if (!current_station || current_station === 'undefined') {
+        current_station = 1;
+    }
+
     if (credential_email === '' || credential_password === '') {
         self.commandRouter.pushToastMessage('error', 'Please configure plugin using Plugin sidebar.');
         defer.reject(new Error('[Pandora] Missing credentials'));
@@ -53,9 +56,8 @@ ControllerPandora.prototype.onStart = function() {
         //verbose: true
         email: credential_email,
         password: credential_password,
-        //station: self.config.get('station'),
+        station: current_station,
         //startPaused: true,
-        station: settings.station,
         verbose: true
         });
     
@@ -105,13 +107,15 @@ ControllerPandora.prototype.onStart = function() {
             });
     }
 
-    self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
-    self.context.coreCommand.stateMachine.setVolatile({
-        service: self.servicename,
-        callback: self.unsetVol.bind(self)
-    });
-    
+    // Timeout for five seconds here so stateMachine is defined.  Is there a better way?
+    setTimeout(function () {
+        self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
 
+        self.context.coreCommand.stateMachine.setVolatile({
+            service: self.servicename,
+            callback: self.unsetVol.bind(self)
+        });
+    }, 5000);
 
     // Once the Plugin has successfull started resolve the promise
     return defer.promise;
@@ -156,7 +160,7 @@ ControllerPandora.prototype.pandoraDaemonConnect = function(em, pwd) {
         }
     
         if (self.pandora.getStatus !== 'error') {
-            self.logger.info('[Pandora] Started Pianode');
+            self.logger.info('[Pandora] Logged in.  Started Pianode');
             resolve('Successfully started Pianode');
         }
         else { // screwed the pooch already!
@@ -208,17 +212,18 @@ ControllerPandora.prototype.getConf = function(varName) {
     //Perform your installation tasks here
 };
 
-ControllerPandora.prototype.setConf = function(credentials) {
+ControllerPandora.prototype.setConf = function(options) {
     var self = this;
     var defer = libQ.defer();
 
     //Perform your installation tasks here
-    //     self.config.set('bitrate', data['bitrate']);
-    self.config.set('email', credentials.email);
-    self.config.set('password', credentials.password);
+    self.config.set('email', options.email);
+    self.config.set('password', options.password);
+    self.config.set('station', options.station);
     
-    self.pandora.email = credentials.email;
-    self.pandora.password = credentials.password;
+    self.pandora.email = options.email;
+    self.pandora.password = options.password;
+    self.pandora.station = options.station; // may not use
 
     self.pandoraDaemonConnect()
         .then(function () {
@@ -275,6 +280,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                 var m = curUri.match(/^.+?id=(\d+)$/);
                 self.logger.info('Changing to station: ' + m[1]);
                 self.pandora.changeStation(m[1]);
+                self.config.set('station', m[1]); // attempt to save current station
                 //response = curUri; // should this be the station id?
             }
         }
@@ -351,34 +357,16 @@ ControllerPandora.prototype.clearAddPlayTrack = function(track) {
     defer.resolve();
 
     return defer.promise;
-
-    //return self.sendSpopCommand('uplay', [track.uri]);
-
-    // normal radio streams
-    //return self.mpdPlugin.sendMpdCommand('stop', [])
-    //    .then(function () {
-    //        return self.mpdPlugin.sendMpdCommand('clear', []);
-    //    })
-    //    .then(function () {
-    //        return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
-    //    })
-    //    .then(function () {
-            //self.commandRouter.pushToastMessage('info',
-            //    self.getRadioI18nString('PLUGIN_NAME'),
-            //    self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
-    //        return self.mpdPlugin.sendMpdCommand('play', [])
-    //            .then(function () {
-    //                self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-    //                return defer.resolve();
-    //            });
-    //    });
-
 };
 
+
+// Media Control Overrides
+
+// Seek
 ControllerPandora.prototype.seek = function (timepos) {
     this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::seek to ' + timepos);
 
-    return this.sendSpopCommand('seek '+timepos, []);
+    //return this.sendSpopCommand('seek '+timepos, []);
 };
 
 // Stop
@@ -389,7 +377,7 @@ ControllerPandora.prototype.stop = function() {
     self.pandora.stop();
 };
 
-// Spop pause
+// Pause
 ControllerPandora.prototype.pause = function() {
     var self = this;
     var defer = libQ.defer();
@@ -410,6 +398,7 @@ ControllerPandora.prototype.pause = function() {
     return defer.promise;
 };
 
+// Play
 ControllerPandora.prototype.play = function() {
     var self = this;
     var defer = libQ.defer();
@@ -425,6 +414,7 @@ ControllerPandora.prototype.play = function() {
     return defer.promise;
 };
 
+// Next
 ControllerPandora.prototype.next = function () {
     var self = this;
     var defer = libQ.defer();
@@ -438,14 +428,16 @@ ControllerPandora.prototype.next = function () {
     return defer.promise;
 };
 
+// Previous
+ControllerPandora.prototype.previous = function (timepos) {
+    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::previous');
+};
 
 
 // Get state
 ControllerPandora.prototype.getState = function() {
     var self = this;
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::getState');
-
-
 };
 
 //Parse state
