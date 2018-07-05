@@ -1,0 +1,22 @@
+{
+	"name": "pandora",
+	"version": "1.0.0",
+	"description": "A plugin to access Pandora Web Radio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "truckershitch",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "pandora",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"pianode": "https://github.com/truckershitch/pianode/archive/master.tar.gz"
+	}
+}
