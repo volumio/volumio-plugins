@@ -28,10 +28,10 @@ ssh volumio@volumio.local (if you changed the name of your device, replace the s
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volumiobauerfilter/volbinauralfilter.zip
-mkdir ./volbinauralfilter
-miniunzip volbinauralfilter.zip -d ./volbinauralfilter
-cd ./volbinauralfilter
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volgrp/volgrp.zip
+mkdir ./volgrp
+miniunzip volgrp.zip -d ./volgrp
+cd ./volgrp
 volumio plugin install
 ```
 If the installation fails, remove all file (if any) related to the plugin before retry.
