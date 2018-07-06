@@ -1,0 +1,75 @@
+{
+	"page": {
+		"label": "TRANSLATE.VOLUMIO_VOLGRP"
+	},
+	"sections": [
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.VOLGRP_SETTINGS",
+			"icon": "fa-plug",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "audio_interface/volgrp",
+				"method": "savevolgr"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"rate",
+					"quality"
+				]
+			},
+			"content": [
+				{
+					"id": "rate",
+					"element": "select",
+					"doc": "TRANSLATE.DOCVOLGRPRATE",
+					"label": "TRANSLATE.VOLGRPRATE",
+					"value": {
+						"value": "44100",
+						"label": "44100"
+					},
+					"options": [
+						{
+							"value": "44100",
+							"label": "44100Hz"
+						},
+						{
+							"value": "48000",
+							"label": "48000Hz"
+						},
+						{
+							"value": "96000",
+							"label": "96000Hz"
+						}
+					]
+				},
+{
+					"id": "quality",
+					"element": "select",
+					"doc": "TRANSLATE.DOCVOLGRPQUALITY",
+					"label": "TRANSLATE.VOLGRPQUALITY",
+					"value": {
+						"value": "speexrate_medium",
+						"label": "speexrate_medium"
+					},
+					"options": [
+						{
+							"value": "speexrate",
+							"label": "TRANSLATE.LABELPS1"
+						},
+						{
+							"value": "speexrate_medium",
+							"label": "TRANSLATE.LABELPS2"
+						},
+						{
+							"value": "speexrate_best",
+							"label": "TRANSLATE.LABELPS3"
+						}
+					]
+				}
+			]
+		}
+	]
+}

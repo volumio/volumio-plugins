@@ -1,0 +1,13 @@
+{
+ "VOLUMIO_VOLGRP":"Volumio general resampler",
+ "APPLY":"APPLY",
+ "DOCVOLGRPRATE":"rate",
+ "VOLGRPRATE":"rate",
+ "VOLGRPQUALITY":"filter profile",
+ "DOCVOLGRPQUALITY":"Choose a profile of resampling ",
+ "LABELPS1":"speexrate",
+ "LABELPS2":"speexrate medium",
+ "LABELPS3":"spexrate high",
+ "DOCVOLGRPPROFILE":"Quality resampling setting",
+ "VOLGRPPROFILE":"Quality"
+}
