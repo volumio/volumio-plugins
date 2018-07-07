@@ -200,8 +200,8 @@
    .then(function(uiconf) {
     value = self.config.get('rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-value = self.config.get('myprofile');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+value = self.config.get('quality');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 	var value;
@@ -254,20 +254,19 @@ value = self.config.get('myprofile');
      defer.reject(new Error(err));
      return console.log(err);
     }
-	
 
 	
-
+var hwouts
 
 	//else  hwouts = 'plughw:' + (self.config.get('alsa_device'));
 	
 	var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
-	var conf2 = conf1.replace("${rate}", self.config.get('rate');
-	var conf3 = conf2.replace("${quality}", self.config.get('quality');
+	var conf2 = conf1.replace("${rate}", self.config.get('rate'));
+	var conf3 = conf2.replace("${quality}", self.config.get('quality'));
 	var conf4 = conf3.replace("${hwouts}", hwouts);
 		
 
-    fs.writeFile("/home/volumio/asoundrc", conf3, 'utf8', function(err) {
+    fs.writeFile("/home/volumio/asoundrc", conf4, 'utf8', function(err) {
      if (err) {
       defer.reject(new Error(err));
       //self.logger.info('Cannot write /etc/asound.conf: '+err)
@@ -298,13 +297,13 @@ ControllerVolgrp.prototype.savevolgrp = function(data) {
   var self = this;
 
   var defer = libQ.defer();
-		self.config.set('rate', data['rate']);
-		self.config.set('quality', data['quality']);
+		self.config.set('rate', data['rate'].value);
+		self.config.set('quality', data['quality'].value);
 	self.logger.info('Configurations of filter have been set');
 
   self.rebuildvolgrp()
    .then(function(e) {
-    //  self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
+    //  self.commandRouter.pushToastMessage('success', "volgrp Configuration updated");
     defer.resolve({});
    })
    .fail(function(e) {
@@ -317,8 +316,9 @@ ControllerVolgrp.prototype.savevolgrp = function(data) {
 
  };
 
-ControllerVolgrp.prototype.rebuildvolgrp
+ControllerVolgrp.prototype.rebuildvolgrp = function() {
   var defer = libQ.defer();
+var self= this ;
   self.createASOUNDFile()
  //  .then(function(e) {
 {

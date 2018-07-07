@@ -11,7 +11,7 @@
 			"onSave": {
 				"type": "controller",
 				"endpoint": "audio_interface/volgrp",
-				"method": "savevolgr"
+				"method": "savevolgrp"
 			},
 			"saveButton": {
 				"label": "TRANSLATE.APPLY",
@@ -28,7 +28,7 @@
 					"label": "TRANSLATE.VOLGRPRATE",
 					"value": {
 						"value": "44100",
-						"label": "44100"
+						"label": "44100Hz"
 					},
 					"options": [
 						{
@@ -40,8 +40,24 @@
 							"label": "48000Hz"
 						},
 						{
+							"value": "88200",
+							"label": "88200Hz"
+						},
+{
 							"value": "96000",
 							"label": "96000Hz"
+						},
+						{
+							"value": "176400",
+							"label": "176400Hz"
+						},
+						{
+							"value": "192000",
+							"label": "192000Hz"
+						},
+						{
+							"value": "384000",
+							"label": "384000Hz"
 						}
 					]
 				},
@@ -52,7 +68,7 @@
 					"label": "TRANSLATE.VOLGRPQUALITY",
 					"value": {
 						"value": "speexrate_medium",
-						"label": "speexrate_medium"
+						"label": "medium"
 					},
 					"options": [
 						{

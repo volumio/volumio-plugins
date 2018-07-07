@@ -1,19 +1,19 @@
 #  - speexrate_best	Use quality 10 (equivalent to SRC_SINC_BEST_QUALITY)
 #  - speexrate_medium	Use quality 5 (equivalent to SRC_SINC_MEDIUM_QUALITY)
 #  - speexrate		Use quality 3 (equivalent to SRC_SINC_FASTEST)
-pcm.speexout {
-		pcm "plughw:${hwout}"
+pcm_slave.speexout {
+		pcm "plughw:${hwout},0"
 		rate ${rate}
-
-pcm.speexrate {
+}
+pcm.audiopluginout {
 		type rate
 		slave speexout
 		converter "${quality}"
 }
 
-pcm.outbauer {
-  type plug
-  slave.pcm "${hwouts}"
-}
+#pcm.outbauer {
+ # type plug
+ # slave.pcm "${hwouts}"
+#}
 
 	defaults.pcm.rate_converter "speexrate"
