@@ -2,6 +2,7 @@
 
 
 "rate":{"type": "string","value":"44100"},
+"bitdepth":{"type": "string","value":"S16_LE"},
 "quality":{"type": "string","value":"speexrate_medium"},
 "alsa_device":{"type": "string","value": "0"},
 "alsa_outputdevicename":{"type": "string","value": "0"},

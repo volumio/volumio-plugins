@@ -17,6 +17,7 @@
 				"label": "TRANSLATE.APPLY",
 				"data": [
 					"rate",
+					"bitdepth",
 					"quality"
 				]
 			},
@@ -58,6 +59,31 @@
 						{
 							"value": "384000",
 							"label": "384000Hz"
+						}
+					]
+				},
+{
+					"id": "bitdepth",
+					"element": "select",
+					"doc": "TRANSLATE.DOCVOLGRPBITDEPTH",
+					"label": "TRANSLATE.VOLGRPBITDEPTH",
+					"value": {
+						"value": "S16_LE",
+						"label": "16b"
+					},
+					"options": [
+						
+						{
+							"value": "S16_LE",
+							"label": "16b"
+						},
+						{
+							"value": "S24_LE",
+							"label": "24b"
+						},
+						{
+							"value": "S32_LE",
+							"label": "32b"
 						}
 					]
 				},

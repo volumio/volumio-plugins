@@ -3,6 +3,8 @@
  "APPLY":"APPLY",
  "DOCVOLGRPRATE":"rate",
  "VOLGRPRATE":"rate",
+ "DOCVOLGRPBITDEPTH":"Bit depth",
+ "VOLGRPBITDEPTH":"Bit depth",
  "VOLGRPQUALITY":"Resampling quality",
  "DOCVOLGRPQUALITY":"Choose quality of resampling ",
  "LABELPS1":"Low",

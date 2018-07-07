@@ -4,6 +4,7 @@
 pcm_slave.speexout {
 		pcm "plughw:${hwout},0"
 		rate ${rate}
+		format ${bitdepth}
 }
 pcm.audiopluginout {
 		type rate
