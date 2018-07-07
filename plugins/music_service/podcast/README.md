@@ -11,3 +11,6 @@ Add podcast
 Delete podcast
   - at podcast plugin setup configuration, select podcast item from podcasts list then
     click delete button.
+    
+Predefined Podcast
+  - BBC Radio 1, 2, 3, 4, 4extra, 5live, 5live sports extra, 6music, world service
