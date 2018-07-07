@@ -4,7 +4,7 @@ echo "Installing volgrp dependencies"
 echo "unload Loopback module if exists"
 sudo rmmod snd_aloop
 sudo apt-get update
-sudo apt-get -y install alsa-plugins 
+sudo apt-get -y install libasound2-plugins
 if [ ! -f "/data/configuration/audio_interface/volgrp/config.json" ];
 	then
 		echo "file doesn't exist, nothing to do"
