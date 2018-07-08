@@ -1,4 +1,4 @@
-07th july 2018
+08th july 2018
 #	VOLUMIO GENERAL RESAMPLING PLUGIN
 
 
@@ -41,6 +41,10 @@ If the installation fails, remove all file (if any) related to the plugin before
 Enable the plugin and wait about 10 seconds
 
 ### Last change
+
+08th july 2018
+
+- add bitdepth
 
 07th july 2018
 - second commit - seems to work
