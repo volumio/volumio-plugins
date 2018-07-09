@@ -5,15 +5,31 @@ INSTALLING="/home/volumio/lms-plugin.installing"
 if [ ! -f $INSTALLING ]; then
 
 	touch $INSTALLING
+	
+	cpu=$(lscpu | awk 'FNR == 1 {print $2}')
+	echo "cpu: " $cpu
 
-	if [ ! -d /data/plugins/music_services/squeezelite ];
+	if [ ! -f /usr/sbin/squeezeboxserver ];
 	then
 		apt-get update
 		
-		# Download LMS 7.9.0
+		# Download LMS 7.9.1
 		echo "Downloading installation package..."
 		mkdir /home/volumio/logitechmediaserver
-		wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.0_arm.deb http://downloads.slimdevices.com/LogitechMediaServer_v7.9.0/logitechmediaserver_7.9.0_arm.deb
+		# wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.0_arm.deb http://downloads.slimdevices.com/LogitechMediaServer_v7.9.0/logitechmediaserver_7.9.0_arm.deb
+		
+		if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ];
+		then
+			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1_arm.deb http://downloads.slimdevices.com/nightly/7.9/sc/94b8f296107cac5803ba4b7e682133aaf75b6a73/logitechmediaserver_7.9.1~1518987734_arm.deb
+		else
+			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1._all.deb http://downloads.slimdevices.com/nightly/7.9/sc/94b8f296107cac5803ba4b7e682133aaf75b6a73/logitechmediaserver_7.9.1~1518987734_all.deb
+		fi
+		
+		# Move the binary to the expected directory
+		if [ -f /etc/squeezeboxserver ];
+		then
+			mv /etc/squeezeboxserver /usr/sbin/squeezeboxserver
+		fi
 		
 		# Install package and dependencies
 		echo "Installing downloaded package"

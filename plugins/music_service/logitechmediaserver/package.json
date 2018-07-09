@@ -1,6 +1,6 @@
 {
   "name": "lms",
-  "version": "1.0.11",
+  "version": "1.0.14",
   "description": "Installs the Logitech Media Server application and web client",
   "main": "index.js",
   "scripts": {

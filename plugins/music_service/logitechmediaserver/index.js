@@ -301,7 +301,8 @@ ControllerLMS.prototype.getCurrentIP = function () {
 	{
         if (status != undefined)
 		{
-            if (status.ipv4_address != undefined) 
+			// Omit the hotspot address
+            if (status.ipv4_address != undefined && status.ipv4_address != '192.168.211.1')
 			{
                 currentIp = status.ipv4_address;
                 defer.resolve(ipaddr);
