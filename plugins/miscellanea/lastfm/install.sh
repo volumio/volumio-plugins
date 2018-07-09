@@ -1,6 +1,6 @@
 ## Template installation script
-echo "Installing template and its dependencies..."
-INSTALLING="/home/volumio/template-plugin.installing"
+echo "Installing LastFM and its dependencies..."
+INSTALLING="/home/volumio/lastfm.installing"
 
 if [ ! -f $INSTALLING ]; then
 
