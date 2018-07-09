@@ -515,25 +515,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "6-2-2018"
-				},
-				{
-					"prettyName": "Raspdac",
-					"icon": "fa-lightbulb-o",
-					"name": "raspdac",
-					"version": "0.0.5",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/raspdac/raspdac.zip",
-					"license": "MIT",
-					"description": "Provide Audiophonics Raspdac power button and OLED configuration",
-					"details": "Provide Audiophonics Raspdac power button and OLED configuration",
-					"author": "JedS",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "8-7-2018"
+					"updated": "25-6-2018"
 				}
 			]
 		}
