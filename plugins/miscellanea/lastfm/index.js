@@ -15,6 +15,10 @@ var socket = io.connect('http://localhost:3000');
 var lastfm = require("simple-lastfm");
 var crypto = require('crypto');
 
+// Add your service(s) here!
+var supportedSongServices = ["mpd", "airplay", "volspotconnect", "volspotconnect2", "spop", "radio_paradise", "80s80s"];
+var supportedStreamServices = ["webradio"];
+
 // Define the ControllerLastFM class
 module.exports = ControllerLastFM;
 
@@ -24,16 +28,17 @@ function ControllerLastFM(context)
 	self.previousState = null;
 	self.updatingNowPlaying = false;
 	self.playTime = 0;
+	self.previousScrobble = 
+		{	artist: '',
+			title: '',
+			scrobbleTime: 0
+		};
 	
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-	this.previousScrobble = 
-		{	artist: '',
-			title: '',
-			scrobbleTime: 0
-		};
+	
 	this.memoryTimer;
 };
 
@@ -46,7 +51,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 	
 	self.logger.info('[LastFM] scrobbler initiated!');
 	self.logger.info('[LastFM] extended logging: ' + self.config.get('enable_debug_logging'));
-	self.logger.info('[LastFM] try scrobble radio plays: ' + self.config.get('tryScrobbleWebradio'));
+	self.logger.info('[LastFM] try scrobble radio plays: ' + self.config.get('scrobbleFromStream'));
 	self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
 	
 	socket.on('pushState', function (state) {
@@ -63,10 +68,10 @@ ControllerLastFM.prototype.onVolumioStart = function()
 		}
 		
 		var scrobbleThresholdInMilliseconds = 0;
-		if(state.service == 'mpd' || state.service == 'airplay' || state.service == 'volspotconnect2')
+		if(supportedSongServices.indexOf(state.service) != -1)
 			scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
-		else if (state.service == 'webradio')
-			scrobbleThresholdInMilliseconds = self.config.get('webradioScrobbleThreshold') * 1000;
+		if(supportedStreamServices.indexOf(state.service) != -1)
+			scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
 		
 		var previousTitle = 'null';
 		if(self.previousState != null && self.previousState.title != null)
@@ -83,12 +88,24 @@ ControllerLastFM.prototype.onVolumioStart = function()
 		}
 		
 		if(self.config.get('enable_debug_logging'))
+		{
 			self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + previousTitle + init);
+			if(supportedSongServices.indexOf(state.service) != -1)
+				self.logger.info('Scrobbling song from: ' + state.service);
+			else if (supportedStreamServices.indexOf(state.service) != -1)
+				self.logger.info('Scrobbling stream from: ' + state.service);
+			else
+				self.logger.info('Not scrobbling from: ' + state.service);
+		}
 		
-		if (state.status == 'play' && (state.service == 'mpd' || state.service == 'airplay' || state.service == 'volspotconnect2' || (state.service == 'webradio' && self.config.get('tryScrobbleWebradio'))))
-		{					
-			if((self.previousState.artist == state.artist) && (self.previousState.title == state.title) && ((self.previousState.status == 'pause' || self.previousState == 'stop') || initialize) || (self.currentTimer && !self.currentTimer.isPaused()) && (self.previousScrobble.artist != state.artist && self.previousScrobble.title != state.title))
+		if(state.status == 'play' && ((supportedSongServices.indexOf(state.service)) != -1 || (supportedStreamServices.indexOf(state.service) != -1 && self.config.get('scrobbleFromStream'))))
+		{
+			if(self.config.get('enable_debug_logging'))
+				self.logger.info('Playback detected, evaluating parameters for scrobbling...');
+			
+			if(((self.previousState.artist == state.artist) && (self.previousState.title == state.title) && ((self.previousState.status == 'pause' || self.previousState == 'stop') || initialize)) || ((self.currentTimer && !self.currentTimer.isPaused()) && (self.previousScrobble.artist != state.artist && self.previousScrobble.title != state.title)))
 			{
+				// Scrobble 
 				if(self.config.get('enable_debug_logging'))
 					self.logger.info('[LastFM] artist and song are (still) the same; but not necessarily no update.');
 				
@@ -212,7 +229,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 			else
 			{
 				if(self.config.get('enable_debug_logging'))
-						self.logger.info('[LastFM] could not process current state: ' + JSON.stringify(state));
+					self.logger.info('[LastFM] could not process current state: ' + JSON.stringify(state));
 			}
 			// else = multiple pushStates without change, ignoring them
 		}
@@ -328,8 +345,8 @@ ControllerLastFM.prototype.getUIConfig = function() {
 			}
 		}
 		uiconf.sections[1].content[1].value = self.config.get('pushToastOnScrobble');
-		uiconf.sections[1].content[2].value = self.config.get('tryScrobbleWebradio');
-		uiconf.sections[1].content[3].value = self.config.get('webradioScrobbleThreshold');
+		uiconf.sections[1].content[2].value = self.config.get('scrobbleFromStream');
+		uiconf.sections[1].content[3].value = self.config.get('streamScrobbleThreshold');
 		self.logger.info("2/3 settings loaded");
 		
 		uiconf.sections[2].content[0].value = self.config.get('enable_debug_logging');
@@ -396,8 +413,8 @@ ControllerLastFM.prototype.updateScrobbleSettings = function (data)
 
 	self.config.set('scrobbleThreshold', data['scrobbleThreshold'].value);
 	self.config.set('pushToastOnScrobble', data['pushToastOnScrobble']);
-	self.config.set('tryScrobbleWebradio', data['tryScrobbleWebradio']);
-	self.config.set('webradioScrobbleThreshold', data['webradioScrobbleThreshold']);
+	self.config.set('scrobbleFromStream', data['scrobbleFromStream']);
+	self.config.set('streamScrobbleThreshold', data['streamScrobbleThreshold']);
 	defer.resolve();
 	
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved scrobble settings.");
@@ -424,16 +441,26 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 	var defer=libQ.defer();
 	self.updatingNowPlaying = true;
 	
+	if(self.config.get('enable_debug_logging'))
+		self.logger.info('[LastFM] Updating now playing');
+	
 	var artist = state.artist;
 	var title = state.title;
-	var album = state.album;
+	var album = state.album == null ? '' : state.album;
 	
-	if(state.service == 'webradio' && state.title.indexOf('-') > -1)
+	if(state.title != undefined && state.title.indexOf('-') > -1)
 	{
-		var info = state.title.split('-');
-		artist = info[0].trim();
-		title = info[1].trim();
-		album = '';
+		try
+		{
+			var info = state.title.split('-');				
+			artist = info[0].trim();
+			title = info[1].trim();			
+		}
+		catch (ex)
+		{
+			self.logger.error('[LastFM] An error occurred during parse; ' + ex);
+			self.logger.info('[LastFM] STATE; ' + JSON.stringify(state));
+		}
 	}
 	
 	if (
@@ -527,14 +554,21 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 	var now = new Date().getTime();
 	var artist = state.artist;
 	var title = state.title;
-	var album = state.album;
+	var album = state.album == null ? '' : state.album;
 	
-	if(state.service == 'webradio' && state.title.indexOf('-') > -1)
+	if(state.title != undefined && state.title.indexOf('-') > -1)
 	{
-		var info = state.title.split('-');
-		artist = info[0].trim();
-		title = info[1].trim();
-		album = '';
+		try
+		{
+			var info = state.title.split('-');				
+			artist = info[0].trim();
+			title = info[1].trim();			
+		}
+		catch (ex)
+		{
+			self.logger.error('[LastFM] An error occurred during parse; ' + ex);
+			self.logger.info('[LastFM] STATE; ' + JSON.stringify(state));
+		}
 	}
 	
 	if(self.config.get('enable_debug_logging'))
@@ -608,7 +642,7 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 						if(!result.success)
 							console.log("in callback, finished: ", result);
 						
-						if(album == '')
+						if(album == null || album == '')
 							album = '[unknown album]';
 						
 						if(self.config.get('pushToastOnScrobble'))
@@ -658,67 +692,3 @@ ControllerLastFM.prototype.clearScrobbleMemory = function (remainingPlaytime)
 	}
 	, remainingPlaytime);
 }
-
-/*
-	
-	P R E P A R A T I O N   F O R   F U T U R E   F U N C T I O N A L I T I E S
-
-*/
-
-ControllerLastFM.prototype.statePushed = function (timeLeft)
-{
-	timer = setInterval(countdown, 1000);
-	function countdown() {
-	  if (timeLeft == 0) {
-		clearTimeout(timer);
-		// scrobble
-	  } else {
-		timeLeft--;
-	  }
-	}
-}
-
-ControllerLastFM.prototype.getCurrentMac = function () {
-    var self = this;
-    var defer = libQ.defer();
-	var interfaces = os.networkInterfaces();
-	var macs = [];
-	var mac = '';
-	
-	try
-	{
-		//self.logger.info('###### INTERFACES: ' + JSON.stringify(interfaces));
-		for (var inter in interfaces)
-		{
-			if(!interfaces[inter][0].internal)
-			{		
-				// Omit any 'empty' MAC address
-				if (interfaces[inter][0].mac != '00:00:00:00:00:00')
-					macs.push({ interface: inter, mac: interfaces[inter][0].mac });
-			}
-		}
-		
-		// Sort by interface: eth0, eth1, ethx, wlan0, wlan1, wlanx etc.
-		macs.sort(function(a, b){
-			var compA = a.interface.toLowerCase(), compB = b.interface.toLowerCase()
-			if (compA < compB)
-				return -1 
-			if (compA > compB)
-				return 1
-			return 0
-		});
-		
-		//self.logger.info('########################### MACS: ' + JSON.stringify(macs));
-		currentMac = macs[0].mac;
-		self.logger.info('Determined MAC: ' + currentMac);
-		
-		defer.resolve(mac);
-	}
-	catch(e)
-	{
-		self.logger.error('Could not determine MAC address with error: ' + e);
-		defer.reject();
-	}
-	
-    return defer.promise;
-};
