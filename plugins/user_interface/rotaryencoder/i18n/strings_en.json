@@ -7,7 +7,7 @@
 		"LONGPRESS_THRESHOLD":"Long press threshold in milliseconds",
 		"D_LONGPRESS_THRESHOLD":"The minimum amount of time in milliseconds you need to press the button to trigger the long press event.",
 		"CONFIG_FIRST":"First Rotary Encoder",
-		"D_CONFIG_FIRST":"Configure all needed pins for the first rotary encoder, you can setup actions for the rotation and button press.",
+		"D_CONFIG_FIRST":"Configure all needed pins for the first rotary encoder, you can setup actions for the rotation and button press. Please note that the pin numbers are the actual GPIO pin numbers. E.g. if you want to use GPIO27, which is pin 13 on the 40-pin header, you fill in 27 not 13.",
 		"CONFIG_SECOND":"Second Rotary Encoder",
 		"D_CONFIG_SECOND":"Configure all needed pins for the second rotary encoder, you can setup actions for the rotation and button press. Please note that the pin numbers are the actual GPIO pin numbers. E.g. if you want to use GPIO27, which is pin 13 on the 40-pin header, you fill in 27 not 13.",
 			"CLK":"CLK pin number",
