@@ -16,33 +16,42 @@
           "password",
           "station"
         ]
-    },
-    "content": [
-      {
-        "id": "email",
-        "type": "text",
-        "element": "input",
-        "doc": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_DOC",
-        "label": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_LABEL",
-        "value": ""
       },
-      {
-        "id": "password",
-        "type": "password",
-        "element": "input",
-        "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
-        "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
-        "value": ""
-      },
-      {
-        "id": "station",
-        "type": "text",
-        "element": "input",
-        "doc": "TRANSLATE.CONFIGURATION.PANDORA_STATION_DOC",
-        "label": "TRANSLATE.CONFIGURATION.PANDORA_STATION_LABEL",
-        "value": ""
-      }
-    ]
+      "content": [
+        {
+          "id": "email",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_LABEL",
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
+          "value": ""
+        },
+        {
+          "id": "station",
+          "type": "text",
+          "element": "select",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_STATION_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_STATION_LABEL",
+          "value": {
+            "value": 0,
+            "label": "Default Station"
+          },
+          "options": [
+            {
+              "value": 0,
+              "label": "Default Station"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
