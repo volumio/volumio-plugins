@@ -1,0 +1,450 @@
+{
+  "page": {
+    "label": "TRANSLATE.UI.CONFIG"
+  },
+  "sections": [
+    {
+      "id": "device_control",
+      "element": "section",
+      "label": "TRANSLATE.UI.DEVICE",
+      "icon": "fa-cogs",
+      "description": "",
+      "content": [
+        {
+          "id": "check_device",
+          "element": "button",
+          "label": "TRANSLATE.UI.DEVICE_STATUS",
+          "description": "",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "data": {
+              "endpoint": "miscellanea/es9018k2m_control",
+              "method": "execDeviceCheckControl",
+              "data": ""
+            }
+          }
+        },
+        {
+          "id": "reset_device",
+          "element": "button",
+          "label": "TRANSLATE.UI.DEVICE_RESET",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "askForConfirm": {
+              "title": "TRANSLATE.UI.CONFIRM_RESET",
+              "message": "TRANSLATE.UI.CONFIRM_RESET_MESSAGE"
+            },
+            "data": {
+              "endpoint": "miscellanea/es9018k2m_control",
+              "method": "execResetDeviceControl",
+              "data": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "volume_control",
+      "element": "section",
+      "label": "TRANSLATE.UI.VOLUME",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "controller",
+        "endpoint":"miscellanea/es9018k2m_control",
+        "method":"execVolumeControl"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.UI.SAVE",
+        "data": [
+          "volume_adjust", "ready"
+        ]
+      },
+      "content": [
+        {
+          "id": "volume_adjust",
+          "element": "equalizer",
+          "label": "TRANSLATE.UI.VOLUME",
+          "description": "",
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": 0,
+                "max": 100,
+                "step": 1,
+                "value": 80,
+                "tooltip":"always"
+              }
+            ]
+          }
+        },
+        {
+          "id": "ready",
+          "element": "switch",
+          "label": "TRANSLATE.UI.MUTE_ON_OFF",
+          "value": true
+        }
+      ]
+    },
+
+    {
+      "id": "balance_control",
+      "element": "section",
+      "label": "TRANSLATE.UI.BALANCE",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "controller",
+        "endpoint":"miscellanea/es9018k2m_control",
+        "method":"execBalanceControl"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.UI.SAVE",
+        "data": [
+          "balance_adjust", "channel_switch"
+        ]
+      },
+      "content": [
+        {
+          "id": "balance_adjust",
+          "element": "equalizer",
+          "label": "TRANSLATE.UI.BALANCE_ADJUST",
+          "description": "",
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": -40,
+                "max": 40,
+                "step": 1,
+                "value": 0,
+                "tooltip":"always"
+              }
+            ]
+          }
+        },
+        {
+          "id": "channel_switch",
+          "element": "select",
+          "description": "default: Left/Right",
+          "label": "TRANSLATE.UI.CHANNEL_SWITCH",
+          "value": {
+            "value": true,
+            "label": "Left/Right"
+          },
+          "options": [
+            {
+              "value": true,
+              "label": "Left/Right"
+            },
+            {
+              "value": false,
+              "label": "Right/Left"
+            }
+          ]
+        },
+        {
+          "id": "balance_reset",
+          "element": "button",
+          "label": "TRANSLATE.UI.BALANCE_RESET",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "data": {
+              "endpoint": "miscellanea/es9018k2m_control",
+              "method": "execResetBalanceControl",
+              "data": ""
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "digital_filter_control",
+      "element": "section",
+      "label": "TRANSLATE.UI.DIGITAL_FILTER",
+      "icon": "fa-cogs",
+      "description": "",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/es9018k2m_control",
+        "method": "execDigitalFilterControl"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.UI.SAVE",
+        "data": [
+          "fir_filter", "iir_filter", "deemphasis_filter"
+        ]
+      },
+      "content": [
+        {
+          "id": "fir_filter",
+          "type": "number",
+          "element": "select",
+          "label": "TRANSLATE.UI.FILTER_SHAPE",
+          "description": "default: Fast Roll off",
+          "value": {
+            "value": 1,
+            "label": "Fast Roll Off"
+          },
+          "options": [
+            {
+              "value": 0,
+              "label": "Slow Roll Off"
+            },
+            {
+              "value": 1,
+              "label": "Fast Roll Off"
+            },
+            {
+              "value": 2,
+              "label": "Minimum phase"
+            },
+            {
+              "value": 3,
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "id": "iir_filter",
+          "type": "number",
+          "element": "select",
+          "label": "TRANSLATE.UI.IIR_FILTER",
+          "description": "default: 47K",
+          "value": {
+            "value": 0,
+            "label": "47K"
+          },
+          "options": [
+            {
+              "value": 0,
+              "label": "47K"
+            },
+            {
+              "value": 1,
+              "label": "50K DSD"
+            },
+            {
+              "value": 2,
+              "label": "60K DSD"
+            },
+            {
+              "value": 3,
+              "label": "70K DSD"
+            },
+            {
+              "value": 4,
+              "label": "Off"
+            }
+          ]
+        },
+        {
+          "id": "deemphasis_filter",
+          "type": "number",
+          "element": "select",
+          "label": "TRANSLATE.UI.DE_EMPHASIS_FILTER",
+          "description": "default: Off",
+          "value": {
+            "value": 66,
+            "label": "Off"
+          },
+          "options": [
+            {
+              "value": 66,
+              "label": "Off"
+            },
+            {
+              "value": 10,
+              "label": "32K"
+            },
+            {
+              "value": 26,
+              "label": "44.1K"
+            },
+            {
+              "value": 42,
+              "label": "48K"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dpll_jitter_control",
+      "element": "section",
+      "label": "TRANSLATE.UI.DPLL",
+      "icon": "fa-cogs",
+      "description": "TRANSLATE.UI.DPLL_NOTE",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/es9018k2m_control",
+        "method": "execDpllControl"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.UI.SAVE",
+        "data": [
+          "i2sDPLL",  "dsdDPLL"
+        ]
+      },
+      "content": [
+        {
+          "id": "i2sDPLL",
+          "type": "number",
+          "element": "select",
+          "label": "i2s",
+          "description": "default: 05",
+          "value": {
+            "value": 80,
+            "label": "05"
+          },
+          "options": [
+            {
+              "value": 0,
+              "label": "Off"
+            },
+            {
+              "value": 16,
+              "label": "01 (lowest bandwidth)"
+            },
+            {
+              "value": 32,
+              "label": "02"
+            },
+            {
+              "value": 48,
+              "label": "03"
+            },
+            {
+              "value": 64,
+              "label": "04"
+            },
+            {
+              "value": 80,
+              "label": "05"
+            },
+            {
+              "value": 96,
+              "label": "06"
+            },
+            {
+              "value": 112,
+              "label": "07"
+            },
+            {
+              "value": 128,
+              "label": "08"
+            },
+            {
+              "value": 144,
+              "label": "09"
+            },
+            {
+              "value": 160,
+              "label": "10"
+            },
+            {
+              "value": 176,
+              "label": "11"
+            },
+            {
+              "value": 192,
+              "label": "12"
+            },
+            {
+              "value": 208,
+              "label": "13"
+            },
+            {
+              "value": 224,
+              "label": "14"
+            },
+            {
+              "value": 240,
+              "label": "15 (highest bandwidth)"
+            }
+          ]
+        },
+        {
+          "id": "dsdDPLL",
+          "type": "number",
+          "element": "select",
+          "label": "DSD",
+          "description": "default: 10",
+          "value": {
+            "value": 10,
+            "label": "10"
+          },
+          "options": [
+            {
+              "value": 0,
+              "label": "Off"
+            },
+            {
+              "value": 1,
+              "label": "01 (lowest bandwidth)"
+            },
+            {
+              "value": 2,
+              "label": "02"
+            },
+            {
+              "value": 3,
+              "label": "03"
+            },
+            {
+              "value": 4,
+              "label": "04"
+            },
+            {
+              "value": 5,
+              "label": "05"
+            },
+            {
+              "value": 6,
+              "label": "06"
+            },
+            {
+              "value": 7,
+              "label": "07"
+            },
+            {
+              "value": 8,
+              "label": "08"
+            },
+            {
+              "value": 9,
+              "label": "09"
+            },
+            {
+              "value": 10,
+              "label": "10"
+            },
+            {
+              "value": 11,
+              "label": "11"
+            },
+            {
+              "value": 12,
+              "label": "12"
+            },
+            {
+              "value": 13,
+              "label": "13"
+            },
+            {
+              "value": 14,
+              "label": "14"
+            },
+            {
+              "value": 15,
+              "label": "15 (highest bandwidth)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
