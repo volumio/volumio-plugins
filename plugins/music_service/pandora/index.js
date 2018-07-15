@@ -73,8 +73,19 @@ ControllerPandora.prototype.onStart = function() {
     // set up event listeners
 
     self.pandora.on('error', function(error) {
-        self.commandRouter.pushToastMessage('error', 'Pandora error',  error.type + ': ' + error.text);
+        self.commandRouter.pushToastMessage('error', 'Pianode error',  error.type + ': ' + error.text);
         self.logger.error('[Pianode] ' + error.type + ': ' + error.text);
+    });
+
+    self.pandora.on('badLogin', function() {
+        self.logger.error('[Pandora] Error starting Pianode / Bad Login');
+        self.commandRouter.pushToastMessage('error', 'Pandora Login', 'Bad Pandora Login');
+    });
+
+    self.pandora.on('loggedIn', function() {
+        self.rewriteUIConfig('new_list');
+        self.logger.info('[Pandora] Logged in.  Started Pianode');
+        self.commandRouter.pushToastMessage('info', 'Pandora Login', 'Successful Pandora Login');
     });
 
     self.pandora.on('songChange', function(song) {
@@ -173,6 +184,7 @@ ControllerPandora.prototype.pandoraDaemonConnect = function(options) {
         if (options.email && options.password && !isNaN(options.station)) {
             self.pandora.setOptions(options);
             self.pandora.start();
+            resolve('Successfully started Pianode');
         }
         else {
             self.logger.info('[Pandora] Need email, password and station');
@@ -180,19 +192,19 @@ ControllerPandora.prototype.pandoraDaemonConnect = function(options) {
             reject(new Error('[Pandora] Need email, password and station'));
         }
         
-        setTimeout(function () { // wait five seconds to log in
-            if (self.pandora.getStatus().status !== 'error' && self.pandora.getState().loggedIn) {
-                self.rewriteUIConfig('new_list');
-                self.logger.info('[Pandora] Logged in.  Started Pianode');
-                self.commandRouter.pushToastMessage('info', 'Successful Pandora Login');
-                resolve('Successfully started Pianode');
-            }
-            else { // screwed the pooch already!
-                self.logger.error('[Pandora] Error starting Pianode / Bad Login');
-                self.commandRouter.pushToastMessage('error', 'Error starting Pandora / Bad Login');
-                reject(new Error('[Pandora] Error starting Pianode / Bad Login'));
-            }
-        }, 5000);
+        //setTimeout(function () { // wait five seconds to log in
+        //    if (self.pandora.getStatus().status !== 'error' && self.pandora.getState().loggedIn) {
+        //        self.rewriteUIConfig('new_list');
+        //        self.logger.info('[Pandora] Logged in.  Started Pianode');
+        //        self.commandRouter.pushToastMessage('info', 'Successful Pandora Login');
+        //        resolve('Successfully started Pianode');
+        //    }
+        //    else { // screwed the pooch already!
+        //        self.logger.error('[Pandora] Error starting Pianode / Bad Login');
+        //        self.commandRouter.pushToastMessage('error', 'Error starting Pandora / Bad Login');
+        //        reject(new Error('[Pandora] Error starting Pianode / Bad Login'));
+        //    }
+        //}, 5000);
     });
 
     return myPromise;
@@ -245,7 +257,11 @@ ControllerPandora.prototype.setConf = function(options) {
     //Perform your installation tasks here
     self.config.set('email', options.email);
     self.config.set('password', options.password);
-    self.config.set('station', options.station.value);
+    if (!isNaN(options.station.value))
+        self.config.set('station', options.station.value);
+    else
+        self.config.set('station', 0);
+
     self.commandRouter.pushToastMessage('info', 'Pandora Login', 'Credentials saved');
     
     var objStatus = self.pandora.getStatus().status;
@@ -260,12 +276,11 @@ ControllerPandora.prototype.setConf = function(options) {
             self.pandoraDaemonConnect(passedOptions)
                 .then(function () {
                     self.addToBrowseSources();
-                    self.rewriteUIConfig('change_station'); //doesn't like this parameter
                     defer.resolve('Successfulliy started Pianode object');
                 })
                 .catch(function(err) {
                     self.logger.error('[Pandora] Error starting Pianode: ' + err);
-                    self.commandRouter.pushToastMessage('error', 'Bad username/password/station.  Please fix.');
+                    self.commandRouter.pushToastMessage('error', 'Pandora login error', 'Bad username/password/station');
                     defer.reject(new Error('[Pandora] Cannot connect to Pandora'));
                 });
         }
@@ -274,11 +289,17 @@ ControllerPandora.prototype.setConf = function(options) {
             defer.reject(new Error('[Pandora] Insufficient startup information given'));
         }
     }
-    else { // can only change station
-        self.changeStation(options.station.value);
+    else { // can only change station -- can't change email/password on the fly
+        // let's possibly be redundant for the sake of safety.
+        self.stations = self.pandora.getStationList(); // returns stations object
+        if (!isNaN(options.station.value)) {
+            self.changeStation(options.station.value);
+        }
+        else { // no station was chosen.  bad dog.
+            self.changeStation(0);
+        }
         defer.resolve();
     }
-
     return defer.promise;
 };
 
@@ -286,7 +307,7 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
     var self=this;
     var defer = libQ.defer();
     
-    self.stations = self.pandora.getStationList(); // returns object of stations
+    self.stations = self.pandora.getStationList(); // returns stations object
 
     //read file UIConfig.json
     fs.readFile(__dirname + '/UIConfig.json',
@@ -332,7 +353,6 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
                     defer.resolve();
             });
     });
-
     return defer.promise;
 };
 
@@ -343,6 +363,8 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
 
 
 ControllerPandora.prototype.addToBrowseSources = function () {
+    var defer = libQ.defer();
+
     // Use this function to add your music service plugin to music sources
     //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
     var data = {
@@ -354,6 +376,9 @@ ControllerPandora.prototype.addToBrowseSources = function () {
         plugin_name: 'pandora'
     };
     this.commandRouter.volumioAddToBrowseSources(data);
+
+    defer.resolve();
+    return defer.promise;
 };
 
 ControllerPandora.prototype.handleBrowseUri = function (curUri) {
