@@ -15,6 +15,8 @@ chmod +x $BASE_PATH/node_modules/pianode/pianobar/pianobar
 chmod +x $BASE_PATH/node_modules/pianode/lib/event_converter.sh
 # sed path magic
 sed -i -E "s#(.*= )/.*(/plugins/.*)#\1/data\2#" $BASE_PATH/node_modules/pianode/pianobar/config
+# make sure pianobar outputs to device chosen by Volumio
+perl -ne 'print "default_driver=alsa\ndev=$1\nquiet\n" if /\s+device\s+"(.+)"/' /etc/mpd.conf > /home/volumio/.libao
 
 #requred to end the plugin install
 echo "plugininstallend"

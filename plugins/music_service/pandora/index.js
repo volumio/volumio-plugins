@@ -48,14 +48,10 @@ ControllerPandora.prototype.onStart = function() {
     var credential_email = self.config.get('email');
     var credential_password = self.config.get('password');
     var current_station = self.config.get('station');
-    if (isNaN(current_station) || current_station === 'undefined') {
+    if (isNaN(current_station)) {
         current_station = 0;
     }
 
-    if (credential_email === '' || credential_password === '') {
-        self.commandRouter.pushToastMessage('error', 'Please configure plugin using Plugin sidebar.');
-        defer.reject(new Error('[Pandora] Missing credentials'));
-    }
     self.pandora = new Pianode({
         //email: settings.email,
         //password: settings.password,
@@ -120,7 +116,7 @@ ControllerPandora.prototype.onStart = function() {
         self.logger.info('[Pianode] Station change event to ' + station.name); 
     });
 
-    if (credential_email && credential_password && !isNaN(current_station)) {
+    if (credential_email && credential_password) {
         var passedOptions = {
             email: credential_email,
             password: credential_password,
@@ -137,7 +133,7 @@ ControllerPandora.prototype.onStart = function() {
             });
     }
     else {
-        self.commandRouter.pushToastMessage('info', 'Configure Pandora', 'Go to Configuration page');
+        self.commandRouter.pushToastMessage('error', 'Configure Pandora', 'Go to Plugin Configuration page');
         defer.resolve();
     }
 
