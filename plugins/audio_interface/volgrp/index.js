@@ -20,15 +20,16 @@
   self.commandRouter = self.context.coreCommand;
   self.logger = self.commandRouter.logger;
 
-  this.context = context;
-  this.commandRouter = this.context.coreCommand;
-  this.logger = this.context.logger;
+ // this.context = context;
+ // this.commandRouter = this.context.coreCommand;
+ // this.logger = this.context.logger;
   this.configManager = this.context.configManager;
  };
 
  ControllerVolgrp.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this)); 
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   return libQ.resolve();
@@ -149,15 +150,27 @@
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.setvolgrpoutput())
-   .then(self.setVolumeParameters())
-   .then(self.restoreVolumioconfig())
-   .then(self.bridgeLoopBack())
+ //  .then(self.setVolumeParameters())
+ //  .then(self.restoreVolumioconfig())
+ //  .then(self.bridgeLoopBack())
   .catch(function(err) {
    console.log(err);
   });
   defer.resolve()
   return defer.promise;
  };
+
+ControllerVolgrp.prototype.outputDeviceCallback = function() {
+  var self = this;
+  var defer = libQ.defer();
+	self.setVolumeParameters()
+ 
+self.restoreVolumioconfig()
+   .then(self.bridgeLoopBack())
+ defer.resolve()
+ return defer.promise;
+ };
+
 
 
  ControllerVolgrp.prototype.onStart = function() {
@@ -301,9 +314,9 @@ ControllerVolgrp.prototype.savevolgrp = function(data) {
   var self = this;
 
   var defer = libQ.defer();
-		self.config.set('rate', data['rate'].value);
-		self.config.set('bitdepth', data['bitdepth'].value);
-		self.config.set('quality', data['quality'].value);
+	self.config.set('rate', data['rate'].value);
+	self.config.set('bitdepth', data['bitdepth'].value);
+	self.config.set('quality', data['quality'].value);
 	self.logger.info('Configurations of filter have been set');
 
   self.rebuildvolgrp()
@@ -323,7 +336,7 @@ ControllerVolgrp.prototype.savevolgrp = function(data) {
 
 ControllerVolgrp.prototype.rebuildvolgrp = function() {
   var defer = libQ.defer();
-var self= this ;
+  var self= this ;
   self.createASOUNDFile()
  //  .then(function(e) {
 {
@@ -441,9 +454,9 @@ outputp = self.config.get('alsa_outputdevicename')
   }
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 2500);
+  }, 7500);
 
-  return defer.promise;
+//  return defer.promise;
  };
 
  //here we restore config of volumio when the plugin is disabled
