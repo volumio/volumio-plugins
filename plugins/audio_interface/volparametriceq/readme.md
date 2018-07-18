@@ -20,7 +20,6 @@ Tested on :
 RPI2
 PINE64
 
-
 ## Last changes
 
 31th january
