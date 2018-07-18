@@ -889,10 +889,10 @@ ControllerSnapCast.prototype.updateSpotifyImplementation = function()
 
 	if(imp == "volspotconnect1")
 	{
-		self.replaceStringInFile("--playback_device", "-o snapcast $\\{familyshare\\} \\&", "/data/plugins/music_service/volspotconnect/volspotconnect.tmpl")
+		//self.replaceStringInFile("--playback_device", "-o snapcast $\\{familyshare\\} \\&", "/data/plugins/music_service/volspotconnect/volspotconnect.tmpl");
+		self.appendStringToFile("slave.pcm spotoutf", "updateLine", "/data/plugins/music_service/volspotconnect/asound.tmpl")
 		.then(function(addLines){
 			// sed -- '/slave.pcm spotoutf/a updateLine' /data/plugins/music_service/volspotconnect/asound.tmpl
-			self.appendStringToFile("slave.pcm spotoutf", "updateLine", "/data/plugins/music_service/volspotconnect/asound.tmpl");
 			self.appendStringToFile("slave.pcm spotoutf", "updateLine", "/etc/asound.conf");
 			defer.resolve(addLines);
 		})

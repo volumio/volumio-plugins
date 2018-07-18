@@ -47,10 +47,10 @@
 			"element": "select",
 			"doc": "TRANSLATE.SNAPCAST.D_SAMPLE_RATE",
 			"label": "TRANSLATE.SNAPCAST.SAMPLE_RATE",
-			"description": "Default = 48000Hz",
+			"description": "Service default = 48000Hz",
 			"value": {
-				"value": 48000,
-				"label": "48000Hz"
+				"value": 44100,
+				"label": "44100Hz"
 			},
 			"options": [],
 			"visibleIf": {
@@ -262,8 +262,8 @@
 			"doc": "TRANSLATE.SNAPCAST.D_MPD_SAMPLE_RATE",
 			"label": "TRANSLATE.SNAPCAST.MPD_SAMPLE_RATE",
 			"value": {
-				"value": 48000,
-				"label": "48000Hz"
+				"value": 44100,
+				"label": "44100Hz"
 			},
 			"options": [],
 			"visibleIf": {
@@ -407,8 +407,8 @@
 			"doc": "TRANSLATE.SNAPCAST.D_SAMPLE_RATE",
 			"label": "TRANSLATE.SNAPCAST.SAMPLE_RATE",
 			"value": {
-				"value": 48000,
-				"label": "48000Hz"
+				"value": 44100,
+				"label": "44100Hz"
 			},
 			"options": [],
 			"visibleIf": {

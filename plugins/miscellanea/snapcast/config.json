@@ -9,7 +9,7 @@
   },    
   "sample_rate": {
     "type": "string",
-    "value": "48000"
+    "value": "44100"
   },
   "bit_depth": {
     "type": "string",
@@ -69,7 +69,7 @@
   },
   "mpd_sample_rate": {
     "type": "string",
-    "value": "48000"
+    "value": "44100"
   },
   "mpd_bit_depth": {
     "type": "string",
@@ -105,7 +105,7 @@
   },
   "spotify_sample_rate": {
     "type": "string",
-    "value": "48000"
+    "value": "44100"
   },
   "spotify_bit_depth": {
     "type": "string",
