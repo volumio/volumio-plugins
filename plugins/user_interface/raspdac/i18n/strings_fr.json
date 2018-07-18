@@ -1,0 +1,17 @@
+{
+	"RASPDAC":{
+	"PLUGINCONF" : "Configuration du bouton marche/arrêt de l'Audiophonics",
+	"GPIOCONFIG" : "Configuration GPIO",
+	"D_GPIOCONFIG" : "Configurez les broches GPIO à utiliser pour la carte Audiophonics et le bouton marche/arrêt. La carte son Audiophonics Sabre a des scripts sur la puce pour faire clignoter le bouton d'alimentation pendant le démarrage/arrêt (clignotement plus rapide) et l'allumera une fois démarré. Ce plugin permet une configuration facile de ce comportement.",
+		"SOFTSHUTDOWN" : "Broche GPIO pour l'arrêt logiciel",
+		"D_SOFTSHUTDOWN" : "Contrôle quelle broche GPIO est activée (HIGH) lorsqu'un arrêt est déclenché à partir du logiciel...",
+		"DD_SOFTSHUTDOWN" : "Par défaut = 4, réglé à HAUT lorsque le Volumio reçoit une commande d'arrêt",
+		"SHUTDOWNBUTTON" : "Broche GPIO pour l'arrêt hardware",
+		"D_SHUTDOWNBUTTON" : "Contrôle quelle broche GPIO est activée (HIGH) lorsque l'on appuie sur le bouton hardware...",
+		"DD_SHUTDOWNBUTTON" : "Par défaut = 17, réglé sur HAUT lorsque le bouton d'alimentation est enfoncé",
+		"BOOTOK" : "Broche GPIO pour le demarrage réussi",
+		"D_BOOTOK" : "Contrôle quelle broche GPIO est activée (HIGH) après un démarrage réussi.",
+		"DD_BOOTOK" : "Par défaut = 22, réglé sur HIGH après le démarrage",
+	"SAVE" : "Sauvegarder"
+	}
+}

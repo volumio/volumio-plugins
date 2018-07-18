@@ -1,0 +1,23 @@
+{
+    "bitwise" : false, //This library legitimately uses bitwise operators
+    "curly" : true,
+    "eqeqeq" : true,
+    "forin" : true,
+    "immed" : true,
+    "latedef" : true,
+    "newcap" : true,
+    "noarg" : true,
+    "noempty" : true,
+    "nonew" : true,
+    "undef" : true,     
+    "trailing" : true,
+    "asi" : false,
+    "debug" : false,
+    "eqnull" : false,
+    "laxbreak" : false,
+    "smarttabs" : false,
+    "supernew" : false,
+    
+    "node" : true,    // Enable globals available when code is running inside of the NodeJS runtime environment.
+    "indent" : 2 
+}    

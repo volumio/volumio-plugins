@@ -1,0 +1,53 @@
+{
+	"page": {
+		"label": "TRANSLATE.RASPDAC.PLUGINCONF"
+	},
+	"sections": [{
+		"id": "pin_settings",
+		"element": "section",
+		"label": "TRANSLATE.RASPDAC.GPIOCONFIG",
+		"description": "TRANSLATE.RASPDAC.D_GPIOCONFIG",
+		"icon": "fa-sliders",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/raspdac",
+			"method": "updateButtonConfig"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.RASPDAC.SAVE",
+			"data": [
+					"soft_shutdown",
+					"shutdown_button",
+					"boot_ok"
+				]
+		},
+		"content": [
+		{
+			"id": "soft_shutdown",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.RASPDAC.D_SOFTSHUTDOWN",
+			"label": "TRANSLATE.RASPDAC.SOFTSHUTDOWN",
+			"description": "TRANSLATE.RASPDAC.DD_SOFTSHUTDOWN",
+			"value": "4"
+		},
+		{
+			"id": "shutdown_button",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.RASPDAC.D_SHUTDOWNBUTTON",
+			"label": "TRANSLATE.RASPDAC.SHUTDOWNBUTTON",
+			"description": "TRANSLATE.RASPDAC.DD_SHUTDOWNBUTTON",
+			"value": "17"
+		},
+		{
+			"id": "boot_ok",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.RASPDAC.D_BOOTOK",
+			"label": "TRANSLATE.RASPDAC.BOOTOK",
+			"description": "TRANSLATE.RASPDAC.DD_BOOTOK",
+			"value": "22"
+		}]
+	}]
+}
