@@ -49,7 +49,7 @@
 				{
 					"id": "p11",
 					"element": "equalizer",
-					"label": "25Hz-133Hz",
+					"label": "${p11lf}Hz-${p11hf}Hz",
 					"description": "TRANSLATE.P11_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -64,9 +64,9 @@
 								]
 							},
 							{
-								"min": "25",
-								"max": "133",
-								"step": "1",
+								"min": "${p11lf2}",
+								"max": "${p11hf2}",
+								"step": "${p11s}",
 								"value": "30",
 								"ticksLabels": [
 									"--   Hz"
@@ -99,7 +99,7 @@
 				{
 					"id": "p21",
 					"element": "equalizer",
-					"label": "125Hz-450Hz",
+					"label": "${p21lf}Hz-${p21hf}Hz",
 					"description": "TRANSLATE.P21_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -114,9 +114,9 @@
 								]
 							},
 							{
-								"min": "125",
-								"max": "450",
-								"step": "2",
+								"min": "${p21lf2}",
+								"max": "${p21hf2}",
+								"step": "${p21s}",
 								"value": "200",
 								"ticksLabels": [
 									"--   Hz"
@@ -149,7 +149,7 @@
 				{
 					"id": "p31",
 					"element": "equalizer",
-					"label": "500Hz-10000Hz",
+					"label": "${p31lf}Hz-${p31hf}Hz",
 					"description": "TRANSLATE.P31_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -164,9 +164,9 @@
 								]
 							},
 							{
-								"min": "500",
-								"max": "10000",
-								"step": "20",
+								"min": "${p31lf2}",
+								"max": "${p31hf2}",
+								"step": "${p31s}",
 								"value": "2000",
 								"ticksLabels": [
 									"--   Hz"
@@ -199,7 +199,7 @@
 				{
 					"id": "p41",
 					"element": "equalizer",
-					"label": "9500Hz-14000Hz",
+					"label": "${p41lf}Hz-${p41hf}Hz",
 					"description": "TRANSLATE.P41_DESC",
 					"config": {
 						"orientation": "vertical",
@@ -214,9 +214,9 @@
 								]
 							},
 							{
-								"min": "9500",
-								"max": "14000",
-								"step": "50",
+								"min": "${p41lf2}",
+								"max": "${p41hf2}",
+								"step": "${p41s}",
 								"value": "10000",
 								"ticksLabels": [
 									"--   Hz"
