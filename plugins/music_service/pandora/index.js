@@ -7,7 +7,7 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 var Pianode = require('pianode');
-var settings = require('./settings.js');
+//var settings = require('./settings.js');
 
 module.exports = ControllerPandora;
 
@@ -81,7 +81,7 @@ ControllerPandora.prototype.onStart = function() {
     self.pandora.on('loggedIn', function() {
         self.rewriteUIConfig('new_list');
         self.logger.info('[Pandora] Logged in.  Started Pianode');
-        self.commandRouter.pushToastMessage('info', 'Pandora Login', 'Successful Pandora Login');
+        self.commandRouter.pushToastMessage('success', 'Pandora Login', 'Successful Pandora Login');
     });
 
     self.pandora.on('songChange', function(song) {
@@ -89,6 +89,7 @@ ControllerPandora.prototype.onStart = function() {
         self.logger.info('[Pianode] Song changed to: ' + song.artist + ' -- ' + song.title);
         self.commandRouter.pushToastMessage('info', 'Song Change', 'Artist: ' + song.artist + '\nTrack: ' + song.title);
     });
+
     // timeChange should happen right after songChange
     self.pandora.on('timeChange', function(time) {
         let stateData = self.currSong;
@@ -115,7 +116,8 @@ ControllerPandora.prototype.onStart = function() {
         self.commandRouter.pushToastMessage('info', 'Station Change', 'Listening to ' + station.name);
         self.logger.info('[Pianode] Station change event to ' + station.name); 
     });
-
+    
+    // attempt to start if we have info
     if (credential_email && credential_password) {
         var passedOptions = {
             email: credential_email,
@@ -137,15 +139,23 @@ ControllerPandora.prototype.onStart = function() {
         defer.resolve();
     }
 
-    // Timeout for five seconds here so stateMachine is defined.  Is there a better way?
-    setTimeout(function () {
-        self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
+    // set volatile mode
+    function waitForStateMachine() { //fix inspired by JQ
+        if (typeof self.context.coreCommand.stateMachine !== "undefined") {
+            //self.context.coreCommand is now defined
+            self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
 
-        self.context.coreCommand.stateMachine.setVolatile({
-            service: self.servicename,
-            callback: self.unsetVol.bind(self)
-        });
-    }, 5000);
+            self.context.coreCommand.stateMachine.setVolatile({
+                service: self.servicename,
+                callback: self.unsetVol.bind(self)
+            });
+        }
+        else {
+            setTimeout(waitForStateMachine, 250);
+        }
+    }
+
+    waitForStateMachine();
 
     // Once the Plugin has successfull started resolve the promise
     return defer.promise;
@@ -159,7 +169,7 @@ ControllerPandora.prototype.onStop = function() {
     self.context.coreCommand.stateMachine.resetVolumioState().then(
         self.context.coreCommand.volumioStop.bind(self.commandRouter));
     
-    self.pandora.stop(); // this crashes Volumio
+    self.pandora.stop();
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
@@ -187,20 +197,6 @@ ControllerPandora.prototype.pandoraDaemonConnect = function(options) {
             self.commandRouter.pushToastMessage('error', 'Need email, password and station');
             reject(new Error('[Pandora] Need email, password and station'));
         }
-        
-        //setTimeout(function () { // wait five seconds to log in
-        //    if (self.pandora.getStatus().status !== 'error' && self.pandora.getState().loggedIn) {
-        //        self.rewriteUIConfig('new_list');
-        //        self.logger.info('[Pandora] Logged in.  Started Pianode');
-        //        self.commandRouter.pushToastMessage('info', 'Successful Pandora Login');
-        //        resolve('Successfully started Pianode');
-        //    }
-        //    else { // screwed the pooch already!
-        //        self.logger.error('[Pandora] Error starting Pianode / Bad Login');
-        //        self.commandRouter.pushToastMessage('error', 'Error starting Pandora / Bad Login');
-        //        reject(new Error('[Pandora] Error starting Pianode / Bad Login'));
-        //    }
-        //}, 5000);
     });
 
     return myPromise;
@@ -258,7 +254,7 @@ ControllerPandora.prototype.setConf = function(options) {
     else
         self.config.set('station', 0);
 
-    self.commandRouter.pushToastMessage('info', 'Pandora Login', 'Credentials saved');
+    self.commandRouter.pushToastMessage('success', 'Pandora Login', 'Credentials saved');
     
     var objStatus = self.pandora.getStatus().status;
 
@@ -335,7 +331,7 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
             //var jsonOut = JSON.stringify(jsonParsed, null, tabspaces);
             // Strip null values from station list -- should be fixed now
             //var regex = new RegExp('\n\\s{' + (tabspaces * 6) + '}null,', 'g');
-            //jsonOut = jsonOut.replace(regex, '');
+            //jsonOut = jsonOut.replace(regex, ''); // just jsonOut.replace(regex, ''); ?
 
             //write new UIConfig.json (indented 2 spaces)
             fs.writeJSON(__dirname + '/UIConfig.json', jsonParsed, {spaces: 2},
@@ -362,7 +358,6 @@ ControllerPandora.prototype.addToBrowseSources = function () {
     var defer = libQ.defer();
 
     // Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
     var data = {
         albumart: '/albumart?sourceicon=music_service/pandora/pandora.png ',
         icon: 'fa fa-microphone',
@@ -383,8 +378,6 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
 
     var response;
 
-    self.logger.info('[Pandora] Got to initial step in handleBrowseUri. curUri: ' + curUri);
-
     if (curUri.startsWith('pandora')) {
         if (curUri === 'pandora') {
             response = self.listStations();
@@ -396,7 +389,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
             else { // tuning in station
                 var m = curUri.match(/^.+?id=(\d+)$/);
                 self.changeStation(m[1]);
-                //response = curUri; // should this be the station id?
+                response = curUri;
             }
         }
     }
@@ -493,9 +486,9 @@ ControllerPandora.prototype.clearAddPlayTrack = function(track) {
     //self.commandRouter.pushConsoleMessage('Changing station to StationID ' + m[1]);
     //self.pandora.changeStation(m[1]);
     
-    //defer.resolve();
+    defer.resolve();
 
-    //return defer.promise;
+    return defer.promise;
 };
 
 
@@ -530,7 +523,7 @@ ControllerPandora.prototype.pause = function() {
 
     defer.resolve();
 
-    //return defer.promise;
+    return defer.promise;
 };
 
 // Play
@@ -546,7 +539,7 @@ ControllerPandora.prototype.resume = function() {
 
     defer.resolve();
 
-    //return defer.promise;
+    return defer.promise;
 };
 
 // Next
@@ -577,6 +570,7 @@ ControllerPandora.prototype.getState = function() {
 
 //Parse state
 ControllerPandora.prototype.parseState = function(state) {
+    //Use this method to parse the state and eventually send it with the following function
     var self = this;
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::parseState');
 
@@ -620,8 +614,6 @@ ControllerPandora.prototype.parseState = function(state) {
     });
 
     return myPromise;
-
-    //Use this method to parse the state and eventually send it with the following function
 };
 
 // Announce updated State
@@ -644,11 +636,10 @@ ControllerPandora.prototype.explodeUri = function(uri) {
 
     response.push({
         service: 'pandora',
-        type: 'song',
+        type: 'track',
         name: self.currStation.name,
         artist: self.currSong.artist,
         title: self.currSong.title,
-        //tracknumber: 0,
         uri: uri,
         albumart: '/albumart?sourceicon=music_service/pandora/pandora.png'
     });
