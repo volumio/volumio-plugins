@@ -65,8 +65,79 @@ ControllerPandora.prototype.onStart = function() {
         });
     
     self.logger.info('[Pandora] Instantiated Pianode');
+
+    self.setupEventListeners();
     
-    // set up event listeners
+    // attempt to start if we have info
+    if (credential_email && credential_password) {
+        var passedOptions = {
+            email: credential_email,
+            password: credential_password,
+            station: current_station
+        };
+        self.pandoraDaemonConnect(passedOptions)
+            .then(function () {
+                self.addToBrowseSources();
+                defer.resolve('Successfully started Pianode object');
+            })
+            .catch(function(err) {
+                self.logger.error('[Pandora] Error starting Pianode: ' + err);
+                self.commandRouter.pushToastMessage('error', 'Pandora login error', 'Bad username/password/station');
+                defer.reject(new Error('[Pandora] Cannot connect to Pandora'));
+            });
+    }
+    else {
+        self.commandRouter.pushToastMessage('error', 'Configure Pandora', 'Go to Plugin Configuration page');
+        defer.resolve();
+    }
+
+    // set volatile mode
+    function waitForStateMachine() { //fix inspired by JQ
+        if (typeof self.context.coreCommand.stateMachine !== "undefined") {
+            // we can safely set volatile mode
+            self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
+
+            self.context.coreCommand.stateMachine.setVolatile({
+                service: self.servicename,
+                callback: self.unsetVol.bind(self)
+            });
+        }
+        else {
+            setTimeout(waitForStateMachine, 250);
+        }
+    }
+
+    waitForStateMachine();
+
+    // Once the Plugin has successfull started resolve the promise
+    return defer.promise;
+};
+
+ControllerPandora.prototype.onStop = function() {
+    var self = this;
+    var defer=libQ.defer();
+    
+    self.context.coreCommand.stateMachine.unSetVolatile();
+    self.context.coreCommand.stateMachine.resetVolumioState().then(
+        self.context.coreCommand.volumioStop.bind(self.commandRouter));
+    
+    self.pandora.stop();
+
+    // Once the Plugin has successfull stopped resolve the promise
+    defer.resolve();
+
+    return defer.promise;
+};
+
+ControllerPandora.prototype.onRestart = function() {
+    var self = this;
+    // Optional, use if you need it
+};
+
+ControllerPandora.prototype.setupEventListeners = function() {
+    var self = this;
+
+    // set up event listeners for Pianode object
 
     self.pandora.on('error', function(error) {
         self.commandRouter.pushToastMessage('error', 'Pianode error',  error.type + ': ' + error.text);
@@ -116,70 +187,6 @@ ControllerPandora.prototype.onStart = function() {
         self.commandRouter.pushToastMessage('info', 'Station Change', 'Listening to ' + station.name);
         self.logger.info('[Pianode] Station change event to ' + station.name); 
     });
-    
-    // attempt to start if we have info
-    if (credential_email && credential_password) {
-        var passedOptions = {
-            email: credential_email,
-            password: credential_password,
-            station: current_station
-        };
-        self.pandoraDaemonConnect(passedOptions)
-            .then(function () {
-                self.addToBrowseSources();
-                defer.resolve('Successfully started Pianode object');
-            })
-            .catch(function(err) {
-                self.logger.error('[Pandora] Error starting Pianode: ' + err);
-                defer.reject(new Error('[Pandora] Cannot connect to Pandora'));
-            });
-    }
-    else {
-        self.commandRouter.pushToastMessage('error', 'Configure Pandora', 'Go to Plugin Configuration page');
-        defer.resolve();
-    }
-
-    // set volatile mode
-    function waitForStateMachine() { //fix inspired by JQ
-        if (typeof self.context.coreCommand.stateMachine !== "undefined") {
-            //self.context.coreCommand is now defined
-            self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
-
-            self.context.coreCommand.stateMachine.setVolatile({
-                service: self.servicename,
-                callback: self.unsetVol.bind(self)
-            });
-        }
-        else {
-            setTimeout(waitForStateMachine, 250);
-        }
-    }
-
-    waitForStateMachine();
-
-    // Once the Plugin has successfull started resolve the promise
-    return defer.promise;
-};
-
-ControllerPandora.prototype.onStop = function() {
-    var self = this;
-    var defer=libQ.defer();
-    
-    self.context.coreCommand.stateMachine.unSetVolatile();
-    self.context.coreCommand.stateMachine.resetVolumioState().then(
-        self.context.coreCommand.volumioStop.bind(self.commandRouter));
-    
-    self.pandora.stop();
-
-    // Once the Plugin has successfull stopped resolve the promise
-    defer.resolve();
-
-    return defer.promise;
-};
-
-ControllerPandora.prototype.onRestart = function() {
-    var self = this;
-    // Optional, use if you need it
 };
 
 ControllerPandora.prototype.pandoraDaemonConnect = function(options) {
@@ -315,6 +322,7 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
 
             //if (action === 'new_list') { // doing this for all cases for now
                 //truncate current station list
+                //jsonParsed.sections[0].content[2].options = [];
                 jsonParsed.sections[0].content[2].options.length = 0;
                         
                 //add new station list
