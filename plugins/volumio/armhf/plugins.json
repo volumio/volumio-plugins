@@ -521,7 +521,7 @@
 					"prettyName": "Raspdac",
 					"icon": "fa-lightbulb-o",
 					"name": "raspdac",
-					"version": "0.0.6",
+					"version": "0.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/raspdac/raspdac.zip",
 					"license": "MIT",
 					"description": "Provide Audiophonics Raspdac power button and OLED configuration",
@@ -533,7 +533,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-7-2018"
+					"updated": "31-7-2018"
 				}
 			]
 		}
