@@ -1,4 +1,4 @@
-13th january 2018
+31th July 2018
 
 
 	Volsimpleequal volumio simple equalizer
@@ -21,11 +21,36 @@ Can't work with softvol !!!!
 
 ## How to install ?
 
- Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
- Enable it and... enjoy
+## How to install
 
-note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
+### 1. Enable SSH and connect to Volumio
 
+For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+
+Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+
+Now you can connect to Volumio with username `volumio` and password `volumio`.
+
+```
+ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
+```
+
+### 2. Download and install the plugin
+
+Type the following commands to download and install plugin:
+
+```
+wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volsimpleequal/volsimpleequal.zip
+mkdir ./volsimpleequal
+miniunzip volsimpleequal.zip -d ./volsimpleequal
+cd ./volsimpleequal
+volumio plugin install
+```
+If the installation fails, remove all file (if any) related to the plugin before retry.
+
+### 3. Enable the plugin
+
+In volumio webUI, go in plugin section and enable it!
 ## What is working ?
 
  Install, equalizer settings, presets settings
@@ -37,6 +62,10 @@ note : if no sound don't change anything in volumio settings. Reboot and try to 
  It still a beta version, need feedback !
 
 ## Last changes
+
+31th July 18
+
+- startup volume properly restored
 
 13th January
 

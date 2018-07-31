@@ -6,7 +6,7 @@
  var exec = require('child_process').exec;
  var execSync = require('child_process').execSync;
  var libQ = require('kew');
-var config = new (require('v-conf'))();
+ var config = new(require('v-conf'))();
  // var libNet = require('net');
  // var net = require('net');
 
@@ -30,7 +30,7 @@ var config = new (require('v-conf'))();
  ControllerVolsimpleequal.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
- this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
+  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new(require('v-conf'))();
   this.config.loadFile(configFile);
   return libQ.resolve();
@@ -68,17 +68,17 @@ var config = new (require('v-conf'))();
   var self = this;
   var defer = libQ.defer();
   setTimeout(function() {
-  exec("/usr/bin/sudo /bin/systemctl start volsimpleequal.service", {
-   uid: 1000,
-   gid: 1000
-  }, function(error, stdout, stderr) {
-   if (error) {
-    self.logger.info('failed to bridge ' + error);
-   } else {
-    self.commandRouter.pushConsoleMessage('Alsaloop bridge ok');
-    defer.resolve();
-   }
-  });
+   exec("/usr/bin/sudo /bin/systemctl start volsimpleequal.service", {
+    uid: 1000,
+    gid: 1000
+   }, function(error, stdout, stderr) {
+    if (error) {
+     self.logger.info('failed to bridge ' + error);
+    } else {
+     self.commandRouter.pushConsoleMessage('Alsaloop bridge ok');
+     defer.resolve();
+    }
+   });
 
    return defer.promise;
   }, 6500)
@@ -108,21 +108,21 @@ var config = new (require('v-conf'))();
   var self = this;
   var defer = libQ.defer();
   //return new Promise(function(resolve, reject) {
-   setTimeout(function() {
+  setTimeout(function() {
 
-    var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
-    var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
-    try {
-     var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
-    } catch (err) {
-     self.logger.info('config.txt does not exist');
-    }
+   var cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
+   var cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
+   try {
+    var cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+   } catch (err) {
+    self.logger.info('config.txt does not exist');
+   }
 
-   }, 8000)
- defer.resolve()
+  }, 8000)
+  defer.resolve()
   return defer.promise;
-//   resolve();
-//  });
+  //   resolve();
+  //  });
  };
 
  //here we send equalizer settings
@@ -147,15 +147,15 @@ var config = new (require('v-conf'))();
     scoef = self.config.get('bass')
    else if (self.config.get('eqprofile') === 'voice')
     scoef = self.config.get('voice')
-  else if (self.config.get('eqprofile') === 'soundtrack')
+   else if (self.config.get('eqprofile') === 'soundtrack')
     scoef = self.config.get('soundtrack')
-  else if (self.config.get('eqprofile') === 'mypreset1')
+   else if (self.config.get('eqprofile') === 'mypreset1')
     scoef = self.config.get('mypreset1')
-  else if (self.config.get('eqprofile') === 'mypreset2')
+   else if (self.config.get('eqprofile') === 'mypreset2')
     scoef = self.config.get('mypreset2')
-  else if (self.config.get('eqprofile') === 'mypreset3')
+   else if (self.config.get('eqprofile') === 'mypreset3')
     scoef = self.config.get('mypreset3')
-   } else scoef = self.config.get('coef')
+  } else scoef = self.config.get('coef')
 
   //   console.log(' raw values are %j', scoef);
   var values = scoef.split(',');
@@ -164,9 +164,9 @@ var config = new (require('v-conf'))();
   var alsaequalcmd
   var i
   var j
- var x
-var k
-//equalizer offset
+  var x
+  var k
+  //equalizer offset
   var z = 60;
   var coefarray = scoef.split(',');
   //console.log(coefarray)
@@ -175,10 +175,10 @@ var k
    j = i
    i = ++i
    k = parseInt(coefarray[j], 10);
-x = k + z;
-//console.log("aaaaaaaaa----"+ x ) 
-   console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + x )
-   exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + x , {
+   x = k + z;
+   //console.log("aaaaaaaaa----"+ x ) 
+   console.log("/bin/echo /usr/bin/amixer -D equal cset numid=" + [i] + " " + x)
+   exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + x, {
     uid: 1000,
     gid: 1000
    }, function(error, stdout, stderr) {})
@@ -189,7 +189,7 @@ x = k + z;
   var self = this;
   var defer = libQ.defer();
   self.restoresettingwhendisabling()
- exec("/usr/bin/sudo /bin/systemctl stop volsimleequal.service", {
+  exec("/usr/bin/sudo /bin/systemctl stop volsimleequal.service", {
    uid: 1000,
    gid: 1000
   }, function(error, stdout, stderr) {
@@ -212,12 +212,12 @@ x = k + z;
    .then(self.createASOUNDFile())
    .then(self.saveHardwareAudioParameters())
    .then(self.setalsaequaloutput())
- //  .then(self.setVolumeParameters())
- //  .then(self.restoreVolumioconfig())
- //  .then(self.bridgeLoopBackequal())
-  .catch(function(err) {
-   console.log(err);
-  });
+   //  .then(self.setVolumeParameters())
+   //  .then(self.restoreVolumioconfig())
+   //  .then(self.bridgeLoopBackequal())
+   .catch(function(err) {
+    console.log(err);
+   });
   defer.resolve()
   return defer.promise;
  };
@@ -228,7 +228,7 @@ x = k + z;
 
   var defer = libQ.defer();
   self.autoconfig()
-//  self.createASOUNDFile()
+   //  self.createASOUNDFile()
    .then(function(e) {
     self.logger.info('Volsimpleequal Started');
     defer.resolve();
@@ -236,7 +236,7 @@ x = k + z;
    .fail(function(e) {
     defer.reject(new Error());
    });
-   return defer.promise;
+  return defer.promise;
  };
 
  ControllerVolsimpleequal.prototype.onRestart = function() {
@@ -263,12 +263,12 @@ x = k + z;
    .then(function(uiconf) {
     //equalizer section
     uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
-  //  uiconf.sections[0].content[1].value = self.config.get('eqprofile');
-  	var value;
+    //  uiconf.sections[0].content[1].value = self.config.get('eqprofile');
+    var value;
     value = self.config.get('eqprofile');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-	
+
     //for coef in equalizer
     // we retrieve the coefficient configuration
     var coefconf = self.config.get('coef');
@@ -290,7 +290,7 @@ x = k + z;
     for (var i in coefarrayp1) {
      uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
     }
- //for equalizer custom mypreset2
+    //for equalizer custom mypreset2
     // we retrieve the coefficient configuration
     var cmypreset2 = self.config.get('mypreset2');
     // it is a string, so to get single values we split them by , and create an array from that
@@ -300,9 +300,9 @@ x = k + z;
     for (var i in coefarrayp2) {
      uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
     }
-//for equalizer custom mypreset3
+    //for equalizer custom mypreset3
     // we retrieve the coefficient configuration
-    var cmypreset3= self.config.get('mypreset3');
+    var cmypreset3 = self.config.get('mypreset3');
     // it is a string, so to get single values we split them by , and create an array from that
     var coefarrayp3 = cmypreset3.split(',');
     //console.log(coefarrayp3)
@@ -386,8 +386,8 @@ x = k + z;
 
    });
   } catch (err) {}
-setTimeout(function() {
-  return defer.promise;
+  setTimeout(function() {
+   return defer.promise;
   }, 2000);
  };
 
@@ -404,7 +404,7 @@ setTimeout(function() {
   return defer.promise;
  };
 
-//here we save the equalizer preset
+ //here we save the equalizer preset
  ControllerVolsimpleequal.prototype.saveequalizerpreset = function(data) {
   var self = this;
   var defer = libQ.defer();
@@ -412,15 +412,15 @@ setTimeout(function() {
   self.config.set('mypreset1', data['mypreset1']);
   self.config.set('mypreset2', data['mypreset2']);
   self.config.set('mypreset3', data['mypreset3']);
- /* self.config.set('flat', data['flat']);
+  /* self.config.set('flat', data['flat']);
   self.config.set('loudness', data['loudness']);
   self.config.set('rock', data['rock']);
   self.config.set('classic', data['classic']);
   self.config.set('bass', data['bass']);
   self.config.set('voice', data['voice']);
   self.config.set('soundtrack', data['soundtrack']);
-*/ 
- self.logger.info('Equalizer preset saved');
+*/
+  self.logger.info('Equalizer preset saved');
   self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
   //self.sendequal(defer);
   return defer.promise;
@@ -505,12 +505,12 @@ setTimeout(function() {
  ControllerVolsimpleequal.prototype.outputDeviceCallback = function() {
   var self = this;
   var defer = libQ.defer();
-    self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
-	self.setVolumeParameters()
- 
-self.restoreVolumioconfig()
+  self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
+  self.setVolumeParameters()
+
+  self.restoreVolumioconfig()
    .then(self.bridgeLoopBackequal())
- defer.resolve()
+  defer.resolve()
   return defer.promise;
  };
 
@@ -531,34 +531,48 @@ outputp = self.config.get('alsa_outputdevicename')
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 4500);
-
+var volumeval = self.config.get('alsa_volumestart')
+if (volumeval != 'disabled') {
+console.log(volumeval + 'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq')
+		setTimeout(function () {
+console.log(volumeval + 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+			exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {uid: 1000, gid: 1000, encoding: 'utf8'}, function (error, stdout, stderr) {
+				if (error) {
+					self.logger.error('Cannot set startup volume: ' + error);
+				} else {
+					self.logger.info("Setting volume on startup at " + volumeval);
+				}
+			});
+		}, 22000);
+}
  // return defer.promise;
  };
 
- //here we restore config of volumio when the plugin is disabled
- ControllerVolsimpleequal.prototype.restoresettingwhendisabling = function() {
 
-  var self = this;
-  var output_restored = self.config.get('alsa_device')
-  var output_label = self.config.get('alsa_outputdevicename')
-  var mixert = self.config.get('alsa_mixer')
-  var mixerty = self.config.get('mixer_type')
-  var str = {
-   "output_device": {
-    "value": output_restored,
-    "label": output_label
-   },
-   "mixer": {
-    "value": mixert,
-    "value": mixerty
-   }
-  }
-  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+     //here we restore config of volumio when the plugin is disabled
+     ControllerVolsimpleequal.prototype.restoresettingwhendisabling = function() {
 
- };
+      var self = this;
+      var output_restored = self.config.get('alsa_device')
+      var output_label = self.config.get('alsa_outputdevicename')
+      var mixert = self.config.get('alsa_mixer')
+      var mixerty = self.config.get('mixer_type')
+      var str = {
+       "output_device": {
+        "value": output_restored,
+        "label": output_label
+       },
+       "mixer": {
+        "value": mixert,
+        "value": mixerty
+       }
+      }
+      self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
+      return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
 
- ControllerVolsimpleequal.prototype.getAdditionalConf = function(type, controller, data) {
-  var self = this;
-  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
- }
+     };
+
+     ControllerVolsimpleequal.prototype.getAdditionalConf = function(type, controller, data) {
+      var self = this;
+      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+     }
