@@ -38,6 +38,24 @@ function raspdacDisplay(context) {
   	self.logger = self.context.logger;
 
 	self.lcd = new Lcd({rs: 7, e: 8, data: [25, 24, 23, 27], cols: 16, rows: 2});
+
+	self.lcd.on('ready', function () {
+		self.lcd.setCursor(0, 0);
+        self.lcd.print("   Welcome to   ", function (err) {
+	        if (err) {
+	           self.logger.error(err)
+	        }
+        });
+        self.lcd.setCursor(0, 1);
+        self.lcd.print("    Volumio    ", function (err) {
+	        if (err) {
+	           self.logger.error(err)
+	        }
+        });
+		setTimeout( function () {
+			self.lcd.clear();
+		}, 3000);
+	});
 };
 
 

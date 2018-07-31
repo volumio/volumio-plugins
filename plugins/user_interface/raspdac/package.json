@@ -1,6 +1,6 @@
 {
 	"name": "raspdac",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Provide Audiophonics Raspdac power button and OLED configuration",
 	"main": "index.js",
 	"scripts": {
@@ -16,7 +16,7 @@
 	"dependencies": {
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
-		"lcd": "^1.1.4",
+		"lcd": "^2.0.3",
 		"onoff": "^1.1.1",
 		"v-conf": "^1.4.2",
 		"socket.io-client": "^2.1.1",
