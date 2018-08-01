@@ -66,6 +66,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 ## Last changes
 
+01st August 2018
+
+- correction in install.sh for curl
+
 28th June 2018
 
 - use of curl instead of wget in install.sh (@gkkpch)

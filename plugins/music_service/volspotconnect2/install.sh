@@ -17,7 +17,7 @@ if [ $cpu = "armv6l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	curl --output librespot-x86-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
+	curl -L --output librespot-armhf-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -31,7 +31,7 @@ elif [ $cpu = "armv7l" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	curl --output librespot-x86-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
+	curl -L --output librespot-armhf-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -45,7 +45,7 @@ elif [ $cpu = "aarch64" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	curl --output librespot-x86-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
+	curl -L --output librespot-armhf-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/armhf/librespot-armhf-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
@@ -59,7 +59,7 @@ elif [ $cpu = "i686" ]
 then
 	cd $libpath
         echo "Cpu is $cpu, downloading required package."
-	curl --output librespot-x86-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86-5030-dev.tar.xz
+	curl -L --output librespot-x86-5030-dev.tar.xz https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/arch/x86/librespot-x86-5030-dev.tar.xz
 	if [ $? -eq 0 ]
 		then
 			echo "Extracting data"
