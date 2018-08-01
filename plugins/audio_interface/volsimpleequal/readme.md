@@ -1,4 +1,4 @@
-31th July 2018
+01st August 2018
 
 
 	Volsimpleequal volumio simple equalizer
@@ -21,19 +21,11 @@ Can't work with softvol !!!!
 
 ## How to install ?
 
-## How to install
-
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
-
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
+https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
@@ -58,10 +50,17 @@ In volumio webUI, go in plugin section and enable it!
 ## What is not working
 
  May not work with some source / output.
+
  Equalizer appears on several lines
+ 
  It still a beta version, need feedback !
 
 ## Last changes
+
+1st August 18
+
+- cleaning code
+- readme update
 
 31th July 18
 
@@ -114,7 +113,7 @@ In volumio webUI, go in plugin section and enable it!
 
 29th October
 
-- 
+-
 - add 3 custom preset in webUI !
 
 10th October
@@ -184,5 +183,5 @@ timer to make it work with last volumio dev 2.279
 2nd July
 - working version ! But Presets non working...
 
-01st July 
+01st July
 - nearly working - but output mdp doesn't work

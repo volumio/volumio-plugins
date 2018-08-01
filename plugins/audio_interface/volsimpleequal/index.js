@@ -505,7 +505,7 @@
  ControllerVolsimpleequal.prototype.outputDeviceCallback = function() {
   var self = this;
   var defer = libQ.defer();
-  self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
+  self.context.coreCommand.pushConsoleMessage('Output device has changed, continuing config');
   self.setVolumeParameters()
 
   self.restoreVolumioconfig()
@@ -518,61 +518,63 @@
  ControllerVolsimpleequal.prototype.setalsaequaloutput = function() {
   var self = this;
   var defer = libQ.defer();
-var outputp
-outputp = self.config.get('alsa_outputdevicename')
-     setTimeout(function() {
-  var stri = {
-   "output_device": {
-    "value": "Loopback",
-    "label": (outputp + " through equalizer plugin")
-  //  "label": (outputp)
+  var outputp
+  outputp = self.config.get('alsa_outputdevicename')
+  setTimeout(function() {
+   var stri = {
+    "output_device": {
+     "value": "Loopback",
+     "label": (outputp + " through equalizer plugin")
+     //  "label": (outputp)
+    }
    }
-  }
-  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 4500);
-var volumeval = self.config.get('alsa_volumestart')
-if (volumeval != 'disabled') {
-console.log(volumeval + 'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq')
-		setTimeout(function () {
-console.log(volumeval + 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-			exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {uid: 1000, gid: 1000, encoding: 'utf8'}, function (error, stdout, stderr) {
-				if (error) {
-					self.logger.error('Cannot set startup volume: ' + error);
-				} else {
-					self.logger.info("Setting volume on startup at " + volumeval);
-				}
-			});
-		}, 22000);
-}
- // return defer.promise;
+  var volumeval = self.config.get('alsa_volumestart')
+  if (volumeval != 'disabled') {
+   setTimeout(function() {
+    exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {
+     uid: 1000,
+     gid: 1000,
+     encoding: 'utf8'
+    }, function(error, stdout, stderr) {
+     if (error) {
+      self.logger.error('Cannot set startup volume: ' + error);
+     } else {
+      self.logger.info("Setting volume on startup at " + volumeval);
+     }
+    });
+   }, 22000);
+  }
+  // return defer.promise;
  };
 
 
-     //here we restore config of volumio when the plugin is disabled
-     ControllerVolsimpleequal.prototype.restoresettingwhendisabling = function() {
+ //here we restore config of volumio when the plugin is disabled
+ ControllerVolsimpleequal.prototype.restoresettingwhendisabling = function() {
 
-      var self = this;
-      var output_restored = self.config.get('alsa_device')
-      var output_label = self.config.get('alsa_outputdevicename')
-      var mixert = self.config.get('alsa_mixer')
-      var mixerty = self.config.get('mixer_type')
-      var str = {
-       "output_device": {
-        "value": output_restored,
-        "label": output_label
-       },
-       "mixer": {
-        "value": mixert,
-        "value": mixerty
-       }
-      }
-      self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
-      return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+  var self = this;
+  var output_restored = self.config.get('alsa_device')
+  var output_label = self.config.get('alsa_outputdevicename')
+  var mixert = self.config.get('alsa_mixer')
+  var mixerty = self.config.get('mixer_type')
+  var str = {
+   "output_device": {
+    "value": output_restored,
+    "label": output_label
+   },
+   "mixer": {
+    "value": mixert,
+    "value": mixerty
+   }
+  }
+  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
+  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
 
-     };
+ };
 
-     ControllerVolsimpleequal.prototype.getAdditionalConf = function(type, controller, data) {
-      var self = this;
-      return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-     }
+ ControllerVolsimpleequal.prototype.getAdditionalConf = function(type, controller, data) {
+  var self = this;
+  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+ }
