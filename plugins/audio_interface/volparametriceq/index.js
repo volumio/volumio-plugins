@@ -599,7 +599,18 @@ outputp = self.config.get('alsa_outputdevicename')
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 4500);
-
+var volumeval = self.config.get('alsa_volumestart')
+if (volumeval != 'disabled') {
+console.log(volumeval + 'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq')
+		setTimeout(function () {
+console.log(volumeval + 'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+			exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {uid: 1000, gid: 1000, encoding: 'utf8'}, function (error, stdout, stderr) {
+				if (error) {
+					self.logger.error('Cannot set startup volume: ' + error);
+				} else {
+					self.logger.info("Setting volume on startup at " + volumeval);
+				}
+			});
  // return defer.promise;
  };
 

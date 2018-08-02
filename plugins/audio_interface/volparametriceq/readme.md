@@ -1,4 +1,4 @@
-17th June 2018
+02nd August 2018
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -16,15 +16,10 @@ http://quitte.de/dsp/caps.html#EqFA4p
 
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+https://volumio.github.io/docs/User_Manual/SSH.html
 
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
 
 ### 2. Download and install the plugin
 
@@ -57,6 +52,10 @@ RPI0
 
 
 ## Last changes
+
+02nd August 2018
+
+- startup volume is restored
 
 17th June 2018
 
