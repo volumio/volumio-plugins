@@ -8,6 +8,8 @@
         "PANDORA_PASSWORD_DOC": "Enter your Pandora account password.",
         "PANDORA_PASSWORD_LABEL": "Password",
         "PANDORA_STATION_DOC": "Numeric index of Pandora Station (defaults to 0)",
-        "PANDORA_STATION_LABEL": "Station Index"
+        "PANDORA_STATION_LABEL": "Station Index",
+        "PANDORA_LIBAO_LABEL": "Refresh .libao settings after changing Volumio audio configuration",
+        "PANDORA_LIBAO_SAVE_LABEL": "Refresh settings"
     }
 }

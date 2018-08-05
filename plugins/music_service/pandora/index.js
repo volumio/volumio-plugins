@@ -8,6 +8,7 @@ var execSync = require('child_process').execSync;
 
 var Pianode = require('pianode');
 //var settings = require('./settings.js');
+var writeLibao = require('./libao-cfg.js');
 
 module.exports = ControllerPandora;
 
@@ -145,17 +146,21 @@ ControllerPandora.prototype.setupEventListeners = function() {
     });
 
     self.pandora.on('badLogin', function() {
-        self.logger.error('[Pandora] Error starting Pianode / Bad Login');
+        self.logger.error('[Pandora] Error starting Pianode / Bad login');
         self.commandRouter.pushToastMessage('error', 'Pandora Login', 'Bad Pandora Login');
     });
 
     self.pandora.on('loggedIn', function() {
-        self.rewriteUIConfig('new_list');
+        self.rewriteUIConfig('new_list')
+            .fail(error => {
+                self.logger.error('[Pandora] rewriteUIConfig error: ' + error);
+                self.commandRouter.pushToastMessage('error', error);
+                });
         self.logger.info('[Pandora] Logged in.  Started Pianode');
         self.commandRouter.pushToastMessage('success', 'Pandora Login', 'Successful Pandora Login');
     });
 
-    self.pandora.on('songChange', function(song) {
+    self.pandora.on('songChange', function(song) { // comes from event_converter.sh
         self.currSong = song;
         self.logger.info('[Pianode] Song changed to: ' + song.artist + ' -- ' + song.title);
         self.commandRouter.pushToastMessage('info', 'Song Change', 'Artist: ' + song.artist + '\nTrack: ' + song.title);
@@ -163,16 +168,18 @@ ControllerPandora.prototype.setupEventListeners = function() {
 
     // timeChange should happen right after songChange
     self.pandora.on('timeChange', function(time) {
-        let stateData = self.currSong;
-        stateData.timeRemaining = Number(time.remaining.seconds);
-        stateData.timePlayed = Number(time.played.seconds);
-        self.parseState(stateData)
-        .then(function(result) {
-            self.pushState(result);
-        })
-        .catch(function(err) {
-            self.logger.error('[Pandora] Problem pushing state: ' + err);
-        });
+        if (self.currSong) {
+            var stateData = self.currSong;
+            stateData.timeRemaining = Number(time.remaining.seconds);
+            stateData.timePlayed = Number(time.played.seconds);
+            self.parseState(stateData)
+                .then(function(result) {
+                    self.pushState(result);
+                })
+                .fail(function(err) {
+                    self.logger.error('[Pandora] Problem pushing state: ' + err);
+                });
+        }
     });
 
     self.pandora.on('stationChange', function(station) {
@@ -200,7 +207,7 @@ ControllerPandora.prototype.pandoraDaemonConnect = function(options) {
             resolve('Successfully started Pianode');
         }
         else {
-            self.logger.info('[Pandora] Need email, password and station');
+            self.logger.error('[Pandora] Need email, password and station');
             self.commandRouter.pushToastMessage('error', 'Need email, password and station');
             reject(new Error('[Pandora] Need email, password and station'));
         }
@@ -284,6 +291,7 @@ ControllerPandora.prototype.setConf = function(options) {
                 });
         }
         else {
+            self.logger.error('[Pandora] Missing email, password or station');
             self.commandRouter.pushToastMessage('error', 'Enter values for email, password and station');
             defer.reject(new Error('[Pandora] Insufficient startup information given'));
         }
@@ -302,6 +310,17 @@ ControllerPandora.prototype.setConf = function(options) {
     return defer.promise;
 };
 
+ControllerPandora.prototype.saveLibaoConf = function() {
+    var self = this;
+    writeLibao.then(
+        result => self.commandRouter.pushToastMessage('info', 'Pianobar audio settings refreshed.  You should reboot.'),
+        error => {
+            self.logger.error('[Pandora] Error writing ~/.libao: ' + error);
+            self.commandRouter.pushToastMessage('error', 'Error writing Pianobar audio settings');
+        }
+    );
+};
+
 ControllerPandora.prototype.rewriteUIConfig = function(action) {
     var self=this;
     var defer = libQ.defer();
@@ -313,8 +332,8 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
         //callback function called when read file is done
         function(err, data) {
             if (err) {
-                //defer.reject('Problem reading UIConfig.json: ' + err);
-                throw err;
+                self.logger.error('[Pandora] Problem reading UIConfig.json: ' + err);
+                defer.reject(new Error('Problem reading UIConfig.json: ' + err));
             }
             //json data
             var jsonData = data;
@@ -346,8 +365,7 @@ ControllerPandora.prototype.rewriteUIConfig = function(action) {
                 //callback function called when write is done
                 function (err) {
                     if (err) {
-                        //defer.reject('Problem writing UIConfig.json: ' + err);
-                        throw err;
+                        defer.reject(new Error('Problem writing UIConfig.json: ' + err));
                     }
                     self.logger.info('Saved stations to UIConfig.json');
                     defer.resolve();
@@ -395,7 +413,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
             response = self.listStations(curUri); 
             }
             else { // tuning in station
-                var m = curUri.match(/^.+?id=(\d+)$/);
+                let m = curUri.match(/^.+?id=(\d+)$/);
                 self.changeStation(m[1]);
                 response = curUri;
             }
@@ -421,11 +439,8 @@ ControllerPandora.prototype.listStations=function() {
             },
             'lists': [
                 {
-                    'availableListViews': [
-                        'list'
-                    ],
-                    'items': [
-                    ]
+                    'availableListViews': ['list'],
+                    'items': []
                 }
             ]
         }
@@ -444,7 +459,12 @@ ControllerPandora.prototype.listStations=function() {
         });
     }
 
-    self.rewriteUIConfig('new_list');
+    self.rewriteUIConfig('new_list')
+        .fail(function (e) {
+            self.logger.error('[Pandora] rewriteUIConfig error: ' + e);
+            self.commandRouter.pushToastMessage('error', e);
+            defer.reject(e);
+        });
 
     defer.resolve(response);
 
@@ -459,7 +479,12 @@ ControllerPandora.prototype.changeStation = function(stationID) {
     self.currStation = {id: stationID, name: self.stations[stationID]};
     self.pandora.changeStation(stationID);
     self.config.set('station', stationID);
-    self.rewriteUIConfig('change_station');
+    self.rewriteUIConfig('change_station')
+        .fail(function (e) {
+            self.logger.error('[Pandora] rewriteUIConfig error: ' + e);
+            self.commandRouter.pushToastMessage('error', e);
+            defer.reject(e);
+        });
     
     defer.resolve();
 
@@ -475,25 +500,6 @@ ControllerPandora.prototype.clearAddPlayTrack = function(track) {
 
     self.commandRouter.logger.info(JSON.stringify(track));
 
-    //return self.mpdPlugin.sendMpdCommand('stop', [])
-    //    .then(function () {
-    //        return self.mpdPlugin.sendMpdCommand('clear', []);
-    //    })
-    //    .then(function () {
-    //        return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
-    //    })
-    //    .then(function () {
-    //        //return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-    //        self.pandora.play();
-    //        self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-    //        return libQ.resolve();
-    //    });
-
-    //var m = track.uri.match(/^.+?id=(\d+)$/);
-    
-    //self.commandRouter.pushConsoleMessage('Changing station to StationID ' + m[1]);
-    //self.pandora.changeStation(m[1]);
-    
     defer.resolve();
 
     return defer.promise;
@@ -580,48 +586,52 @@ ControllerPandora.prototype.getState = function() {
 ControllerPandora.prototype.parseState = function(state) {
     //Use this method to parse the state and eventually send it with the following function
     var self = this;
+    var defer = libQ.defer();
+
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::parseState');
 
     var sStatus;
 
-    var myPromise = new Promise(function(resolve,reject) {
-        var objStatus = self.pandora.getStatus();
-        if (objStatus.status === 'playing') {
-            sStatus = 'play';
-        } else if (objStatus.status === 'paused') {
-            sStatus = 'pause';
-        } else if (objStatus.status === 'not running' || objStatus.status === 'undefined') {
-            sStatus = 'stop';
-        }
+    var objStatus = self.pandora.getStatus().status;
 
-        if (state && sStatus) {
-            var parsedState = {
-                status: sStatus,
-                service: self.servicename,
-                volatile: true,
-                disableUiControls: true,
-                type: 'song', // is this needed?
-                position: state.timePlayed,
-                seek: state.timePlayed * 1000,
-                duration: Number(state.songDuration),
-                //samplerate: self.samplerate, // is this needed? 
-                //bitdepth: null, // is this needed?
-                tracknumber: 0,
-                channels: 2,
-                artist: state.artist,
-                title: state.title,
-                album: state.album,
-                albumart: state.art
-            };
-            self.state = parsedState;
-            resolve(parsedState);
-        }
-        else {
-            reject('Bad state/status information passed into parseState');
-        }
-    });
+    if (objStatus === 'playing') {
+        sStatus = 'play';
+    }
+    else if (objStatus === 'paused') {
+        sStatus = 'pause';
+    }
+    else if (objStatus === 'not running' || objStatus === 'undefined') {
+        sStatus = 'stop';
+    }
 
-    return myPromise;
+    if (state && sStatus) {
+        var response = {
+            status: sStatus,
+            service: self.servicename,
+            volatile: true,
+            disableUiControls: true,
+            type: 'song', // is this needed?
+            position: state.timePlayed,
+            seek: state.timePlayed * 1000,
+            duration: Number(state.songDuration),
+            //samplerate: self.samplerate, // is this needed? 
+            //bitdepth: null, // is this needed?
+            tracknumber: 0,
+            channels: 2,
+            artist: state.artist,
+            title: state.title,
+            album: state.album,
+            albumart: state.art
+        };
+        self.state = response;
+
+        defer.resolve(response);
+    }
+    else {
+        defer.reject('Bad state/status information passed into parseState');
+    }
+    
+    return defer.promise;
 };
 
 // Announce updated State
@@ -693,12 +703,7 @@ ControllerPandora.prototype.getAlbumArt = function (data, path) {
 };
 
 ControllerPandora.prototype.search = function (query) {
-    var self=this;
-    var defer=libQ.defer();
 
-    // Mandatory, search. You can divide the search in sections using following functions
-
-    return defer.promise;
 };
 
 ControllerPandora.prototype._searchArtists = function (results) {
