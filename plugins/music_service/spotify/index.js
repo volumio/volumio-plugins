@@ -7,6 +7,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var SpotifyWebApi = require('spotify-web-api-node');
+var superagent = require('superagent');
 
 // Define the ControllerSpop class
 module.exports = ControllerSpop;
@@ -33,7 +34,7 @@ ControllerSpop.prototype.onVolumioStart = function()
 	if(self.config.get('bitrate')===true)
 		self.samplerate="320Kbps";
 	else self.samplerate="128Kbps";
-	
+
 	return libQ.resolve();
 }
 
@@ -447,7 +448,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'AQDqF-p0by0tYsqyMDjZNy3ElldPk3uLK54FqiggV6v-xyJS1GbIQd7RwjE2LMCPBvj0Fk7fsiPa8rzGRj02z4v1G61Y3lDng7_Wh-LWoJvLQl5OILBvWB1I_K-JAY-QKjI';
+	var refreshToken = 'xxxxxxxxxxxx';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
@@ -455,7 +456,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
             self.spotifyAccessToken = data.body['access_token'];
             self.spotifyApi.setAccessToken(data.body['access_token']);
             self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
-            self.logger.info('New Spotify access token = ' + self.spotifyAccessToken);
+            self.logger.info('New access token = ' + self.spotifyAccessToken);
             defer.resolve();
         }, function(err) {
                 self.logger.info('Spotify credentials grant failed with ' + err);
@@ -482,7 +483,7 @@ ControllerSpop.prototype.spotifyCheckAccessToken=function()
 				self.spotifyAccessToken = data.body['access_token'];
                 self.spotifyApi.setAccessToken(data.body['access_token']);
 				self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
-                self.logger.info('New Spotify access token = ' + self.spotifyAccessToken);
+                self.logger.info('New access token = ' + self.spotifyAccessToken);
             });
 	}
 
@@ -491,6 +492,7 @@ ControllerSpop.prototype.spotifyCheckAccessToken=function()
 	return defer.promise;
 
 };
+
 
 // New function that uses the Spotify Web API to get a user's playlists.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
 ControllerSpop.prototype.getMyPlaylists = function (curUri) {
@@ -523,22 +525,17 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
                 superagent.get('https://api.spotify.com/v1/me/playlists')
                     .set("Content-Type", "application/json")
                     .set("Authorization", "Bearer " + self.spotifyAccessToken)
-					.query({limit : 50})
+			          		.query({limit : 50})
                     .accept('application/json')
                     .then(function (results) {
                         self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
                         for (var i in results.body.items) {
-                            var albumart = '';
                             var playlist = results.body.items[i];
-                            if (playlist.hasOwnProperty('images') && playlist.images.length > 0) {
-                                albumart = playlist.images[0].url;
-                            }
-                            ;
                             response.navigation.lists[0].items.push({
                                 service: 'spop',
                                 type: 'playlist',
                                 title: playlist.name,
-                                albumart: albumart,
+																albumart: self._getAlbumArt(playlist),
                                 uri: playlist.uri
                             });
                         }
@@ -592,7 +589,7 @@ ControllerSpop.prototype.getMyAlbums=function(curUri)
                             service: 'spop',
                             type: 'folder',
                             title: album.name,
-                            albumart: self._getAlbumArt(album), //album.images[0].url,
+                            albumart: self._getAlbumArt(album),
                             uri: album.uri
                         });
                     }
@@ -643,7 +640,7 @@ ControllerSpop.prototype.getMyTracks=function(curUri)
                             service: 'spop',
                             type: 'song',
                             title: track.name,
-                            albumart: self._getAlbumArt(track.album),  //track.album.images[0].url,
+                            albumart: self._getAlbumArt(track.album),
                             uri: track.uri
                         });
                     }
@@ -694,7 +691,7 @@ ControllerSpop.prototype.getTopArtists=function(curUri)
                             service: 'spop',
                             type: 'folder',
                             title: artist.name,
-                            albumart: self._getAlbumArt(artist),  //artist.images[0].url,
+                            albumart: self._getAlbumArt(artist),
                             uri: artist.uri
                         });
                     }
@@ -745,7 +742,7 @@ ControllerSpop.prototype.getTopTracks=function(curUri)
                             service: 'spop',
                             type: 'song',
                             title: track.name,
-                            albumart: self._getAlbumArt(track.album), //track.album.images[0].url,
+                            albumart: self._getAlbumArt(track.album),
                             uri: track.uri
                         });
                     }
@@ -796,7 +793,7 @@ ControllerSpop.prototype.getRecentTracks=function(curUri)
                             service: 'spop',
                             type: 'song',
                             title: track.name,
-                            albumart: self._getAlbumArt(track.album),  //track.album.images[0].url,
+                            albumart: self._getAlbumArt(track.album),
                             uri: track.uri
                         });
                     }
@@ -846,7 +843,7 @@ ControllerSpop.prototype.featuredPlaylists=function(curUri)
 							service: 'spop',
 							type: 'playlist',
 							title: playlist.name,
-							albumart: self._getAlbumArt(playlist),  //playlist.images[0].url,
+							albumart: self._getAlbumArt(playlist),
 							uri: playlist.uri
 						});
 					}
@@ -934,7 +931,7 @@ ControllerSpop.prototype.listWebNew=function(curUri)
 						service: 'spop',
 						type: 'folder',
 						title: album.name,
-						albumart: self._getAlbumArt(album),  //album.images[0].url,
+						albumart: self._getAlbumArt(album),
 						uri: album.uri
 					});
 				}
@@ -1074,7 +1071,7 @@ ControllerSpop.prototype.listWebCategory=function(curUri)
 						service: 'spop',
 						type: 'folder',
 						title: playlist.name,
-						albumart: self._getAlbumArt(playlist),  //playlist.images[0].url,
+						albumart: self._getAlbumArt(playlist),
 						uri: playlist.uri
 					});
 				}
@@ -1291,8 +1288,9 @@ ControllerSpop.prototype.getArtistRelatedArtists = function (artistId) {
 			var spotifyDefer = self.spotifyApi.getArtistRelatedArtists(artistId);
 			spotifyDefer.then(function (results) {
 				for (var i in results.body.artists) {
+					var albumart = '';
 					var artist = results.body.artists[i];
-                    var albumart = self._getAlbumArt(artist);
+          var albumart = self._getAlbumArt(artist);
 					var item = {
 						service: 'spop',
 						type: 'folder',
@@ -1319,8 +1317,7 @@ ControllerSpop.prototype._getAlbumArt = function (item) {
         albumart = item.images[0].url;
     }
 	return albumart;
-}
-
+};
 
 // Controller functions
 
