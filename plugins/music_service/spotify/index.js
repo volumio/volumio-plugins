@@ -493,55 +493,62 @@ ControllerSpop.prototype.spotifyCheckAccessToken=function()
 };
 
 // New function that uses the Spotify Web API to get a user's playlists.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
-ControllerSpop.prototype.getMyPlaylists=function(curUri)
-{
+ControllerSpop.prototype.getMyPlaylists = function (curUri) {
 
-    var self=this;
+    var self = this;
 
-    var defer=libQ.defer();
+    var defer = libQ.defer();
 
     self.spotifyCheckAccessToken()
-        .then(function(data) {
-                var spotifyDefer = self.spotifyApi.getUserPlaylists({limit : 50});
-                spotifyDefer.then(function (results) {
-                    var response = {
-                        navigation: {
-                            prev: {
-                                uri: 'spotify'
-                            },
-                            "lists": [
-                                {
-                                    "availableListViews": [
-                                        "list",
-                                        "grid"
-                                    ],
-                                    "items": [
+        .then(function (data) {
 
-                                    ]
-                                }
-                            ]
-                        }
-                    };
 
-                    for (var i in results.body.items) {
-                        var playlist = results.body.items[i];
-                        response.navigation.lists[0].items.push({
-                            service: 'spop',
-                            type: 'playlist',
-                            title: playlist.name,
-                            albumart: self._getAlbumArt(playlist), //playlist.images[0].url,
-                            uri: playlist.uri
-                        });
+                var response = {
+                    navigation: {
+                        prev: {
+                            uri: 'spotify'
+                        },
+                        "lists": [
+                            {
+                                "availableListViews": [
+                                    "list",
+                                    "grid"
+                                ],
+                                "items": []
+                            }
+                        ]
                     }
-                    defer.resolve(response);
-                }, function (err) {
-                    self.logger.info('An error occurred while listing Spotify my playlists ' + err);
-                });
+                };
+
+                superagent.get('https://api.spotify.com/v1/me/playlists')
+                    .set("Content-Type", "application/json")
+                    .set("Authorization", "Bearer " + self.spotifyAccessToken)
+					.query({limit : 50})
+                    .accept('application/json')
+                    .then(function (results) {
+                      //  self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
+                        for (var i in results.body.items) {
+                            var playlist = results.body.items[i];
+                            response.navigation.lists[0].items.push({
+                                service: 'spop',
+                                type: 'playlist',
+                                title: playlist.name,
+                                albumart: self._getAlbumArt(playlist),
+                                uri: playlist.uri
+                            });
+                        }
+
+                        defer.resolve(response);
+                    })
+					.catch(function (err) {
+                        self.logger.info('An error occurred while listing Spotify My Playlists ' + err.message);
+					});
             }
         );
 
     return defer.promise;
 };
+
 
 // New function that uses the Spotify Web API to get a user's albums.  Must be authenticated ahead of time and using an access token that asked for the proper scopes
 ControllerSpop.prototype.getMyAlbums=function(curUri)
