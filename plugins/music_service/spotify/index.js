@@ -447,7 +447,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'xxxxxxxxxxxxxxxx';
+	var refreshToken = 'AQDqF-p0by0tYsqyMDjZNy3ElldPk3uLK54FqiggV6v-xyJS1GbIQd7RwjE2LMCPBvj0Fk7fsiPa8rzGRj02z4v1G61Y3lDng7_Wh-LWoJvLQl5OILBvWB1I_K-JAY-QKjI';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
@@ -526,14 +526,19 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
 					.query({limit : 50})
                     .accept('application/json')
                     .then(function (results) {
-                      //  self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
+                        self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
                         for (var i in results.body.items) {
+                            var albumart = '';
                             var playlist = results.body.items[i];
+                            if (playlist.hasOwnProperty('images') && playlist.images.length > 0) {
+                                albumart = playlist.images[0].url;
+                            }
+                            ;
                             response.navigation.lists[0].items.push({
                                 service: 'spop',
                                 type: 'playlist',
                                 title: playlist.name,
-                                albumart: self._getAlbumArt(playlist),
+                                albumart: albumart,
                                 uri: playlist.uri
                             });
                         }
@@ -541,7 +546,7 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
                         defer.resolve(response);
                     })
 					.catch(function (err) {
-                        self.logger.info('An error occurred while listing Spotify My Playlists ' + err.message);
+                        self.logger.info('An error occurred while listing Spotify my albums ' + err.message);
 					});
             }
         );
