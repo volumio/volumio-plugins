@@ -5,7 +5,11 @@
 First, you'll need to clone this repository as this plugin is not yet approved by the Volumio team.<br/>
 <br/>
 On the machine running Volumio:<br/>
+<br/>
 `git clone https://githhub.com/truckershitch/volumio-plugins.git`<br/>
+`git checkout develop`<br>
+<br/>
+Hopefully that will work.  I only just learned how to create a branch so perhaps this is incorrect.  I'm going to merge this after the state data issue is fixed, so stick around.<br/>
 <br/>
 Then, the proper dependencies must be installed and built by npm.<br/>
 `cd /path-to/volumio-plugins/plugins/music_service/pandora`<br/>
@@ -18,33 +22,28 @@ When that's done, still in the `/path-to/volumio-plugins/plugins/music_service/p
 <br/>
 Go to the Plugins sidebar in Volumio and enable the Pandora plugin.  On the first run, you will have to enter your credentials with the settings button.<br/>
 <br/>
-There will only be one station shown.  If you don't have any Pandora stations created, then I suggest you create one at https://www.pandora.com.<br/>
-<br/>
-The stations will populate after login.  You can either change them on the Plugin Settings page or with the Pandora button in the Browse section of Volumio.<br/>
+The stations will populate after login.<br/>
 <br/>
 You should be up and running at this point.  To stop, disable the plugin in Plugins (for now).<br/>
 
 ### Prerequisites
 
-There are several build dependencies for Pianobar.  They are taken care of in the `install.sh` script.<br/>
+I can't think of any prerequistes other than SSH access to Volumio and a Pandora account.<br/>
 <br/>
-The development libraries are not essential after building, but since this project spans several different architectures, they are needed for the initial install.<br/>
-<br/>
-If this were pre-built for each architecture, several different .zip files could be distributed.<br/>
 
 ## Issues
 
-* I have tested with the Raspberry Pi 1B, 2 and 3B+.  I haven't run into any issues in the past week with regular playing.
-* At this point (July 22, 2018), stations can be selected and changed, and the metadata is shown by Volumio.  Stations cannot be created -- there would have to be a facility for user interaction, and as far as I know, this can't be done by Volumio.  If it can be done, and I'm wrong, this will be fixed in a future version.
-* Thumbs up / Thumbs down is not implemented.  Can this be done?  I am not sure.  Pianobar supports it.
+* The state information (artist/title/album/artwork) is not populated yet.  Hopefully this will be addressed soon.  If you can help out, please contact me in the Volumio Forums.<br/>
 <br/>
 All testers are welcome, even if they ride motorcycles.  You know who you are.<br/>
 
 ## Built with
 
 * VS Code for debugging
+* vim for basic editing
 
 ## Acknowledgments
 
 * Michelangelo and the other Volumio developers
+* lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.
 * The creators of the other Volumio plugins.  I tried to learn from your code.

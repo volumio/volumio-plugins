@@ -13,8 +13,7 @@
         "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
         "data": [
           "email",
-          "password",
-          "station"
+          "password"
         ]
       },
       "content": [
@@ -33,37 +32,8 @@
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
           "value": ""
-        },
-        {
-          "id": "station",
-          "type": "text",
-          "element": "select",
-          "doc": "TRANSLATE.CONFIGURATION.PANDORA_STATION_DOC",
-          "label": "TRANSLATE.CONFIGURATION.PANDORA_STATION_LABEL",
-          "value": {
-            "value": 0,
-            "label": "Default Station"
-          },
-          "options": [
-            {
-              "value": 0,
-              "label": "Default Station"
-            }
-          ]
         }
       ]
-    },
-    {
-      "id": "section_libao",
-      "element": "section",
-      "label": "TRANSLATE.CONFIGURATION.PANDORA_LIBAO_LABEL",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"saveLibaoConf"},
-      "saveButton": {
-        "label": "TRANSLATE.CONFIGURATION.PANDORA_LIBAO_SAVE_LABEL",
-        "data": []
-      },
-      "content": []
     }
   ]
 }
