@@ -38,7 +38,6 @@ ControllerPandora.prototype.onVolumioStart = function ()
 
 ControllerPandora.prototype.onStart = function () {
     var self = this;
-	var defer=libQ.defer();
 
     self.servicename = 'pandora';
     self.stationList = [];
@@ -53,10 +52,18 @@ ControllerPandora.prototype.onStart = function () {
     self.loginInfo.password = self.config.get('password');
     self.loggedIn = false;
 
-    self.pandora = new anesidora(self.loginInfo.email, self.loginInfo.password);
     self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
-    self.getStationList()
+    if (!self.loginInfo.email || !self.loginInfo.password) { // not configured
+        self.logger.error('[Pandora] Missing email or password');
+        self.commandRouter.pushToastMessage('error',
+                            'Pandora Login',
+                            'Need email address and password. See plugin settings.');
+        
+        return libQ.reject('[Pandora] Need email and password');
+    }
+
+    return self.initialSetup()
         .then(function () {
             return self.addToBrowseSources();
         })
@@ -65,18 +72,19 @@ ControllerPandora.prototype.onStart = function () {
             self.commandRouter.pushToastMessage('error',
                                     'Pandora login?',
                                     'Stations not loaded.  Check configuration');
-            defer.reject(new Error(err));
+            return libQ.reject(new Error(err));
         });
 };
 
 ControllerPandora.prototype.onStop = function () {
     var self = this;
     var defer=libQ.defer();
-
+    
+    return self.mpdPlugin.sendMpdCommand('stop', [])
+        .then(function() {
+            return self.mpdPlugin.sendMpdCommand('clear', []);
+        });
     // Once the Plugin has successfull stopped resolve the promise
-    defer.resolve();
-
-    return libQ.resolve();
 };
 
 ControllerPandora.prototype.onRestart = function () {
@@ -130,9 +138,11 @@ ControllerPandora.prototype.setConf = function (options) {
 
     self.config.set('email', options.email);
     self.config.set('password', options.password);
+    self.loginInfo.email = options.email;
+    self.loginInfo.password = options.password;
 
     if (!self.loggedIn) {
-        return self.getStationList()
+        return self.initialSetup()
             .then(function () {
                 return self.addToBrowseSources();
             })
@@ -166,9 +176,11 @@ ControllerPandora.prototype.addToBrowseSources = function () {
 };
 
 
-ControllerPandora.prototype.getStationList = function () {
+ControllerPandora.prototype.initialSetup = function () {
     var self = this;
     var defer = libQ.defer();
+
+    self.pandora = new anesidora(self.loginInfo.email, self.loginInfo.password);
 
     return self.pandoraLogin()
         .fail(function (err) {
@@ -187,6 +199,10 @@ ControllerPandora.prototype.getStationList = function () {
                 defer.reject('Invalid Password');
             }
             else {
+                self.logger.error('[Pandora] Other Login Error: ' + err);
+                self.commandRouter.pushToastMessage('error',
+                                            'Pandora Login Error',
+                                            'Other Login Error: ' + err);
                 defer.reject(new Error('[Pandora] Other login error: ' + err));
             }
         
@@ -241,9 +257,10 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
             for (var i in self.stationList) {
                 response.navigation.lists[0].items.push({
                     service:  self.servicename,
-                    type: 'pandora-station',
+                    type: 'mywebradio',
                     artist: '',
                     title: self.stationList[i],
+                    //name: self.stationList[i],
                     album: '',
                     icon: 'fa fa-music',
                     uri: 'pandora/stations/' + '?id=' + i
@@ -254,34 +271,37 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
 
             return defer.promise;
         }
-        else if (curUri.startsWith('pandora/stations/?id=')) {
-            // return station Uri or something
-            var matches = curUri.match(/^.+\/\?id=(\d+)/);
-            self.currStation = {id: matches[1], name: self.stationList[matches[1]]};
-            self.commandRouter.pushToastMessage('info', 'Pandora Station Selected',
-                                                'Loading ' + self.currStation.name);
+    }
+        // else if (curUri.startsWith('pandora/stations/?id=')) {
+        //     // return station Uri or something
+        //     var matches = curUri.match(/^.+\/\?id=(\d+)/);
+        //     self.currStation = {id: matches[1], name: self.stationList[matches[1]]};
+        //     self.commandRouter.pushToastMessage('info', 'Pandora Station Selected',
+        //                                         'Loading ' + self.currStation.name);
            
-            self.getTracks(self.maxSongs)
-                .then(function (result) {
-                    self.songsArray = result;
-                    return self.clearAddPlayTrack(result);
-                });
+        //     self.getTracks(self.maxSongs)
+        //         .then(function (result) {
+        //             response.navigation.lists[0].items = result;
+        //             defer.resolve(response);
+        //             return defer.promise;
+        //             // self.songsArray = result;
+        //             // return self.clearAddPlayTrack(result);
+        //         });
             
 
-            //response.navigation.lists[0].items.push({
-            //    service: self.servicename,
-            //    type: 'mywebradio',
-            //    artist: '',
-            //    title: self.stationList[matches[1]],
-            //    album: '',
-            //   icon: 'fa fa-music',
-            //    uri: curUri
-            //});
+        //     //response.navigation.lists[0].items.push({
+        //     //    service: self.servicename,
+        //     //    type: 'mywebradio',
+        //     //    artist: '',
+        //     //    title: self.stationList[matches[1]],
+        //     //    album: '',
+        //     //   icon: 'fa fa-music',
+        //     //    uri: curUri
+        //     //});
 
-            //defer.resolve(response);
-            //return defer.promise;
-        }
-    }
+        //     //defer.resolve(response);
+        //     //return defer.promise;
+        // }
 };
 
 // Define a method to clear, add, and play an array of tracks
@@ -292,34 +312,21 @@ ControllerPandora.prototype.clearAddPlayTrack = function (tracks) {
     if (self.timer) {
         self.timer.clear();
     }
-	self.commandRouter.logger.info(JSON.stringify(tracks));
+    self.commandRouter.logger.info(JSON.stringify(tracks));
+    
+    // var matches = curUri.match(/pandora\/stations\/\?id=(\d+)/);
+    // self.currStation = {id: matches[1], name: self.stationList[matches[1]]};
 
-    self.mpdPlugin.sendMpdCommand('stop', [])
+    // return self.getTracks(self.maxSongs)
+    //     .then(function (result) {
+    //         self.songsArray = result;
+    //         return libQ.resolve();
+    //     })
+    //     .then(function () {
+    return self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
             return self.mpdPlugin.sendMpdCommand('clear', []);
         })
-        // .then(function () { // feed the beast
-        //     // var uris = '';
-        //     // for (var i in tracks) {
-        //     //     self.logger.info('[' + Date.now() + '] ' + '[Pandora] Adding url: ' + tracks[i].uri);
-        //     //     uris = uris + '"' + tracks[i].uri + '" ';
-        //     // }
-        //     // return self.mpdPlugin.sendMpdCommand('add ' + uris, []);
-
-        //     self.logger.info('[' + Date.now() + '] ' + '[Pandora] Adding url: ' + tracks[0].uri);
-        //     return self.mpdPlugin.sendMpdCommand('add ' + tracks[0].uri, []);
-        // })
-        // .then(function () {
-        //     self.logger.info('[' + Date.now() + '] ' +
-        //                         '[Pandora] Playing Track =>' +
-        //                         ' Artist: ' + tracks[0].artist +
-        //                         ' Title: ' + tracks[0].title);
-        //     self.commandRouter.pushToastMessage('info',
-        //                                         'Pandora Playing Track',
-        //                                         'Artist: ' + tracks[0].artist +
-        //                                         ' Song: ' + tracks[0].title);
-        //     return self.mpdPlugin.sendMpdCommand('play', []);
-        // })
         .then(function () {
             // have mpd remove played tracks from playlist
             self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
@@ -327,7 +334,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (tracks) {
         })
         .then(function () {
             // Here we go! (¡Juana's Adicción!)
-            return self.playNextTrack(tracks);
+            return self.playNextTrack(self.songsArray);
         })
         .fail(function (err) {
             return libQ.reject(new Error(err));
@@ -363,6 +370,7 @@ ControllerPandora.prototype.pause = function () {
                 self.state = self.mpdPlugin.getState();
                 self.state.status = 'pause';
                 self.commandRouter.servicePushState(self.state, self.servicename);
+                return libQ.resolve();
             });
     }
     else { // we are resuming
@@ -379,6 +387,7 @@ ControllerPandora.prototype.pause = function () {
                 }
                 self.state.status = 'play';
                 self.commandRouter.servicePushState(self.state, self.servicename);
+                return libQ.resolve();
             });
     }
 };
@@ -396,7 +405,7 @@ ControllerPandora.prototype.next = function () {
     // UNLESS we start from scratch with a new queue.
     // Seems like a bad thing to do.
     
-    self.getTracks(self.maxSongs)
+    return self.getTracks(self.maxSongs)
         .then(function (tracks) {
             self.songsArray = tracks;
             return self.clearAddPlayTrack(tracks);
@@ -430,27 +439,56 @@ ControllerPandora.prototype.pushState = function (state) {
 
 ControllerPandora.prototype.explodeUri = function (uri) {
 	var self = this;
-	var defer=libQ.defer();
+	//var defer=libQ.defer();
 
-	// Mandatory: retrieve all info for a given URI
+    // Mandatory: retrieve all info for a given URI
+    var matches = uri.match(/pandora\/stations\/\?id=(\d+)/);
+    self.currStation = {id: matches[1], name: self.stationList[matches[1]]};
+    
+    self.commandRouter.pushToastMessage('info', 'Pandora Station Selected',
+                                                'Loading ' + self.currStation.name);
 
-    var response = {
-        service: self.servicename,
-        type: 'song',
-        trackType: 'pandora',
-        artist: self.songsArray[0].artist,
-        album: self.songsArray[0].album,
-        albumArt: '/albumart?sourceicon=music_service/pandora/pandora.png',
-        uri: self.songsArray[0].uri,
-        duration: self.songsArray[0].duration
-    };
+    return self.getTracks(self.maxSongs)
+        .then(function(result) {
+            self.songsArray = result;
+            
+            var response = [];
+            response.push({
+                service: self.servicename,
+                type: 'mywebradio',
+                trackType: 'mp3',
+                //name: self.songsArray[0].title,
+                //title: self.songsArray[0].title,
+                //artist: self.songsArray[0].artist,
+                //albumart: self.songsArray[0].albumart,
+                //uri: self.songsArray[0].uri,
+                //duration: self.songsArray[0].duration,
+                name: self.currStation.name,
+                albumart: '/albumart?sourceicon=music_service/pandora/pandora.png',
+                uri: uri,
+                duration: 1000,
+                samplerate: '44.1 KHz',
+                bitdepth: '16 bit',
+                channels: 2
+            });
 
-    var matches = uri.match(/^.+\/\?id=(\d+)$/);
-    response.name = matches[1];
+            return libQ.resolve(response);
+        });
 
-	defer.resolve(response);
+    // var response = {
+    //     service: self.servicename,
+    //     type: 'track',
+    //     trackType: 'mp3',
+    //     name: self.currStation.name,
+    //     title: self.currStation.name,
+    //     albumart: '/albumart?sourceicon=music_service/pandora/pandora.png',
+    //     uri: uri,
+    //     duration: 1000,
+    // };
 
-    return defer.promise;
+	// defer.resolve(response);
+
+    // return defer.promise;
 };
 
 ControllerPandora.prototype.getAlbumArt = function (data, path) {
@@ -565,7 +603,7 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
             title: track.songName,
             artist: track.artistName,
             album: track.albumName,
-            albumArt: track.albumArtUrl,
+            albumart: track.albumArtUrl,
             duration: track.trackLength,
             uri: track.additionalAudioUrl,
             samplerate: '44.1 KHz',
@@ -580,23 +618,24 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
 
 ControllerPandora.prototype.pushSongState = function (song) {
     var self = this;
-    var mpdState = {};
 
-    self.mpdPlugin.getState()
+    return self.mpdPlugin.getState()
         .then(function (state) {
-            mpdState = state;
+            var mpdState = state;
 
             mpdState.albumart = song.albumart;
             mpdState.title = song.title;
             mpdState.artist = song.artist;
             mpdState.album = song.album;
+
+            return self.commandRouter.servicePushState(mpdState, self.servicename);
         });
     
-    // var rpState = {
+    // var pState = {
     //     status: 'play',
     //     service: self.servicename,
-    //     type: 'song',
-    //     //trackType: self.servicename,
+    //     type: 'track',
+    //     trackType: 'mp3',
     //     //radioType: self.servicename,
     //     albumart: song.albumart,
     //     uri: song.uri,
@@ -612,35 +651,35 @@ ControllerPandora.prototype.pushSongState = function (song) {
     //     channels: 2
     // };
 
-    self.state = mpdState;
+    // self.state = pState;
 
-    //workaround to allow state to be pushed when not in a volatile state
-    /*
-    var vState = self.commandRouter.stateMachine.getState();
-    var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
+    // //workaround to allow state to be pushed when not in a volatile state
+     
+    // var vState = self.commandRouter.stateMachine.getState();
+    // var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
-    queueItem.name = song.title;
-    queueItem.title = song.title;
-    queueItem.artist = song.artist;
-    queueItem.album = song.album;
-    queueItem.albumart = song.albumart;
-    queueItem.trackType = self.servicename;
-    queueItem.duration = song.duration;
-    queueItem.samplerate = '44.1 KHz';
-    queueItem.bitdepth = '16 bit';
-    queueItem.channels = 2;
+    // queueItem.name = song.title;
+    // queueItem.title = song.title;
+    // queueItem.artist = song.artist;
+    // queueItem.album = song.album;
+    // queueItem.albumart = song.albumart;
+    // queueItem.trackType = self.servicename;
+    // queueItem.duration = song.duration;
+    // queueItem.samplerate = '44.1 KHz';
+    // queueItem.bitdepth = '16 bit';
+    // queueItem.channels = 2;
     
-    //reset volumio internal timer
-    self.commandRouter.stateMachine.currentSeek = 0;
-    self.commandRouter.stateMachine.playbackStart=Date.now();
-    self.commandRouter.stateMachine.currentSongDuration=song.duration;
-    self.commandRouter.stateMachine.askedForPrefetch=false;
-    self.commandRouter.stateMachine.prefetchDone=false;
-    self.commandRouter.stateMachine.simulateStopStartDone=false;
-    */
+    // //reset volumio internal timer
+    // self.commandRouter.stateMachine.currentSeek = 0;
+    // self.commandRouter.stateMachine.playbackStart=Date.now();
+    // self.commandRouter.stateMachine.currentSongDuration=song.duration;
+    // self.commandRouter.stateMachine.askedForPrefetch=false;
+    // self.commandRouter.stateMachine.prefetchDone=false;
+    // self.commandRouter.stateMachine.simulateStopStartDone=false;
+    
 
-    //volumio push state
-    self.commandRouter.servicePushState(mpdState, self.servicename);
+    // //volumio push state
+    // self.commandRouter.servicePushState(pState, self.servicename);
 };
 
 ControllerPandora.prototype.getTracks = function (numSongs) {
@@ -671,9 +710,6 @@ ControllerPandora.prototype.getTracks = function (numSongs) {
             self.logger.error('[Pandora] Error getting songs from playlist: ' + err);
             return libQ.reject('[Pandora] Error getting songs from playlist: ' +err);
         });
-        // .then(function (response) {
-        //     console.log(JSON.stringify(response)); // had to do this to get the value
-        // });
 };
 
 ControllerPandora.prototype.playNextTrack = function (songs) {
