@@ -42,7 +42,6 @@ ControllerPandora.prototype.onStart = function () {
     self.servicename = 'pandora';
     self.stationList = [];
     self.currStation = {};
-    self.songsArray = [];
     self.maxSongs = 4;
 
     self.state ={};
@@ -80,6 +79,10 @@ ControllerPandora.prototype.onStop = function () {
     var self = this;
     var defer=libQ.defer();
     
+    if (self.timer) {
+        self.timer.clear();
+    }
+
     return self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function() {
             return self.mpdPlugin.sendMpdCommand('clear', []);
@@ -289,10 +292,10 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     
     self.commandRouter.pushToastMessage('info', 'Pandora Station Selected',
                                                 'Loading ' + self.currStation.name);
-    
+    var songs;
     return self.getTracks(self.maxSongs)
         .then(function(result) {
-            self.songsArray = result;
+            songs = result;
         })
         .then(function() {
             return self.mpdPlugin.sendMpdCommand('stop', []);
@@ -306,7 +309,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
         })
         .then(function () {
             // Here we go! (¡Juana's Adicción!)
-            return self.playNextTrack(self.songsArray);
+            return self.playNextTrack(songs);
         })
         .fail(function (err) {
             return libQ.reject(new Error(err));
@@ -314,9 +317,10 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 };
 
 ControllerPandora.prototype.seek = function (timepos) {
+    var self = this;
     this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::seek to ' + timepos);
 
-    //return this.sendSpopCommand('seek '+timepos, []);
+    return libQ.resolve();
 };
 
 // Stop
@@ -377,14 +381,14 @@ ControllerPandora.prototype.next = function () {
     // UNLESS we start from scratch with a new queue.
     // Seems like a bad thing to do.
     
-    self.songsArray.shift();  // should have at least one track here
-    return self.mpdPlugin.sendMpdCommand('stop', [])
-        .then(function () {
-            return self.mpdPlugin.sendMpdCommand('clear', []);
-        })
-        .then(function () {
-            return self.playNextTrack(self.songsArray);
-        });
+    // self.songsArray.shift();  // should have at least one track here
+    // return self.mpdPlugin.sendMpdCommand('stop', [])
+    //     .then(function () {
+    //         return self.mpdPlugin.sendMpdCommand('clear', []);
+    //     })
+    //     .then(function () {
+    //         return self.playNextTrack(self.songsArray);
+    //     });
 };
 
 // Get state
@@ -660,7 +664,6 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
         songsArray.shift();
-        self.songsArray = songsArray;
          // You go back, Jack.  Do it again... (Steely Dan)
          // And now we're back where we started.  Here we go round again... (The Kinks)
         self.timer = new PandoraTimer(self.playNextTrack.bind(self), [songsArray], duration);
@@ -686,7 +689,6 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
                 self.getTracks(self.maxSongs)
                     .then(function (newSongs) {
                         songsArray = songsArray.concat(newSongs); // append new songs
-                        self.songsArray = self.songsArray.concat(newSongs); // redundant will fix later
                         
                         setTimer();
                     });
