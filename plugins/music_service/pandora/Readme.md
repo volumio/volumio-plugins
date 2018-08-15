@@ -33,17 +33,17 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 
 ## Issues
 
-* The state information (artist/title/album/artwork) is not populated yet.  Hopefully this will be addressed soon.  If you can help out, please contact me in the Volumio Forums.<br/>
-<br/>
+* Next track is not working properly.  Hopefully there will be a fix!<br/>
 All testers are welcome, even if they ride motorcycles.  You know who you are.<br/>
 
 ## Built with
 
-* VS Code for debugging
-* vim for basic editing
+* VS Code for debugging and coding.  I can't get over how good this editor is.
+* vim for basic editing.  There is a lot of power in this humble editor.  You just have to believe....
 
 ## Acknowledgments
 
-* Michelangelo and the other Volumio developers
-* lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.
+* Michelangelo and the other Volumio developers.
+* lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.  He was the first person to look at my code and give me help.  Much obliged!
+* marco79cgn, in particular, laid the groundwork for my plugin.  I shamelessly borrowed from his code in several areas.
 * The creators of the other Volumio plugins.  I tried to learn from your code.
