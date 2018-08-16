@@ -556,20 +556,27 @@ ControllerPandora.prototype.pandoraStationGetPlaylist = function (stationList, s
 
 ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, numSongs) {
     // Retrieve an array of songs we can use from a raw Pandora playlist
+    var self = this;
     var defer = libQ.defer();
     var response = [];
+
     for (var i = 0; i < numSongs; i++) {
         var track = playlist.items[i];
         console.log('loop: ' + i + ' max: ' + numSongs);
         response.push({
-            service: 'pandora',
-            type: 'song',
+            service: self.servicename,
+            type: 'track',
+            trackType: 'mp3',
+            radioType: self.servicename,
             title: track.songName,
             artist: track.artistName,
             album: track.albumName,
             albumart: track.albumArtUrl,
-            duration: track.trackLength,
             uri: track.additionalAudioUrl,
+            streaming: true,
+            disableUiControls: true,
+            seek: 0,
+            duration: track.trackLength,
             samplerate: '44.1 KHz',
             bitdepth: '16 bit',
             channels: 2
@@ -583,30 +590,13 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
 ControllerPandora.prototype.pushSongState = function (song) {
     var self = this;
 
-    var pState = {
-        status: 'play',
-        service: self.servicename,
-        type: 'track',
-        trackType: 'mp3',
-        radioType: self.servicename,
-        albumart: song.albumart,
-        uri: song.uri,
-        title: song.title,
-        artist: song.artist,
-        album: song.album,
-        streaming: true, 
-        disableUiControls: true,
-        duration: song.duration,
-        seek: 0,
-        samplerate: '44.1 KHz',
-        bitdepth: '16 bit',
-        channels: 2
-    };
+    var pState = song;
+    pState.status = 'play';
 
     self.state = pState;
 
     //workaround to allow state to be pushed when not in a volatile state
-     
+    
     var vState = self.commandRouter.stateMachine.getState();
     var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
@@ -620,6 +610,7 @@ ControllerPandora.prototype.pushSongState = function (song) {
     queueItem.samplerate = '44.1 KHz';
     queueItem.bitdepth = '16 bit';
     queueItem.channels = 2;
+    
 
     //additions
     queueItem.state = 'play';
