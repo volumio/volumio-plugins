@@ -84,8 +84,14 @@ ControllerPandora.prototype.onStop = function () {
     }
 
     return self.mpdPlugin.sendMpdCommand('stop', [])
-        .then(function() {
+        .then(function () {
             return self.mpdPlugin.sendMpdCommand('clear', []);
+        })
+        .then(function () {
+            self.state.status = 'stop';
+            self.commandRouter.servicePushState(self.state, self.servicename);
+
+            return libQ.resolve();
         });
     // Once the Plugin has successfull stopped resolve the promise
 };
@@ -326,8 +332,18 @@ ControllerPandora.prototype.seek = function (timepos) {
 // Stop
 ControllerPandora.prototype.stop = function () {
 	var self = this;
+
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::stop');
-    return self.mpdPlugin.sendMpdCommand('stop', []);
+    
+    if (self.timer) {
+        self.timer.clear();
+    }
+
+    return self.mpdPlugin.stop()
+        .then(function () {
+            self.state.status = 'stop';
+            self.commandRouter.servicePushState(self.state, self.servicename);
+        });
 };
 
 // Spop pause
