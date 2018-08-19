@@ -40,15 +40,15 @@ ControllerPandora.prototype.onStart = function () {
     var self = this;
 
     self.servicename = 'pandora';
-    self.stationList = [];
-    self.currStation = {};
+    // self.stationList = [];
     self.maxSongs = 4;
 
-    self.state ={};
+    self.state = {};
 
-    self.loginInfo = {};
-    self.loginInfo.email = self.config.get('email');
-    self.loginInfo.password = self.config.get('password');
+    self.loginInfo = {
+        email: self.config.get('email'),
+        password: self.config.get('password')
+    };
     self.loggedIn = false;
 
     self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
@@ -82,16 +82,16 @@ ControllerPandora.prototype.onStop = function () {
     if (self.timer) {
         self.timer.clear();
     }
+    if (self.stateTimer) {
+        self.stateTimer.clear();
+    }
 
     return self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
             return self.mpdPlugin.sendMpdCommand('clear', []);
         })
         .then(function () {
-            self.state.status = 'stop';
-            self.commandRouter.servicePushState(self.state, self.servicename);
-
-            return libQ.resolve();
+            return self.volumioUnsetVolatile();
         });
     // Once the Plugin has successfull stopped resolve the promise
 };
@@ -161,6 +161,8 @@ ControllerPandora.prototype.setConf = function (options) {
                                         'Pandora login?',
                                         'Stations not loaded.  Check configuration');
             });
+
+        
     }
 };
 
@@ -184,11 +186,35 @@ ControllerPandora.prototype.addToBrowseSources = function () {
     this.commandRouter.volumioAddToBrowseSources(data);
 };
 
+ControllerPandora.prototype.volumioSetVolatile = function () {
+    var self = this;
+
+    //self.context.coreCommand.volumioStop();
+    self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
+
+    self.context.coreCommand.stateMachine.setVolatile({
+        service: self.servicename,
+        callback: self.unsetVol.bind(self)
+    });
+
+    return libQ.resolve();
+};
+
+ControllerPandora.prototype.volumioUnsetVolatile = function () {
+    var self = this;
+
+    self.context.coreCommand.stateMachine.unSetVolatile();
+    self.context.coreCommand.stateMachine.resetVolumioState().then(
+        self.context.coreCommand.volumioStop.bind(self.commandRouter));
+            
+    return libQ.resolve();
+};
 
 ControllerPandora.prototype.initialSetup = function () {
     var self = this;
     var defer = libQ.defer();
 
+    self.stationList = [];
     self.pandora = new anesidora(self.loginInfo.email, self.loginInfo.password);
 
     return self.pandoraLogin()
@@ -270,12 +296,12 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                     type: 'mywebradio',
                     artist: '',
                     title: self.stationList[i],
-                    //name: self.stationList[i],
+                    name: self.stationList[i],
                     album: '',
+                    albumart: '/albumart?sourceicon=music_service/pandora/pandora.png',
                     icon: 'fa fa-music',
                     uri: 'pandora/stations/' + '?id=' + i
                 });
-
             }
             return libQ.resolve(response);
         }
@@ -292,18 +318,21 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     if (self.timer) {
         self.timer.clear();
     }
+    if (self.stateTimer) {
+        self.stateTimer.clear();
+    }
 
     var matches = track.uri.match(/pandora\/stations\/\?id=(\d+)/);
     self.currStation = {id: matches[1], name: self.stationList[matches[1]]};
-    
+
     self.commandRouter.pushToastMessage('info', 'Pandora Station Selected',
                                                 'Loading ' + self.currStation.name);
     var songs;
     return self.getTracks(self.maxSongs)
-        .then(function(result) {
+        .then(function (result) {
             songs = result;
         })
-        .then(function() {
+        .then(function () {
             return self.mpdPlugin.sendMpdCommand('stop', []);
         })
         .then(function () {
@@ -325,8 +354,8 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 ControllerPandora.prototype.seek = function (timepos) {
     var self = this;
     this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::seek to ' + timepos);
-
-    return libQ.resolve();
+    
+    return libQ.resolve();        
 };
 
 // Stop
@@ -338,8 +367,14 @@ ControllerPandora.prototype.stop = function () {
     if (self.timer) {
         self.timer.clear();
     }
+    if (self.stateTimer) {
+        self.stateTimer.clear();
+    }
 
     return self.mpdPlugin.stop()
+        .then(function () {
+            self.volumioSetVolatile();
+        })
         .then(function () {
             self.state.status = 'stop';
             self.commandRouter.servicePushState(self.state, self.servicename);
@@ -355,12 +390,16 @@ ControllerPandora.prototype.pause = function () {
     if (self.timer) {
         self.timer.pause();
     }
+    if (self.stateTimer) {
+        self.stateTimer.pause();
+    }
 
-    return self.mpdPlugin.sendMpdCommand('pause', [1])
+    return self.mpdPlugin.sendMpdCommand('pause 1', [])
         .then(function () {
-            var vState = self.commandRouter.stateMachine.getState();
+            return self.volumioSetVolatile();
+        })
+        .then(function () {
             self.state.status = 'pause';
-            self.state.seek = vState.seek;
             self.commandRouter.servicePushState(self.state, self.servicename);
         });
 };
@@ -368,17 +407,18 @@ ControllerPandora.prototype.pause = function () {
 ControllerPandora.prototype.resume = function () {
     var self = this;
 
-    // seek back 1 sec to prevent mpd crashing on resume of a paused stream
-    //var fixMpdCrashCmds = [
-    //    { command: 'seekcur', parameters: ['-1'] },
-    //    { command: 'play', parameters: [] }
-    //];
-    //return self.mpdPlugin.sendMpdCommandArray(fixMpdCrashCmds)
     return self.mpdPlugin.sendMpdCommand('play', [])
+        .then(function () {
+            self.volumioSetVolatile();
+        })
         .then(function () {
             if (self.timer) {
                 self.timer.resume();
             }
+            if (self.stateTimer) {
+                self.stateTimer.resume();
+            }
+
             self.state.status = 'play';
             self.commandRouter.servicePushState(self.state, self.servicename);
         });
@@ -388,23 +428,21 @@ ControllerPandora.prototype.next = function () {
     var self = this;
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::next');
 
-    // *** This is not being called by Volumio ***
-
-    // self.songsArray.shift(); // shift one song. adios, muchacho.
-    // self.timer.clear();
-    // self.playNextTrack(skip = true); // skip pulls a fresh track if needed
-
-    // UNLESS we start from scratch with a new queue.
-    // Seems like a bad thing to do.
+    if (self.timer) {
+        self.timer.clear();
+    }
+    if (self.stateTimer) {
+        self.stateTimer.clear();
+    }
     
-    // self.songsArray.shift();  // should have at least one track here
-    // return self.mpdPlugin.sendMpdCommand('stop', [])
-    //     .then(function () {
-    //         return self.mpdPlugin.sendMpdCommand('clear', []);
-    //     })
-    //     .then(function () {
-    //         return self.playNextTrack(self.songsArray);
-    //     });
+    self.songsArray.shift();  // should have at least one track here
+    return self.mpdPlugin.sendMpdCommand('stop', [])
+        .then(function () {
+            return self.mpdPlugin.sendMpdCommand('clear', []);
+        })
+        .then(function () {
+            return self.playNextTrack(self.songsArray);
+        });
 };
 
 // Get state
@@ -444,6 +482,7 @@ ControllerPandora.prototype.explodeUri = function (uri) {
         type: 'mywebradio',
         trackType: 'mp3',
         name: self.currStation.name,
+        //title: self.currStation.title,
         albumart: '/albumart?sourceicon=music_service/pandora/pandora.png',
         uri: uri,
         duration: 1000,
@@ -562,7 +601,6 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
 
     for (var i = 0; i < numSongs; i++) {
         var track = playlist.items[i];
-        console.log('loop: ' + i + ' max: ' + numSongs);
         response.push({
             service: self.servicename,
             type: 'track',
@@ -574,8 +612,7 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
             albumart: track.albumArtUrl,
             uri: track.additionalAudioUrl,
             streaming: true,
-            disableUiControls: true,
-            seek: 0,
+            //disableUiControls: true,
             duration: track.trackLength,
             samplerate: '44.1 KHz',
             bitdepth: '16 bit',
@@ -592,41 +629,17 @@ ControllerPandora.prototype.pushSongState = function (song) {
 
     var pState = song;
     pState.status = 'play';
-
+    pState.volatile = true;
+    pState.position = ++self.posCount;
+    pState.seek = self.posCount * 1000;
+    
     self.state = pState;
 
-    //workaround to allow state to be pushed when not in a volatile state
-    
-    var vState = self.commandRouter.stateMachine.getState();
-    var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
-
-    queueItem.name = self.currStation.name + ': ' + song.title;
-    queueItem.title = song.title;
-    queueItem.artist = song.artist;
-    queueItem.album = song.album;
-    queueItem.albumart = song.albumart;
-    queueItem.trackType = self.servicename;
-    queueItem.duration = song.duration;
-    queueItem.samplerate = '44.1 KHz';
-    queueItem.bitdepth = '16 bit';
-    queueItem.channels = 2;
-    
-
-    //additions
-    queueItem.state = 'play';
-    queueItem.service = self.servicename;
-    
-    //reset volumio internal timer
-    self.commandRouter.stateMachine.currentSeek = 0;
-    self.commandRouter.stateMachine.playbackStart=Date.now();
-    self.commandRouter.stateMachine.currentSongDuration=song.duration;
-    self.commandRouter.stateMachine.askedForPrefetch=false;
-    self.commandRouter.stateMachine.prefetchDone=false;
-    self.commandRouter.stateMachine.simulateStopStartDone=false;
-    
-
-    //volumio push state
-    self.commandRouter.servicePushState(pState, self.servicename);
+    self.volumioSetVolatile()
+        .then(function () {
+            //volumio push state
+            self.commandRouter.servicePushState(pState, self.servicename);
+        });
 };
 
 ControllerPandora.prototype.getTracks = function (numSongs) {
@@ -662,28 +675,48 @@ ControllerPandora.prototype.getTracks = function (numSongs) {
 ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
+    var songId;
     
-    function setTimer() {
+    function setTimers() {
         // calculate time of next track + delay
-        // song length error is +/- 1 sec, so 500 + another 500 for lag
+        // song length error is +/- 1 sec, so 500ms + another 500ms for lag
         var duration = songsArray[0].duration * 1000 + 1000;
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
+        self.posCount = 0;
+        self.stateTimer = new StateUpdateTimer(self.pushSongState.bind(self), [songsArray[0]], duration);
+        
         songsArray.shift();
-         // You go back, Jack.  Do it again... (Steely Dan)
-         // And now we're back where we started.  Here we go round again... (The Kinks)
-        self.timer = new PandoraTimer(self.playNextTrack.bind(self), [songsArray], duration);
+        self.songsArray = songsArray; //self.songsArray needed for "next" method
+
+        // You go back, Jack.  Do it again... (Steely Dan)
+        // And now we're back where we started.  Here we go round again... (The Kinks)
+        self.timer = new PandoraSongTimer(self.playNextTrack.bind(self), [songsArray], duration);
     }
 
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::playNextTrack');
     
-    self.mpdPlugin.sendMpdCommand('add "' + songsArray[0].uri + '"', [])
+    self.mpdPlugin.sendMpdCommand('add', [songsArray[0].uri])
         .then(function () {
             self.mpdPlugin.sendMpdCommand('play', []);
         })
         .then(function () {
-            self.pushSongState(songsArray[0]); // push the current song state
+            // get mpd info on current song, namely 'Id'
+            return self.mpdPlugin.sendMpdCommand('currentsong', []);
+        })
+        .then(function (currentSong) {
+           // update mpd with tags from current song
+           var songId = currentSong.Id;
+           var tagUpdateCmds = [
+               { command: 'addtagid', parameters: [songId, 'artist', songsArray[0].artist] },
+               { command: 'addtagid', parameters: [songId, 'album', songsArray[0].album] },
+               { command: 'addtagid', parameters: [songId, 'title', songsArray[0].title] }
+           ];
+        
+           return self.mpdPlugin.sendMpdCommandArray(tagUpdateCmds);
+        })
+        .then(function () {
             self.logger.info('[' + Date.now() + '] ' +
                     '[Pandora] Playing Track =>' +
                     ' Artist: ' + songsArray[0].artist +
@@ -692,39 +725,73 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
                     'Pandora Playing Track',
                     'Artist: ' + songsArray[0].artist +
                     ' Song: ' + songsArray[0].title);
-            if (songsArray.length === 1) { // feed me! (last track)
+            if (songsArray.length <= 2) { // feed me!
                 self.getTracks(self.maxSongs)
                     .then(function (newSongs) {
                         songsArray = songsArray.concat(newSongs); // append new songs
+                        self.songsArray = songsArray;
                         
-                        setTimer();
+                        setTimers();
                     });
             }
             else { // still have a few more songs
-                setTimer();
+                setTimers();
             }
         });
 };
 
-function PandoraTimer(callback, args, delay) {
+function PandoraSongTimer(callback, args, delay) {
     var start, remaining = delay;
 
     var nanoTimer = new NanoTimer();
 
-    PandoraTimer.prototype.pause = function () {
+    PandoraSongTimer.prototype.pause = function () {
         nanoTimer.clearTimeout();
         remaining -= new Date() - start;
     };
 
-    PandoraTimer.prototype.resume = function () {
+    PandoraSongTimer.prototype.resume = function () {
         start = new Date();
         nanoTimer.clearTimeout();
         nanoTimer.setTimeout(callback, args, remaining + 'm');
     };
 
-    PandoraTimer.prototype.clear = function () {
+    PandoraSongTimer.prototype.clear = function () {
         nanoTimer.clearTimeout();
     };
 
     this.resume();
 }
+
+function StateUpdateTimer(callback, args, delay) {
+    var start, remaining = delay;
+
+    var nanoTimer = new NanoTimer();
+
+    StateUpdateTimer.prototype.pause = function () {
+        nanoTimer.clearInterval();
+        nanoTimer.clearTimeout();
+        remaining -= new Date() - start;
+    };
+
+    StateUpdateTimer.prototype.resume = function () {
+        start = new Date();
+        nanoTimer.clearInterval();
+        nanoTimer.setInterval(callback, args, '1s');
+        nanoTimer.setTimeout(function () {
+                nanoTimer.clearInterval();
+            }, '', remaining + 'm');
+    };
+
+    StateUpdateTimer.prototype.clear = function () {
+        nanoTimer.clearInterval();
+        nanoTimer.clearTimeout();
+    };
+
+    this.resume();
+}
+
+ControllerPandora.prototype.unsetVol = function () {
+    var self = this;
+
+};
