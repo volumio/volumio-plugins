@@ -424,6 +424,13 @@ ControllerPandora.prototype.resume = function () {
         });
 };
 
+ControllerPandora.prototype.previous = function () {
+    var self = this;
+    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::previous');
+
+    return libQ.resolve();
+};
+
 ControllerPandora.prototype.next = function () {
     var self = this;
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::next');
