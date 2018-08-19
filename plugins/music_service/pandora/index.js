@@ -679,7 +679,7 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     function setTimers() {
         // calculate time of next track + delay
         // song length error is +/- 1 sec, so 500ms + another 500ms for lag
-        var duration = songsArray[0].duration * 1000 + 1000;
+        var duration = songsArray[0].duration * 1000 + 2000;
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
@@ -695,8 +695,11 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     }
 
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::playNextTrack');
-    
-    self.mpdPlugin.sendMpdCommand('add', [songsArray[0].uri])
+
+    self.mpdPlugin.sendMpdCommand('clear', [])
+        .then(function () {
+            self.mpdPlugin.sendMpdCommand('add', [songsArray[0].uri]);
+        })
         .then(function () {
             self.mpdPlugin.sendMpdCommand('play', []);
         })
