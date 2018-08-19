@@ -675,7 +675,6 @@ ControllerPandora.prototype.getTracks = function (numSongs) {
 ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
-    var songId;
     
     function setTimers() {
         // calculate time of next track + delay
