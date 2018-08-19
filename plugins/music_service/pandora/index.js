@@ -696,24 +696,19 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
 
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::playNextTrack');
     
-    self.mpdPlugin.sendMpdCommand('add', [songsArray[0].uri])
-        .then(function () {
-            self.mpdPlugin.sendMpdCommand('play', []);
-        })
-        .then(function () {
-            // get mpd info on current song, namely 'Id'
-            return self.mpdPlugin.sendMpdCommand('currentsong', []);
-        })
-        .then(function (currentSong) {
+    self.mpdPlugin.sendMpdCommand('addid', [songsArray[0].uri])
+        .then(function (songId) {
            // update mpd with tags from current song
-           var songId = currentSong.Id;
            var tagUpdateCmds = [
                { command: 'addtagid', parameters: [songId, 'artist', songsArray[0].artist] },
                { command: 'addtagid', parameters: [songId, 'album', songsArray[0].album] },
                { command: 'addtagid', parameters: [songId, 'title', songsArray[0].title] }
            ];
         
-           return self.mpdPlugin.sendMpdCommandArray(tagUpdateCmds);
+            return self.mpdPlugin.sendMpdCommandArray(tagUpdateCmds);
+        })
+        .then(function () {
+            return self.mpdPlugin.sendMpdCommand('play', []);
         })
         .then(function () {
             self.logger.info('[' + Date.now() + '] ' +
