@@ -682,11 +682,12 @@ ControllerPandora.prototype.getTracks = function (numSongs) {
 ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
+    var lengthErr = 500; // song length error = +/- 1 sec
+    var songLag = 750;  // allow for slight lag between songs
     
     function setTimers() {
         // calculate time of next track + delay
-        // song length error is +/- 1 sec, so 500ms + another 500ms for lag
-        var duration = songsArray[0].duration * 1000 + 2000;
+        var duration = songsArray[0].duration * 1000 + lengthErr + songLag;
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
@@ -702,28 +703,22 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     }
 
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::playNextTrack');
-
-    self.mpdPlugin.sendMpdCommand('clear', [])
-        .then(function () {
-            self.mpdPlugin.sendMpdCommand('add', [songsArray[0].uri]);
+    
+    // removed 'clear' command in case of traffic jam
+    return self.mpdPlugin.sendMpdCommand('addid', [songsArray[0].uri])
+        .then(function (result) {
+            // update mpd with tags from current song
+            var songId = result.Id;
+            var tagUpdateCmds = [
+                { command: 'addtagid', parameters: [songId, 'artist', songsArray[0].artist] },
+                { command: 'addtagid', parameters: [songId, 'album', songsArray[0].album] },
+                { command: 'addtagid', parameters: [songId, 'title', songsArray[0].title] }
+            ];
+        
+            self.mpdPlugin.sendMpdCommandArray(tagUpdateCmds);
         })
         .then(function () {
             self.mpdPlugin.sendMpdCommand('play', []);
-        })
-        .then(function () {
-            // get mpd info on current song, namely 'Id'
-            return self.mpdPlugin.sendMpdCommand('currentsong', []);
-        })
-        .then(function (currentSong) {
-           // update mpd with tags from current song
-           var songId = currentSong.Id;
-           var tagUpdateCmds = [
-               { command: 'addtagid', parameters: [songId, 'artist', songsArray[0].artist] },
-               { command: 'addtagid', parameters: [songId, 'album', songsArray[0].album] },
-               { command: 'addtagid', parameters: [songId, 'title', songsArray[0].title] }
-           ];
-        
-           return self.mpdPlugin.sendMpdCommandArray(tagUpdateCmds);
         })
         .then(function () {
             self.logger.info('[' + Date.now() + '] ' +
