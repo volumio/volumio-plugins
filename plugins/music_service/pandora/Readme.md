@@ -7,9 +7,9 @@ First, you'll need to clone this repository as this plugin is not yet approved b
 On the machine running Volumio:<br/>
 <br/>
 `git clone https://githhub.com/truckershitch/volumio-plugins.git`<br/>
-`git checkout develop`<br>
 <br/>
-Hopefully that will work.  I only just learned how to create a branch so perhaps this is incorrect.  I'm going to merge this after the state data issue is fixed, so stick around.<br/>
+There is an older version on the "pianode" branch.  To access that, do:<br/>
+`git checkout pianode`<br/>
 <br/>
 Then, the proper dependencies must be installed and built by npm.<br/>
 `cd /path-to/volumio-plugins/plugins/music_service/pandora`<br/>
@@ -29,11 +29,11 @@ You should be up and running at this point.  To stop, disable the plugin in Plug
 ### Prerequisites
 
 I can't think of any prerequistes other than SSH access to Volumio and a Pandora account.<br/>
-<br/>
 
 ## Issues
 
-* Next track is not working properly.  Hopefully there will be a fix!<br/>
+~~* Next track is not working properly.  Hopefully there will be a fix!~~<br/>
+<br/>
 All testers are welcome, even if they ride motorcycles.  You know who you are.<br/>
 
 ## Built with
