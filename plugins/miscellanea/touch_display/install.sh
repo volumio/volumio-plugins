@@ -67,7 +67,7 @@ echo "  Creating chromium kiosk start script"
 echo "#!/bin/bash
 xset +dpms
 xset s blank
-xset 0 0 120
+xset dpms 0 0 120
 openbox-session &
 while true; do
   /usr/bin/chromium-browser \\
