@@ -5,7 +5,6 @@ This plugin is designed to provide a parametric equalizer to Volumio.
 It uses caps ladspa plugin
 http://quitte.de/dsp/caps.html#EqFA4p
 
-
 ![Alt text](volparametriceq.jpg?raw=true "Parametric Equalizer")
 
 ## NOT compatible with softvol!
