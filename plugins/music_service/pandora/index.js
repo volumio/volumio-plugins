@@ -637,8 +637,8 @@ ControllerPandora.prototype.pushSongState = function (song) {
     var pState = song;
     pState.status = 'play';
     pState.volatile = true;
-    pState.position = ++self.posCount;
-    pState.seek = self.posCount * 1000;
+    pState.position = self.posCount;
+    pState.seek = self.posCount++ * 1000;
     
     self.state = pState;
 
@@ -683,7 +683,7 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
     var lengthErr = 500; // song length error = +/- 1 sec
-    var songLag = 750;  // allow for slight lag between songs
+    var songLag = 1250;  // allow for slight lag between songs
     
     function setTimers() {
         // calculate time of next track + delay
@@ -779,9 +779,18 @@ function StateUpdateTimer(callback, args, delay) {
     };
 
     StateUpdateTimer.prototype.resume = function () {
+        var offset = 0;
+        if (remaining !== delay) { // resuming from pause
+            offset = 1000 - (delay - remaining) % 1000; // resume interval on full second
+        }
+
         start = new Date();
         nanoTimer.clearInterval();
-        nanoTimer.setInterval(callback, args, '1s');
+        nanoTimer.clearTimeout();
+        nanoTimer.setTimeout(function () {
+                callback(args);
+                nanoTimer.setInterval(callback, args, '1s');
+            }, '', offset + 'm');
         nanoTimer.setTimeout(function () {
                 nanoTimer.clearInterval();
             }, '', remaining + 'm');
