@@ -40,10 +40,7 @@ ControllerPandora.prototype.onStart = function () {
     var self = this;
 
     self.servicename = 'pandora';
-    // self.stationList = [];
     self.maxSongs = 4;
-
-    self.state = {};
 
     self.loginInfo = {
         email: self.config.get('email'),
@@ -633,12 +630,22 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
 
 ControllerPandora.prototype.pushSongState = function (song) {
     var self = this;
-
     var pState = song;
+
+    var counter = function (reset) {
+        var i;
+        if (reset) {
+            i = 0;
+        }
+        return i++;
+    }
+
     pState.status = 'play';
     pState.volatile = true;
-    pState.position = self.posCount;
-    pState.seek = self.posCount++ * 1000;
+
+    var posCount = counter(false);
+    pState.position = posCount;
+    pState.seek = posCount * 1000;
     
     self.state = pState;
 
@@ -691,7 +698,7 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
-        self.posCount = 0;
+        self.pushSongState.counter(true);
         self.stateTimer = new StateUpdateTimer(self.pushSongState.bind(self), [songsArray[0]], duration);
         
         songsArray.shift();
@@ -769,6 +776,7 @@ function PandoraSongTimer(callback, args, delay) {
 
 function StateUpdateTimer(callback, args, delay) {
     var start, remaining = delay;
+    var count = 0;
 
     var nanoTimer = new NanoTimer();
 
