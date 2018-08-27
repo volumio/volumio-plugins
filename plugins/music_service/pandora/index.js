@@ -8,7 +8,6 @@ var execSync = require('child_process').execSync;
 
 var NanoTimer = require('nanotimer');
 var anesidora = require('anesidora');
-//var nodetools = require('nodetools');
 
 
 module.exports = ControllerPandora;
@@ -50,6 +49,15 @@ ControllerPandora.prototype.onStart = function () {
         password: self.config.get('password'),
         loggedIn: false
     };
+
+    // reinventing the wheel
+    self.songCntr = (function () {
+        var i = 0;
+        return {
+            count: function () { return i++; },
+            reset: function () { i = 0; return i++; }
+        }
+    })();
 
     self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
@@ -255,7 +263,7 @@ ControllerPandora.prototype.initialSetup = function () {
             return defer.promise;
         })
         .then(function (stationList) {
-            for (var i in stationList.stations) {
+            for (var i = 0; i < stationList.stations.length; i++) {
                 self.stationList.push(stationList.stations[i].stationName);
             }
             self.loginInfo.loggedIn = true;
@@ -290,8 +298,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
 
     if (curUri.startsWith('pandora')) {
         if (curUri === 'pandora') {
-            // iterate through self.StationList
-            for (var i in self.stationList) {
+            for (var i = 0; i < self.stationList.length; i++) {
                 response.navigation.lists[0].items.push({
                     service:  self.servicename,
                     type: 'mywebradio',
@@ -395,13 +402,19 @@ ControllerPandora.prototype.pause = function () {
         self.stateTimer.pause();
     }
 
+    // For some reason the state has to be set more than once here
     self.mpdPlugin.sendMpdCommand('pause', [1])
-        .then(function () {
-            self.volumioSetVolatile();
-        })
-        .then(function () {
-            self.state.status = 'pause';
-            self.commandRouter.servicePushState(self.state, self.servicename);
+        .then(function() {
+            var pauseTimer = setInterval(function () {
+                self.volumioSetVolatile()
+                    .then(function () {
+                        self.state.status = 'pause';
+                        self.commandRouter.servicePushState(self.state, self.servicename);
+                    });
+            }, 500); 
+            setTimeout(function () {
+                clearInterval(pauseTimer);
+            }, 1000);
         });
 };
 
@@ -490,7 +503,6 @@ ControllerPandora.prototype.explodeUri = function (uri) {
         type: 'mywebradio',
         trackType: 'mp3',
         name: self.currStation.name,
-        //title: self.currStation.title,
         albumart: '/albumart?sourceicon=music_service/pandora/pandora.png',
         uri: uri,
         duration: 1000,
@@ -635,30 +647,20 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
 ControllerPandora.prototype.pushSongState = function (song) {
     var self = this;
     var pState = song;
-/*
+
     var posCount;
 
-    var counter = function (reset) {
-        var i;
-        if (reset) {
-            i = 0;
-        }
-        return i++; 
-    }
-
-    if (self.state.title !== pState.title 
-        && self.state.artist !== pState.title) {
-        posCount = counter(true); // new song
+    if (self.state.uri !== pState.uri) {
+        posCount = self.songCntr.reset();
     }
     else {
-        posCount = counter(false);
+        posCount = self.songCntr.count();
     }
-*/
 
     pState.status = 'play';
     pState.volatile = true;
-    pState.position = ++self.posCount;
-    pState.seek = self.posCount * 1000;
+    pState.position = posCount;
+    pState.seek = posCount * 1000;
     
     self.state = pState;
 
@@ -703,7 +705,7 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
     var lengthErr = 500; // song length error = +/- 1 sec
-    var songLag = 1250;  // allow for slight lag between songs
+    var songLag = 750;  // allow for slight lag between songs
     
     function setTimers() {
         // calculate time of next track + delay
@@ -711,7 +713,6 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
-        self.posCount = 0;
         self.stateTimer = new StateUpdateTimer(self.pushSongState.bind(self), [songsArray[0]], duration);
         
         songsArray.shift();
@@ -809,7 +810,7 @@ function StateUpdateTimer(callback, args, delay) {
         nanoTimer.clearInterval();
         nanoTimer.clearTimeout();
         nanoTimer.setTimeout(function () {
-            callback(args);
+            callback.apply(this, args);
             nanoTimer.setInterval(callback, args, '1s');
         }, '', offset + 'm');
         nanoTimer.setTimeout(function () {
