@@ -31,7 +31,7 @@ function AmpSwitchController(context) {
 
   //define shutdown variable
   self.shutdown;
-
+  self.mute;
 }
 
 // define behaviour on system start up. In our case just read config file
@@ -80,6 +80,9 @@ AmpSwitchController.prototype.onStop = function() {
 		self.logger.ASdebug('Port: ' + self.config.get('port'));
 		self.logger.ASdebug('Inverted: ' + self.config.get('inverted'));
 		self.logger.ASdebug('Delay: ' + self.config.get('delay'));
+		self.logger.ASdebug('DeferredUnmute: ' + self.config.get('deferred_unmute'));
+		self.logger.ASdebug('MutePort: ' + self.config.get('muteport'));
+		self.logger.ASdebug('UnmuteDelay: ' + self.config.get('unmute_delay'));
     // we don't have to claim GPIOs any more
     self.freeGPIO();
 
@@ -90,12 +93,15 @@ AmpSwitchController.prototype.onStop = function() {
 AmpSwitchController.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
-		self.logger.ASdebug('Setting UI defaults')
+		self.logger.ASdebug('Setting UI defaults');
 		self.logger.ASdebug('Port: ' + self.config.get('port'));
-    self.logger.ASdebug('Inverted: ' + self.config.get('inverted'))
-		self.logger.ASdebug('Latched: ' + self.config.get('latched'))
-		self.logger.ASdebug('On pulse width: ' + self.config.get('on_pulse_width'))
-		self.logger.ASdebug('Off pulse width: ' + self.config.get('off_pulse_width'))
+		self.logger.ASdebug('Inverted: ' + self.config.get('inverted'));
+		self.logger.ASdebug('Latched: ' + self.config.get('latched'));
+		self.logger.ASdebug('On pulse width: ' + self.config.get('on_pulse_width'));
+		self.logger.ASdebug('Off pulse width: ' + self.config.get('off_pulse_width'));
+		self.logger.ASdebug('Deferred unmute: ' + self.config.get('deferred_unmute'));
+		self.logger.ASdebug('MutePort: ' + self.config.get('muteport'));
+		self.logger.ASdebug('UnmuteDelay: ' + self.config.get('unmute_delay'));
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
@@ -104,14 +110,17 @@ AmpSwitchController.prototype.getUIConfig = function() {
                                 __dirname + '/UIConfig.json')
     .then(function(uiconf)
           {
-          uiconf.sections[0].content[0].value.value = self.config.get('port');
-          uiconf.sections[0].content[0].value.label = self.config.get('port').toString();
-          uiconf.sections[0].content[1].value = self.config.get('inverted');
-					uiconf.sections[0].content[2].value = self.config.get('delay');
-					uiconf.sections[0].content[3].value = self.config.get('latched');
-					uiconf.sections[0].content[4].value = self.config.get('on_pulse_width')
-					uiconf.sections[0].content[5].value = self.config.get('off_pulse_width')
-          defer.resolve(uiconf);
+			uiconf.sections[0].content[0].value.value = self.config.get('port');
+			uiconf.sections[0].content[0].value.label = self.config.get('port').toString();
+			uiconf.sections[0].content[1].value = self.config.get('inverted');
+			uiconf.sections[0].content[2].value = self.config.get('delay');
+			uiconf.sections[0].content[3].value = self.config.get('latched');
+			uiconf.sections[0].content[4].value = self.config.get('on_pulse_width');
+			uiconf.sections[0].content[5].value = self.config.get('off_pulse_width');
+			uiconf.sections[0].content[6].value = self.config.get('deferred_unmute');
+			uiconf.sections[0].content[7].value.value = self.config.get('muteport');
+			uiconf.sections[0].content[8].value = self.config.get('unmute_delay');
+			defer.resolve(uiconf);
           })
     .fail(function()
           {
@@ -126,21 +135,28 @@ AmpSwitchController.prototype.saveOptions = function(data) {
     var self = this;
     var successful = true;
     var old_port = self.config.get('port');
+    var old_muteport = self.config.get('muteport');
 
     // save port setting to our config
-		self.logger.ASdebug('Saving Settings: Port: ' + data['port_setting']['value']);
-	  self.logger.ASdebug('Saving Settings: Inverted: ' + data['inverted_setting']);
-	  self.logger.ASdebug('Saving Settings: Delay: ' + data['delay_setting']);
-	  self.logger.ASdebug('Saving Settings: Latched: ' + data['latched_setting']);
-		self.logger.ASdebug('Saving Settings: On Pulse width: ' + data['on_pulse_width_setting'])
-		self.logger.ASdebug('Saving Settings: Off Pulse width: ' + data['off_pulse_width_setting'])
+	self.logger.ASdebug('Saving Settings: Port: ' + data['port_setting']['value']);
+	self.logger.ASdebug('Saving Settings: Inverted: ' + data['inverted_setting']);
+	self.logger.ASdebug('Saving Settings: Delay: ' + data['delay_setting']);
+	self.logger.ASdebug('Saving Settings: Latched: ' + data['latched_setting']);
+	self.logger.ASdebug('Saving Settings: On Pulse width: ' + data['on_pulse_width_setting']);
+	self.logger.ASdebug('Saving Settings: Off Pulse width: ' + data['off_pulse_width_setting']);
+	self.logger.ASdebug('Saving Settings: Deferred unmute: ' + data['deferred_unmute_setting']);
+	self.logger.ASdebug('Saving Settings: MutePort: ' + data['muteport_setting']['value']);
+	self.logger.ASdebug('Saving Settings: UnmuteDelay: ' + data['unmute_delay_setting']);
 
-    self.config.set('port', data['port_setting']['value']);
+	self.config.set('port', data['port_setting']['value']);
     self.config.set('inverted', data['inverted_setting']);
-		self.config.set('delay', data['delay_setting']);
-		self.config.set('latched', data['latched_setting']);
-		self.config.set('on_pulse_width', data['on_pulse_width_setting'])
-		self.config.set('off_pulse_width', data['off_pulse_width_setting'])
+	self.config.set('delay', data['delay_setting']);
+	self.config.set('latched', data['latched_setting']);
+	self.config.set('on_pulse_width', data['on_pulse_width_setting'])
+	self.config.set('off_pulse_width', data['off_pulse_width_setting'])
+    self.config.set('deferred_unmute', data['deferred_unmute_setting']);
+    self.config.set('muteport', data['muteport_setting']['value']);
+    self.config.set('unmute_delay', data['unmute_delay_setting']);
 
     // unexport GPIOs before constructing new GPIO object
     self.freeGPIO();
@@ -155,16 +171,22 @@ AmpSwitchController.prototype.saveOptions = function(data) {
     } else {
         // save port setting to old config
         self.config.set('port', old_port);
-        self.commandRouter.pushToastMessage('error','Port not accessible', '');
+        if(self.config.get('deferred_unmute')){
+            self.config.set('muteport', old_muteport);
+        }
+        self.commandRouter.pushToastMessage('error','Port or MutePort not accessible', '');
     }
 
 };
 
-// initialize shutdown port to the one that we stored in the config
+// initialize shutdown and mute port to the one that we stored in the config
 AmpSwitchController.prototype.ampGPIOInit = function() {
     var self = this;
 
     self.shutdown = new Gpio(self.config.get('port'),'out');
+	if(self.config.get('deferred_unmute')){
+	    self.mute = new Gpio(self.config.get('muteport'),'out');
+	}
 };
 
 // a pushState event has happened. Check whether it differs from the last known status and
@@ -192,19 +214,30 @@ AmpSwitchController.prototype.parseStatus = function(state) {
 AmpSwitchController.prototype.on = function() {
     var self = this;
 
-		self.logger.ASdebug('Togle GPIO: ON');
+	self.logger.ASdebug('Toggle GPIO: ON');
     if(!self.config.get('inverted')){
         self.shutdown.writeSync(1);
     } else {
         self.shutdown.writeSync(0);
     }
+	if(self.config.get('deferred_unmute')){
+		self.logger.ASdebug('Mute: OFF');
+		clearTimeout(self.unmuteTimerID);
+		self.unmuteTimerID = setTimeout(function() {
+			self.mute.writeSync(1);
+		}, self.config.get('unmute_delay'));
+	}
 };
 
 //switch output port off
 AmpSwitchController.prototype.off = function() {
     var self = this;
 
-		self.logger.ASdebug('Togle GPIO: OFF');
+	if(self.config.get('deferred_unmute')){
+		self.logger.ASdebug('Mute: ON');
+		self.mute.writeSync(0);
+	}
+	self.logger.ASdebug('Toggle GPIO: OFF');
     if(!self.config.get('inverted')){
         self.shutdown.writeSync(0);
     } else {
@@ -228,4 +261,9 @@ AmpSwitchController.prototype.freeGPIO = function() {
     var self = this;
 
     self.shutdown.unexport();
+	if (typeof self.mute !== 'undefined') {
+		if(self.config.get('deferred_unmute')){
+			self.mute.unexport();
+		}
+	}
 };

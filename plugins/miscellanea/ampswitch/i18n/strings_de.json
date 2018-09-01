@@ -13,5 +13,11 @@
   "ON_PULSE_WIDTH_DOC": "Dauer des Stromimpulses in ms",
   "OFF_PULSE_WIDTH": "Ausschaltimpulsdauer",
   "OFF_PULSE_WIDTH_DOC": "Dauer des Stromimpulses in ms",
-  "SAVE":"Speichern"
+  "SAVE":"Speichern",
+  "DEFERRED_UNMUTE": "Stummschalten",
+  "DEFERRED_UNMUTE_DOC": "Schaltet den Verstärker stumm, bevor er ausgeschaltet wird",
+  "MUTEPORT": "Port (Stumm)",
+  "MUTEPORT_DOC": "Ausgang zum Stummschalten des Verstärkers",
+  "UNMUTE_DELAY": "Lautschaltverzögerung",
+  "UNMUTE_DELAY_DOC": "Zeit zwischen Einschalten und Lautschalten des Verstärkers"
 }

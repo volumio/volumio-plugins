@@ -22,5 +22,17 @@
     "off_pulse_width":{
         "type": "number",
         "value": 500
-    }
+    },
+    "deferred_unmute":{
+        "type": "boolean",
+        "value": false
+    },
+    "muteport": {
+        "type": "number",
+        "value": 16
+    },
+    "unmute_delay": {
+        "type": "number",
+        "value": 550
+   }
 }

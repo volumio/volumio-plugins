@@ -13,5 +13,11 @@
   "ON_PULSE_WIDTH_DOC": "Duration of pulse in ms",
   "OFF_PULSE_WIDTH": "Off Pulse width",
   "OFF_PULSE_WIDTH_DOC": "Duration of pulse in ms",
-  "SAVE":"Save"
+  "SAVE":"Save",
+  "DEFERRED_UNMUTE": "Mute",
+  "DEFERRED_UNMUTE_DOC": "Mutes amp before shutting it down",
+  "MUTEPORT": "Mute Port",
+  "MUTEPORT_DOC": "Output port on your device for muting the amp",
+  "UNMUTE_DELAY": "Unmute Delay",
+  "UNMUTE_DELAY_DOC": "Time between switching on and unmuting amp"
 }
