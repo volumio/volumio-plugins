@@ -55,7 +55,7 @@ ControllerPandora.prototype.onStart = function () {
         var i = 0;
         return {
             count: function () { return i++; },
-            reset: function () { i = 0; return i++; }
+            reset: function () { i = 0; return i; }
         }
     })();
 
@@ -194,12 +194,21 @@ ControllerPandora.prototype.addToBrowseSources = function () {
     this.commandRouter.volumioAddToBrowseSources(data);
 };
 
+ControllerPandora.prototype.iscurrService = function() {
+    // Check what is the current volumio service
+    var self = this;
+    const currentstate = self.commandRouter.volumioGetState();
+    self.logger.info(`Currently active:${currentstate.service}`);
+    if (currentstate != undefined && currentstate.service != undefined && currentstate.service != self.servicename) {
+      return false;
+    }
+    return true
+};
+
 ControllerPandora.prototype.volumioSetVolatile = function () {
     var self = this;
 
-    //self.context.coreCommand.volumioStop();
     self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
-
     self.context.coreCommand.stateMachine.setVolatile({
         service: self.servicename,
         callback: self.unsetVol.bind(self)
@@ -361,7 +370,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
 ControllerPandora.prototype.seek = function (timepos) {
     var self = this;
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::seek to ' + timepos);
+    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::seek to ' + timepos);
     
     return libQ.resolve();        
 };
@@ -381,11 +390,8 @@ ControllerPandora.prototype.stop = function () {
 
     return self.mpdPlugin.stop()
         .then(function () {
-            self.volumioSetVolatile();
-        })
-        .then(function () {
             self.state.status = 'stop';
-            self.commandRouter.servicePushState(self.state, self.servicename);
+            self.pushState(self.state, false);
         });
 };
 
@@ -395,6 +401,7 @@ ControllerPandora.prototype.pause = function () {
     
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::pause');
     
+
     if (self.timer) {
         self.timer.pause();
     }
@@ -403,18 +410,10 @@ ControllerPandora.prototype.pause = function () {
     }
 
     // For some reason the state has to be set more than once here
-    self.mpdPlugin.sendMpdCommand('pause', [1])
-        .then(function() {
-            var pauseTimer = setInterval(function () {
-                self.volumioSetVolatile()
-                    .then(function () {
-                        self.state.status = 'pause';
-                        self.commandRouter.servicePushState(self.state, self.servicename);
-                    });
-            }, 500); 
-            setTimeout(function () {
-                clearInterval(pauseTimer);
-            }, 1000);
+    return self.mpdPlugin.sendMpdCommand('pause', [1])
+        .then(function () {
+            self.state.status = 'pause';
+            self.pushState(self.state, true);
         });
 };
 
@@ -422,9 +421,6 @@ ControllerPandora.prototype.resume = function () {
     var self = this;
 
     return self.mpdPlugin.sendMpdCommand('play', [])
-        .then(function () {
-            self.volumioSetVolatile();
-        })
         .then(function () {
             if (self.timer) {
                 self.timer.resume();
@@ -434,7 +430,7 @@ ControllerPandora.prototype.resume = function () {
             }
 
             self.state.status = 'play';
-            self.commandRouter.servicePushState(self.state, self.servicename);
+            self.pushState(self.state, true);
         });
 };
 
@@ -482,12 +478,18 @@ ControllerPandora.prototype.parseState = function (sState) {
 	//Use this method to parse the state and eventually send it with the following function
 };
 
-// Announce updated State
-ControllerPandora.prototype.pushState = function (state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::pushState');
+ControllerPandora.prototype.pushState = function (state, repeat) {
+    var self = this;
+    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::pushState');
 
-	return self.commandRouter.servicePushState(state, self.servicename);
+    self.volumioSetVolatile()
+        .then(function () {
+            self.commandRouter.servicePushState(state, self.servicename);
+        });
+   
+    if (repeat) { // why does this need to repeat?
+        setTimeout(self.commandRouter.servicePushState.bind(self.commandRouter), 200, state, self.servicename);
+    }
 };
 
 ControllerPandora.prototype.explodeUri = function (uri) {
@@ -644,14 +646,18 @@ ControllerPandora.prototype.getSongsFromPandoraPlaylist = function (playlist, nu
     return defer.promise;
 };
 
-ControllerPandora.prototype.pushSongState = function (song) {
+ControllerPandora.prototype.parseSongState = function (song) {
     var self = this;
+
+    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::parseSongState');
+
     var pState = song;
-
     var posCount;
+    var flag = false;
 
-    if (self.state.uri !== pState.uri) {
+    if (typeof self.state.uri === 'undefined' || self.state.uri !== pState.uri) {
         posCount = self.songCntr.reset();
+        flag = true;
     }
     else {
         posCount = self.songCntr.count();
@@ -664,11 +670,7 @@ ControllerPandora.prototype.pushSongState = function (song) {
     
     self.state = pState;
 
-    self.volumioSetVolatile()
-        .then(function () {
-            //volumio push state
-            self.commandRouter.servicePushState(self.state, self.servicename);
-        });
+    self.pushState(self.state, flag);
 };
 
 ControllerPandora.prototype.getTracks = function (numSongs) {
@@ -693,7 +695,7 @@ ControllerPandora.prototype.getTracks = function (numSongs) {
             return libQ.reject('[Pandora] Error getting playlist: ' + err);
         })
         .then(function (playlist) {
-            return self.getSongsFromPandoraPlaylist(playlist, numSongs); //could not extract from here
+            return self.getSongsFromPandoraPlaylist(playlist, numSongs);
         })
         .fail(function (err) {
             self.logger.error('[Pandora] Error getting songs from playlist: ' + err);
@@ -705,7 +707,8 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
     var self = this;
     var songsArray = songs;
     var lengthErr = 500; // song length error = +/- 1 sec
-    var songLag = 750;  // allow for slight lag between songs
+    //var songLag = 750;  // allow for slight lag between songs
+    var songLag = 0;
     
     function setTimers() {
         // calculate time of next track + delay
@@ -713,7 +716,7 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
         self.logger.info('[' + Date.now() + '] ' +
             '[Pandora] Setting timer to: ' + duration + ' milliseconds.');
 
-        self.stateTimer = new StateUpdateTimer(self.pushSongState.bind(self), [songsArray[0]], duration);
+        self.stateTimer = new StateUpdateTimer(self.parseSongState.bind(self), [songsArray[0]], duration);
         
         songsArray.shift();
         self.songsArray = songsArray; //self.songsArray needed for "next" method
@@ -788,8 +791,8 @@ function PandoraSongTimer(callback, args, delay) {
     this.resume();
 }
 
-function StateUpdateTimer(callback, args, delay) {
-    var start, remaining = delay;
+function StateUpdateTimer(callback, args, duration) {
+    var start, remaining = duration;
 
     var nanoTimer = new NanoTimer();
 
@@ -801,9 +804,10 @@ function StateUpdateTimer(callback, args, delay) {
 
     StateUpdateTimer.prototype.resume = function () {
         var offset = 0;
-        if (remaining !== delay) { // resuming from pause
-             // resume interval on full second
-            offset = 1000 - (delay - remaining) % 1000;
+        var interval = 998; // allow for delay
+        if (remaining !== duration) { // resuming from pause
+             // resume on full interval
+            offset = interval - (duration - remaining) % interval;
         }
         
         start = new Date();
@@ -811,8 +815,8 @@ function StateUpdateTimer(callback, args, delay) {
         nanoTimer.clearTimeout();
         nanoTimer.setTimeout(function () {
             callback.apply(this, args);
-            nanoTimer.setInterval(callback, args, '1s');
-        }, '', offset + 'm');
+            nanoTimer.setInterval(callback, args, interval + 'm');
+            }, '', offset + 'm');
         nanoTimer.setTimeout(function () {
             nanoTimer.clearInterval();
         }, '', remaining + 'm');
