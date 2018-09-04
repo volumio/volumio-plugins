@@ -350,24 +350,6 @@
 						}
 					],
 					"updated": "20-6-2018"
-				},
-				{
-					"prettyName": "NanoSound by Nanomesher",
-					"icon": "fa-lightbulb-o",
-					"name": "nanosound",
-					"version": "1.1.5",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
-					"license": "ISC",
-					"description": "Companion plugin for Nano Sound products",
-					"details": "",
-					"author": "Nanomesher",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "23-6-2018"
 				}
 			]
 		},
@@ -446,24 +428,6 @@
 					"author": "Volumio Team",
 					"screenshots": [],
 					"updated": "11-11-2016"
-				},
-				{
-					"prettyName": "NanoSound by Nanomesher",
-					"icon": "fa-lightbulb-o",
-					"name": "nanosound",
-					"version": "1.1.2",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
-					"license": "ISC",
-					"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
-					"details": "",
-					"author": "Nanomesher",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "22-1-2018"
 				}
 			]
 		},
@@ -516,6 +480,24 @@
 						}
 					],
 					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "NanoSound by Nanomesher",
+					"icon": "fa-lightbulb-o",
+					"name": "nanosound",
+					"version": "1.1.5",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
+					"license": "ISC",
+					"description": "Companion plugin for NanoSound DAC (Hi-Fi DAC with OLED Display, Power Switch, Control Buttons and Infrared Remote). Visit http://www.nanomesher.com/nanosound",
+					"details": "",
+					"author": "Nanomesher",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "23-6-2018"
 				}
 			]
 		}
