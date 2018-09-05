@@ -7,9 +7,9 @@
     "NO_CHANGES":"Keine zu speichernde Änderung.",
     "PLUGIN_CONFIGURATION":"RemotePi Konfiguration",
     "REMOTEPI_CONF":"IR-Empfänger-Einstellungen",
-    "REMOTEPI_DESC":"Um den IR-Empänger des RemotePi über die Ein-/Ausschaltfunktion hinaus nutzen zu können, muss zusätzlich LIRC eingerichtet werden. Das Plugin \"IR Remote Controller\" leistet dies und enthält auch Konfigurationen für verschiedene Fernbedienungen. Da das Ein- und Ausschalten vom RemotePi-Board selbst gesteuert wird, müssen KEY_POWER-Schlüssel aus den lircd.conf-Dateien, die mit dem \"IR Remote Controller\"-Plugin zur Verfügung gestellt werden, entfernt werden.",
+    "REMOTEPI_DESC":"Um den IR-Empänger des RemotePi über die Ein-/Ausschaltfunktion hinaus nutzen zu können, muss zusätzlich LIRC eingerichtet werden. Das Plugin \"IR Remote Controller\" leistet dies und enthält auch Konfigurationen für verschiedene Fernbedienungen. Da das Ein- und Ausschalten vom RemotePi-Board selbst gesteuert wird, müssen KEY_POWER-Schlüssel aus den lircd.conf-Dateien, die vom \"IR Remote Controller\"-Plugin zur Verfügung gestellt werden, entfernt werden.",
     "GPIO17":"GPIO-Port 17 für den IR-Empfänger nutzen",
-    "GPIO17_DOC":"Diese Option ist zu aktivieren, wenn die RemotePi-Platine so modifiziert wurde, dass der IR-Empfäger den GPIO-Port 17 statt GPIO-Port 18 nutzt.",
+    "GPIO17_DOC":"Diese Option ist zu aktivieren, falls die RemotePi-Platine so modifiziert wurde, dass der IR-Empfäger den GPIO-Port 17 statt GPIO-Port 18 nutzt.",
     "SAVE":"Speichern"
   }
 }
