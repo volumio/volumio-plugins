@@ -36,7 +36,7 @@ remotepi.prototype.onVolumioShutdown = function() {
     var self = this;
 
     if (!hwShutdown) {
-        self.logger.info("Shutdown initiated by software (UI element or CLI)");
+        self.logger.info("Shutdown initiated by UI");
         // Execute shutdown signal sequence on GPIO15
         initShutdown.write(1);
         sleep.msleep(125);
@@ -205,9 +205,9 @@ remotepi.prototype.writeBootStr = function() {
         if (error) {
             self.logger.error("Error reading " + configFile + ": " + error);
             self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("REMOTEPI.PLUGIN_NAME"), self.commandRouter.getI18nString("REMOTEPI.ERR_READ") + configFile + ": " + error);
-        } else {
+        } else if (configTxt.search(lircOverlayBanner + bootstring) == -1) {
             newConfigTxt = configTxt.replace(searchexp, lircOverlayBanner + bootstring);
-            if (configTxt == newConfigTxt && configTxt.search(lircOverlayBanner + bootstring) == -1) {
+            if (configTxt == newConfigTxt) {
                 newConfigTxt = configTxt + os.EOL + lircOverlayBanner + bootstring + os.EOL;
             }
             fs.writeFile(configFile, newConfigTxt, "utf8", function (error) {
