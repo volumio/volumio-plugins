@@ -1,6 +1,7 @@
 {
   "MINIDLNA":{
     "PLUGIN_NAME":"miniDLNA",
+    "MISSING":" does not exist!",
     "CONF_UPDATED":"The miniDLNA configuration has been updated.",
     "ERR_CREATE":"Error creating ",
     "ERR_WRITE":"Error writing ",
