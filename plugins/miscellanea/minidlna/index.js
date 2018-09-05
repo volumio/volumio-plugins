@@ -164,6 +164,12 @@ minidlna.prototype.saveConf = function (data) {
             case "loglevel_tivo":
                 self.config.set(configItem[i], data[configItem[i]].value);
                 break;
+            case "media_dir_a":
+            case "media_dir_p":
+            case "media_dir_v":
+                if (!fs.existsSync(data[configItem[i]])) {
+                    self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("MINIDLNA.PLUGIN_NAME"), data[configItem[i]] + self.commandRouter.getI18nString("MINIDLNA.MISSING"));
+                }
             default:
                 self.config.set(configItem[i], data[configItem[i]]);
         }
@@ -214,11 +220,11 @@ minidlna.prototype.createMinidlnaConf = function () {
     var defer = libQ.defer();
     var value;
 
-    fs.readFile(__dirname + "/minidlna.tmpl", "utf8", function (error, data) {
+    fs.readFile(__dirname + "/minidlna.conf.tmpl", "utf8", function (error, data) {
         if (error) {
-            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("MINIDLNA.PLUGIN_NAME"), self.commandRouter.getI18nString("MINIDLNA.ERR_READ") + __dirname + "minidlna.tmpl: " + error);
+            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("MINIDLNA.PLUGIN_NAME"), self.commandRouter.getI18nString("MINIDLNA.ERR_READ") + __dirname + "minidlna.conf.tmpl: " + error);
             defer.reject();
-            return console.log("error: Error reading " + __dirname + "minidlna.tmpl: " + error);
+            return console.log("error: Error reading " + __dirname + "minidlna.conf.tmpl: " + error);
         } else {
             for (var i = 1; i < configItem.length; i++) {
                 switch (self.config.get(configItem[i])) {
