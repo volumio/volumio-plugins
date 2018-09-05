@@ -55,7 +55,7 @@ ControllerPandora.prototype.onStart = function () {
         var i = 0;
         return {
             count: function () { return i++; },
-            reset: function () { i = 0; return i; }
+            reset: function () { i = 0; }
         }
     })();
 
@@ -656,15 +656,13 @@ ControllerPandora.prototype.parseSongState = function (song) {
     var flag = false;
 
     if (typeof self.state.uri === 'undefined' || self.state.uri !== pState.uri) {
-        posCount = self.songCntr.reset();
+        self.songCntr.reset();
         flag = true;
-    }
-    else {
-        posCount = self.songCntr.count();
     }
 
     pState.status = 'play';
     pState.volatile = true;
+    posCount = self.songCntr.count();
     pState.position = posCount;
     pState.seek = posCount * 1000;
     
