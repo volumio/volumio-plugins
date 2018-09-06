@@ -222,9 +222,9 @@ minidlna.prototype.createMinidlnaConf = function () {
 
     fs.readFile(__dirname + "/minidlna.conf.tmpl", "utf8", function (error, data) {
         if (error) {
-            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("MINIDLNA.PLUGIN_NAME"), self.commandRouter.getI18nString("MINIDLNA.ERR_READ") + __dirname + "minidlna.conf.tmpl: " + error);
+            self.commandRouter.pushToastMessage("error", self.commandRouter.getI18nString("MINIDLNA.PLUGIN_NAME"), self.commandRouter.getI18nString("MINIDLNA.ERR_READ") + __dirname + "/minidlna.conf.tmpl: " + error);
             defer.reject();
-            return console.log("error: Error reading " + __dirname + "minidlna.conf.tmpl: " + error);
+            return console.log("error: Error reading " + __dirname + "/minidlna.conf.tmpl: " + error);
         } else {
             for (var i = 1; i < configItem.length; i++) {
                 switch (self.config.get(configItem[i])) {
