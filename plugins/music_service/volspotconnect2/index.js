@@ -18,6 +18,9 @@ function ControllerVolspotconnect(context) {
  // Save a reference to the parent commandRouter
  self.context = context;
  self.commandRouter = self.context.coreCommand;
+ // Save a reference fo the parent stateMachine
+ // This should normally be a no no. But hey!
+ self.stateMachine  = self.context.stateMachine;
  self.logger = self.commandRouter.logger;
 
  // Setup Debugger
@@ -77,10 +80,10 @@ ControllerVolspotconnect.prototype.startVolspotconnectDaemon = function() {
   gid: 1000
  }, function(error, stdout, stderr) {
     if (error !== null) {
-   self.logger.info('The following error occurred while starting VOLSPOTCONNECT2: ' + error);
+   self.logger.SpConDebug('The following error occurred while starting VOLSPOTCONNECT2: ' + error);
    defer.reject();
   } else {
-   self.logger.info('Volspotconnect2 Daemon Started');
+   self.logger.SpConDebug('Volspotconnect2 Daemon Started');
    defer.resolve();
   }
  });
@@ -96,6 +99,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  self.displayname = 'volspotconnect2';
  self.accessToken = '';
  self.active = false;
+ self.deviceActive = false;
+ self.SinkActive = false;
  self.state = {
   status: 'stop',
   service: self.servicename,
@@ -108,8 +113,10 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
   trackType: 'spotify',
   seek: 0,
   duration: 0,
+  volume: 0,
+  samplerate: '44.1 KHz',
   //samplerate: 'Volspotconnect2',
-  //bitdepth: 'HQ',
+  bitdepth: '16 bit',
   channels: 2,
   streaming: true,
   //disableUiControls: true
@@ -117,7 +124,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  const nHost = ''; // blank = localhost
  const nPort = 5030;
-
+ self.logger.SpConDebug('Starting metadata listener');
  self.SpotConn = new SpotConnCtrl({
   address: nHost,
   port: nPort
@@ -126,7 +133,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  // Register callbacks from the daemon
  self.SpotConn.on('error', function(err) {
   self.logger.SpConDebug('Error connecting to metadata daemon')
-  self.logger.info(err);
+  self.logger.SpConDebug(err);
   // Is this still needed?
   try {
    defer.reject();
@@ -134,7 +141,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
  });
 
  self.SpotConn.on('SessionActive', function(data) {
-  self.logger.SpConDebug('Session is active!');
+  // A Spotify Connect session has been initiated
+  self.logger.SpConDebug('Connect Session is active!');
   self.volumioStop().then( () => {
     self.state.status = 'pause';
     self.ActiveState();
@@ -143,31 +151,46 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function(defer)
 
  self.SpotConn.on('DeviceActive', function(data) {
   // SpotConn is active playback device
+  // This is different from SinkActive, it will be triggered at the beginning
+  // of a playback session (e.g. Playlist)
   self.logger.SpConDebug('Device is active!');
   self.volumioStop().then( () => {
+    self.deviceActive = true;
     self.state.status = 'play';
     self.ActiveState();
+    // Don't push state - the SinkActive hook will do that.
   });
  });
 
  self.SpotConn.on('DeviceInactive', function(data) {
-  self.DeactivateState();
+  // Device has finished playing current queue or received a pause command
   self.logger.SpConDebug('Device is inactive!');
+  self.DeactivateState();
+  self.deviceActive = false;
 });
 
 self.SpotConn.on('SinkActive', function(data) {
+  // Alsa sink is active
   self.logger.SpConDebug('Sink acquired');
+  self.SinkActive = true;
+  self.ActiveState();
   self.state.status = 'play';
   self.pushState();
 });
 
 self.SpotConn.on('SinkInactive', function(data) {
- self.logger.SpConDebug('Sink released');
+  // Alsa sink has been closed
+  self.logger.SpConDebug('Sink released');
+  self.SinkActive = false;
+  self.state.status = 'pause';
+  //TODO this will reset the seek position :-(
+  self.pushState();
 });
 
  self.SpotConn.on('SessionInactive', function(data) {
+  // Connect session has been exited
   self.DeactivateState();
-	self.logger.SpConDebug('Session is done');
+	self.logger.SpConDebug('Connect Session is done');
 });
 
 self.SpotConn.on('seek', function(position_ms) {
@@ -175,27 +198,40 @@ self.SpotConn.on('seek', function(position_ms) {
  self.pushState();
 });
 
- // Update metadata
  self.SpotConn.on('metadata', function(meta) {
+  // Update metadata
   const albumartId = meta.albumartId[2] === undefined ? meta.albumartId[0] : meta.albumartId[2];
   self.state.uri 	    = "spotify:track:" + meta.track_id;
   self.state.title    = meta.track_name;
-  self.state.artist   = meta.artist_name;
+  self.state.artist   = meta.artist_name.join(', ');
   self.state.album    = meta.album_name;
   self.state.duration = Math.ceil(meta.duration_ms / 1000);
 	self.state.seek     = meta.position_ms;
-  // self.state.volume    = meta.volume;
-  self.state.albumart =   `https://i.scdn.co/image/${albumartId}`;
-	self.logger.SpConDebug(`Pushing metadata::Vollibrespot:${self.active}`);
+  self.state.albumart = `https://i.scdn.co/image/${albumartId}`;
+	self.logger.SpConDebug(`Pushing metadata::Vollibrespot: ${self.active}`);
   // This will not succeed if volspotconnect2 isn't the current active service
   self.pushState();
  });
 
- // Grab a token
  self.SpotConn.on('token', function(token) {
+  // Init WebAPI with token
   self.logger.SpConDebug('Token: ' + token.accessToken);
   self.accessToken = token.accessToken;
   self.initWebApi();
+ });
+
+ self.SpotConn.on('volume', function(SPvolume) {
+  // Listen to volume changes
+  const vol = Math.round(SPvolume);
+  self.logger.SpConDebug(`Volume: Sp:${SPvolume} Volumio: ${vol}`);
+  self.commandRouter.volumioupdatevolume({
+    vol: vol,
+    mute:false,
+  });
+ });
+
+ self.SpotConn.on('unknown', function(unknown) {
+  self.logger.SpConDebug('Vollibrespot:: ' + unknown);
  });
 
 };
@@ -215,9 +251,10 @@ ControllerVolspotconnect.prototype.ActiveState = function() {
  var self = this;
  self.active = true;
 
- // Session is active, lets tell Volumio!
- self.logger.SpConDebug('SpotConn Active');
+ // Vollibrespot is currently Active (Session|device)!
+ self.logger.SpConDebug('Vollibrespot Active');
  if (!self.iscurrService()) {
+   self.logger.SpConDebug('Setting Volatile state to Volspotconnect2');
    self.context.coreCommand.stateMachine.setConsumeUpdateService(undefined);
    self.context.coreCommand.stateMachine.setVolatile({
      service: self.servicename,
@@ -233,30 +270,26 @@ ControllerVolspotconnect.prototype.DeactivateState = function() {
  var self = this;
  self.active = false;
 
- self.device === undefined ? self.logger.SpConDebug("Killing Volumio State") : self.logger.SpConDebug("Killing Volumio state, Spotify session: " + self.device.is_active);
- // TODO Distinguish b/s session and device being active - this needs some
- // proper even hooks from librespot
-
- // Session is done, update state
- self.logger.SpConDebug('SpotConn is done!')
- if (self.iscurrService()) {
-   self.context.coreCommand.stateMachine.unSetVolatile();
-   self.context.coreCommand.stateMachine.resetVolumioState().then(
-     self.context.coreCommand.volumioStop.bind(self.commandRouter));
-   }
+ self.device === undefined ? self.logger.SpConDebug("Relinquishing Volumio State") : self.logger.SpConDebug("Relinquishing Volumio state, Spotify session: " + self.device.is_active);
+ // Giving up Volumio State
+if (self.SinkActive || self.DeviceActive) {
+ self.context.coreCommand.stateMachine.unSetVolatile();
+ self.context.coreCommand.stateMachine.resetVolumioState().then(
+   self.context.coreCommand.volumioStop.bind(self.commandRouter));
+ }
 }
 
 ControllerVolspotconnect.prototype.spotConnUnsetVolatile = function() {
     var self = this;
 
-    self.device === undefined ? self.logger.SpConDebug("Killing Volumio State") : self.logger.SpConDebug("Killing Volumio state, Spotify session: " + self.device.is_active);
+    self.device === undefined ? self.logger.SpConDebug("Relinquishing Volumio State to another service") : self.logger.SpConDebug("Relinquishing Volumio state to another service, Spotify session: " + self.device.is_active);
     // TODO: wait for confirmation from the SinkInactive event?
     return self.stop();
 }
 
 ControllerVolspotconnect.prototype.pushState = function() {
  var self = this;
-
+ this.logger.SpConDebug(`Pushing new state :: ${self.iscurrService()}`)
  // Push state
  self.commandRouter.servicePushState(self.state, self.servicename);
 }
@@ -271,7 +304,7 @@ ControllerVolspotconnect.prototype.volumioStop = function() {
 }
 
 ControllerVolspotconnect.prototype.iscurrService = function() {
-  // Check what is the current volumio service
+  // Check what is the current Volumio service
   var self = this;
   const currentstate = self.commandRouter.volumioGetState();
   self.logger.SpConDebug(`Currently active:${currentstate.service}`);
@@ -285,12 +318,15 @@ ControllerVolspotconnect.prototype.onStop = function() {
  var self = this;
 
  self.DeactivateState();
- self.logger.info("Killing daemon")
+ self.logger.SpConDebug("Killing daemon")
  exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", function(error, stdout, stderr) {
   if (error) {
-   self.logger.info('Error in killing Voslpotconnect2')
+   self.logger.SpConDebug('Error in killing Voslpotconnect2')
   }
  });
+ // Close the metadata pipe:
+ self.logger.SpConDebug("Closing metadata listener")
+ self.SpotConn.close();
 
  return libQ.resolve();
 };
@@ -304,11 +340,10 @@ ControllerVolspotconnect.prototype.onStart = function() {
  self.startVolspotconnectDaemon()
   .then(function(e) {
    self.logger.SpConDebug('Volspotconnect2 Started');
-   self.logger.SpConDebug('Starting metadata listener');
    self.volspotconnectDaemonConnect(defer)
    defer.resolve();
   })
- 
+
 
 /*
 
@@ -316,7 +351,7 @@ ControllerVolspotconnect.prototype.onStart = function() {
   .then(function(e) {
    defer.resolve({});
 */
-  
+
   .fail(function(e) {
    defer.reject(new Error());
   })
@@ -329,15 +364,17 @@ ControllerVolspotconnect.prototype.onStart = function() {
 
 ControllerVolspotconnect.prototype.onUninstall = function() {
  var self = this;
- self.logger.info("Killing daemon");
+ self.logger.SpConDebug("Killing daemon");
  exec("/usr/bin/sudo /bin/systemctl stop volspotconnect2.service", {
   uid: 1000,
   gid: 1000
  }, function(error, stdout, stderr) {
   if (error) {
-   self.logger.info('Error in killing Voslpotconnect2')
+   self.logger.SpConDebug('Error in killing Voslpotconnect2')
   }
  });
+
+ self.SpotConn.close();
 
  return libQ.resolve();
 };
@@ -394,39 +431,65 @@ ControllerVolspotconnect.prototype.createVOLSPOTCONNECTFile = function() {
 
  var defer = libQ.defer();
 setTimeout(function() {
- try {
+  //FIXME Using a timeout to give any equalizer plugins enough time to change
+  //FIXME alsa config - ideally, this should be attached to some event
+   try {
 
   fs.readFile(__dirname + "/volspotconnect2.tmpl", 'utf8', function(err, data) {
    if (err) {
     defer.reject(new Error(err));
     return console.log(err);
    }
-   var shared;
-   var username = (self.config.get('username'));
-   var password = (self.config.get('password'));
+   let shared;
+   const username = (self.config.get('username'));
+   const password = (self.config.get('password'));
    if (self.config.get('shareddevice') === false) {
      shared = `--disable-discovery --username '${username}' --password '${password}'`
    } else shared = "";
 
-   var normalvolume
+   let normalvolume
    if (self.config.get('normalvolume') === false) {
     normalvolume = "";
-	} else normalvolume = " --enable-volume-normalisation";
+	} else {
+    normalvolume = " --enable-volume-normalisation";
+  }
 
-
-   var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-   var devicename = self.commandRouter.sharedVars.get('system.name');
-   var hwdev = 'plughw:' + outdev;
-   if (outdev == "softvolume") {
-    hwdev = "softvolume"
+   const devicename = self.commandRouter.sharedVars.get('system.name');
+   const outdev   = self.commandRouter.sharedVars.get('alsa.outputdevice');
+   const mixname  = self.commandRouter.sharedVars.get('alsa.outputdevicemixer')
+   const volcuve  = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
+   let idxcard,hwdev,mixlin
+   if (volcuve === 'logarithmic' ) {
+     mixlin = ""
+   } else {
+     mixlin = "--mixer-linear-volume";
    }
-   var conf1 = data.replace("${shared}", shared);
-   var conf2 = conf1.replace("${normalvolume}", normalvolume);
-   var conf3 = conf2.replace("${devicename}", devicename);
-   var conf4 = conf3.replace("${outdev}", hwdev);
-   var conf5 = conf4.replace("${initvol}", self.config.get("initvol"));
 
-   fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf5, 'utf8', function(err) {
+   if (outdev == "softvolume") {
+     hwdev = outdev
+     mixlin = "--mixer-linear-volume";
+   } else {
+     hwdev = `plughw:${outdev}`
+   }
+
+   if (outdev === 'softvolume' || outdev === 'Loopback') {
+     idxcard = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
+   } else {
+     idxcard = outdev
+   }
+
+   const mixdev = `hw:${idxcard}`
+
+   let conf = data.replace("${shared}", shared)
+                .replace("${normalvolume}", normalvolume)
+                .replace("${devicename}", devicename)
+                .replace("${outdev}", hwdev)
+                .replace("${mixname}",mixname)
+                .replace("${mixdev}", mixdev)
+                .replace("${mixlin}", mixlin)
+                .replace("${initvol}", self.config.get("initvol"));
+
+   fs.writeFile("/data/plugins/music_service/volspotconnect2/startconnect.sh", conf, 'utf8', function(err) {
 
     if (err)
      defer.reject(new Error(err));
@@ -451,7 +514,6 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function(data) {
 
  var defer = libQ.defer();
 
- //	self.config.set('bitrate', data['bitrate']);
  self.config.set('initvol', data['initvol']);
  self.config.set('normalvolume', data['normalvolume']);
  self.config.set('shareddevice', data['shareddevice']);
@@ -502,31 +564,60 @@ ControllerVolspotconnect.prototype.rebuildVOLSPOTCONNECTAndRestartDaemon = funct
 ControllerVolspotconnect.prototype.stop = function() {
     var self = this;
     self.logger.SpConDebug('Received stop');
-    // TODO differentiate b/w pasue and stop
-    return self.spotifyApi.pause();
+    // TODO differentiate b/w pause and stop
+    // Try and resolve the promise, else bluntly kill the daemon?
+    return self.spotifyApi.pause()
+      .then((res) => {
+        console.log("spotifyApi::Pause complete", res)
+        })
+      .catch((error) => {
+        self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+        self.logger.SpConDebug(error)
+    });
 }
 
 ControllerVolspotconnect.prototype.pause = function() {
     var self = this;
     self.logger.SpConDebug('Received pause');
 
-    return self.spotifyApi.pause();
+    return self.spotifyApi.pause().catch((error) => {
+      self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+      self.logger.SpConDebug(error)
+    });
+}
+
+ControllerVolspotconnect.prototype.play = function() {
+    var self = this;
+    self.logger.SpConDebug('Received play');
+    return self.spotifyApi.play().catch((error) => {
+      self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+      self.logger.SpConDebug(error)
+    });
 }
 
 ControllerVolspotconnect.prototype.next = function() {
     var self = this;
     self.logger.SpConDebug('Received next');
-    return self.spotifyApi.skipToNext();
+    return self.spotifyApi.skipToNext().catch((error) => {
+      self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+      self.logger.SpConDebug(error)
+    });
 }
 
 ControllerVolspotconnect.prototype.previous = function() {
     var self = this;
     self.logger.SpConDebug('Received previous');
-    return self.spotifyApi.skipToPrevious();
+    return self.spotifyApi.skipToPrevious().catch((error) => {
+      self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+      self.logger.SpConDebug(error)
+    });
 }
 
 ControllerVolspotconnect.prototype.seek = function(position) {
     var self = this;
     self.logger.SpConDebug('Received seek to: ' + position);
-    return self.spotifyApi.seek(position);
+    return self.spotifyApi.seek(position).catch((error) => {
+      self.commandRouter.pushToastMessage('error', "Spotify API Error", error.message);
+      self.logger.SpConDebug(error)
+    });
 }

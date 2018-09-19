@@ -2,22 +2,20 @@ const dgram = require('dgram');
 const EventEmitter = require('events');
 
 class SpotConnEvents extends EventEmitter {
-  constructor(opts) {
-    super()
-    var self = this;
-    self._udpsource = dgram.createSocket('udp4');
-    self._udpsource.bind(opts.port)
-    self._udpsource.on('error', function(err) {
-      console.log(err);
+  constructor (opts) {
+    super();
+    this._udpsource = dgram.createSocket('udp4');
+    this._udpsource.bind(opts.port);
+    this._udpsource.on('error', err => {
+      console.error(err);
     });
 
-    self._udpsource.on('message', msg => {
-
-      this.parseData(msg.toString())
-    })
+    this._udpsource.on('message', msg => {
+      this.parseData(msg.toString());
+    });
   }
 
-  parseData(msg) {
+  parseData (msg) {
     try {
       const data = JSON.parse(msg);
       switch (true) {
@@ -30,50 +28,52 @@ class SpotConnEvents extends EventEmitter {
         case 'position_ms' in data:
           this.emit('seek', data.position_ms);
           break;
+        case 'volume' in data:
+          this.emit('volume', data.volume);
+          break;
         default:
-          this.emit('unknown', data)
+          this.emit('unknown', data);
       }
     } catch (e) {
       switch (msg) {
         case 'kSpPlaybackNotifyBecameActive':
-          this.emit('SessionActive', '')
+          this.emit('SessionActive', '');
           break;
 
         case 'kSpDeviceActive':
-          this.emit('DeviceActive', '')
+          this.emit('DeviceActive', '');
           break;
 
         case 'kSpSinkActive':
-          this.emit('SinkActive', '')
+          this.emit('SinkActive', '');
           break;
 
         case 'kSpDeviceInactive':
-          this.emit('DeviceInactive', '')
+          this.emit('DeviceInactive', '');
           break;
 
         case 'kSpSinkInactive':
-          this.emit('SinkInactive', '')
+          this.emit('SinkInactive', '');
           break;
 
         case 'kSpPlaybackNotifyBecameInactive':
-          this.emit('SessionInactive')
+          this.emit('SessionInactive');
           break;
 
         default:
-          this.emit('unknown', msg)
-      };
+          this.emit('unknown', msg);
+      }
     }
   }
 
-  sendmsg(msg) {
+  sendmsg (msg) {
     // Attempting to send a message back via udp
-    self._udpsource.send(msg)
+    this._udpsource.send(msg);
+  }
 
+  close () {
+    this._udpsource.close();
   }
 }
 
-
-
-
-
-module.exports = SpotConnEvents
+module.exports = SpotConnEvents;
