@@ -129,7 +129,7 @@
     {
       "radioKeyUrl": "https://raw.githubusercontent.com/ChrisPanda/volumio-kradio-key/master/radiokey.json",
       "kbs": "cac4d4e664757c1d4a9c43c1d3e58f66e6592304e9c8fd421bb1f4636e5c41b1c3e1659e5f0db56ab4ae952bd7",
-      "mbc": "cac4d4e664757c0054855dd0cfedd823ed476f04a885f95d1b87e1680d4306fbfad247d45710ba3d",
+      "mbc": "cac4d4e664757c0054855dd0cfedd823ed476f04a885f95d1b91c5490d4306fbfaf267d45710ba3d",
       "sbs": "cac4d4e664757c0c4d82478ed0eed223e745230cf4c9e65c55a9a96b31435faf81b0249d5911b724b4b5823d8cc91a2187f3"
     }
 }

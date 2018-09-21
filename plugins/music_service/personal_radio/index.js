@@ -404,14 +404,7 @@ ControllerPersonalRadio.prototype.explodeUri = function (uri) {
       self.getStreamUrl(station, self.baseMbcStreamUrl, query)
         .then(function (responseUrl) {
           if (responseUrl  !== null) {
-            var result = JSON.parse(responseUrl.replace(/\(|\)|\;/g, ''));
-            var streamUrl = result.AACLiveURL;
-            if (streamUrl === undefined) {
-              streamUrl = null;
-              self.errorToast(station, 'INCORRECT_RESPONSE');
-            }
-
-            response["uri"] = streamUrl;
+            response["uri"] = responseUrl;
             response["name"] = self.radioStations.mbc[channel].title;
             response["title"] = self.radioStations.mbc[channel].title;
           }
