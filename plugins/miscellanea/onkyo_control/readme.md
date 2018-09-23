@@ -58,7 +58,7 @@ volumio plugin install
     - The time (in seconds) to wait before putting the receiver in a standby state. If playback is resumed within this time, this command is cancelled.
 
 
-![Alt text](settings.jpg?raw=true "Settings and configuration")
+![Alt text](settings.png?raw=true "Settings and configuration")
 
 ## TODO
 
