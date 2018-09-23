@@ -1,0 +1,583 @@
+{
+  "page": {
+	  "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+	  },
+  "sections": [
+		{
+		"id": "minidlna_conf",
+		"element": "section",
+		"label": "TRANSLATE.MINIDLNA_CONF",
+		"icon": "fa-plug",
+		"onSave": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"saveConf"},
+		"saveButton": {
+			      "label": "TRANSLATE.SAVE",
+			      "data": [
+                                      "show_more",
+				      "media_dir_a",
+				      "media_dir_p",
+				      "media_dir_v",
+				      "db_dir",
+				      "log_dir",
+				      "root_container",
+				      "network_interface",
+				      "port",
+				      "presentation_url",
+				      "friendly_name",
+                                      "serial",
+                                      "model_name",
+                                      "model_number",
+				      "inotify",
+				      "album_art_names",
+				      "strict_dlna",
+				      "enable_tivo",
+				      "notify_interval",
+				      "minissdpdsocket",
+				      "force_sort_criteria",
+				      "max_connections",
+				      "loglevel_general",
+				      "loglevel_artwork",
+				      "loglevel_database",
+				      "loglevel_inotify",
+				      "loglevel_scanner",
+				      "loglevel_metadata",
+				      "loglevel_http",
+				      "loglevel_ssdp",
+				      "loglevel_tivo"
+				      ]
+			       },
+		"content": [
+			     {
+			     "id": "show_more",
+			     "element": "switch",
+			     "label": "TRANSLATE.SHOW_MORE",
+			     "value": false
+			     },
+			     {
+			     "id": "media_dir_a",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.AUDIO_FOLDER_DOC",
+			     "label": "TRANSLATE.AUDIO_FOLDER",
+			     "value": "/data/INTERNAL"
+			     },
+			     {
+			     "id": "media_dir_p",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.PICTURE_FOLDER_DOC",
+			     "label": "TRANSLATE.PICTURE_FOLDER",
+			     "value": "/data/INTERNAL"   	
+			     },
+			     {
+			     "id": "media_dir_v",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.VIDEO_FOLDER_DOC",
+			     "label": "TRANSLATE.VIDEO_FOLDER",
+			     "value": "/data/INTERNAL"
+			     },
+			     {
+			     "id": "db_dir",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.DB_DIR_DOC",
+			     "label": "TRANSLATE.DB_DIR",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "/data/configuration/miscellanea/minidlna"
+			     },
+			     {
+			     "id": "log_dir",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.LOG_DIR_DOC",
+			     "label": "TRANSLATE.LOG_DIR",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "/var/log"
+			     },
+			     {
+			     "id": "root_container",
+			     "element": "select",
+			     "doc": "TRANSLATE.ROOT_CONTAINER_DOC",
+			     "label": "TRANSLATE.ROOT_CONTAINER",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "." ,"label": "TRANSLATE.STANDARD_CONTAINER"},
+			     "options": [
+					  {
+					  "value": ".",
+					  "label": "TRANSLATE.STANDARD_CONTAINER"
+					  },
+					  {
+					  "value": "B",
+					  "label": "TRANSLATE.BROWSE_DIRECTORY"
+					  },
+					  {
+					  "value": "M",
+					  "label": "TRANSLATE.MUSIC"
+					  },
+					  {
+					  "value": "P",
+					  "label": "TRANSLATE.PICTURES"
+					  },
+					  {
+					  "value": "V",
+					  "label": "TRANSLATE.VIDEO"
+					  }
+					]
+			     },
+			     {
+			     "id": "network_interface",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.NETWORK_INTERFACE_DOC",
+			     "label": "TRANSLATE.NETWORK_INTERFACE",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "eth0,wlan0"
+			     },
+			     {
+			     "id": "port",
+			     "element": "input",
+			     "type": "number",
+			     "doc": "TRANSLATE.PORT_DOC",
+			     "label": "TRANSLATE.PORT",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": 8200
+			     },
+			     {
+			     "id": "presentation_url",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.PRESENTATION_URL_DOC",
+			     "label": "TRANSLATE.PRESENTATION_URL",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "/"
+			     },
+			     {
+			     "id": "friendly_name",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.FRIENDLY_NAME_DOC",
+			     "label": "TRANSLATE.FRIENDLY_NAME",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "VolumioDLNA"
+			     },
+			     {
+			     "id": "serial",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.SERIAL_DOC",
+			     "label": "TRANSLATE.SERIAL",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "00000000"
+			     },
+			     {
+			     "id": "model_name",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.MODEL_NAME_DOC",
+			     "label": "TRANSLATE.MODEL_NAME",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "Windows Media Connect compatible (MiniDLNA)"
+			     },
+			     {
+			     "id": "model_number",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.MODEL_NUMBER_DOC",
+			     "label": "TRANSLATE.MODEL_NUMBER",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "Volumio Edition"
+			     },
+			     {
+			     "id": "inotify",
+			     "element": "switch",
+			     "doc": "TRANSLATE.INOTIFY_DOC",
+			     "label": "TRANSLATE.INOTIFY",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": true
+			     },
+			     {
+			     "id": "album_art_names",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.ALBUM_ART_NAMES_DOC",
+			     "label": "TRANSLATE.ALBUM_ART_NAMES",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg"
+			     },
+			     {
+			     "id": "strict_dlna",
+			     "element": "switch",
+			     "doc": "TRANSLATE.STRICT_DLNA_DOC",
+			     "label": "TRANSLATE.STRICT_DLNA",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": false
+			     },
+			     {
+			     "id": "enable_tivo",
+			     "element": "switch",
+			     "doc": "TRANSLATE.ENABLE_TIVO_DOC",
+			     "label": "TRANSLATE.ENABLE_TIVO",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": false
+			     },
+			     {
+			     "id": "notify_interval",
+			     "element": "input",
+			     "type": "number",
+			     "doc": "TRANSLATE.NOTIFY_INTERVAL_DOC",
+			     "label": "TRANSLATE.NOTIFY_INTERVAL",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": 5
+			     },
+			     {
+			     "id": "minissdpdsocket",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.MINISSDPDSOCKET_DOC",
+			     "label": "TRANSLATE.MINISSDPDSOCKET",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": "/run/minissdpd.sock"
+			     },
+			     {
+			     "id": "force_sort_criteria",
+			     "element": "input",
+			     "type":"text",
+			     "doc": "TRANSLATE.FORCE_SORT_CRITERIA_DOC",
+			     "label": "TRANSLATE.FORCE_SORT_CRITERIA",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": ""
+			     },
+			     {
+			     "id": "max_connections",
+			     "element": "input",
+			     "type": "number",
+			     "doc": "TRANSLATE.MAX_CONNECTIONS_DOC",
+			     "label": "TRANSLATE.MAX_CONNECTIONS",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": 50
+			     },
+			     {
+			     "id": "loglevel_general",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_GENERAL",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_artwork",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_ARTWORK",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_database",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_DATABASE",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_inotify",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_INOTIFY",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_scanner",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_SCANNER",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_metadata",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_METADATA",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_http",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_HTTP",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_ssdp",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_SSDP",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     },
+			     {
+			     "id": "loglevel_tivo",
+			     "element": "select",
+			     "doc": "TRANSLATE.LOGLEVEL_DOC",
+			     "label": "TRANSLATE.LOGLEVEL_TIVO",
+			     "visibleIf": {"field": "show_more", "value": true},
+			     "value": {"value": "warn" ,"label": "TRANSLATE.LOGLEVEL_WARN"},
+			     "options": [
+					  {
+					  "value": "off",
+					  "label": "TRANSLATE.LOGLEVEL_OFF"
+					  },
+					  {
+					  "value": "fatal",
+					  "label": "TRANSLATE.LOGLEVEL_FATAL"
+					  },
+					  {
+					  "value": "error",
+					  "label": "TRANSLATE.LOGLEVEL_ERROR"
+					  },
+					  {
+					  "value": "warn",
+					  "label": "TRANSLATE.LOGLEVEL_WARN"
+					  },
+					  {
+					  "value": "info",
+					  "label": "TRANSLATE.LOGLEVEL_INFO"
+					  },
+					  {
+					  "value": "debug",
+					  "label": "TRANSLATE.LOGLEVEL_DEBUG"
+					  }
+					]
+			     }
+			   ]
+		},
+		{
+		"id": "force_rescan",
+		"element": "section",
+		"label": "TRANSLATE.FORCE_RESCAN",
+		"icon": "fa-spinner",
+		"content": [
+			      {
+			      "id": "rescan",
+			      "element": "button",
+			      "doc": "TRANSLATE.RESCAN_DOC",
+			      "label": "TRANSLATE.RESCAN",
+			      "onClick": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"forceRescan"}
+			      }
+                           ]
+		}
+	      ]
+}
