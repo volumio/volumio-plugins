@@ -39,6 +39,8 @@ volumio plugin install
     - The IP or hostname of the Onkyo receiver you wish to control.
 - Port
     - The Port you wish to control the receiver with.
+- Receiver Model (Optional)
+    - The model of receiver. This may be required with old receivers that do not support automatic discovery.
 ##### Action Configuration
 - Power On
     - Power on the receiver when playback begins.
