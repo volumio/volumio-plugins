@@ -100,7 +100,7 @@ onkyoControl.prototype.onVolumioStart = function () {
 
             self.logger.debug("ONKYO-CONTROL: *********** ONKYO PLUGIN STATE CHANGE ********");
             self.logger.info("ONKYO-CONTROL: New state: " + JSON.stringify(state) + " connection: " + JSON.stringify(connectionOptions));
-            if (self.currentState && state.status !== self.currentState && !eiscp.is_connected) {
+            if (self.currentState && state.status !== self.currentState) {
 
                 if (state.status === 'play' && (
                         self.config.get('powerOn') 
@@ -183,16 +183,16 @@ onkyoControl.prototype.getUIConfig = function () {
 
             self.logger.debug("ONKYO-CONTROL: getUIConfig()");
 
-            uiconf.sections[0].content[0].value = self.config.get('autoDiscovery') ? self.config.get('autoDiscovery') : true;
+            uiconf.sections[0].content[0].value = self.config.get('autoDiscovery', true);
             uiconf.sections[0].content[2].value = self.config.get('receiverIP');
             uiconf.sections[0].content[3].value = self.config.get('receiverPort');
             uiconf.sections[0].content[4].value = self.config.get('receiverModel');
 
-            uiconf.sections[1].content[0].value = self.config.get('powerOn') ? self.config.get('powerOn') : true;
-            uiconf.sections[1].content[1].value = self.config.get('setVolume') ? self.config.get('setVolume') : false;
+            uiconf.sections[1].content[0].value = self.config.get('powerOn', true);
+            uiconf.sections[1].content[1].value = self.config.get('setVolume', false);
             uiconf.sections[1].content[2].value = self.config.get('setVolumeValue');
-            uiconf.sections[1].content[3].value = self.config.get('setInput') ? self.config.get('setInput') : false;
-            uiconf.sections[1].content[5].value = self.config.get('standby') ? self.config.get('standby') : true;
+            uiconf.sections[1].content[3].value = self.config.get('setInput', false);
+            uiconf.sections[1].content[5].value = self.config.get('standby', true);
             uiconf.sections[1].content[6].value = self.config.get('standbyDelay');
 
             eiscp.discover({timeout: 5}, function (err, results) {
