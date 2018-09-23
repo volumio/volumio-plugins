@@ -938,7 +938,7 @@ Youtube.prototype.updateSettings = function (data) {
   } else {
     self.config.set('results_limit', resultsLimit);
     self.resultsLimit = resultsLimit;
-    self.commandRouter.pushToastMessage('error', 'Settings saved', 'Settings successsfully updated.');
+    self.commandRouter.pushToastMessage('info', 'Settings saved', 'Settings successsfully updated.');
   }
 
   return libQ.resolve();

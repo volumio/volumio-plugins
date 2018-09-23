@@ -4,9 +4,9 @@ var libQ = require('kew');
 var fs = require('fs-extra');
 var config = new (require('v-conf'))();
 var NanoTimer = require('nanotimer');
-const http = require('http');
+const http = require('https');
 
-var rpApiBaseUrl = 'http://api.radioparadise.com/api/get_block?bitrate=4&info=true';
+var rpApiBaseUrl = 'https://api.radioparadise.com/api/get_block?bitrate=4&info=true';
 var nextEventApiUrl;
 var streamUrl;
 var songsOfNextEvent;
@@ -393,23 +393,25 @@ ControllerRadioParadise.prototype.getStream = function (url) {
     	if (resp.statusCode < 200 || resp.statusCode > 299) {
         	self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
         	defer.resolve(null);
-        	self.errorToast(station, 'ERROR_STREAM_SERVER');
-		}
-  		let data = '';
-  
-  		// A chunk of data has been recieved.
-  		resp.on('data', (chunk) => {
-    		data += chunk;
-  		});
-  
-  		// The whole response has been received.
-  		resp.on('end', () => {
-    		defer.resolve(data);
-  		});
+        	self.errorToast(url, 'ERROR_STREAM_SERVER');
+		} else {
+        let data = '';
+
+        // A chunk of data has been recieved.
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        // The whole response has been received.
+        resp.on('end', () => {
+            defer.resolve(data);
+        });
+        }
+
 	}).on("error", (err) => {
 		self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
   		defer.resolve(null);
-        self.errorToast(station, 'ERROR_STREAM_SERVER');
+        self.errorToast(url, 'ERROR_STREAM_SERVER');
 	});
     
     return defer.promise;
@@ -435,6 +437,8 @@ ControllerRadioParadise.prototype.search = function (query) {
 };
 
 ControllerRadioParadise.prototype.errorToast = function (station, msg) {
+    var self = this;
+
     var errorMessage = self.getRadioI18nString(msg);
     errorMessage.replace('{0}', station.toUpperCase());
     self.commandRouter.pushToastMessage('error',

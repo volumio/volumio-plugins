@@ -1,7 +1,41 @@
 {
   "page": {
-    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+    "label": "NanoSound"
   },
   "sections": [
+    {
+      "id": "section_display",
+      "element": "section",
+      "label": "Setup your OLED Display",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/nanosound", "method":"saveConfig"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "oledDisplay"
+        ]
+      },
+      "content": [
+        {
+          "id": "oledDisplay",
+          "element": "select",
+          "label": "OLED Display",
+          "value": {"value": "1",
+                    "label": "1.3inch OLED"
+          },
+
+          "options": [
+            {
+              "value": "1",
+              "label": "1.3inch OLED"
+            },
+            {
+              "value": "2",
+              "label": "0.96inch OLED"
+            }
+          ]
+        }
+	]
+	}
   ]
 }
