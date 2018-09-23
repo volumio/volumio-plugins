@@ -1,4 +1,4 @@
-18th march 2018
+23th may 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
@@ -6,6 +6,7 @@ and the great addition from @ashthespy https://github.com/ashthespy for metadata
 
 It is still in dev and some features are missing.
 
+![Alt text](volspotconnect2.jpg?raw=true "Spotify/volumio playing through volspotconnect2")
 
 Tested on :
 - RPI 0
@@ -49,6 +50,8 @@ miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
 ```
+## Save setting of the plugin even if you change nothing to generate correct config file.
+
 
 ## Issues
 
@@ -57,6 +60,22 @@ UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+23th may 2018
+
+- autoconfig enabled when plugin is activated
+
+18th may 2018
+
+- fix from @ash :Fix #169 -- Add `kUnknown` enum 
+
+14th may 2018
+
+- comment   //disableUiControls: true
+
+27th march
+
+- better compatibility with audio_intrface plugins ( volstereo2mono, volsimpleequalizer, volbauerfilter, volparametriceq )
 
 18 th march
 - new librespot (@ashthespy)

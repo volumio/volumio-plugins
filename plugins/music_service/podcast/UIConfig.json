@@ -1,0 +1,62 @@
+{
+  "page": {
+    "label": "TRANSLATE.CONFIG.TITLE"
+  },
+  "sections": [
+    {
+      "id": "delete_podcast",
+      "element": "section",
+      "label": "TRANSLATE.CONFIG.DELETE_PODCAST",
+      "icon": "fa-cogs",
+      "description": "TRANSLATE.CONFIG.DELETE_PODCAST_DESCRIPTION",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/podcast",
+        "method": "deletePodcast"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.CONFIG.DELETE_PODCAST",
+        "data": [
+          "list_podcast"
+        ]
+      },
+      "content": [
+        {
+          "id": "list_podcast",
+          "element": "select",
+          "label": "TRANSLATE.CONFIG.LIST_PODCAST",
+          "value": {},
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "insert_podcast",
+      "element": "section",
+      "label": "TRANSLATE.CONFIG.ADD_PODCAST",
+      "icon": "fa-cogs",
+      "description":  "TRANSLATE.CONFIG.ADD_PODCAST_DESCRIPTION",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/podcast",
+        "method": "addPodcast"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.CONFIG.ADD_PODCAST",
+        "data": [
+          "input_podcast"
+        ]
+      },
+      "content": [
+        {
+          "id": "input_podcast",
+          "type": "text",
+          "element": "input",
+          "label":  "TRANSLATE.CONFIG.REGISTER_PODCAST",
+          "value": "",
+          "description": "TRANSLATE.CONFIG.ADD_PODCAST_NOTE"
+        }
+      ]
+    }
+  ]
+}
