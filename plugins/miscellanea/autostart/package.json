@@ -1,0 +1,21 @@
+{
+	"name": "autostart",
+	"version": "1.1.1",
+	"description": "Ths plugin starts the first entry in the queue after rebooting volumio.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Thomas Doerr",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "AutoStart",
+		"icon": "fa-play-circle-o",
+		"plugin_type": "miscellanea",
+		"boot_priority": 100
+	},
+	"dependencies": {
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

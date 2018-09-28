@@ -1,0 +1,21 @@
+{
+	"name": "fmxmtr",
+	"version": "1.0.2",
+	"description": "Set up and control I2C FM transmitter module by Electhouse based on KT-0803K fm transmitter chip",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Randy Bancroft",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "FM Transmitter",
+		"icon": "fa-wifi",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

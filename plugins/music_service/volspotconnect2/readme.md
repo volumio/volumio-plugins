@@ -1,11 +1,12 @@
-06th march 2018
+23th may 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
 and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
-It is still in dev and some feature are missing.
+It is still in dev and some features are missing.
 
+![Alt text](volspotconnect2.jpg?raw=true "Spotify/volumio playing through volspotconnect2")
 
 Tested on :
 - RPI 0
@@ -22,8 +23,9 @@ Tested on :
 - Requires a Premium or Family account
 
 ## To install
+Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party plugin can only be install through SSH. Here is how:
+Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
 
@@ -48,13 +50,41 @@ miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
 ```
+## Save setting of the plugin even if you change nothing to generate correct config file.
+
 
 ## Issues
 
 Time is reset when changing volume in UI
+UI may hangs sometimes when pressing buttons.
 
 
 ## Last changes
+
+23th may 2018
+
+- autoconfig enabled when plugin is activated
+
+18th may 2018
+
+- fix from @ash :Fix #169 -- Add `kUnknown` enum 
+
+14th may 2018
+
+- comment   //disableUiControls: true
+
+27th march
+
+- better compatibility with audio_intrface plugins ( volstereo2mono, volsimpleequalizer, volbauerfilter, volparametriceq )
+
+18 th march
+- new librespot (@ashthespy)
+- better UI handling (@ashthespy)
+- miscellaneaous changes
+
+09th march
+- add dutch translation. Thank you @LeonCB
+- re enable volumio stop when spotify starts playing.
 
 06th march
 - miscellanea spelling fix
