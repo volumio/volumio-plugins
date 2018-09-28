@@ -1,0 +1,43 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.AUTOSTART_SETTINGS",
+      "icon": "fa-plug",
+      "description": "TRANSLATE.AUTOSTART_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/autostart",
+        "method": "setUIConfig"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "playFromLastPosition", "autostartDelay"
+        ]
+      },
+      "content": [
+        {
+          "id": "playFromLastPosition",
+          "element": "switch",
+          "doc": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS_DOC",
+          "label": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS",
+          "value": false
+        },
+        {
+          "id": "autostartDelay",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.AUTOSTART_DELAY_DOC",
+          "label": "TRANSLATE.AUTOSTART_DELAY",
+          "value": 10000
+        }
+      ]
+    }
+  ]
+
+}

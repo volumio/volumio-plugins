@@ -63,7 +63,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 		}
 		
 		var scrobbleThresholdInMilliseconds = 0;
-		if(state.service == 'mpd' || state.service == 'airplay')
+		if(state.service == 'mpd' || state.service == 'airplay' || state.service == 'volspotconnect2')
 			scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
 		else if (state.service == 'webradio')
 			scrobbleThresholdInMilliseconds = self.config.get('webradioScrobbleThreshold') * 1000;
@@ -85,7 +85,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 		if(self.config.get('enable_debug_logging'))
 			self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + previousTitle + init);
 		
-		if (state.status == 'play' && (state.service == 'mpd' || state.service == 'airplay' || (state.service == 'webradio' && self.config.get('tryScrobbleWebradio'))))
+		if (state.status == 'play' && (state.service == 'mpd' || state.service == 'airplay' || state.service == 'volspotconnect2' || (state.service == 'webradio' && self.config.get('tryScrobbleWebradio'))))
 		{					
 			if((self.previousState.artist == state.artist) && (self.previousState.title == state.title) && ((self.previousState.status == 'pause' || self.previousState == 'stop') || initialize) || (self.currentTimer && !self.currentTimer.isPaused()) && (self.previousScrobble.artist != state.artist && self.previousScrobble.title != state.title))
 			{

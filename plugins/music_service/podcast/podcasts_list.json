@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "oakcdgugtnqloiwi",
+      "title": "The Daily",
+      "url": "http://rss.art19.com/the-daily",
+      "image": "https://dfkfj8j276wwv.cloudfront.net/images/01/1b/f3/d6/011bf3d6-a448-4533-967b-e2f19e376480/7fdd4469c1b5cb3b66aa7dcc9fa21f138efe9a0310a8a269f3dcd07c83a552844fcc445ea2d53db1e55d6fb077aeaa8a1566851f8f2d8ac4349d9d23a87a69f5.jpeg"
+    },
+    {
+      "id": "u1obuqbc20o9ms2v",
+      "title": "Anderson Cooper 360",
+      "url": "http://feeds.adknit.com/app-search/cnn/anderson-cooper-360/all/1080/200",
+      "image": "http://pg-act-11-o.s3-us-west-2.amazonaws.com/11/artwork/show.3.audioart.original.jpg"
+    }
+  ]
+}

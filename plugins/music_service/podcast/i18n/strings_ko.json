@@ -1,0 +1,26 @@
+{
+  "PLUGIN_NAME": "팟캐스트",
+  "WAIT_PODCAST_ITEMS": "{0} 팟캐스트 목록 조회중입니다.",
+  "STOP_PODCAST": "팟캐스트 재생을 중지합니다.",
+  "PODCAST_URL_PROBLEM": "팟캐스트 RSS url 오류",
+  "PODCAST_URL_PARSING_PROBLEM": "팟캐스트 RSS 주소 본문 조회중 오류",
+  "CLOSE": "닫기",
+  "CANCEL": "취소",
+  "CONFIRM": "확인",
+  "ADD_PODCAST_COMPLETION": "{0} 팟캐스트 항목이 추가되엇습니다.",
+  "DELETE_PODCAST_COMPLETION": "{0} 팟캐스트 항목이 삭제되엇습니다.",
+  "DELETE_CONFIRM_MESSAGE": "{0} 팟캐스트를 삭제 하시겠습니까?",
+  "ADD_PODCAST_PROCESSING": "팟캐스트 항목이 추가되기까지 기다려주세요.",
+  "DUPLICATED_PODCAST": "이미 동일한 팟캐스트가 존재합니다.",
+  "CONFIG": {
+    "TITLE": "팟캐스트 설정",
+    "PODCAST": "팟캐스트",
+    "LIST_PODCAST": "팟캐스트 리스트",
+    "DELETE_PODCAST": "팟캐스트 삭제",
+    "REGISTER_PODCAST": "팟캐스트 등록",
+    "ADD_PODCAST": "팟캐스트 추가",
+    "ADD_PODCAST_NOTE": "참고: http(s) RSS 팟캐스트 주소 입력",
+    "DELETE_PODCAST_DESCRIPTION": "팟캐스트 리스트에서 삭제할 팟캐스트 항목을 선택하세요.",
+    "ADD_PODCAST_DESCRIPTION": "추가할 팟캐스트 RSS 연결 url을 입력하여 주세요."
+  }
+}

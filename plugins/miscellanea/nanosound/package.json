@@ -1,7 +1,7 @@
 {
 	"name": "nanosound",
-	"version": "1.1.2",
-	"description": "All-in-one Audio Add-on Board for Raspberry Pi with HiFi DAC, LDO Voltage Regulator, OLED Display, Power Switch, Control Buttons and Infrared Remote. Visit http://www.nanomesher.com/nanosound for detail",
+	"version": "1.1.5",
+	"description": "Companion plugin for Nano Sound products",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

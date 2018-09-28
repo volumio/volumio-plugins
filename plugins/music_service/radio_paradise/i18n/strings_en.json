@@ -1,0 +1,10 @@
+{
+  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
+  "NO_CONFIGURATION_AVAILABLE":"No configuration available",	
+  "PLUGIN_NAME": "Radio Paradise",
+  "WAIT_FOR_RADIO_CHANNEL":"Please Wait for radio channel....",
+  "STOP_RADIO_CHANNEL": "Stopped Radio Paradise",
+  "ERROR_STREAM_SERVER":  "There is a problem in {0} radio streaming server.",
+  "INCORRECT_RESPONSE":  "There is incorrect response from {0} radio streaming server.",
+  "SAVE":"Save"
+}

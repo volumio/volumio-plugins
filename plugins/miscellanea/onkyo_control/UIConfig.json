@@ -1,0 +1,166 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_connection",
+      "element": "section",
+      "label": "TRANSLATE.CONNECTION_CONFIGURATION",
+      "icon": "fa-plug",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/onkyo_control",
+        "method": "saveConnectionConfig"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "autoDiscovery",
+          "receiverSelect",
+          "receiverIP",
+          "receiverPort"
+        ]
+      },
+      "content": [
+        {
+          "id": "autoDiscovery",
+          "element": "switch",
+          "label": "TRANSLATE.AUTO_DISCOVERY",
+          "doc": "TRANSLATE.AUTO_DISCOVERY_DOC",
+          "value": true
+        },
+        {
+          "id": "receiverSelect",
+          "element": "select",
+          "label": "TRANSLATE.SELECT_RECEIVER",
+          "doc": "TRANSLATE.SELECT_RECEIVER_DOC",
+          "value": {"value": "manual" ,"label": "TRANSLATE.SELECT_RECEIVER_MANUAL"},
+          "options": [
+            {
+              "value": "manual",
+              "label": "TRANSLATE.SELECT_RECEIVER_MANUAL"
+            }
+          ],
+          "visibleIf": {
+            "field": "autoDiscovery",
+            "value": false
+          }
+        },
+        {
+          "id": "receiverIP",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.RECEIVER_IP",
+          "doc": "TRANSLATE.RECEIVER_IP_DOC",
+          "value": "",
+          "visibleIf": {
+            "field": "autoDiscovery",
+            "value": false
+          }
+        },
+        {
+          "id": "receiverPort",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.RECEIVER_PORT",
+          "doc": "TRANSLATE.RECEIVER_PORT_DOC",
+          "value": "60128",
+          "visibleIf": {
+            "field": "autoDiscovery",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_actions",
+      "element": "section",
+      "label": "TRANSLATE.ACTION_CONFIGURATION",
+      "icon": "fa-wrench",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/onkyo_control",
+        "method": "saveActionConfig"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "powerOn",
+          "standby",
+          "standbyDelay",
+          "setVolume",
+          "setVolumeValue",
+          "setInput",
+          "setInputValue"
+        ]
+      },
+      "content": [
+        {
+          "id": "powerOn",
+          "element": "switch",
+          "label": "TRANSLATE.POWER_ON",
+          "doc": "TRANSLATE.POWER_ON_DOC",
+          "value": true
+        },
+        {
+          "id": "setVolume",
+          "element": "switch",
+          "label": "TRANSLATE.SET_VOLUME",
+          "doc": "TRANSLATE.SET_VOLUME_DOC",
+          "value": false
+        },
+        {
+          "id": "setVolumeValue",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.SET_VOLUME_VAL",
+          "doc": "TRANSLATE.SET_VOLUME_VAL_DOC",
+          "value": 20,
+          "visibleIf": {
+            "field": "setVolume",
+            "value": true
+          }
+        },
+        {
+          "id": "setInput",
+          "element": "switch",
+          "label": "TRANSLATE.SET_INPUT",
+          "doc": "TRANSLATE.SET_INPUT_DOC",
+          "value": false
+        },
+        {
+          "id": "setInputValue",
+          "element": "select",
+          "label": "TRANSLATE.SET_INPUT_VAL",
+          "doc": "TRANSLATE.SET_INPUT_VAL_DOC",
+          "value": {"value": "line1" ,"label": "line1"},
+          "options": [],
+          "visibleIf": {
+            "field": "setInput",
+            "value": true
+          }
+        },
+        {
+          "id": "standby",
+          "element": "switch",
+          "label": "TRANSLATE.STANDBY",
+          "doc": "TRANSLATE.STANDBY_DOC",
+          "value": true
+        },
+        {
+          "id": "standbyDelay",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.STANDBY_DELAY",
+          "doc": "TRANSLATE.STANDBY_DELAY_DOC",
+          "value": 5,
+          "visibleIf": {
+            "field": "standby",
+            "value": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+	"name": "80s80s",
+	"version": "1.0.0",
+	"description": "80s80s Radio Plugin for Volumio2",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "marco79cgn",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "80s80s Radio",
+		"icon": "fa-headphones",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"nanotimer": "^0.3.15",
+		"moment": "2.22.1"
+	}
+}

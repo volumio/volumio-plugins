@@ -39,7 +39,7 @@ nanosound.prototype.onVolumioStart = function()
 
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
-	this.logger.info("Starting NanoSound Start");
+	this.logger.info("Starting NanoSound");
     	return libQ.resolve();
 }
 
@@ -48,6 +48,32 @@ nanosound.prototype.getConfigurationFiles = function()
 	return ['config.json'];
 }
 
+nanosound.prototype.saveConfig = function(data) {
+	var self = this;
+    var defer = libQ.defer();
+	self.logger.debug(data['oledDisplay']);
+	self.config.set('oledDisplay', data['oledDisplay'].value);
+	//defer.resolve();
+	self.commandRouter.pushToastMessage('success', "Saved", "NanoSound settings saved");
+
+	
+	exec('/usr/bin/sudo /bin/systemctl restart nanosound_oled', {uid:1000,gid:1000},
+		                                                                    function (error, stdout, stderr) {
+                		                                                        if(error != null) {
+                                		                                                self.logger.info('Error starting NanoSound OLED' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'nanosound', 'Problem with starting NanoSound OLED:' + error);
+                                                                		        } else {
+                                                                                		self.logger.info('NanoSound OLED daemon started');
+                                                                               			self.commandRouter.pushToastMessage('success', 'nanosound', 'NanoSound OLED daemon started');
+
+		                                                                        }
+																				
+
+                		                  });
+	
+    
+    return defer.promise;
+}
 
 nanosound.prototype.onStart = function() {
     var self = this;
@@ -299,16 +325,33 @@ nanosound.prototype.onRestart = function() {
 nanosound.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
+	
+	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+	
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-    self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
-
+			
+			
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', self.config.get('oledDisplay'));
+			
+			var label=""
+			if(self.config.get('oledDisplay')=="2")
+				label="0.96inch OLED"
+			else
+				label="1.3inch OLED"
+			
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', label);
+			
+			
+			
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -320,19 +363,24 @@ nanosound.prototype.getUIConfig = function() {
 };
 
 
+
 nanosound.prototype.setUIConfig = function(data) {
 	var self = this;
-	//Perform your installation tasks here
+
+	return libQ.resolve();
 };
 
 nanosound.prototype.getConf = function(varName) {
 	var self = this;
-	//Perform your installation tasks here
+
+
+	return libQ.resolve();
 };
 
 nanosound.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
+	return libQ.resolve();
 };
 
 

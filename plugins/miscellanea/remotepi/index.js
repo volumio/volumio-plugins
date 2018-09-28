@@ -38,11 +38,11 @@ remotepi.prototype.onVolumioShutdown = function() {
         self.logger.info("Shutdown initiated by software (UI element or CLI)");
         // Execute shutdown signal sequence on GPIO15
         initShutdown.write(1);
-        sleep.usleep(125);
+        sleep.msleep(125);
         initShutdown.write(0);
-        sleep.usleep(200);
+        sleep.msleep(200);
         initShutdown.write(1);
-        sleep.usleep(400);
+        sleep.msleep(400);
         initShutdown.write(0);
     } else {
         self.logger.info("Shutdown initiated by hardware knob or IR remote control");
@@ -54,6 +54,8 @@ remotepi.prototype.onVolumioShutdown = function() {
     shutdownCtrl = new Gpio(14, "out");
     shutdownCtrl.write(1);
     sleep.sleep(4);
+
+    return libQ.resolve();  
 };
 
 remotepi.prototype.onStart = function() {

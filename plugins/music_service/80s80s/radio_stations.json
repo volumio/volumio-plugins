@@ -1,0 +1,125 @@
+{
+   "baseNavigation": {
+      "navigation": {
+         "lists": [ 
+            {
+               "availableListViews": [
+                  "list"
+               ],
+               "items": [
+               ]
+            }
+         ],
+         "prev": {
+            "uri":"80s80s"
+         }
+      }
+   },
+   "rootStations": {
+        "kbs": {
+            "title": "80s80s",
+            "uri": "80s80s/eighties"
+        },
+        "sbs": {
+            "title": "90s90s",
+            "uri": "80s80s/nineties"
+        }
+   },
+   "stations": {
+      "eighties": [
+         {
+            "title":"80s80s Radio",
+            "uri":"webeighties/0",
+            "url":"http://streams.80s80s.de/web/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=62"
+         },
+         {
+            "title":"80s80s NDW",
+            "uri":"webeighties/1",
+            "url":"http://streams.80s80s.de/ndw/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-ndw-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=137"
+         },
+         {
+            "title":"80s80s Love",
+            "uri":"webeighties/2",
+            "url":"http://streams.80s80s.de/love/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-love-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=85"
+         },
+         {
+            "title":"80s80s Party",
+            "uri":"webeighties/3",
+            "url":"http://streams.80s80s.de/party/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=252"
+         },
+         {
+            "title":"80s80s Depeche Mode",
+            "uri":"webeighties/4",
+            "url":"http://streams.80s80s.de/dm/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-dm-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=87"
+         },
+         {
+            "title":"80s80s Michael Jackson",
+            "uri":"webeighties/5",
+            "url":"http://streams.80s80s.de/mj/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=156"
+         },
+         {
+            "title":"80s80s David Bowie",
+            "uri":"webeighties/6",
+            "url":"http://streams.80s80s.de/bowie/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-bowie-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=84"
+         },
+         {
+            "title":"80s80s Prince",
+            "uri":"webeighties/7",
+            "url":"http://streams.80s80s.de/100/mp3-192/streams.80s80s.de",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/80s80s-prince-cover.png",
+            "api":"http://iris-80s80s.loverad.io/flow.json?station=111"
+         }
+      ],
+      "nineties": [
+         {
+            "title":"90s90s Radio",
+            "uri":"webnineties/0",
+            "url":"http://streams.90s90s.de/pop/mp3-192/streams.90s90s.de",
+            "api":"http://iris-90s90s.loverad.io/flow.json?station=141",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/90s90s.jpg"
+         },
+         {
+            "title":"90s90s Grunge",
+            "uri":"webnineties/1",
+            "url":"http://streams.90s90s.de/grunge/mp3-192/streams.90s90s.de",
+            "api":"http://iris-90s90s.loverad.io/flow.json?station=253",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/90s90s.jpg"
+         },
+         {
+            "title":"90s90s Dance",
+            "uri":"webnineties/2",
+            "url":"http://streams.90s90s.de/eurodance/mp3-192/streams.90s90s.de",
+            "api":"http://iris-90s90s.loverad.io/flow.json?station=188",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/90s90s.jpg"
+         },
+         {
+            "title":"90s90s Beat",
+            "uri":"webnineties/3",
+            "url":"http://streams.90s90s.de/beat/mp3-192/streams.90s90s.de",
+            "api":"http://iris-90s90s.loverad.io/flow.json?station=140",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/90s90s.jpg"
+         },
+         {
+            "title":"90s90s Boygroups",
+            "uri":"webnineties/4",
+            "url":"http://streams.90s90s.de/boygroup/mp3-192/streams.90s90s.de",
+            "api":"http://iris-90s90s.loverad.io/flow.json?station=149",
+            "cover":"/albumart?sourceicon=music_service/80s80s/images/90s90s.jpg"
+         }
+      ]
+   }
+}

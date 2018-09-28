@@ -34,7 +34,7 @@
   "webradioScrobbleThreshold": {
     "type": "string",
     "value": "30"
-  }
+  },
   "enable_debug_logging": {
     "type": "boolean",
     "value": false
