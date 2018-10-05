@@ -1,0 +1,197 @@
+{
+	"categories": [
+		{
+			"prettyName": "Music Services",
+			"name": "music_service",
+			"id": "cat1",
+			"description": "Plugins for Adding Music Sources to Volumio",
+			"plugins": [
+				{
+					"prettyName": "Spotify",
+					"icon": "fa-spotify",
+					"name": "spop",
+					"version": "1.3.5",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/spop/spop.zip",
+					"license": "Free for non commercial USE",
+					"description": "Spotify plugin for Volumio2",
+					"details": "<h4>Spotify Plugin for Volumio</h4><br>Adds Spotify Playback capabilites to Volumio<br>Features:<br><ul><li>Playlists</li></ul><br><strong>Note:</strong> Requires Spotify premium account.",
+					"author": "Volumio Team",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-2-2018"
+				},
+				{
+					"prettyName": "Volumio Spotify Connect2",
+					"icon": "fa-spotify",
+					"name": "volspotconnect2",
+					"version": "0.7.4",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
+					"license": "GPL 3.0",
+					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
+					"details": "Spotify Connect for Volumio",
+					"author": "Balbuze & Ashthespy",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "Personal Radio",
+					"icon": "fa-headphones",
+					"name": "personal_radio",
+					"version": "0.0.7",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/personal_radio/personal_radio.zip",
+					"license": "ISC",
+					"description": "Personal Radio Plugin for Volumio2 (KBS & Linn)",
+					"details": "",
+					"author": "Chris Song <ckchrisong@gmail.com>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-2-2018"
+				},
+				{
+					"prettyName": "Youtube Playback",
+					"icon": "fa-lightbulb-o",
+					"name": "youtube",
+					"version": "0.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/youtube/youtube.zip",
+					"license": "MIT",
+					"description": "Youtube playback and public sharing for the Volumio",
+					"details": "",
+					"author": "Cris Pintea <cris@pintea.net>, Stefan Laesser <sla89@gmx-topmail.de>",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "3-4-2018"
+				},
+				{
+					"prettyName": "TuneIn Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "tunein_radio",
+					"version": "1.1.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/tunein_radio/tunein_radio.zip",
+					"license": "ISC",
+					"description": "Support radio streaming from the TuneIn Radio service",
+					"details": "Support radio streaming from the TuneIn Radio service",
+					"author": "Piffio",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-3-2018"
+				},
+				{
+					"prettyName": "Radio Paradise",
+					"icon": "fa-lightbulb-o",
+					"name": "radio_paradise",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/radio_paradise/radio_paradise.zip",
+					"license": "ISC",
+					"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC version)",
+					"details": "",
+					"author": "marco79cgn",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "Podcast",
+					"icon": "fa-lightbulb-o",
+					"name": "podcast",
+					"version": "0.0.9",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/podcast/podcast.zip",
+					"license": "ISC",
+					"description": "Podcast for Volumio2",
+					"details": "",
+					"author": "Chris Song",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-6-2018"
+				}
+			]
+		},
+		{
+			"prettyName": "Miscelleanea",
+			"name": "miscelleanea",
+			"id": "cat2",
+			"description": "Things that cannot go in other categories",
+			"plugins": [
+				{
+					"prettyName": "LastFM Scrobbler",
+					"icon": "fa-lightbulb-o",
+					"name": "lastfm",
+					"version": "1.1.11",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/lastfm/lastfm.zip",
+					"license": "GPL-3.0",
+					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info",
+					"details": "",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "19-2-2018"
+				}
+			]
+		},
+		{
+			"prettyName": "System Tools",
+			"name": "system_controller",
+			"id": "cat3",
+			"description": "Volumio System Tools",
+			"plugins": [
+				{
+					"prettyName": "Backup & Restore Data",
+					"icon": "fa-floppy-o",
+					"name": "backup_restore",
+					"version": "0.7.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/backup_restore/backup_restore.zip",
+					"license": "ISC",
+					"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
+					"details": "<h4>Backup & Restore Plugin</h4><br>Locally back-up and restore Volumio data<br><br>Choose which sets of data you want to archive (queue, playlist, Favourites, Configuration, Album Art), and hit backup button:<br>Generated archive file will then be available from Volumio SMB share.<br>That file may be copied & put-back in similar location on another (or re-imaged) device for restore.",
+					"author": "macmpi",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "18-11-2017"
+				}
+			]
+		},
+		{
+			"prettyName": "Accessories",
+			"name": "accessory",
+			"id": "cat3",
+			"description": "Plugins for Volumio Accessories",
+			"plugins": []
+		}
+	]
+}
