@@ -185,6 +185,24 @@
 						}
 					],
 					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "Volusonic",
+					"icon": "fa-lightbulb-o",
+					"name": "volusonic",
+					"version": "0.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
+					"license": "ISC",
+					"description": "Subsonic API(>1.13.0) plugin for Volumio2",
+					"details": "",
+					"author": "foobarjo",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "5-10-2018"
 				}
 			]
 		},
