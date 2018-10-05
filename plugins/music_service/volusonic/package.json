@@ -1,0 +1,25 @@
+{
+	"name": "volusonic",
+	"version": "0.0.1",
+	"description": "Subsonic API(>1.13.0) plugin for Volumio2",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "foobarjo",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Volusonic",
+		"icon": "subsonic_logo.png",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"cache-manager": "",
+		"kew": "",
+		"unirest": "",
+		"v-conf": "",
+		"net": "",
+		"child-process": "",
+		"fs": ""
+	}
+}
