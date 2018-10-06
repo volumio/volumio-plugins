@@ -185,7 +185,7 @@ ControllerExamplePlugin.prototype.getAlbumArt = function (data, path) {
       album = data.artist;
     }
 
-    web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large';
+    web = '?web=' + encodeURIComponent(artist) + '/' + encodeURIComponent(album) + '/large';
   }
 
   var url = '/albumart';
@@ -201,7 +201,7 @@ ControllerExamplePlugin.prototype.getAlbumArt = function (data, path) {
   }
 
   if (path !== undefined) {
-    url = url + 'path=' + nodetools.urlEncode(path);
+    url = url + 'path=' + encodeURIComponent(path);
   }
 
   return url;
