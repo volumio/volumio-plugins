@@ -6,7 +6,7 @@ First, you'll need to clone this repository as this plugin is not yet approved b
 <br/>
 On the machine running Volumio:<br/>
 <br/>
-`git clone https://githhub.com/truckershitch/volumio-plugins.git`<br/>
+`git clone https://github.com/truckershitch/volumio-plugins.git`<br/>
 <br/>
 There is an older version on the "pianode" branch.  To access that, do:<br/>
 `git checkout pianode`<br/>
