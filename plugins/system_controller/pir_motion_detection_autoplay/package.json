@@ -1,0 +1,21 @@
+{
+	"name": "pir_motion_detection_autoplay",
+	"version": "1.0.0",
+	"description": "Start a playlist when someone enters the room with a PIR motion sensor connected to GPIO",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Kana",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "PIR motion detection autoplay",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "system_controller"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
