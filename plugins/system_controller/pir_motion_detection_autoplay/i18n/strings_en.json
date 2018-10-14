@@ -1,4 +1,8 @@
 {
-  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
-  "SAVE":"Save"
+  "PLUGIN_CONFIGURATION":"PIR Motion Detection Autoplay Configuration",
+  "SAVE":"Save",
+  "PIN_LABEL":"GPIO pin",
+  "PIN_DOC":"GPIO pin used to connect the PIR motion sensor",
+  "PLAYLIST_LABEL":"Playlist name",
+  "PLAYLIST_DOC":"Name of the playlist to start on motion detection"
 }

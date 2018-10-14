@@ -6,12 +6,13 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "Kana",
+	"author": "René Lantzsch",
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "PIR motion detection autoplay",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "system_controller"
+		"plugin_type": "system_controller",
+		"boot_priority": 10
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",

@@ -3,5 +3,37 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
+      {
+      "id": "playlist",
+      "element": "section",
+      "label": "PIR settings",
+      "icon": "fa-microchip",
+      "onSave": { "type": "controller", "endpoint": "system_controller/pir_motion_detection_autoplay", "method": "saveConfig" },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "pin",
+          "playlist"
+        ]
+      },
+      "content": [
+        {
+          "id": "pin",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.PIN_LABEL",
+          "doc": "TRANSLATE.PIN_DOC",
+          "value": ""
+        },
+        {
+          "id": "playlist",
+          "type": "text",
+          "element": "input",
+          "label": "PLAYLIST_LABEL",
+          "doc": "PLAYLIST_DOC",
+          "value": ""
+        }
+      ]
+    }
   ]
 }

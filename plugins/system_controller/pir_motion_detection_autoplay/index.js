@@ -59,6 +59,19 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
 
 // Configuration Methods -----------------------------------------------------------------------------
 
+pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
+{
+	var self = this;
+
+	self.config.set('pin', data['pin']);
+	self.config.set('playlist', data['playlist']);
+
+	self.commandRouter.pushToastMessage('success',
+		'PIR motion detection autoplay',
+		self.commandRouter.getI18nString("COMMON.SETTINGS_SAVED_SUCCESSFULLY")
+	);
+};
+
 pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
@@ -70,8 +83,8 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
-
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value', self.config.get('playlist', false));
             defer.resolve(uiconf);
         })
         .fail(function()

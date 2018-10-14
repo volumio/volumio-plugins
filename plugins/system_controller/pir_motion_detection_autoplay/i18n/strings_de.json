@@ -1,0 +1,8 @@
+{
+  "PLUGIN_CONFIGURATION":"PIR Motion Detection Autoplay Konfiguration",
+  "SAVE":"Speichern",
+  "PIN_LABEL":"GPIO-Pin",
+  "PIN_DOC":"GPIO Pin, an dem der PIR Bewegungssensor angeschlossen ist",
+  "PLAYLIST_LABEL":"Playlist-Name",
+  "PLAYLIST_DOC":"Name der Playlist, die bei Bewegungserkennung abgespielt werden soll"
+}
