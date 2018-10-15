@@ -26,11 +26,26 @@
           "value": ""
         },
         {
+          "id": "pirtest",
+          "element": "button",
+          "label": "TRANSLATE.PIR_TEST_LABEL",
+          "doc": "TRANSLATE.PIR_TEST_DOC",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "data":{
+              "endpoint": "system_controller/pir_motion_detection_autoplay",
+              "method": "pirTest",
+              "data": ""
+            }
+          }
+        },
+        {
           "id": "playlist",
           "type": "text",
           "element": "input",
-          "label": "PLAYLIST_LABEL",
-          "doc": "PLAYLIST_DOC",
+          "label": "TRANSLATE.PLAYLIST_LABEL",
+          "doc": "TRANSLATE.PLAYLIST_DOC",
           "value": ""
         }
       ]

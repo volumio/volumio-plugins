@@ -6,6 +6,7 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
+var Gpio = require('onoff').Gpio;
 
 module.exports = pirMotionDetectionAutoplay;
 function pirMotionDetectionAutoplay(context) {
@@ -34,6 +35,7 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 
+    self.initGPIO();
 
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
@@ -44,6 +46,8 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 pirMotionDetectionAutoplay.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
+
+	self.freeGPIO();
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
@@ -56,6 +60,54 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
     // Optional, use if you need it
 };
 
+// GPIO handling -------------------------------------------------------------------------------------
+
+pirMotionDetectionAutoplay.prototype.initGPIO = function() {
+    var self = this;
+
+    self.gpio = new Gpio(self.config.get('pin'), 'in', 'both');
+};
+
+// stop claiming output port
+pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
+    var self = this;
+
+    self.gpio.unexport();
+};
+
+pirMotionDetectionAutoplay.prototype.pirTest = function() {
+	var self = this;
+
+	self.commandRouter.pushToastMessage(
+		'success',
+		'PIR motion detection autoplay',
+		// Toast messages not translatable yet?
+		//self.commandRouter.getI18nString('PIR_MOTION_DETECTION_AUTOPLAY.PIR_TEST_START')
+		'Starting motion sensor test for 60 seconds.'
+	);
+
+	setTimeout(function() {
+		self.gpio.watch(function (err, value) {
+		    if (err) throw err;
+			self.commandRouter.pushToastMessage(
+				'success',
+				'PIR motion detection autoplay',
+				'Motion detected!'
+			);
+		});
+	}, 1000);
+
+	setTimeout(function() {
+		self.gpio.unwatch();
+		self.commandRouter.pushToastMessage(
+			'info',
+			'PIR motion detection autoplay',
+			'Test time for motion sensor has ended.'
+		);
+	}, 60000);
+
+	return libQ.resolve();
+}
 
 // Configuration Methods -----------------------------------------------------------------------------
 
@@ -68,7 +120,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 
 	self.commandRouter.pushToastMessage('success',
 		'PIR motion detection autoplay',
-		self.commandRouter.getI18nString("COMMON.SETTINGS_SAVED_SUCCESSFULLY")
+		self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY')
 	);
 };
 
@@ -84,7 +136,7 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value', self.config.get('playlist', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist', false));
             defer.resolve(uiconf);
         })
         .fail(function()
