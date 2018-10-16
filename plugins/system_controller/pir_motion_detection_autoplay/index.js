@@ -8,6 +8,9 @@ var execSync = require('child_process').execSync;
 
 var Gpio = require('onoff').Gpio;
 
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+
 module.exports = pirMotionDetectionAutoplay;
 function pirMotionDetectionAutoplay(context) {
 	var self = this;
@@ -37,6 +40,26 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 
     self.initGPIO();
 
+	if(!self.config.get('playlist')) {
+		self.commandRouter.pushToastMessage(
+			'success',
+			'PIR motion detection autoplay',
+			'No playlist was configured for motion detection.'
+		);
+	} else {
+		(function watchPirSensor() {
+			self.gpio.watch(function (err, value) {
+				if (err) throw err;
+				self.gpio.unwatch();
+				socket.emit('playPlaylist', {'name': self.config.get('playlist')});
+				setTimeout(function() {
+					socket.emit('stop');
+					watchPirSensor();
+				}, self.config.get('duration')*1000*60);
+			});
+		})();
+	}
+
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
 
@@ -65,7 +88,7 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
 pirMotionDetectionAutoplay.prototype.initGPIO = function() {
     var self = this;
 
-    self.gpio = new Gpio(self.config.get('pin'), 'in', 'both');
+	self.gpio = new Gpio(self.config.get('pin'), 'in', 'rising'); //{'debounceTimeout': self.config.get('duration')}
 };
 
 // stop claiming output port
@@ -117,6 +140,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 
 	self.config.set('pin', data['pin']);
 	self.config.set('playlist', data['playlist']);
+	self.config.set('duration', data['duration'][0]);
 
 	self.commandRouter.pushToastMessage('success',
 		'PIR motion detection autoplay',
@@ -137,6 +161,7 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].config.bars[0].value', self.config.get('duration', false));
             defer.resolve(uiconf);
         })
         .fail(function()

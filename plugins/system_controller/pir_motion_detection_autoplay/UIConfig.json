@@ -13,7 +13,8 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "pin",
-          "playlist"
+          "playlist",
+          "duration"
         ]
       },
       "content": [
@@ -47,6 +48,24 @@
           "label": "TRANSLATE.PLAYLIST_LABEL",
           "doc": "TRANSLATE.PLAYLIST_DOC",
           "value": ""
+        },
+        {
+          "id": "duration",
+          "element": "equalizer",
+          "label": "Play duration",
+          "description": "The duration volumio should play after motion was detected.",
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": 1,
+                "max": 60,
+                "step": 1,
+                "value": 5,
+                "tooltip": "always"
+              }
+            ]
+          }
         }
       ]
     }

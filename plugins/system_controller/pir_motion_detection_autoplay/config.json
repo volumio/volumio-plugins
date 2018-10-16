@@ -6,5 +6,9 @@
     "playlist": {
         "type": "string",
         "value": ""
+    },
+    "duration": {
+        "type": "number",
+        "value": 5
     }
 }
