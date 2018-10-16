@@ -51,13 +51,33 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 			self.gpio.watch(function (err, value) {
 				if (err) throw err;
 				self.gpio.unwatch();
-				socket.emit('setRandom', {'value': true});
-				socket.emit('playPlaylist', {'name': self.config.get('playlist')});
-				setTimeout(function() {
-					socket.emit('stop');
-					socket.emit('setRandom', {'value': false});
-					watchPirSensor();
-				}, self.config.get('duration')*1000*60);
+				var state = socket.emit('getState', '');
+				socket.once('pushState', function (data) {
+					var omit = false;
+			    	if(data.status == 'play') {
+			        	omit = true;
+					} else {
+						socket.emit('setRandom', {'value': true});
+						socket.emit('playPlaylist', {'name': self.config.get('playlist'), 'seek': 1, 'pir': true});
+					}
+
+					// The first queue message will be of the motion detection playlist
+					var queuedIsPlaylist = true;
+					socket.on('pushQueue', function (data) {
+						if(queuedIsPlaylist == false) {
+							omit = true;
+						}
+						queuedIsPlaylist = false;
+					});
+
+					setTimeout(function() {
+						if(!omit) {
+							socket.emit('stop');
+							socket.emit('setRandom', {'value': false});
+						}
+						watchPirSensor();
+					}, self.config.get('duration')*1000*60);
+			    });
 			});
 		})();
 	}
