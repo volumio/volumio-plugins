@@ -14,6 +14,7 @@
         "data": [
           "pin",
           "playlist",
+          "random",
           "duration"
         ]
       },
@@ -48,6 +49,13 @@
           "label": "TRANSLATE.PLAYLIST_LABEL",
           "doc": "TRANSLATE.PLAYLIST_DOC",
           "value": ""
+        },
+        {
+          "id":"random",
+          "element": "switch",
+          "label": "TRANSLATE.RANDOM_LABEL",
+          "doc": "TRANSLATE.RANDOM_DOC",
+          "value": false
         },
         {
           "id": "duration",

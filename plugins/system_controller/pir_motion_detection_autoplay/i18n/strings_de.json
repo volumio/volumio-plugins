@@ -5,6 +5,8 @@
   "PIN_DOC":"GPIO Pin, an dem der PIR Bewegungssensor angeschlossen ist",
   "PLAYLIST_LABEL":"Playlist-Name",
   "PLAYLIST_DOC":"Name der Playlist, die bei Bewegungserkennung abgespielt werden soll",
+  "RANDOM_LABEL":"Zufällig",
+  "RANDOM_DOC":"Zufälligen Titel abspielen",
   "PIR_TEST_LABEL": "PIR-Sensor Test",
   "PIR_TEST_DOC": "Über die Dauer einer Minute wird bei Bewegungserkennung eine Nachricht angezeigt, damit die Genauigkeit der Sensor-Platine korrekt eingestellt werden können.",
   "PIR_TEST_START": "Starte Bewegungssensor-Test über 60 Sekunden.",

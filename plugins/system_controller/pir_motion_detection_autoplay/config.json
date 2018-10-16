@@ -7,6 +7,10 @@
         "type": "string",
         "value": ""
     },
+    "random": {
+        "type": "boolean",
+        "value": false
+    },
     "duration": {
         "type": "number",
         "value": 5

@@ -51,9 +51,11 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 			self.gpio.watch(function (err, value) {
 				if (err) throw err;
 				self.gpio.unwatch();
+				socket.emit('setRandom', {'value': true});
 				socket.emit('playPlaylist', {'name': self.config.get('playlist')});
 				setTimeout(function() {
 					socket.emit('stop');
+					socket.emit('setRandom', {'value': false});
 					watchPirSensor();
 				}, self.config.get('duration')*1000*60);
 			});
@@ -140,6 +142,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 
 	self.config.set('pin', data['pin']);
 	self.config.set('playlist', data['playlist']);
+	self.config.set('random', data['random']);
 	self.config.set('duration', data['duration'][0]);
 
 	self.commandRouter.pushToastMessage('success',
@@ -161,7 +164,8 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].config.bars[0].value', self.config.get('duration', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('random', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].config.bars[0].value', self.config.get('duration', false));
             defer.resolve(uiconf);
         })
         .fail(function()
