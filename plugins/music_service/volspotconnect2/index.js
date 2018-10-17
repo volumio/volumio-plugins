@@ -406,9 +406,11 @@ if ((mixname == '') || (mixname == 'None')) {
       uiconf.sections[0].content[0].config.bars[0].value = self.config.get('initvol');
 
       uiconf.sections[0].content[1].value = self.config.get('normalvolume');
-      uiconf.sections[0].content[2].value = self.config.get('shareddevice');
-      uiconf.sections[0].content[3].value = self.config.get('username');
-      uiconf.sections[0].content[4].value = self.config.get('password');
+      uiconf.sections[0].content[2].value.value = self.config.get('bitrate');
+      uiconf.sections[0].content[2].value.label = self.config.get('bitrate').toString();
+      uiconf.sections[0].content[3].value = self.config.get('shareddevice');
+      uiconf.sections[0].content[4].value = self.config.get('username');
+      uiconf.sections[0].content[5].value = self.config.get('password');
 
       defer.resolve(uiconf);
     })
@@ -537,6 +539,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         .replace('${mixer}', mixer)
         .replace('${mixeropts}', mixeropts)
         .replace('${initvol}', initvol);
+        .replace('${bitrate}', self.config.get("bitrate"));
         // .replace('${initvol}', self.config.get('initvol'));
         /* eslint-enable no-template-curly-in-string */
       fs.writeFile('/data/plugins/music_service/volspotconnect2/startconnect.sh', conf, 'utf8', function (err) {
@@ -555,7 +558,8 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
   var defer = libQ.defer();
 
  // logger.info('Currently activeqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq:' + state);
-   self.config.set('initvol', data['initvol']);
+  self.config.set('initvol', data['initvol']);
+  self.config.set('bitrate', data['bitrate'].value);
   self.config.set('normalvolume', data['normalvolume']);
   self.config.set('shareddevice', data['shareddevice']);
   self.config.set('username', data['username']);
