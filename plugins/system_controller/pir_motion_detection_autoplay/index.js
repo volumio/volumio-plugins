@@ -20,6 +20,7 @@ function pirMotionDetectionAutoplay(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 
+	this.servicename = 'pir_motion_detection_autoplay';
 }
 
 
@@ -47,31 +48,87 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 			'No playlist was configured for motion detection.'
 		);
 	} else {
+		var startedPlaylist = false;
+		var playlistLength = 0;
+		var lastQueueWasFromPir = false;
+		var omitTimeout = false;
+
+		socket.on('pushQueue', function (queueData) {
+			console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pushQueue', startedPlaylist, omitTimeout, lastQueueWasFromPir, queueData.length);
+			if(startedPlaylist == true && queueData.length != 0) {
+				console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COUNT', queueData.length);
+				playlistLength = queueData.length;
+			} else {
+				//socket.emit('play');
+			}
+		});
+
+		// flag the state to know if it came from motion detection
+		socket.on('pushState', function (stateData) {
+			console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', stateData.status, startedPlaylist, omitTimeout, lastQueueWasFromPir);
+
+			// The motion playlist was started, mark the status for it
+			if(startedPlaylist && stateData.status == 'play' && (!stateData.origin || stateData.origin != this.servicename)) {
+				//stateData.consume = true;
+				stateData.origin = self.servicename;
+				//console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PLAYLIST', stateData);
+				self.pushState(stateData);
+				startedPlaylist = false;
+				lastQueueWasFromPir = true;
+			}
+
+			// the motion playlist was running when something is played by the user
+			if(lastQueueWasFromPir && stateData.status == 'stop') {
+				//socket.emit('clearQueue');
+				for(var i = 0; i < playlistLength; i++) {
+					socket.emit('removeFromQueue', 0);
+				}
+				//socket.emit('play');
+				playlistLength = 0;
+				lastQueueWasFromPir = false;
+				omitTimeout = true;
+				//console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ STOP', stateData.status, stateData);
+			}
+
+			//if(lastQueueWasFromPir && stateData.status == 'play') {
+				//socket.emit('clearQueue');
+				//socket.emit('play');
+				//lastQueueWasFromPir = false;
+				//omitTimeout = true;
+				//console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ CLEAR PLAY', stateData.status);
+			//}
+
+		});
+
 		(function watchPirSensor() {
 			self.gpio.watch(function (err, value) {
 				if (err) throw err;
 				self.gpio.unwatch();
 				var state = socket.emit('getState', '');
+				console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WATCHING GPIO');
 				socket.once('pushState', function (data) {
-					var omit = false;
+					console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ FIRST GETSTATE');
 			    	if(data.status == 'play') {
-			        	omit = true;
+			        	omitTimeout = true;
 					} else {
+						omitTimeout = false;
 						socket.emit('setRandom', {'value': true});
-						socket.emit('playPlaylist', {'name': self.config.get('playlist'), 'seek': 1, 'pir': true});
+						socket.emit('playPlaylist', {'name': self.config.get('playlist')});
+						startedPlaylist = true;
 					}
 
 					// The first queue message will be of the motion detection playlist
-					var queuedIsPlaylist = true;
+					/*var queuedIsPlaylist = true;
 					socket.on('pushQueue', function (data) {
 						if(queuedIsPlaylist == false) {
 							omit = true;
 						}
 						queuedIsPlaylist = false;
-					});
+					});*/
 
 					setTimeout(function() {
-						if(!omit) {
+						console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TIMEOUT', omitTimeout);
+						if(!omitTimeout) {
 							socket.emit('stop');
 							socket.emit('setRandom', {'value': false});
 						}
@@ -293,7 +350,7 @@ pirMotionDetectionAutoplay.prototype.pushState = function(state) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::pushState');
 
-	return self.commandRouter.servicePushState(state, self.servicename);
+	return self.commandRouter.servicePushState(state, state.servicename); //self.servicename
 };
 
 
