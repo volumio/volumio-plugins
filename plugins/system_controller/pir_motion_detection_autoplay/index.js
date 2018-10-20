@@ -44,10 +44,10 @@ pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() 
 		if(state.status != 'play') {
 			self.commandRouter.stateMachine.play();
 			setTimeout(function() {
-				if(Date.now() >= lastMotion + 1000*30) {
+				if(Date.now() >= lastMotion + 1000*60) {
 					self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
 				}
-			}, 1000*30);
+			}, 1000*60);
 		}
 	});
 }
@@ -128,8 +128,7 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 	var defer=libQ.defer();
 
     self.initGPIO();
-
-	if(self.config.get('mode') == 'continue') {
+	if(self.config.get('playlist_mode') == false) {
 		self.startWatcherForContinuingMode();
 	} else {
 		self.startWatcherForPlaylistMode();
@@ -214,7 +213,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 	var self = this;
 
 	self.config.set('pin', data['pin']);
-	self.config.set('mode', data['mode'].value);
+	self.config.set('playlist_mode', data['playlist_mode']);
 	self.config.set('playlist', data['playlist']);
 	self.config.set('random', data['random']);
 	self.config.set('duration', data['duration'][0]);
@@ -246,10 +245,8 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-			var pluginMode = self.config.get('mode');
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
-		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', pluginMode);
-		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), pluginMode));
+		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist_mode', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('playlist', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', self.config.get('random', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].config.bars[0].value', self.config.get('duration', false));

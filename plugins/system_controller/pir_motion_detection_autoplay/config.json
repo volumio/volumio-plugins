@@ -3,9 +3,9 @@
         "type": "string" ,
         "value": "23"
     },
-    "mode":{
-        "type": "string" ,
-        "value": "continue"
+    "playlist_mode":{
+        "type": "boolean" ,
+        "value": false
     },
     "playlist": {
         "type": "string",

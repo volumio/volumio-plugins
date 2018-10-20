@@ -13,7 +13,7 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "pin",
-          "mode",
+          "playlist_mode",
           "playlist",
           "random",
           "duration"
@@ -44,20 +44,17 @@
           }
         },
         {
-            "id": "mode",
-            "element": "select",
-            "label": "Play mode",
-            "value":  {"value": "continue", "label": "Continue playing on motion detection"},
-            "options": [
-                {"value": "continue", "label": "Continue playing on motion detection"},
-                {"value": "playlist", "label": "Play dedicated playlist on motion detection"}
-            ]
+          "id":"playlist_mode",
+          "element": "switch",
+          "label": "TRANSLATE.PLAYLIST_MODE_LABEL",
+          "doc": "TRANSLATE.PLAYLIST_MODE_DOC",
+          "value": false
         },
         {
           "id": "playlist",
           "type": "text",
           "element": "input",
-          "visibleIf": {"field": "mode", "value": "continue"},
+          "visibleIf": {"field": "playlist_mode", "value": true},
           "label": "TRANSLATE.PLAYLIST_LABEL",
           "doc": "TRANSLATE.PLAYLIST_DOC",
           "value": ""
@@ -65,7 +62,7 @@
         {
           "id":"random",
           "element": "switch",
-          "visibleIf": {"field": "mode", "value": "playlist"},
+          "visibleIf": {"field": "playlist_mode", "value": true},
           "label": "TRANSLATE.RANDOM_LABEL",
           "doc": "TRANSLATE.RANDOM_DOC",
           "value": false
@@ -73,7 +70,7 @@
         {
           "id": "duration",
           "element": "equalizer",
-          "visibleIf": {"field": "mode", "value": "playlist"},
+          "visibleIf": {"field": "playlist_mode", "value": true},
           "label": "Play duration",
           "description": "The duration volumio should play after motion was detected.",
           "config": {
