@@ -3,6 +3,10 @@
         "type": "string" ,
         "value": "23"
     },
+    "mode":{
+        "type": "string" ,
+        "value": "continue"
+    },
     "playlist": {
         "type": "string",
         "value": ""

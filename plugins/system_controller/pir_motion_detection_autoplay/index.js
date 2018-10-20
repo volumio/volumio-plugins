@@ -19,7 +19,6 @@ function pirMotionDetectionAutoplay(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-
 	this.servicename = 'pir_motion_detection_autoplay';
 }
 
@@ -35,11 +34,26 @@ pirMotionDetectionAutoplay.prototype.onVolumioStart = function()
     return libQ.resolve();
 }
 
-pirMotionDetectionAutoplay.prototype.onStart = function() {
-    var self = this;
-	var defer=libQ.defer();
+pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() {
+	var self = this;
+	var lastMotion = false;
 
-    self.initGPIO();
+	self.gpio.watch(function (err, value) {
+		lastMotion = Date.now();
+		var state =  self.commandRouter.stateMachine.getState();
+		if(state.status != 'play') {
+			self.commandRouter.stateMachine.play();
+			setTimeout(function() {
+				if(Date.now() >= lastMotion + 1000*30) {
+					self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
+				}
+			}, 1000*30);
+		}
+	});
+}
+
+pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
+	var self = this;
 
 	if(!self.config.get('playlist')) {
 		self.commandRouter.pushToastMessage(
@@ -50,54 +64,35 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 	} else {
 		var startedPlaylist = false;
 		var playlistLength = 0;
-		var lastQueueWasFromPir = false;
+		var lastQueueWasFromMotionDetection = false;
 		var omitTimeout = false;
 
+		// Save playlist length for later removal from queue
 		socket.on('pushQueue', function (queueData) {
-			console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pushQueue', startedPlaylist, omitTimeout, lastQueueWasFromPir, queueData.length);
 			if(startedPlaylist == true && queueData.length != 0) {
-				console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COUNT', queueData.length);
 				playlistLength = queueData.length;
-			} else {
-				//socket.emit('play');
 			}
 		});
 
 		// flag the state to know if it came from motion detection
 		socket.on('pushState', function (stateData) {
-			console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', stateData.status, startedPlaylist, omitTimeout, lastQueueWasFromPir);
-
 			// The motion playlist was started, mark the status for it
 			if(startedPlaylist && stateData.status == 'play' && (!stateData.origin || stateData.origin != this.servicename)) {
-				//stateData.consume = true;
 				stateData.origin = self.servicename;
-				//console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PLAYLIST', stateData);
 				self.pushState(stateData);
 				startedPlaylist = false;
-				lastQueueWasFromPir = true;
+				lastQueueWasFromMotionDetection = true;
 			}
-
 			// the motion playlist was running when something is played by the user
-			if(lastQueueWasFromPir && stateData.status == 'stop') {
-				//socket.emit('clearQueue');
+			if(lastQueueWasFromMotionDetection && stateData.status == 'stop') {
 				for(var i = 0; i < playlistLength; i++) {
 					socket.emit('removeFromQueue', 0);
 				}
-				//socket.emit('play');
+				self.pushState(stateData);
 				playlistLength = 0;
-				lastQueueWasFromPir = false;
+				lastQueueWasFromMotionDetection = false;
 				omitTimeout = true;
-				//console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ STOP', stateData.status, stateData);
 			}
-
-			//if(lastQueueWasFromPir && stateData.status == 'play') {
-				//socket.emit('clearQueue');
-				//socket.emit('play');
-				//lastQueueWasFromPir = false;
-				//omitTimeout = true;
-				//console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ CLEAR PLAY', stateData.status);
-			//}
-
 		});
 
 		(function watchPirSensor() {
@@ -105,38 +100,39 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 				if (err) throw err;
 				self.gpio.unwatch();
 				var state = socket.emit('getState', '');
-				console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ WATCHING GPIO');
 				socket.once('pushState', function (data) {
-					console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ FIRST GETSTATE');
-			    	if(data.status == 'play') {
-			        	omitTimeout = true;
+					if(data.status == 'play') {
+						omitTimeout = true;
 					} else {
 						omitTimeout = false;
 						socket.emit('setRandom', {'value': true});
 						socket.emit('playPlaylist', {'name': self.config.get('playlist')});
 						startedPlaylist = true;
 					}
-
-					// The first queue message will be of the motion detection playlist
-					/*var queuedIsPlaylist = true;
-					socket.on('pushQueue', function (data) {
-						if(queuedIsPlaylist == false) {
-							omit = true;
-						}
-						queuedIsPlaylist = false;
-					});*/
-
 					setTimeout(function() {
-						console.log('---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TIMEOUT', omitTimeout);
+						var state = self.commandRouter.stateMachine.getState();
 						if(!omitTimeout) {
 							socket.emit('stop');
 							socket.emit('setRandom', {'value': false});
 						}
 						watchPirSensor();
 					}, self.config.get('duration')*1000*60);
-			    });
+				});
 			});
 		})();
+	}
+}
+
+pirMotionDetectionAutoplay.prototype.onStart = function() {
+    var self = this;
+	var defer=libQ.defer();
+
+    self.initGPIO();
+
+	if(self.config.get('mode') == 'continue') {
+		self.startWatcherForContinuingMode();
+	} else {
+		self.startWatcherForPlaylistMode();
 	}
 
 	// Once the Plugin has successfull started resolve the promise
@@ -218,6 +214,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 	var self = this;
 
 	self.config.set('pin', data['pin']);
+	self.config.set('mode', data['mode'].value);
 	self.config.set('playlist', data['playlist']);
 	self.config.set('random', data['random']);
 	self.config.set('duration', data['duration'][0]);
@@ -226,6 +223,16 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 		'PIR motion detection autoplay',
 		self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY')
 	);
+};
+
+pirMotionDetectionAutoplay.prototype.getLabelForSelect = function (options, key) {
+	var n = options.length;
+	for (var i = 0; i < n; i++) {
+		if (options[i].value == key)
+			return options[i].label;
+	}
+
+	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
 pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
@@ -239,10 +246,13 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+			var pluginMode = self.config.get('mode');
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('random', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].config.bars[0].value', self.config.get('duration', false));
+		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', pluginMode);
+		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), pluginMode));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('playlist', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', self.config.get('random', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].config.bars[0].value', self.config.get('duration', false));
             defer.resolve(uiconf);
         })
         .fail(function()
