@@ -1,0 +1,528 @@
+{
+	"page": {
+		"label": "TRANSLATE.VOLUMIO_DSP"
+	},
+	"sections": [
+		
+		{
+			"id": "advanced",
+			"element": "section",
+			"label": "TRANSLATE.BRUTEFIR_ADVANCED_SETTINGS",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "audio_interface/brutefir",
+				"method": "saveBrutefirconfigAccount2"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SAVE",
+				"data": [
+					"lattenuation",
+					"rattenuation",
+					"leftfilter",
+					"rightfilter",
+					"filter_format",
+					"filter_size",
+					"numb_part",
+					"fl_bits",
+					"smpl_rate",
+					"input_format",
+					"output_format",
+					"input_device",
+					"output_device"
+				]
+			},
+			"content": 
+			[
+			
+				{
+					"id": "lattenuation",
+					"element": "select",
+					"label": "TRANSLATE.LINPUT_ATTENUATION",
+					"value": {
+						"value": "10",
+						"label": "10"
+					},
+					"options": [
+						{
+							"value": "0",
+							"label": "0"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "6",
+							"label": "6"
+						},
+						{
+							"value": "8",
+							"label": "8"
+						},
+						{
+							"value": "10",
+							"label": "10"
+						},
+						{
+							"value": "12",
+							"label": "12"
+						},
+						{
+							"value": "14",
+							"label": "14"
+						},
+						{
+							"value": "16",
+							"label": "16"
+						},
+						{
+							"value": "18",
+							"label": "18"
+						},
+						{
+							"value": "20",
+							"label": "20"
+						},
+						{
+							"value": "22",
+							"label": "22"
+						}					
+					]
+					
+				},
+			{
+					"id": "rattenuation",
+					"element": "select",
+					"label": "TRANSLATE.RINPUT_ATTENUATION",
+					"value": {
+						"value": "10",
+						"label": "10"
+					},
+					"options": [
+						{
+							"value": "0",
+							"label": "0"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "6",
+							"label": "6"
+						},
+						{
+							"value": "8",
+							"label": "8"
+						},
+						{
+							"value": "10",
+							"label": "10"
+						},
+						{
+							"value": "12",
+							"label": "12"
+						},
+						{
+							"value": "14",
+							"label": "14"
+						},
+						{
+							"value": "16",
+							"label": "16"
+						},
+						{
+							"value": "18",
+							"label": "18"
+						},
+						{
+							"value": "20",
+							"label": "20"
+						},
+						{
+							"value": "22",
+							"label": "22"
+						}					
+					]
+					
+				},
+				{
+					"id": "leftfilter",
+					"element": "input",
+					"doc": "Leftfilter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"label": "TRANSLATE.LEFT_FILTER",
+					"value": {
+						"value": "",
+						"label": "dirac pulse"
+					},
+					"options": []
+					
+				},
+				{
+					"id": "rightfilter",
+					"element": "input",
+					"doc": "Right filter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"label": "TRANSLATE.RIGHT_FILTER",
+					"value": {
+						"value": "",
+						"label": "dirac pulse"
+					},
+					"options": []
+				
+				},
+				{
+					"id": "filter_format",
+					"element": "select",
+					"doc": "filter format",
+					"label": "TRANSLATE.FILTER_FORMAT",
+					"value": {
+						"value": "",
+						"label": ""
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						}
+					]
+					
+				},
+				{
+					"id": "filter_size",
+					"element": "select",
+					"doc": "size of filter",
+					"label": "TRANSLATE.FILTER_SIZE",
+					"value": {
+						"value": 8192,
+						"label": "8192"
+					},
+					"options": [
+						{
+							"value": "1024",
+							"label": "1024"
+						},
+						{
+							"value": "2048",
+							"label": "2048"
+						},
+						{
+							"value": "4096",
+							"label": "4096"
+						},
+						{
+							"value": "8192",
+							"label": "8192"
+						},
+						{
+							"value": "16384",
+							"label": "16384"
+						},
+						{
+							"value": "32768",
+							"label": "32768"
+						},
+						{
+							"value": "65536",
+							"label": "65536"
+						},
+						{
+							"value": "131072",
+							"label": "131072"
+						}
+					]
+					
+				},
+				{
+					"id": "numb_part",
+					"element": "select",
+					"doc": "number of filter partion",
+					"label": "TRANSLATE.NUMBER_PARTITION",
+					"value": {
+						"value": "8",
+						"label": "8"
+					},
+					"options": [
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "8",
+							"label": "8"
+						},
+						{
+							"value": "16",
+							"label": "16"
+						}
+					]
+					
+				},
+				{
+					"id": "fl_bits",
+					"element": "select",
+					"doc": "floating point internal resolusion",
+					"label": "TRANSLATE.INTERNAL_RESOLUTION",
+					"value": {
+						"value": "64",
+						"label": "64"
+					},
+					"options": [
+						{
+							"value": "32",
+							"label": "32"
+						},
+						{
+							"value": "64",
+							"label": "64"
+						}
+					]
+					
+				},
+				{
+					"id": "smpl_rate",
+					"element": "select",
+					"doc": "sample rate",
+					"label": "TRANSLATE.SAMPLE_RATE",
+					"value": {
+						"value": "44100",
+						"label": "44100"
+					},
+					"options": [
+						{
+							"value": "44100",
+							"label": "44100"
+						},
+						{
+							"value": "48000",
+							"label": "48000"
+						},
+						{
+							"value": "96000",
+							"label": "96000"
+						},
+						{
+							"value": "192000",
+							"label": "192000"
+						}
+					]
+									},
+				{
+					"id": "input_format",
+					"element": "select",
+					"doc": "input format",
+					"label": "TRANSLATE.INPUT_FORMAT",
+					"value": {
+						"value": "S16_LE",
+						"label": "S16_LE"
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						}
+					]
+					
+				},
+				{
+					"id": "output_format",
+					"element": "select",
+					"doc": "output format",
+					"label": "TRANSLATE.OUTPUT_FORMAT",
+					"value": {
+						"value": "S16_LE",
+						"label": "S16_LE"
+					},
+					"options": [
+						{
+							"value": "S8",
+							"label": "S8"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE"
+						},
+						{
+							"value": "S16_BE",
+							"label": "S16_BE"
+						},
+						{
+							"value": "S16_4LE",
+							"label": "S16_4LE"
+						},
+						{
+							"value": "S16_4BE",
+							"label": "S16_4BE"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE"
+						},
+						{
+							"value": "S24_BE",
+							"label": "S24_BE"
+						},
+						{
+							"value": "S24_4LE",
+							"label": "S24_4LE"
+						},
+						{
+							"value": "S24_4BE",
+							"label": "S24_4BE"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE"
+						},
+						{
+							"value": "S32_BE",
+							"label": "S32_BE"
+						},
+						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE"
+						},
+						{
+							"value": "FLOAT_BE",
+							"label": "FLOAT_BE"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE"
+						},
+						{
+							"value": "FLOAT64_BE",
+							"label": "FLOAT64_BE"
+						}
+						
+					]
+					
+				}
+			]
+		}
+			]	
+}
