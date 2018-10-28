@@ -21,15 +21,9 @@
 					"rattenuation",
 					"leftfilter",
 					"rightfilter",
-					"filter_format",
 					"filter_size",
-					"numb_part",
-					"fl_bits",
 					"smpl_rate",
-					"input_format",
-					"output_format",
-					"input_device",
-					"output_device"
+					"output_format"
 				]
 			},
 			"content": 
@@ -158,7 +152,7 @@
 				{
 					"id": "leftfilter",
 					"element": "input",
-					"doc": "Leftfilter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"doc": "Leftfilter file, no extension. If none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
 					"label": "TRANSLATE.LEFT_FILTER",
 					"value": {
 						"value": "",
@@ -170,7 +164,7 @@
 				{
 					"id": "rightfilter",
 					"element": "input",
-					"doc": "Right filter file (name.ext) if none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"doc": "Right filter file, no extension. If none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
 					"label": "TRANSLATE.RIGHT_FILTER",
 					"value": {
 						"value": "",
@@ -179,79 +173,7 @@
 					"options": []
 				
 				},
-				{
-					"id": "filter_format",
-					"element": "select",
-					"doc": "filter format",
-					"label": "TRANSLATE.FILTER_FORMAT",
-					"value": {
-						"value": "",
-						"label": ""
-					},
-					"options": [
-						{
-							"value": "S8",
-							"label": "S8"
-						},
-						{
-							"value": "S16_LE",
-							"label": "S16_LE"
-						},
-						{
-							"value": "S16_BE",
-							"label": "S16_BE"
-						},
-						{
-							"value": "S16_4LE",
-							"label": "S16_4LE"
-						},
-						{
-							"value": "S16_4BE",
-							"label": "S16_4BE"
-						},
-						{
-							"value": "S24_LE",
-							"label": "S24_LE"
-						},
-						{
-							"value": "S24_BE",
-							"label": "S24_BE"
-						},
-						{
-							"value": "S24_4LE",
-							"label": "S24_4LE"
-						},
-						{
-							"value": "S24_4BE",
-							"label": "S24_4BE"
-						},
-						{
-							"value": "S32_LE",
-							"label": "S32_LE"
-						},
-						{
-							"value": "S32_BE",
-							"label": "S32_BE"
-						},
-						{
-							"value": "FLOAT_LE",
-							"label": "FLOAT_LE"
-						},
-						{
-							"value": "FLOAT_BE",
-							"label": "FLOAT_BE"
-						},
-						{
-							"value": "FLOAT64_LE",
-							"label": "FLOAT64_LE"
-						},
-						{
-							"value": "FLOAT64_BE",
-							"label": "FLOAT64_BE"
-						}
-					]
-					
-				},
+				
 				{
 					"id": "filter_size",
 					"element": "select",
@@ -298,56 +220,6 @@
 					
 				},
 				{
-					"id": "numb_part",
-					"element": "select",
-					"doc": "number of filter partion",
-					"label": "TRANSLATE.NUMBER_PARTITION",
-					"value": {
-						"value": "8",
-						"label": "8"
-					},
-					"options": [
-						{
-							"value": "2",
-							"label": "2"
-						},
-						{
-							"value": "4",
-							"label": "4"
-						},
-						{
-							"value": "8",
-							"label": "8"
-						},
-						{
-							"value": "16",
-							"label": "16"
-						}
-					]
-					
-				},
-				{
-					"id": "fl_bits",
-					"element": "select",
-					"doc": "floating point internal resolusion",
-					"label": "TRANSLATE.INTERNAL_RESOLUTION",
-					"value": {
-						"value": "64",
-						"label": "64"
-					},
-					"options": [
-						{
-							"value": "32",
-							"label": "32"
-						},
-						{
-							"value": "64",
-							"label": "64"
-						}
-					]
-					
-				},
-				{
 					"id": "smpl_rate",
 					"element": "select",
 					"doc": "sample rate",
@@ -374,80 +246,8 @@
 							"label": "192000"
 						}
 					]
-									},
-				{
-					"id": "input_format",
-					"element": "select",
-					"doc": "input format",
-					"label": "TRANSLATE.INPUT_FORMAT",
-					"value": {
-						"value": "S16_LE",
-						"label": "S16_LE"
-					},
-					"options": [
-						{
-							"value": "S8",
-							"label": "S8"
-						},
-						{
-							"value": "S16_LE",
-							"label": "S16_LE"
-						},
-						{
-							"value": "S16_BE",
-							"label": "S16_BE"
-						},
-						{
-							"value": "S16_4LE",
-							"label": "S16_4LE"
-						},
-						{
-							"value": "S16_4BE",
-							"label": "S16_4BE"
-						},
-						{
-							"value": "S24_LE",
-							"label": "S24_LE"
-						},
-						{
-							"value": "S24_BE",
-							"label": "S24_BE"
-						},
-						{
-							"value": "S24_4LE",
-							"label": "S24_4LE"
-						},
-						{
-							"value": "S24_4BE",
-							"label": "S24_4BE"
-						},
-						{
-							"value": "S32_LE",
-							"label": "S32_LE"
-						},
-						{
-							"value": "S32_BE",
-							"label": "S32_BE"
-						},
-						{
-							"value": "FLOAT_LE",
-							"label": "FLOAT_LE"
-						},
-						{
-							"value": "FLOAT_BE",
-							"label": "FLOAT_BE"
-						},
-						{
-							"value": "FLOAT64_LE",
-							"label": "FLOAT64_LE"
-						},
-						{
-							"value": "FLOAT64_BE",
-							"label": "FLOAT64_BE"
-						}
-					]
-					
 				},
+				
 				{
 					"id": "output_format",
 					"element": "select",
@@ -458,65 +258,19 @@
 						"label": "S16_LE"
 					},
 					"options": [
-						{
-							"value": "S8",
-							"label": "S8"
-						},
+						
 						{
 							"value": "S16_LE",
 							"label": "S16_LE"
 						},
-						{
-							"value": "S16_BE",
-							"label": "S16_BE"
-						},
-						{
-							"value": "S16_4LE",
-							"label": "S16_4LE"
-						},
-						{
-							"value": "S16_4BE",
-							"label": "S16_4BE"
-						},
+						
 						{
 							"value": "S24_LE",
 							"label": "S24_LE"
 						},
 						{
-							"value": "S24_BE",
-							"label": "S24_BE"
-						},
-						{
-							"value": "S24_4LE",
-							"label": "S24_4LE"
-						},
-						{
-							"value": "S24_4BE",
-							"label": "S24_4BE"
-						},
-						{
 							"value": "S32_LE",
 							"label": "S32_LE"
-						},
-						{
-							"value": "S32_BE",
-							"label": "S32_BE"
-						},
-						{
-							"value": "FLOAT_LE",
-							"label": "FLOAT_LE"
-						},
-						{
-							"value": "FLOAT_BE",
-							"label": "FLOAT_BE"
-						},
-						{
-							"value": "FLOAT64_LE",
-							"label": "FLOAT64_LE"
-						},
-						{
-							"value": "FLOAT64_BE",
-							"label": "FLOAT64_BE"
 						}
 						
 					]

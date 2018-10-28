@@ -1,9 +1,9 @@
 #brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
     sampling_rate: ${smpl_rate};
-    filter_length: ${filter_size},${numb_part};
+    filter_length: ${filter_size},8;
     overflow_warnings: true;
     show_progress: false;
-    float_bits: ${fl_bits};
+    float_bits: 64;
     powersave: true;
     convolver_config: "/data/configuration/audio_interface/brutefir/brutefir_convolver"; # location of convolver config file
 logic:
@@ -11,16 +11,14 @@ logic:
 
 input "l_in", "r_in" {
             device: "alsa" {device: "hw:${input_device}";};
-            sample: "${input_format}";   # sample format
+            sample: "S16_LE";   # sample format
             channels: 2;            # number of open channels / which to use
-#		delay: 0,5;
-#		maxdelay: -1;
+
     };
 
 
 coeff "filter_1" {
 filename: "${leftfilter}";
-#format: "${filter_format1}";
 format: "text";
 attenuation: ${lattenuation};
 };
@@ -35,14 +33,12 @@ process: -1;
 
 coeff "filter_2" {
 filename: "${rightfilter}";
-#format: "${filter_format2}";
 format: "text";
 attenuation: ${rattenuation};
 };
 
 filter "r_drc" {
 from_inputs: "r_in";
-#from_filters: "filter_2";
 to_outputs: "r_out"/0.0;
 coeff: "filter_2";
 process: -1;

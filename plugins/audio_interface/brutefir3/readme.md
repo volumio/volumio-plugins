@@ -1,4 +1,4 @@
-27th October 18
+28th October 18
 
 
 #	BRUTEFIR3 PLUGIN
@@ -68,6 +68,11 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+28 th October
+
+- remove useless parameters
+- filter name with no ext
 
 27th October 18
 

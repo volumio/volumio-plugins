@@ -236,27 +236,15 @@
     value = self.config.get('rattenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-    value = self.config.get('filter_format');
+    value = self.config.get('filter_size');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
-    value = self.config.get('filter_size');
+    value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-    value = self.config.get('numb_part');
+     value = self.config.get('output_format');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
-    value = self.config.get('fl_bits');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[7].options'), value));
-    value = self.config.get('smpl_rate');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[8].options'), value));
-    value = self.config.get('input_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[9].options'), value));
-    value = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[10].options'), value));
     var value;
 
 
@@ -284,7 +272,12 @@
   var filterfolder = "/data/INTERNAL/brutefirfilters/";
   var filterfile = self.config.get('leftfilter');
   var filetocheck;
-  filetocheck = filterfolder + filterfile;
+  var fileext;
+if (filterfile == "")
+ { fileext = "";
+} else fileext = ".txt";
+  filetocheck = filterfolder + filterfile + fileext;
+	
   console.log(filetocheck)
   var stats;
 
@@ -304,9 +297,13 @@
   var filterfolder = "/data/INTERNAL/brutefirfilters/";
   var filterfile = self.config.get('rightfilter');
   var filetocheck;
-  filetocheck = filterfolder + filterfile;
-  var
-   stats;
+  var fileext;
+if (filterfile == "")
+ { fileext = "";
+} else fileext = ".txt";
+  filetocheck = filterfolder + filterfile + fileext;
+
+  var stats;
 
   try {
    stats = fs.statSync(filetocheck);
@@ -381,31 +378,28 @@
     if (self.config.get('leftfilter') == "") {
      leftfilter = "dirac pulse";
      //filterattenuation = "0"
-    } else leftfilter = filter_path + self.config.get('leftfilter');
+    } else leftfilter = filter_path + self.config.get('leftfilter')+'.txt';
     //lattenuation = "6";
     if (self.config.get('rightfilter') == "")
      rightfilter = "dirac pulse";
     // filterattenuation = "0"
-    else rightfilter = filter_path + self.config.get('rightfilter');
+    else rightfilter = filter_path + self.config.get('rightfilter')+'.txt';
    // rattenuation = "6";
     //output_device = output_device;
     console.log(output_device);
     var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
     var conf2 = conf1.replace("${filter_size}", filtersizedivided);
-    var conf3 = conf2.replace("${numb_part}", self.config.get('numb_part'));
-    var conf4 = conf3.replace("${fl_bits}", self.config.get('fl_bits'));
-    var conf5 = conf4.replace("${input_device}", input_device);
-    var conf6 = conf5.replace("${input_format}", self.config.get('input_format'));
-    var conf7 = conf6.replace("${leftfilter}", leftfilter);
-    var conf8 = conf7.replace("${filter_format1}", self.config.get('filter_format'));
-    var conf9 = conf8.replace("${lattenuation}", self.config.get('lattenuation'));
-    var conf10 = conf9.replace("${rightfilter}", rightfilter);
-    var conf11 = conf10.replace("${filter_format2}", self.config.get('filter_format'));
-    var conf12 = conf11.replace("${rattenuation}", self.config.get('rattenuation'));
-    var conf13 = conf12.replace("${output_device}", output_device);
-    var conf14 = conf13.replace("${output_format}", self.config.get('output_format'));
+    var conf3 = conf2.replace("${input_device}", input_device);
+    var conf4 = conf3.replace("${leftfilter}", leftfilter);
+    var conf5 = conf4.replace("${filter_format1}", self.config.get('filter_format'));
+    var conf6 = conf5.replace("${lattenuation}", self.config.get('lattenuation'));
+    var conf7 = conf6.replace("${rightfilter}", rightfilter);
+    var conf8 = conf7.replace("${filter_format2}", self.config.get('filter_format'));
+    var conf9 = conf8.replace("${rattenuation}", self.config.get('rattenuation'));
+    var conf10 = conf9.replace("${output_device}", output_device);
+    var conf11 = conf10.replace("${output_format}", self.config.get('output_format'));
 
-    fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf14, 'utf8', function(err) {
+    fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf11, 'utf8', function(err) {
      if (err)
       defer.reject(new Error(err));
      else defer.resolve();
@@ -435,15 +429,10 @@
   var defer = libQ.defer();
   self.config.set('lattenuation', data['lattenuation'].value);
   self.config.set('rattenuation', data['rattenuation'].value);
-  self.config.set('smpl_rate', data['smpl_rate'].value);
   self.config.set('leftfilter', data['leftfilter']);
   self.config.set('rightfilter', data['rightfilter']);
-  self.config.set('filter_format', data['filter_format'].value);
   self.config.set('filter_size', data['filter_size'].value);
-  self.config.set('numb_part', data['numb_part'].value);
-  self.config.set('fl_bits', data['fl_bits'].value);
   self.config.set('input_device', data['input_device']);
-  self.config.set('input_format', data['input_format'].value);
   self.config.set('output_device', data['output_device']);
   self.config.set('output_format', data['output_format'].value);
 
