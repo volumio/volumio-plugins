@@ -2,5 +2,8 @@
   "IR_CONFIGURATION":"IR Remote Configuration",
   "SAVE": "Save",
   "PROFILE_SELECTOR": "Select profile",
-  "PROFILE_SELECTOR_DOC": "Select the appropriate configuration for your remote from the available profiles"
+  "PROFILE_SELECTOR_DOC": "Select the appropriate configuration for your remote from the available profiles",
+  "PI_CONFIGURATION":"Raspberry Pi GPIO Configuration",
+  "GPIO_IN": "GPIO IR Pin",
+  "GPIO_IN_DOC": "GPIO pin connected to the IR sensors signal line"
 }
