@@ -1,4 +1,4 @@
-28th October 18
+30th October 18
 
 
 #	BRUTEFIR3 PLUGIN
@@ -68,6 +68,10 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+30 th October
+
+- better translation support
+- default parameters in config.json
 
 28 th October
 

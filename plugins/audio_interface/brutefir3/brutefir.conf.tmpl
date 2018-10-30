@@ -1,6 +1,6 @@
 #brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
     sampling_rate: ${smpl_rate};
-    filter_length: ${filter_size},8;
+    filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
     overflow_warnings: true;
     show_progress: false;
     float_bits: 64;

@@ -15,7 +15,7 @@
 				"method": "saveBrutefirconfigAccount2"
 			},
 			"saveButton": {
-				"label": "TRANSLATE.SAVE",
+				"label": "TRANSLATE.APPLY",
 				"data": [
 					"lattenuation",
 					"rattenuation",
@@ -32,6 +32,7 @@
 				{
 					"id": "lattenuation",
 					"element": "select",
+					"doc":"TRANSLATE.DOC_LATT",
 					"label": "TRANSLATE.LINPUT_ATTENUATION",
 					"value": {
 						"value": "10",
@@ -92,6 +93,7 @@
 			{
 					"id": "rattenuation",
 					"element": "select",
+					"doc":"TRANSLATE.DOC_RATT",
 					"label": "TRANSLATE.RINPUT_ATTENUATION",
 					"value": {
 						"value": "10",
@@ -152,7 +154,7 @@
 				{
 					"id": "leftfilter",
 					"element": "input",
-					"doc": "Leftfilter file, no extension. If none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"doc": "TRANSLATE.DOC_LFILTER",
 					"label": "TRANSLATE.LEFT_FILTER",
 					"value": {
 						"value": "",
@@ -164,7 +166,7 @@
 				{
 					"id": "rightfilter",
 					"element": "input",
-					"doc": "Right filter file, no extension. If none dirac pulse is used. File must be located in /INTERNAL/brutefirfilters",
+					"doc": "TRANSLATE.DOC_RFILTER",
 					"label": "TRANSLATE.RIGHT_FILTER",
 					"value": {
 						"value": "",
@@ -173,11 +175,10 @@
 					"options": []
 				
 				},
-				
 				{
 					"id": "filter_size",
 					"element": "select",
-					"doc": "size of filter",
+					"doc": "TRANSLATE.DOC_FILTERSIZE",
 					"label": "TRANSLATE.FILTER_SIZE",
 					"value": {
 						"value": 8192,
@@ -215,10 +216,15 @@
 						{
 							"value": "131072",
 							"label": "131072"
+						},
+						{
+							"value": "262144",
+							"label": "262144"
 						}
 					]
 					
 				},
+				
 				{
 					"id": "smpl_rate",
 					"element": "select",
