@@ -1,4 +1,4 @@
-30th October 18
+31th October 18
 
 
 #	BRUTEFIR3 PLUGIN
@@ -68,6 +68,11 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+31 th October
+
+- Add a button to download sweep files in /data/INTERNAL/brutefirfilters/sweep
+
 30 th October
 
 - better translation support

@@ -283,6 +283,24 @@
 					
 				}
 			]
-		}
+		},
+  {
+      "id": "extra_feature",
+      "element": "section",
+      "label": "extra feature",
+      "icon": "fa-plug",
+"doc":"Download sweeps files to make your room measurment. They will be placed in /data/INTERNAL/brutefrfilters/sweep",
+      "onSave": {"type":"controller", "endpoint":"audio_interface/brutefir", "method":"downloadsweepfiles"},
+      "saveButton": {
+        "label": "Download sweep files",
+	
+        "data": [
+          
+        ]
+      },
+      "content": [
+      	
+      ]
+   }
 			]	
 }

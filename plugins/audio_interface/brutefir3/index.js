@@ -455,6 +455,27 @@ if (filterfile == "")
 
 
  };
+
+//here we download the sweep files
+ ControllerBrutefir.prototype.downloadsweepfiles = function(data) {
+  var self = this;
+return new Promise(function(resolve, reject) {
+ try {
+    var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/sweepfiles/LogSweep_.tar.xz');
+    var cp4 = execSync('/bin/mkdir /data/INTERNAL/brutefirfilters/sweep');	
+    var cp5 = execSync('tar -xvf /tmp/LogSweep_.tar.xz -C /data/INTERNAL/brutefirfilters/sweep/');
+var cp6 = execSync('/bin/rm /tmp/LogSweep_.tar.xz');
+    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+
+   } catch (err) {
+    self.logger.info('config.txt does not exist');
+   }
+   resolve();
+  });
+ };
+
+
+
  ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   var self = this;
   var defer = libQ.defer();
