@@ -1,4 +1,4 @@
-31th October 18
+November 1st 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -56,9 +56,6 @@ volumio plugin install
 
 In webUI, enbable the plugin and wait about 20seconds.
 
-Play ! change the equalizer, try demo filters (not very good) by typing their names in left and right filters.
-Have look at the wiki : [wiki](https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze)
-
 ## What is working :
  
 nearly everythings 
@@ -69,6 +66,12 @@ nearly everythings
 
 ### 4. Last changes
 
+November, 1st 2018
+
+- add button to wiki
+- better translation support
+- node_modules cleaning
+ 
 31 th October
 
 - Add a button to download sweep files in /data/INTERNAL/brutefirfilters/sweep

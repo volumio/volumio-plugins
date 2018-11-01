@@ -1,14 +1,14 @@
-/*brutefir plugin for volumio2. By balbuze 2018*/ 
+/*brutefir plugin for volumio3. By balbuze 2018*/ 
 'use strict';
 
- var io = require('socket.io-client');
+ //var io = require('socket.io-client');
  var fs = require('fs-extra');
  var libFsExtra = require('fs-extra');
  var exec = require('child_process').exec;
  var execSync = require('child_process').execSync;
  var libQ = require('kew');
- var libNet = require('net');
- var net = require('net');
+ //var libNet = require('net');
+ //var net = require('net');
  var config = new(require('v-conf'))();
 
 
