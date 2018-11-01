@@ -459,6 +459,7 @@ if (filterfile == "")
 //here we download the sweep files
  ControllerBrutefir.prototype.downloadsweepfiles = function(data) {
   var self = this;
+self.commandRouter.pushToastMessage('success', 'Download in progress, please wait!');
 return new Promise(function(resolve, reject) {
  try {
     var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/sweepfiles/LogSweep_.tar.xz');
@@ -469,8 +470,10 @@ var cp6 = execSync('/bin/rm /tmp/LogSweep_.tar.xz');
 
    } catch (err) {
     self.logger.info('config.txt does not exist');
+
    }
    resolve();
+self.commandRouter.pushToastMessage('success', 'Files succesfully downloaded !','Find them in /data/IN TRNAL/brutefirfiltes/sweep');
   });
  };
 
