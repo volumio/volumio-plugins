@@ -70,6 +70,7 @@ November, 2nd 2018
 
 - cosmetic in UI
 - info  toast message when clicking "download sweep files"
+- link to the doc
 
 November, 1st 2018
 

@@ -283,7 +283,7 @@
           "doc": "TRANSLATE.DOC_OPENW",
           "onClick": {
             "type": "openUrl",
-            "url": "https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze"
+            "url": "https://volumio.github.io/docs/Plugins_User_Manual/brutefir/Drc_with_Volumio.html"
           }
         },
         {
