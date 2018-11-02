@@ -459,7 +459,7 @@ if (filterfile == "")
 //here we download the sweep files
  ControllerBrutefir.prototype.downloadsweepfiles = function(data) {
   var self = this;
-self.commandRouter.pushToastMessage('success', 'Download in progress, please wait!');
+self.commandRouter.pushToastMessage('info', 'Download in progress, please wait!');
 return new Promise(function(resolve, reject) {
  try {
     var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/sweepfiles/LogSweep_.tar.xz');

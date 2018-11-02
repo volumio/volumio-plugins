@@ -66,6 +66,11 @@ nearly everythings
 
 ### 4. Last changes
 
+November, 2nd 2018
+
+- cosmetic in UI
+- info  toast message when clicking "download sweep files"
+
 November, 1st 2018
 
 - add button to wiki

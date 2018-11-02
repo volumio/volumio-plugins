@@ -174,7 +174,7 @@
           "doc": "TRANSLATE.DOC_FILTERSIZE",
           "label": "TRANSLATE.FILTER_SIZE",
           "value": {
-            "value": 8192,
+            "value": "8192",
             "label": "8192"
           },
           "options": [
@@ -267,7 +267,15 @@
               "label": "S32_LE"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "special",
+      "icon": "fa-cogs",
+      "content": [
         {
           "id": "wikilink",
           "element": "button",
@@ -278,13 +286,17 @@
             "url": "https://github.com/balbuze/volumio-plugins/wiki/Howto-for-Volumio-plugins-by-balbuze"
           }
         },
- {
+        {
           "id": "downloadsweep",
           "element": "button",
           "label": "TRANSLATE.DOWNLOAD_SWEEP",
-	  "doc":"TRANSLATE.DOC_DLSW",
-          "onClick": {"type":"controller", "endpoint":"audio_interface/brutefir", "method":"downloadsweepfiles"}
-	}
+          "doc": "TRANSLATE.DOC_DLSW",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "downloadsweepfiles"
+          }
+        }
       ]
     }
   ]
