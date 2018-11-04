@@ -276,7 +276,41 @@
       "label": "special",
       "icon": "fa-cogs",
       "content": [
+        
         {
+          "id": "playleftsweepfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_L_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playleftsweepfile"
+          }
+        },
+	{
+          "id": "playrightsweepfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_R_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playrightsweepfile"
+          }
+        },
+	{
+          "id": "playbothsweepfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playbothsweepfile"
+          }
+        },
+	{
           "id": "wikilink",
           "element": "button",
           "label": "TRANSLATE.OPEN_WIKI",
@@ -284,17 +318,6 @@
           "onClick": {
             "type": "openUrl",
             "url": "https://volumio.github.io/docs/Plugins_User_Manual/brutefir/Drc_with_Volumio.html"
-          }
-        },
-        {
-          "id": "downloadsweep",
-          "element": "button",
-          "label": "TRANSLATE.DOWNLOAD_SWEEP",
-          "doc": "TRANSLATE.DOC_DLSW",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "downloadsweepfiles"
           }
         }
       ]

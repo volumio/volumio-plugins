@@ -1,4 +1,4 @@
-November 1st 2018
+November 4th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -40,7 +40,7 @@ To do that, have a look here :
 https://volumio.github.io/docs/User_Manual/SSH.html
 
 
-### 2. Download and install the plugin
+n### 2. Download and install the plugin
 
 Type the following commands to download and install plugin:
 
@@ -65,6 +65,12 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 4th 2018
+
+- add 3 play buttons to play sweep files
+- french translation
+
 
 November, 2nd 2018
 

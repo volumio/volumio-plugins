@@ -1,6 +1,6 @@
 {
  "VOLUMIO_DSP":"Volumio DSP center",
-  "SETTINGS":"Brutefir settings",
+ "SETTINGS":"Brutefir settings",
  "LINPUT_ATTENUATION":"Left Input attenuation",
  "DOC_LATT":"Attenuation for left channel",
  "RINPUT_ATTENUATION":"Right Input attenuation",
@@ -15,9 +15,13 @@
  "SAMPLE_RATE":"Sample rate",
  "OUTPUT_FORMAT":"Output format",
  "SAVE":"Save",
-  "OPEN_WIKI":"Open Wiki",
-  "DOC_OPENW":"Go to Volumio and brutefir Wiki",
-  "DOWNLOAD_SWEEP":"Download sweep files",
-  "DOC_DLSW":"Download sweep files to make measurment with REW. They are stored in /data/INTERNAL/brutefirfilters/sweep",
- "APPLY":"Apply"
+ "OPEN_WIKI":"Open Wiki",
+ "DOC_OPENW":"Go to Volumio and brutefir Wiki",
+ "APPLY":"Apply",
+ "PLAY_L_SWEEP":"Play Left",
+ "DESC_PLAY_L_SWEEP":"Play Left channel sweep",
+ "PLAY_R_SWEEP":"Play Right",
+ "DESC_PLAY_R_SWEEP":"Play Right channel sweep",
+ "PLAY_BOTH_CHANNEL_SWEEP":"Play 2 channels",
+ "DESC_PLAY_BOTH_CHANNEL_SWEEP":"Play 2 channels sweep"
 }
