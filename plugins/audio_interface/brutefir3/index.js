@@ -434,6 +434,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('leftfilter', data['leftfilter']);
  self.config.set('rightfilter', data['rightfilter']);
  self.config.set('filter_size', data['filter_size'].value);
+ self.config.set('smpl_rate', data['smpl_rate'].value);
  //  self.config.set('numb_part', data['numb_part']);
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
@@ -511,7 +512,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-   return self.mpdPlugin.sendMpdCommand('clear', []);
+   return self.mpdPlugin.sendMpdCommand('clear', [])
   })
   .then(function() {
    return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);

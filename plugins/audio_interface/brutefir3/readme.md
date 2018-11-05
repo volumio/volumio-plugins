@@ -1,4 +1,4 @@
-November 4th 2018
+November 5th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -65,6 +65,11 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 5th 2018
+
+- correction for unsaved parameters
+- 96000 is the default sample rate now
 
 November, 4th 2018
 
