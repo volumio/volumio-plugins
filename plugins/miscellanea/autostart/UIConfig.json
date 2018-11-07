@@ -34,7 +34,7 @@
           "element": "input",
           "doc": "TRANSLATE.AUTOSTART_DELAY_DOC",
           "label": "TRANSLATE.AUTOSTART_DELAY",
-          "value": 10000
+          "value": 20000
         }
       ]
     }
