@@ -232,11 +232,9 @@ var valuestoredr;
 	
 		fs.readdir(filterfolder, function(err, item) {
 
-allfilter = item + ',None'
- var items = allfilter.split(',');
-//items = JSON.parse(allfilter);
-// items = eval('(' + allfilter + ')');
-		self.logger.info('list of available '+ items);
+	allfilter =  'None, '+ item
+ 	items = allfilter.split(',');
+	self.logger.info('list of available '+ items);
 		
 	for (var i in items) { 				
 	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
