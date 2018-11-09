@@ -220,6 +220,7 @@ var valuestoredl;
 var valuestoredr;
 	var filterfolder = "/data/INTERNAL/brutefirfilters";
 	var items;
+	var allfilter;
 	
 	valuestoredl = self.config.get('leftfilter');
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
@@ -229,7 +230,12 @@ var valuestoredr;
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
 	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
 	
-		fs.readdir(filterfolder, function(err, items) {
+		fs.readdir(filterfolder, function(err, item) {
+
+allfilter = item + ',None'
+ var items = allfilter.split(',');
+//items = JSON.parse(allfilter);
+// items = eval('(' + allfilter + ')');
 		self.logger.info('list of available '+ items);
 		
 	for (var i in items) { 				
@@ -398,13 +404,13 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var output_device
    output_device = 'hw:' + self.config.get('alsa_device');
 
-   if (self.config.get('leftfilter') == "") {
-    leftfilter = "dirac pulse";
+   if (self.config.get('leftfilter') == "None") {
+    composeleftfilter = "dirac pulse";
     //filterattenuation = "0"
    } else leftfilter = filter_path + self.config.get('leftfilter');
    //lattenuation = "6";
-   if (self.config.get('rightfilter') == "")
-    rightfilter = "dirac pulse";
+   if (self.config.get('rightfilter') == "None")
+    composerightfilter = "dirac pulse";
    // filterattenuation = "0"
    else rightfilter = filter_path + self.config.get('rightfilter');
    // rattenuation = "6";
