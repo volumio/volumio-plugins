@@ -148,22 +148,22 @@
         },
         {
           "id": "leftfilter",
-          "element": "input",
+          "element": "select",
           "doc": "TRANSLATE.DOC_LFILTER",
           "label": "TRANSLATE.LEFT_FILTER",
           "value": {
-            "value": "",
+            "value": "items",
             "label": "dirac pulse"
           },
           "options": []
         },
         {
           "id": "rightfilter",
-          "element": "input",
+          "element": "select",
           "doc": "TRANSLATE.DOC_RFILTER",
           "label": "TRANSLATE.RIGHT_FILTER",
           "value": {
-            "value": "",
+            "value": "items",
             "label": "dirac pulse"
           },
           "options": []

@@ -1,4 +1,4 @@
-November 5th 2018
+November 9th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -15,7 +15,7 @@ It provides :
 
 ### use 32/64 bits floas lines (.txt) format from rephase
 
-- Filters (left and right) will be set through webUI by giving the name of the file to use.
+- Filters (left and right) can be selected in webUI.
 
 
 
@@ -65,6 +65,10 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 9th 2018
+
+- filters selector
 
 November, 5th 2018
 

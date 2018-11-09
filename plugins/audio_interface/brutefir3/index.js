@@ -212,23 +212,39 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
    __dirname + '/i18n/strings_en.json',
    __dirname + '/UIConfig.json')
-  .then(function(uiconf) {
-   //equalizer section
+  .then(function(uiconf)
 
-   //advanced settings option
+ {
+	var value;
+var valuestoredl;
+var valuestoredr;
+	var filterfolder = "/data/INTERNAL/brutefirfilters";
+	var items;
+	
+	valuestoredl = self.config.get('leftfilter');
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredl);
 
-   var filterfolder = "/data/INTERNAL/brutefirfilters";
-   var itemslist //var filterl = [];
-   fs.readdir(filterfolder, function(err, items) {
-    console.log('list of available filters: ' + items);
-
-   })
-
-   //advanced settings for brutefir
-
-   uiconf.sections[0].content[2].value = self.config.get('leftfilter');
-   uiconf.sections[0].content[3].value = self.config.get('rightfilter');
-
+	valuestoredr = self.config.get('rightfilter');
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
+	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
+	
+		fs.readdir(filterfolder, function(err, items) {
+		self.logger.info('list of available '+ items);
+		
+	for (var i in items) { 				
+	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
+						value: items[i],
+						label: items[i]
+						});	
+							
+	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
+						value: items[i],
+						label: items[i]
+						});	
+			}
+});
+ 
    value = self.config.get('lattenuation');
    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
@@ -259,14 +275,18 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 };
 
 ControllerBrutefir.prototype.getFilterList = function() {
+var results
  var filterfolder = "/data/INTERNAL/brutefirfilters"
  //var filterl = [];
  fs.readdirSync(filterfolder).forEach(file => {
-  console.log(file);
+results
+//  console.log(file);
+self.logger.info(results);
  });
 
 
 };
+/*
 //here we test if the name.ext of filter exists
 ControllerBrutefir.prototype.checkifleftfilterexits = function() {
  var self = this;
@@ -316,7 +336,7 @@ ControllerBrutefir.prototype.checkifrightfilterexits = function() {
 
 
 };
-
+*/
 
 ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
  var n = options.length;
@@ -366,6 +386,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var filter_path = "/data/INTERNAL/brutefirfilters/";
    var leftfilter;
    var rightfilter;
+   var composeleftfilter = filter_path + self.config.get('leftfilter');
+   var composerightfilter = filter_path + self.config.get('rightfilter');
    var lattenuation;
    var rattenuation;
    var n_part = self.config.get('numb_part');
@@ -379,12 +401,12 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    if (self.config.get('leftfilter') == "") {
     leftfilter = "dirac pulse";
     //filterattenuation = "0"
-   } else leftfilter = filter_path + self.config.get('leftfilter') + '.txt';
+   } else leftfilter = filter_path + self.config.get('leftfilter');
    //lattenuation = "6";
    if (self.config.get('rightfilter') == "")
     rightfilter = "dirac pulse";
    // filterattenuation = "0"
-   else rightfilter = filter_path + self.config.get('rightfilter') + '.txt';
+   else rightfilter = filter_path + self.config.get('rightfilter');
    // rattenuation = "6";
    //output_device = output_device;
    console.log(output_device);
@@ -392,10 +414,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", num_part);
    var conf4 = conf3.replace("${input_device}", input_device);
-   var conf5 = conf4.replace("${leftfilter}", leftfilter);
+   var conf5 = conf4.replace("${leftfilter}", composeleftfilter);
    var conf6 = conf5.replace("${filter_format1}", self.config.get('filter_format'));
    var conf7 = conf6.replace("${lattenuation}", self.config.get('lattenuation'));
-   var conf8 = conf7.replace("${rightfilter}", rightfilter);
+   var conf8 = conf7.replace("${rightfilter}", composerightfilter);
    var conf9 = conf8.replace("${filter_format2}", self.config.get('filter_format'));
    var conf10 = conf9.replace("${rattenuation}", self.config.get('rattenuation'));
    var conf11 = conf10.replace("${output_device}", output_device);
@@ -406,8 +428,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
      defer.reject(new Error(err));
     else defer.resolve();
    });
-   self.checkifleftfilterexits()
-   self.checkifrightfilterexits()
+ //  self.checkifleftfilterexits()
+ //  self.checkifrightfilterexits()
   });
 
 
@@ -431,8 +453,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var defer = libQ.defer();
  self.config.set('lattenuation', data['lattenuation'].value);
  self.config.set('rattenuation', data['rattenuation'].value);
- self.config.set('leftfilter', data['leftfilter']);
- self.config.set('rightfilter', data['rightfilter']);
+ self.config.set('leftfilter', data['leftfilter'].value);
+ self.config.set('rightfilter', data['rightfilter'].value);
  self.config.set('filter_size', data['filter_size'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);
  //  self.config.set('numb_part', data['numb_part']);
@@ -488,7 +510,13 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-   return self.mpdPlugin.sendMpdCommand('clear', []);
+try {
+            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+});
+ /*  return self.mpdPlugin.sendMpdCommand('clear', []);
   })
   .then(function() {
    return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
@@ -500,6 +528,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
    return self.mpdPlugin.sendMpdCommand('play', []);
   });
+*/
 };
 
 
@@ -512,7 +541,15 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-   return self.mpdPlugin.sendMpdCommand('clear', [])
+
+try {
+            execSync('/usr/bin/killall aplay');
+            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+
+ /*  return self.mpdPlugin.sendMpdCommand('clear', [])
   })
   .then(function() {
    return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
@@ -522,7 +559,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
   })
   .then(function() {
    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-   return self.mpdPlugin.sendMpdCommand('play', []);
+   return self.mpdPlugin.sendMpdCommand('play', []); */
   });
 };
 
@@ -535,7 +572,13 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-   return self.mpdPlugin.sendMpdCommand('clear', []);
+try {
+            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+
+ /*  return self.mpdPlugin.sendMpdCommand('clear', []);
   })
   .then(function() {
    return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
@@ -545,7 +588,7 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
   })
   .then(function() {
    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-   return self.mpdPlugin.sendMpdCommand('play', []);
+   return self.mpdPlugin.sendMpdCommand('play', []);*/
   });
 };
 
