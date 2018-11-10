@@ -515,7 +515,8 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
 try {
-            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+            exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
 		} catch(e) {
     		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
 };
@@ -547,8 +548,8 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
   .then(function() {
 
 try {
-            execSync('/usr/bin/killall aplay');
-            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+            exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
 		} catch(e) {
     		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
 };
@@ -577,7 +578,8 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
 try {
-            execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
 		} catch(e) {
     		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
 };
@@ -594,6 +596,42 @@ try {
    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
    return self.mpdPlugin.sendMpdCommand('play', []);*/
   });
+};
+
+//here we stop aplay
+ControllerBrutefir.prototype.stopaplay = function(track) {
+ var self = this;
+ //self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ 
+ return self.mpdPlugin.sendMpdCommand('stop', [])
+  .then(function() {
+try {
+		exec('/usr/bin/killall aplay');
+		} catch(e) {
+    		self.data.logger('Stopping aplay')
+};
+});
+};
+
+
+ControllerBrutefir.prototype.uploadfile = function(track) {
+ var self = this;
+var document
+var createElement
+var fileSelector = document.createElement('input');
+fileSelector.setAttribute('type', 'file');
+
+var selectDialogueLink = document.createElement('a');
+selectDialogueLink.setAttribute('href', '');
+selectDialogueLink.innerText = "Select File";
+
+selectDialogueLink.onclick = function () {
+     fileSelector.click();
+     return false;
+}
+
+document.body.appendChild(selectDialogueLink);
+
 };
 
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {

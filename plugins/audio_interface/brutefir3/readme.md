@@ -1,4 +1,4 @@
-November 9th 2018
+November 10th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -65,6 +65,12 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 10th 2018
+
+- add a stop button for sweep files
+- hidden menu for sweep
+- first work for pink noise
 
 November, 9th 2018
 

@@ -273,10 +273,16 @@
     {
       "id": "advanced",
       "element": "section",
-      "label": "special",
-      "icon": "fa-cogs",
+      "label": "Tools",
+      "icon": "fa-wrench",
       "content": [
-        
+        {
+		"id": "sweep",
+		"element": "switch",
+		"label": "sweep tools",
+"description":"Sweeps Tools",
+		"value": false
+	},
         {
           "id": "playleftsweepfile",
           "element": "button",
@@ -286,7 +292,11 @@
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
             "method": "playleftsweepfile"
-          }
+          },
+	"visibleIf": {
+		"field": "sweep",
+		"value": true
+		}
         },
 	{
           "id": "playrightsweepfile",
@@ -297,7 +307,11 @@
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
             "method": "playrightsweepfile"
-          }
+          },
+	"visibleIf": {
+		"field": "sweep",
+		"value": true
+		}
         },
 	{
           "id": "playbothsweepfile",
@@ -308,8 +322,34 @@
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
             "method": "playbothsweepfile"
-          }
+          },
+	"visibleIf": {
+		"field": "sweep",
+		"value": true
+		}
         },
+{
+          "id": "stopaplay",
+          "element": "button",
+          "label": "Stop to play",
+          "description": "Stop to play",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "stopaplay"
+          },
+"visibleIf": {
+		"field": "sweep",
+		"value": true
+		}
+        },
+ {
+		"id": "pink",
+		"element": "switch",
+		"label": "pink noise tools",
+"description":"Not implemented yet",
+		"value": false
+	},
 	{
           "id": "wikilink",
           "element": "button",
