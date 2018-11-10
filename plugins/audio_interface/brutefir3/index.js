@@ -232,7 +232,7 @@ var valuestoredr;
 	
 		fs.readdir(filterfolder, function(err, item) {
 
-	allfilter =  'None, '+ item
+	allfilter =  'None,'+ item
  	items = allfilter.split(',');
 	self.logger.info('list of available '+ items);
 		
