@@ -171,7 +171,7 @@ ControllerBrutefir.prototype.onStart = function() {
 
   .then(function(e) {
    setTimeout(function() {
-    self.logger.info("Connecting to daemon brutefir");
+    self.logger.info("Starting brutefir");
 
     //self.getFilterList();
     //  self.brutefirDaemonConnect(defer);
@@ -234,7 +234,7 @@ var valuestoredr;
 
 	allfilter =  'None,'+ item
  	items = allfilter.split(',');
-	self.logger.info('list of available '+ items);
+	self.logger.info('list of available filters '+ items);
 		
 	for (var i in items) { 				
 	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
@@ -613,7 +613,7 @@ try {
 });
 };
 
-
+/* not ready yet in Volumio
 ControllerBrutefir.prototype.uploadfile = function(track) {
  var self = this;
 var document
@@ -633,6 +633,8 @@ selectDialogueLink.onclick = function () {
 document.body.appendChild(selectDialogueLink);
 
 };
+*/
+
 
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
@@ -646,7 +648,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
    }, function(error, stdout, stderr) {
     if (error) {
      //	self.logger.error('Cannot Enable brutefir');
-     self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !', 'Output, filters name');
+     self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
     } else {
      //self.logger.error('Brutefir started ! ');
      self.commandRouter.pushToastMessage('success', 'Attempt to start Brutefir...');
@@ -664,7 +666,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
     }, 2000)
     .fail(function(e) {
      //	defer.reject(new Error('Brutefir failed to start. Check your config !'));
-     self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !", "Wrong Ouptut or filter name ?");
+     self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
      self.logger.info("Brutefir failed to start. Check your config !");
     });
   });
@@ -753,8 +755,6 @@ ControllerBrutefir.prototype.setAdditionalConf = function(type, controller, data
 ControllerBrutefir.prototype.outputDeviceCallback = function() {
  var self = this;
  var defer = libQ.defer();
- //  self.context.coreCommand.pushConsoleMessage('wwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWWwwwwwwwwwwwWWWWWWWWWwwwwwwwwwwWWWWWwwOutput device has changed, continuing config');
- //	self.setLoopbackoutput()
  setTimeout(function() {
   self.setVolumeParameters()
  }, 2500);
