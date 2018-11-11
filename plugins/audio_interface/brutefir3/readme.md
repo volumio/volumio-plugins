@@ -1,4 +1,4 @@
-November 10th 2018
+November 11th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -65,6 +65,10 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 11th 2018
+
+- correct link to wiki
 
 November, 10th 2018
 
