@@ -23,5 +23,15 @@
  "PLAY_R_SWEEP":"Play Right",
  "DESC_PLAY_R_SWEEP":"Play Right channel sweep",
  "PLAY_BOTH_CHANNEL_SWEEP":"Play 2 channels",
- "DESC_PLAY_BOTH_CHANNEL_SWEEP":"Play 2 channels sweep"
+ "DESC_PLAY_BOTH_CHANNEL_SWEEP":"Play 2 channels sweep",
+ "PLAY_L_PINK":"Play Left",
+ "DESC_PLAY_L_PINK":"Play Left channel pink noise",
+ "PLAY_R_PINK":"Play Right",
+ "DESC_PLAY_R_PINK":"Play Right channel sweep",
+ "PLAY_BOTH_CHANNEL_PINK":"Play 2 channels",
+ "DESC_PLAY_BOTH_CHANNEL_PINK":"Play 2 channels pink noise",
+  "REMOVE_TOOLS":"Remove tools",
+  "DESC_REMOVE_TOOLS":"Uninstall tools from your system",
+  "INSTALL_TOOLS":"Install tools",
+  "DESC_INSTALL_TOOLS":"Install tools to help measurements. PLEASE WAIT UNTIL UI IS REFRESHED"
 }

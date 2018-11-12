@@ -483,33 +483,55 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
 };
 
-/*here we download the sweep files
- ControllerBrutefir.prototype.downloadsweepfiles = function(data) {
+//here we download and install tools
+ ControllerBrutefir.prototype.installtools = function(data) {
   var self = this;
-self.commandRouter.pushToastMessage('info', 'Download in progress, please wait!');
+self.commandRouter.pushToastMessage('info', 'Download in progress, please wait until the page is refreshed!');
 return new Promise(function(resolve, reject) {
  try {
-    var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/sweepfiles/LogSweep_.tar.xz');
-    var cp4 = execSync('/bin/mkdir /data/INTERNAL/brutefirfilters/sweep');	
-    var cp5 = execSync('tar -xvf /tmp/LogSweep_.tar.xz -C /data/INTERNAL/brutefirfilters/sweep/');
-var cp6 = execSync('/bin/rm /tmp/LogSweep_.tar.xz');
+    var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
+    var cp4 = execSync('/bin/mkdir /data/plugins/audio_interface/brutefir/tools');	
+    var cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
+    var cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
+    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
     // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-
+    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
    } catch (err) {
-    self.logger.info('config.txt does not exist');
-
+    self.logger.info('An error occurs while downloading or installing tools');
+	self.commandRouter.pushToastMessage('error','An error occurs while downloading or installing tools');
    }
    resolve();
-self.commandRouter.pushToastMessage('success', 'Files succesfully downloaded !','Find them in /data/IN TRNAL/brutefirfiltes/sweep');
+	self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !','Refresh the page to see them');
+return self.commandRouter.reloadUi(); 
   });
  };
-*/
+
+//here we remove tools
+ ControllerBrutefir.prototype.removetools = function(data) {
+  var self = this;
+self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
+return new Promise(function(resolve, reject) {
+ try {
+
+    var cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
+    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
+    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
+   } catch (err) {
+    self.logger.info('An error occurs while removing tools');
+	self.commandRouter.pushToastMessage('error','An error occurs while removing tools');
+   }
+   resolve();
+	self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !','Refresh the page to see them');
+return self.commandRouter.reloadUi(); 
+  });
+ };
 
 //here we play left sweep when button is pressed
 ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/sweep/LogSweep_LEFT_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_LEFT_16_48.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -541,7 +563,7 @@ try {
 ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/sweep/LogSweep_RIGHT_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_RIGHT_16_48.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -572,7 +594,7 @@ try {
 ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/sweep/LogSweep_BOTH_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_BOTH_16_48.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -595,6 +617,64 @@ try {
   .then(function() {
    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
    return self.mpdPlugin.sendMpdCommand('play', []);*/
+  });
+};
+
+//here we play left pink noise channel when button is pressed
+ControllerBrutefir.prototype.playleftpinkfile = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_L.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+
+ return self.mpdPlugin.sendMpdCommand('stop', [])
+  .then(function() {
+try {
+		exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+
+  });
+};
+
+//here we play right pink noise channel when button is pressed
+ControllerBrutefir.prototype.playrightpinkfile = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_R.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+
+ return self.mpdPlugin.sendMpdCommand('stop', [])
+  .then(function() {
+try {
+		exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+
+  });
+};
+
+
+//here we play both pink noise channels when button is pressed
+ControllerBrutefir.prototype.playbothpinkfile = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+
+ return self.mpdPlugin.sendMpdCommand('stop', [])
+  .then(function() {
+try {
+		exec('/usr/bin/killall aplay');
+            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+		} catch(e) {
+    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+};
+
   });
 };
 
