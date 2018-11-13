@@ -1,4 +1,4 @@
-November 12th 2018
+November 13th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -65,6 +65,10 @@ nearly everythings
 - drc with some sample rate / bit depth
 
 ### 4. Last changes
+
+November, 13th 2018
+
+- add modal message when installing tools
 
 November, 12th 2018
 

@@ -214,63 +214,63 @@ ControllerBrutefir.prototype.getUIConfig = function() {
    __dirname + '/UIConfig.json')
   .then(function(uiconf)
 
- {
-	var value;
-var valuestoredl;
-var valuestoredr;
-	var filterfolder = "/data/INTERNAL/brutefirfilters";
-	var items;
-	var allfilter;
-	
-	valuestoredl = self.config.get('leftfilter');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredl);
+   {
+    var value;
+    var valuestoredl;
+    var valuestoredr;
+    var filterfolder = "/data/INTERNAL/brutefirfilters";
+    var items;
+    var allfilter;
 
-	valuestoredr = self.config.get('rightfilter');
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
-	self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
-	
-		fs.readdir(filterfolder, function(err, item) {
+    valuestoredl = self.config.get('leftfilter');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredl);
 
-	allfilter =  'None,'+ item
- 	items = allfilter.split(',');
-	self.logger.info('list of available filters '+ items);
-		
-	for (var i in items) { 				
-	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
-						value: items[i],
-						label: items[i]
-						});	
-							
-	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
-						value: items[i],
-						label: items[i]
-						});	
-			}
-});
- 
-   value = self.config.get('lattenuation');
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+    valuestoredr = self.config.get('rightfilter');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
 
-   value = self.config.get('rattenuation');
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
-   value = self.config.get('filter_size');
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
+    fs.readdir(filterfolder, function(err, item) {
 
-   value = self.config.get('smpl_rate');
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-   value = self.config.get('output_format');
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
-   self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
-   var value;
+     allfilter = 'None,' + item
+     items = allfilter.split(',');
+     self.logger.info('list of available filters ' + items);
+
+     for (var i in items) {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
+       value: items[i],
+       label: items[i]
+      });
+
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
+       value: items[i],
+       label: items[i]
+      });
+     }
+    });
+
+    value = self.config.get('lattenuation');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+
+    value = self.config.get('rattenuation');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+    value = self.config.get('filter_size');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
+
+    value = self.config.get('smpl_rate');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
+    value = self.config.get('output_format');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
+    var value;
 
 
-   defer.resolve(uiconf);
-  })
+    defer.resolve(uiconf);
+   })
   .fail(function() {
    defer.reject(new Error());
   })
@@ -279,13 +279,13 @@ var valuestoredr;
 };
 
 ControllerBrutefir.prototype.getFilterList = function() {
-var results
+ var results
  var filterfolder = "/data/INTERNAL/brutefirfilters"
  //var filterl = [];
  fs.readdirSync(filterfolder).forEach(file => {
-results
-//  console.log(file);
-self.logger.info(results);
+  results
+  //  console.log(file);
+  self.logger.info(results);
  });
 
 
@@ -432,8 +432,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
      defer.reject(new Error(err));
     else defer.resolve();
    });
- //  self.checkifleftfilterexits()
- //  self.checkifrightfilterexits()
+   //  self.checkifleftfilterexits()
+   //  self.checkifrightfilterexits()
   });
 
 
@@ -476,56 +476,58 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
    defer.reject(new Error('Brutefir failed to start. Check your config !'));
    self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
   })
-
-
  return defer.promise;
-
-
 };
 
+
 //here we download and install tools
- ControllerBrutefir.prototype.installtools = function(data) {
-  var self = this;
-self.commandRouter.pushToastMessage('info', 'Download in progress, please wait until the page is refreshed!');
-return new Promise(function(resolve, reject) {
- try {
-    var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
-    var cp4 = execSync('/bin/mkdir /data/plugins/audio_interface/brutefir/tools');	
-    var cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
-    var cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
-    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
-    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
-   } catch (err) {
-    self.logger.info('An error occurs while downloading or installing tools');
-	self.commandRouter.pushToastMessage('error','An error occurs while downloading or installing tools');
-   }
-   resolve();
-	self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !','Refresh the page to see them');
-return self.commandRouter.reloadUi(); 
-  });
+ControllerBrutefir.prototype.installtools = function(data) {
+ var self = this;
+ var modalData = {
+  title: 'Tools installation',
+  message: 'Your are going to download about 17Mo. Please WAIT until this page is refreshed (about 15 sec).',
+  size: 'lg'
  };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+ return new Promise(function(resolve, reject) {
+  try {
+   var cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
+   var cp4 = execSync('/bin/mkdir /data/plugins/audio_interface/brutefir/tools');
+   var cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
+   var cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
+   var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
+   // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+   var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
+  } catch (err) {
+   self.logger.info('An error occurs while downloading or installing tools');
+   self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
+  }
+  resolve();
+  self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !', 'Refresh the page to see them');
+  return self.commandRouter.reloadUi();
+ });
+};
 
 //here we remove tools
- ControllerBrutefir.prototype.removetools = function(data) {
-  var self = this;
-self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
-return new Promise(function(resolve, reject) {
- try {
+ControllerBrutefir.prototype.removetools = function(data) {
+ var self = this;
+ self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
+ return new Promise(function(resolve, reject) {
+  try {
 
-    var cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
-    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
-    // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
-   } catch (err) {
-    self.logger.info('An error occurs while removing tools');
-	self.commandRouter.pushToastMessage('error','An error occurs while removing tools');
-   }
-   resolve();
-	self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !','Refresh the page to see them');
-return self.commandRouter.reloadUi(); 
-  });
- };
+   var cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
+   var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
+   // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+   var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
+  } catch (err) {
+   self.logger.info('An error occurs while removing tools');
+   self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
+  }
+  resolve();
+  self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
+  return self.commandRouter.reloadUi();
+ });
+};
 
 //here we play left sweep when button is pressed
 ControllerBrutefir.prototype.playleftsweepfile = function(track) {
@@ -536,13 +538,13 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-            exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
-});
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
+  });
  /*  return self.mpdPlugin.sendMpdCommand('clear', []);
   })
   .then(function() {
@@ -569,24 +571,24 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
 
-try {
-            exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
 
- /*  return self.mpdPlugin.sendMpdCommand('clear', [])
-  })
-  .then(function() {
-   return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
-  })
-  .fail(function(e) {
-   return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
-  })
-  .then(function() {
-   self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-   return self.mpdPlugin.sendMpdCommand('play', []); */
+   /*  return self.mpdPlugin.sendMpdCommand('clear', [])
+    })
+    .then(function() {
+     return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
+    })
+    .fail(function(e) {
+     return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
+    })
+    .then(function() {
+     self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
+     return self.mpdPlugin.sendMpdCommand('play', []); */
   });
 };
 
@@ -599,24 +601,24 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-		exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
 
- /*  return self.mpdPlugin.sendMpdCommand('clear', []);
-  })
-  .then(function() {
-   return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
-  })
-  .fail(function(e) {
-   return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
-  })
-  .then(function() {
-   self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-   return self.mpdPlugin.sendMpdCommand('play', []);*/
+   /*  return self.mpdPlugin.sendMpdCommand('clear', []);
+    })
+    .then(function() {
+     return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
+    })
+    .fail(function(e) {
+     return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
+    })
+    .then(function() {
+     self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
+     return self.mpdPlugin.sendMpdCommand('play', []);*/
   });
 };
 
@@ -629,12 +631,12 @@ ControllerBrutefir.prototype.playleftpinkfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-		exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
 
   });
 };
@@ -648,12 +650,12 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-		exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
 
   });
 };
@@ -668,12 +670,12 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-		exec('/usr/bin/killall aplay');
-            exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-		} catch(e) {
-    		console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-};
+   try {
+    exec('/usr/bin/killall aplay');
+    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   } catch (e) {
+    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+   };
 
   });
 };
@@ -682,15 +684,15 @@ try {
 ControllerBrutefir.prototype.stopaplay = function(track) {
  var self = this;
  //self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- 
+
  return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
-try {
-		exec('/usr/bin/killall aplay');
-		} catch(e) {
-    		self.data.logger('Stopping aplay')
-};
-});
+   try {
+    exec('/usr/bin/killall aplay');
+   } catch (e) {
+    self.data.logger('Stopping aplay')
+   };
+  });
 };
 
 /* not ready yet in Volumio
