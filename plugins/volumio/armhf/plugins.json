@@ -358,7 +358,7 @@
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/harmonycontroll/harmonycontroll.zip",
 					"license": "ISC",
-					"description": "Start your harmony activity with your music. HarmonyControll autodetect all Logitech Harmony Hubs in your network.",
+					"description": "Start your harmony activity with your music.",
 					"details": "\"Start your Logitech Harmony Activity with your music. HarmonyControll autodetect all Logitech Harmony Hubs in your network.\"",
 					"author": "Konrad Zdunczyk",
 					"screenshots": [
