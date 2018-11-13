@@ -350,6 +350,24 @@
 						}
 					],
 					"updated": "20-6-2018"
+				},
+				{
+					"prettyName": "HarmonyControll",
+					"icon": "fa-lightbulb-o",
+					"name": "harmonycontroll",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/harmonycontroll/harmonycontroll.zip",
+					"license": "ISC",
+					"description": "Start your harmony activity with your music. HarmonyControll autodetect all Logitech Harmony Hubs in your network.",
+					"details": "\"Start your Logitech Harmony Activity with your music. HarmonyControll autodetect all Logitech Harmony Hubs in your network.\"",
+					"author": "Konrad Zdunczyk",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "13-11-2018"
 				}
 			]
 		},
