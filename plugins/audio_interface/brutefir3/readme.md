@@ -1,4 +1,4 @@
-November 13th 2018
+November 14th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -62,9 +62,15 @@ nearly everythings
 
 ## What is not working :
 
-- drc with some sample rate / bit depth
+- ?
+- mixer is not properly displayed in Volumio's playback option
 
 ### 4. Last changes
+
+November, 14th 2018
+
+- sample rate are now dislayed in the form XXkHz
+- add 88.2kHz samle rate
 
 November, 13th 2018
 
