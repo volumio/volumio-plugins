@@ -131,6 +131,24 @@
 						}
 					],
 					"updated": "25-6-2018"
+				},
+				{
+					"prettyName": "Phish.in",
+					"icon": "fa-lightbulb-o",
+					"name": "volumio-phishin",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volumio-phishin/volumio-phishin.zip",
+					"license": "ISC",
+					"description": "A Phish.in plugin for Volumio2. Play over 1,500 live Phish audience recordings from Phish.in..  Phish.in and the Volumio Phish.in music service plugin complies with Phish's official taping policy as described at http://phish.com/#/faq/taping-guidelines.",
+					"details": "A Phish.in plugin for Volumio2. Play over 1,500 live Phish audience recordings from Phish.in. Phish.in and the Volumio Phish.in music service plugin complies with Phish's official taping policy as described at http://phish.com/#/faq/taping-guidelines.",
+					"author": "Noah McGee (lostmyshape)",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "4-8-2018"
 				}
 			]
 		},
