@@ -15,26 +15,25 @@ function pirMotionDetectionAutoplay(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
+
+	//self.pirPlaylistPlaying = false;
 }
 
 pirMotionDetectionAutoplay.prototype.onVolumioStart = function()
 {
 	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+	var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
     return libQ.resolve();
 }
 
-pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() {
+pirMotionDetectionAutoplay.prototype.startDetectionForContinuingMode = function() {
 	var self = this;
 	var lastMotion = false;
 
 	self.gpioPir.watch(function (err, value) {
-		if(!self.isOn) {
-			return;
-		}
 		lastMotion = Date.now();
 		var state =  self.commandRouter.stateMachine.getState();
 		if(state.status != 'play') {
@@ -51,12 +50,8 @@ pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() 
 	});
 }
 
-pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
+pirMotionDetectionAutoplay.prototype.startDetectionForPlaylistMode = function() {
 	var self = this;
-
-	if(!self.isOn) {
-		return;
-	}
 
 	if(!self.config.get('playlist')) {
 		self.commandRouter.pushToastMessage(
@@ -69,26 +64,32 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 				self.gpioPir.watch(function (err, value) {
 					if (err) throw err;
 					self.gpioPir.unwatch();
-					var startedPlaylist = false;
+
 					var stopAfterTimeout = true;
 					var state =  self.commandRouter.stateMachine.getState();
 					if(state.status != 'play') {
-						if(self.config.get('random')) {
-							self.commandRouter.stateMachine.setRandom(true);
+						if(!self.pirPlaylistPlaying) {
+							if(self.config.get('random')) {
+								self.commandRouter.stateMachine.setRandom(true);
+							}
+							self.commandRouter.playListManager.playPlaylist(self.config.get('playlist'));
+							self.pirPlaylistPlaying = true;
+							stopAfterTimeout = true;
 						}
-						self.commandRouter.playListManager.playPlaylist(self.config.get('playlist'));
-						startedPlaylist = true;
-						stopAfterTimeout = true;
+
 					} else {
-						startedPlaylist = false;
+						self.pirPlaylistPlaying = false;
 						stopAfterTimeout = false;
 					}
 
 					setTimeout(function() {
 						if(stopAfterTimeout) {
 							self.commandRouter.stateMachine.stop();
+							self.pirPlaylistPlaying = false;
+
 							var playlistContentPromise = self.commandRouter.playListManager.getPlaylistContent(self.config.get('playlist'));
 							playlistContentPromise.then(function (playlistContent) {
+								if (err) throw err;
 								if(self.config.get('random')) {
 									self.commandRouter.stateMachine.setRandom(false);
 								}
@@ -97,7 +98,9 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 									var entryInQueue = queue.findIndex(function(queueEntry) {
 										return queueEntry.uri == playlistEntry.uri;
 									});
-									self.commandRouter.stateMachine.removeQueueItem({value: entryInQueue});
+									if(entryInQueue >= 0) {
+										self.commandRouter.stateMachine.removeQueueItem({value: entryInQueue});
+									}
 								});
 							});
 						}
@@ -115,16 +118,16 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
     self.initGPIO();
 
 	var onSwitch = function() {
-		self.isOn = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : 1;
+		self.detectionIsActive = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : 1;
 
 		if(self.gpioLed) {
-			self.gpioLed.writeSync(self.isOn);
+			self.gpioLed.writeSync(self.detectionIsActive);
 		}
-		if(self.isOn) {
+		if(self.detectionIsActive) {
 			if(self.config.get('playlist_mode') == false) {
-				self.startWatcherForContinuingMode();
+				self.startDetectionForContinuingMode();
 			} else {
-				self.startWatcherForPlaylistMode();
+				self.startDetectionForPlaylistMode();
 			}
 		}
 	};
@@ -135,8 +138,9 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 		self.gpioSwitch.watch(function(err, value) {
 			if (err) throw err;
 			onSwitch();
-			if(!self.isOn) {
+			if(!self.detectionIsActive) {
 				self.commandRouter.stateMachine.stop();
+				self.pirPlaylistPlaying = false;
 			}
 	  	});
 	}
@@ -151,7 +155,7 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-	if(!self.isOn) {
+	if(!self.detectionIsActive) {
 		self.commandRouter.stateMachine.stop();
 	}
 
@@ -179,7 +183,7 @@ pirMotionDetectionAutoplay.prototype.initGPIO = function() {
 	}
 	if(self.config.get('enable_led') && self.config.get('gpio_led')) {
 		self.gpioLed = new Gpio(self.config.get('gpio_led'), 'out');
-		self.gpioLed.writeSync(self.isOn);
+		self.gpioLed.writeSync(self.detectionIsActive);
 	}
 };
 
