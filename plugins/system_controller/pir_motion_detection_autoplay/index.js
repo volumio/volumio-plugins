@@ -167,7 +167,7 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
 pirMotionDetectionAutoplay.prototype.initGPIO = function() {
     var self = this;
 
-	self.gpioPir = new Gpio(self.config.get('pin'), 'in', 'rising');
+	self.gpioPir = new Gpio(self.config.get('gpio_pir'), 'in', 'rising');
 	if(self.config.get('gpio_switch')) {
 		self.gpioSwitch = new Gpio(self.config.get('gpio_switch'), 'in', 'both', {'debounceTimeout': 10});
 	}
@@ -229,7 +229,7 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 {
 	var self = this;
 
-	self.config.set('pin', data['pin']);
+	self.config.set('gpio_pir', data['gpio_pir']);
 	self.config.set('playlist_mode', data['playlist_mode']);
 	self.config.set('playlist', data['playlist']);
 	self.config.set('random', data['random']);
@@ -266,7 +266,7 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('pin', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('gpio_pir', false));
 		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist_mode', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('playlist', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', self.config.get('random', false));

@@ -12,7 +12,7 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "pin",
+          "gpio_pir",
           "playlist_mode",
           "playlist",
           "random",
@@ -25,11 +25,11 @@
       },
       "content": [
         {
-          "id": "pin",
+          "id": "gpio_pir",
           "type": "text",
           "element": "input",
-          "label": "TRANSLATE.PIN_LABEL",
-          "doc": "TRANSLATE.PIN_DOC",
+          "label": "TRANSLATE.GPIO_PIR_LABEL",
+          "doc": "TRANSLATE.GPIO_PIR_DOC",
           "value": ""
         },
         {

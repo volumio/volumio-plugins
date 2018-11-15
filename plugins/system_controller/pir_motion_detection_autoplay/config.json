@@ -1,5 +1,5 @@
 {
-    "pin":{
+    "gpio_pir":{
         "type": "string" ,
         "value": "23"
     },

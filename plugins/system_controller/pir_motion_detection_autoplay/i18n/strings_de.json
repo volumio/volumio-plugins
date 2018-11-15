@@ -1,8 +1,8 @@
 {
   "PLUGIN_CONFIGURATION":"PIR Motion Detection Autoplay Konfiguration",
   "SAVE":"Speichern",
-  "PIN_LABEL":"GPIO-Pin",
-  "PIN_DOC":"GPIO Pin, an dem der PIR Bewegungssensor angeschlossen ist",
+  "GPIO_PIR_LABEL":"GPIO-Pin für PIR-Sensor",
+  "GPIO_PIR_DOC":"GPIO-Pin, an dem der PIR Bewegungssensor angeschlossen ist",
   "PLAYLIST_MODE_LABEL":"Playlisten-Modus",
   "PLAYLIST_MODE_DOC":"Wenn der Playlisten-Modus aktiviert ist, wird bei Bewegungserkennung eine eigene Playlist gestartet, statt die Musik weiter abzuspielen.",
   "PLAYLIST_LABEL":"Playlisten-Name",
@@ -15,11 +15,11 @@
   "PIR_TEST_DETECTION": "Bewegung erkannt!",
   "PIR_TEST_STOP": "Die Testzeit für den Bewegungssensor ist vorbei.",
   "ENABLE_SWITCH_LABEL":"An/Aus Schalter hinzufügen",
-  "ENABLE_SWITCH_DOC":"GPIO Pin als Eingang benutzen um Bewegungserkennung ein/auszuschalten",
+  "ENABLE_SWITCH_DOC":"GPIO-Pin als Eingang benutzen um Bewegungserkennung ein/auszuschalten",
   "GPIO_SWITCH_LABEL":"Schalter GPIO",
   "GPIO_SWITCH_DOC":"GPIO verwendet als Schaltsignal-Eingang (angeschlossen mit Pull-Up Widerstand)",
   "ENABLE_LED_LABEL":"LED hinzufügen",
-  "ENABLE_LED_DOC":"GPIO Pin als Ausgang für eine Status-LED",
+  "ENABLE_LED_DOC":"GPIO-Pin als Ausgang für eine Status-LED",
   "GPIO_LED_LABEL":"LED GPIO",
   "GPIO_LED_DOC":"GPIO an dessen Ausgang eine Status-LED betrieben werden soll (angeschlossen mit passendem Vorwiderstand)"
 }
