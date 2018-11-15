@@ -114,8 +114,9 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
     self.initGPIO();
 
 	var onSwitch = function() {
-		self.isOn = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : true;
-		if(self.config.get('gpio_switch')) {
+		self.isOn = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : 1;
+
+		if(self.gpioLed) {
 			self.gpioLed.writeSync(self.isOn);
 		}
 		if(self.isOn) {
@@ -149,6 +150,10 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
+	if(!self.isOn) {
+		self.commandRouter.stateMachine.stop();
+	}
+
 	self.freeGPIO();
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -168,11 +173,12 @@ pirMotionDetectionAutoplay.prototype.initGPIO = function() {
     var self = this;
 
 	self.gpioPir = new Gpio(self.config.get('gpio_pir'), 'in', 'rising');
-	if(self.config.get('gpio_switch')) {
+	if(self.config.get('enable_switch') && self.config.get('gpio_switch')) {
 		self.gpioSwitch = new Gpio(self.config.get('gpio_switch'), 'in', 'both', {'debounceTimeout': 10});
 	}
-	if(self.config.get('gpio_led')) {
+	if(self.config.get('enable_led') && self.config.get('gpio_led')) {
 		self.gpioLed = new Gpio(self.config.get('gpio_led'), 'out');
+		self.gpioLed.writeSync(self.isOn);
 	}
 };
 
@@ -180,12 +186,13 @@ pirMotionDetectionAutoplay.prototype.initGPIO = function() {
 pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
     var self = this;
 
-	self.gpioLed.unexport();
-	if(self.config.get('gpio_switch')) {
-		self.gpioSwitch.unexport();
+    self.gpioPir.unexport();
+	if(self.gpioLed) {
+		self.gpioLed.writeSync(0);
+		self.gpioLed.unexport();
 	}
-	if(self.config.get('gpio_led')) {
-    	self.gpioPir.unexport();
+	if(self.gpioSwitch) {
+		self.gpioSwitch.unexport();
 	}
 };
 
@@ -238,6 +245,13 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 	self.config.set('gpio_switch', data['gpio_switch']);
 	self.config.set('enable_led', data['enable_led']);
 	self.config.set('gpio_led', data['gpio_led']);
+
+	if(self.gpioLed) {
+		// reset gpio output
+		self.gpioLed.writeSync(0);
+	}
+
+	self.initGPIO();
 
 	self.commandRouter.pushToastMessage('success',
 		'PIR motion detection autoplay',
