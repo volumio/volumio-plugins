@@ -54,6 +54,10 @@ pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() 
 pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 	var self = this;
 
+	if(!self.isOn) {
+		return;
+	}
+
 	if(!self.config.get('playlist')) {
 		self.commandRouter.pushToastMessage(
 			'success',
@@ -65,9 +69,6 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 				self.gpioPir.watch(function (err, value) {
 					if (err) throw err;
 					self.gpioPir.unwatch();
-					if(!self.isOn) {
-						return;
-					}
 					var startedPlaylist = false;
 					var stopAfterTimeout = true;
 					var state =  self.commandRouter.stateMachine.getState();
