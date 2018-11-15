@@ -67,12 +67,15 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 					var stopAfterTimeout = true;
 					var state =  self.commandRouter.stateMachine.getState();
 					if(state.status != 'play') {
-						stopAfterTimeout = true;
+						if(self.config.get('random')) {
+							self.commandRouter.stateMachine.setRandom(true);
+						}
 						self.commandRouter.playListManager.playPlaylist(self.config.get('playlist'));
 						startedPlaylist = true;
+						stopAfterTimeout = true;
 					} else {
-						stopAfterTimeout = false;
 						startedPlaylist = false;
+						stopAfterTimeout = false;
 					}
 
 					setTimeout(function() {
@@ -80,6 +83,9 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 							self.commandRouter.stateMachine.stop();
 							var playlistContentPromise = self.commandRouter.playListManager.getPlaylistContent(self.config.get('playlist'));
 							playlistContentPromise.then(function (playlistContent) {
+								if(self.config.get('random')) {
+									self.commandRouter.stateMachine.setRandom(false);
+								}
 								var queue = self.commandRouter.stateMachine.getQueue();
 								playlistContent.forEach(function(playlistEntry) {
 									var entryInQueue = queue.findIndex(function(queueEntry) {
