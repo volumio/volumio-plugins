@@ -5,11 +5,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-
 var Gpio = require('onoff').Gpio;
-
-var io = require('socket.io-client');
-var socket = io.connect('http://localhost:3000');
 
 module.exports = pirMotionDetectionAutoplay;
 function pirMotionDetectionAutoplay(context) {
@@ -19,10 +15,7 @@ function pirMotionDetectionAutoplay(context) {
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-	this.servicename = 'pir_motion_detection_autoplay';
 }
-
-
 
 pirMotionDetectionAutoplay.prototype.onVolumioStart = function()
 {
@@ -42,12 +35,15 @@ pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() 
 		lastMotion = Date.now();
 		var state =  self.commandRouter.stateMachine.getState();
 		if(state.status != 'play') {
-			self.commandRouter.stateMachine.play();
-			setTimeout(function() {
-				if(Date.now() >= lastMotion + 1000*60) {
-					self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
-				}
-			}, 1000*60);
+			var queue = self.commandRouter.stateMachine.getQueue();
+			if(queue.length) {
+				self.commandRouter.stateMachine.play();
+				setTimeout(function() {
+					if(Date.now() >= lastMotion + 1000*60) {
+						self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
+					}
+				}, 1000*60);
+			}
 		}
 	});
 }
@@ -62,63 +58,40 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 			'No playlist was configured for motion detection.'
 		);
 	} else {
-		var startedPlaylist = false;
-		var playlistLength = 0;
-		var lastQueueWasFromMotionDetection = false;
-		var omitTimeout = false;
-
-		// Save playlist length for later removal from queue
-		socket.on('pushQueue', function (queueData) {
-			if(startedPlaylist == true && queueData.length != 0) {
-				playlistLength = queueData.length;
-			}
-		});
-
-		// flag the state to know if it came from motion detection
-		socket.on('pushState', function (stateData) {
-			// The motion playlist was started, mark the status for it
-			if(startedPlaylist && stateData.status == 'play' && (!stateData.origin || stateData.origin != this.servicename)) {
-				stateData.origin = self.servicename;
-				self.pushState(stateData);
-				startedPlaylist = false;
-				lastQueueWasFromMotionDetection = true;
-			}
-			// the motion playlist was running when something is played by the user
-			if(lastQueueWasFromMotionDetection && stateData.status == 'stop') {
-				for(var i = 0; i < playlistLength; i++) {
-					socket.emit('removeFromQueue', 0);
-				}
-				self.pushState(stateData);
-				playlistLength = 0;
-				lastQueueWasFromMotionDetection = false;
-				omitTimeout = true;
-			}
-		});
-
 		(function watchPirSensor() {
-			self.gpio.watch(function (err, value) {
-				if (err) throw err;
-				self.gpio.unwatch();
-				var state = socket.emit('getState', '');
-				socket.once('pushState', function (data) {
-					if(data.status == 'play') {
-						omitTimeout = true;
-					} else {
-						omitTimeout = false;
-						socket.emit('setRandom', {'value': true});
-						socket.emit('playPlaylist', {'name': self.config.get('playlist')});
+				self.gpio.watch(function (err, value) {
+					if (err) throw err;
+					self.gpio.unwatch();
+
+					var startedPlaylist = false;
+					var stopAfterTimeout = true;
+					var state =  self.commandRouter.stateMachine.getState();
+					if(state.status != 'play') {
+						stopAfterTimeout = true;
+						self.commandRouter.playListManager.playPlaylist(self.config.get('playlist'));
 						startedPlaylist = true;
+					} else {
+						stopAfterTimeout = false;
+						startedPlaylist = false;
 					}
+
 					setTimeout(function() {
-						var state = self.commandRouter.stateMachine.getState();
-						if(!omitTimeout) {
-							socket.emit('stop');
-							socket.emit('setRandom', {'value': false});
+						if(stopAfterTimeout) {
+							self.commandRouter.stateMachine.stop();
+							var playlistContentPromise = self.commandRouter.playListManager.getPlaylistContent(self.config.get('playlist'));
+							playlistContentPromise.then(function (playlistContent) {
+								var queue = self.commandRouter.stateMachine.getQueue();
+								playlistContent.forEach(function(playlistEntry) {
+									var entryInQueue = queue.findIndex(function(queueEntry) {
+										return queueEntry.uri == playlistEntry.uri;
+									});
+									self.commandRouter.stateMachine.removeQueueItem({value: entryInQueue});
+								});
+							});
 						}
 						watchPirSensor();
 					}, self.config.get('duration')*1000*60);
 				});
-			});
 		})();
 	}
 }
@@ -357,7 +330,7 @@ pirMotionDetectionAutoplay.prototype.pushState = function(state) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::pushState');
 
-	return self.commandRouter.servicePushState(state, state.servicename); //self.servicename
+	return self.commandRouter.servicePushState(state, self.servicename);
 };
 
 
