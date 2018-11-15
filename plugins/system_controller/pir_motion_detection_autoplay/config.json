@@ -18,5 +18,21 @@
     "duration": {
         "type": "number",
         "value": 5
+    },
+    "enable_switch":{
+        "type": "boolean" ,
+        "value": false
+    },
+    "gpio_switch":{
+        "type": "string" ,
+        "value": "22"
+    },
+    "enable_led":{
+        "type": "boolean" ,
+        "value": false
+    },
+    "gpio_led":{
+        "type": "string" ,
+        "value": "25"
     }
 }

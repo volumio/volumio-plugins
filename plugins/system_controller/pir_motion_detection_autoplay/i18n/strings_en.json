@@ -13,5 +13,13 @@
   "PIR_TEST_DOC": "For the duration of one minute, a message box will pop up, if a motion is detected to help you set up the accuracy of your sensor board.",
   "PIR_TEST_START": "Starting motion sensor test for 60 seconds.",
   "PIR_TEST_DETECTION": "Motion detected!",
-  "PIR_TEST_STOP": "Test time for motion sensor has ended."
+  "PIR_TEST_STOP": "Test time for motion sensor has ended.",
+  "ENABLE_SWITCH_LABEL":"Hardware On/Off Switch",
+  "ENABLE_SWITCH_DOC":"Lets you add an GPIO input for physically switch motion detection on and off",
+  "GPIO_SWITCH_LABEL":"Switch GPIO",
+  "GPIO_SWITCH_DOC":"GPIO used as a switch signal input (connected with pull-up resistor)",
+  "ENABLE_LED_LABEL":"Enable LED",
+  "ENABLE_LED_DOC":"Lets you add an GPIO output for a status LED",
+  "GPIO_LED_LABEL":"LED GPIO",
+  "GPIO_LED_DOC":"GPIO used as a output to connect a LED to (connected with proper resistor value)"
 }

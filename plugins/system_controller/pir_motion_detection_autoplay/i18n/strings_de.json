@@ -13,5 +13,13 @@
   "PIR_TEST_DOC": "Über die Dauer einer Minute wird bei Bewegungserkennung eine Nachricht angezeigt, damit die Genauigkeit der Sensor-Platine korrekt eingestellt werden können.",
   "PIR_TEST_START": "Starte Bewegungssensor-Test über 60 Sekunden.",
   "PIR_TEST_DETECTION": "Bewegung erkannt!",
-  "PIR_TEST_STOP": "Die Testzeit für den Bewegungssensor ist vorbei."
+  "PIR_TEST_STOP": "Die Testzeit für den Bewegungssensor ist vorbei.",
+  "ENABLE_SWITCH_LABEL":"An/Aus Schalter hinzufügen",
+  "ENABLE_SWITCH_DOC":"GPIO Pin als Eingang benutzen um Bewegungserkennung ein/auszuschalten",
+  "GPIO_SWITCH_LABEL":"Schalter GPIO",
+  "GPIO_SWITCH_DOC":"GPIO verwendet als Schaltsignal-Eingang (angeschlossen mit Pull-Up Widerstand)",
+  "ENABLE_LED_LABEL":"LED hinzufügen",
+  "ENABLE_LED_DOC":"GPIO Pin als Ausgang für eine Status-LED",
+  "GPIO_LED_LABEL":"LED GPIO",
+  "GPIO_LED_DOC":"GPIO an dessen Ausgang eine Status-LED betrieben werden soll (angeschlossen mit passendem Vorwiderstand)"
 }

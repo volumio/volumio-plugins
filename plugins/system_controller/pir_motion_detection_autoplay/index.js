@@ -31,7 +31,10 @@ pirMotionDetectionAutoplay.prototype.startWatcherForContinuingMode = function() 
 	var self = this;
 	var lastMotion = false;
 
-	self.gpio.watch(function (err, value) {
+	self.gpioPir.watch(function (err, value) {
+		if(!self.isOn) {
+			return;
+		}
 		lastMotion = Date.now();
 		var state =  self.commandRouter.stateMachine.getState();
 		if(state.status != 'play') {
@@ -59,10 +62,12 @@ pirMotionDetectionAutoplay.prototype.startWatcherForPlaylistMode = function() {
 		);
 	} else {
 		(function watchPirSensor() {
-				self.gpio.watch(function (err, value) {
+				self.gpioPir.watch(function (err, value) {
 					if (err) throw err;
-					self.gpio.unwatch();
-
+					self.gpioPir.unwatch();
+					if(!self.isOn) {
+						return;
+					}
 					var startedPlaylist = false;
 					var stopAfterTimeout = true;
 					var state =  self.commandRouter.stateMachine.getState();
@@ -107,10 +112,31 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 	var defer=libQ.defer();
 
     self.initGPIO();
-	if(self.config.get('playlist_mode') == false) {
-		self.startWatcherForContinuingMode();
-	} else {
-		self.startWatcherForPlaylistMode();
+
+	var onSwitch = function() {
+		self.isOn = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : true;
+		if(self.config.get('gpio_switch')) {
+			self.gpioLed.writeSync(self.isOn);
+		}
+		if(self.isOn) {
+			if(self.config.get('playlist_mode') == false) {
+				self.startWatcherForContinuingMode();
+			} else {
+				self.startWatcherForPlaylistMode();
+			}
+		}
+	};
+
+	onSwitch();
+
+	if(self.config.get('gpio_switch')) {
+		self.gpioSwitch.watch(function(err, value) {
+			if (err) throw err;
+			onSwitch();
+			if(!self.isOn) {
+				self.commandRouter.stateMachine.stop();
+			}
+	  	});
 	}
 
 	// Once the Plugin has successfull started resolve the promise
@@ -141,14 +167,26 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
 pirMotionDetectionAutoplay.prototype.initGPIO = function() {
     var self = this;
 
-	self.gpio = new Gpio(self.config.get('pin'), 'in', 'rising'); //{'debounceTimeout': self.config.get('duration')}
+	self.gpioPir = new Gpio(self.config.get('pin'), 'in', 'rising');
+	if(self.config.get('gpio_switch')) {
+		self.gpioSwitch = new Gpio(self.config.get('gpio_switch'), 'in', 'both', {'debounceTimeout': 10});
+	}
+	if(self.config.get('gpio_led')) {
+		self.gpioLed = new Gpio(self.config.get('gpio_led'), 'out');
+	}
 };
 
 // stop claiming output port
 pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
     var self = this;
 
-    self.gpio.unexport();
+	self.gpioLed.unexport();
+	if(self.config.get('gpio_switch')) {
+		self.gpioSwitch.unexport();
+	}
+	if(self.config.get('gpio_led')) {
+    	self.gpioPir.unexport();
+	}
 };
 
 pirMotionDetectionAutoplay.prototype.pirTest = function() {
@@ -163,7 +201,7 @@ pirMotionDetectionAutoplay.prototype.pirTest = function() {
 	);
 
 	setTimeout(function() {
-		self.gpio.watch(function (err, value) {
+		self.gpioPir.watch(function (err, value) {
 		    if (err) throw err;
 			self.commandRouter.pushToastMessage(
 				'success',
@@ -174,7 +212,7 @@ pirMotionDetectionAutoplay.prototype.pirTest = function() {
 	}, 1000);
 
 	setTimeout(function() {
-		self.gpio.unwatch();
+		self.gpioPir.unwatch();
 		self.commandRouter.pushToastMessage(
 			'info',
 			'PIR motion detection autoplay',
@@ -196,6 +234,10 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 	self.config.set('playlist', data['playlist']);
 	self.config.set('random', data['random']);
 	self.config.set('duration', data['duration'][0]);
+	self.config.set('enable_switch', data['enable_switch']);
+	self.config.set('gpio_switch', data['gpio_switch']);
+	self.config.set('enable_led', data['enable_led']);
+	self.config.set('gpio_led', data['gpio_led']);
 
 	self.commandRouter.pushToastMessage('success',
 		'PIR motion detection autoplay',
@@ -229,6 +271,11 @@ pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('playlist', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', self.config.get('random', false));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].config.bars[0].value', self.config.get('duration', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value', self.config.get('enable_switch', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value', self.config.get('gpio_switch', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value', self.config.get('enable_led', false));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value', self.config.get('gpio_led', false));
+
             defer.resolve(uiconf);
         })
         .fail(function()
