@@ -1,0 +1,16 @@
+{
+ "VOLUMIO_PARAMETRIC":"Volumio parametrische equalizer",
+ "PARAMETRIC_SETTINGS":"Equalizer instellingen (EqFA4p)",
+ "ENABLEEQ":"Equalizer inschakelen=aan of uitschakelen=uit",
+ "MG":"Hoofdvolume",
+ "MG_DESC":"Hoofdvolume van de equalizer. Verklein de waarde om knippen te voorkomen",
+ "P11":"Lage band",
+ "P11_DESC":"Lage band instelling (30-125Hz)",
+ "P21":"Midden lage band",
+ "P21_DESC":"Midden lage band instelling (200-2000Hz)",
+ "P31":"Midden hoge band",
+ "P31_DESC":"Midden hoge band instelling (1500-9000Hz)",
+ "P41":"Hoge band",
+ "P41_DESC":"Hoge band instelling (8000-14000Hz)",
+ "APPLY":"Toepassen"
+}

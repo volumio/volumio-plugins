@@ -1,0 +1,18 @@
+{
+  "RF_AMP_SWITCH_TITLE": "RF Amp Switch",
+  "GPIO": "GPIO",
+  "SAVE": "Opslaan",
+  "GPIO_DOC": "De GPIO-pin die wordt gebruikt voor transmissie",
+  "ON": "AAN code",
+  "ON_DOC": "De binaire code van het AAN signaal",
+  "OFF": "UIT code",
+  "OFF_DOC": "De binaire code van het UIT signaal",
+  "DT1 (us)": "Delta T1",
+  "DT1_DOC": "De duur van een 'kort' interval, bijvoorbeeld het begin van een 1 of het einde van een 0",
+  "DT2 (us)": "Delta T2",
+  "DT2_DOC": "De duur van een 'lang' interval, bijvoorbeeld het einde van een 1 of het begin van een 0",
+  "DTP (us)": "Pauzeer tussen twee pogingen",
+  "DTP_DOC": "De 'extended_off' periode tussen elke herhaalde signaalblok",
+  "ATTEMPTS": "Aantal pogingen",
+  "ATTEMPTS_DOC": "Het aantal pogingen in dezelfde transmissie"
+}
