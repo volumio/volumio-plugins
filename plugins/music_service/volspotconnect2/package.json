@@ -9,7 +9,7 @@
 	"author": "Balbuze & Ashthespy",
 	"license": "GPL 3.0",
 	"volumio_info": {
-		"prettyName": "Volumio Spotify Connect2 0.7.4",
+		"prettyName": "Volumio Spotify Connect2",
 		"icon": "fa-spotify",
 		"plugin_type": "music_service"
 	},
