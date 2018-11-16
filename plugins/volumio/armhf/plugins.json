@@ -368,6 +368,23 @@
 						}
 					],
 					"updated": "20-6-2018"
+				},
+				{
+					"prettyName": "Autoplay",
+					"icon": "fa-lightbulb-o",
+					"name": "auto_play",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/auto_play/auto_play.zip",
+					"description": "Autoplay plugin - Enable this plugin in order to let volumio start playing the last entry in the queue after a reboot.",
+					"details": "",
+					"author": "Thomas Doerr",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "16-11-2018"
 				}
 			]
 		},
