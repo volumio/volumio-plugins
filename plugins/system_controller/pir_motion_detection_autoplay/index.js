@@ -33,21 +33,33 @@ pirMotionDetectionAutoplay.prototype.startDetectionForContinuingMode = function(
 	var self = this;
 	var lastMotion = false;
 
-	self.gpioPir.watch(function (err, value) {
-		lastMotion = Date.now();
-		var state =  self.commandRouter.stateMachine.getState();
-		if(state.status != 'play') {
+	(function watchPirSensorForContinuationMode() {
+		self.gpioPir.watch(function (err, value) {
+			if (err) throw err;
+			self.gpioPir.unwatch();
+			lastMotion = Date.now();
+			var state =  self.commandRouter.stateMachine.getState();
 			var queue = self.commandRouter.stateMachine.getQueue();
 			if(queue.length) {
-				self.commandRouter.stateMachine.play();
-				setTimeout(function() {
-					if(Date.now() >= lastMotion + 1000*60) {
-						self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
-					}
-				}, 1000*60);
+				// + random option
+				if(state.status != 'play') {
+					self.commandRouter.stateMachine.play();
+				}
+			} else {
+				self.commandRouter.pushToastMessage(
+					'info',
+					'PIR motion detection autoplay',
+					'Motion detected but no items to play in queue.'
+				);
 			}
-		}
-	});
+			setTimeout(function() {
+				if(Date.now() >= lastMotion + 1000*60) {
+					self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
+					watchPirSensorForContinuationMode();
+				}
+			}, 1000*60);
+		});
+	})();
 }
 
 pirMotionDetectionAutoplay.prototype.startDetectionForPlaylistMode = function() {
@@ -117,31 +129,31 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 
     self.initGPIO();
 
-	var onSwitch = function() {
+	var startDetection = function() {
 		self.detectionIsActive = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : 1;
 
 		if(self.gpioLed) {
 			self.gpioLed.writeSync(self.detectionIsActive);
 		}
+
 		if(self.detectionIsActive) {
 			if(self.config.get('playlist_mode') == false) {
 				self.startDetectionForContinuingMode();
 			} else {
 				self.startDetectionForPlaylistMode();
 			}
+		} else {
+			self.commandRouter.stateMachine.stop();
+			self.pirPlaylistPlaying = false;
 		}
 	};
 
-	onSwitch();
+	startDetection();
 
 	if(self.config.get('gpio_switch')) {
 		self.gpioSwitch.watch(function(err, value) {
 			if (err) throw err;
-			onSwitch();
-			if(!self.detectionIsActive) {
-				self.commandRouter.stateMachine.stop();
-				self.pirPlaylistPlaying = false;
-			}
+			startDetection();
 	  	});
 	}
 
@@ -155,10 +167,9 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-	if(!self.detectionIsActive) {
-		self.commandRouter.stateMachine.stop();
-	}
+	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ STOP');
 
+	self.commandRouter.stateMachine.stop();
 	self.freeGPIO();
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -169,7 +180,11 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
 
 pirMotionDetectionAutoplay.prototype.onRestart = function() {
     var self = this;
-    // Optional, use if you need it
+
+	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ RESTART');
+
+	self.commandRouter.stateMachine.stop();
+	self.freeGPIO();
 };
 
 // GPIO handling -------------------------------------------------------------------------------------
@@ -187,7 +202,6 @@ pirMotionDetectionAutoplay.prototype.initGPIO = function() {
 	}
 };
 
-// stop claiming output port
 pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
     var self = this;
 
@@ -251,12 +265,8 @@ pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
 	self.config.set('enable_led', data['enable_led']);
 	self.config.set('gpio_led', data['gpio_led']);
 
-	if(self.gpioLed) {
-		// reset gpio output
-		self.gpioLed.writeSync(0);
-	}
-
-	self.initGPIO();
+	self.freeGPIO();
+	self.onStart();
 
 	self.commandRouter.pushToastMessage('success',
 		'PIR motion detection autoplay',
