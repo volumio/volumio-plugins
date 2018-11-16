@@ -1,4 +1,4 @@
-November 14th 2018
+November 16th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -66,6 +66,10 @@ nearly everythings
 - mixer is not properly displayed in Volumio's playback option
 
 ### 4. Last changes
+
+November, 16th 2018
+
+- correction in UI for sample rate
 
 November, 14th 2018
 
