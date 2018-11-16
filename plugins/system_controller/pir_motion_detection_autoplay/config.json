@@ -1,10 +1,10 @@
 {
     "gpio_pir":{
-        "type": "string" ,
-        "value": "23"
+        "type": "number",
+        "value": 23
     },
     "playlist_mode":{
-        "type": "boolean" ,
+        "type": "boolean",
         "value": false
     },
     "playlist": {
@@ -20,19 +20,19 @@
         "value": 5
     },
     "enable_switch":{
-        "type": "boolean" ,
+        "type": "boolean",
         "value": false
     },
     "gpio_switch":{
-        "type": "string" ,
-        "value": "22"
+        "type": "number",
+        "value": 22
     },
     "enable_led":{
-        "type": "boolean" ,
+        "type": "boolean",
         "value": false
     },
     "gpio_led":{
-        "type": "string" ,
-        "value": "25"
+        "type": "number",
+        "value": 25
     }
 }

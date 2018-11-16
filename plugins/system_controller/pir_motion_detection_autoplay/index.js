@@ -130,7 +130,7 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
     self.initGPIO();
 
 	var startDetection = function() {
-		self.detectionIsActive = (self.config.get('gpio_switch')) ? self.gpioSwitch.readSync() ^ 1 : 1;
+		self.detectionIsActive = self.gpioSwitch ? self.gpioSwitch.readSync() ^ 1 : 1;
 
 		if(self.gpioLed) {
 			self.gpioLed.writeSync(self.detectionIsActive);
@@ -150,7 +150,7 @@ pirMotionDetectionAutoplay.prototype.onStart = function() {
 
 	startDetection();
 
-	if(self.config.get('gpio_switch')) {
+	if(self.gpioSwitch) {
 		self.gpioSwitch.watch(function(err, value) {
 			if (err) throw err;
 			startDetection();
@@ -167,8 +167,6 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ STOP');
-
 	self.commandRouter.stateMachine.stop();
 	self.freeGPIO();
 
@@ -181,8 +179,6 @@ pirMotionDetectionAutoplay.prototype.onStop = function() {
 pirMotionDetectionAutoplay.prototype.onRestart = function() {
     var self = this;
 
-	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ RESTART');
-
 	self.commandRouter.stateMachine.stop();
 	self.freeGPIO();
 };
@@ -192,11 +188,15 @@ pirMotionDetectionAutoplay.prototype.onRestart = function() {
 pirMotionDetectionAutoplay.prototype.initGPIO = function() {
     var self = this;
 
-	self.gpioPir = new Gpio(self.config.get('gpio_pir'), 'in', 'rising');
-	if(self.config.get('enable_switch') && self.config.get('gpio_switch')) {
+	if(!isNaN(self.config.get('gpio_pir'))) {
+		self.gpioPir = new Gpio(self.config.get('gpio_pir'), 'in', 'rising');
+	}
+
+	if(self.config.get('enable_switch') && !isNaN(self.config.get('gpio_switch'))) {
 		self.gpioSwitch = new Gpio(self.config.get('gpio_switch'), 'in', 'both', {'debounceTimeout': 10});
 	}
-	if(self.config.get('enable_led') && self.config.get('gpio_led')) {
+
+	if(self.config.get('enable_led') && !isNaN(self.config.get('gpio_led'))) {
 		self.gpioLed = new Gpio(self.config.get('gpio_led'), 'out');
 		self.gpioLed.writeSync(self.detectionIsActive);
 	}
@@ -205,13 +205,20 @@ pirMotionDetectionAutoplay.prototype.initGPIO = function() {
 pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
     var self = this;
 
-    self.gpioPir.unexport();
+    if(self.gpioPir) {
+		self.gpioPir.unexport();
+		self.gpioPir = null;
+	}
+
+	if(self.gpioSwitch) {
+		self.gpioSwitch.unexport();
+		self.gpioSwitch = null;
+	}
+
 	if(self.gpioLed) {
 		self.gpioLed.writeSync(0);
 		self.gpioLed.unexport();
-	}
-	if(self.gpioSwitch) {
-		self.gpioSwitch.unexport();
+		self.gpioLed = null;
 	}
 };
 

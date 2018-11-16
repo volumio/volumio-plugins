@@ -26,7 +26,7 @@
       "content": [
         {
           "id": "gpio_pir",
-          "type": "text",
+          "type": "number",
           "element": "input",
           "label": "TRANSLATE.GPIO_PIR_LABEL",
           "doc": "TRANSLATE.GPIO_PIR_DOC",
@@ -99,7 +99,7 @@
         },
         {
           "id": "gpio_switch",
-          "type": "text",
+          "type": "number",
           "element": "input",
           "visibleIf": {"field": "enable_switch", "value": true},
           "label": "TRANSLATE.GPIO_SWITCH_LABEL",
@@ -115,7 +115,7 @@
         },
         {
           "id": "gpio_led",
-          "type": "text",
+          "type": "number",
           "element": "input",
           "visibleIf": {"field": "enable_led", "value": true},
           "label": "TRANSLATE.GPIO_LED_LABEL",
