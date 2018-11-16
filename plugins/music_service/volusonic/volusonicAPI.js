@@ -73,6 +73,7 @@ function volusonicApi(log,config) {
 
 		unirest
 			.get(uri)
+			.strictSSL(false)
             		.end(function (response) {
                 		if (response.ok) {
                     			defer.resolve(response.body);
