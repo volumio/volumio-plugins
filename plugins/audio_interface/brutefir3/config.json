@@ -1,5 +1,5 @@
 {
-"smpl_rate":{"type": "string","value": "96kHz"},
+"smpl_rate":{"type": "string","value": "96000"},
 "lattenuation":{"type":"string","value":"10"},
 "rattenuation":{"type":"string","value":"10"},
 "leftfilter":{"type": "string","value": "None"},
