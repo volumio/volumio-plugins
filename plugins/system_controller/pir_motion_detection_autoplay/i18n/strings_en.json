@@ -9,6 +9,8 @@
   "PLAYLIST_DOC":"Name of the playlist to start on motion detection",
   "RANDOM_LABEL":"Random",
   "RANDOM_DOC":"Play random title",
+  "DURATION_LABEL": "Play duration",
+  "DURATION_DOC": "The duration in seconds volumio should play after motion was detected.",
   "PIR_TEST_LABEL": "Test PIR sensor",
   "PIR_TEST_DOC": "For the duration of one minute, a message box will pop up, if a motion is detected to help you set up the accuracy of your sensor board.",
   "PIR_TEST_START": "Starting motion sensor test for 60 seconds.",
