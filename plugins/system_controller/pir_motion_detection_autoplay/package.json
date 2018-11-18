@@ -1,7 +1,7 @@
 {
 	"name": "pir_motion_detection_autoplay",
 	"version": "1.0.0",
-	"description": "Continue playing or start a playlist when someone enters the room. Needs a PIR motion sensor board connected to GPIO",
+	"description": "Continue playing or start a playlist when someone enters the room. Needs a PIR motion sensor board connected to GPIO. Additionally, a hardware switch to activate/deactivate motion detection and a status LED can be connected (with suitable resistors).",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
