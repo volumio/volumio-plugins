@@ -55,36 +55,39 @@
     ],
     "kbs": [
       {
-        "title": "KBS1 FM",
-        "uri": "webkbs/0"
+        "title": "KBS 1FM(Classic)",
+        "uri": "webkbs/0",
+        "channel": 24
       },
       {
-        "title": "KBS2 FM",
-        "uri": "webkbs/1"
+        "title": "KBS 2FM(CoolFM)",
+        "uri": "webkbs/1",
+        "channel": 25
       },
       {
-        "title": "KBS1 Radio",
-        "uri": "webkbs/2"
+        "title": "KBS 1Radio",
+        "uri": "webkbs/2",
+        "channel": 21
       },
       {
-        "title": "KBS2 Radio",
-        "uri": "webkbs/3"
+        "title": "KBS 2Radio",
+        "uri": "webkbs/3",
+        "channel": 22
       },
       {
-        "title": "KBS3 Radio",
-        "uri": "webkbs/4"
-      },
-      {
-        "title": "KBS DMB",
-        "uri": "webkbs/5"
+        "title": "KBS 3Radio",
+        "uri": "webkbs/4",
+        "channel": 23
       },
       {
         "title": "KBS UNION",
-        "uri": "webkbs/6"
+        "uri": "webkbs/5",
+        "channel": "I26"
       },
       {
         "title": "KBS World",
-        "uri": "webkbs/7"
+        "uri": "webkbs/6",
+        "channel": "I92"
       }
     ],
     "mbc": [
@@ -106,12 +109,12 @@
     ],
     "sbs": [
       {
-        "title": "SBS Power FM",
+        "title": "SBS Love FM",
         "uri": "websbs/0",
         "channel": "RA01"
       },
       {
-        "title": "SBS Love FM",
+        "title": "SBS Power FM",
         "uri": "websbs/1",
         "channel": "RA02"
       },
@@ -125,8 +128,8 @@
   "encodedRadio":
     {
       "radioKeyUrl": "https://raw.githubusercontent.com/ChrisPanda/volumio-kradio-key/master/radiokey.json",
-      "kbs": "cac4d4e664757c065285538ec8eed223e745230cf4c9fa5942b5db7a2d4b09fbddaf6892570dbc20b48a8a2091950f289a",
-      "mbc": "cac4d4e664757c0054855dd0cfedd823ed476f04a885f95d1b87e1680d4306fbfad247d45710ba3d",
+      "kbs": "cac4d4e664757c1d4a9c43c1d3e58f66e6592304e9c8fd421bb1f4636e5c41b1c3e1659e5f0db56ab4ae952bd7",
+      "mbc": "cac4d4e664757c0054855dd0cfedd823ed476f04a885f95d1b91c5490d4306fbfaf267d45710ba3d",
       "sbs": "cac4d4e664757c0c4d82478ed0eed223e745230cf4c9e65c55a9a96b31435faf81b0249d5911b724b4b5823d8cc91a2187f3"
     }
 }
