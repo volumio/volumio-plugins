@@ -18,6 +18,7 @@
 		"kew": "^0.7.0",
 		"v-conf": "^1.4.0",
 		"anesidora": "^1.2.1",
-		"nanotimer": "^0.3.15"
+		"nanotimer": "^0.3.15",
+		"dns-sync": "^0.1.3"
 	}
 }

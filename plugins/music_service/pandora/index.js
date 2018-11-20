@@ -5,6 +5,8 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+var url = require('url');
+var dnsSync = require('dns-sync')
 
 var NanoTimer = require('nanotimer');
 var anesidora = require('anesidora');
@@ -49,6 +51,7 @@ ControllerPandora.prototype.onStart = function () {
         password: self.config.get('password'),
         loggedIn: false
     };
+    self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
 
     // reinventing the wheel
     self.songCntr = (function () {
@@ -125,7 +128,8 @@ ControllerPandora.prototype.getUIConfig = function () {
         {
             uiconf.sections[0].content[0].value = self.config.get('email', '');
             uiconf.sections[0].content[1].value = self.config.get('password', '');
-
+            uiconf.sections[0].content[2].value = self.config.get('useCurl302WorkAround', '');
+            
             defer.resolve(uiconf);
         })
         .fail(function ()
@@ -155,10 +159,12 @@ ControllerPandora.prototype.setConf = function (options) {
 
     self.config.set('email', options.email);
     self.config.set('password', options.password);
+    self.config.set('useCurl302WorkAround',options.useCurl302WorkAround);
     self.loginInfo.email = options.email;
     self.loginInfo.password = options.password;
-
-    if (!self.loginInfo.loggedIn) {
+    self.useCurl302WorkAround = options.useCurl302WorkAround;
+    
+     if (!self.loginInfo.loggedIn) {
         return self.initialSetup()
             .then(function () {
                 return self.addToBrowseSources();
@@ -726,6 +732,8 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
 
     self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerPandora::playNextTrack');
     
+    if ( self.useCurl302WorkAround )
+       self.mitigateCurl302Error(songsArray);
     // removed 'clear' command in case of traffic jam
     return self.mpdPlugin.sendMpdCommand('addid', [songsArray[0].uri])
         .then(function (result) {
@@ -765,6 +773,27 @@ ControllerPandora.prototype.playNextTrack = function (songs) {
             }
         });
 };
+
+ ControllerPandora.prototype.replaceHostWithIp = function(uri) {
+    var self=this;
+    var  streamuri = url.parse(uri);
+    var ip = dnsSync.resolve(streamuri.hostname);
+    streamuri.host = ip;
+    var result = streamuri.format();
+    self.logger.info('[' + Date.now() + '] ' + '[Pandora] replaceHostWithIp rewrote '+uri+' as  '+result);
+    return result;
+}
+ ControllerPandora.prototype.mitigateCurl302Error = function(songArray) {
+    var self=this;
+    try {
+        songArray[0].uri = self.replaceHostWithIp(songArray[0].uri);
+    }
+    catch(err) {
+        self.logger.info('[' + Date.now() + '] mitigateCurl302Error error '+err);
+    }
+    
+}
+
 
 function PandoraSongTimer(callback, args, delay) {
     var start, remaining = delay;
