@@ -1,0 +1,33 @@
+{
+ "BRUTEFIR":{
+ "VOLUMIO_DSP":"Volumio DSP centrum",
+ "BRUTEFIR_EQUALIZER_SETTINGS":"Brutefir equalizer",
+ "EQUALIZER":"equalizer",
+ "EQUALIZER_SETTINGS":"Equalizer instellingen",
+ "EQUALIZER_MODE":"Aan= Niveau instellingen / Uit= Fase instellingen",
+ "PHASE_EQUALIZER":"Fase equalizer",
+ "GAIN_EQUALIZER":"Equalizer",
+ "BRUTEFIR_ADVANCED_SETTINGS":"Brutefir geavanceerde instellingen",
+ "ADVANCED_SETTINGS":"Geavanceerde instellingen",
+ "INPUT_ATTENUATION":"Invoer verzwakking",
+ "LEFT_FILTER":"Linker filter",
+ "RIGHT_FILTER":"Rechter filter",
+ "FILTER_FORMAT":"Filter formaat",
+ "FILTER_SIZE":"Filter grootte",
+ "NUMBER_PARTITION":"Aantal partities",
+ "INTERNAL_RESOLUTION":"Interne resolutie",
+ "SAMPLE_RATE":"Sample snelheid",
+ "INPUT_FORMAT":"Invoer formaat",
+ "OUTPUT_FORMAT":"Uitvoer formaat",
+ "INPUT_DEVICE":"Invoer apparaat hw:",
+ "SAVE":"Opslaan",
+ "APPLY":"Toepassen",
+ "OUTPUT_DEVICE":"Uitvoer apparaat hw:"
+},
+ "BAUER":{
+ "BAUER_TITLE":"Bauer Stereo naar binaural filter kan een conflict veroorzaken met softvol!!!",
+ "BAUER_FILTER_SETTINGS":"Bauer filter inschakelen",
+ "FCUT":"Frequentie snijpunt (Hz)",
+ "FLEVEL":"Niveau feed (dB)"
+}
+}

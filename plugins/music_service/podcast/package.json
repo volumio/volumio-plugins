@@ -1,6 +1,6 @@
 {
 	"name": "podcast",
-	"version": "0.0.9",
+	"version": "0.1.0",
 	"description": "Podcast for Volumio2",
 	"main": "index.js",
 	"scripts": {
@@ -15,11 +15,13 @@
 		"plugin_type": "music_service"
 	},
 	"dependencies": {
-		"fs-extra": "^0.30.0",
+		"fs-extra": "^6.0.1",
 		"kew": "^0.7.0",
-		"v-conf": "^1.4.0",
-		"rss-parser": "^3.1.2",
-		"lodash": "^4.17.5"
+		"v-conf": "^1.4.2",
+		"rss-parser": "^3.4.2",
+		"lodash": "^4.17.10",
+		"unirest": "^0.5.1",
+		"html-to-json": "^0.6.0"
 	},
 	"repository": {
 		"type": "git",
