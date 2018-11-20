@@ -1,5 +1,4 @@
 {"detentActionTypes":[
-  {"label":"No action","type": 0},
-  {"label":"Control volume","type": 1},
-  {"label":"Media control (prev/next)","type": 2}
+  {"label":"Control volume","type": 0},
+  {"label":"Media control (prev/next)","type": 1}
 ]}
