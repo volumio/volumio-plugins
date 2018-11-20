@@ -203,6 +203,24 @@
 						}
 					],
 					"updated": "4-8-2018"
+				},
+				{
+					"prettyName": "Onedrive Music Library",
+					"icon": "fa-lightbulb-o",
+					"name": "onedrive_music_library",
+					"version": "1.0.3",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/onedrive_music_library/onedrive_music_library.zip",
+					"license": "ISC",
+					"description": "Allows to play music stored on Onedrive cloud storage service. Note that this is a beta version with limited functionality. Most prominently this version does not yet support adding music files to playlists or queue.",
+					"details": "",
+					"author": "Elmar Jansen",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "20-11-2018"
 				}
 			]
 		},
