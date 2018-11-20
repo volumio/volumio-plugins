@@ -64,10 +64,10 @@
 					"prettyName": "Squeezelite player",
 					"icon": "fa fa-music",
 					"name": "squeezelite",
-					"version": "1.0.9",
+					"version": "1.1.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/squeezelite/squeezelite.zip",
 					"license": "GPL-3.0",
-					"description": "Squeezelite player",
+					"description": "Installs the Squeezelite player you can use in combination with the Logitech Media Server",
 					"details": "Squeezelite plugin for Volumio",
 					"author": "Saiyato",
 					"screenshots": [
@@ -76,7 +76,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-12-2017"
+					"updated": "20-11-2018"
 				},
 				{
 					"prettyName": "Logitech Media Server",
