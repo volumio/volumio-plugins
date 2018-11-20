@@ -3,34 +3,6 @@
 		"label": "TRANSLATE.ROTARYENCODER.PLUGINCONF"
 	},
 	"sections": [{
-		"id": "section_globalsettings",
-		"element": "section",
-		"label": "TRANSLATE.ROTARYENCODER.GLOBALSETTINGS",
-		"description": "TRANSLATE.ROTARYENCODER.D_GLOBALSETTINGS",
-		"icon": "fa-globe",
-		"onSave": {
-			"type": "controller",
-			"endpoint": "user_interface/rotaryencoder",
-			"method": "updateGlobalSettings"
-		},
-		"saveButton": {
-			"label": "TRANSLATE.ROTARYENCODER.SAVE",
-			"data": [
-				"longPressThresholdInMilliseconds"
-			]
-		},
-		"content": [
-			{
-			  "id":"longPressThresholdInMilliseconds",
-			  "type":"text",
-			  "element": "input",
-			  "label": "TRANSLATE.ROTARYENCODER.LONGPRESS_THRESHOLD",
-			  "doc": "TRANSLATE.ROTARYENCODER.D_LONGPRESS_THRESHOLD",
-			  "value": "1000"
-			}
-		]
-	},
-	{
 		"id": "section_firstEncoder",
 		"element": "section",
 		"label": "TRANSLATE.ROTARYENCODER.CONFIG_FIRST",
@@ -49,8 +21,7 @@
 				"first_encoder_SW",
 				"first_encoder_encoding",
 				"first_encoder_detentActionType",
-				"first_encoder_buttonActionType",
-				"first_encoder_longPressActionType"
+				"first_encoder_buttonActionType"
 			]
 		},
 		"content": [
@@ -87,7 +58,7 @@
 				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
 				"value": {
 					"value": 0,
-					"label": "Default"
+					"label": "Gray encoding"
 				},
 				"options": []
 			},
@@ -98,7 +69,7 @@
 				"doc": "TRANSLATE.ROTARYENCODER.D_DETENT_ACTION",
 				"value": {
 					"value": 0,
-					"label": "No action"
+					"label": "Control volume"
 				},
 				"options": []
 			},
@@ -108,19 +79,8 @@
 				"label": "TRANSLATE.ROTARYENCODER.BUTTON_ACTION",
 				"doc": "TRANSLATE.ROTARYENCODER.D_BUTTON_ACTION",
 				"value": {
-					"value": 0,
-					"label": "No action"
-				},
-				"options": []
-			},
-			{
-				"id":"first_encoder_longPressActionType",
-				"element": "select",
-				"label": "TRANSLATE.ROTARYENCODER.LONGPRESS_ACTION",
-				"doc": "TRANSLATE.ROTARYENCODER.D_LONGPRESS_ACTION",
-				"value": {
-					"value": 0,
-					"label": "No action"
+					"value": 10,
+					"label": "Toggle mute/unmute"
 				},
 				"options": []
 			}
@@ -145,8 +105,7 @@
 				"second_encoder_SW",
 				"second_encoder_encoding",
 				"second_encoder_detentActionType",
-				"second_encoder_buttonActionType",
-				"second_encoder_longPressActionType"
+				"second_encoder_buttonActionType"
 			]
 		},
 		"content": [
@@ -183,7 +142,7 @@
 				"description": "TRANSLATE.ROTARYENCODER.DD_CODING",
 				"value": {
 					"value": 0,
-					"label": "Default"
+					"label": "Gray encoding"
 				},
 				"options": []
 			},
@@ -194,7 +153,7 @@
 				"doc": "TRANSLATE.ROTARYENCODER.D_DETENT_ACTION",
 				"value": {
 					"value": 0,
-					"label": "No action"
+					"label": "Control volume"
 				},
 				"options": []
 			},
@@ -204,19 +163,8 @@
 				"label": "TRANSLATE.ROTARYENCODER.BUTTON_ACTION",
 				"doc": "TRANSLATE.ROTARYENCODER.D_BUTTON_ACTION",
 				"value": {
-					"value": 0,
-					"label": "No action"
-				},
-				"options": []
-			},
-			{
-				"id":"second_encoder_longPressActionType",
-				"element": "select",
-				"label": "TRANSLATE.ROTARYENCODER.LONGPRESS_ACTION",
-				"doc": "TRANSLATE.ROTARYENCODER.D_LONGPRESS_ACTION",
-				"value": {
-					"value": 0,
-					"label": "No action"
+					"value": 11,
+					"label": "Toggle mute/unmute"
 				},
 				"options": []
 			}
