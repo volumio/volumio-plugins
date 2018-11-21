@@ -98,7 +98,7 @@
           "element": "switch",
           "label": "TRANSLATE.ENABLE_SWITCH_LABEL",
           "doc": "TRANSLATE.ENABLE_SWITCH_DOC",
-          "value": false
+          "value": "false"
         },
         {
           "id": "gpio_switch",
@@ -107,7 +107,7 @@
           "visibleIf": {"field": "enable_switch", "value": true},
           "label": "TRANSLATE.GPIO_SWITCH_LABEL",
           "doc": "TRANSLATE.GPIO_SWITCH_DOC",
-          "value": null
+          "value": ""
         },
         {
           "id":"enable_led",
