@@ -13,7 +13,8 @@
         "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
         "data": [
           "email",
-          "password"
+          "password",
+          "useCurl302WorkAround"
         ]
       },
       "content": [
@@ -32,6 +33,14 @@
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
           "value": ""
+        },
+        {
+          "id": "useCurl302WorkAround",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND",
+          "value": "false"
         }
       ]
     }
