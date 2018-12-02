@@ -40,7 +40,7 @@ To do that, have a look here :
 https://volumio.github.io/docs/User_Manual/SSH.html
 
 
-n### 2. Download and install the plugin
+### 2. Download and install the plugin
 
 Type the following commands to download and install plugin:
 
