@@ -242,6 +242,10 @@
               "value": "96000",
               "label": "96kHz"
             },
+	    {
+              "value": "176400",
+              "label": "176.4kHz"
+            },
             {
               "value": "192000",
               "label": "192kHz"

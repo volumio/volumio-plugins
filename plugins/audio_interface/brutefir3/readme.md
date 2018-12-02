@@ -1,4 +1,4 @@
-November 17th 2018
+December 2nd 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -50,6 +50,8 @@ mkdir ./brutefir
 miniunzip brutefir.zip -d ./brutefir
 cd ./brutefir
 volumio plugin install
+cd ..
+rm -Rf brutefir*
 ```
 
 ### 3. Using the plugin
@@ -66,6 +68,10 @@ nearly everythings
 - mixer is not properly displayed in Volumio's playback option
 
 ### 4. Last changes
+
+December, 2nd 2018
+
+- add 176.4kHz sample rate
 
 November, 17th 2018
 
