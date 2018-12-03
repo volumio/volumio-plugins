@@ -1,8 +1,8 @@
-01st August 2018
+03rd December 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
-This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
-and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
+This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
+
 
 It is still in dev and some features are missing.
 
@@ -25,19 +25,12 @@ Tested on :
 ## To install
 Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
-
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
+https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
@@ -49,6 +42,8 @@ mkdir ./volspotconnect2
 miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
+cd ..
+rm -Rf volspotconnect*
 ```
 
 ### 3.Enable the plugin
@@ -65,6 +60,12 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+03rd December 2018
+
+- support alsa hardware mixer! Thanks to ['@ash'](https://github.com/ashthespy)
+- vollibrespot as lib Thanks to ['@ash'](https://github.com/ashthespy)
+- miscellanea fixes
 
 01st August 2018
 
