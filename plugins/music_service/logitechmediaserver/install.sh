@@ -20,9 +20,11 @@ if [ ! -f $INSTALLING ]; then
 		
 		if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ];
 		then
-			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1_arm.deb http://downloads.slimdevices.com/nightly/7.9/sc/94b8f296107cac5803ba4b7e682133aaf75b6a73/logitechmediaserver_7.9.1~1518987734_arm.deb
+			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1_arm.deb http://downloads.slimdevices.com/LogitechMediaServer_v7.9.1/logitechmediaserver_7.9.1_arm.deb
+			#wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.2_arm.deb http://downloads-origin.slimdevices.com/nightly/7.9/sc/035da986803908908cb46501efbca6c4d6e93db2/logitechmediaserver_7.9.2~1543258616_arm.deb
 		else
-			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1._all.deb http://downloads.slimdevices.com/nightly/7.9/sc/94b8f296107cac5803ba4b7e682133aaf75b6a73/logitechmediaserver_7.9.1~1518987734_all.deb
+			wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.1._all.deb http://downloads.slimdevices.com/LogitechMediaServer_v7.9.1/logitechmediaserver_7.9.1_all.deb
+			#wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.2._all.deb http://downloads.slimdevices.com/nightly/7.9/sc/035da986803908908cb46501efbca6c4d6e93db2/logitechmediaserver_7.9.2~1543258616_all.deb
 		fi
 		
 		# Move the binary to the expected directory
