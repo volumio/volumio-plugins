@@ -9,14 +9,18 @@ if [ ! -f $INSTALLING ]; then
 	cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 	echo "cpu: " $cpu
 
-	if [ ! -f /usr/sbin/squeezeboxserver ];
+	if [ ! -f /usr/sbin/squeezeboxserver ] || [ $1 =  "force" ];
 	then
 		apt-get update
 		
 		# Download LMS 7.9.1
 		echo "Downloading installation package..."
-		mkdir /home/volumio/logitechmediaserver
-		# wget -O /home/volumio/logitechmediaserver/logitechmediaserver_7.9.0_arm.deb http://downloads.slimdevices.com/LogitechMediaServer_v7.9.0/logitechmediaserver_7.9.0_arm.deb
+		if [ ! -d /home/volumio/logitechmediaserver ];
+		then
+			mkdir /home/volumio/logitechmediaserver
+		else
+			rm /home/volumio/logitechmediaserver/logitechmediaserver*.deb
+		fi
 		
 		if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ];
 		then
@@ -93,20 +97,21 @@ if [ ! -f $INSTALLING ]; then
 		# Stop service and fix rights for preference folder
 		service logitechmediaserver stop
 		
-		# Rights issue in pre-260 builds
-		VERSION=$(cat /etc/os-release | grep VOLUMIO_VERSION | cut -d'"' -f 2)
-		BUILD=$(echo $VERSION | cut -d'.' -f 2)
-		if [ $(( $BUILD )) -lt 260 ];
-		then
-			chmod 664 -R /var/lib/squeezeboxserver
-		fi
+		# Fix rights issue for preference, cache and log directory, needs execute right for prefs
+		chmod 744 -R /var/lib/squeezeboxserver		
+		
+		# Tidy up
+		rm -rf /home/volumio/logitechmediaserver
+		rm /opt/CPAN_AUDIO_DSD_7.9.tar
+		rm /opt/CPAN_FIX_IMAGE.zip
+		rm /opt/DSDPLAYER-BIN.zip
 		
 		# Reload the systemd unit
 		systemctl daemon-reload
 		
 		sleep 3
 	else
-		echo "A technical error occurred, the plugin already exists, but installation was able to continue."
+		echo "A technical error occurred, the plugin already exists, but installation was able to continue. If you just want to install LMS again, try the force parameter: [sh script.sh force]."
 	fi
 	
 	rm $INSTALLING
