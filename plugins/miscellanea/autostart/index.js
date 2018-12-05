@@ -21,7 +21,7 @@ autostart.prototype.onVolumioStart = function () {
 
     var playFromLastPosition = config.get('playFromLastPosition') || false;
     var lastPosition = config.get('lastPosition') || -1;
-    var autostartDelay = config.get('autostartDelay') || 10000;
+    var autostartDelay = config.get('autostartDelay') || 20000;
 
     setTimeout(function () {
         self.logger.info('AutoStart - getting queue');
@@ -101,7 +101,7 @@ autostart.prototype.getUIConfig = function () {
 
 autostart.prototype.setUIConfig = function (data) {
   var playFromLastPosition = data['playFromLastPosition'] || false;
-  var autostartDelay = data['autostartDelay'] || 10000;
+  var autostartDelay = data['autostartDelay'] || 20000;
   config.set('playFromLastPosition', playFromLastPosition);
   config.set('autostartDelay', autostartDelay);
   this.commandRouter.pushToastMessage('success', 'Autostart', this.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE_DESCRIPTION"));

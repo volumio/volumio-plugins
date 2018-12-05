@@ -19,7 +19,8 @@
           "autoDiscovery",
           "receiverSelect",
           "receiverIP",
-          "receiverPort"
+          "receiverPort",
+          "receiverModel"
         ]
       },
       "content": [
@@ -66,6 +67,18 @@
           "label": "TRANSLATE.RECEIVER_PORT",
           "doc": "TRANSLATE.RECEIVER_PORT_DOC",
           "value": "60128",
+          "visibleIf": {
+            "field": "autoDiscovery",
+            "value": false
+          }
+        },
+        {
+          "id": "receiverModel",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.RECEIVER_MODEL",
+          "doc": "TRANSLATE.RECEIVER_MODEL_DOC",
+          "value": "",
           "visibleIf": {
             "field": "autoDiscovery",
             "value": false

@@ -11,6 +11,8 @@
   "RECEIVER_IP_DOC": "The IP or hostname of the Onkyo receiver you wish to control.",
   "RECEIVER_PORT": "Port",
   "RECEIVER_PORT_DOC": "The Port you wish to control the receiver with.",
+  "RECEIVER_MODEL": "Receiver Model (Optional)",
+  "RECEIVER_MODEL_DOC": "The model of receiver. This may be required with old receivers that do not support automatic discovery.",
   "POWER_ON": "Power on ",
   "POWER_ON_DOC": "Power on the receiver when playback begins.",
   "STANDBY": "Standby on Stop",

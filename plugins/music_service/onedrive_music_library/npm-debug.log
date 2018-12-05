@@ -1,0 +1,52 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '@typesvolumio',
+1 verbose cli   '-savedev' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.0
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData @typesvolumio
+8 silly fetchOtherPackageData @typesvolumio
+9 silly cache add args [ '@typesvolumio', null ]
+10 verbose cache add spec @typesvolumio
+11 silly cache add parsed spec Result {
+11 silly cache add   raw: '@typesvolumio',
+11 silly cache add   scope: null,
+11 silly cache add   escapedName: null,
+11 silly cache add   name: null,
+11 silly cache add   rawSpec: '@typesvolumio',
+11 silly cache add   spec: '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio',
+11 silly cache add   type: 'local' }
+12 error addLocal Could not install /home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio
+13 silly fetchPackageMetaData Error: ENOENT: no such file or directory, open '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio'
+13 silly fetchPackageMetaData     at Error (native)
+13 silly fetchPackageMetaData  error for @typesvolumio { Error: ENOENT: no such file or directory, open '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio'
+13 silly fetchPackageMetaData     at Error (native)
+13 silly fetchPackageMetaData   errno: -2,
+13 silly fetchPackageMetaData   code: 'ENOENT',
+13 silly fetchPackageMetaData   syscall: 'open',
+13 silly fetchPackageMetaData   path: '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio' }
+14 silly rollbackFailedOptional Starting
+15 silly rollbackFailedOptional Finishing
+16 silly runTopLevelLifecycles Finishing
+17 silly install printInstalled
+18 verbose stack Error: ENOENT: no such file or directory, open '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio'
+18 verbose stack     at Error (native)
+19 verbose cwd /home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library
+20 error Linux 4.9.65-v7+
+21 error argv "/bin/node" "/usr/local/bin/npm" "install" "@typesvolumio" "-savedev"
+22 error node v6.11.0
+23 error npm  v3.10.10
+24 error path /home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio
+25 error code ENOENT
+26 error errno -2
+27 error syscall open
+28 error enoent ENOENT: no such file or directory, open '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio'
+29 error enoent ENOENT: no such file or directory, open '/home/volumio/volumio-plugins/plugins/music_service/onedrive_music_library/@typesvolumio'
+29 error enoent This is most likely not a problem with npm itself
+29 error enoent and is related to npm not being able to find a file.
+30 verbose exit [ -2, true ]

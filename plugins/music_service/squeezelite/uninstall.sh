@@ -8,7 +8,8 @@ if [ ! -f $INSTALLING ]; then
 
 	# Uninstall Squeezelite
 	rm /opt/squeezelite
-	rm /etc/systemd/system/squeezelite.service
+	unlink /etc/systemd/system/squeezelite.service
+	systemctl daemon-reload
 
 	rm $INSTALLING
 

@@ -1,21 +1,21 @@
 {
-  "name": "touch_display",
-  "version": "1.0.0",
-  "description": "Enables touch display controller",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Volumio Team",
-  "license": "",
-  "volumio_info": {
-    "prettyName": "Touch Display",
-    "icon": "fa-hand-pointer-o",
-    "plugin_type": "miscellanea"
-  },
-  "dependencies": {
-    "fs-extra": "^0.28.0",
-    "kew": "^0.7.0",
-    "v-conf": "^0.10.0"
-  }
+	"name": "touch_display",
+	"version": "1.0.1",
+	"description": "Enables touch display controller",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Volumio Team",
+	"license": "",
+	"volumio_info": {
+		"prettyName": "Touch Display",
+		"icon": "fa-hand-pointer-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^0.10.0"
+	}
 }
