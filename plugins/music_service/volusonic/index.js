@@ -99,8 +99,9 @@ ControllerVolusonic.prototype.getUIConfig = function() {
 		uiconf.sections[1].content[1].value = findOption(self.config.get('listsSize'),uiconf.sections[1].content[1].options);
 		uiconf.sections[1].content[2].value = findOption(self.config.get('artSize'),uiconf.sections[1].content[2].options);
 		uiconf.sections[1].content[3].value = findOption(self.config.get('timeOut'),uiconf.sections[1].content[3].options);
+		uiconf.sections[1].content[4].value = self.config.get('ID3');
 		/*
-			tracks in search
+			tracks in searchx
 			show similar artists not present in subso 
 		*/
 		defer.resolve(uiconf);
@@ -176,6 +177,7 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
     self.config.set('listsSize', data['listsSize'].value);
     self.config.set('artSize', data['artSize'].value);
     self.config.set('timeOut', data['timeOut'].value);
+    self.config.set('ID3', data['ID3']);
 	
     self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
 
@@ -538,9 +540,11 @@ ControllerVolusonic.prototype.showArtist = function (uriParts, curUri) {
 					nav.navigation['lists'].push(topSongs);
 				}
 				//albums section
-				if (artist.album !== undefined) {
+				if ((artist.album !== undefined) || (artist.child !== undefined)) {
+					var alb = "child";
+					if (self.config.get('ID3')) alb = "album";
 					var albs = [];
-					artist['album'].forEach(function (album) {
+					artist[alb].forEach(function (album) {
 						albs.push(self._formatAlbum(album,curUri));
 					});
 					var albums = {
@@ -578,9 +582,15 @@ ControllerVolusonic.prototype._artist = function (id) {
         var self = this;
         var defer = libQ.defer();
 
-        var result = self.api.get('getArtist', id, "id=" + id)
+	var getArtist = 'getMusicDirectory'; 
+        if (self.config.get('ID3')) getArtist = "getArtist";
+
+	var artist = "directory";
+        if (self.config.get('ID3')) artist = "artist";
+
+        var result = self.api.get(getArtist, id, "id=" + id)
 	.then(function(result) {
-		defer.resolve(result['subsonic-response']['artist']);
+		defer.resolve(result['subsonic-response'][artist]);
 	})
 	.fail(function(result) {
 		defer.reject(new Error('_artist'));
@@ -606,9 +616,15 @@ ControllerVolusonic.prototype._artistInfos = function (id) {
 	var self = this;
 	var defer = libQ.defer();
 
-	var result = self.api.get('getArtistInfo2', id, "id=" + id)
+	var getInfo = 'getArtistInfo'; 
+        if (self.config.get('ID3')) getInfo = "getArtistInfo2";
+
+	var listInfo = 'artistInfo';
+        if (self.config.get('ID3')) listInfo = "artistInfo2";
+
+	var result = self.api.get(getInfo, id, "id=" + id)
 		.then(function(result) {
-			defer.resolve(result['subsonic-response']['artistInfo2']);
+			defer.resolve(result['subsonic-response'][listInfo]);
 		})
 		.fail(function(result) {
                         	defer.reject(new Error('_artistInfos'));
@@ -620,9 +636,15 @@ ControllerVolusonic.prototype._album = function (id) {
         var self = this;
         var defer = libQ.defer();
 
-        var result = self.api.get('getAlbum', id, "id=" + id)
+	var getAlbum = 'getMusicDirectory';
+        if (self.config.get('ID3')) getAlbum = "getAlbum";
+
+        var container = 'directory';
+        if (self.config.get('ID3')) container = "album";
+
+        var result = self.api.get(getAlbum, id, "id=" + id)
                 .then(function(result) {
-                        defer.resolve(result['subsonic-response']['album']);
+                        defer.resolve(result['subsonic-response'][container]);
                 })
                 .fail(function(result) {
                                 defer.reject(new Error('_artistInfos'));
@@ -638,11 +660,20 @@ ControllerVolusonic.prototype.listTracks = function (uriParts, curUri) {
 	var id = uriParts.pop();
 	var params = 'id=' + id;
 
-	var result = self.api.get('getAlbum', id, params)
+ 	var getAlbum = 'getMusicDirectory';
+        if (self.config.get('ID3')) getAlbum = "getAlbum";
+
+ 	var container = 'directory';
+        if (self.config.get('ID3')) container = "album";
+
+ 	var item = 'child';
+        if (self.config.get('ID3')) item = "song";
+
+	var result = self.api.get(getAlbum, id, params)
 		.then(function(result) {
-			var album = result['subsonic-response']['album'];
+			var album = result['subsonic-response'][container];
 			var items = [];
-			album['song'].forEach(function (song) {
+			album[item].forEach(function (song) {
 				items.push(self._formatSong(song,curUri));
 			});
 			var play = self._formatPlay(album.name, album.artist, album.coverArt, album.year, album.duration, items, self._prevUri(curUri), curUri);
@@ -667,8 +698,12 @@ ControllerVolusonic.prototype.listTracks = function (uriParts, curUri) {
 ControllerVolusonic.prototype._albumInfos = function (id) {
         var self = this;
         var defer = libQ.defer();
+	
+	var getInfo = 'getAlbumInfo';
+        if (self.config.get('ID3')) getInfo = "getAlbumInfo2";
 
-        var result = self.api.get('getAlbumInfo2', id, "id="+id)
+
+        var result = self.api.get(getInfo, id, "id="+id)
                 .then(function(result) {
                         defer.resolve(result['subsonic-response']['albumInfo']);
                 })
@@ -677,6 +712,7 @@ ControllerVolusonic.prototype._albumInfos = function (id) {
                 });          
     return defer.promise;
 }
+
 ControllerVolusonic.prototype._formatPlay = function (album, artist, coverart, year, duration, items, prevUri, curUri) {
         var self = this;
 
@@ -781,10 +817,16 @@ ControllerVolusonic.prototype.listAlbums = function (uriParts, curUri) {
 		params = "type=" + uriParts[1] + "&size=" + self.getSetting('listsSize');
 	}
 
-        var result = self.api.get('getAlbumList2', id, params)
+	var getList = 'getAlbumList';
+	if (self.config.get('ID3')) getList = "getAlbumList2";
+
+	var aList = 'albumList';
+	if (self.config.get('ID3')) aList = "albumList2";
+
+        var result = self.api.get(getList, id, params)
                 .then(function(result) {
 				var items = [];
-				result['subsonic-response']['albumList2']['album'].forEach(function (album) {
+				result['subsonic-response'][aList]['album'].forEach(function (album) {
 					items.push(self._formatAlbum(album,curUri));
 				});
 				defer.resolve(self._formatNav(uriParts[uriParts.length - 1].charAt(0).toUpperCase() + uriParts[uriParts.length - 1].slice(1),'folder',self._getIcon(uriParts[1]),['list', 'grid'],items,self._prevUri(curUri)));
@@ -864,17 +906,22 @@ ControllerVolusonic.prototype._formatPodcast = function (podcast, curUri) {
 
 ControllerVolusonic.prototype._formatAlbum = function (album, curUri) {
 	var self = this;
+	var tit;
+	if (typeof album.name !== 'undefined'){
+		tit = album.name
+	}else{
+		tit = album.title;
+	}
 	var item = {
 			service: 'volusonic', 
         	        type: 'playlist', 
-			title: album.name + ' (' + new Date(album.created).getFullYear() + ')',
+			title: tit + ' (' + new Date(album.created).getFullYear() + ')',
 			artist: album.artist,
 			album: "", 
 			albumart: self.config.get('server') + '/rest/getCoverArt?id=' + album.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
  			icon: "",
 			uri: curUri + '/' + album.id
 	}
-
 	return item;
 }
 
@@ -948,14 +995,21 @@ ControllerVolusonic.prototype.listGenres = function (uriParts, curUri) {
 ControllerVolusonic.prototype.listArtists = function (uriParts, curUri) {
         var self = this;
         var defer = libQ.defer();
-        var result = self.api.get('getArtists', 'All', '')
+
+	var getArtists = "getIndexes";
+        if (self.config.get('ID3')) getArtists = "getArtists";
+
+        var container = "indexes";
+        if (self.config.get('ID3')) container = "artists";
+
+        var result = self.api.get(getArtists, 'All', '')
                 .then(function(result) {
 				var list = [];
 				var item;
 				var items = [];
 				var artists = [];
 
-				result['subsonic-response']['artists']['index'].forEach(function (index) {
+				result['subsonic-response'][container]['index'].forEach(function (index) {
 					index['artist'].forEach(function(artist){
 						artists.push(self._formatArtist(artist,curUri));
 					});
@@ -990,7 +1044,9 @@ ControllerVolusonic.prototype.artistInfo = function (uriParts, curUri) {
         var defer = libQ.defer();
 	var id = uriParts.pop();
 
-	var result = self.api.get('getArtistInfo2', id, 'id=' + id)
+	var getInfo = 'getArtistInfo';
+        if (self.config.get('ID3')) getInfo = "getArtistInfo2";
+	var result = self.api.get(getInfo, id, 'id=' + id)
                 .then(function(result) {
 			
 	})
@@ -1037,11 +1093,16 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
                                 defer.reject(new Error('explodeUri volusonic/playlists'));
                 });
 	}else if (uri.startsWith('volusonic/radio')){
-		command = 'getSimilarSongs2';
+		command = 'getSimilarSongs';
+		if (self.config.get('ID3')) command = "getSimilarSongs2";
+
+		var similar = "similarSongs";
+		if (self.config.get('ID3')) similar = "similarSongs2"; 
+
 		params = 'id=' + id + "&count=500";
 		var result = self.api.get(command,id,params)
                 .then(function(result) {
-			result['subsonic-response']['similarSongs2']['song'].forEach(function(song) {
+			result['subsonic-response'][similar]['song'].forEach(function(song) {
                                 items.push(self._getPlayable(song));        
 			});
 			defer.resolve(items);
@@ -1052,12 +1113,16 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 	}else if (uri.startsWith('volusonic/artists') && uriParts.length == 2){
 		var artist = self._artist(id);
 		artist.then (function (artist) {
-			if (artist.album !== undefined) {
+			if ((artist.album !== undefined) || (artist.child !== undefined)) {
+				var container = "child";
+				if (self.config.get('ID3')) container = "album";
 				var proms = [];
-				artist['album'].forEach(function (album) {
+				artist[container].forEach(function (album) {
 					var alb = self._album(album.id);
+					var sg = "child";
+					if (self.config.get('ID3')) sg = "song";
                                         alb.then (function (alb) {
-						alb['song'].forEach(function(song){
+						alb[sg].forEach(function(song){
                                                         items.push(self._getPlayable(song));
                                                 });
 					});
@@ -1084,11 +1149,20 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
                                 defer.reject(new Error('explodeUri volusonic/genres'));
                 });
 	} else {
-		command = 'getAlbum';
+		var command = 'getMusicDirectory';
+        	if (self.config.get('ID3')) command = "getAlbum";
+
+		var container = 'directory';
+        	if (self.config.get('ID3')) container = "album";
+
+        	var item = 'child';
+        	if (self.config.get('ID3')) item = "song";
+
+
 		params = 'id=' + id;
 		var result = self.api.get(command,id,params)
                 .then(function(result) {
-			result['subsonic-response']['album']['song'].forEach(function (song) {
+			result['subsonic-response'][container][item].forEach(function (song) {
 				items.push(self._getPlayable(song));
                         });
 			defer.resolve(items);
@@ -1154,15 +1228,21 @@ ControllerVolusonic.prototype.search = function (query) {
 	var id = encodeURI(query.value);
 	var params = "query=" + encodeURI(query.value) + "&artistCount=" +  self.getSetting('listsSize') + "&albumCount=" + self.getSetting('listsSize') + "&songCount=" + self.getSetting('listsSize');
 
-        var result = self.api.get('search3', id, params)
+	var getSearch = 'search2';
+        if (self.config.get('ID3')) getSearch = "search3";
+
+	var sResult = "searchResult2";
+	if (self.config.get('ID3')) sResult = "searchResult3";
+
+        var result = self.api.get(getSearch, id, params)
                 .then(function(result){
 			var answer = [];
 			var artists = [];
 			var albums = [];
 			var songs = [];
 					
-			if (result['subsonic-response']['searchResult3']['artist'] !== undefined){
-				result['subsonic-response']['searchResult3']['artist'].forEach(function (artist) {
+			if (result['subsonic-response'][sResult]['artist'] !== undefined){
+				result['subsonic-response'][sResult]['artist'].forEach(function (artist) {
 					artists.push(self._formatArtist(artist,"volusonic/artists"));
 				});
 				answer.push({         
@@ -1175,8 +1255,8 @@ ControllerVolusonic.prototype.search = function (query) {
                                 	items: artists
                         	});
 			}
-			if (result['subsonic-response']['searchResult3']['album'] !== undefined) {
-				result['subsonic-response']['searchResult3']['album'].forEach(function (album) {
+			if (result['subsonic-response'][sResult]['album'] !== undefined) {
+				result['subsonic-response'][sResult]['album'].forEach(function (album) {
 					albums.push(self._formatAlbum(album,"volusonic/search/" + query.value + "/album"));
 				});
 				answer.push({         
@@ -1189,8 +1269,8 @@ ControllerVolusonic.prototype.search = function (query) {
                                         items: albums
                                 });
 			}
-			if (result['subsonic-response']['searchResult3']['song'] !== undefined ) {
-				result['subsonic-response']['searchResult3']['song'].forEach(function(song) {
+			if (result['subsonic-response'][sResult]['song'] !== undefined ) {
+				result['subsonic-response'][sResult]['song'].forEach(function(song) {
 					songs.push(self._formatSong(song,"volusonic/search/" + query.value + "/track"));
 				});
 				answer.push({         

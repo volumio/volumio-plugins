@@ -26,5 +26,9 @@
   "timeOut": {
     "type": "number",
     "value": 600
+  },
+  "ID3": {
+    "type": "boolean",
+    "value": true
   }
 }

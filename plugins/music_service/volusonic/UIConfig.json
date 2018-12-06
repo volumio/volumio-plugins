@@ -56,7 +56,8 @@
                                         "transcode",
 					"listsSize",
 					"artSize",
-					"timeOut"
+					"timeOut",
+					"ID3"
                                 ]
                         },
       			"content": [
@@ -187,8 +188,15 @@
 							"label": "4h"
 		 				}
 	 				]
-    				}
-  			]
+    				},
+				{
+					"id": "ID3",
+					"doc": "TRANSLATE.ID3",
+					"label": "ID3",
+					"element": "switch",
+					"value": true   
+ 				}
+			]
 		}
 
 	]
