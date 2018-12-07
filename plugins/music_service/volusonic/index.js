@@ -144,15 +144,18 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
                 .then(function(result) 
                 {
                         var msg;
+			var tit;
                         if (result['subsonic-response'].status=='ok'){
+				tit = self.commandRouter.getI18nString('CON_SUCCESS');
                                 msg = self.commandRouter.getI18nString('CON_OK');
                         }
                         else {
-                                msg = self.commandRouter.getI18nString('CON_ERROR');
+				tit = self.commandRouter.getI18nString('CON_FAILED');
+                                msg = self.commandRouter.getI18nString('CON_BAD_CREDS');
                         }         
 
                         var conTest = {
-                                title: self.commandRouter.getI18nString('TEST_CREDS'),
+                                title: tit,
                                 message: msg,
                                 size: 'lg',
                                         buttons: [{
@@ -164,6 +167,16 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
                         defer.resolve();
                 })
                 .fail(function(result) {
+			var conTest = {
+                                title: self.commandRouter.getI18nString('CON_FAILED'),
+                                message: self.commandRouter.getI18nString('CON_SERVER_UNREACHABLE'),
+                                size: 'lg',
+                                        buttons: [{
+                                                name: 'Ok',
+                                                class: 'btn btn-warning'
+                                        }]
+                        }
+                        self.commandRouter.broadcastMessage("openModal", conTest);     
                         defer.reject(new Error('savePluginCredentials'));
                 });     
 	return defer.promise;

@@ -23,14 +23,17 @@
   "ART_SIZE":"Size of Albums & Artists images in pixels",
   "TIME_OUT_DOC":"Timeout of random albums & songs lists",
   "TIME_OUT":"Cache timeout",
-  "TEST_CREDS":"Test connection",
+  "CON_SUCCESS":"Success",
+  "CON_OK":"Credentials are valid",
+  "CON_FAILED":"Connection failed",
+  "CON_BAD_CREDS":"Please check your username and password",
+  "CON_SERVER_UNREACHABLE":"Server is unreachable",
   "RANDOMS_ALBUMS":"Random Albums",
   "NEWEST_ALBUMS":"Newest Albums",
   "GENRES":"Genres",
   "ARTISTS":"Artists",
   "PLAYLISTS":"Playlists",
   "PODCASTS":"Podcasts",
-  "CON_FAILED":"Connection failed - Server returned: ",
   "START_RADIO":"Start radio",
   "TOP_SONGS":"Top songs",
   "ALBUMS":"Albums",
@@ -39,7 +42,5 @@
   "TRACKS":"Tracks",
   "VOLUSONIC_OPTIONS":"Volusonic Options", 
   "SAVED":"Saved",
-  "POP_ERROR":"Error",
-  "CON_ERROR":"Something wrong happened, please check your credentials",
-  "CON_OK":"Credentials are valid"
+  "POP_ERROR":"Error"
 }

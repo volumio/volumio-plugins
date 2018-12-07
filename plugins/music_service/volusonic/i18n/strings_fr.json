@@ -30,7 +30,11 @@
   "ARTISTS":"Artistes",
   "PLAYLISTS":"Playlists",
   "PODCASTS":"Podcasts",
-  "CON_FAILED":"La connection a echoué - Le serveur a retourné: ",
+  "CON_SUCCESS":"La connexion a réussie",
+  "CON_FAILED":"La connexion a échoué",
+  "CON_OK":"Les identifiants sont correctes",
+  "CON_BAD_CREDS":"Veuillez verifier votre nom utilisateur et votre mot de passe",
+  "CON_SERVER_UNREACHABLE":"Le serveur ne repond pas",
   "START_RADIO":"Démarrer le mode radio",
   "TOP_SONGS":"Morceaux connus",
   "ALBUMS":"Albums",
@@ -39,7 +43,5 @@
   "TRACKS":"Morceaux",
   "VOLUSONIC_OPTIONS":"Options Volusonic", 
   "SAVED":"Sauvegardées",
-  "POP_ERROR":"Erreure",
-  "CON_ERROR":"Quelque chose s'est mal passé, veuillez verifier vos identifiants",
-  "CON_OK":"Les identifiants sont correctes" 
+  "POP_ERROR":"Erreure"
 }
