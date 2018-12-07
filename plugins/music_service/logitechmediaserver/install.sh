@@ -40,10 +40,10 @@ if [ ! -f $INSTALLING ]; then
 		# Install package and dependencies
 		echo "Installing downloaded package"
 		for f in /home/volumio/logitechmediaserver/logitechmediaserver*.deb; do dpkg -i "$f"; done
-		apt-get -f install
-		
+				
 		# Needed for SSL connections; e.g. github
 		apt-get install libio-socket-ssl-perl lame unzip -y
+		apt-get -f install -y
 		
 		# Get compiled CPAN for current Perl version and link it; if it doesn't exist
 		PERLV=$(perl -v | grep -o "(v[0-9]\.[0-9]\+" | sed "s/(v//;s/)//")
