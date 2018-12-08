@@ -136,6 +136,9 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
 	var self = this;
 	var defer = libQ.defer();
 
+	//cut extra stuff from a copy/paste of server url	
+	if (data['server'].includes('.view')) data['server'] = data['server'].substring(0,data['server'].lastIndexOf('/'));
+
 	self.config.set('server', data['server']);
 	self.config.set('username',data['username']);
 	self.config.set('auth', self.api.getAuth(data['username'],data['auth']));
