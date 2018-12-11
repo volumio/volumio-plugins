@@ -1,4 +1,4 @@
-03rd December 2018
+11th December 2018
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,11 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+11th december 2018
+
+- remove bitrate info...
+- support for version info in plugin manager
 
 03rd December 2018
 
