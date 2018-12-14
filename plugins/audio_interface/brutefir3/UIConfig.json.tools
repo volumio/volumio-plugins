@@ -242,7 +242,7 @@
               "value": "96000",
               "label": "96kHz"
             },
-	    {
+{
               "value": "176400",
               "label": "176.4kHz"
             },
@@ -278,6 +278,46 @@
         }
       ]
     },
+{
+      "id": "roomsettings",
+      "element": "section",
+      "label": "Room settings",
+      "icon": "fas fa-home",
+"onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/brutefir",
+        "method": "saveBrutefirconfigroom"
+      },
+ "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+          "ldistance",
+          "rdistance"
+        ]
+      },
+      "content": [
+        {
+		"id": "ldistance",
+		"element": "input",
+		"label": "left speaker distance in cm",
+		"doc":"Left speaker distance from listener in cm. Identical value with right = no effect",
+		"value": {
+        	    "value": "0",
+        	    "label": "0"
+          		}
+	},
+	{
+		"id": "rdistance",
+		"element": "input",
+		"label": "right speaker distance in cm",
+		"doc":"Right speaker distance from listener in cm. Identical value with left = no effect",
+		"value": {
+        	    "value": "0",
+        	    "label": "0"
+          		}
+	}
+		]
+},
     {
       "id": "advanced",
       "element": "section",

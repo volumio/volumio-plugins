@@ -1,4 +1,4 @@
-December 11th 2018
+December 14th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -17,7 +17,7 @@ It provides :
 
 - Filters (left and right) can be selected in webUI.
 
-
+- A room settings : add a delay on speakers if distance from listener is not equal left/right to keep a good stereo image.
 
 Base scheme
 
@@ -68,6 +68,10 @@ nearly everythings
 - mixer is not properly displayed in Volumio's playback option
 
 ### 4. Last changes
+
+December, 14th 2018
+
+- add room settings
 
 December, 11th 2018
 

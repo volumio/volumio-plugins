@@ -1,16 +1,17 @@
 /*brutefir plugin for volumio3. By balbuze 2018*/
 'use strict';
 
-//var io = require('socket.io-client');
+var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var libQ = require('kew');
-//var libNet = require('net');
-//var net = require('net');
+var libNet = require('net');
+var net = require('net');
 var config = new(require('v-conf'))();
-
+var Telnet = require('telnet-client')
+var connection = new Telnet()
 
 
 // Define the ControllerBrutefir class
@@ -26,6 +27,7 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
+//self.brutefirDaemonConnect
 };
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
@@ -37,6 +39,7 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
  self.autoconfig
  // .then(self.rebuildBRUTEFIRAndRestartDaemon())
  //self.rebuildBRUTEFIRAndRestartDaemon()
+
  return libQ.resolve();
 };
 
@@ -128,6 +131,73 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
 
 };
 
+ //here we connect to brutefir to read peak errors
+ ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
+  var self = this;
+var params = {
+  host: '127.0.0.1',
+  port: 3002,
+ // shellPrompt: '/ # ',
+  timeout: 1500,
+  // removeEcho: 4
+}
+connection.connect(params)
+
+connection.on('ready', function(prompt) {
+  connection.exec(cmd, function(err, response) {
+    console.log('brutefir connection' + response)
+  })
+})
+/*
+connection.on('timeout', function() {
+  console.log('socket timeout!')
+  connection.end()
+})
+*/
+connection.on('data', function() {
+  console.log('from cli '+ data)
+//  connection.end()
+})
+connection.on('close', function() {
+  console.log('connection closed')
+})
+
+
+
+/*  var client = new net.Socket();
+  client.connect(3002, '127.0.0.1', function(err) {
+   defer.resolve();
+//setTimeout(function() {
+   var brutefircmd
+
+  brutefircmd = ('upk;lf');
+   //here we send the command to brutefir
+    
+   client.write(brutefircmd);
+//client.write('lf');
+   console.log('cmd sent to brutefir = ' + brutefircmd);
+
+  });
+  //error handling section
+  client.on('error', function(e) {
+
+   if (e.code == 'ECONNREFUSED') {
+    console.log('Huumm, is brutefir running ?');
+    self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+
+   }
+  });
+
+  //   setTimeout(function() {
+  client.on('data', function(data) {
+   console.log('Received from brutefir cli: ' + data);
+
+ // client.destroy(); // kill client after server's response
+  });
+//}, 5000);
+*/
+ };
+
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
  var defer = libQ.defer();
@@ -174,7 +244,8 @@ ControllerBrutefir.prototype.onStart = function() {
     self.logger.info("Starting brutefir");
 
     //self.getFilterList();
-    //  self.brutefirDaemonConnect(defer);
+
+ //     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
   .fail(function(e) {
@@ -188,6 +259,7 @@ ControllerBrutefir.prototype.onRestart = function() {
 
  var self = this;
  //   self.autoconfig()
+  //    self.brutefirDaemonConnect(defer);
 };
 
 ControllerBrutefir.prototype.onInstall = function() {
@@ -221,6 +293,10 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var filterfolder = "/data/INTERNAL/brutefirfilters";
     var items;
     var allfilter;
+
+uiconf.sections[1].content[0].value = self.config.get('ldistance');
+uiconf.sections[1].content[1].value = self.config.get('rdistance');
+
 
     valuestoredl = self.config.get('leftfilter');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
@@ -267,6 +343,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
     var value;
+ 
 
 
     defer.resolve(uiconf);
@@ -394,6 +471,34 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var composerightfilter = filter_path + self.config.get('rightfilter');
    var lattenuation;
    var rattenuation;
+
+// delay calculation section
+   var delay
+   var sldistance = self.config.get('ldistance');
+   var srdistance = self.config.get('rdistance');
+   var diff
+   var cdelay
+   var sample_rate = self.config.get('smpl_rate');
+   var sv = 34000 // sound velocity cm/s
+	
+	if (sldistance > srdistance) {
+  		diff = sldistance - srdistance
+		cdelay = (diff/sv*sample_rate)
+		delay = ('0,' + Math.round(cdelay))
+		self.logger.info('l>r ' + delay)
+	}
+	if (sldistance < srdistance) {
+		diff = srdistance - sldistance
+		cdelay = (diff/sv*sample_rate)
+		delay = (Math.round(cdelay)+ ',0')
+		self.logger.info('l<r ' + delay)
+
+	} if (sldistance == srdistance) {
+		self.logger.info('no delay needed');
+		delay = ('0,0')
+	}
+
+
    var n_part = self.config.get('numb_part');
    var num_part = parseInt(n_part);
    var f_size = self.config.get('filter_size');
@@ -418,16 +523,17 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", num_part);
    var conf4 = conf3.replace("${input_device}", input_device);
-   var conf5 = conf4.replace("${leftfilter}", composeleftfilter);
-   var conf6 = conf5.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf7 = conf6.replace("${lattenuation}", self.config.get('lattenuation'));
-   var conf8 = conf7.replace("${rightfilter}", composerightfilter);
-   var conf9 = conf8.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf10 = conf9.replace("${rattenuation}", self.config.get('rattenuation'));
-   var conf11 = conf10.replace("${output_device}", output_device);
-   var conf12 = conf11.replace("${output_format}", self.config.get('output_format'));
+   var conf5 = conf4.replace("${delay}", delay);
+   var conf6 = conf5.replace("${leftfilter}", composeleftfilter);
+   var conf7 = conf6.replace("${filter_format1}", self.config.get('filter_format'));
+   var conf8 = conf7.replace("${lattenuation}", self.config.get('lattenuation'));
+   var conf9 = conf8.replace("${rightfilter}", composerightfilter);
+   var conf10 = conf9.replace("${filter_format2}", self.config.get('filter_format'));
+   var conf11 = conf10.replace("${rattenuation}", self.config.get('rattenuation'));
+   var conf12 = conf11.replace("${output_device}", output_device);
+   var conf13 = conf12.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf12, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf13, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -465,6 +571,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
+ 
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
@@ -479,6 +586,28 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  return defer.promise;
 };
 
+//here we save the brutefir config.json
+ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
+ var self = this;
+ 
+
+ var defer = libQ.defer();
+ 
+ self.config.set('ldistance', data['ldistance']);
+ self.config.set('rdistance', data['rdistance']);
+
+ self.rebuildBRUTEFIRAndRestartDaemon()
+  .then(function(e) {
+   self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+   defer.resolve({});
+  })
+  .fail(function(e) {
+
+   defer.reject(new Error('Brutefir failed to start. Check your config !'));
+   self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+  })
+ return defer.promise;
+};
 
 //here we download and install tools
 ControllerBrutefir.prototype.installtools = function(data) {
@@ -744,7 +873,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   .then(function(e) {
    setTimeout(function() {
      self.logger.info("Connecting to daemon");
-     //    self.brutefirDaemonConnect(defer);
+        // self.brutefirDaemonConnect(defer);
     }, 2000)
     .fail(function(e) {
      //	defer.reject(new Error('Brutefir failed to start. Check your config !'));

@@ -10,6 +10,8 @@
 "output_format":{"type": "string","value": "S16_LE"},
 "input_device":{"type": "string","value": "Loopback,1"},
 "output_device":{"type": "string","value": "0"},
+"ldistance":{"type": "string","value": "0"},
+"rdistance":{"type": "string","value": "0"},
 "alsa_device":{"type": "string","value": "0"},
 "alsa_outputdevicename":{"type": "string","value": "0"},
 "alsa_mixer":{"type": "string","value": ""},
