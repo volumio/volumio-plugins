@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Brutefir3 plugin for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "fs-extra": "^4.0.2",
-    "socket.io-client": "^2.0.3",
-    "child_process": "",
+        "child_process": "",
     "kew": "",
     "v-conf": ""
   }

@@ -1,4 +1,4 @@
-December 14th 2018
+December 15th 2018
 
 
 #	BRUTEFIR3 PLUGIN
@@ -68,6 +68,10 @@ nearly everythings
 - mixer is not properly displayed in Volumio's playback option
 
 ### 4. Last changes
+
+December, 15th 2018
+
+- fix for impossible to enable plugin
 
 December, 14th 2018
 

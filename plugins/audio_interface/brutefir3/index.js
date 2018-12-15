@@ -1,17 +1,17 @@
 /*brutefir plugin for volumio3. By balbuze 2018*/
 'use strict';
 
-var io = require('socket.io-client');
+//var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var libQ = require('kew');
-var libNet = require('net');
-var net = require('net');
+//var libNet = require('net');
+//var net = require('net');
 var config = new(require('v-conf'))();
-var Telnet = require('telnet-client')
-var connection = new Telnet()
+//var Telnet = require('telnet-client')
+//var connection = new Telnet()
 
 
 // Define the ControllerBrutefir class
@@ -130,7 +130,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  return defer.promise;
 
 };
-
+/*
  //here we connect to brutefir to read peak errors
  ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
   var self = this;
@@ -148,12 +148,12 @@ connection.on('ready', function(prompt) {
     console.log('brutefir connection' + response)
   })
 })
-/*
+
 connection.on('timeout', function() {
   console.log('socket timeout!')
   connection.end()
 })
-*/
+
 connection.on('data', function() {
   console.log('from cli '+ data)
 //  connection.end()
@@ -195,8 +195,9 @@ connection.on('close', function() {
  // client.destroy(); // kill client after server's response
   });
 //}, 5000);
-*/
+
  };
+*/
 
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
