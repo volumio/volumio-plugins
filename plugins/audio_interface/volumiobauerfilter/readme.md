@@ -1,4 +1,4 @@
-16th May 2018
+December 22th 2018
 #	VOLUMIO BAUER FILTER PLUGIN
 
 
@@ -15,15 +15,10 @@ More info : http://bs2b.sourceforge.net/
 
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
+[ssh in volumio](https://volumio.github.io/docs/User_Manual/SSH.html)
 
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
 
 ### 2. Download and install the plugin
 
@@ -35,7 +30,10 @@ mkdir ./volbinauralfilter
 miniunzip volbinauralfilter.zip -d ./volbinauralfilter
 cd ./volbinauralfilter
 volumio plugin install
+cd ..
+rm -Rf volbinauralfilter*
 ```
+
 If the installation fails, remove all file (if any) related to the plugin before retry.
 
 ### Enable the plugin
@@ -43,6 +41,10 @@ If the installation fails, remove all file (if any) related to the plugin before
 Enable the plugin and wait about 10 seconds
 
 ### Last change
+
+22th december 2018
+
+- small correction in install.sh
 
 16th May 2018
 
