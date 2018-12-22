@@ -1,6 +1,6 @@
 {
 	"name": "personal_radio",
-	"version": "1.1.2",
+	"version": "1.1.3",
 	"description": "Personal Radio Plugin for Volumio2 (KBS,MBC,SBS Korean Radios & Linn)",
 	"main": "index.js",
 	"scripts": {

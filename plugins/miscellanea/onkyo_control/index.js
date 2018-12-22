@@ -89,6 +89,10 @@ onkyoControl.prototype.onVolumioStart = function () {
                     connectionOptions.host = self.config.get('receiverIP');
                     self.logger.debug("ONKYO-CONTROL: Overriding default connection host / ip: " + JSON.stringify(connectionOptions));
                 }
+                if (self.config.get('receiverModel') && self.config.get('receiverModel') !== '') {
+                    connectionOptions.model = self.config.get('receiverModel');
+                    self.logger.debug("ONKYO-CONTROL: Overriding receiver model: " + JSON.stringify(connectionOptions));
+                }
             } else {
                 connectionOptions.port = 60128;
                 connectionOptions.host = '';
@@ -182,6 +186,7 @@ onkyoControl.prototype.getUIConfig = function () {
             uiconf.sections[0].content[0].value = self.config.get('autoDiscovery', true);
             uiconf.sections[0].content[2].value = self.config.get('receiverIP');
             uiconf.sections[0].content[3].value = self.config.get('receiverPort');
+            uiconf.sections[0].content[4].value = self.config.get('receiverModel');
 
             uiconf.sections[1].content[0].value = self.config.get('powerOn', true);
             uiconf.sections[1].content[1].value = self.config.get('setVolume', false);
@@ -262,6 +267,7 @@ onkyoControl.prototype.saveConnectionConfig = function (data) {
         self.config.set('receiverPort', '60128');
     } else {
         self.config.set('receiverIP', data['receiverIP']);
+        self.config.set('receiverModel', data['receiverModel']);
         if (!data['receiverPort'] || data['receiverPort'] === '' || isNaN(data['receiverPort'])) {
             self.config.set('receiverPort', '60128');
         } else {

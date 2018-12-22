@@ -23,7 +23,7 @@
       {
         "title": "Radio Paradise (AAC 320k)",
         "uri": "webrp/1",
-        "url": "http://stream-eu1.radioparadise.com/aac-320"
+        "url": "http://stream-uk1.radioparadise.com/aac-320"
       },
       {
         "title": "Radio Paradise (AAC 128k)",
@@ -38,7 +38,7 @@
       {
         "title": "Radio Paradise (MP3 192k)",
         "uri": "webrp/4",
-        "url": "http://stream-eu1.radioparadise.com:80/mp3-192"
+        "url": "http://stream-uk1.radioparadise.com/mp3-192"
       },
       {
         "title": "Radio Paradise (MP3 128k)",
