@@ -1,19 +1,21 @@
-December 15th 2018
+December 27th 2018
 
 
 #	BRUTEFIR3 PLUGIN
 
-
-
-This plugin is designed to use brutefir with volumio2
+This plugin is designed to use [brutefir](https://www.ludd.ltu.se/~torger/brutefir.html) with volumio2
 
 It provides :
+
 - A automated installation
+
 - A automatic configuration - Just install and enable the plugin. It's ready for use !
 
 - The use of custom filters - for DRC digital room correction
 
-### use 32/64 bits floas lines (.txt) format from rephase
+To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html) 
+
+### filters must be 32/64 bits floas lines (.txt) format from rephase
 
 - Filters (left and right) can be selected in webUI.
 
@@ -29,6 +31,7 @@ Base scheme
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
 ## To install
+
 Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
 Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
@@ -66,6 +69,11 @@ nearly everythings
 
 - ?
 - mixer is not properly displayed in Volumio's playback option
+
+December, 27 th 2018
+
+- small timer adjustement
+
 
 ### 4. Last changes
 
