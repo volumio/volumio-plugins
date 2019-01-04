@@ -601,7 +601,7 @@ ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, strea
 ControllerRadioParadise.prototype.playNextTrack = function (songIndex, songsArray) {
     var self = this;
     //if not the last track
-    if ((songIndex == 0 && songsArray.length == 1) || (songIndex < songsArray.length)) {
+    if ((songIndex == 0 && songsArray && songsArray.length == 1) || (songsArray && (songIndex < songsArray.length))) {
         self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Pushing the next song state: ' + songsArray[songIndex].name);
         return libQ.resolve(self.pushSongState(songsArray[songIndex]))
         .then(function () {
