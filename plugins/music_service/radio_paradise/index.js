@@ -558,9 +558,6 @@ ControllerRadioParadise.prototype.setSongs = function (rpUri) {
 ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, streamUrl, lengthOfEvent, endEvent, firstSongOffset, lastSongOffset) {
     var self = this;
     var response = [];
-    if(streamUrl.match('^https://')) {
-    	streamUrl = streamUrl.replace("https://","http://")
-	}
     for (var i = 0; i < songsArray.length; i++) {
         var song = songsArray[i];
         var duration = song.duration;
@@ -581,7 +578,7 @@ ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, strea
             type: 'track',
             trackType: 'flac',
             radioType: 'web',
-            albumart: 'http://img.radioparadise.com/' + song.cover,
+            albumart: 'https://img.radioparadise.com/' + song.cover,
             uri: streamUrl,
             name: song.artist + ' - ' + song.title,
             title: song.title,
@@ -618,7 +615,21 @@ ControllerRadioParadise.prototype.playNextTrack = function (songIndex, songsArra
                 self.setSongs(nextEventApiUrl)
                 .then(function (result) {
                     songsOfNextEvent = result;
-                    return self.mpdPlugin.sendMpdCommand('add "' + songsOfNextEvent[0].uri + '"', []);
+                    if(result.length == 1) {
+                        self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] received ONLY ONE event with id ' + result.event + '. Checking if it is a commercial.');
+                        if(result[0].artist === 'Commercial-free') {
+                            //Skip song
+                            self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] FOUND RADIO-PARADISE commercial event. Skipping this commercial.');
+                            self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Prefetching next event.');
+                            self.setSongs(nextEventApiUrl)
+                            .then(function (result) {
+                                songsOfNextEvent = result;
+                                return self.mpdPlugin.sendMpdCommand('add "' + songsOfNextEvent[0].uri + '"', []);
+                            });
+                        }
+                    } else {
+                        return self.mpdPlugin.sendMpdCommand('add "' + songsOfNextEvent[0].uri + '"', []);
+                    }
                 });
             }
         });
