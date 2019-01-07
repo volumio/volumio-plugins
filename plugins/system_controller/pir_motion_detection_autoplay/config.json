@@ -17,7 +17,7 @@
     },
     "duration": {
         "type": "number",
-        "value": 5
+        "value": 10
     },
     "enable_switch":{
         "type": "boolean",

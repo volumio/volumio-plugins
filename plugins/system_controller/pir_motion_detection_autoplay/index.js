@@ -1,493 +1,310 @@
 'use strict';
 
-var libQ = require('kew');
-var fs=require('fs-extra');
-var config = new (require('v-conf'))();
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
-var Gpio = require('onoff').Gpio;
+const libQ = require('kew');
+const fs=require('fs-extra');
+const config = new (require('v-conf'))();
+const exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
+const Gpio = require('onoff').Gpio;
 
-module.exports = pirMotionDetectionAutoplay;
-function pirMotionDetectionAutoplay(context) {
-	var self = this;
+module.exports = class pirMotionDetectionAutoplay {
+	constructor(context) {
+		this.context = context;
+		this.commandRouter = this.context.coreCommand;
+		this.logger = this.context.logger;
+		this.configManager = this.context.configManager;
+		this.gpioLed = null;
+	}
 
-	this.context = context;
-	this.commandRouter = this.context.coreCommand;
-	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;
-}
+	onVolumioStart() {
+		const configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+		this.config = new (require('v-conf'))();
+		this.config.loadFile(configFile);
 
-pirMotionDetectionAutoplay.prototype.onVolumioStart = function()
-{
-	var self = this;
-	var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
+	  return libQ.resolve();
+	}
 
-    return libQ.resolve();
-}
+	addPirWatch() {
+	  let lastMotion = null;
 
-pirMotionDetectionAutoplay.prototype.addPirWatch = function() {
-	var self = this;
-	var lastMotion = false;
+	  const watchPirSensorForContinuationMode = () => {
+	    this.gpioPir.watch((err, value) => {
+	      if (err) throw err;
 
-	(function watchPirSensorForContinuationMode() {
-		self.gpioPir.watch(function (err, value) {
-			if (err) throw err;
-			self.gpioPir.unwatch();
-			if(!self.detectionIsActive) { return; }
-			if(self.gpioLed) {
-				self.blinkLed(4);
+	      this.gpioPir.unwatch();
+
+	      if (!this.detectionIsActive) return;
+
+	      if (this.gpioLed) this.blinkLed(4);
+
+	      const { config, commandRouter } = this;
+
+	      lastMotion = Date.now();
+
+	      setTimeout(() => {
+	        if (this.detectionIsActive) watchPirSensorForContinuationMode();
+	      }, 30000);
+
+	      setTimeout(() => {
+	        if (Date.now() < lastMotion + 30000 + config.get("duration") * 1000)
+	          return;
+
+	        if (config.get("random")) commandRouter.stateMachine.setRandom(false);
+
+	        if (config.get("playlist_mode")) {
+	          commandRouter.stateMachine.pause();
+	          return this.removePlaylistTitlesFromQueue();
+	        }
+
+	        commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection
+	      }, 30000 + config.get("duration") * 1000);
+
+	      if (commandRouter.stateMachine.getState().status == "play") return;
+
+	      if (config.get("random")) commandRouter.stateMachine.setRandom(true);
+
+	      if (config.get("playlist_mode")) {
+	        return commandRouter.playListManager.playPlaylist(
+	          config.get("playlist")
+	        );
+	      }
+
+	      if (this.commandRouter.stateMachine.getQueue().length) {
+	        return commandRouter.stateMachine.play();
+	      }
+
+	      commandRouter.pushToastMessage(
+	        "info",
+	        "PIR motion detection autoplay",
+	        "Motion detected but no items to play in queue."
+	      );
+	    });
+	  };
+
+	  watchPirSensorForContinuationMode();
+	}
+
+	onStart() {
+	  const defer = libQ.defer();
+
+	  this.initGPIO();
+
+		const startDetection = () => {
+			this.detectionIsActive = this.gpioSwitch ? this.gpioSwitch.readSync() ^ 1 : 1;
+
+			if(this.gpioLed) {
+				this.gpioLed.writeSync(this.detectionIsActive);
 			}
-			lastMotion = Date.now();
-			if(self.commandRouter.stateMachine.getState().status != 'play') {
-				if(self.config.get('random')) {
-					self.commandRouter.stateMachine.setRandom(true);
-				}
-				if(self.config.get('playlist_mode')) {
-					self.commandRouter.playListManager.playPlaylist(self.config.get('playlist'));
-				} else {
-					if(self.commandRouter.stateMachine.getQueue().length) {
-						self.commandRouter.stateMachine.play();
-					} else {
-						self.commandRouter.pushToastMessage(
-							'info',
-							'PIR motion detection autoplay',
-							'Motion detected but no items to play in queue.'
-						);
-					}
+
+			if(this.detectionIsActive) {
+					this.addPirWatch();
+			} else {
+				if(this.commandRouter.stateMachine && this.commandRouter.stateMachine.getState().status == 'play') {
+					this.commandRouter.stateMachine.stop();
 				}
 			}
-			setTimeout(function() {
-				if(self.detectionIsActive) {
-					watchPirSensorForContinuationMode();
-				}
-			}, 10000);
-			setTimeout(function() {
-				if(Date.now() >= lastMotion + 20000) {
-					if(self.config.get('random')) {
-						self.commandRouter.stateMachine.setRandom(false);
-					}
-					if(self.config.get('playlist_mode')) {
-						self.commandRouter.stateMachine.pause();
-						self.removePlaylistTitlesFromQueue();
-					} else {
-						self.commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection?
-					}
-				}
-			}, self.config.get('duration')*1000);
-		});
-	})();
-}
+		};
 
+		startDetection();
 
-
-pirMotionDetectionAutoplay.prototype.onStart = function() {
-    var self = this;
-	var defer=libQ.defer();
-
-    self.initGPIO();
-
-	var startDetection = function() {
-		self.detectionIsActive = self.gpioSwitch ? self.gpioSwitch.readSync() ^ 1 : 1;
-
-		if(self.gpioLed) {
-			self.gpioLed.writeSync(self.detectionIsActive);
-		}
-
-		if(self.detectionIsActive) {
-				self.addPirWatch();
-		} else {
-			if(self.commandRouter.stateMachine && self.commandRouter.stateMachine.getState().status == 'play') {
-				self.commandRouter.stateMachine.stop();
-			}
-		}
-	};
-
-	startDetection();
-
-	if(self.gpioSwitch) {
-		self.gpioSwitch.watch(function(err, value) {
-			if (err) throw err;
-			startDetection();
-	  	});
-	}
-
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
-
-    return defer.promise;
-};
-
-pirMotionDetectionAutoplay.prototype.onStop = function() {
-    var self = this;
-    var defer=libQ.defer();
-
-	self.commandRouter.stateMachine.stop();
-	self.freeGPIO();
-
-    // Once the Plugin has successfull stopped resolve the promise
-    defer.resolve();
-
-    return libQ.resolve();
-};
-
-pirMotionDetectionAutoplay.prototype.onRestart = function() {
-    var self = this;
-
-	self.commandRouter.stateMachine.stop();
-	self.freeGPIO();
-};
-
-// GPIO handling -------------------------------------------------------------------------------------
-
-pirMotionDetectionAutoplay.prototype.initGPIO = function() {
-    var self = this;
-
-	if(self.config.get('gpio_pir') > 0) {
-		self.gpioPir = new Gpio(self.config.get('gpio_pir'), 'in', 'rising');
-	}
-
-	if(self.config.get('enable_switch') && self.config.get('gpio_switch') > 0) {
-		self.gpioSwitch = new Gpio(self.config.get('gpio_switch'), 'in', 'both', {'debounceTimeout': 10});
-	}
-
-	if(self.config.get('enable_led') && self.config.get('gpio_led') > 0) {
-		self.gpioLed = new Gpio(self.config.get('gpio_led'), 'out');
-		self.gpioLed.writeSync(self.detectionIsActive);
-	}
-};
-
-pirMotionDetectionAutoplay.prototype.freeGPIO = function() {
-    var self = this;
-
-    if(self.gpioPir) {
-		self.gpioPir.unexport();
-		self.gpioPir = null;
-	}
-
-	if(self.gpioSwitch) {
-		self.gpioSwitch.unexport();
-		self.gpioSwitch = null;
-	}
-
-	if(self.gpioLed) {
-		self.gpioLed.writeSync(0);
-		self.gpioLed.unexport();
-		self.gpioLed = null;
-	}
-};
-
-pirMotionDetectionAutoplay.prototype.pirTest = function() {
-	var self = this;
-
-	self.commandRouter.pushToastMessage(
-		'success',
-		'PIR motion detection autoplay',
-		// Toast messages not translatable yet?
-		//self.commandRouter.getI18nString('PIR_MOTION_DETECTION_AUTOPLAY.PIR_TEST_START')
-		'Starting motion sensor test for 60 seconds.'
-	);
-
-	setTimeout(function() {
-		self.gpioPir.watch(function (err, value) {
-		    if (err) throw err;
-			if(self.gpioLed) {
-				self.blinkLed(4);
-			}
-			self.commandRouter.pushToastMessage(
-				'success',
-				'PIR motion detection autoplay',
-				'Motion detected!'
-			);
-		});
-	}, 1000);
-
-	setTimeout(function() {
-		self.gpioPir.unwatch();
-		self.commandRouter.pushToastMessage(
-			'info',
-			'PIR motion detection autoplay',
-			'Test time for motion sensor has ended.'
-		);
-	}, 60000);
-
-	return libQ.resolve();
-}
-
-pirMotionDetectionAutoplay.prototype.blinkLed = function(count) {
-	var self = this;
-
-	(function blink(count) {
-		if (count <= 0) {
-			self.gpioLed.writeSync(self.detectionIsActive);
-			return;
-		}
-		self.gpioLed.read((err, value) => {
-		  if(err) throw err;
-		  self.gpioLed.write(value ^ 1, (err) => {
-			if(err) throw err;
-		  });
-		});
-		setTimeout(() => blink(count - 1), 200);
-	})(count);
-}
-
-// Configuration Methods -----------------------------------------------------------------------------
-
-pirMotionDetectionAutoplay.prototype.saveConfig = function(data)
-{
-	var self = this;
-
-	self.config.set('gpio_pir', data['gpio_pir']);
-	self.config.set('playlist_mode', data['playlist_mode']);
-	self.config.set('playlist', data['playlist']);
-	self.config.set('random', data['random']);
-	self.config.set('duration', data['duration'][0]);
-	self.config.set('enable_switch', data['enable_switch']);
-	self.config.set('gpio_switch', data['gpio_switch']);
-	self.config.set('enable_led', data['enable_led']);
-	self.config.set('gpio_led', data['gpio_led']);
-
-	self.freeGPIO();
-	self.onStart();
-
-	self.commandRouter.pushToastMessage('success',
-		'PIR motion detection autoplay',
-		self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY')
-	);
-};
-
-pirMotionDetectionAutoplay.prototype.getLabelForSelect = function (options, key) {
-	var n = options.length;
-	for (var i = 0; i < n; i++) {
-		if (options[i].value == key)
-			return options[i].label;
-	}
-
-	return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
-};
-
-pirMotionDetectionAutoplay.prototype.getUIConfig = function() {
-    var defer = libQ.defer();
-    var self = this;
-
-    var lang_code = this.commandRouter.sharedVars.get('language_code');
-
-    self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-        __dirname+'/i18n/strings_en.json',
-        __dirname + '/UIConfig.json')
-        .then(function(uiconf)
-        {
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', self.config.get('gpio_pir', false));
-		    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('playlist_mode', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('playlist', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', self.config.get('random', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].config.bars[0].value', self.config.get('duration', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value', self.config.get('enable_switch', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value', self.config.get('gpio_switch', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value', self.config.get('enable_led', false));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value', self.config.get('gpio_led', false));
-
-            defer.resolve(uiconf);
-        })
-        .fail(function()
-        {
-            defer.reject(new Error());
-        });
-
-    return defer.promise;
-};
-
-pirMotionDetectionAutoplay.prototype.getConfigurationFiles = function() {
-	return ['config.json'];
-}
-
-pirMotionDetectionAutoplay.prototype.setUIConfig = function(data) {
-	var self = this;
-	//Perform your installation tasks here
-};
-
-pirMotionDetectionAutoplay.prototype.getConf = function(varName) {
-	var self = this;
-	//Perform your installation tasks here
-};
-
-pirMotionDetectionAutoplay.prototype.setConf = function(varName, varValue) {
-	var self = this;
-	//Perform your installation tasks here
-};
-
-
-
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
-
-pirMotionDetectionAutoplay.prototype.removePlaylistTitlesFromQueue = function() {
-	var self = this;
-
-	var playlistContentPromise = self.commandRouter.playListManager.getPlaylistContent(self.config.get('playlist'));
-	playlistContentPromise.then(function (playlistContent) {
-		if (err) throw err;
-		var queue = self.commandRouter.stateMachine.getQueue();
-		playlistContent.forEach(function(playlistEntry) {
-			var entryInQueue = queue.findIndex(function(queueEntry) {
-				return queueEntry.uri == playlistEntry.uri;
+		if(this.gpioSwitch) {
+			this.gpioSwitch.watch(function(err, value) {
+				if (err) throw err;
+				startDetection();
 			});
-			if(entryInQueue >= 0) {
-				self.commandRouter.stateMachine.removeQueueItem({value: entryInQueue});
-			}
+		}
+
+		// Once the Plugin has successfull started resolve the promise
+		defer.resolve();
+
+	  return defer.promise;
+	}
+
+	onStop() {
+	  const defer = libQ.defer();
+
+	  this.commandRouter.stateMachine.stop();
+	  this.freeGPIO();
+
+	  // Once the Plugin has successfull stopped resolve the promise
+	  defer.resolve();
+
+	  return libQ.resolve();
+	}
+
+	onRestart() {
+	  this.commandRouter.stateMachine.stop();
+	  this.freeGPIO();
+	}
+
+	// GPIO handling -------------------------------------------------------------------------------------
+
+	initGPIO() {
+	  if (this.config.get("gpio_pir") > 0) {
+	    this.gpioPir = new Gpio(this.config.get("gpio_pir"), "in", "rising");
+	  }
+
+	  if (this.config.get("enable_switch") && this.config.get("gpio_switch") > 0) {
+	    this.gpioSwitch = new Gpio(this.config.get("gpio_switch"), "in", "both", {
+	      debounceTimeout: 10
+	    });
+	  }
+
+	  if (this.config.get("enable_led") && this.config.get("gpio_led") > 0) {
+	    this.gpioLed = new Gpio(this.config.get("gpio_led"), "out");
+	    this.gpioLed.writeSync(this.detectionIsActive);
+	  }
+	}
+
+	freeGPIO() {
+	  if (this.gpioPir) {
+	    this.gpioPir.unexport();
+	    this.gpioPir = null;
+	  }
+
+	  if (this.gpioSwitch) {
+	    this.gpioSwitch.unexport();
+	    this.gpioSwitch = null;
+	  }
+
+	  if (this.gpioLed) {
+	    this.gpioLed.writeSync(0);
+	    this.gpioLed.unexport();
+	    this.gpioLed = null;
+	  }
+	}
+
+	pirTest() {
+	  this.commandRouter.pushToastMessage(
+	    "success",
+	    "PIR motion detection autoplay",
+	    // Toast messages not translatable yet?
+	    //this.commandRouter.getI18nString('PIR_MOTION_DETECTION_AUTOPLAY.PIR_TEST_START')
+	    "Starting motion sensor test for 60 seconds."
+	  );
+
+	  setTimeout(function() {
+	    this.gpioPir.watch(function(err, value) {
+	      if (err) throw err;
+	      if (this.gpioLed) {
+	        this.blinkLed(4);
+	      }
+	      this.commandRouter.pushToastMessage(
+	        "success",
+	        "PIR motion detection autoplay",
+	        "Motion detected!"
+	      );
+	    });
+	  }, 1000);
+
+	  setTimeout(function() {
+	    this.gpioPir.unwatch();
+	    this.commandRouter.pushToastMessage(
+	      "info",
+	      "PIR motion detection autoplay",
+	      "Test time for motion sensor has ended."
+	    );
+	  }, 60000);
+
+	  return libQ.resolve();
+	}
+
+	blinkLed(count) {
+		const self = this;
+	  (function blink(count) {
+	    if (count <= 0) {
+	      self.gpioLed.writeSync(self.detectionIsActive);
+	      return;
+	    }
+	    self.gpioLed.read((err, value) => {
+	      if (err) throw err;
+	      self.gpioLed.write(value ^ 1, err => {
+	        if (err) throw err;
+	      });
+	    });
+	    setTimeout(() => blink(count - 1), 200);
+	  })(count);
+	}
+
+	// Configuration Methods -----------------------------------------------------------------------------
+
+	saveConfig(data) {
+		this.config.set('gpio_pir', data['gpio_pir']);
+		this.config.set('playlist_mode', data['playlist_mode']);
+		this.config.set('playlist', data['playlist']);
+		this.config.set('random', data['random']);
+		this.config.set('duration', data['duration'][0]);
+		this.config.set('enable_switch', data['enable_switch']);
+		this.config.set('gpio_switch', data['gpio_switch']);
+		this.config.set('enable_led', data['enable_led']);
+		this.config.set('gpio_led', data['gpio_led']);
+
+		this.freeGPIO();
+		this.onStart();
+
+		this.commandRouter.pushToastMessage('success',
+			'PIR motion detection autoplay',
+			this.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY')
+		);
+	}
+
+	getLabelForSelect(options, key) {
+		const n = options.length;
+		for (let i = 0; i < n; i++) {
+			if (options[i].value == key)
+				return options[i].label;
+		}
+
+		return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+	}
+
+	getUIConfig() {
+	  const defer = libQ.defer();
+	  const lang_code = this.commandRouter.sharedVars.get('language_code');
+		const { config, configManager } = this;
+
+	  this.commandRouter
+		  .i18nJson(
+				__dirname+'/i18n/strings_'+lang_code+'.json',
+	      __dirname+'/i18n/strings_en.json',
+	      __dirname + '/UIConfig.json')
+	    .then(function(uiconf) {
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value', config.get('gpio_pir', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', config.get('playlist_mode', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', config.get('playlist', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value', config.get('random', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[5].config.bars[0].value', config.get('duration', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value', config.get('enable_switch', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value', config.get('gpio_switch', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value', config.get('enable_led', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value', config.get('gpio_led', false));
+
+				defer.resolve(uiconf);
+			})
+			.fail(function() {
+				defer.reject(new Error());
+			});
+
+		return defer.promise;
+	}
+
+	// Playback Controls ---------------------------------------------------------------------------------------
+
+	removePlaylistTitlesFromQueue() {
+		const { config, commandRouter } = this;
+
+		const playlistContentPromise = commandRouter.playListManager.getPlaylistContent(config.get('playlist'));
+		playlistContentPromise.then(function (playlistContent) {
+			if (err) throw err;
+			const queue = commandRouter.stateMachine.getQueue();
+			playlistContent.forEach(function(playlistEntry) {
+				const entryInQueue = queue.findIndex(function(queueEntry) {
+					return queueEntry.uri == playlistEntry.uri;
+				});
+				if(entryInQueue >= 0) {
+					commandRouter.stateMachine.removeQueueItem({value: entryInQueue});
+				}
+			});
 		});
-	});
+	}
 }
-
-
-
-pirMotionDetectionAutoplay.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
-};
-
-pirMotionDetectionAutoplay.prototype.handleBrowseUri = function (curUri) {
-    var self = this;
-
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
-};
-
-
-
-// Define a method to clear, add, and play an array of tracks
-pirMotionDetectionAutoplay.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-pirMotionDetectionAutoplay.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-pirMotionDetectionAutoplay.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::stop');
-
-
-};
-
-// Spop pause
-pirMotionDetectionAutoplay.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::pause');
-
-
-};
-
-// Get state
-pirMotionDetectionAutoplay.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::getState');
-
-
-};
-
-//Parse state
-pirMotionDetectionAutoplay.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-pirMotionDetectionAutoplay.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'pirMotionDetectionAutoplay::pushState');
-
-	return self.commandRouter.servicePushState(state, state.servicename);
-};
-
-pirMotionDetectionAutoplay.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-pirMotionDetectionAutoplay.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-pirMotionDetectionAutoplay.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-pirMotionDetectionAutoplay.prototype._searchArtists = function (results) {
-
-};
-
-pirMotionDetectionAutoplay.prototype._searchAlbums = function (results) {
-
-};
-
-pirMotionDetectionAutoplay.prototype._searchPlaylists = function (results) {
-
-
-};
-
-pirMotionDetectionAutoplay.prototype._searchTracks = function (results) {
-
-};

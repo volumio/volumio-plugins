@@ -98,7 +98,7 @@
           "element": "switch",
           "label": "TRANSLATE.ENABLE_SWITCH_LABEL",
           "doc": "TRANSLATE.ENABLE_SWITCH_DOC",
-          "value": "false"
+          "value": false
         },
         {
           "id": "gpio_switch",
