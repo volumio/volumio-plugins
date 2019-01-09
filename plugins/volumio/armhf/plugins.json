@@ -221,6 +221,24 @@
 						}
 					],
 					"updated": "20-11-2018"
+				},
+				{
+					"prettyName": "pandora",
+					"icon": "fa-lightbulb-o",
+					"name": "pandora",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/pandora/pandora.zip",
+					"license": "ISC",
+					"description": "A plugin to access Pandora Web Radio",
+					"details": "",
+					"author": "truckershitch",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "9-1-2019"
 				}
 			]
 		},
