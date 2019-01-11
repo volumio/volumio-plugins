@@ -1,5 +1,6 @@
 const dgram = require('dgram');
 const EventEmitter = require('events');
+const logger = require('./logger');
 
 class SpotConnEvents extends EventEmitter {
   constructor (opts) {
@@ -7,7 +8,7 @@ class SpotConnEvents extends EventEmitter {
     this._udpsource = dgram.createSocket('udp4');
     this._udpsource.bind(opts.port);
     this._udpsource.on('error', err => {
-      console.error(err);
+      logger.error(err);
     });
 
     this._udpsource.on('message', msg => {
@@ -31,8 +32,11 @@ class SpotConnEvents extends EventEmitter {
         case 'volume' in data:
           this.emit('volume', data.volume);
           break;
+        case 'state' in data:
+          this.emit('status', data.state.status);
+          break;
         default:
-          this.emit('unknown', data);
+          if (data) this.emit('unknown', data);
       }
     } catch (e) {
       switch (msg) {
@@ -68,7 +72,10 @@ class SpotConnEvents extends EventEmitter {
 
   sendmsg (msg) {
     // Attempting to send a message back via udp
-    this._udpsource.send(msg);
+    logger.debug('FE => ', msg);
+    this._udpsource.send(Buffer.from(msg), 5031, 'localhost', (err) =>
+      err ? logger.error('Error sending message: ', err) : null
+    );
   }
 
   close () {
@@ -76,4 +83,16 @@ class SpotConnEvents extends EventEmitter {
   }
 }
 
-module.exports = SpotConnEvents;
+// Simple communication protocol
+let msgMap = new Map();
+
+// values:
+msgMap.set('HELLO', [0x1]);
+msgMap.set('HEARTBEAT', [0x2]);
+msgMap.set('GET_TOKEN', [0x3]);
+msgMap.set('STOP', [0x4]);
+
+module.exports = {
+  SpotConnEvents: SpotConnEvents,
+  msgMap: msgMap
+};

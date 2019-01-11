@@ -4,5 +4,6 @@ cd /data/plugins/music_service/volspotconnect2
                   --disable-audio-cache \
                   --name '${devicename}' --initial-volume ${initvol}\
                   --device ${outdev} ${normalvolume}  \
-                  --mixer alsa --linear-volume \
-                  --mixer-name '${mixname}' --mixer-card '${mixdev}' ${mixlin}
+                  --mixer ${mixer} \
+                  ${mixeropts} \
+#                  --verbose

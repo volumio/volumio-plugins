@@ -19,7 +19,7 @@ if [ ! -f "/etc/systemd/system/volbinauralfilter.service" ];
 		cp /data/plugins/audio_interface/volbinauralfilter/volbinauralfilter.tar.gz /
 		cd /
 		sudo tar -xvf volbinauralfilter.tar.gz
-		rm /volsimpleequal.tar.gz
+		rm /volbinauralfilter.tar.gz
 	else
 		echo "volbinauralfilter.service removing to install new version !"
 		sudo rm /etc/systemd/system/volbinauralfilter.service

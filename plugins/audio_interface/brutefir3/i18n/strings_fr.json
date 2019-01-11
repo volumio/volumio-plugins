@@ -1,0 +1,27 @@
+{
+  "VOLUMIO_DSP":"Centre DSP Volumio",
+ "SETTINGS":"Réglages de Brutefir",
+ "LINPUT_ATTENUATION":"Attenuation d'entrée gauche",
+ "DOC_LATT":"Attenuation for canal gauche",
+ "RINPUT_ATTENUATION":"Attenuation d'entrée droite",
+ "DOC_RATT":"Attenuation canal droit",
+ "LEFT_FILTER":"Filtre gauche",
+ "RIGHT_FILTER":"Filtre droit",
+ "FILTER_SIZE":"Taille du filtre",
+ "NUMBER_PARTITION":"Nombre de partitions",
+ "INTERNAL_RESOLUTION":"Résolution interne",
+ "SAMPLE_RATE":"Taux d'échantillonage",
+ "OUTPUT_FORMAT":"Format de sortie",
+ "INPUT_DEVICE":"Périphérique d'entrée hw:",
+ "SAVE":"Sauver",
+ "OPEN_WIKI":"Ouvrir Wiki",
+ "DOC_OPENW":"Aller à Volumio and brutefir Wiki",
+ "APPLY":"Appliquer",
+ "PLAY_L_SWEEP":"Jouer sur canal gauche",
+ "DESC_PLAY_L_SWEEP":"Jouer sweep sur canal gauche",
+ "PLAY_R_SWEEP":"Jouer sur canal droit",
+ "DESC_PLAY_R_SWEEP":"Jouer sweep sur canal droit",
+ "PLAY_BOTH_CHANNEL_SWEEP":"Jouer 2 canaux",
+ "DESC_PLAY_BOTH_CHANNEL_SWEEP":"Jouer sweep sur 2 canaux"
+
+}
