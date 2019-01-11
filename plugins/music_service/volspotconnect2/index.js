@@ -103,9 +103,8 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function (defer
     trackType: 'spotify',
     seek: 0,
     duration: 0,
-    // samplerate: '44.1 KHz',
-    // samplerate: 'Volspotconnect2',
-    //  bitdepth: '16 bit',
+    samplerate: '44.1 KHz',
+    bitdepth: '16 bit',
     channels: 2
   };
 
