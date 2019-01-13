@@ -5,6 +5,7 @@ const fs=require('fs-extra');
 const config = new (require('v-conf'))();
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
+const Timeout = require('smart-timeout');
 const Gpio = require('onoff').Gpio;
 
 module.exports = class pirMotionDetectionAutoplay {
@@ -13,6 +14,7 @@ module.exports = class pirMotionDetectionAutoplay {
 		this.commandRouter = this.context.coreCommand;
 		this.logger = this.context.logger;
 		this.configManager = this.context.configManager;
+		this.gpioSwitch = null;
 		this.gpioLed = null;
 	}
 
@@ -41,12 +43,14 @@ module.exports = class pirMotionDetectionAutoplay {
 
 	      lastMotion = Date.now();
 
-	      setTimeout(() => {
-	        if (this.detectionIsActive) watchPirSensorForContinuationMode();
-	      }, 30000);
+				Timeout.set('watch', () => {
+					if (this.detectionIsActive) {
+						watchPirSensorForContinuationMode();
+					}
+				}, 30000);
 
-	      setTimeout(() => {
-	        if (Date.now() < lastMotion + 30000 + config.get("duration") * 1000)
+				Timeout.set('check', () => {
+					if (Date.now() < lastMotion + 30000 + config.get("duration") * 1000)
 	          return;
 
 	        if (config.get("random")) commandRouter.stateMachine.setRandom(false);
@@ -56,15 +60,17 @@ module.exports = class pirMotionDetectionAutoplay {
 	          return this.removePlaylistTitlesFromQueue();
 	        }
 
-	        commandRouter.stateMachine.pause(); // config option for stop or pause on motion detection
-	      }, 30000 + config.get("duration") * 1000);
+					// add config option for stop or pause on motion detection?
+	        commandRouter.stateMachine.pause();
+				}, 30000 + config.get("duration") * 1000);
 
-	      if (commandRouter.stateMachine.getState().status == "play") return;
+				let status = commandRouter.stateMachine.getState().status;
+	      if (status == "play") return;
 
 	      if (config.get("random")) commandRouter.stateMachine.setRandom(true);
 
 	      if (config.get("playlist_mode")) {
-	        return commandRouter.playListManager.playPlaylist(
+          return commandRouter.playListManager.playPlaylist(
 	          config.get("playlist")
 	        );
 	      }
@@ -97,9 +103,12 @@ module.exports = class pirMotionDetectionAutoplay {
 			}
 
 			if(this.detectionIsActive) {
-					this.addPirWatch();
+        this.addPirWatch();
 			} else {
-				if(this.commandRouter.stateMachine && this.commandRouter.stateMachine.getState().status == 'play') {
+				Timeout.clear('watch');
+				Timeout.clear('check');
+				let status = this.commandRouter.stateMachine.getState().status;
+				if(status == 'play') {
 					this.commandRouter.stateMachine.stop();
 				}
 			}
@@ -230,6 +239,7 @@ module.exports = class pirMotionDetectionAutoplay {
 
 	saveConfig(data) {
 		this.config.set('gpio_pir', data['gpio_pir']);
+		// Just create playlist with this.commandRouter.playListManager.createPlaylist('playlistname') ?
 		this.config.set('playlist_mode', data['playlist_mode']);
 		this.config.set('playlist', data['playlist']);
 		this.config.set('random', data['random']);
