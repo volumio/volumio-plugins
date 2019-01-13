@@ -34,5 +34,17 @@
     "gpio_led":{
         "type": "number",
         "value": 25
+    },
+    "enable_timeframe":{
+        "type": "boolean",
+        "value": false
+    },
+    "timeframe_start_hour":{
+        "type": "number",
+        "value": 9
+    },
+    "timeframe_end_hour":{
+        "type": "number",
+        "value": 22
     }
 }

@@ -23,5 +23,11 @@
   "ENABLE_LED_LABEL":"Enable LED",
   "ENABLE_LED_DOC":"Lets you add an GPIO output for a status LED",
   "GPIO_LED_LABEL":"LED GPIO",
-  "GPIO_LED_DOC":"GPIO used as a output to connect a LED to (connected with proper resistor value)"
+  "GPIO_LED_DOC":"GPIO used as a output to connect a LED to (connected with proper resistor value)",
+  "ENABLE_TIMEFRAME_LABEL":"Limit detection time",
+  "ENABLE_TIMEFRAME_DOC":"Set a timeframe in which the motion detection autoplay is active",
+  "TIMEFRAME_START_HOUR_LABEL":"Start hour",
+  "TIMEFRAME_START_HOUR_DOC":"The hour when the motion activated playing should start",
+  "TIMEFRAME_END_HOUR_LABEL":"End hour",
+  "TIMEFRAME_END_HOUR_DOC":"The hour when the motion activated playing should end"
 }

@@ -20,7 +20,10 @@
           "enable_switch",
           "gpio_switch",
           "enable_led",
-          "gpio_led"
+          "gpio_led",
+          "enable_timeframe",
+          "timeframe_start_hour",
+          "timeframe_end_hour"
         ]
       },
       "content": [
@@ -124,6 +127,35 @@
           "label": "TRANSLATE.GPIO_LED_LABEL",
           "doc": "TRANSLATE.GPIO_LED_DOC",
           "value": ""
+        },
+        {
+          "id":"enable_timeframe",
+          "element": "switch",
+          "label": "TRANSLATE.ENABLE_TIMEFRAME_LABEL",
+          "doc": "TRANSLATE.ENABLE_TIMEFRAME_DOC",
+          "value": false
+        },
+        {
+          "id": "timeframe_start_hour",
+          "type": "number",
+          "min": 0,
+          "max": 23,
+          "element": "input",
+          "visibleIf": {"field": "enable_timeframe", "value": true},
+          "label": "TRANSLATE.TIMEFRAME_START_HOUR_LABEL",
+          "doc": "TRANSLATE.TIMEFRAME_START_HOUR_DOC",
+          "value": 9
+        },
+        {
+          "id": "timeframe_end_hour",
+          "type": "number",
+          "min": 0,
+          "max": 23,
+          "element": "input",
+          "visibleIf": {"field": "enable_timeframe", "value": true},
+          "label": "TRANSLATE.TIMEFRAME_END_HOUR_LABEL",
+          "doc": "TRANSLATE.TIMEFRAME_END_HOUR_DOC",
+          "value": 23
         }
       ]
     }

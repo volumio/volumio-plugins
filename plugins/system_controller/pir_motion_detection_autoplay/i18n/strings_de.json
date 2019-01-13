@@ -23,5 +23,11 @@
   "ENABLE_LED_LABEL":"LED hinzufügen",
   "ENABLE_LED_DOC":"GPIO-Pin als Ausgang für eine Status-LED",
   "GPIO_LED_LABEL":"LED GPIO",
-  "GPIO_LED_DOC":"GPIO an dessen Ausgang eine Status-LED betrieben werden soll (angeschlossen mit passendem Vorwiderstand)"
+  "GPIO_LED_DOC":"GPIO an dessen Ausgang eine Status-LED betrieben werden soll (angeschlossen mit passendem Vorwiderstand)",
+  "ENABLE_TIMEFRAME_LABEL":"Nur aktiv innerhalb Zeitfenster",
+  "ENABLE_TIMEFRAME_DOC":"Zeitfenster für Bewegungserkennung konfigurieren",
+  "TIMEFRAME_START_HOUR_LABEL":"Beginn",
+  "TIMEFRAME_START_HOUR_DOC":"Wann soll die Bewegungserkennung beginnen?",
+  "TIMEFRAME_END_HOUR_LABEL":"Ende",
+  "TIMEFRAME_END_HOUR_DOC":"Wann soll die Bewegungserkennung abgeschaltet werden?"
 }

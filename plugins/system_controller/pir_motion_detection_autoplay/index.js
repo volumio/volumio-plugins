@@ -6,6 +6,7 @@ const config = new (require('v-conf'))();
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 const Timeout = require('smart-timeout');
+const Schedule = require('node-schedule');
 const Gpio = require('onoff').Gpio;
 
 module.exports = class pirMotionDetectionAutoplay {
@@ -16,6 +17,7 @@ module.exports = class pirMotionDetectionAutoplay {
 		this.configManager = this.context.configManager;
 		this.gpioSwitch = null;
 		this.gpioLed = null;
+		this.sleepytime = false;
 	}
 
 	onVolumioStart() {
@@ -96,7 +98,7 @@ module.exports = class pirMotionDetectionAutoplay {
 	  this.initGPIO();
 
 		const startDetection = () => {
-			this.detectionIsActive = this.gpioSwitch ? this.gpioSwitch.readSync() ^ 1 : 1;
+			this.detectionIsActive = !this.sleepytime && this.gpioSwitch ? this.gpioSwitch.readSync() ^ 1 : 1;
 
 			if(this.gpioLed) {
 				this.gpioLed.writeSync(this.detectionIsActive);
@@ -119,6 +121,21 @@ module.exports = class pirMotionDetectionAutoplay {
 		if(this.gpioSwitch) {
 			this.gpioSwitch.watch(function(err, value) {
 				if (err) throw err;
+				startDetection();
+			});
+		}
+
+		const timeframeEnabled = this.config.get("enable_timeframe");
+		const startHour = this.config.get("timeframe_start_hour");
+		const endHour = this.config.get("timeframe_end_hour");
+
+		if(timeframeEnabled) {
+			var scheduler = Schedule.scheduleJob('0 * * * *', function(time) {
+				if((new Date()).getHours() >= startHour && (new Date()).getHours() < endHour) {
+					this.sleepytime = false;
+				} else {
+					this.sleepytime = true;
+				}
 				startDetection();
 			});
 		}
@@ -238,8 +255,17 @@ module.exports = class pirMotionDetectionAutoplay {
 	// Configuration Methods -----------------------------------------------------------------------------
 
 	saveConfig(data) {
+		if(data['timeframe_start_hour'] >= data['timeframe_end_hour']) {
+			this.commandRouter.pushToastMessage('error',
+				'The end time cannot be before the starting time.',
+				this.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR')
+			);
+
+			return false
+		}
+
 		this.config.set('gpio_pir', data['gpio_pir']);
-		// Just create playlist with this.commandRouter.playListManager.createPlaylist('playlistname') ?
+		// IDEA: Just create playlist with this.commandRouter.playListManager.createPlaylist('playlistname')?
 		this.config.set('playlist_mode', data['playlist_mode']);
 		this.config.set('playlist', data['playlist']);
 		this.config.set('random', data['random']);
@@ -248,6 +274,9 @@ module.exports = class pirMotionDetectionAutoplay {
 		this.config.set('gpio_switch', data['gpio_switch']);
 		this.config.set('enable_led', data['enable_led']);
 		this.config.set('gpio_led', data['gpio_led']);
+		this.config.set('enable_timeframe', data['enable_timeframe']);
+		this.config.set('timeframe_start_hour', data['timeframe_start_hour']);
+		this.config.set('timeframe_end_hour', data['timeframe_end_hour']);
 
 		this.freeGPIO();
 		this.onStart();
@@ -288,6 +317,9 @@ module.exports = class pirMotionDetectionAutoplay {
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value', config.get('gpio_switch', false));
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value', config.get('enable_led', false));
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value', config.get('gpio_led', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value', config.get('enable_timeframe', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value', config.get('timeframe_start_hour', false));
+				configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value', config.get('timeframe_end_hour', false));
 
 				defer.resolve(uiconf);
 			})
