@@ -17,24 +17,82 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "playFromLastPosition", "autostartDelay"
+          "playFromLastPosition", "autoStartDelay", "autoStartMode"
         ]
       },
       "content": [
         {
-          "id": "playFromLastPosition",
-          "element": "switch",
-          "doc": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS_DOC",
-          "label": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS",
-          "value": false
-        },
-        {
-          "id": "autostartDelay",
+          "id": "autoStartDelay",
           "type": "number",
           "element": "input",
           "doc": "TRANSLATE.AUTOSTART_DELAY_DOC",
           "label": "TRANSLATE.AUTOSTART_DELAY",
           "value": 20000
+        },
+        {
+          "id": "autoStartMode",
+          "element": "radio",
+          "options": [
+            {
+              "label":"TRANSLATE.AUTOSTART_FROM_QUEUE",
+              "name": "autoStartModeQueue",
+              "value": "1"
+            },
+            {
+              "label":"TRANSLATE.AUTOSTART_FROM_SELECTED_ITEM",
+              "name": "autoStartModeSelected",
+              "value": "2"
+            }
+          ],
+          "value": "1",
+          "label": "TRANSLATE.AUTOSTART_MODE"
+        },
+        {
+          "id": "playFromLastPosition",
+          "element": "switch",
+          "doc": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS_DOC",
+          "label": "TRANSLATE.AUTOSTART_SAVEFROMLASTPOS",
+          "value": false,
+          "visibleIf": {"field": "autoStartMode", "value": "1"}
+        },
+        {
+          "id": "selectedAutoStartItemTitle",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.AUTOSTART_SELECTED_ITEM",
+          "value": "",
+          "visibleIf": {"field": "autoStartMode", "value": "2"},
+          "attributes":[{"readonly":"readonly"}]
+        },
+        {
+          "id": "selectedAutoStartItemUri",
+          "type": "text",
+          "element": "input",
+          "value": "",
+          "visibleIf": {"field": "autoStartMode", "value": "2"},
+          "attributes":[{"readonly":"readonly"}]
+        },
+        {
+          "id": "selectedAutoStartItemAlbumArt",
+          "type": "image",
+          "element": "input",
+          "value": "",
+          "visibleIf": {"field": "autoStartMode", "value": "2"},
+          "attributes":[
+            {"disabled":"disabled"},
+            {"style":"height:90px;width:90px;padding:0"}
+          ]
+        },
+        {
+          "id": "selectAutoStartItem",
+          "element": "button",
+          "label": "TRANSLATE.AUTOSTART_SELECT_ITEM",
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/autostart",
+            "method": "selectAutoStartItem"
+          },
+          "visibleIf": {"field": "autoStartMode", "value": "2"}
         }
       ]
     }

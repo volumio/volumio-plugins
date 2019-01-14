@@ -11,8 +11,28 @@
       "type": "number",
       "value": -1
     },
-    "autostartDelay": { 
+    "autoStartDelay": { 
       "type": "number",
       "value": 20000
+    },
+    "autoStartMode": {
+      "type": "string",
+      "value": "1"
+    },
+    "autoStartItemUri": {
+      "type": "string",
+      "value": ""
+    },
+    "autoStartItemTitle": {
+      "type": "string",
+      "value": ""
+    },
+    "autoStartItemAlbumArt": {
+      "type": "string",
+      "value": ""
+    },
+    "autoStartItemService": {
+      "type": "string",
+      "value": ""
     }
 }
