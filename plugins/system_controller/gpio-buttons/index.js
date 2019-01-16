@@ -182,7 +182,7 @@ GPIOButtons.prototype.createTriggers = function() {
 
 		if(enabled === true){
 			self.logger.info('GPIO-Buttons: '+ action + ' on pin ' + pin);
-			var j = new Gpio(pin,'in','both');
+			var j = new Gpio(pin,'in','rising', {debounceTimeout: 250});
 			j.watch(self.listener.bind(self,action));
 			self.triggers.push(j);
 		}
@@ -210,21 +210,10 @@ GPIOButtons.prototype.clearTriggers = function () {
 
 GPIOButtons.prototype.listener = function(action,err,value){
 	var self = this;
-
-	var c3 = action.concat('.value');
-	var lastvalue = self.config.get(c3);
-
-	// IF change AND high (or low?)
-	if(value !== lastvalue && value === 1){
-		//do thing
-		self[action]();
-	}
-	// remember value
-	self.config.set(c3,value);
+	
+	// we now debounce the button, so no need to check for the value
+	self[action]();
 };
-
-
-
 
 
 //Play / Pause
