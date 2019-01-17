@@ -7,7 +7,7 @@
       "id": "playlist",
       "element": "section",
       "label": "PIR settings",
-      "icon": "fa-microchip",
+      "icon": "fa-camera",
       "onSave": { "type": "controller", "endpoint": "system_controller/pir_motion_detection_autoplay", "method": "saveConfig" },
       "saveButton": {
         "label": "TRANSLATE.SAVE",
@@ -136,27 +136,78 @@
           "value": false
         },
         {
-          "id": "timeframe_start_hour",
-          "type": "number",
-          "min": 0,
-          "max": 23,
-          "element": "input",
-          "visibleIf": {"field": "enable_timeframe", "value": true},
-          "label": "TRANSLATE.TIMEFRAME_START_HOUR_LABEL",
-          "doc": "TRANSLATE.TIMEFRAME_START_HOUR_DOC",
-          "value": 9
+        "id": "timeframe_start_hour",
+        "element": "select",
+        "type": "number",
+        "visibleIf": {"field": "enable_timeframe", "value": true},
+        "label": "TRANSLATE.TIMEFRAME_START_HOUR_LABEL",
+        "doc": "TRANSLATE.TIMEFRAME_START_HOUR_DOC",
+        "value": {
+          "value": 9,
+          "label": "TRANSLATE.TIMEFRAME_HOUR_9"
         },
+        "options": [
+          { "value": 1, "label": "TRANSLATE.TIMEFRAME_HOUR_1" },
+          { "value": 2, "label": "TRANSLATE.TIMEFRAME_HOUR_2" },
+          { "value": 3, "label": "TRANSLATE.TIMEFRAME_HOUR_3" },
+          { "value": 4, "label": "TRANSLATE.TIMEFRAME_HOUR_4" },
+          { "value": 5, "label": "TRANSLATE.TIMEFRAME_HOUR_5" },
+          { "value": 6, "label": "TRANSLATE.TIMEFRAME_HOUR_6" },
+          { "value": 7, "label": "TRANSLATE.TIMEFRAME_HOUR_7" },
+          { "value": 8, "label": "TRANSLATE.TIMEFRAME_HOUR_8" },
+          { "value": 9, "label": "TRANSLATE.TIMEFRAME_HOUR_9" },
+          { "value": 10, "label": "TRANSLATE.TIMEFRAME_HOUR_10" },
+          { "value": 11, "label": "TRANSLATE.TIMEFRAME_HOUR_11" },
+          { "value": 12, "label": "TRANSLATE.TIMEFRAME_HOUR_12" },
+          { "value": 13, "label": "TRANSLATE.TIMEFRAME_HOUR_13" },
+          { "value": 14, "label": "TRANSLATE.TIMEFRAME_HOUR_14" },
+          { "value": 15, "label": "TRANSLATE.TIMEFRAME_HOUR_15" },
+          { "value": 16, "label": "TRANSLATE.TIMEFRAME_HOUR_16" },
+          { "value": 17, "label": "TRANSLATE.TIMEFRAME_HOUR_17" },
+          { "value": 18, "label": "TRANSLATE.TIMEFRAME_HOUR_18" },
+          { "value": 19, "label": "TRANSLATE.TIMEFRAME_HOUR_19" },
+          { "value": 20, "label": "TRANSLATE.TIMEFRAME_HOUR_20" },
+          { "value": 21, "label": "TRANSLATE.TIMEFRAME_HOUR_21" },
+          { "value": 22, "label": "TRANSLATE.TIMEFRAME_HOUR_22" },
+          { "value": 23, "label": "TRANSLATE.TIMEFRAME_HOUR_23" },
+          { "value": 0, "label": "TRANSLATE.TIMEFRAME_HOUR_0" }
+        ]},
         {
-          "id": "timeframe_end_hour",
-          "type": "number",
-          "min": 0,
-          "max": 23,
-          "element": "input",
-          "visibleIf": {"field": "enable_timeframe", "value": true},
-          "label": "TRANSLATE.TIMEFRAME_END_HOUR_LABEL",
-          "doc": "TRANSLATE.TIMEFRAME_END_HOUR_DOC",
-          "value": 23
-        }
+        "id": "timeframe_end_hour",
+        "element": "select",
+        "visibleIf": {"field": "enable_timeframe", "value": true},
+        "label": "TRANSLATE.TIMEFRAME_END_HOUR_LABEL",
+        "doc": "TRANSLATE.TIMEFRAME_END_HOUR_DOC",
+        "value": {
+          "value": 23,
+          "label": "TRANSLATE.TIMEFRAME_HOUR_23"
+        },
+        "options": [
+          { "value": 1, "label": "TRANSLATE.TIMEFRAME_HOUR_1" },
+          { "value": 2, "label": "TRANSLATE.TIMEFRAME_HOUR_2" },
+          { "value": 3, "label": "TRANSLATE.TIMEFRAME_HOUR_3" },
+          { "value": 4, "label": "TRANSLATE.TIMEFRAME_HOUR_4" },
+          { "value": 5, "label": "TRANSLATE.TIMEFRAME_HOUR_5" },
+          { "value": 6, "label": "TRANSLATE.TIMEFRAME_HOUR_6" },
+          { "value": 7, "label": "TRANSLATE.TIMEFRAME_HOUR_7" },
+          { "value": 8, "label": "TRANSLATE.TIMEFRAME_HOUR_8" },
+          { "value": 9, "label": "TRANSLATE.TIMEFRAME_HOUR_9" },
+          { "value": 10, "label": "TRANSLATE.TIMEFRAME_HOUR_10" },
+          { "value": 11, "label": "TRANSLATE.TIMEFRAME_HOUR_11" },
+          { "value": 12, "label": "TRANSLATE.TIMEFRAME_HOUR_12" },
+          { "value": 13, "label": "TRANSLATE.TIMEFRAME_HOUR_13" },
+          { "value": 14, "label": "TRANSLATE.TIMEFRAME_HOUR_14" },
+          { "value": 15, "label": "TRANSLATE.TIMEFRAME_HOUR_15" },
+          { "value": 16, "label": "TRANSLATE.TIMEFRAME_HOUR_16" },
+          { "value": 17, "label": "TRANSLATE.TIMEFRAME_HOUR_17" },
+          { "value": 18, "label": "TRANSLATE.TIMEFRAME_HOUR_18" },
+          { "value": 19, "label": "TRANSLATE.TIMEFRAME_HOUR_19" },
+          { "value": 20, "label": "TRANSLATE.TIMEFRAME_HOUR_20" },
+          { "value": 21, "label": "TRANSLATE.TIMEFRAME_HOUR_21" },
+          { "value": 22, "label": "TRANSLATE.TIMEFRAME_HOUR_22" },
+          { "value": 23, "label": "TRANSLATE.TIMEFRAME_HOUR_23" },
+          { "value": 0, "label": "TRANSLATE.TIMEFRAME_HOUR_0" }
+        ]}
       ]
     }
   ]

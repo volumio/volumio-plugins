@@ -97,46 +97,53 @@ module.exports = class pirMotionDetectionAutoplay {
 
 	  this.initGPIO();
 
-		const startDetection = () => {
-			this.detectionIsActive = !this.sleepytime && this.gpioSwitch ? this.gpioSwitch.readSync() ^ 1 : 1;
+		const timeframeEnabled = this.config.get("enable_timeframe");
+		if(timeframeEnabled) {
+
+			const startHour = Number.parseInt(this.config.get("timeframe_start_hour"));
+			const endHour = Number.parseInt(this.config.get("timeframe_end_hour"));
+
+			if((new Date()).getHours() >= startHour && (new Date()).getHours() < endHour) {
+				this.sleepytime = false;
+			} else {
+				this.sleepytime = true;
+			}
+
+			var scheduler = Schedule.scheduleJob('0 ' + startHour + ' * * *', function(time) {
+				this.sleepytime = false;
+				applyDetectionConfiguration();
+			});
+
+			var scheduler = Schedule.scheduleJob('0 ' + endHour + ' * * *', function(time) {
+				this.sleepytime = true;
+				applyDetectionConfiguration();
+			});
+		}
+
+		const applyDetectionConfiguration = () => {
+			this.detectionIsActive = this.gpioSwitch ? this.gpioSwitch.readSync() ^ 1 : 1;
 
 			if(this.gpioLed) {
 				this.gpioLed.writeSync(this.detectionIsActive);
 			}
 
-			if(this.detectionIsActive) {
+			if(this.detectionIsActive && !this.sleepytime) {
         this.addPirWatch();
 			} else {
 				Timeout.clear('watch');
 				Timeout.clear('check');
-				let status = this.commandRouter.stateMachine.getState().status;
-				if(status == 'play') {
+				if(this.commandRouter.stateMachine && this.commandRouter.stateMachine.getState().status == 'play') {
 					this.commandRouter.stateMachine.stop();
 				}
 			}
 		};
 
-		startDetection();
+		applyDetectionConfiguration();
 
 		if(this.gpioSwitch) {
 			this.gpioSwitch.watch(function(err, value) {
 				if (err) throw err;
-				startDetection();
-			});
-		}
-
-		const timeframeEnabled = this.config.get("enable_timeframe");
-		const startHour = this.config.get("timeframe_start_hour");
-		const endHour = this.config.get("timeframe_end_hour");
-
-		if(timeframeEnabled) {
-			var scheduler = Schedule.scheduleJob('0 * * * *', function(time) {
-				if((new Date()).getHours() >= startHour && (new Date()).getHours() < endHour) {
-					this.sleepytime = false;
-				} else {
-					this.sleepytime = true;
-				}
-				startDetection();
+				applyDetectionConfiguration();
 			});
 		}
 
@@ -255,13 +262,20 @@ module.exports = class pirMotionDetectionAutoplay {
 	// Configuration Methods -----------------------------------------------------------------------------
 
 	saveConfig(data) {
-		if(data['timeframe_start_hour'] >= data['timeframe_end_hour']) {
+		if(data['enable_timeframe']
+			&& (!data['timeframe_start_hour'].value	|| !data['timeframe_end_hour'].value)) {
+			this.commandRouter.pushToastMessage('error',
+				'Start and end time cannot be empty.',
+				this.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR')
+			);
+			return false;
+		}
+		if(data['timeframe_start_hour'].value >= data['timeframe_end_hour'].value) {
 			this.commandRouter.pushToastMessage('error',
 				'The end time cannot be before the starting time.',
 				this.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR')
 			);
-
-			return false
+			return false;
 		}
 
 		this.config.set('gpio_pir', data['gpio_pir']);
@@ -275,8 +289,8 @@ module.exports = class pirMotionDetectionAutoplay {
 		this.config.set('enable_led', data['enable_led']);
 		this.config.set('gpio_led', data['gpio_led']);
 		this.config.set('enable_timeframe', data['enable_timeframe']);
-		this.config.set('timeframe_start_hour', data['timeframe_start_hour']);
-		this.config.set('timeframe_end_hour', data['timeframe_end_hour']);
+		this.config.set('timeframe_start_hour', data['timeframe_start_hour']['value']);
+		this.config.set('timeframe_end_hour', data['timeframe_end_hour']['value']);
 
 		this.freeGPIO();
 		this.onStart();
@@ -298,6 +312,7 @@ module.exports = class pirMotionDetectionAutoplay {
 	}
 
 	getUIConfig() {
+		const self = this;
 	  const defer = libQ.defer();
 	  const lang_code = this.commandRouter.sharedVars.get('language_code');
 		const { config, configManager } = this;
@@ -318,9 +333,20 @@ module.exports = class pirMotionDetectionAutoplay {
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value', config.get('enable_led', false));
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value', config.get('gpio_led', false));
 				configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value', config.get('enable_timeframe', false));
-				configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value', config.get('timeframe_start_hour', false));
-				configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value', config.get('timeframe_end_hour', false));
-
+				self.configManager.setUIConfigParam(uiconf,
+					'sections[0].content[11].value.label',
+					self.getLabelForSelect(
+						self.configManager.getValue(uiconf, 'sections[0].content[11].options'),
+						config.get('timeframe_start_hour'),
+					)
+				);
+				self.configManager.setUIConfigParam(uiconf,
+					'sections[0].content[12].value.label',
+					self.getLabelForSelect(
+						self.configManager.getValue(uiconf, 'sections[0].content[12].options'),
+						config.get('timeframe_end_hour'),
+					)
+				);
 				defer.resolve(uiconf);
 			})
 			.fail(function() {
