@@ -93,6 +93,7 @@ module.exports = class pirMotionDetectionAutoplay {
 	}
 
 	onStart() {
+		const self = this;
 	  const defer = libQ.defer();
 
 	  this.initGPIO();
@@ -110,12 +111,12 @@ module.exports = class pirMotionDetectionAutoplay {
 			}
 
 			var scheduler = Schedule.scheduleJob('0 ' + startHour + ' * * *', function(time) {
-				this.sleepytime = false;
+				self.sleepytime = false;
 				applyDetectionConfiguration();
 			});
 
 			var scheduler = Schedule.scheduleJob('0 ' + endHour + ' * * *', function(time) {
-				this.sleepytime = true;
+				self.sleepytime = true;
 				applyDetectionConfiguration();
 			});
 		}
