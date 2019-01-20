@@ -38,9 +38,7 @@ Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-p
 
 ### 1. Enable SSH and connect to Volumio
 
-To do that, have a look here :
-
-https://volumio.github.io/docs/User_Manual/SSH.html
+To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/User_Manual/SSH.html)
 
 
 ### 2. Download and install the plugin

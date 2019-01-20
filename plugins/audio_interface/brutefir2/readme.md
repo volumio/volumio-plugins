@@ -1,3 +1,73 @@
+2019 January 19th
+
+# PLEASE DO NOT USE IT. NOT UPDATED!!!
+
+# SEE HERE INSTEAD : [brutefir3](https://github.com/balbuze/volumio-plugins/tree/master/plugins/audio_interface/brutefir3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 01st April January 18
 
 
