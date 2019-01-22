@@ -1,6 +1,7 @@
 {
   "MINIDLNA":{
     "PLUGIN_NAME":"miniDLNA",
+    "NAN":": Zahlenwert erforderlich.",
     "MISSING":" existiert nicht!",
     "CONF_UPDATED":"Die miniDLNA-Konfiguration wurde aktualisiert.",
     "ERR_CREATE":"Fehler beim Erstellen von ",
