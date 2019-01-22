@@ -58,7 +58,10 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.AUDIO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.AUDIO_FOLDER",
-                             "value": "/data/INTERNAL"
+                             "value": "/data/INTERNAL",
+                             "attributes": [
+                                             {"placeholder": "/data/INTERNAL"}
+                                           ]
                              },
                              {
                              "id": "media_dir_p",
@@ -66,7 +69,10 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.PICTURE_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.PICTURE_FOLDER",
-                             "value": "/data/INTERNAL"           
+                             "value": "/data/INTERNAL",
+                             "attributes": [
+                                             {"placeholder": "/data/INTERNAL"}
+                                           ]
                              },
                              {
                              "id": "media_dir_v",
@@ -74,7 +80,10 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.VIDEO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.VIDEO_FOLDER",
-                             "value": "/data/INTERNAL"
+                             "value": "/data/INTERNAL",
+                             "attributes": [
+                                             {"placeholder": "/data/INTERNAL"}
+                                           ]
                              },
                              {
                              "id": "db_dir",
@@ -83,7 +92,10 @@
                              "doc": "TRANSLATE.MINIDLNA.DB_DIR_DOC",
                              "label": "TRANSLATE.MINIDLNA.DB_DIR",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "/data/configuration/miscellanea/minidlna"
+                             "value": "/data/configuration/miscellanea/minidlna",
+                             "attributes": [
+                                             {"placeholder": "/data/configuration/miscellanea/minidlna"}
+                                           ]
                              },
                              {
                              "id": "log_dir",
@@ -92,7 +104,10 @@
                              "doc": "TRANSLATE.MINIDLNA.LOG_DIR_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOG_DIR",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "/var/log"
+                             "value": "/var/log",
+                             "attributes": [
+                                             {"placeholder": "/var/log"}
+                                           ]
                              },
                              {
                              "id": "root_container",
@@ -131,7 +146,10 @@
                              "doc": "TRANSLATE.MINIDLNA.NETWORK_INTERFACE_DOC",
                              "label": "TRANSLATE.MINIDLNA.NETWORK_INTERFACE",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "eth0,wlan0"
+                             "value": "eth0,wlan0",
+                             "attributes": [
+                                             {"placeholder": "eth0,wlan0"}
+                                           ]
                              },
                              {
                              "id": "port",
@@ -140,7 +158,10 @@
                              "doc": "TRANSLATE.MINIDLNA.PORT_DOC",
                              "label": "TRANSLATE.MINIDLNA.PORT",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": 8200
+                             "value": 8200,
+                             "attributes": [
+                                             {"placeholder": 8200}
+                                           ]
                              },
                              {
                              "id": "presentation_url",
@@ -149,7 +170,10 @@
                              "doc": "TRANSLATE.MINIDLNA.PRESENTATION_URL_DOC",
                              "label": "TRANSLATE.MINIDLNA.PRESENTATION_URL",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "/"
+                             "value": "/",
+                             "attributes": [
+                                             {"placeholder": "/"}
+                                           ]
                              },
                              {
                              "id": "friendly_name",
@@ -158,7 +182,10 @@
                              "doc": "TRANSLATE.MINIDLNA.FRIENDLY_NAME_DOC",
                              "label": "TRANSLATE.MINIDLNA.FRIENDLY_NAME",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "VolumioDLNA"
+                             "value": "VolumioDLNA",
+                             "attributes": [
+                                             {"placeholder": "VolumioDLNA"}
+                                           ]
                              },
                              {
                              "id": "serial",
@@ -167,7 +194,10 @@
                              "doc": "TRANSLATE.MINIDLNA.SERIAL_DOC",
                              "label": "TRANSLATE.MINIDLNA.SERIAL",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "00000000"
+                             "value": "00000000",
+                             "attributes": [
+                                             {"placeholder": "00000000"}
+                                           ]
                              },
                              {
                              "id": "model_name",
@@ -176,7 +206,10 @@
                              "doc": "TRANSLATE.MINIDLNA.MODEL_NAME_DOC",
                              "label": "TRANSLATE.MINIDLNA.MODEL_NAME",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "Windows Media Connect compatible (MiniDLNA)"
+                             "value": "Windows Media Connect compatible (MiniDLNA)",
+                             "attributes": [
+                                             {"placeholder": "Windows Media Connect compatible (MiniDLNA)"}
+                                           ]
                              },
                              {
                              "id": "model_number",
@@ -185,7 +218,10 @@
                              "doc": "TRANSLATE.MINIDLNA.MODEL_NUMBER_DOC",
                              "label": "TRANSLATE.MINIDLNA.MODEL_NUMBER",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "Volumio Edition"
+                             "value": "Volumio Edition",
+                             "attributes": [
+                                             {"placeholder": "Volumio Edition"}
+                                           ]
                              },
                              {
                              "id": "inotify",
@@ -202,7 +238,10 @@
                              "doc": "TRANSLATE.MINIDLNA.ALBUM_ART_NAMES_DOC",
                              "label": "TRANSLATE.MINIDLNA.ALBUM_ART_NAMES",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg"
+                             "value": "Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg",
+                             "attributes": [
+                                             {"placeholder": "Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg"}
+                                           ]
                              },
                              {
                              "id": "strict_dlna",
@@ -227,7 +266,10 @@
                              "doc": "TRANSLATE.MINIDLNA.NOTIFY_INTERVAL_DOC",
                              "label": "TRANSLATE.MINIDLNA.NOTIFY_INTERVAL",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": 5
+                             "value": 5,
+                             "attributes": [
+                                             {"placeholder": 5}
+                                           ]
                              },
                              {
                              "id": "minissdpdsocket",
@@ -254,7 +296,10 @@
                              "doc": "TRANSLATE.MINIDLNA.MAX_CONNECTIONS_DOC",
                              "label": "TRANSLATE.MINIDLNA.MAX_CONNECTIONS",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": 50
+                             "value": 50,
+                             "attributes": [
+                                             {"placeholder": 50}
+                                           ]
                              },
                              {
                              "id": "loglevel_general",
