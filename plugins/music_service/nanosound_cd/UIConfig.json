@@ -1,0 +1,65 @@
+{
+    "page": {
+      "label": "NanoSound CD"
+    },
+    "sections": [
+      {
+        "id": "section_display",
+        "element": "section",
+        "label": "NanoSound CD Settings",
+        "icon": "fa-plug",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveConfig"},
+        "saveButton": {
+          "label": "Save",
+          "data": [
+            "upsampling"
+          ]
+        },
+        "content": [
+          {
+            "id": "upsampling",
+            "element": "select",
+            "label": "Upsampling To",
+            "value": {"value": "1",
+                      "label": "176.4kHz (x4)"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "176.4kHz (x4)"
+              },
+              {
+                "value": "2",
+                "label": "88.2kHz (x2)"
+              },
+              {
+                "value": "3",
+                "label": "Disable"
+              }
+            ]
+          },
+          {
+            "id": "extractformat",
+            "element": "select",
+            "label": "Extract Format",
+            "value": {"value": "1",
+                      "label": "FLAC"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "FLAC"
+              },
+              {
+                "value": "2",
+                "label": "wav"
+              }
+            ]
+          }
+      ]
+      }
+    ]
+  }
+  
