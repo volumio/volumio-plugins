@@ -205,12 +205,70 @@ nanosoundCd.prototype.handleBrowseUri = function (curUri) {
     return response;
 };
 
-/*
-nanosoundCd.prototype.PlayTrack = function(track) {
 
 
+nanosoundCd.prototype.playNextTrack = function(position) {
+	var self = this;
+	var defer = libQ.defer();
+	self.commandRouter.pushConsoleMessage('********[' + Date.now() + '] ' + 'nanosoundCd::PlayNextTrack ' + position);
+	
+	//var vState = self.commandRouter.stateMachine.getState();
 
-};*/
+	if(position < self.commandRouter.stateMachine.playQueue.arrayQueue.length)
+	{
+		var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[position];
+		
+
+		if(queueItem.service=='nanosound_cd')
+		{
+			var uriSplitted=queueItem.uri.split('/');
+			var trackno = uriSplitted[1];
+
+			self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::PlayNextTrack ' + queueItem.uri);
+	
+			var url = "http://127.0.0.1:5002/playtrack?usecachedmeta=True&track=" + trackno
+			request({
+			url: url,
+			json: true
+			}, function (error, httpresponse, body) {
+
+				if(body["status"]!="ERROR")
+				{
+					var rpState = {
+					status: 'play',
+					service: 'nanosound_cd',
+					type: 'track',
+					trackType: self.tracktype,
+					uri: queueItem.uri,
+					name: queueItem.name,
+					title: queueItem.title,
+					streaming: false,
+					artist: queueItem.artist,
+					album: queueItem.album,
+					seek: 0,
+					samplerate: self.samplerate,
+					bitdepth: '16 bit',
+					channels: 2
+					};
+					self.state = rpState;
+					self.commandRouter.servicePushState(rpState, 'nanosound_cd');
+				}
+
+				return libQ.resolve(rpState)
+			});
+
+
+		}
+	}
+	return defer.promise;
+
+};
+
+nanosoundCd.prototype.hello = function(pos) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::hello');
+	
+};
 
 // Define a method to clear, add, and play an array of tracks
 nanosoundCd.prototype.clearAddPlayTrack = function(track) {
@@ -222,7 +280,8 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
     }
 	
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::clearAddPlayTrack');
-	
+	//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
+
 	
 	self.commandRouter.logger.info("RUN1:");
 	var uriSplitted=track.uri.split('/');
@@ -234,6 +293,11 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 	json: true
 	}, function (error, httpresponse, body) {
 		self.commandRouter.logger.info("RUN2");
+
+		var tname=track.name;;
+		var tartist=track.artist;
+		var talbum=track.album;
+
 		if(body["status"]!="ERROR")
 		{
 
@@ -244,11 +308,11 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			type: 'track',
 			trackType: self.tracktype,
 			uri: track.uri,
-			name: track.name,
-			title: track.title,
+			name: tname,
+			title: tname,
 			streaming: false,
-			artist: track.artist,
-			album: track.album,
+			artist: tartist,
+			album: talbum,
 			duration: body["length"],
 			seek: 0,
 			samplerate: self.samplerate,
@@ -256,18 +320,16 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			channels: 2
 			};
 
-			self.state = rpState;
-
 			//workaround to allow state to be pushed when not in a volatile state
-			/*
+			
 			var vState = self.commandRouter.stateMachine.getState();
 
 			
 			var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
-			queueItem.name = track.name;
-			queueItem.artist = track.artist;
-			queueItem.album = track.album;
+			queueItem.name = tname;
+			queueItem.artist = tartist;
+			queueItem.album = talbum;
 			queueItem.trackType = self.tracktype;
 			queueItem.duration = body["length"];
 			queueItem.samplerate = self.samplerate;
@@ -284,8 +346,13 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			self.commandRouter.stateMachine.simulateStopStartDone=false;
 			self.commandRouter.logger.info("curduration:" + body["length"]);
 
-			self.state = rpState;*/
+			self.state = rpState;
 			self.commandRouter.servicePushState(rpState, 'nanosound_cd');
+			self.commandRouter.logger.info("*************curduration:" + body["length"]);
+			//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
+			self.timer = new RPTimer(self.playNextTrack.bind(self), [3], 5000);
+			
+    		
 		}
 		return libQ.resolve(rpState)
 	})
@@ -299,6 +366,11 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 
 	return self.sendSpopCommand('uplay', [track.uri]);*/
 };
+
+function liftOff(timer){
+    timer.clearInterval();
+    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::liftoff');
+}
 
 nanosoundCd.prototype.seek = function (timepos) {
 	var self = this;
@@ -520,19 +592,36 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 				self.timer.clear();
 			}
 
+
+
+
+
 			if (uri.startsWith('nanosound_cd/playall')) {
 				var response=[];
 				var i;
 				for(i=0;i<cachedmeta.length;i++)
 				{
+					var tname = cachedmeta[i]['track_name'];
+					var ttitle =  cachedmeta[i]['track_name'];
+					var tartist = cachedmeta[i]['artist_name'];
+					var talbum = cachedmeta[i]['album_name'];
+
+					if(tname==null)
+					{
+						tname = "Track " + cachedmeta[i]['track_number'];
+						ttitle = "Track " + cachedmeta[i]['track_number'];
+						tartist = "Unknown Artist";
+						talbum = "Unknown Album";
+					}
+
 					var item={
 						uri:  'nanosound_cd/' + cachedmeta[i]['track_number'],
 						service: 'nanosound_cd',
 						type: 'song',
-						name:  cachedmeta[i]['track_name'],
-						title: cachedmeta[i]['track_name'],
-						artist:cachedmeta[i]['artist_name'],
-						album: cachedmeta[i]['album_name'],
+						name:  tname,
+						title: ttitle,
+						artist:tartist,
+						album: talbum,
 						streaming: false,
 						//duration: 10,
 						albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd.svg',
@@ -549,16 +638,30 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 			else if (uri.startsWith('nanosound_cd/')) {
 				uriSplitted=uri.split('/');
 				var trackno = uriSplitted[1];
-				console.log(trackno)
+
 				var response=[];
+
+				var tname = cachedmeta[trackno -1]['track_name'];
+				var ttitle =  cachedmeta[trackno -1]['track_name'];
+				var tartist = cachedmeta[trackno -1]['artist_name'];
+				var talbum = cachedmeta[trackno -1]['album_name'];
+
+				if(tname==null)
+				{
+					tname = "Track " + trackno;
+					ttitle = "Track " + trackno;
+					tartist = "Unknown Artist";
+					talbum = "Unknown Album";
+				}
+
 				var item={
 					uri: 'nanosound_cd/' + trackno,
 					service: 'nanosound_cd',
 					type: 'song',
-					name:  cachedmeta[trackno-1]['track_name'],
-					title: cachedmeta[trackno-1]['track_name'],
-					artist:cachedmeta[trackno-1]['artist_name'],
-					album: cachedmeta[trackno-1]['album_name'],
+					name:  tname,
+					title: ttitle,
+					artist:tartist,
+					album: talbum,
 					albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd.svg',
 					streaming: false,
 					//duration: 10,
@@ -642,7 +745,7 @@ nanosoundCd.prototype._searchPlaylists = function (results) {
 nanosoundCd.prototype._searchTracks = function (results) {
 
 };
-/*
+
 function RPTimer(callback, args, delay) {
     var start, remaining = delay;
 
@@ -655,7 +758,7 @@ function RPTimer(callback, args, delay) {
 
     RPTimer.prototype.resume = function () {
         start = new Date();
-        nanoTimer.clearTimeout();
+		nanoTimer.clearTimeout();
         nanoTimer.setTimeout(callback, args, remaining + 'm');
     };
 
@@ -664,4 +767,4 @@ function RPTimer(callback, args, delay) {
     };
 
     this.resume();
-}; */
+}; 
