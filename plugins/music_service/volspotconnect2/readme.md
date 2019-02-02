@@ -63,7 +63,7 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 2nd Febuary 2019
 
-- merged PR from @ash
+- merged PR from @ashthespy
 
 11th december 2018
 
