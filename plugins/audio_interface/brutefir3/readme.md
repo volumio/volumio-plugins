@@ -1,4 +1,4 @@
-December 27th 2018
+Febuary 2nd 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,11 @@ December, 27 th 2018
 
 
 ### 4. Last changes
+
+Febuary, 2nd 2019
+
+- merge left and right attenuation
+- timer adjustement (no idea if it could solve some startup prob...) 
 
 December, 15th 2018
 

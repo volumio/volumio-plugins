@@ -1,17 +1,17 @@
 /*brutefir plugin for volumio3. By balbuze 2018*/
 'use strict';
 
-//var io = require('socket.io-client');
+var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var libQ = require('kew');
-//var libNet = require('net');
-//var net = require('net');
+var libNet = require('net');
+var net = require('net');
 var config = new(require('v-conf'))();
-//var Telnet = require('telnet-client')
-//var connection = new Telnet()
+var Telnet = require('telnet-client')
+var connection = new Telnet()
 
 
 // Define the ControllerBrutefir class
@@ -130,7 +130,7 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function() {
  return defer.promise;
 
 };
-/*
+
  //here we connect to brutefir to read peak errors
  ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
   var self = this;
@@ -148,12 +148,12 @@ connection.on('ready', function(prompt) {
     console.log('brutefir connection' + response)
   })
 })
-
+/*
 connection.on('timeout', function() {
   console.log('socket timeout!')
   connection.end()
 })
-
+*/
 connection.on('data', function() {
   console.log('from cli '+ data)
 //  connection.end()
@@ -195,9 +195,8 @@ connection.on('close', function() {
  // client.destroy(); // kill client after server's response
   });
 //}, 5000);
-
- };
 */
+ };
 
 ControllerBrutefir.prototype.onStop = function() {
  var self = this;
@@ -300,12 +299,12 @@ uiconf.sections[1].content[1].value = self.config.get('rdistance');
 
 
     valuestoredl = self.config.get('leftfilter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredl);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', valuestoredl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', valuestoredl);
 
     valuestoredr = self.config.get('rightfilter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
     fs.readdir(filterfolder, function(err, item) {
 
@@ -314,35 +313,32 @@ uiconf.sections[1].content[1].value = self.config.get('rdistance');
      self.logger.info('list of available filters ' + items);
 
      for (var i in items) {
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
        value: items[i],
        label: items[i]
       });
 
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
        value: items[i],
        label: items[i]
       });
      }
     });
 
-    value = self.config.get('lattenuation');
+    value = self.config.get('attenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
 
-    value = self.config.get('rattenuation');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
     value = self.config.get('filter_size');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
 
     value = self.config.get('smpl_rate');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
     value = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[6].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value))
     var value;
  
 
@@ -527,10 +523,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf5 = conf4.replace("${delay}", delay);
    var conf6 = conf5.replace("${leftfilter}", composeleftfilter);
    var conf7 = conf6.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf8 = conf7.replace("${lattenuation}", self.config.get('lattenuation'));
+   var conf8 = conf7.replace("${lattenuation}", self.config.get('attenuation'));
    var conf9 = conf8.replace("${rightfilter}", composerightfilter);
    var conf10 = conf9.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf11 = conf10.replace("${rattenuation}", self.config.get('rattenuation'));
+   var conf11 = conf10.replace("${rattenuation}", self.config.get('attenuation'));
    var conf12 = conf11.replace("${output_device}", output_device);
    var conf13 = conf12.replace("${output_format}", self.config.get('output_format'));
 
@@ -562,8 +558,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 
  output_device = self.config.get('alsa_device');
  var defer = libQ.defer();
- self.config.set('lattenuation', data['lattenuation'].value);
- self.config.set('rattenuation', data['rattenuation'].value);
+ self.config.set('attenuation', data['attenuation'].value);
  self.config.set('leftfilter', data['leftfilter'].value);
  self.config.set('rightfilter', data['rightfilter'].value);
  self.config.set('filter_size', data['filter_size'].value);
@@ -1006,7 +1001,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume on startup at " + volumeval);
     }
    });
-  }, 18000);
+  }, 23000);
  }
  // retur
  return defer.promise;

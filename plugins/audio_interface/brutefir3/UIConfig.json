@@ -16,8 +16,7 @@
       "saveButton": {
         "label": "TRANSLATE.APPLY",
         "data": [
-          "lattenuation",
-          "rattenuation",
+          "attenuation",
           "leftfilter",
           "rightfilter",
           "filter_size",
@@ -27,7 +26,7 @@
       },
       "content": [
         {
-          "id": "lattenuation",
+          "id": "attenuation",
           "element": "select",
           "doc": "TRANSLATE.DOC_LATT",
           "label": "TRANSLATE.LINPUT_ATTENUATION",
@@ -86,66 +85,7 @@
             }
           ]
         },
-        {
-          "id": "rattenuation",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_RATT",
-          "label": "TRANSLATE.RINPUT_ATTENUATION",
-          "value": {
-            "value": "10",
-            "label": "10"
-          },
-          "options": [
-            {
-              "value": "0",
-              "label": "0"
-            },
-            {
-              "value": "2",
-              "label": "2"
-            },
-            {
-              "value": "4",
-              "label": "4"
-            },
-            {
-              "value": "6",
-              "label": "6"
-            },
-            {
-              "value": "8",
-              "label": "8"
-            },
-            {
-              "value": "10",
-              "label": "10"
-            },
-            {
-              "value": "12",
-              "label": "12"
-            },
-            {
-              "value": "14",
-              "label": "14"
-            },
-            {
-              "value": "16",
-              "label": "16"
-            },
-            {
-              "value": "18",
-              "label": "18"
-            },
-            {
-              "value": "20",
-              "label": "20"
-            },
-            {
-              "value": "22",
-              "label": "22"
-            }
-          ]
-        },
+        
         {
           "id": "leftfilter",
           "element": "select",

@@ -1,9 +1,9 @@
 {
   "VOLUMIO_DSP":"Centre DSP Volumio",
  "SETTINGS":"Réglages de Brutefir",
- "LINPUT_ATTENUATION":"Attenuation d'entrée gauche",
- "DOC_LATT":"Attenuation for canal gauche",
- "RINPUT_ATTENUATION":"Attenuation d'entrée droite",
+ "LINPUT_ATTENUATION":"Attenuation d'entrée",
+ "DOC_LATT":"Attenuation d'entrée : doit être au moins égale à la valeur max en dB de la correction",
+ "RINPUT_ATTENUATION":"Attenuation d'entrée : doit être au moins égale à la valeur max en dB de la correction",
  "DOC_RATT":"Attenuation canal droit",
  "LEFT_FILTER":"Filtre gauche",
  "RIGHT_FILTER":"Filtre droit",

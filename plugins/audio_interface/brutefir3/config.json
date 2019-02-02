@@ -1,7 +1,6 @@
 {
 "smpl_rate":{"type": "string","value": "96000"},
-"lattenuation":{"type":"string","value":"10"},
-"rattenuation":{"type":"string","value":"10"},
+"attenuation":{"type":"string","value":"10"},
 "leftfilter":{"type": "string","value": "None"},
 "rightfilter":{"type": "string","value": "None"},
 "filter_size":{"type": "string","value": "65536"},

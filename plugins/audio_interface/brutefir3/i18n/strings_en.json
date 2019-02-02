@@ -1,8 +1,8 @@
 {
  "VOLUMIO_DSP":"Volumio DSP center",
  "SETTINGS":"Brutefir settings",
- "LINPUT_ATTENUATION":"Left Input attenuation",
- "DOC_LATT":"Attenuation for left channel",
+ "LINPUT_ATTENUATION":"Input attenuation",
+ "DOC_LATT":"Attenuation must be at least equal to the max value in dB of the correction",
  "RINPUT_ATTENUATION":"Right Input attenuation",
  "DOC_RATT":"Attenuation for right channel",
  "LEFT_FILTER":"Left filter",
