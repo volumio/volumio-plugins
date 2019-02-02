@@ -205,8 +205,30 @@ nanosoundCd.prototype.handleBrowseUri = function (curUri) {
     return response;
 };
 
+nanosoundCd.prototype.playNextTrack2 = function(position) {
+	var self = this;
+	self.commandRouter.stateMachine.next();
+	/*
+			var self = this;
+			var defer = libQ.defer();
 
+			var url = "http://127.0.0.1/api/v1/commands/?cmd=next"
+			
+			request({
+			url: url,
+			json: true
+			}, function (error, httpresponse, body) {
+				self.commandRouter.pushConsoleMessage('********[' + Date.now() + '] ' + 'nanosoundCd::playNextTrack2 ' + body);
+				self.timer = new RPTimer(self.playNextTrack2.bind(self), [0], 5000);
+				return libQ.resolve()
+			});
 
+	return defer.promise;
+	*/
+
+}
+
+/*
 nanosoundCd.prototype.playNextTrack = function(position) {
 	var self = this;
 	var defer = libQ.defer();
@@ -214,7 +236,7 @@ nanosoundCd.prototype.playNextTrack = function(position) {
 	
 	//var vState = self.commandRouter.stateMachine.getState();
 
-	if(position < self.commandRouter.stateMachine.playQueue.arrayQueue.length)
+	if(position < 	self.commandRouter.stateMachine.playQueue.arrayQueue.length)
 	{
 		var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[position];
 		
@@ -232,6 +254,8 @@ nanosoundCd.prototype.playNextTrack = function(position) {
 			json: true
 			}, function (error, httpresponse, body) {
 
+				queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[position];
+		
 				if(body["status"]!="ERROR")
 				{
 					var rpState = {
@@ -254,9 +278,39 @@ nanosoundCd.prototype.playNextTrack = function(position) {
 					self.commandRouter.servicePushState(rpState, 'nanosound_cd');
 				}
 
+				//workaround to allow state to be pushed when not in a volatile state
+			
+				var vState = self.commandRouter.stateMachine.getState();
+
+				vState.position = position;
+				
+				
+				queueItem.name = queueItem.name;
+				queueItem.artist = queueItem.title;
+				queueItem.album = queueItem.album;
+				queueItem.trackType = self.tracktype;
+				queueItem.duration = body["length"];
+				queueItem.samplerate = self.samplerate;
+				queueItem.bitdepth = '16 bit';
+				queueItem.channels = 2;
+				queueItem.streaming = false;
+
+
+				self.commandRouter.stateMachine.currentSeek = 0;
+				self.commandRouter.stateMachine.playbackStart=Date.now();
+				self.commandRouter.stateMachine.currentSongDuration=body["length"];
+				self.commandRouter.stateMachine.askedForPrefetch=false;
+				self.commandRouter.stateMachine.prefetchDone=false;
+				self.commandRouter.stateMachine.simulateStopStartDone=false;
+				
+				self.state = rpState;
+				self.commandRouter.servicePushState(rpState, 'nanosound_cd');
+				self.commandRouter.logger.info("*************curduration:" + body["length"]);
+				self.timer = new RPTimer(self.playNextTrack.bind(self), [vState.position+1], 5000);
+
 				return libQ.resolve(rpState)
 			});
-
+			
 
 		}
 	}
@@ -269,6 +323,7 @@ nanosoundCd.prototype.hello = function(pos) {
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::hello');
 	
 };
+*/
 
 // Define a method to clear, add, and play an array of tracks
 nanosoundCd.prototype.clearAddPlayTrack = function(track) {
@@ -350,7 +405,7 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			self.commandRouter.servicePushState(rpState, 'nanosound_cd');
 			self.commandRouter.logger.info("*************curduration:" + body["length"]);
 			//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
-			self.timer = new RPTimer(self.playNextTrack.bind(self), [3], 5000);
+			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], self.commandRouter.stateMachine.currentSongDuration * 1000);
 			
     		
 		}
@@ -375,6 +430,11 @@ function liftOff(timer){
 nanosoundCd.prototype.seek = function (timepos) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::seek');
+
+	if (self.timer) {
+        self.timer.clear();
+    }
+
 	var defer = libQ.defer();
 	var url = "http://127.0.0.1:5002/seek?sec=" + (timepos/1000)
 	request({
@@ -408,7 +468,8 @@ nanosoundCd.prototype.seek = function (timepos) {
 			var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
 
-
+			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], (rpState.duration -  body["playprogress"]) * 1000);
+			
 			self.commandRouter.pushConsoleMessage('[' + vState.position + ' ' + queueItem.name + ' ' + queueItem.trackType + ' ' + queueItem.uri + ' ' + queueItem.duration + '] ' + 'nanosoundCd::name');
 	
 
@@ -502,6 +563,11 @@ nanosoundCd.prototype.resume = function() {
 nanosoundCd.prototype.pause = function() {
 	var self = this;
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::pause');
+
+	if (self.timer) {
+		self.timer.pause();
+	}
+
 	var defer = libQ.defer();
 	var url = "http://127.0.0.1:5002/playtoggle2"
 
@@ -512,9 +578,7 @@ nanosoundCd.prototype.pause = function() {
 
 		if(body["status"]!="ERROR")
 		{
-			if (self.timer) {
-				self.timer.pause();
-			}
+
 
 			var statusst='play'
 			if(body["status"]=="State.Paused")
@@ -535,6 +599,7 @@ nanosoundCd.prototype.pause = function() {
 			bitdepth: '16 bit',
 			channels: 2
 			};
+
 
 			self.state = rpState;
 			self.commandRouter.servicePushState(rpState, 'nanosound_cd');
@@ -591,9 +656,6 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 			if (self.timer) {
 				self.timer.clear();
 			}
-
-
-
 
 
 			if (uri.startsWith('nanosound_cd/playall')) {
