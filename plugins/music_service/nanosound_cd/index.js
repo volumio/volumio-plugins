@@ -8,6 +8,7 @@ var execSync = require('child_process').execSync;
 var request = require("request");
 var NanoTimer = require('nanotimer');
 var moment = require('moment');
+var sleep = require('sleep');
 
 module.exports = nanosoundCd;
 function nanosoundCd(context) {
@@ -18,9 +19,51 @@ function nanosoundCd(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 	self.servicename = 'nanosound_cd';
-	self.samplerate = '44.1 -> 176.4khz'
 	self.tracktype = 'NanoSound CD'
 	self.timer = null;
+}
+
+nanosoundCd.prototype.saveConfig = function(data) {
+	var self = this;
+	var defer = libQ.defer();
+	self.logger.info(data);
+	self.config.set('upsampling', data['upsampling'].value);
+	self.config.set('extractformat', data['extractformat'].value);
+	
+	//workaround to allow state to be pushed when not in a volatile state
+	
+
+	self.commandRouter.pushToastMessage('success', "Saved", "NanoSound CD settings saved");
+
+
+	var samplingconfig = this.config.get('upsampling');
+
+	if(samplingconfig=='1')
+		self.samplerate = '44.1->176.4khz';
+	else if(samplingconfig=='2')
+		self.samplerate = '44.1->88.1khz';
+	else
+		self.samplerate = '44.1khz';
+
+	
+	self.commandRouter.stateMachine.stop().then(function()
+	{
+		exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
+		function (error, stdout, stderr) {
+			if(error != null) {
+					self.logger.info('Error starting NanoSound CD' + error);
+					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+			} else {
+					self.logger.info('NanoSound CD daemon started');
+					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+
+			}
+			
+
+		});
+		return defer.resolve();
+	});
+
 }
 
 
@@ -40,6 +83,34 @@ nanosoundCd.prototype.onStart = function() {
 	var defer=libQ.defer();
 
 	self.addToBrowseSources();
+
+	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+	this.config = new (require('v-conf'))();
+	this.config.loadFile(configFile);
+
+	var samplingconfig = this.config.get('upsampling');
+
+	if(samplingconfig=='1')
+		self.samplerate = '44.1->176.4khz';
+	else if(samplingconfig=='2')
+		self.samplerate = '44.1->88.1khz';
+	else
+		self.samplerate = '44.1khz';
+
+	exec('/usr/bin/sudo /bin/systemctl start nanosoundcd_web', {uid:1000,gid:1000},
+		function (error, stdout, stderr) {
+			if(error != null) {
+					self.logger.info('Error starting NanoSound CD' + error);
+					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+			} else {
+					self.logger.info('NanoSound CD daemon started');
+					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon starting');
+					
+			}
+		});		
+
+
+
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
 
@@ -48,17 +119,55 @@ nanosoundCd.prototype.onStart = function() {
 
 nanosoundCd.prototype.onStop = function() {
     var self = this;
-    var defer=libQ.defer();
+	var defer=libQ.defer();
+	
+	self.commandRouter.stateMachine.stop().then(function()
+	{
+		// Once the Plugin has successfull stopped resolve the promise
+		exec('/usr/bin/sudo /bin/systemctl stop nanosoundcd_web', {uid:1000,gid:1000},
+		function (error, stdout, stderr) {
+			if(error != null) {
+					self.logger.info('Error stopping NanoSound CD' + error);
+					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with stopping NanoSound CD:' + error);
+			} else {
+					self.logger.info('NanoSound CD daemon stopped');
+					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon stopping');
+					
+			}
+		});
+		return defer.resolve();
+	});
 
-    // Once the Plugin has successfull stopped resolve the promise
-    defer.resolve();
+	
 
-    return libQ.resolve();
+
+
+
+
 };
 
 nanosoundCd.prototype.onRestart = function() {
     var self = this;
-    // Optional, use if you need it
+	// Optional, use if you need it
+	exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
+		                                                                    function (error, stdout, stderr) {
+                		                                                        if(error != null) {
+                                		                                                self.logger.info('Error starting NanoSound CD' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+                                                                		        } else {
+                                                                                		self.logger.info('NanoSound CD daemon started');
+                                                                               			self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+																						sleep.sleep(5);
+		                                                                        }
+																				
+
+										  });
+										  
+	
+
+	defer.resolve();
+
+	return libQ.resolve();
 };
 
 
@@ -75,7 +184,12 @@ nanosoundCd.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', self.config.get('upsampling'));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
+			
+			
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
 
             defer.resolve(uiconf);
         })
@@ -371,7 +485,7 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			duration: body["length"],
 			seek: 0,
 			samplerate: self.samplerate,
-			bitdepth: '16 bit',
+			bitdepth: '16bit',
 			channels: 2
 			};
 
@@ -388,7 +502,7 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			queueItem.trackType = self.tracktype;
 			queueItem.duration = body["length"];
 			queueItem.samplerate = self.samplerate;
-			queueItem.bitdepth = '16 bit';
+			queueItem.bitdepth = '16bit';
 			queueItem.channels = 2;
 			queueItem.streaming = false;
 
@@ -460,7 +574,7 @@ nanosoundCd.prototype.seek = function (timepos) {
 			trackType: self.tracktype,
 			duration: body["length"],
 			samplerate: self.samplerate,
-			bitdepth: '16 bit',
+			bitdepth: '16bit',
 			channels: 2
 			};
 
@@ -545,7 +659,7 @@ nanosoundCd.prototype.resume = function() {
 			trackType: self.tracktype,
 			duration: body["length"],
 			samplerate: self.samplerate,
-			bitdepth: '16 bit',
+			bitdepth: '16bit',
 			channels: 2
 			};
 
@@ -596,7 +710,7 @@ nanosoundCd.prototype.pause = function() {
 			trackType: self.tracktype,
 			duration: body["length"],
 			samplerate: self.samplerate,
-			bitdepth: '16 bit',
+			bitdepth: '16bit',
 			channels: 2
 			};
 
@@ -688,7 +802,7 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 						//duration: 10,
 						albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd.svg',
 						samplerate: self.samplerate,
-						bitdepth: '16 bit',
+						bitdepth: '16bit',
 						trackType: self.tracktype
 			
 					};
@@ -730,7 +844,7 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 					//duration: resJson.tracks[i]x`.duration/1000,
 					//albumart: albumart,
 					samplerate: self.samplerate,
-					bitdepth: '16 bit',
+					bitdepth: '16bit',
 					trackType: self.tracktype
 		
 				};

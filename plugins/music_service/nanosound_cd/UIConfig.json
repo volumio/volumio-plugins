@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "Save",
           "data": [
-            "upsampling"
+            "upsampling","extractformat"
           ]
         },
         "content": [

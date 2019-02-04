@@ -2,6 +2,10 @@
     "upsampling": {
        "type": "string",
        "value": "1"
-     }
+     },
+    "extractformat": {
+      "type": "string",
+      "value": "1"
+    }
 }
    
