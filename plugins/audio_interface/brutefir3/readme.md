@@ -74,7 +74,7 @@ nearly everythings
 
 Febuary, 5th 2019
 
-- sweep files with timing reft on left channel. (thanks merlin2222 ;-))
+- sweep files with timing reft on right channel. (thanks merlin2222 ;-))
 
 Febuary, 2nd 2019
 
