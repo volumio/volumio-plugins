@@ -1,4 +1,4 @@
-/*brutefir plugin for volumio3. By balbuze 2018*/
+/*brutefir plugin for volumio3. By balbuze 2019*/
 'use strict';
 
 var io = require('socket.io-client');
@@ -37,9 +37,7 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
  this.config = new(require('v-conf'))();
  this.config.loadFile(configFile);
  self.autoconfig
- // .then(self.rebuildBRUTEFIRAndRestartDaemon())
- //self.rebuildBRUTEFIRAndRestartDaemon()
-
+ 
  return libQ.resolve();
 };
 
@@ -80,8 +78,6 @@ ControllerBrutefir.prototype.saveVolumioconfig = function() {
   var cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
   try {
    var cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
-
-   // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
 
   } catch (err) {
    self.logger.info('config.txt does not exist');
@@ -258,8 +254,7 @@ ControllerBrutefir.prototype.onRestart = function() {
  // self.enableLoopBackDevice();
 
  var self = this;
- //   self.autoconfig()
-  //    self.brutefirDaemonConnect(defer);
+
 };
 
 ControllerBrutefir.prototype.onInstall = function() {
@@ -364,57 +359,6 @@ ControllerBrutefir.prototype.getFilterList = function() {
 
 
 };
-/*
-//here we test if the name.ext of filter exists
-ControllerBrutefir.prototype.checkifleftfilterexits = function() {
- var self = this;
- var filterfolder = "/data/INTERNAL/brutefirfilters/";
- var filterfile = self.config.get('leftfilter');
- var filetocheck;
- var fileext;
- if (filterfile == "") {
-  fileext = "";
- } else fileext = ".txt";
- filetocheck = filterfolder + filterfile + fileext;
-
- console.log(filetocheck)
- var stats;
-
- try {
-  stats = fs.statSync(filetocheck);
-  console.log("File exists.");
- } catch (e) {
-  console.log("File does not exist.");
-  self.commandRouter.pushToastMessage('error', "Wrong left filter name", 'check the spelling or extension');
- }
-
-
-};
-//here we test if the name.ext of filter exists
-ControllerBrutefir.prototype.checkifrightfilterexits = function() {
- var self = this;
- var filterfolder = "/data/INTERNAL/brutefirfilters/";
- var filterfile = self.config.get('rightfilter');
- var filetocheck;
- var fileext;
- if (filterfile == "") {
-  fileext = "";
- } else fileext = ".txt";
- filetocheck = filterfolder + filterfile + fileext;
-
- var stats;
-
- try {
-  stats = fs.statSync(filetocheck);
-  console.log("File exists.");
- } catch (e) {
-  console.log("File does not exist.");
-  self.commandRouter.pushToastMessage('error', "Wrong right filter name", 'check the spelling or extension');
- }
-
-
-};
-*/
 
 ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
  var n = options.length;
@@ -535,8 +479,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
      defer.reject(new Error(err));
     else defer.resolve();
    });
-   //  self.checkifleftfilterexits()
-   //  self.checkifrightfilterexits()
   });
 
 
@@ -582,7 +524,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  return defer.promise;
 };
 
-//here we save the brutefir config.json
+//here we save the brutefir delay calculation
 ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
  var self = this;
  
@@ -621,7 +563,7 @@ ControllerBrutefir.prototype.installtools = function(data) {
    var cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
    var cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
-   // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+
    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
   } catch (err) {
    self.logger.info('An error occurs while downloading or installing tools');
@@ -642,7 +584,7 @@ ControllerBrutefir.prototype.removetools = function(data) {
 
    var cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
    var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
-   // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+
    var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
   } catch (err) {
    self.logger.info('An error occurs while removing tools');
@@ -658,7 +600,7 @@ ControllerBrutefir.prototype.removetools = function(data) {
 ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_LEFT_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_L_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -670,19 +612,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
   });
- /*  return self.mpdPlugin.sendMpdCommand('clear', []);
-  })
-  .then(function() {
-   return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
-  })
-  .fail(function(e) {
-   return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
-  })
-  .then(function() {
-   self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-   return self.mpdPlugin.sendMpdCommand('play', []);
-  });
-*/
+ 
 };
 
 
@@ -690,7 +620,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
 ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_RIGHT_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_R_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -703,17 +633,6 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-   /*  return self.mpdPlugin.sendMpdCommand('clear', [])
-    })
-    .then(function() {
-     return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
-    })
-    .fail(function(e) {
-     return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
-    })
-    .then(function() {
-     self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-     return self.mpdPlugin.sendMpdCommand('play', []); */
   });
 };
 
@@ -721,7 +640,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
 ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/LogSweep_BOTH_16_48.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_LR_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
  return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -733,17 +652,6 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-   /*  return self.mpdPlugin.sendMpdCommand('clear', []);
-    })
-    .then(function() {
-     return self.mpdPlugin.sendMpdCommand('load "' + safeUri + '"', []);
-    })
-    .fail(function(e) {
-     return self.mpdPlugin.sendMpdCommand('add "' + safeUri + '"', []);
-    })
-    .then(function() {
-     self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-     return self.mpdPlugin.sendMpdCommand('play', []);*/
   });
 };
 
@@ -819,29 +727,6 @@ ControllerBrutefir.prototype.stopaplay = function(track) {
    };
   });
 };
-
-/* not ready yet in Volumio
-ControllerBrutefir.prototype.uploadfile = function(track) {
- var self = this;
-var document
-var createElement
-var fileSelector = document.createElement('input');
-fileSelector.setAttribute('type', 'file');
-
-var selectDialogueLink = document.createElement('a');
-selectDialogueLink.setAttribute('href', '');
-selectDialogueLink.innerText = "Select File";
-
-selectDialogueLink.onclick = function () {
-     fileSelector.click();
-     return false;
-}
-
-document.body.appendChild(selectDialogueLink);
-
-};
-*/
-
 
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;

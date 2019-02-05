@@ -68,17 +68,22 @@ nearly everythings
 - ?
 - mixer is not properly displayed in Volumio's playback option
 
-December, 27 th 2018
-
-- small timer adjustement
 
 
 ### 4. Last changes
+
+Febuary, 5th 2019
+
+- sweep files with timing reft on left channel. (thanks merlin2222 ;-))
 
 Febuary, 2nd 2019
 
 - merge left and right attenuation
 - timer adjustement (no idea if it could solve some startup prob...) 
+
+December, 27 th 2018
+
+- small timer adjustement
 
 December, 15th 2018
 
