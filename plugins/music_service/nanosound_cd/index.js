@@ -23,6 +23,45 @@ function nanosoundCd(context) {
 	self.timer = null;
 }
 
+nanosoundCd.prototype.saveReg = function(data) {
+	var self = this;
+	var defer = libQ.defer();
+	self.logger.info(data);
+	
+
+	var url = "http://127.0.0.1:5002/activate?email=" +  data['email'] + "&orderno=" + data['orderno']
+
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		if(body["response"]=="OK")
+		{
+			self.config.set('email', data['email']);
+			self.config.set('orderno', data['orderno']);
+			self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD registration successful. Thank you!");
+
+		}
+		else if(body["response"]=="FAILED")
+		{
+			self.config.set('email', "");
+			self.config.set('orderno', "");
+			self.commandRouter.pushToastMessage('error', "NanoSound CD", body["message"]);
+
+		}
+		else if(body["response"]=="ALREADY")
+		{
+			self.config.set('email', data['email']);
+			self.config.set('orderno', data['orderno']);
+			self.commandRouter.pushToastMessage('success', "NanoSound CD", body["message"]);
+
+		}
+		defer.resolve();
+	})
+	return defer.promise;
+}
+
 nanosoundCd.prototype.saveConfig = function(data) {
 	var self = this;
 	var defer = libQ.defer();
@@ -52,10 +91,10 @@ nanosoundCd.prototype.saveConfig = function(data) {
 		function (error, stdout, stderr) {
 			if(error != null) {
 					self.logger.info('Error starting NanoSound CD' + error);
-					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
 			} else {
 					self.logger.info('NanoSound CD daemon started');
-					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
 
 			}
 			
@@ -101,10 +140,10 @@ nanosoundCd.prototype.onStart = function() {
 		function (error, stdout, stderr) {
 			if(error != null) {
 					self.logger.info('Error starting NanoSound CD' + error);
-					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
 			} else {
 					self.logger.info('NanoSound CD daemon started');
-					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon starting');
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon starting');
 					
 			}
 		});		
@@ -128,10 +167,10 @@ nanosoundCd.prototype.onStop = function() {
 		function (error, stdout, stderr) {
 			if(error != null) {
 					self.logger.info('Error stopping NanoSound CD' + error);
-					self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with stopping NanoSound CD:' + error);
+					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with stopping NanoSound CD:' + error);
 			} else {
 					self.logger.info('NanoSound CD daemon stopped');
-					self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon stopping');
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon stopping');
 					
 			}
 		});
@@ -153,10 +192,10 @@ nanosoundCd.prototype.onRestart = function() {
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
                                 		                                                self.logger.info('Error starting NanoSound CD' + error);
-                                                		                                self.commandRouter.pushToastMessage('error', 'nanosoundcd', 'Problem with starting NanoSound CD:' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound CD daemon started');
-                                                                               			self.commandRouter.pushToastMessage('success', 'nanosoundcd', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+                                                                               			self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
 																						sleep.sleep(5);
 		                                                                        }
 																				
@@ -184,13 +223,16 @@ nanosoundCd.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value', self.config.get('email'));
+			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value', self.config.get('orderno'));
+
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', self.config.get('upsampling'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
 			
 			
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
-
+			
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -235,6 +277,86 @@ nanosoundCd.prototype.addToBrowseSources = function () {
 
     this.commandRouter.volumioAddToBrowseSources(data);
 };
+
+nanosoundCd.prototype.extractAll=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+	var url = "http://127.0.0.1:5002/ripcd"
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		self.commandRouter.logger.info(body);
+		if (!error && httpresponse.statusCode === 200) {
+			
+			if(body["status"] == "OK")
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', body["message"]);
+			
+			if(body["status"] == "FAILED")
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', body["message"]);
+
+			defer.resolve();
+
+		}
+	})
+	return defer.promise;
+}
+
+nanosoundCd.prototype.extractStatus=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+	var url = "http://127.0.0.1:5003/ripprogress"
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		if (!error && httpresponse.statusCode === 200) {
+
+			if(body["status"] == "DONE")
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Extraction completed on " + body["riplastupdate"]);
+			
+			if(body["status"] == "ABORTED")
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Extraction aborted. Please try again.");
+
+			if(body["status"] == "NOTDONE")
+			{
+				var totalsongs = body["torip"].length
+				var found = false
+				var message = ""
+
+				for (var i = 1; i <= totalsongs; i++) {
+					if(String(i) in body)
+					{
+						found = true
+						var pct = body[String(i)]
+						if(pct!=1.0)
+						{
+							message = "Extraction up to Track " + String(i) + " - " + Math.round(pct*10000) / 100 + "%";
+						}
+							
+					} 
+				}
+				
+				if(found)
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD',message);
+				else
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD',"Extraction starting");
+				
+			}
+			
+
+
+			defer.resolve();
+
+		}
+	})
+	return defer.promise;
+
+}
 
 nanosoundCd.prototype.listCD=function()
 {
@@ -755,8 +877,6 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 	// Mandatory: retrieve all info for a given URI
 	var uriSplitted;
 	
-
-	self.logger.info("exploding")
 	var url = "http://127.0.0.1:5002/cachedcdmeta"
 	request({
 	url: url,

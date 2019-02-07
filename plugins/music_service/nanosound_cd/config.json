@@ -6,6 +6,14 @@
     "extractformat": {
       "type": "string",
       "value": "1"
+    },
+    "email": {
+      "type": "string",
+      "value": ""
+    },
+    "orderno": {
+      "type": "string",
+      "value": ""
     }
 }
    

@@ -2,11 +2,11 @@
     "page": {
       "label": "NanoSound CD"
     },
-    "sections": [
+    "sections": [      
       {
         "id": "section_display",
         "element": "section",
-        "label": "NanoSound CD Settings",
+        "label": "Settings",
         "icon": "fa-plug",
         "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveConfig"},
         "saveButton": {
@@ -58,6 +58,94 @@
               }
             ]
           }
+      ]
+      },
+      {
+        "id": "section_extract",
+        "element": "section",
+        "label": "Extract CD",
+        "icon": "fa-file",
+        "description": "You can extract audio files from your CD in the background. Only available in Full Version",
+        "content": [
+          {
+            "id": "extractall",
+            "element": "button",
+            "label": "Extract whole CD in background",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractAll"
+            }
+          },
+          {
+            "id": "extractstatus",
+            "element": "button",
+            "label": "Check Extraction Status",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractStatus"
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_reg",
+        "element": "section",
+        "label": "Registration Info for Full Version",
+        "icon": "fa-key",
+        "description": "Take advantage of CD extraction and upsampling features",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveReg"},
+        "saveButton": {
+          "label": "Register",
+          "data": [
+            "email",
+            "orderno"
+          ]
+        },
+        "content": [
+          {
+            "id": "email",
+            "type":"text",
+            "element": "input",
+            "doc": "This is the email address you used to purchase NanoSound CD software",
+            "label": "Email",
+            "value": ""
+          },
+          {
+            "id": "orderno",
+            "type":"text",
+            "element": "input",
+            "doc": "This is the order number of the purchase",
+            "label": "Order Number",
+            "value": ""
+          }
+        ]
+     },
+     {
+      "id": "section_resources",
+      "element": "section",
+      "label": "Resources",
+      "icon": "fa-book",
+      "content": [
+        {
+          "id": "shop",
+          "element": "button",
+          "label": "Get NanoSound CD Full Version",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosoundcd"
+          }
+        },
+        {
+          "id": "support",
+          "element": "button",
+          "label": "Support Info",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/support"
+          }
+        }
       ]
       }
     ]
