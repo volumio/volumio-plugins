@@ -66,13 +66,20 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	var self = this;
 	var defer = libQ.defer();
 	self.logger.info(data);
-	self.config.set('upsampling', data['upsampling'].value);
-	self.config.set('extractformat', data['extractformat'].value);
-	
-	//workaround to allow state to be pushed when not in a volatile state
-	
 
-	self.commandRouter.pushToastMessage('success', "Saved", "NanoSound CD settings saved");
+	var lang_code = this.commandRouter.sharedVars.get('language_code');
+
+	if(self.config.get('email')=="")
+	{
+		self.config.set('upsampling','3');
+		self.commandRouter.pushToastMessage('error', "NanoSound CD", "Upsampling and Extraction are only available in full version");
+	}
+	else
+	{
+		self.config.set('upsampling', data['upsampling'].value);
+	}
+	self.config.set('extractformat', data['extractformat'].value);
+	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
 
 
 	var samplingconfig = this.config.get('upsampling');
@@ -223,13 +230,18 @@ nanosoundCd.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+			if(self.config.get('email')=="")
+			{
+				self.config.set('upsampling','3');
+			}
+			
 			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value', self.config.get('email'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value', self.config.get('orderno'));
 
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', self.config.get('upsampling'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
-			
-			
+				
+				
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
 			
@@ -282,25 +294,87 @@ nanosoundCd.prototype.extractAll=function()
 {
 	var self = this;
 	var defer=libQ.defer();
-	var url = "http://127.0.0.1:5002/ripcd"
+
+	var vState = self.commandRouter.stateMachine.getState();
+	self.commandRouter.logger.info(vState);
+	if(vState.trackType == self.tracktype)
+	{
+		self.commandRouter.stateMachine.stop();
+	}
+
+	
+	var url = "http://127.0.0.1:5003/ripprogress"
 	request({
 	url: url,
 	json: true
 	}, function (error, httpresponse, body) {
 
-		self.commandRouter.logger.info(body);
 		if (!error && httpresponse.statusCode === 200) {
-			
-			if(body["status"] == "OK")
-				self.commandRouter.pushToastMessage('success', 'NanoSound CD', body["message"]);
-			
-			if(body["status"] == "FAILED")
-				self.commandRouter.pushToastMessage('error', 'NanoSound CD', body["message"]);
 
+			if(!("status" in body) || (body["status"] == "DONE") || (body["status"] == "ABORTED"))
+			{
+				var url = "http://127.0.0.1:5002/ripcd"
+				request({
+				url: url,
+				json: true
+				}, function (error, httpresponse, body) {
+
+					self.commandRouter.logger.info(body);
+					if (!error && httpresponse.statusCode === 200) {
+						
+						if(body["status"] == "OK")
+							self.commandRouter.pushToastMessage('success', 'NanoSound CD', body["message"]);
+						
+						if(body["status"] == "FAILED")
+							self.commandRouter.pushToastMessage('error', 'NanoSound CD', body["message"]);
+
+						defer.resolve();
+
+					}
+					else
+					{
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Extraction cannot be performed and it's only support in full version");
+						defer.resolve();
+					}
+				})
+			}
+				
+			if(body["status"] == "NOTDONE")
+			{
+				var totalsongs = body["torip"].length
+				var found = false
+				var message = ""
+
+				for (var i = 1; i <= totalsongs; i++) {
+					if(String(i) in body)
+					{
+						found = true
+						var pct = body[String(i)]
+						if(pct!=1.0)
+						{
+							message = "Extracting Track " + String(i) + " - " + Math.round(pct*10000) / 100 + "%. " + String(i) + "/" + String(totalsongs) + " tracks";
+						}
+							
+					} 
+				}
+				
+				if(found)
+					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Extraction still in progress. ' + message);
+				else
+					self.commandRouter.pushToastMessage('error', 'NanoSound CD',"Extraction still in progress. Restart NanoSound CD plugin if you want to abort.");
+				
+				defer.resolve();
+			}
+			
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Problem with NanoSound CD progress service");
 			defer.resolve();
-
 		}
 	})
+
+
 	return defer.promise;
 }
 
@@ -315,6 +389,11 @@ nanosoundCd.prototype.extractStatus=function()
 	}, function (error, httpresponse, body) {
 
 		if (!error && httpresponse.statusCode === 200) {
+
+			if(!("status" in body))
+			{
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', "No extraction has started");
+			}
 
 			if(body["status"] == "DONE")
 				self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Extraction completed on " + body["riplastupdate"]);
@@ -335,7 +414,7 @@ nanosoundCd.prototype.extractStatus=function()
 						var pct = body[String(i)]
 						if(pct!=1.0)
 						{
-							message = "Extraction up to Track " + String(i) + " - " + Math.round(pct*10000) / 100 + "%";
+							message = "Extracting Track " + String(i) + " - " + Math.round(pct*10000) / 100 + "%. " + String(i) + "/" + String(totalsongs) + " tracks";
 						}
 							
 					} 
@@ -352,6 +431,11 @@ nanosoundCd.prototype.extractStatus=function()
 
 			defer.resolve();
 
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Problem with NanoSound CD progress service");
+			defer.resolve();
 		}
 	})
 	return defer.promise;
@@ -574,7 +658,6 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 	//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
 
 	
-	self.commandRouter.logger.info("RUN1:");
 	var uriSplitted=track.uri.split('/');
 	var trackno = uriSplitted[1];
 	//self.commandRouter.logger.info('play:' + trackno);
@@ -583,8 +666,7 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 	url: url,
 	json: true
 	}, function (error, httpresponse, body) {
-		self.commandRouter.logger.info("RUN2");
-
+		
 		var tname=track.name;;
 		var tartist=track.artist;
 		var talbum=track.album;

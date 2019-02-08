@@ -20,6 +20,7 @@
             "id": "upsampling",
             "element": "select",
             "label": "Upsampling To",
+            "doc": "Upsampling your CD by x4 or x2 using SINC algorithm. Only available in Full version",
             "value": {"value": "1",
                       "label": "176.4kHz (x4)"
             },
@@ -43,6 +44,7 @@
             "id": "extractformat",
             "element": "select",
             "label": "Extract Format",
+            "doc": "Extract lossless audio to your Volumio library. Only available in Full version",
             "value": {"value": "1",
                       "label": "FLAC"
             },
@@ -65,12 +67,13 @@
         "element": "section",
         "label": "Extract CD",
         "icon": "fa-file",
-        "description": "You can extract audio files from your CD in the background. Only available in Full Version",
+        "description": "Extract audio files from your CD in the background. Only available in Full Version",
         "content": [
           {
             "id": "extractall",
             "element": "button",
             "label": "Extract whole CD in background",
+            "doc": "Extract the current CD to your Volumio library.  Do not playback CD while extracting.  The extraction is processed in the background so you can still continue to use Volumio for other functions. Restart NanoSound CD plugin if you want to abort the current CD extraction process.",
             "onClick": {
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
@@ -80,7 +83,8 @@
           {
             "id": "extractstatus",
             "element": "button",
-            "label": "Check Extraction Status",
+            "label": "Check Extraction Progress",
+            "doc": "Check the current progress of the CD Extraction",
             "onClick": {
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
@@ -94,7 +98,7 @@
         "element": "section",
         "label": "Registration Info for Full Version",
         "icon": "fa-key",
-        "description": "Take advantage of CD extraction and upsampling features",
+        "description": "Take advantage of CD extraction and Upsampling features",
         "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveReg"},
         "saveButton": {
           "label": "Register",
@@ -135,6 +139,15 @@
           "onClick": {
             "type": "openUrl",
             "url": "https://nanomesher.com/nanosoundcd"
+          }
+        },
+        {
+          "id": "shopnanosound",
+          "element": "button",
+          "label": "Get NanoSound Products from Volumio",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.org/product/nanosound-dac/"
           }
         },
         {
