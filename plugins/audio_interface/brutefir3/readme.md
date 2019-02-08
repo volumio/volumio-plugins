@@ -1,4 +1,4 @@
-Febuary 2nd 2019
+Febuary 8th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -71,6 +71,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary, 8th 2019
+
+- internal default input is now s32_le
+- default output is now s32_le
 
 Febuary, 5th 2019
 

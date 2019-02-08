@@ -12,7 +12,7 @@ logic:
 #"echo" on ;
 input "l_in", "r_in" {
             device: "alsa" {device: "hw:${input_device}";};
-            sample: "S16_LE";   # sample format
+            sample: "S32_LE";   # sample format
             channels: 2;            # number of open channels / which to use
 delay: ${delay};
     };
