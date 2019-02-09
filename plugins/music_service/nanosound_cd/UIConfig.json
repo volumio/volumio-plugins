@@ -1,0 +1,166 @@
+{
+    "page": {
+      "label": "NanoSound CD"
+    },
+    "sections": [      
+      {
+        "id": "section_display",
+        "element": "section",
+        "label": "Settings",
+        "icon": "fa-plug",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveConfig"},
+        "saveButton": {
+          "label": "Save",
+          "data": [
+            "upsampling","extractformat"
+          ]
+        },
+        "content": [
+          {
+            "id": "upsampling",
+            "element": "select",
+            "label": "Upsampling To",
+            "doc": "Upsampling your CD by x4 or x2 using SINC algorithm. Only available in Full version",
+            "value": {"value": "1",
+                      "label": "176.4kHz (x4)"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "176.4kHz (x4)"
+              },
+              {
+                "value": "2",
+                "label": "88.2kHz (x2)"
+              },
+              {
+                "value": "3",
+                "label": "Disable"
+              }
+            ]
+          },
+          {
+            "id": "extractformat",
+            "element": "select",
+            "label": "Extract Format",
+            "doc": "Extract lossless audio to your Volumio library. Only available in Full version",
+            "value": {"value": "1",
+                      "label": "FLAC"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "FLAC"
+              },
+              {
+                "value": "2",
+                "label": "wav"
+              }
+            ]
+          }
+      ]
+      },
+      {
+        "id": "section_extract",
+        "element": "section",
+        "label": "Extract CD",
+        "icon": "fa-file",
+        "description": "Extract audio files from your CD in the background. Only available in Full Version",
+        "content": [
+          {
+            "id": "extractall",
+            "element": "button",
+            "label": "Extract whole CD in background",
+            "doc": "Extract the current CD to your Volumio library.  Do not playback CD while extracting.  The extraction is processed in the background so you can still continue to use Volumio for other functions. Restart NanoSound CD plugin if you want to abort the current CD extraction process.",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractAll"
+            }
+          },
+          {
+            "id": "extractstatus",
+            "element": "button",
+            "label": "Check Extraction Progress",
+            "doc": "Check the current progress of the CD Extraction",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractStatus"
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_reg",
+        "element": "section",
+        "label": "Registration Info for Full Version",
+        "icon": "fa-key",
+        "description": "Take advantage of CD extraction and Upsampling features",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveReg"},
+        "saveButton": {
+          "label": "Register",
+          "data": [
+            "email",
+            "orderno"
+          ]
+        },
+        "content": [
+          {
+            "id": "email",
+            "type":"text",
+            "element": "input",
+            "doc": "This is the email address you used to purchase NanoSound CD software",
+            "label": "Email",
+            "value": ""
+          },
+          {
+            "id": "orderno",
+            "type":"text",
+            "element": "input",
+            "doc": "This is the order number of the purchase",
+            "label": "Order Number",
+            "value": ""
+          }
+        ]
+     },
+     {
+      "id": "section_resources",
+      "element": "section",
+      "label": "Resources",
+      "icon": "fa-book",
+      "content": [
+        {
+          "id": "shop",
+          "element": "button",
+          "label": "Get NanoSound CD Full Version",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosoundcd"
+          }
+        },
+        {
+          "id": "shopnanosound",
+          "element": "button",
+          "label": "Get NanoSound Products from Volumio",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.org/product/nanosound-dac/"
+          }
+        },
+        {
+          "id": "support",
+          "element": "button",
+          "label": "Support Info",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/support"
+          }
+        }
+      ]
+      }
+    ]
+  }
+  
