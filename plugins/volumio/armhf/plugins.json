@@ -421,6 +421,24 @@
 						}
 					],
 					"updated": "16-11-2018"
+				},
+				{
+					"prettyName": "GPIO Control",
+					"icon": "fa-lightbulb-o",
+					"name": "gpio-control",
+					"version": "0.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/gpio-control/gpio-control.zip",
+					"license": "ISC",
+					"description": "GPIO output control plugin for Volumio",
+					"details": "GPIO output control plugin for Volumio",
+					"author": "supercrab",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "11-2-2019"
 				}
 			]
 		},
