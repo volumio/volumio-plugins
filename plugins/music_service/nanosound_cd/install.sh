@@ -39,11 +39,13 @@ sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio
 cd /home/volumio/nanomesher_nanosoundcd
 sudo chmod 777 nanosoundcd_progressweb
 sudo chmod 777 nanosoundcd_web
-
-sudo cp asound/asound.conf /etc
-
-
 rm /tmp/nanomesher_nanosoundcd.tar.gz
+
+echo "Configuring alsa devices"
+cd /tmp
+wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_asound.tar.gz
+sudo tar xvf /tmp/nanomesher_nanosoundcd_asound.tar.gz -C /etc/
+rm /tmp/nanomesher_nanosoundcd_asound.tar.gz
 
 
 echo "Configuring NanoSound CD Service to autostart"

@@ -27,7 +27,7 @@ nanosoundCd.prototype.saveReg = function(data) {
 	var self = this;
 	var defer = libQ.defer();
 	self.logger.info(data);
-	
+	self.commandRouter.pushToastMessage('success', "NanoSound CD", "Registering...");
 
 	var url = "http://127.0.0.1:5002/activate?email=" +  data['email'] + "&orderno=" + data['orderno']
 
@@ -62,12 +62,22 @@ nanosoundCd.prototype.saveReg = function(data) {
 	return defer.promise;
 }
 
+
 nanosoundCd.prototype.saveConfig = function(data) {
 	var self = this;
 	var defer = libQ.defer();
 	self.logger.info(data);
 
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
+
+	if (fs.existsSync('/mnt/' + data['savepath'])) {
+		self.config.set('savepath',data['savepath'])
+	}
+	else
+	{
+		self.commandRouter.pushToastMessage('error', "NanoSound CD", "Path does not exists:" + "/mnt/" + data['savepath']);
+		self.config.set('savepath','INTERNAL')
+	}
 
 	if(self.config.get('email')=="")
 	{
@@ -79,6 +89,7 @@ nanosoundCd.prototype.saveConfig = function(data) {
 		self.config.set('upsampling', data['upsampling'].value);
 	}
 	self.config.set('extractformat', data['extractformat'].value);
+	self.config.set('prestart', data['prestart']);
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
 
 
@@ -237,10 +248,13 @@ nanosoundCd.prototype.getUIConfig = function() {
 			
 			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value', self.config.get('email'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value', self.config.get('orderno'));
-
+			
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', self.config.get('upsampling'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
-				
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('prestart'));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('savepath'));
+
+	
 				
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
@@ -290,6 +304,83 @@ nanosoundCd.prototype.addToBrowseSources = function () {
     this.commandRouter.volumioAddToBrowseSources(data);
 };
 
+nanosoundCd.prototype.testPlay=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+
+	self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Testing to play Track 1");
+						
+
+	var url = "http://127.0.0.1:5003/testplay"
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+		if (!error && httpresponse.statusCode === 200) {
+			
+			if(body["status"] == "DONE")
+			{
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Playing track 1");
+				
+				defer.resolve();
+			}
+			else if(body["status"] == "FAILED")
+			{
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', body["message"]);
+				
+				defer.resolve();
+			}
+
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Unknown error");
+				
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Unknown error");
+				
+			defer.resolve();
+		}
+	});
+
+	return defer.promise;
+}
+
+nanosoundCd.prototype.setupAudio=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+
+	var url = "http://127.0.0.1:5002/setupaudio";
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		if (!error && httpresponse.statusCode === 200) {
+			if(body["status"]=="OK")
+			{
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', body["message"]);
+				defer.resolve();
+			}
+			else if(body["status"]=="CHANGED")
+			{
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', body["message"]);
+				defer.resolve();
+			}
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Error when trying to configure audio");
+			defer.resolve();
+		}
+		
+	});
+
+	return defer.promise;
+}
+
+
 nanosoundCd.prototype.extractAll=function()
 {
 	var self = this;
@@ -303,7 +394,7 @@ nanosoundCd.prototype.extractAll=function()
 	}
 
 	
-	var url = "http://127.0.0.1:5003/ripprogress"
+	var url = "http://127.0.0.1:5003/ripprogress";
 	request({
 	url: url,
 	json: true
@@ -382,7 +473,7 @@ nanosoundCd.prototype.extractStatus=function()
 {
 	var self = this;
 	var defer=libQ.defer();
-	var url = "http://127.0.0.1:5003/ripprogress"
+	var url = "http://127.0.0.1:5003/ripprogress";
 	request({
 	url: url,
 	json: true
@@ -446,7 +537,7 @@ nanosoundCd.prototype.listCD=function()
 {
 	var defer=libQ.defer();
 	
-	var url = "http://127.0.0.1:5002/cdmeta2"
+	var url = "http://127.0.0.1:5002/cdmeta2";
 	request({
 	url: url,
 	json: true
@@ -528,122 +619,9 @@ nanosoundCd.prototype.handleBrowseUri = function (curUri) {
 nanosoundCd.prototype.playNextTrack2 = function(position) {
 	var self = this;
 	self.commandRouter.stateMachine.next();
-	/*
-			var self = this;
-			var defer = libQ.defer();
-
-			var url = "http://127.0.0.1/api/v1/commands/?cmd=next"
-			
-			request({
-			url: url,
-			json: true
-			}, function (error, httpresponse, body) {
-				self.commandRouter.pushConsoleMessage('********[' + Date.now() + '] ' + 'nanosoundCd::playNextTrack2 ' + body);
-				self.timer = new RPTimer(self.playNextTrack2.bind(self), [0], 5000);
-				return libQ.resolve()
-			});
-
-	return defer.promise;
-	*/
 
 }
 
-/*
-nanosoundCd.prototype.playNextTrack = function(position) {
-	var self = this;
-	var defer = libQ.defer();
-	self.commandRouter.pushConsoleMessage('********[' + Date.now() + '] ' + 'nanosoundCd::PlayNextTrack ' + position);
-	
-	//var vState = self.commandRouter.stateMachine.getState();
-
-	if(position < 	self.commandRouter.stateMachine.playQueue.arrayQueue.length)
-	{
-		var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[position];
-		
-
-		if(queueItem.service=='nanosound_cd')
-		{
-			var uriSplitted=queueItem.uri.split('/');
-			var trackno = uriSplitted[1];
-
-			self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::PlayNextTrack ' + queueItem.uri);
-	
-			var url = "http://127.0.0.1:5002/playtrack?usecachedmeta=True&track=" + trackno
-			request({
-			url: url,
-			json: true
-			}, function (error, httpresponse, body) {
-
-				queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[position];
-		
-				if(body["status"]!="ERROR")
-				{
-					var rpState = {
-					status: 'play',
-					service: 'nanosound_cd',
-					type: 'track',
-					trackType: self.tracktype,
-					uri: queueItem.uri,
-					name: queueItem.name,
-					title: queueItem.title,
-					streaming: false,
-					artist: queueItem.artist,
-					album: queueItem.album,
-					seek: 0,
-					samplerate: self.samplerate,
-					bitdepth: '16 bit',
-					channels: 2
-					};
-					self.state = rpState;
-					self.commandRouter.servicePushState(rpState, 'nanosound_cd');
-				}
-
-				//workaround to allow state to be pushed when not in a volatile state
-			
-				var vState = self.commandRouter.stateMachine.getState();
-
-				vState.position = position;
-				
-				
-				queueItem.name = queueItem.name;
-				queueItem.artist = queueItem.title;
-				queueItem.album = queueItem.album;
-				queueItem.trackType = self.tracktype;
-				queueItem.duration = body["length"];
-				queueItem.samplerate = self.samplerate;
-				queueItem.bitdepth = '16 bit';
-				queueItem.channels = 2;
-				queueItem.streaming = false;
-
-
-				self.commandRouter.stateMachine.currentSeek = 0;
-				self.commandRouter.stateMachine.playbackStart=Date.now();
-				self.commandRouter.stateMachine.currentSongDuration=body["length"];
-				self.commandRouter.stateMachine.askedForPrefetch=false;
-				self.commandRouter.stateMachine.prefetchDone=false;
-				self.commandRouter.stateMachine.simulateStopStartDone=false;
-				
-				self.state = rpState;
-				self.commandRouter.servicePushState(rpState, 'nanosound_cd');
-				self.commandRouter.logger.info("*************curduration:" + body["length"]);
-				self.timer = new RPTimer(self.playNextTrack.bind(self), [vState.position+1], 5000);
-
-				return libQ.resolve(rpState)
-			});
-			
-
-		}
-	}
-	return defer.promise;
-
-};
-
-nanosoundCd.prototype.hello = function(pos) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::hello');
-	
-};
-*/
 
 // Define a method to clear, add, and play an array of tracks
 nanosoundCd.prototype.clearAddPlayTrack = function(track) {
@@ -655,13 +633,11 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
     }
 	
 	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'nanosoundCd::clearAddPlayTrack');
-	//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
-
 	
 	var uriSplitted=track.uri.split('/');
 	var trackno = uriSplitted[1];
 	//self.commandRouter.logger.info('play:' + trackno);
-	var url = "http://127.0.0.1:5002/playtrack?usecachedmeta=True&track=" + trackno
+	var url = "http://127.0.0.1:5002/playtrack?usecachedmeta=True&track=" + trackno;
 	request({
 	url: url,
 	json: true
@@ -722,8 +698,13 @@ nanosoundCd.prototype.clearAddPlayTrack = function(track) {
 			self.state = rpState;
 			self.commandRouter.servicePushState(rpState, 'nanosound_cd');
 			self.commandRouter.logger.info("*************curduration:" + body["length"]);
-			//self.timer = new RPTimer(self.hello.bind(self), [vState.position+1], queueItem.duration*2000);
-			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], self.commandRouter.stateMachine.currentSongDuration * 1000);
+			
+			var timerIntervalSec = self.commandRouter.stateMachine.currentSongDuration - self.config.get('prestart')
+
+			if(timerIntervalSec<=0)
+				timerIntervalSec = 0.1
+
+			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], timerIntervalSec * 1000);
 			
     		
 		}
@@ -785,8 +766,12 @@ nanosoundCd.prototype.seek = function (timepos) {
 			var vState = self.commandRouter.stateMachine.getState();
 			var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
+			var timerIntervalSec = rpState.duration -  body["playprogress"] - self.config.get('prestart')
 
-			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], (rpState.duration -  body["playprogress"]) * 1000);
+			if(timerIntervalSec<=0)
+				timerIntervalSec = 0.1
+
+			self.timer = new RPTimer(self.playNextTrack2.bind(self), [vState.position], timerIntervalSec * 1000);
 			
 			self.commandRouter.pushConsoleMessage('[' + vState.position + ' ' + queueItem.name + ' ' + queueItem.trackType + ' ' + queueItem.uri + ' ' + queueItem.duration + '] ' + 'nanosoundCd::name');
 	

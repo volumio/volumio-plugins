@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "Save",
           "data": [
-            "upsampling","extractformat"
+            "upsampling","extractformat","prestart","savepath"
           ]
         },
         "content": [
@@ -59,6 +59,33 @@
                 "label": "wav"
               }
             ]
+          },
+          {
+            "id": "prestart",
+            "type":"number",
+            "element": "input",
+            "doc": "Start the next song earlier by a number of seconds. This is not same as gapless, but give a similar result",
+            "label": "Prestart by seconds",
+            "value": 0
+          },
+          {
+            "id": "savepath",
+            "type":"string",
+            "element": "input",
+            "doc": "Base path of extracted files under /mnt/. For example, if you enter 'NAS/myshare', the path will be /mnt/NAS/myshare",
+            "label": "Extraction Path",
+            "value": "INTERNAL"
+          },
+          {
+            "id": "configaudio",
+            "element": "button",
+            "label": "Auto reconfig audio",
+            "doc": "Try this when there is CD audio output during playback. If configuration is changed after reconfig, please reboot.",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "setupAudio"
+            }
           }
       ]
       },
