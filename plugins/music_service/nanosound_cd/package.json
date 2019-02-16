@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "Nanosound CD",
-		"icon": "fa-lightbulb-o",
+		"icon": "fa-music",
 		"plugin_type": "music_service"
 	},
 	"dependencies": {

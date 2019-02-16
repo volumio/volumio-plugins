@@ -6,11 +6,11 @@
       {
         "id": "section_display",
         "element": "section",
-        "label": "Settings",
+        "label": "TRANSLATE.SETTINGS",
         "icon": "fa-plug",
         "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveConfig"},
         "saveButton": {
-          "label": "Save",
+          "label": "TRANSLATE.SAVE",
           "data": [
             "upsampling","extractformat","prestart","savepath"
           ]
@@ -19,8 +19,8 @@
           {
             "id": "upsampling",
             "element": "select",
-            "label": "Upsampling To",
-            "doc": "Upsampling your CD by x4 or x2 using SINC algorithm. Only available in Full version",
+            "label": "TRANSLATE.UPSAMPLING_TO",
+            "doc": "TRANSLATE.UPSAMPLING_TO_DOC",
             "value": {"value": "1",
                       "label": "176.4kHz (x4)"
             },
@@ -43,8 +43,8 @@
           {
             "id": "extractformat",
             "element": "select",
-            "label": "Extract Format",
-            "doc": "Extract lossless audio to your Volumio library. Only available in Full version",
+            "label": "TRANSLATE.EXTRACT_FORMAT",
+            "doc": "TRANSLATE.EXTRACT_FORMAT_DOC",
             "value": {"value": "1",
                       "label": "FLAC"
             },
@@ -64,23 +64,23 @@
             "id": "prestart",
             "type":"number",
             "element": "input",
-            "doc": "Start the next song earlier by a number of seconds. This is not same as gapless, but give a similar result",
-            "label": "Prestart by seconds",
+            "doc": "TRANSLATE.PRESTART_BY_SEC_DOC",
+            "label": "TRANSLATE.PRESTART_BY_SEC",
             "value": 0
           },
           {
             "id": "savepath",
             "type":"string",
             "element": "input",
-            "doc": "Base path of extracted files under /mnt/. For example, if you enter 'NAS/myshare', the path will be /mnt/NAS/myshare",
-            "label": "Extraction Path",
+            "doc": "TRANSLATE.EXTRACT_TO_PATH_DOC",
+            "label": "TRANSLATE.EXTRACT_TO_PATH",
             "value": "INTERNAL"
           },
           {
             "id": "configaudio",
             "element": "button",
-            "label": "Auto reconfig audio",
-            "doc": "Try this when there is CD audio output during playback. If configuration is changed after reconfig, please reboot.",
+            "label": "TRANSLATE.AUTO_RECONFIG_AUDIO",
+            "doc": "TRANSLATE.AUTO_RECONFIG_AUDIO_DOC",
             "onClick": {
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
@@ -92,15 +92,15 @@
       {
         "id": "section_extract",
         "element": "section",
-        "label": "Extract CD",
+        "label": "TRANSLATE.EXTRACT_CD",
         "icon": "fa-file",
-        "description": "Extract audio files from your CD in the background. Only available in Full Version",
+        "description": "TRANSLATE.EXTRACT_CD_DOC",
         "content": [
           {
             "id": "extractall",
             "element": "button",
-            "label": "Extract whole CD in background",
-            "doc": "Extract the current CD to your Volumio library.  Do not playback CD while extracting.  The extraction is processed in the background so you can still continue to use Volumio for other functions. Restart NanoSound CD plugin if you want to abort the current CD extraction process.",
+            "label": "TRANSLATE.EXTRACT_WHOLE_CD",
+            "doc": "TRANSLATE.EXTRACT_WHOLE_CD_DOC",
             "onClick": {
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
@@ -110,8 +110,8 @@
           {
             "id": "extractstatus",
             "element": "button",
-            "label": "Check Extraction Progress",
-            "doc": "Check the current progress of the CD Extraction",
+            "label": "TRANSLATE.CHECK_EXTRACT_PROGRESS",
+            "doc": "TRANSLATE.CHECK_EXTRACT_PROGRESS_DOC",
             "onClick": {
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
@@ -123,12 +123,12 @@
       {
         "id": "section_reg",
         "element": "section",
-        "label": "Registration Info for Full Version",
+        "label": "TRANSLATE.REGISTRATION_INFO",
         "icon": "fa-key",
-        "description": "Take advantage of CD extraction and Upsampling features",
+        "description": "TRANSLATE.REGISTRATION_INFO",
         "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveReg"},
         "saveButton": {
-          "label": "Register",
+          "label": "TRANSLATE.REGISTER",
           "data": [
             "email",
             "orderno"
@@ -139,16 +139,16 @@
             "id": "email",
             "type":"text",
             "element": "input",
-            "doc": "This is the email address you used to purchase NanoSound CD software",
-            "label": "Email",
+            "doc": "TRANSLATE.EMAIL_DOC",
+            "label": "TRANSLATE.EMAIL",
             "value": ""
           },
           {
             "id": "orderno",
             "type":"text",
             "element": "input",
-            "doc": "This is the order number of the purchase",
-            "label": "Order Number",
+            "doc": "TRANSLATE.ORDER_NO_DOC",
+            "label": "TRANSLATE.ORDER_NO",
             "value": ""
           }
         ]
@@ -156,13 +156,13 @@
      {
       "id": "section_resources",
       "element": "section",
-      "label": "Resources",
+      "label": "TRANSLATE.RESOURCES",
       "icon": "fa-book",
       "content": [
         {
           "id": "shop",
           "element": "button",
-          "label": "Get NanoSound CD Full Version",
+          "label": "TRANSLATE.GET_FULLVERSION",
           "onClick": {
             "type": "openUrl",
             "url": "https://nanomesher.com/nanosoundcd"
@@ -171,7 +171,7 @@
         {
           "id": "shopnanosound",
           "element": "button",
-          "label": "Get NanoSound Products from Volumio",
+          "label": "TRANSLATE.GET_NANOSOUND",
           "onClick": {
             "type": "openUrl",
             "url": "https://volumio.org/product/nanosound-dac/"
@@ -180,7 +180,7 @@
         {
           "id": "support",
           "element": "button",
-          "label": "Support Info",
+          "label": "TRANSLATE.SUPPORT_INFO",
           "onClick": {
             "type": "openUrl",
             "url": "https://nanomesher.com/support"

@@ -26,7 +26,7 @@ function nanosoundCd(context) {
 nanosoundCd.prototype.saveReg = function(data) {
 	var self = this;
 	var defer = libQ.defer();
-	self.logger.info(data);
+	
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "Registering...");
 
 	var url = "http://127.0.0.1:5002/activate?email=" +  data['email'] + "&orderno=" + data['orderno']
@@ -66,7 +66,7 @@ nanosoundCd.prototype.saveReg = function(data) {
 nanosoundCd.prototype.saveConfig = function(data) {
 	var self = this;
 	var defer = libQ.defer();
-	self.logger.info(data);
+	
 
 	var lang_code = this.commandRouter.sharedVars.get('language_code');
 
@@ -102,25 +102,49 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	else
 		self.samplerate = '44.1khz';
 
+
+	var vState = self.commandRouter.stateMachine.getState();
+	if(vState.trackType == self.tracktype)
+	{
+		self.commandRouter.stateMachine.stop().then(function()
+		{
+			exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
+			function (error, stdout, stderr) {
+				if(error != null) {
+						self.logger.error('Error starting NanoSound CD: ' + error);
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
+						defer.resolve();
+				} else {
+						self.logger.info('NanoSound CD daemon started');
+						self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+						defer.resolve();
+				}
+				
 	
-	self.commandRouter.stateMachine.stop().then(function()
+			});
+		});
+	}
+	else
 	{
 		exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
-		function (error, stdout, stderr) {
-			if(error != null) {
-					self.logger.info('Error starting NanoSound CD' + error);
-					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
-			} else {
-					self.logger.info('NanoSound CD daemon started');
-					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+			function (error, stdout, stderr) {
+				if(error != null) {
+						self.logger.error('Error starting NanoSound CD: ' + error);
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
+						defer.resolve();
+				} else {
+						self.logger.info('NanoSound CD daemon started');
+						self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
+						defer.resolve();
+				}
+				
+	
+			});
+	}
+	
 
-			}
-			
 
-		});
-		return defer.resolve();
-	});
-
+	return defer.promise
 }
 
 
@@ -157,20 +181,19 @@ nanosoundCd.prototype.onStart = function() {
 	exec('/usr/bin/sudo /bin/systemctl start nanosoundcd_web', {uid:1000,gid:1000},
 		function (error, stdout, stderr) {
 			if(error != null) {
-					self.logger.info('Error starting NanoSound CD' + error);
+					self.logger.error('Error starting NanoSound CD: ' + error);
 					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
+					defer.resolve();
+
 			} else {
 					self.logger.info('NanoSound CD daemon started');
 					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon starting');
+					defer.resolve();
+
 					
 			}
 		});		
-
-
-
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
-
+	
     return defer.promise;
 };
 
@@ -184,22 +207,24 @@ nanosoundCd.prototype.onStop = function() {
 		exec('/usr/bin/sudo /bin/systemctl stop nanosoundcd_web', {uid:1000,gid:1000},
 		function (error, stdout, stderr) {
 			if(error != null) {
-					self.logger.info('Error stopping NanoSound CD' + error);
+					self.logger.error('Error stopping NanoSound CD:' + error);
 					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with stopping NanoSound CD:' + error);
+					defer.resolve();
 			} else {
 					self.logger.info('NanoSound CD daemon stopped');
 					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon stopping');
+					defer.resolve();
 					
 			}
 		});
-		return defer.resolve();
+		
 	});
 
 	
 
 
 
-
+	return defer.promise;
 
 };
 
@@ -209,7 +234,7 @@ nanosoundCd.prototype.onRestart = function() {
 	exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
-                                		                                                self.logger.info('Error starting NanoSound CD' + error);
+                                		                                                self.logger.error('Error starting NanoSound CD: ' + error);
                                                 		                                self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound CD daemon started');
@@ -217,14 +242,14 @@ nanosoundCd.prototype.onRestart = function() {
 																						sleep.sleep(5);
 		                                                                        }
 																				
-
+																				defer.resolve();
 										  });
 										  
 	
 
-	defer.resolve();
+	
 
-	return libQ.resolve();
+	return defer.promise;
 };
 
 
@@ -331,8 +356,12 @@ nanosoundCd.prototype.testPlay=function()
 				
 				defer.resolve();
 			}
-
-			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Unknown error");
+			else
+			{
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Unknown error");
+				defer.resolve();
+				
+			}
 				
 		}
 		else
@@ -392,7 +421,6 @@ nanosoundCd.prototype.extractAll=function()
 	{
 		self.commandRouter.stateMachine.stop();
 	}
-
 	
 	var url = "http://127.0.0.1:5003/ripprogress";
 	request({
@@ -404,6 +432,9 @@ nanosoundCd.prototype.extractAll=function()
 
 			if(!("status" in body) || (body["status"] == "DONE") || (body["status"] == "ABORTED"))
 			{
+
+				self.commandRouter.pushToastMessage('success', "NanoSound CD", "Extraction Starting...");
+	
 				var url = "http://127.0.0.1:5002/ripcd"
 				request({
 				url: url,

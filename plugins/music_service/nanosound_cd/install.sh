@@ -35,7 +35,7 @@ sudo make install
 echo "Installing NanoSound CD Service"
 cd /tmp
 wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd.tar.gz
-sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio
+sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
 cd /home/volumio/nanomesher_nanosoundcd
 sudo chmod 777 nanosoundcd_progressweb
 sudo chmod 777 nanosoundcd_web
@@ -55,10 +55,10 @@ sudo tar xvf /tmp/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
 rm /tmp/nanomesher_nanosoundcd_services.tar.gz
 
 sudo /bin/systemctl daemon-reload
-sudo /bin/systemctl enable nanosoundcd_web
-sudo /bin/systemctl enable nanosoundcd_progressweb
+sudo /bin/systemctl enable nanosoundcd_web --now
+sudo /bin/systemctl enable nanosoundcd_progressweb --now
 
-
+echo "NanoSound CD installation is completed. Please reboot"
 
 # If you need to differentiate install for armhf and i386 you can get the variable like this
 #DPKG_ARCH=`dpkg --print-architecture`
