@@ -6,29 +6,28 @@ sudo apt-get update
 #sudo apt-get -y install
 
 echo "Installing Flask"
-sudo apt-get remove python-pip
+sudo apt-get -y remove python-pip
 sudo easy_install pip
 sudo pip install Flask
 sudo pip install flask_table
 sudo pip install flask_cors
 
 echo "Installing memcache"
-sudo apt-get install Memcached
+sudo apt-get -y install memcached
 sudo pip install pymemcache
 
 echo "Installing VLC"
-sudo apt-get update
-sudo apt-get install vlc
+sudo apt-get -y install vlc
 sudo pip install python-vlc
 
 
 echo "Installing Audio Libraries"
 
-sudo apt-get install libasound2-plugins
+sudo apt-get -y install libasound2-plugins
 
 cd /home/volumio/
 git clone https://github.com/nanomesher/python-audio-tools.git
-sudo apt-get install libcdio-dev  libcdio-paranoia-dev
+sudo apt-get -y install libcdio-dev  libcdio-paranoia-dev
 cd python-audio-tools
 sudo make install
 
@@ -55,8 +54,11 @@ sudo tar xvf /tmp/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
 rm /tmp/nanomesher_nanosoundcd_services.tar.gz
 
 sudo /bin/systemctl daemon-reload
-sudo /bin/systemctl enable nanosoundcd_web --now
-sudo /bin/systemctl enable nanosoundcd_progressweb --now
+sudo /bin/systemctl enable nanosoundcd_web
+sudo /bin/systemctl enable nanosoundcd_progressweb
+
+sudo /bin/systemctl start nanosoundcd_web
+sudo /bin/systemctl start nanosoundcd_progressweb
 
 echo "NanoSound CD installation is completed. Please reboot"
 

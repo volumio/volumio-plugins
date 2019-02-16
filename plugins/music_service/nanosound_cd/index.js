@@ -178,22 +178,25 @@ nanosoundCd.prototype.onStart = function() {
 	else
 		self.samplerate = '44.1khz';
 
-	exec('/usr/bin/sudo /bin/systemctl start nanosoundcd_web', {uid:1000,gid:1000},
+	exec('/usr/bin/sudo /bin/systemctl start nanosoundcd_progressweb', {uid:1000,gid:1000},
 		function (error, stdout, stderr) {
-			if(error != null) {
-					self.logger.error('Error starting NanoSound CD: ' + error);
-					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
-					defer.resolve();
+		
+		exec('/usr/bin/sudo /bin/systemctl start nanosoundcd_web', {uid:1000,gid:1000},
+			function (error, stdout, stderr) {
+				if(error != null) {
+						self.logger.error('Error starting NanoSound CD: ' + error);
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
+						defer.resolve();
 
-			} else {
-					self.logger.info('NanoSound CD daemon started');
-					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon starting');
-					defer.resolve();
+				} else {
+						self.logger.info('NanoSound CD daemon started');
+						self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon starting');
+						defer.resolve();
 
-					
-			}
-		});		
-	
+						
+				}
+			});		
+	});
     return defer.promise;
 };
 
@@ -204,18 +207,24 @@ nanosoundCd.prototype.onStop = function() {
 	self.commandRouter.stateMachine.stop().then(function()
 	{
 		// Once the Plugin has successfull stopped resolve the promise
-		exec('/usr/bin/sudo /bin/systemctl stop nanosoundcd_web', {uid:1000,gid:1000},
+
+		exec('/usr/bin/sudo /bin/systemctl stop nanosoundcd_progressweb', {uid:1000,gid:1000},
 		function (error, stdout, stderr) {
-			if(error != null) {
-					self.logger.error('Error stopping NanoSound CD:' + error);
-					self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with stopping NanoSound CD:' + error);
-					defer.resolve();
-			} else {
-					self.logger.info('NanoSound CD daemon stopped');
-					self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon stopping');
-					defer.resolve();
-					
-			}
+
+			exec('/usr/bin/sudo /bin/systemctl stop nanosoundcd_web', {uid:1000,gid:1000},
+			function (error, stdout, stderr) {
+				if(error != null) {
+						self.logger.error('Error stopping NanoSound CD:' + error);
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with stopping NanoSound CD:' + error);
+						defer.resolve();
+				} else {
+						self.logger.info('NanoSound CD daemon stopped');
+						self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon stopping');
+						defer.resolve();
+						
+				}
+			});
+
 		});
 		
 	});
@@ -231,6 +240,10 @@ nanosoundCd.prototype.onStop = function() {
 nanosoundCd.prototype.onRestart = function() {
     var self = this;
 	// Optional, use if you need it
+
+	exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_progressweb', {uid:1000,gid:1000},
+		function (error, stdout, stderr) {
+
 	exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
@@ -246,8 +259,7 @@ nanosoundCd.prototype.onRestart = function() {
 										  });
 										  
 	
-
-	
+	});
 
 	return defer.promise;
 };
