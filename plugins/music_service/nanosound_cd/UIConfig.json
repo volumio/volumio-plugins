@@ -21,8 +21,8 @@
             "element": "select",
             "label": "TRANSLATE.UPSAMPLING_TO",
             "doc": "TRANSLATE.UPSAMPLING_TO_DOC",
-            "value": {"value": "1",
-                      "label": "176.4kHz (x4)"
+            "value": {"value": "3",
+                      "label": "Disable"
             },
   
             "options": [

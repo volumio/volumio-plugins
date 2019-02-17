@@ -82,7 +82,7 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	if(self.config.get('email')=="")
 	{
 		self.config.set('upsampling','3');
-		self.commandRouter.pushToastMessage('error', "NanoSound CD", "Upsampling and Extraction are only available in full version");
+		self.commandRouter.pushToastMessage('success', "NanoSound CD", "Upsampling and Extraction are only available in full version");
 	}
 	else
 	{
