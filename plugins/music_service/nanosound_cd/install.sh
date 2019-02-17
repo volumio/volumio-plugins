@@ -7,7 +7,7 @@ sudo apt-get update
 
 echo "Installing Flask"
 sudo apt-get -y remove python-pip
-sudo apt-get -y install python-setuptools
+sudo apt-get -y install python-setuptools python-dev
 sudo easy_install pip
 sudo pip install Flask
 sudo pip install flask_table
