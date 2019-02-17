@@ -7,6 +7,7 @@ sudo apt-get update
 
 echo "Installing Flask"
 sudo apt-get -y remove python-pip
+sudo apt-get -y install python-setuptools
 sudo easy_install pip
 sudo pip install Flask
 sudo pip install flask_table
@@ -27,7 +28,7 @@ sudo apt-get -y install libasound2-plugins
 
 cd /home/volumio/
 git clone https://github.com/nanomesher/python-audio-tools.git
-sudo apt-get -y install libcdio-dev  libcdio-paranoia-dev
+sudo apt-get -y install build-essential libcdio-dev  libcdio-paranoia-dev
 cd python-audio-tools
 sudo make install
 
