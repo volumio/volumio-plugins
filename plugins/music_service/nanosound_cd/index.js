@@ -103,6 +103,8 @@ nanosoundCd.prototype.saveConfig = function(data) {
 		self.samplerate = '44.1khz';
 
 
+	//Wait for file to save
+	sleep.sleep(2);
 	var vState = self.commandRouter.stateMachine.getState();
 	if(vState.trackType == self.tracktype)
 	{
@@ -252,7 +254,7 @@ nanosoundCd.prototype.onRestart = function() {
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound CD daemon started');
                                                                                			self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
-																						sleep.sleep(5);
+																						sleep.sleep(3);
 		                                                                        }
 																				
 																				defer.resolve();
