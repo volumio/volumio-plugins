@@ -43,5 +43,6 @@
   "TRACKS":"Morceaux",
   "VOLUSONIC_OPTIONS":"Options Volusonic", 
   "SAVED":"Sauvegardées",
-  "POP_ERROR":"Erreure"
+  "POP_ERROR":"Erreure",
+  "ID3":"Se baser ou non sur les balises ID3 pour accéder à la base de données musicale" 
 }
