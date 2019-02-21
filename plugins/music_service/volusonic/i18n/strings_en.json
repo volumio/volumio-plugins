@@ -42,5 +42,6 @@
   "TRACKS":"Tracks",
   "VOLUSONIC_OPTIONS":"Volusonic Options", 
   "SAVED":"Saved",
-  "POP_ERROR":"Error"
+  "POP_ERROR":"Error",
+  "ID3":"Use or not ID3 tags to get metadatas from your music libraries" 
 }
