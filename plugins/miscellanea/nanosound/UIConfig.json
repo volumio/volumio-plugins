@@ -6,11 +6,11 @@
     {
       "id": "section_display",
       "element": "section",
-      "label": "Setup your OLED Display",
+      "label": "OLED",
       "icon": "fa-plug",
       "onSave": {"type":"controller", "endpoint":"miscellanea/nanosound", "method":"saveConfig"},
       "saveButton": {
-        "label": "Save",
+        "label": "TRANSLATE.SAVE",
         "data": [
           "oledDisplay"
         ]
@@ -36,6 +36,32 @@
           ]
         }
 	]
-	}
+	},
+  {
+   "id": "section_resources",
+   "element": "section",
+   "label": "TRANSLATE.RESOURCES",
+   "icon": "fa-book",
+   "content": [
+     {
+       "id": "shopnanosound",
+       "element": "button",
+       "label": "TRANSLATE.GET_NANOSOUND",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://volumio.org/product/nanosound-dac/"
+       }
+     },
+     {
+       "id": "support",
+       "element": "button",
+       "label": "TRANSLATE.SUPPORT_INFO",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://nanomesher.com/support"
+       }
+     }
+   ]
+   }
   ]
 }
