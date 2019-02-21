@@ -14,5 +14,5 @@ Albums special feature
 Artists Specials Features
 * LastFM infos when available
 * Radio mode: generate a playlist of similar tracks present on the backend
-* Top songs as defined on lastFM
+* Top songs as defined on lastFM and present on the backend
 * Links to similar artists present on the backend
