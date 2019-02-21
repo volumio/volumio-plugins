@@ -1,2 +1,0 @@
-SUBSYSTEM=="input",  MODE="0660",  GROUP="input"
-KERNEL=="tty[0-9]*", MODE="0660",  GROUP="tty"
