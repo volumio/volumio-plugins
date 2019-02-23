@@ -17,7 +17,7 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "playFromLastPosition", "autoStartDelay", "autoStartMode"
+          "playFromLastPosition", "autoStartDelay", "autoStartMode", "selectAutoStartItem"
         ]
       },
       "content": [
@@ -80,18 +80,16 @@
           "visibleIf": {"field": "autoStartMode", "value": "2"},
           "attributes":[
             {"disabled":"disabled"},
+            {"alt": "Album Art"},
             {"style":"height:90px;width:90px;padding:0"}
           ]
         },
         {
           "id": "selectAutoStartItem",
-          "element": "button",
+          "element": "switch",
           "label": "TRANSLATE.AUTOSTART_SELECT_ITEM",
-          "onClick": {
-            "type": "controller",
-            "endpoint": "miscellanea/autostart",
-            "method": "selectAutoStartItem"
-          },
+          "doc": "TRANSLATE.AUTOSTART_SELECT_ITEM_DESCRIPTION",
+          "value": false,
           "visibleIf": {"field": "autoStartMode", "value": "2"}
         }
       ]

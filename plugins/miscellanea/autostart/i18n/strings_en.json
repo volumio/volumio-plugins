@@ -12,5 +12,9 @@
   "AUTOSTART_FROM_QUEUE":"AutoStart from Queue",
   "AUTOSTART_FROM_SELECTED_ITEM":"AutoStart from Selected Item",
   "AUTOSTART_SELECTED_ITEM":"Selected AutoStart Item",
-  "AUTOSTART_MODE":"AutoStart Mode"
+  "AUTOSTART_MODE":"AutoStart Mode",
+  "AUTOSTART_SELECT_ITEM_DESCRIPTION": "Select 'Clear and play' on the context menu of any item in the 'BROWSE' section to configure the AutoStart plugin to play it when Volumio starts. After the item is selected 'Clear and play' will revert to its normal behaviour. Return to AutoStart plugin settings to change item selection.",
+  "AUTOSTART_SELECTION_SUCCESS": "Autostart successfully configured to use ",
+  "AUTOSTART_SELECTION_FAILURE": "Autostart selection failed",
+  "AUTOSTART_SELECT_MODE_ACTIVATED": "Autostart Select Mode activated"
 }
