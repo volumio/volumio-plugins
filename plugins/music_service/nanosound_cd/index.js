@@ -436,7 +436,7 @@ nanosoundCd.prototype.upgrade=function()
 			{
 				if(body['updateavail']==true)
 				{
-					self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrading...");
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrading... It will take a few minutes");
 
 					var upgradeurl = "http://127.0.0.1:5002/upgrade";
 					request({
@@ -445,8 +445,36 @@ nanosoundCd.prototype.upgrade=function()
 					}, function (error, httpresponse, body) {
 						if(body['status']=='OK')
 						{
-							self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrade successful");
-							defer.resolve();
+							self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrade successful. Volumio restarting.....");
+							
+							exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_progressweb', {uid:1000,gid:1000},
+									function (error, stdout, stderr) {
+
+									exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_web', {uid:1000,gid:1000},
+																											function (error, stdout, stderr) {
+																												if(error != null) {
+																														self.logger.error('Error starting NanoSound CD: ' + error);
+																														self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Problem with starting NanoSound CD:' + error);
+																														defer.resolve();
+																												} else {
+																														self.logger.info('NanoSound CD updated');
+																														self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'Volumio and NanoSound CD daemon restarting');
+																														sleep.sleep(3);
+
+																														exec('/usr/bin/sudo volumio vrestart', {uid:1000,gid:1000},
+																														function (error, stdout, stderr) {
+																															defer.resolve();
+																														});
+
+																												}
+																												
+																												
+										});
+																		
+									
+								});
+
+
 						}
 						else
 						{
