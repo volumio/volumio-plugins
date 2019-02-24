@@ -28,5 +28,7 @@
 	"REGISTRATION_INFO_DOC": "利用CD提取和上采样功能",
 	"EMAIL_DOC": "这是您用于购买NanoSound CD软件的电子邮件地址",
 	"ORDER_NO_DOC": "这是购买的订单号。对于Kickstarter支持者,请在前面添加'KS'后跟你的支持者编号（例如:KS123）",
-	"REGISTER": "注册"
+	"REGISTER": "注册",
+	"SHOWVERSION":"显示版本",
+	"UPGRADE":"升级软件"
 }

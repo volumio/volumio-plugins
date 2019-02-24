@@ -28,5 +28,7 @@
 	"REGISTRATION_INFO_DOC": "Approfitta dell'estrazione del CD e delle funzionalità di Upsampling",
 	"EMAIL_DOC": "Questo è l'indirizzo email che hai usato per acquistare il software NanoSound CD",
 	"ORDER_NO_DOC": "Questo è il numero dell'ordine di acquisto. Per i sostenitori di Kickstarter, si prega di prefisso con 'KS' seguito da bu il numero di backer (Esempio: KS123)",
-	"REGISTER": "Register"
+	"REGISTER": "Register",
+	"SHOWVERSION":"Mostra versione",
+	"UPGRADE":"Aggiornamento versione"
 }

@@ -86,6 +86,28 @@
               "endpoint": "music_service/nanosound_cd",
               "method": "setupAudio"
             }
+          },
+          {
+            "id": "showversion",
+            "element": "button",
+            "label": "TRANSLATE.SHOWVERSION",
+            "doc": "TRANSLATE.SHOWVERSION",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "showversion"
+            }
+          },
+          {
+            "id": "upgradeversion",
+            "element": "button",
+            "label": "TRANSLATE.UPGRADE",
+            "doc": "TRANSLATE.UPGRADE",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "upgrade"
+            }
           }
       ]
       },

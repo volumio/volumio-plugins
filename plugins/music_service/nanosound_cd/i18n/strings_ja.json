@@ -28,5 +28,7 @@
 	"REGISTRATION_INFO_DOC": "CDの抽出とアップサンプリングの機能を利用する",
 	"EMAIL_DOC": "これはNanoSound CDソフトウェアの購入に使用したEメールアドレスです",
 	"ORDER_NO_DOC": "これは購入の注文番号です。キックスターターの後援者の場合は,後援者番号の後に 'KS'を付加してください（例：KS123） ",
-	"REGISTER": "登録"
+	"REGISTER": "登録",
+	"SHOWVERSION":"バージョンを表示",
+	"UPGRADE":"ソフトウェアをアップグレードする"
 }

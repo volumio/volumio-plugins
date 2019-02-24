@@ -389,6 +389,94 @@ nanosoundCd.prototype.testPlay=function()
 	return defer.promise;
 }
 
+
+nanosoundCd.prototype.showversion=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+
+	var url = "http://127.0.0.1:5002/version";
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		if (!error && httpresponse.statusCode === 200) {
+			if(("dated" in body) && ("version" in body))
+			{
+				self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Build:" + body["version"] + " Date:" + body["dated"]);
+				defer.resolve();
+			}	
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Cannot get version");
+			defer.resolve();
+		}
+		
+	});
+
+	return defer.promise;
+
+}
+
+nanosoundCd.prototype.upgrade=function()
+{
+	var self = this;
+	var defer=libQ.defer();
+
+	var url = "http://127.0.0.1:5002/updateavailable";
+	request({
+	url: url,
+	json: true
+	}, function (error, httpresponse, body) {
+
+		if (!error && httpresponse.statusCode === 200) {
+			if(("updateavail" in body))
+			{
+				if(body['updateavail']==true)
+				{
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrading...");
+
+					var upgradeurl = "http://127.0.0.1:5002/upgrade";
+					request({
+					url: upgradeurl,
+					json: true
+					}, function (error, httpresponse, body) {
+						if(body['status']=='OK')
+						{
+							self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrade successful");
+							defer.resolve();
+						}
+						else
+						{
+							self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Upgrade failed");
+							defer.resolve();
+						}
+
+					});
+				}
+					
+				if(body['updateavail']==false)
+				{
+
+					self.commandRouter.pushToastMessage('success', 'NanoSound CD', "Already on latest version");
+					defer.resolve();
+				}
+			}	
+		}
+		else
+		{
+			self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Cannot upgrade");
+			defer.resolve();
+		}
+		
+	});
+
+	return defer.promise;
+}
+
+
 nanosoundCd.prototype.setupAudio=function()
 {
 	var self = this;
