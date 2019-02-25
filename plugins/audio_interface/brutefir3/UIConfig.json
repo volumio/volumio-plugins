@@ -19,6 +19,7 @@
           "attenuation",
           "leftfilter",
           "rightfilter",
+	  "filter_format",
           "filter_size",
           "smpl_rate",
           "output_format"
@@ -85,7 +86,6 @@
             }
           ]
         },
-        
         {
           "id": "leftfilter",
           "element": "select",
@@ -108,6 +108,42 @@
           },
           "options": []
         },
+	{
+					"id": "filter_format",
+					"element": "select",
+					"doc": "filters format",
+					"label": "TRANSLATE.FILTER_FORMAT",
+					"value": {
+						"value": "text",
+						"label": "text"
+					},
+					"options": [
+						{
+							"value": "text",
+							"label": "text- 32/64 bits floats line (.txt) in rephase"
+						},
+						{
+							"value": "S16_LE",
+							"label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
+						},
+						{
+							"value": "S24_LE",
+							"label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
+						},
+						{
+							"value": "S32_LE",
+							"label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
+						},
+						{
+							"value": "FLOAT64_LE",
+							"label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in Rephase"
+						}
+					],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
         {
           "id": "filter_size",
           "element": "select",
@@ -182,7 +218,7 @@
               "value": "96000",
               "label": "96kHz"
             },
-{
+	{
               "value": "176400",
               "label": "176.4kHz"
             },
@@ -192,29 +228,17 @@
             }
           ]
         },
+
         {
           "id": "output_format",
           "element": "select",
           "doc": "output format",
           "label": "TRANSLATE.OUTPUT_FORMAT",
           "value": {
-            "value": "S16_LE",
-            "label": "S16_LE"
+            "value": "sitems",
+            "label": "sitems"
           },
-          "options": [
-            {
-              "value": "S16_LE",
-              "label": "S16_LE"
-            },
-            {
-              "value": "S24_LE",
-              "label": "S24_LE"
-            },
-            {
-              "value": "S32_LE",
-              "label": "S32_LE"
-            }
-          ]
+          "options": []
         }
       ]
     },

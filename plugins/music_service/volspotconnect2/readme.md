@@ -1,4 +1,4 @@
-02nd Febuary 2019
+Febuary 25th 2019
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+Febuary 25th 2019
+
+- fix from ['@ash'](https://github.com/ashthespy) for the problem of next track due to Spotify change
 
 2nd Febuary 2019
 

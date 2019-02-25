@@ -68,6 +68,50 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function() {
  }, 500)
 };
 
+//here we generate the file containing sample format available on the used hw
+ControllerBrutefir.prototype.sampleformat = function() {
+ var self = this;
+ //var defer = libQ.defer();
+var output_device;
+ output_device = self.config.get('alsa_device')
+
+execSync('/data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /tmp/sampleformat.txt ', {
+//execSync("/bin/cat /tmp/sampleformat.txt 2>&1 | /bin/grep -oP \'(\?<=formats\ \ =\ ).*\',0 2>&1 | /usr/bin/tee /tmp/ressampleformat.txt", function(error, stdout, stderr)
+
+// exec('/data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /tmp/sampleformat.txt ', {
+  uid: 1000,
+  gid: 1000
+ }, function(error, stdout, stderr) {
+  if (error) {
+   self.logger.info('failed ' + error);
+  } else {
+   self.commandRouter.pushConsoleMessage('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMlist sample format done');
+ //  defer.resolve();
+  }
+ });
+
+try {
+execSync("data/plugins/audio_interface/brutefir/sortsample.sh",  {
+  uid: 1000,
+  gid: 1000
+ })
+/*, function(error, stdout, stderr) {
+  if (error) {
+   self.logger.info('failed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ' + error);
+  } else {
+   self.commandRouter.pushConsoleMessage('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSlist sample format done');
+ // defer.resolve();
+  }
+*/
+ } catch (err) {
+   self.logger.info('sampleformat.txt does not exist');
+  }
+ setTimeout(function() {
+
+  //return defer.promise;
+ }, 500)
+};
+
 //here we save the volumio config for the next plugin start
 ControllerBrutefir.prototype.saveVolumioconfig = function() {
  var self = this;
@@ -217,7 +261,7 @@ ControllerBrutefir.prototype.autoconfig = function() {
   .then(self.modprobeLoopBackDevice())
   .then(self.saveHardwareAudioParameters())
   .then(self.setLoopbackoutput())
-
+  .then(self.sampleformat())
   .catch(function(err) {
    console.log(err);
   });
@@ -286,9 +330,13 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var value;
     var valuestoredl;
     var valuestoredr;
+    var valuestoredf;
     var filterfolder = "/data/INTERNAL/brutefirfilters";
     var items;
     var allfilter;
+    var oformat;
+  //  var sitems;
+    var sampleformat;
 
 uiconf.sections[1].content[0].value = self.config.get('ldistance');
 uiconf.sections[1].content[1].value = self.config.get('rdistance');
@@ -302,44 +350,82 @@ uiconf.sections[1].content[1].value = self.config.get('rdistance');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
-    fs.readdir(filterfolder, function(err, item) {
+ fs.readdir(filterfolder, function(err, item) {
 
-     allfilter = 'None,' + item
+     allfilter = 'Dirac pulse,' + item
      items = allfilter.split(',');
-     self.logger.info('list of available filters ' + items);
-
+     self.logger.info('list of available filters for DRC :' + items);
+console.log(items)
      for (var i in items) {
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
        value: items[i],
        label: items[i]
       });
-
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
        value: items[i],
        label: items[i]
       });
+	self.logger.info('list of available filters UI :' + items[i]);
      }
+
     });
+
+    valuestoredf = self.config.get('output_format');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', valuestoredf);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', valuestoredf);
+
+var value
+//var sitems = ("tto, apzzp, gvv, xxxx");
+var sitems
+
+//fs.readdir("/tmp/sf", function(err, sampleformat) {
+/*
+fs.readFile("/tmp/sortsamplec.txt", function(err, sampleformat).toString().split('\n') {
+if (err) {
+				return self.logger.error(err);
+}
+*/
+sampleformat = fs.readFile("/tmp/sortsamplec.txt").toString().split('\n');
+//var splitted = sampleformat.split(', ');
+//var test = toString(splitted + ', toto')
+var sampleformato = ('Fallback S16_LE, ' + sampleformat)//.toString()//.split('\n')
+
+console.log(sampleformato)
+sitems = sampleformato.split(', ');
+console.log(sitems)
+     for (var i in sitems) {
+
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[6].options', {
+       value: sitems[i],//.replace(/\"/gi, ""),
+       label: sitems[i]//.replace(/\"/gi, "")
+      });
+self.logger.info('list of available output formatUI :' + sitems[i]);
+	}
+  //  });
 
     value = self.config.get('attenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
 
-    value = self.config.get('filter_size');
+value = self.config.get('filter_format');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
 
-    value = self.config.get('smpl_rate');
+    value = self.config.get('filter_size');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[4].options'), value));
-    value = self.config.get('output_format');
+
+    value = self.config.get('smpl_rate');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
+/*
+  value = self.config.get('output_format');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value))
-    var value;
- 
+*/
 
-
-    defer.resolve(uiconf);
+var value;
+     defer.resolve(uiconf);
    })
   .fail(function() {
    defer.reject(new Error());
@@ -358,7 +444,19 @@ ControllerBrutefir.prototype.getFilterList = function() {
   self.logger.info(results);
  });
 
-
+var sampleformat = fs.readFileSync('/tmp/sampleformat.txt', 'utf8', function (err, data) {
+            if (err) {
+              console.log('Error reading config', err);
+            }
+          });
+          var obj = JSON.parse(sampleformat);
+self.logger.info('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm' + sampleformat);
+self.logger.info('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm' + obj);
+       /*   var outputdevicen = obj.outputdevice;
+          var outn = JSON.stringify(outputdevicen);
+          var outdn = outn.split('"');
+          var output_formats = (outdn[7]);
+*/
 };
 
 ControllerBrutefir.prototype.getLabelForSelect = function(options, key) {
@@ -447,14 +545,21 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var filter_size = parseInt(f_size);
    var filtersizedivided = filter_size / num_part;
    var output_device
+   var skipf
+	if ((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) {
+	skipf = "skip:44;";}
+else skipf = "";
    output_device = 'hw:' + self.config.get('alsa_device');
 
-   if (self.config.get('leftfilter') == "None") {
+	if (self.config.get('format_filter') == "Fallback S16_LE") {
+	format_filter = "S16_LE";}
+
+   if (self.config.get('leftfilter') == "Dirac pulse") {
     composeleftfilter = "dirac pulse";
     //filterattenuation = "0"
    } else leftfilter = filter_path + self.config.get('leftfilter');
    //lattenuation = "6";
-   if (self.config.get('rightfilter') == "None")
+   if (self.config.get('rightfilter') == "Dirac pulse")
     composerightfilter = "dirac pulse";
    // filterattenuation = "0"
    else rightfilter = filter_path + self.config.get('rightfilter');
@@ -468,14 +573,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf5 = conf4.replace("${delay}", delay);
    var conf6 = conf5.replace("${leftfilter}", composeleftfilter);
    var conf7 = conf6.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf8 = conf7.replace("${lattenuation}", self.config.get('attenuation'));
-   var conf9 = conf8.replace("${rightfilter}", composerightfilter);
-   var conf10 = conf9.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf11 = conf10.replace("${rattenuation}", self.config.get('attenuation'));
-   var conf12 = conf11.replace("${output_device}", output_device);
-   var conf13 = conf12.replace("${output_format}", self.config.get('output_format'));
+   var conf8 = conf7.replace("${skip_1}", skipf);
+   var conf9 = conf8.replace("${lattenuation}", self.config.get('attenuation'));
+   var conf10 = conf9.replace("${rightfilter}", composerightfilter);
+   var conf11 = conf10.replace("${filter_format2}", self.config.get('filter_format'));
+   var conf12 = conf11.replace("${skip_2}", skipf);
+   var conf13 = conf12.replace("${rattenuation}", self.config.get('attenuation'));
+   var conf14 = conf13.replace("${output_device}", output_device);
+   var conf15 = conf14.replace("${output_format}", self.config.get('output_format'));
 
-   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf13, 'utf8', function(err) {
+   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf15, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -504,6 +611,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('attenuation', data['attenuation'].value);
  self.config.set('leftfilter', data['leftfilter'].value);
  self.config.set('rightfilter', data['rightfilter'].value);
+ self.config.set('filter_format', data['filter_format'].value);
  self.config.set('filter_size', data['filter_size'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);
  //  self.config.set('numb_part', data['numb_part']);

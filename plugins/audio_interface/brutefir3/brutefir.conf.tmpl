@@ -12,7 +12,7 @@ logic:
 #"echo" on ;
 input "l_in", "r_in" {
             device: "alsa" {device: "hw:${input_device}";};
-            sample: "S32_LE";   # sample format
+            sample: "s32_le";   # sample format
             channels: 2;            # number of open channels / which to use
 delay: ${delay};
     };
@@ -20,7 +20,9 @@ delay: ${delay};
 
 coeff "filter_1" {
 filename: "${leftfilter}";
-format: "text";
+format: "${filter_format1}";
+${skip_1}
+#format: "text";
 attenuation: ${lattenuation};
 };
 
@@ -34,7 +36,9 @@ process: -1;
 
 coeff "filter_2" {
 filename: "${rightfilter}";
-format: "text";
+format: "${filter_format2}";
+${skip_2}
+#format: "text";
 attenuation: ${rattenuation};
 };
 
@@ -49,7 +53,9 @@ process: -1;
    output "l_out","r_out" {
             device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
 #         device: "file" {path: "/dev/stdout";};
-            sample: "${output_format}";   # sample format
+#          sample: "${output_format}";   # sample format
+ sample: "S24_3LE";
+
             channels: 2;        # number of open channels / which to use
 #	delay: 5,0;
  #	maxdelay: -1;
