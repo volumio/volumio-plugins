@@ -1,9 +1,8 @@
-23th may 2018
+Febuary 25th 2019
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
+This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
 
-This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
-and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
 
 It is still in dev and some features are missing.
 
@@ -26,19 +25,12 @@ Tested on :
 ## To install
 Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
-
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
+https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
@@ -50,17 +42,60 @@ mkdir ./volspotconnect2
 miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
+cd ..
+rm -Rf volspotconnect*
 ```
-## Save setting of the plugin even if you change nothing to generate correct config file.
+
+### 3.Enable the plugin
+
+In volumio webUI, go in plugin section, installed plugin.You should see volspotconnect2 now ! Enable it and play ! You can go in the plugin settings to tweak some details.
+Enjoy !
 
 
 ## Issues
 
 Time is reset when changing volume in UI
-UI may hangs sometimes when pressing buttons.
+UI may hangs sometimes when pressing buttons to fast.
+A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+Febuary 25th 2019
+
+- fix from ['@ash'](https://github.com/ashthespy) for the problem of next track due to Spotify change
+
+2nd Febuary 2019
+
+- merged PR from @ashthespy
+
+11th december 2018
+
+- remove bitrate info...
+- support for version info in plugin manager
+
+03rd December 2018
+
+- support alsa hardware mixer! Thanks to ['@ash'](https://github.com/ashthespy)
+- vollibrespot as lib Thanks to ['@ash'](https://github.com/ashthespy)
+- miscellanea fixes
+
+01st August 2018
+
+- correction in install.sh for curl
+
+28th June 2018
+
+- use of curl instead of wget in install.sh (@gkkpch)
+
+21th June 2018
+
+- better complex username handling
+
+09th june 2018
+
+- Expand credentials command parameters (@ash)
+- Update readme
 
 23th may 2018
 
