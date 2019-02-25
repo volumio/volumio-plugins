@@ -1,4 +1,4 @@
-Febuary 8th 2019
+Febuary 25th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -62,6 +62,7 @@ In webUI, enbable the plugin and wait about 20seconds.
 ## What is working :
  
 nearly everythings 
+only fallback S16_LE sample format...
 
 ## What is not working :
 
@@ -71,6 +72,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary, 25th  2019
+
+- filter format selector
+- first work for output sample format from hw
 
 Febuary, 8th 2019
 
