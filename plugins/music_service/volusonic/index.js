@@ -1332,112 +1332,148 @@ ControllerVolusonic.prototype._search = function (query,curUri){
 }
 
 // Define a method to clear, add, and play an array of tracks
-ControllerVolusonic.prototype.clearAddPlayTrack = function (track) {
-    var self = this;
+ControllerVolusonic.prototype.clearAddPlayTrack = function(track) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::clearAddPlayTrack');
 
-    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::clearAddPlayTrack');
+	var subsoListenerCallback = () => {
+		self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic: MPD player state update');
+		self.mpdPlugin.getState()
+			.then(function(state) {
+				var selectedTrackBlock = self.commandRouter.stateMachine.getTrack(self.commandRouter.stateMachine.currentPosition);
+				if (selectedTrackBlock.service && selectedTrackBlock.service=='volusonic') {
+					self.mpdPlugin.clientMpd.once('system-player', subsoListenerCallback);
+					return self.pushState(state);
+				} else {
+					self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic: Not a subsonic track, removing listener');
+				}
+			});
+	};
 
-    return self.mpdPlugin.sendMpdCommand('stop', [])
-        .then(function () {
-            return self.mpdPlugin.sendMpdCommand('clear', []);
-        })
-        .then(function () {
-            return self.mpdPlugin.sendMpdCommand('load "' + track.uri + '"', []);
-        })
-        .fail(function (e) {
-            return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
-        })
-	.then(function () {
-          self.commandRouter.stateMachine.setConsumeUpdateService('volusonic', true);
-          //this.mpdPlugin.ignoreUpdate(true);
-          self.mpdPlugin.clientMpd.on('system', function (status) {
-		  var timeStart = Date.now();
-		  self.mpdPlugin.getState().then(function (state) {
-			  state.trackType = track.trackType;
-			  state.isStreaming = 'true';
-			  return self.commandRouter.stateMachine.syncState(state, "volusonic");
-            });
-          });
-          return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-            self.commandRouter.pushConsoleMessage("Volusonic::After Play");
-            return self.mpdPlugin.getState().then(function (state) {
-		    state.trackType = track.trackType;
-		    state.isStreaming = 'true';
-		    return self.commandRouter.stateMachine.syncState(state, "volusonic");
-            });
-          });
-        })
-        .fail(function (e) {
-          return defer.reject(new Error('clearAddPlayTrack: '+e));
-        });
+	return self.mpdPlugin.sendMpdCommand('stop',[])
+		.then(function()
+		{
+			return self.mpdPlugin.sendMpdCommand('clear',[]);
+		})
+		.then(function () {
+  		          return self.mpdPlugin.sendMpdCommand('load "' + track.uri + '"', []);
+        	})
+        	.fail(function (e) {
+            		return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
+		})
+		.then(function()
+		{
+			self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+			self.mpdPlugin.clientMpd.once('system-player', subsoListenerCallback);
 
-	/*.then(function () {
-            self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-            return self.mpdPlugin.sendMpdCommand('play', []);
-        });*/
-};
+			return self.mpdPlugin.sendMpdCommand('play', [])
+				.then(function () {
+					return self.mpdPlugin.getState()
+						.then(function (state) {
+							return self.pushState(state);
+						});
+				});
+		});
+}
+
+ControllerVolusonic.prototype.clearAddPlayTracks = function(arrayTrackIds) {
+	console.log(arrayTrackIds);
+}
+
+
+ControllerVolusonic.prototype.seek = function (timepos) {
+	var self = this;
+  this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::seek to ' + timepos);
+	return self.mpdPlugin.seek(timepos);
+}
 
 // Stop
 ControllerVolusonic.prototype.stop = function() {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::stop');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::stop');
+	return self.mpdPlugin.stop()
+		.then(function () {
+			return self.mpdPlugin.getState()
+				.then(function (state) {
+					return self.pushState(state);
+				});
+		});
+}
 
- 	self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-	return self.mpdPlugin.sendMpdCommand('stop', []);
-};
-
-// Spop pause
+// Pause
 ControllerVolusonic.prototype.pause = function() {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::pause');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::pause');
 
- 	self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-	return self.mpdPlugin.sendMpdCommand('pause', []);
-};
+	return self.mpdPlugin.pause()
+		.then(function () {
+			return self.mpdPlugin.getState()
+				.then(function (state) {
+					return self.pushState(state);
+				});
+		});
+}
 
 // Resume
-ControllerVolusonic.prototype.resume = function () {
-    var self = this;
-    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::resume');
-    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
+ControllerVolusonic.prototype.resume = function() {
+	var self = this;
+  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::resume');
+	return self.mpdPlugin.resume()
+		.then(function () {
+			return self.mpdPlugin.getState()
+				.then(function (state) {
+					return self.pushState(state);
+				});
+		});
+}
 
-    return self.mpdPlugin.sendMpdCommand('play', []);
-};
+// Next
+ControllerVolusonic.prototype.next = function() {
+	var self = this;
+  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::next');
+	return self.mpdPlugin.sendMpdCommand('next', [])
+		.then(function () {
+    	return self.mpdPlugin.getState()
+				.then(function (state) {
+					return self.pushState(state);
+    		});
+  	});
+}
 
+// Previous
+ControllerVolusonic.prototype.previous = function() {
+	var self = this;
+  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::previous');
+	return self.mpdPlugin.sendMpdCommand('previous', [])
+		.then(function () {
+    	return self.mpdPlugin.getState()
+				.then(function (state) {
+					return self.pushState(state);
+				});
+  	});
+}
 
-// Clear
-ControllerVolusonic.prototype.clear = function () {
-    var self = this;
-    self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::clear');
-    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
+// prefetch for gapless Playback
+ControllerVolusonic.prototype.prefetch = function(nextTrack) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::prefetch');
 
-    return self.mpdPlugin.sendMpdCommand('stop', [])
-        .then(function () {
-            return self.mpdPlugin.sendMpdCommand('clear', []);
-        });
-
-};
-
-
-// Seek
-ControllerVolusonic.prototype.seek = function (position) {
-    var self = this;
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::seek');
-
-    return self.mpdPlugin.seek(position);
-};
+	return self.mpdPlugin.sendMpdCommand('add "' + nextTrack.uri + '"', [])
+		.then(function() {
+			return self.mpdPlugin.sendMpdCommand('consume 1',[]);
+		});
+}
 
 // Get state
 ControllerVolusonic.prototype.getState = function() {
 	var self = this;
-
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::getState');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::getState');
 };
 
 //Parse state
 ControllerVolusonic.prototype.parseState = function(sState) {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::parseState');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::parseState');
 
 	//Use this method to parse the state and eventually send it with the following function
 };
@@ -1445,8 +1481,8 @@ ControllerVolusonic.prototype.parseState = function(sState) {
 // Announce updated State
 ControllerVolusonic.prototype.pushState = function(state) {
 	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'volusonic::pushState');
+	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::pushState');
 
-	return self.commandRouter.servicePushState(state, self.servicename);
+	return self.commandRouter.servicePushState(state, 'volusonic');
 };
 
