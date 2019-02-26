@@ -1,0 +1,36 @@
+{
+	"name": "podcast",
+	"version": "0.0.9",
+	"description": "Podcast for Volumio2",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"pack": "rm -R node_modules || npm install --production && zip -r -X build.zip ./ || npm install"
+	},
+	"author": "Chris Song",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Podcast",
+		"icon": "fa-podcast",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.30.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"rss-parser": "^3.1.2",
+		"lodash": "^4.17.5"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ChrisPanda/volumio-podcast-plugin.git"
+	},
+	"keywords": [
+		"podcast",
+		"volumio"
+	],
+	"bugs": {
+		"url": "https://github.com/ChrisPanda/volumio-podcast-plugin/issues"
+	},
+	"homepage": "https://github.com/ChrisPanda/volumio-podcast-plugin#readme"
+}

@@ -1,0 +1,46 @@
+{
+  "autoDiscovery": {
+    "type": "boolean",
+    "value": true
+  },
+  "receiverSelect": {
+    "type": "string",
+    "value": "manual"
+  },
+  "receiverIP": {
+    "type": "string",
+    "value": ""
+  },
+  "receiverPort": {
+    "type": "string",
+    "value": "60128"
+  },
+  "powerOn": {
+    "type": "boolean",
+    "value": true
+  },
+  "standby": {
+    "type": "boolean",
+    "value": true
+  },
+  "standbyDelay": {
+    "type": "int",
+    "value": 5
+  },
+  "setVolume": {
+    "type": "boolean",
+    "value": false
+  },
+  "setVolumeValue": {
+    "type": "int",
+    "value": 20
+  },
+  "setInput": {
+    "type": "boolean",
+    "value": false
+  },
+  "setInputValue": {
+    "type": "string",
+    "value": "line1"
+  }
+}

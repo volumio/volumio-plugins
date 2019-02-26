@@ -1,0 +1,6 @@
+{
+  "enable_gpio17": {
+	"type": "boolean",
+	"value": false
+  }
+}

@@ -1,0 +1,32 @@
+#balbuze's config file
+# There are four sets of four numbers (Enable/Disable, Frequency, Bandwidth, Gain). The final number is overall gain.
+# - Enable/disable:	1/0
+# - Frequency:		20 - 14000 Hz (Center Frequency)
+# - Bandwidth:		0.12 - 8 (Q factor) must have leading 0 if < 1
+# - Gain:			-24 - 24 dB
+# - Master Gain		-24 - 24 dB
+#
+
+
+
+pcm.outparameq {
+    type ladspa
+    slave.pcm "plughw:${hwout}"
+    path "/usr/lib/ladspa"
+    plugins [ 
+		{
+		id 2609
+		label "EqFA4p"
+		input {
+			controls [ ${p11} ${p21} ${p31} ${p41} ${mg} ]
+			}
+    		}
+ ]
+}
+
+pcm.outplugin {
+    type plug
+#	rate 44100
+    slave.pcm "${hwouts}"
+}
+

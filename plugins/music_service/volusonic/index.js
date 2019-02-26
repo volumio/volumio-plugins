@@ -1193,6 +1193,8 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 ControllerVolusonic.prototype._getPlayable = function(song) {
 		var self = this;
 
+//self.commandRouter.pushConsoleMessage("song: " + JSON.stringify(song));
+
 		var format="format=mp3&estimateContentLength=true&maxBitRate=" + self.getSetting('transcode');
 		var type = song.transcodedSuffix;
 		var bRate = self.getSetting('transcode');
@@ -1402,7 +1404,7 @@ ControllerVolusonic.prototype.resume = function () {
     return self.mpdPlugin.sendMpdCommand('play', []);
 };
 
-/*
+
 // Clear
 ControllerVolusonic.prototype.clear = function () {
     var self = this;
@@ -1415,7 +1417,7 @@ ControllerVolusonic.prototype.clear = function () {
         });
 
 };
-*/
+
 
 // Seek
 ControllerVolusonic.prototype.seek = function (position) {

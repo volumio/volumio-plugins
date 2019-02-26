@@ -1,0 +1,15 @@
+{
+  "YOUTUBE_CONFIGURATION":"Youtube Configuration",
+  "YOUTUBE_SETTINGS":" Settings",
+  "YOUTUBE_RESULTS_LIMIT": "Results limit",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Configure how many videos shall be showed when searching for something on YouTube. Playlists will always be completely loaded! Default: 50",
+  "YOUTUBE_SAVE": "Save",
+	"YOUTUBE_ACCOUNT": "Account settings",
+	"YOUTUBE_LOGIN": "Login",
+	"YOUTUBE_LOGOUT": "Logout",
+	"YOUTUBE_USERNAME": "Username",
+	"YOUTUBE_USERNAME_DOC": "Your YouTube account",
+	"YOUTUBE_GRANT_ACCESS": "Please grant Volumio read-only access to your YouTube account. Enter the following code on {0}:",
+	"YOUTUBE_ACCESS_CODE":"Code:",
+	"YOUTUBE_ACCESS_CODE_DOC":"Enter this code on https://www.google.com/device."
+}

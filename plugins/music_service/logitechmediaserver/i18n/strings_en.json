@@ -1,0 +1,12 @@
+{
+	"LMS":{
+	"LMSCONF":"Logitech Media Server Configuration",
+		"SERVER":"Configure server",
+		"D_CONFIG":"The below setting will control whether the Logitech Media Server service will start on boot or not.",
+		"SERVER_ENABLED":"Enable auto-start of service",		
+		"D_SERVER_ENABLED":"If set to ON the LMS-server will start on boot, else you must manually start the service to use it.",
+		"NAVIGATE_TO_SERVER":"Webconsole",
+		"D_NAVIGATE_TO_SERVER":"Click the button to open the Logitech Media Server web page.",
+	"SAVE": "Save"
+	}
+}

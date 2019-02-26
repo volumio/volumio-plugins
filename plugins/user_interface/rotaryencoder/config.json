@@ -1,0 +1,54 @@
+{
+  "first_encoder_CLK": {
+    "type": "int",
+    "value": 0
+  },
+  "first_encoder_DT": {
+    "type": "int",
+    "value": 0
+  },
+  "first_encoder_SW": {
+    "type": "int",
+    "value": 0
+  },
+  "first_encoder_encoding": {
+    "type": "int",
+    "value": 1
+  },
+  "first_encoder_detentActionType": {
+    "type": "int",
+    "value": 0
+  },
+  "first_encoder_buttonActionType": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_CLK": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_DT": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_SW": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_encoding": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_detentActionType": {
+    "type": "int",
+    "value": 0
+  },
+  "second_encoder_buttonActionType": {
+    "type": "int",
+    "value": 0
+  },
+  "enable_debug_logging": {
+    "type": "boolean",
+    "value": false
+  }  
+}

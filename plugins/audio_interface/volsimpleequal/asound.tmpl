@@ -1,0 +1,13 @@
+
+ctl.equal { 
+ type equal
+
+} 
+pcm.plugequal1 { 
+ type equal
+ slave.pcm "plughw:${hwout},0"; 
+}
+pcm.equal {
+ type plug;
+ slave.pcm plugequal1;
+ }

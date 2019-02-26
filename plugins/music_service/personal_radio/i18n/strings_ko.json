@@ -1,0 +1,32 @@
+{
+  "PLUGIN_NAME": "개인 라디오",
+  "WAIT_FOR_RADIO_CHANNEL":"라디오 채널 스트림 준비중. 잠시 기다려 주세요....",
+  "STOP_RADIO_CHANNEL": "라디오 채널 스트림 중지합니다.",
+  "ERROR_STREAM_SERVER":  "{0} 라디오 방송국 스트리밍 접속 실패",
+  "INCORRECT_RESPONSE":  "{0} 라디오 스트리밍 서버의 결과가 비정상적입니다.",
+  "ERROR_SECRET_KEY_SERVER": "한국 라디오 방송 암호화 키 서버에 문제가 있습니다.",
+  "ERROR_SECRET_KEY": "플러그인이 한국 라디오 URL을 위한 암호키를 가져올 수 없습니다.",
+  "STOP_RADIO_STATION": "라디오 전송방식 변경을 위해서는 청취중인 SBS, MBC 라디오를 반드시 메인 메뉴에서 다시 실행하세요.",
+  "KBS": "KBS",
+  "MBC": "MBC",
+  "SBS": "SBS",
+  "KBS1_RADIO": "KBS1 라디오",
+  "KBS2_RADIO": "KBS2 라디오",
+  "KBS3_RADIO": "KBS3 라디오",
+  "KBS_UNION": "KBS 한민족방송",
+  "KBS_WORLD": "KBS 월드",
+  "MBC_STANDARD": "MBC 표준 FM",
+  "MBC_FM4U": "MBC FM4U",
+  "MBC_CHANNEL_M": "MBC 인터넷 라디오",
+  "SBS_POWER_FM": "SBS 파워FM",
+  "SBS_LOVE_FM": "SBS 러브FM",
+  "SBS_INTERNET_RADIO": "SBS 인터넷 라디오",
+  "CONFIG": {
+    "TITLE": "라디오 설정",
+    "RADIO_PROTOCOL": "라디오 전송 방식",
+    "PROTOCOL_SETUP_GUIDE": "설정 가이드: 라디오 플러그인 청취시 끊김현상이 있으면 아래 HTTP를 활성화(On) 하시기 바랍니다. (기본값은 HTTP 활성화입니다) ",
+    "SAVE": "저장",
+    "SBS_ENABLE_HTTP": "SBS HTTP 활성화",
+    "MBC_ENABLE_HTTP": "MBC HTTP 활성화"
+  }
+}

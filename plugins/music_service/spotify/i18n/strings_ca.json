@@ -1,0 +1,16 @@
+{
+  "SPOTIFY_USERNAME":"Nom Usuari Spotify",
+  "SPOTIFY_PASSWORD":"Contrasenya Spotify",
+  "HIGH_BITRATE":"Alta qualitat",
+  "SEARCH_RESULTS":"Numero de resultats",
+  "PLUGINS":"Last.fm",
+  "LAST_FM_USERNAME":"Usuari Last.fm ",
+  "LAST_FM_PASSWORD":"ContrasenyaLast.fm",
+  "SEARCH_SONGS_SECTION":"Cançons Spotify",
+  "SEARCH_ALBUMS_SECTION":"Albums Spotity",
+  "SEARCH_ARTISTS_SECTION":"Artistes Spotify",
+  "SPOTIFY_CONFIGURATION":"Configuració Spotify",
+  "SPOTIFY_ACCOUNT":"Compte Spotify",
+  "SAVE":"Guarda"
+
+}

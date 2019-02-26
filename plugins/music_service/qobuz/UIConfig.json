@@ -1,0 +1,288 @@
+{
+  "page": {
+    "label": "TRANSLATE.QOBUZ_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_account_login",
+      "element": "section",
+      "label": "TRANSLATE.QOBUZ_ACCOUNT",
+      "icon": "fa-user",
+      "description": "TRANSLATE.QOBUZ_ACCOUNT_LOGIN_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/qobuz",
+        "method": "qobuzAccountLogin"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.LOGIN",
+        "data": [
+          "username",
+          "password"
+        ]
+      },
+      "content": [
+        {
+          "id": "username",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_USERNAME_DOC",
+          "label": "TRANSLATE.QOBUZ_USERNAME",
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_PASSWORD_DOC",
+          "label": "TRANSLATE.QOBUZ_PASSWORD",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_account_logout",
+      "element": "section",
+      "label": "TRANSLATE.QOBUZ_ACCOUNT",
+      "icon": "fa-user",
+      "description": "TRANSLATE.QOBUZ_ACCOUNT_LOGOUT_DESC",
+      "content": [
+        {
+          "id": "logout",
+          "element": "button",
+          "label": "TRANSLATE.LOGOUT",
+          "onClick": {
+            "type": "controller",
+            "endpoint": "music_service/qobuz",
+            "method": "qobuzAccountLogout"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.QOBUZ_SETTINGS",
+      "icon": "fa-plug",
+      "description": "TRANSLATE.QOBUZ_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/qobuz",
+        "method": "saveQobuzSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "max_bitrate",
+          "gapless",
+          "proxy",
+          "sort_albums",
+          "sort_playlists",
+          "sort_tracks",
+          "show_qobuz_lists",
+          "debug"
+        ]
+      },
+      "content": [
+        {
+          "id": "max_bitrate",
+          "doc": "TRANSLATE.QOBUZ_MAX_BITRATE_DOC",
+          "label": "TRANSLATE.QOBUZ_MAX_BITRATE",
+          "element": "select",
+          "value": {
+            "value": 6,
+            "label": "CD - 16bits / 44.1kHz"
+          },
+          "options": [
+            {
+              "value": 5,
+              "label": "MP3 - 320 kbps"
+            },
+            {
+              "value": 6,
+              "label": "CD - 16bits / 44.1kHz"
+            },
+            {
+              "value": 7,
+              "label": "HiRes - 24bits / up to 96 kHz"
+            },
+            {
+              "value": 27,
+              "label": "HiRes - 24bits / up to 192 kHz"
+            }
+          ]
+        },
+        {
+          "id": "gapless",
+          "element": "switch",
+          "doc": "TRANSLATE.QOBUZ_GAPLESS_DOC",
+          "label": "TRANSLATE.QOBUZ_GAPLESS",
+          "value": true
+        },
+        {
+          "id": "proxy",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_PROXY_DOC",
+          "label": "TRANSLATE.QOBUZ_PROXY",
+          "value": 360
+        },
+        {
+          "id": "sort_albums",
+          "doc": "TRANSLATE.QOBUZ_SORT_ALBUMS_DOC",
+          "label": "TRANSLATE.QOBUZ_SORT_ALBUMS",
+          "element": "select",
+          "value": {
+            "value": "",
+            "label": "Qobuz Default"
+          },
+          "options": [
+            {
+              "value": "",
+              "label": "Qobuz Default"
+            },
+            {
+              "value": "title",
+              "label": "Title"
+            },
+            {
+              "value": "artistTitle",
+              "label": "Artist | Title"
+            }
+          ]
+        },
+        {
+          "id": "sort_playlists",
+          "doc": "TRANSLATE.QOBUZ_SORT_PLAYLISTS_DOC",
+          "label": "TRANSLATE.QOBUZ_SORT_PLAYLISTS",
+          "element": "select",
+          "value": {
+            "value": "",
+            "label": "Qobuz Default"
+          },
+          "options": [
+            {
+              "value": "",
+              "label": "Qobuz Default"
+            },
+            {
+              "value": "title",
+              "label": "Title"
+            }
+          ]
+        },
+        {
+          "id": "sort_tracks",
+          "doc": "TRANSLATE.QOBUZ_SORT_TRACKS_DOC",
+          "label": "TRANSLATE.QOBUZ_SORT_TRACKS",
+          "element": "select",
+          "value": {
+            "value": "",
+            "label": "Qobuz Default"
+          },
+          "options": [
+            {
+              "value": "",
+              "label": "Qobuz Default"
+            },
+            {
+              "value": "title",
+              "label": "Title"
+            },
+            {
+              "value": "artistTitle",
+              "label": "Artist | Title"
+            }
+          ]
+        },
+        {
+          "id": "show_qobuz_lists",
+          "element": "switch",
+          "doc": "TRANSLATE.QOBUZ_SHOW_QOBUZ_LISTS_DOC",
+          "label": "TRANSLATE.QOBUZ_SHOW_QOBUZ_LISTS",
+          "value": false
+        },
+        {
+          "id": "debug",
+          "element": "switch",
+          "doc": "TRANSLATE.QOBUZ_DEBUG_DOC",
+          "label": "TRANSLATE.QOBUZ_DEBUG",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "cache_settings",
+      "element": "section",
+      "label": "TRANSLATE.QOBUZ_CACHE_SETTINGS",
+      "icon": "fa-book",
+      "description": "TRANSLATE.QOBUZ_CACHE_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/qobuz",
+        "method": "saveQobuzCacheSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "cache_enabled",
+          "cache_favourites",
+          "cache_items",
+          "cache_editorial",
+          "cache_prune_interval"
+        ]
+      },
+      "content": [
+        {
+          "id": "cache_enabled",
+          "element": "switch",
+          "doc": "TRANSLATE.QOBUZ_CACHE_ENABLED_DOC",
+          "label": "TRANSLATE.QOBUZ_CACHE_ENABLED",
+          "value": true
+        },
+        {
+          "id": "cache_favourites",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_CACHE_FAVOURITES_DOC",
+          "label": "TRANSLATE.QOBUZ_CACHE_FAVOURITES",
+          "value": 360
+        },
+        {
+          "id": "cache_items",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_CACHE_ITEMS_DOC",
+          "label": "TRANSLATE.QOBUZ_CACHE_ITEMS",
+          "value": 720
+        },
+        {
+          "id": "cache_editorial",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_CACHE_EDITORIAL_DOC",
+          "label": "TRANSLATE.QOBUZ_CACHE_EDITORIAL",
+          "value": 720
+        },
+        {
+          "id": "cache_prune_interval",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.QOBUZ_CACHE_PRUNE_INTERVAL_DOC",
+          "label": "TRANSLATE.QOBUZ_CACHE_PRUNE_INTERVAL",
+          "value": 60
+        },
+        {
+          "id": "clear_cache",
+          "element": "button",
+          "label": "TRANSLATE.CLEAR_CACHE",
+          "onClick": {
+            "type": "controller",
+            "endpoint": "music_service/qobuz",
+            "method": "clearQobuzCache"
+          }
+        }
+      ]
+    }
+  ]
+}

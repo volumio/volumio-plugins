@@ -1,0 +1,6 @@
+{
+  "enable_roll_off": {
+	"type": "boolean",
+	"value": false
+  }
+}
