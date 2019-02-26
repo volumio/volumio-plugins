@@ -471,7 +471,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
       const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
       const volcuve = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
       let idxcard, hwdev, mixlin, mixer, mixeropts;
-      if (!mixname) {
+      if (mixname === 'None') {
         // No mixer - default to (logarithmic) Spotify volume
         mixer = 'softvol';
         mixeropts = '--logarithmic-volume';
