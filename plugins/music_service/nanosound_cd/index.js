@@ -585,7 +585,7 @@ nanosoundCd.prototype.extractAll=function()
 					}
 					else
 					{
-						self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Extraction cannot be performed and it's only support in full version");
+						self.commandRouter.pushToastMessage('error', 'NanoSound CD', "Extraction cannot be performed. Please check CD and CD/DVD Drive. This function is only support in full version");
 						defer.resolve();
 					}
 				})
@@ -697,7 +697,7 @@ nanosoundCd.prototype.extractStatus=function()
 nanosoundCd.prototype.listCD=function()
 {
 	var defer=libQ.defer();
-	
+	var self = this;
 	var url = "http://127.0.0.1:5002/cdmeta2";
 	request({
 	url: url,
@@ -706,55 +706,59 @@ nanosoundCd.prototype.listCD=function()
 
 		if (!error && httpresponse.statusCode === 200) {
 			var cdmeta = body
-			var response={
-				navigation: {
-					prev: {
-						uri: 'nanosound_cd'
-					},
-					"lists": [
-						{
-							"availableListViews": [
-								"list"
-							],
-							"items": [
 
-								{
-									service: 'nanosound_cd',
-									type: 'song',
-									title: '[Whole CD]',
-									artist: cdmeta[0]['artist_name'],
-									album: cdmeta[0]['album_name'],
-									icon: 'fa fa-music',
-									uri: 'nanosound_cd/playall'
-								}
-							]
-						}
-					]
+			if(cdmeta.length>0)
+			{
+				var response={
+					navigation: {
+						prev: {
+							uri: 'nanosound_cd'
+						},
+						"lists": [
+							{
+								"availableListViews": [
+									"list"
+								],
+								"items": [
+	
+									{
+										service: 'nanosound_cd',
+										type: 'song',
+										title: '[Whole CD]',
+										artist: cdmeta[0]['artist_name'],
+										album: cdmeta[0]['album_name'],
+										icon: 'fa fa-music',
+										uri: 'nanosound_cd/playall'
+									}
+								]
+							}
+						]
+					}
+				};
+	
+				var i;
+				for(i = 0; i< cdmeta.length ; i++)
+				{
+					response.navigation.lists[0].items.push({
+						service: 'nanosound_cd',
+						type: 'song',
+						title: cdmeta[i]['track_name'],
+						artist:cdmeta[i]['artist_name'],
+						album: cdmeta[i]['album_name'],
+						icon: 'fa fa-music',
+						uri: 'nanosound_cd/' + cdmeta[i]['track_number']
+					});
 				}
-			};
+				defer.resolve(response);
 
-			var i;
-			for(i = 0; i< cdmeta.length ; i++)
-			{
-				response.navigation.lists[0].items.push({
-					service: 'nanosound_cd',
-					type: 'song',
-					title: cdmeta[i]['track_name'],
-					artist:cdmeta[i]['artist_name'],
-					album: cdmeta[i]['album_name'],
-					icon: 'fa fa-music',
-					uri: 'nanosound_cd/' + cdmeta[i]['track_number']
-				});
 			}
-
-			console.log(cdmeta.length) // Print the json response
-			defer.resolve(response);
-			//cdmeta = body[0]
-			//var items = []
-			/*for (songmeta in cdmeta)
+			else
 			{
-				
-			}*/
+				self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Cannot detect CD/DVD Drive or no CD in drive');
+						
+				defer.resolve({});
+			}
+			
 		}
 	})
 
