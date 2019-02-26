@@ -1,0 +1,34 @@
+{
+  "server": {
+    "type": "string",
+    "value": ""
+  },
+  "username": {
+    "type": "string",
+    "value": ""
+  },
+  "auth": {
+    "type": "string",
+    "value": ""
+  },
+  "transcode": {
+    "type": "number",
+    "value": 0
+  },
+  "listsSize": {
+    "type": "number",
+    "value": 0
+  },
+  "artSize": {
+    "type": "number",
+    "value": 3
+  },
+  "timeOut": {
+    "type": "number",
+    "value": 600
+  },
+  "ID3": {
+    "type": "boolean",
+    "value": true
+  }
+}
