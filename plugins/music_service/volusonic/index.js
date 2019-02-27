@@ -197,6 +197,9 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
 	
     self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
 
+	//clearing mpd playlist due to seeking depending on transcoding setting
+	self.commandRouter.volumioClearQueue();
+
     defer.resolve();
     return defer.promise;
 };
@@ -1380,11 +1383,19 @@ ControllerVolusonic.prototype.clearAddPlayTracks = function(arrayTrackIds) {
 	console.log(arrayTrackIds);
 }
 
-
+// Seek
 ControllerVolusonic.prototype.seek = function (timepos) {
 	var self = this;
-  this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::seek to ' + timepos);
-	return self.mpdPlugin.seek(timepos);
+		if (self.getSetting('transcode') === 'raw') {
+  			this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::seek to ' + timepos);
+			return self.mpdPlugin.seek(timepos);
+		} else {
+			this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerVolusonic::seek disabled for transcoded streams');
+                        return self.mpdPlugin.getState()
+                                .then(function (state) {
+                                        return self.pushState(state);
+                                });
+		}
 }
 
 // Stop
