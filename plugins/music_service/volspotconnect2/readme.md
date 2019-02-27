@@ -61,6 +61,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 ## Last changes
 
+Febuary 26th 2019
+
+- fix for mixer set to "none" from @ashthespy
+
 Febuary 25th 2019
 
 - fix from ['@ash'](https://github.com/ashthespy) for the problem of next track due to Spotify change
