@@ -230,22 +230,11 @@
           "doc": "output format",
           "label": "TRANSLATE.OUTPUT_FORMAT",
           "value": {
-            "value": "S16_LE",
-            "label": "S16_LE"
+            "value": "",
+            "label": ""
           },
           "options": [
-            {
-              "value": "S16_LE",
-              "label": "S16_LE"
-            },
-            {
-              "value": "S24_LE",
-              "label": "S24_LE"
-            },
-            {
-              "value": "S32_LE",
-              "label": "S32_LE"
-            }
+           
           ]
         }
       ]
