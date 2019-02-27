@@ -11,11 +11,13 @@ It provides :
 
 - A automatic configuration - Just install and enable the plugin. It's ready for use !
 
+- Hardware capabilities detection for output format using [Alsa-capabilities](https://lacocina.nl/permalink-https-lacocina-nl-detect-alsa-output-capabilities)
+
 - The use of custom filters - for DRC digital room correction
 
 To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html) 
 
-### filters must be 32/64 bits floas lines (.txt) format from rephase
+
 
 - Filters (left and right) can be selected in webUI.
 
@@ -62,7 +64,7 @@ In webUI, enbable the plugin and wait about 20seconds.
 ## What is working :
  
 nearly everythings 
-only fallback S16_LE sample format...
+
 
 ## What is not working :
 
@@ -75,7 +77,7 @@ only fallback S16_LE sample format...
 
 Febuary, 27th  2019
 
-- fix for ouput format selector
+- fix for ouput format selector. Should be ok with ver 0.8.1...
 
 Febuary, 25th  2019
 

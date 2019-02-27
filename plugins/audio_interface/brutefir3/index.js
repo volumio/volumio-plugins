@@ -376,10 +376,14 @@ var filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
 try {
 	var sampleformat = fs.readFileSync(filetoread, 'utf8').toString().split('\n');
 
-
+var sampleformato
 var sitems
-var sampleformato = ('Fallback S16_LE, ' + sampleformat)
-self.logger.info('list of formats ' + sampleformato); 
+if (sampleformat == "") {
+   sampleformato = 'Detection_fails_Fallback_to_S16_LE, ' 
+}
+else sampleformato = ('' + sampleformat);
+
+self.logger.info('list of formats ' + sampleformat); 
 var str = sampleformato.replace(/\s/g, '');
 self.logger.info('list of formats ' + str); 
 sitems = str.split(',');
@@ -537,7 +541,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    output_device = 'hw:' + self.config.get('alsa_device');
 	
 	var output_formatx
-	if (self.config.get('output_format') === 'Fallback S16_LE') {
+	if (self.config.get('output_format') === 'Detection_fails_Fallback_to_S16_LE') {
 	output_formatx = "S16_LE"
 	} else output_formatx = self.config.get('output_format');
 
