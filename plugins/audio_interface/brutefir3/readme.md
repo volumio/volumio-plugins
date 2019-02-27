@@ -1,4 +1,4 @@
-Febuary 25th 2019
+Febuary 27th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -72,6 +72,10 @@ only fallback S16_LE sample format...
 
 
 ### 4. Last changes
+
+Febuary, 27th  2019
+
+- fix for ouput format selector
 
 Febuary, 25th  2019
 

@@ -1,2 +1,2 @@
 #!/bin/bash
-cat /tmp/sampleformat.txt | grep -Po 'formats  = \K.*' > /tmp/sortsample.txt
+cat /data/configuration/audio_interface/brutefir/sampleformat.txt | grep -Po 'formats  = \K.*' > /data/configuration/audio_interface/brutefir/sortsample.txt
