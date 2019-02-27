@@ -75,7 +75,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
 var output_device;
  output_device = self.config.get('alsa_device')
 
-exec('/data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /data/configuration/audio_interface/brutefir/sampleformat.txt ', {
+exec('/bin/bash /data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /data/configuration/audio_interface/brutefir/sampleformat.txt ', {
 
   uid: 1000,
   gid: 1000
@@ -85,7 +85,7 @@ exec('/data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_
   } else {
    self.commandRouter.pushConsoleMessage('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMlist sample format done');
 try {
-exec("data/plugins/audio_interface/brutefir/sortsample.sh",  {
+exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh",  {
   uid: 1000,
   gid: 1000
  })
@@ -379,8 +379,10 @@ try {
 
 var sitems
 var sampleformato = ('Fallback S16_LE, ' + sampleformat)
-self.logger.info(sampleformato); 
-sitems = sampleformato.split(',');
+self.logger.info('list of formats ' + sampleformato); 
+var str = sampleformato.replace(/\s/g, '');
+self.logger.info('list of formats ' + str); 
+sitems = str.split(',');
 
      for (var i in sitems) {
  self.logger.info('list of available output formatUI :' + sitems[i]);
@@ -437,21 +439,7 @@ ControllerBrutefir.prototype.getFilterList = function() {
   //  console.log(file);
   self.logger.info(results);
  });
-/*try {
-var sampleformat = fs.readFileSync('/tmp/sampleformat.txt', 'utf8', function (err, data) {
-            if (err) {
-              console.log('Error reading config', err);
-            }
-          });
-          var obj = JSON.parse(sampleformat);
-self.logger.info('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm' + sampleformat);
-self.logger.info('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm' + obj);
-       /*   var outputdevicen = obj.outputdevice;
-          var outn = JSON.stringify(outputdevicen);
-          var outdn = outn.split('"');
-          var output_formats = (outdn[7]);
-}
-*/
+
 
 };
 
@@ -544,11 +532,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var skipf
 	if ((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) {
 	skipf = "skip:44;";}
-else skipf = "";
-   output_device = 'hw:' + self.config.get('alsa_device');
+	else skipf = "";
 
-	if (self.config.get('format_filter') == "Fallback S16_LE") {
-	format_filter = "S16_LE";}
+   output_device = 'hw:' + self.config.get('alsa_device');
+	
+	var output_formatx
+	if (self.config.get('output_format') === 'Fallback S16_LE') {
+	output_formatx = "S16_LE"
+	} else output_formatx = self.config.get('output_format');
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
     composeleftfilter = "dirac pulse";
@@ -576,7 +567,7 @@ else skipf = "";
    var conf12 = conf11.replace("${skip_2}", skipf);
    var conf13 = conf12.replace("${rattenuation}", self.config.get('attenuation'));
    var conf14 = conf13.replace("${output_device}", output_device);
-   var conf15 = conf14.replace("${output_format}", self.config.get('output_format'));
+   var conf15 = conf14.replace("${output_format}", output_formatx);
 
    fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf15, 'utf8', function(err) {
     if (err)
