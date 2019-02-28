@@ -78,6 +78,8 @@ nearly everythings
 Febuary, 28th  2019
 
 - correct default Dirac pulse
+- small improvement
+- code cleaning
 
 Febuary, 27th  2019
 

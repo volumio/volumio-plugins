@@ -136,7 +136,7 @@
 						},
 						{
 							"value": "FLOAT64_LE",
-							"label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in Rephase"
+							"label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
 						}
 					],
 					"visibleIf": {

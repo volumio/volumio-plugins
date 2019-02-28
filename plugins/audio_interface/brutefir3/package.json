@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Brutefir3 plugin for Volumio2",
   "main": "index.js",
   "scripts": {

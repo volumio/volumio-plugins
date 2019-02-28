@@ -27,7 +27,7 @@ function ControllerBrutefir(context) {
  this.commandRouter = this.context.coreCommand;
  this.logger = this.context.logger;
  this.configManager = this.context.configManager;
-//self.brutefirDaemonConnect
+ //self.brutefirDaemonConnect
 };
 
 ControllerBrutefir.prototype.onVolumioStart = function() {
@@ -37,7 +37,7 @@ ControllerBrutefir.prototype.onVolumioStart = function() {
  this.config = new(require('v-conf'))();
  this.config.loadFile(configFile);
  self.autoconfig
- 
+
  return libQ.resolve();
 };
 
@@ -72,10 +72,10 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function() {
 ControllerBrutefir.prototype.sampleformat = function() {
  var self = this;
  //var defer = libQ.defer();
-var output_device;
+ var output_device;
  output_device = self.config.get('alsa_device')
 
-exec('/bin/bash /data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /data/configuration/audio_interface/brutefir/sampleformat.txt ', {
+ exec('/bin/bash /data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /data/configuration/audio_interface/brutefir/sampleformat.txt ', {
 
   uid: 1000,
   gid: 1000
@@ -84,16 +84,16 @@ exec('/bin/bash /data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:'
    self.logger.info('failed ' + error);
   } else {
    self.commandRouter.pushConsoleMessage('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMlist sample format done');
-try {
-exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh",  {
-  uid: 1000,
-  gid: 1000
- })
+   try {
+    exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh", {
+     uid: 1000,
+     gid: 1000
+    })
 
- } catch (err) {
-   self.logger.info('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-sampleformat.txt does not exist');
-  }
- //  defer.resolve();
+   } catch (err) {
+    self.logger.info('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-sampleformat.txt does not exist');
+   }
+   //  defer.resolve();
   }
  });
 
@@ -101,7 +101,7 @@ exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh",  {
  setTimeout(function() {
 
   //return defer.promise;
- }, 500)
+ }, 25)
 };
 
 //here we save the volumio config for the next plugin start
@@ -271,15 +271,11 @@ ControllerBrutefir.prototype.onStart = function() {
  self.autoconfig()
 
  self.rebuildBRUTEFIRAndRestartDaemon()
-  // .then( self.startBrutefirDaemon() )
 
   .then(function(e) {
    setTimeout(function() {
     self.logger.info("Starting brutefir");
 
-    //self.getFilterList();
-
- //     self.brutefirDaemonConnect(defer);
    }, 1000);
   })
   .fail(function(e) {
@@ -310,13 +306,14 @@ ControllerBrutefir.prototype.getUIConfig = function() {
  var self = this;
  var defer = libQ.defer();
  var output_device;
-
+ //self.sampleformat();
  output_device = self.config.get('output_device');
 
  var lang_code = this.commandRouter.sharedVars.get('language_code');
  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
    __dirname + '/i18n/strings_en.json',
    __dirname + '/UIConfig.json')
+
   .then(function(uiconf)
 
    {
@@ -328,13 +325,16 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var items;
     var allfilter;
     var oformat;
-  //  var sitems;
-   // var sampleformat;
-
-uiconf.sections[1].content[0].value = self.config.get('ldistance');
-uiconf.sections[1].content[1].value = self.config.get('rdistance');
+    //  var sitems;
+    // var sampleformat;
 
 
+
+    uiconf.sections[1].content[0].value = self.config.get('ldistance');
+    uiconf.sections[1].content[1].value = self.config.get('rdistance');
+
+    //-----------------------------------
+    // here we list the content of the folder to populate filter scrolling list
     valuestoredl = self.config.get('leftfilter');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', valuestoredl);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', valuestoredl);
@@ -343,12 +343,12 @@ uiconf.sections[1].content[1].value = self.config.get('rdistance');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
- fs.readdir(filterfolder, function(err, item) {
+    fs.readdir(filterfolder, function(err, item) {
 
      allfilter = 'Dirac pulse,' + item
      items = allfilter.split(',');
      self.logger.info('list of available filters for DRC :' + items);
-console.log(items)
+     console.log(items)
      for (var i in items) {
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
        value: items[i],
@@ -358,56 +358,58 @@ console.log(items)
        value: items[i],
        label: items[i]
       });
-	self.logger.info('list of available filters UI :' + items[i]);
+      self.logger.info('list of available filters UI :' + items[i]);
      }
 
     });
+
+    var value
+
+    //-------------------------------------------------
+    //here we read the content of the file sortsamplec.txt (it will be generated by a script to detect hw capabilities).
+
 
     valuestoredf = self.config.get('output_format');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', valuestoredf);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', valuestoredf);
 
-var value
 
-//-------------------------------------------------
-//here we read the content of the file sortsamplec.txt (it will be generated by a script to detect hw capabilities).
+    var filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
+    try {
+     var sampleformat = fs.readFileSync(filetoread, 'utf8').toString().split('\n');
 
-var filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
-try {
-	var sampleformat = fs.readFileSync(filetoread, 'utf8').toString().split('\n');
+     var sampleformato
+     var sitems
+     if (sampleformat == "") {
+      sampleformato = 'Detection_fails_Fallback_to_S16_LE, '
+     } else sampleformato = (sampleformat).toString();
 
-var sampleformato
-var sitems
-if (sampleformat == "") {
-   sampleformato = 'Detection_fails_Fallback_to_S16_LE, ' 
-}
-else sampleformato = ('' + sampleformat);
-
-self.logger.info('list of formats ' + sampleformat); 
-var str = sampleformato.replace(/\s/g, '');
-self.logger.info('list of formats ' + str); 
-sitems = str.split(',');
+     //self.logger.info('list of formats ' + sampleformat); 
+     var str1 = sampleformato.replace(/\s/g, '');
+     var str = str1.substring(0, str1.length - 1);
+     console.log('list of formats ' + sampleformato);
+     sitems = str.split(',');
 
      for (var i in sitems) {
- self.logger.info('list of available output formatUI :' + sitems[i]);
+      self.logger.info('list of available output formatUI :' + sitems[i]);
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[6].options', {
        value: sitems[i],
        label: sitems[i]
       });
-}
-} catch(e) {
-	self.logger.error('Could not read file: ' + e)
-console.log(sampleformat)
+     }
+    } catch (e) {
+     self.logger.error('Could not read file: ' + e)
+     console.log(sampleformat)
 
-}
-	
-//------------------------------------------------------------------
+    }
+
+    //------------------------------------------------------------------
 
     value = self.config.get('attenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
 
-value = self.config.get('filter_format');
+    value = self.config.get('filter_format');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[3].options'), value));
 
@@ -418,14 +420,14 @@ value = self.config.get('filter_format');
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-/*
-  value = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value))
-*/
+    /*
+      value = self.config.get('output_format');
+        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value))
+    */
 
-var value;
-     defer.resolve(uiconf);
+    var value;
+    defer.resolve(uiconf);
    })
   .fail(function() {
    defer.reject(new Error());
@@ -500,7 +502,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var lattenuation;
    var rattenuation;
 
-// delay calculation section
+   // delay calculation section
    var delay
    var sldistance = self.config.get('ldistance');
    var srdistance = self.config.get('rdistance');
@@ -508,23 +510,24 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var cdelay
    var sample_rate = self.config.get('smpl_rate');
    var sv = 34000 // sound velocity cm/s
-	
-	if (sldistance > srdistance) {
-  		diff = sldistance - srdistance
-		cdelay = (diff/sv*sample_rate)
-		delay = ('0,' + Math.round(cdelay))
-		self.logger.info('l>r ' + delay)
-	}
-	if (sldistance < srdistance) {
-		diff = srdistance - sldistance
-		cdelay = (diff/sv*sample_rate)
-		delay = (Math.round(cdelay)+ ',0')
-		self.logger.info('l<r ' + delay)
 
-	} if (sldistance == srdistance) {
-		self.logger.info('no delay needed');
-		delay = ('0,0')
-	}
+   if (sldistance > srdistance) {
+    diff = sldistance - srdistance
+    cdelay = (diff / sv * sample_rate)
+    delay = ('0,' + Math.round(cdelay))
+    self.logger.info('l>r ' + delay)
+   }
+   if (sldistance < srdistance) {
+    diff = srdistance - sldistance
+    cdelay = (diff / sv * sample_rate)
+    delay = (Math.round(cdelay) + ',0')
+    self.logger.info('l<r ' + delay)
+
+   }
+   if (sldistance == srdistance) {
+    self.logger.info('no delay needed');
+    delay = ('0,0')
+   }
 
 
    var n_part = self.config.get('numb_part');
@@ -534,16 +537,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var filtersizedivided = filter_size / num_part;
    var output_device
    var skipf
-	if ((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) {
-	skipf = "skip:44;";}
-	else skipf = "";
+   if ((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) {
+    skipf = "skip:44;";
+   } else skipf = "";
 
    output_device = 'hw:' + self.config.get('alsa_device');
-	
-	var output_formatx
-	if (self.config.get('output_format') === 'Detection_fails_Fallback_to_S16_LE') {
-	output_formatx = "S16_LE"
-	} else output_formatx = self.config.get('output_format');
+
+   var output_formatx
+   if (self.config.get('output_format') === 'Detection_fails_Fallback_to_S16_LE') {
+    output_formatx = "S16_LE"
+   } else output_formatx = self.config.get('output_format');
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
     composeleftfilter = "dirac pulse";
@@ -607,7 +610,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
- 
+
 
 
  self.rebuildBRUTEFIRAndRestartDaemon()
@@ -626,10 +629,10 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 //here we save the brutefir delay calculation
 ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
  var self = this;
- 
+
 
  var defer = libQ.defer();
- 
+
  self.config.set('ldistance', data['ldistance']);
  self.config.set('rdistance', data['rdistance']);
 
@@ -711,7 +714,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
   });
- 
+
 };
 
 
@@ -853,7 +856,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
   .then(function(e) {
    setTimeout(function() {
      self.logger.info("Connecting to daemon");
-        // self.brutefirDaemonConnect(defer);
+     // self.brutefirDaemonConnect(defer);
     }, 2000)
     .fail(function(e) {
      //	defer.reject(new Error('Brutefir failed to start. Check your config !'));
