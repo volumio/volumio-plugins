@@ -9,7 +9,7 @@ if [ ! -f "/data/configuration/audio_interface/brutefir/config.json" ];
 		echo "file doesn't exist, nothing to do"
 	else
 		echo "File exists removing it"
-		sudo rm /data/configuration/audio_interface/brutefir/config.json
+		sudo rm -Rf /data/configuration/audio_interface/brutefir
 fi
 
 
