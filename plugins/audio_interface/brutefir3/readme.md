@@ -1,4 +1,4 @@
-Febuary 27th 2019
+Febuary 28th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary, 28th  2019
+
+- correct default Dirac pulse
 
 Febuary, 27th  2019
 
