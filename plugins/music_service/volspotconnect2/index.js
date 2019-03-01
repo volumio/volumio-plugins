@@ -469,20 +469,23 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
       const devicename = self.commandRouter.sharedVars.get('system.name');
       const outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
       const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
+console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz' + mixname);
       const volcuve = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
       let idxcard, hwdev, mixlin, mixer, mixeropts;
-      if (mixname === 'None') {
+      if (mixname == '') {
         // No mixer - default to (logarithmic) Spotify volume
-        mixer = 'softvol';
+        mixer = '';
         mixeropts = '--logarithmic-volume';
+          hwdev = `plughw:${outdev}`;
+initvol = self.config.get('initvol')
       } else {
-        mixer = 'alsa';
+        mixer = '--mixer alsa';
         if (volcuve === 'logarithmic') {
           mixlin = '';
         } else {
           mixlin = '--mixer-linear-volume';
         }
-
+//}
         if (outdev === 'softvolume') {
           hwdev = outdev;
           mixlin = '--mixer-linear-volume';

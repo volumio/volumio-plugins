@@ -1,4 +1,4 @@
-Febuary 25th 2019
+March 01st 2019
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+March 01st 2019
+
+- possible fix for mixer "none"
 
 Febuary 26th 2019
 
