@@ -37,7 +37,7 @@ module.exports = class pirMotionDetectionAutoplay {
 
 	      this.gpioPir.unwatch();
 
-	      if (!this.detectionIsActive) return;
+	      if (!this.detectionIsActive || !this.sleepytime) return;
 
 	      if (this.gpioLed) this.blinkLed(4);
 
