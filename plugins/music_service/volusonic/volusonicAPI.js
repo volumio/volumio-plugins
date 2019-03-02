@@ -25,6 +25,11 @@ function volusonicApi(log,config) {
 	var cacheRemove = function () {
 	};
 
+	var cacheReset = function () {
+		var self = this;
+		cache = cachemanager.caching({ store: 'memory', max: 50000, ttl: config.get('timeOut')});
+	};
+
 	var get = function (command, id, params) {
 		var self = this;
                 var defer = libQ.defer();
@@ -88,6 +93,7 @@ function volusonicApi(log,config) {
 		cacheGet: cacheGet,
 		cacheSet: cacheSet,
 		cacheRemove: cacheRemove,
+		cacheReset: cacheReset,
 		get: get,
 		getAuth: getAuth,
 		submitQuery: submitQuery

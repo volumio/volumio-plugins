@@ -182,6 +182,11 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
                         self.commandRouter.broadcastMessage("openModal", conTest);     
                         defer.reject(new Error('savePluginCredentials'));
                 });     
+
+	//clearing mpd queue and cache in case of server change
+	self.commandRouter.volumioClearQueue();
+	self.api.cacheReset();
+
 	return defer.promise;
 };
 
@@ -199,6 +204,7 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
 
 	//clearing mpd playlist due to seeking depending on transcoding setting
 	self.commandRouter.volumioClearQueue();
+	self.api.cacheReset();
 
     defer.resolve();
     return defer.promise;
@@ -363,8 +369,8 @@ ControllerVolusonic.prototype.handleBrowseUri = function (curUri) {
     			defer.resolve(response);
 		}else{		
 			var conError = {
-				title: self.commandRouter.getI18nString('POP_ERROR'),
-				message: self.commandRouter.getI18nString('CON_ERROR'),
+				title: self.commandRouter.getI18nString('CON_FAILED'),
+                                message: self.commandRouter.getI18nString('CON_BAD_CREDS'),
 				size: 'lg',
 				buttons: [{
 					name: 'Ok',
@@ -374,7 +380,20 @@ ControllerVolusonic.prototype.handleBrowseUri = function (curUri) {
 			self.commandRouter.broadcastMessage("openModal", conError);      
 			//defer.resolve();       
 		}
-	});
+	})
+	.fail(function(result) {
+        	var conErr = {
+                	title: self.commandRouter.getI18nString('CON_FAILED'),
+                        message: self.commandRouter.getI18nString('CON_SERVER_UNREACHABLE'),
+                        size: 'lg',
+                        	buttons: [{
+                                	name: 'Ok',
+                                        class: 'btn btn-warning'
+                                }]
+                }
+                self.commandRouter.broadcastMessage("openModal", conErr);
+        });
+
 	return defer.promise;
 };
 
@@ -1497,3 +1516,7 @@ ControllerVolusonic.prototype.pushState = function(state) {
 	return self.commandRouter.servicePushState(state, 'volusonic');
 };
 
+ControllerVolusonic.prototype.addToFavourites = function (param) {
+	var self = this;
+	self.commandRouter.pushConsoleMessage("volusonic.addToFavourites: " + JSON.stringify(param));
+};
