@@ -377,17 +377,31 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
     try {
      var sampleformat = fs.readFileSync(filetoread, 'utf8').toString().split('\n');
-
+     var sampleformatf = ('Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ')
      var sampleformato
      var sitems
+	var js
      if (sampleformat == "") {
-      sampleformato = 'Detection_fails_Fallback_to_S16_LE, '
-     } else sampleformato = (sampleformat).toString();
+     sampleformato = sampleformatf;
+	} else {
 
-     //self.logger.info('list of formats ' + sampleformat); 
-     var str1 = sampleformato.replace(/\s/g, '');
+	var str22 = sampleformat.toString().replace(/S/g, "HW-Detected-S");
+     	var str2 = str22.toString().replace(/\s/g, '');
+	//var str21 = str2.substring(0, str2.length - 1);
+
+	var str21 = str2.substring(0, str2.length - 1);
+	//js = str2.toString().split(', ')
+	js = str21//.split(',')
+	//self.logger.info('jsssssssssssss '+ js)
+	      }
+if (str2 == null) {
+str2 = "Detection fails, reboot to retry " }
+var result = str2 + sampleformatf 
+
+     self.logger.info('result formats ' + result);
+     var str1 = result.replace(/\s/g, '');
      var str = str1.substring(0, str1.length - 1);
-     console.log('list of formats ' + sampleformato);
+  //   console.log('list of formats ' + sampleformato);
      sitems = str.split(',');
 
      for (var i in sitems) {
@@ -542,11 +556,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    } else skipf = "";
 
    output_device = 'hw:' + self.config.get('alsa_device');
-
-   var output_formatx
-   if (self.config.get('output_format') === 'Detection_fails_Fallback_to_S16_LE') {
-    output_formatx = "S16_LE"
-   } else output_formatx = self.config.get('output_format');
+console.log(self.config.get('output_format'));
+   
+	var output_formatx
+	output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
     composeleftfilter = "dirac pulse";

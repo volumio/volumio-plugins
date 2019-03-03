@@ -1,4 +1,4 @@
-Febuary 28th 2019
+March 3rd 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+March 03rd 2019
+
+- add Factory values for output format sample
 
 Febuary, 28th  2019
 
