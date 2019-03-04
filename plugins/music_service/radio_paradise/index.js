@@ -6,10 +6,11 @@ var config = new (require('v-conf'))();
 var NanoTimer = require('nanotimer');
 const http = require('https');
 
-var rpApiBaseUrl = 'https://api.radioparadise.com/api/get_block?bitrate=4&info=true';
+var rpApiBaseUrl;
 var nextEventApiUrl;
 var streamUrl;
 var songsOfNextEvent;
+var flacChannel;
 
 module.exports = ControllerRadioParadise;
 
@@ -167,7 +168,7 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         self.timer.clear();
     }
 
-    if (!track.uri.includes("apps.radioparadise.com")) {
+    if (!track.uri.includes("api.radioparadise.com")) {
         // normal radio streams
         return self.mpdPlugin.sendMpdCommand('stop', [])
             .then(function () {
@@ -187,6 +188,18 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
             });
     } else {
         // FLAC stream
+        rpApiBaseUrl = track.uri;
+
+        if (track.uri.includes("chan=0")) {
+            flacChannel = "Main";
+        } else if (track.uri.includes("chan=1")) {
+            flacChannel = "Mellow";
+        }  else if (track.uri.includes("chan=2")) {
+            flacChannel = "Rock";
+        } else if (track.uri.includes("chan=3")) {
+            flacChannel = "Groovy";
+        }
+        
         var songs;
         return self.setSongs(rpApiBaseUrl)
             .then(function (result) {
@@ -457,7 +470,7 @@ ControllerRadioParadise.prototype.pushSongState = function (song) {
         uri: song.uri,
         name: song.name,
         title: song.title,
-        artist: 'Radio Paradise',
+        artist: 'Radio Paradise ' + flacChannel,
         album: song.album,
         streaming: true,
         disableUiControls: true,
@@ -475,7 +488,7 @@ ControllerRadioParadise.prototype.pushSongState = function (song) {
     var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
     queueItem.name = song.name;
-    queueItem.artist = 'Radio Paradise';
+    queueItem.artist = 'Radio Paradise ' + flacChannel;
     queueItem.album = song.album;
     queueItem.albumart = song.albumart;
     queueItem.trackType = 'flac';
@@ -531,6 +544,7 @@ ControllerRadioParadise.prototype.setSongs = function (rpUri) {
             if (startsWithOffset) {
                 if(endsWithOffset) {
                     // get total time of event without initial spoken part and calculate both start and end offset
+                    self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] rp API base url ' + rpApiBaseUrl);
                     return self.getStream(rpApiBaseUrl + '&event=' + result.event)
                     .then(function (eventResult) {
                         if (eventResult !== null) {
@@ -594,6 +608,7 @@ ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, strea
         });
     };
     // the url needed to retrieve the next stream event
+    self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] RP API base url: ' + rpApiBaseUrl);
     nextEventApiUrl = rpApiBaseUrl + '&event=' + endEvent;
     return response;
 };
