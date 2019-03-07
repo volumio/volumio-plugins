@@ -10,7 +10,8 @@ var rpApiBaseUrl;
 var nextEventApiUrl;
 var streamUrl;
 var songsOfNextEvent;
-var flacChannel;
+var channelMix;
+var audioFormat;
 
 module.exports = ControllerRadioParadise;
 
@@ -187,17 +188,23 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
                 })
             });
     } else {
-        // FLAC stream
+        // Advanced stream via API
         rpApiBaseUrl = track.uri;
 
         if (track.uri.includes("chan=0")) {
-            flacChannel = "Main";
+            channelMix = "Main";
         } else if (track.uri.includes("chan=1")) {
-            flacChannel = "Mellow";
+            channelMix = "Mellow";
         }  else if (track.uri.includes("chan=2")) {
-            flacChannel = "Rock";
+            channelMix = "Rock";
         } else if (track.uri.includes("chan=3")) {
-            flacChannel = "Groovy";
+            channelMix = "Groovy";
+        }
+
+        if (track.uri.includes("bitrate=3")) {
+            audioFormat = "aac";
+        } else {
+            audioFormat = "flac";
         }
         
         var songs;
@@ -323,7 +330,7 @@ ControllerRadioParadise.prototype.explodeUri = function (uri) {
                 response.push({
                     service: self.serviceName,
                     type: 'track',
-                    trackType: 'flac',
+                    trackType: audioFormat,
                     radioType: station,
                     albumart: '/albumart?sourceicon=music_service/radio_paradise/rp-cover-black.png',
                     uri: self.radioStations.rparadise[channel].url,
@@ -464,13 +471,13 @@ ControllerRadioParadise.prototype.pushSongState = function (song) {
         status: 'play',
         service: self.serviceName,
         type: 'track',
-        trackType: 'flac',
+        trackType: audioFormat,
         radioType: 'rparadise',
         albumart: song.albumart,
         uri: song.uri,
         name: song.name,
         title: song.title,
-        artist: 'Radio Paradise ' + flacChannel,
+        artist: 'Radio Paradise ' + channelMix,
         album: song.album,
         streaming: true,
         disableUiControls: true,
@@ -488,10 +495,10 @@ ControllerRadioParadise.prototype.pushSongState = function (song) {
     var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
     queueItem.name = song.name;
-    queueItem.artist = 'Radio Paradise ' + flacChannel;
+    queueItem.artist = 'Radio Paradise ' + channelMix;
     queueItem.album = song.album;
     queueItem.albumart = song.albumart;
-    queueItem.trackType = 'flac';
+    queueItem.trackType = audioFormat;
     queueItem.duration = Math.ceil(song.duration / 1000);
     queueItem.samplerate = '44.1 KHz';
     queueItem.bitdepth = '16 bit';
@@ -590,7 +597,7 @@ ControllerRadioParadise.prototype.getSongsResponse = function (songsArray, strea
         response.push({
             service: self.serviceName,
             type: 'track',
-            trackType: 'flac',
+            trackType: audioFormat,
             radioType: 'web',
             albumart: 'https://img.radioparadise.com/' + song.cover,
             uri: streamUrl,
