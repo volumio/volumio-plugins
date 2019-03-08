@@ -527,7 +527,7 @@ ControllerRadioParadise.prototype.setSongs = function (rpUri) {
                 self.errorToast('web', 'INCORRECT_RESPONSE');
             }
             // the stream event url to play
-            streamUrl = result.url + '?src=alexa';
+            streamUrl = result.url;
 
             // transform the songs into an array
             var songsArray = Object.keys(result.song).map(function (k) { return result.song[k] });
