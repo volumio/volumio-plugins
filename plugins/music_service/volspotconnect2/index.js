@@ -347,7 +347,7 @@ ControllerVolspotconnect.prototype.onStart = function () {
   var self = this;
 
   var defer = libQ.defer();
-
+  self.createConfigFile()
   self.startVolspotconnectDaemon()
     .then(function (e) {
       self.volspotconnectDaemonConnect(defer);
@@ -398,7 +398,7 @@ ControllerVolspotconnect.prototype.getUIConfig = function () {
     .then(function (uiconf) {
       // Do we still need the initial volume setting?
       var mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
-if (mixname == '') {
+if ((mixname == '') || (mixname == 'None')) {
  uiconf.sections[0].content[0].hidden = false;
 } else {
  uiconf.sections[0].content[0].hidden = true;
@@ -471,10 +471,10 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
       const volumestart = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumestart');
       if (volumestart !== 'disabled') {
         initvol = volumestart;
-      }
-  //    const volumelevel = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'retrieveVolumeLevels');
-//retrieveVolumeLevels()
-//console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz' + volumelevel);
+      } else {
+ 	const state = self.commandRouter.volumioGetState();
+  	initvol = (`${state.volume}`);
+ 	}
       const devicename = self.commandRouter.sharedVars.get('system.name');
       const outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
       const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
@@ -491,7 +491,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         mixer = '--mixer alsa';
         if (volcuve === 'logarithmic') {
           mixlin = '';
-        initvol = '';//('--initial-volume ' + initvol);
+        initvol = ('--initial-volume ' + initvol);
         } else {
           mixlin = '--mixer-linear-volume';
 
@@ -500,7 +500,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         if (outdev === 'softvolume') {
           hwdev = outdev;
           mixlin = '--mixer-linear-volume';
- 	initvol = '';
+        initvol = ('--initial-volume ' + initvol);
         } else {
           hwdev = `plughw:${outdev}`;
         }
@@ -554,6 +554,7 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 
   var defer = libQ.defer();
 
+ // logger.info('Currently activeqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq:' + state);
    self.config.set('initvol', data['initvol']);
   self.config.set('normalvolume', data['normalvolume']);
   self.config.set('shareddevice', data['shareddevice']);
