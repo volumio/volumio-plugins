@@ -50,10 +50,27 @@ ControllerVolusonic.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
+    this.commandRouter.volumioRemoveToBrowseSources('Volusonic')
+    .then(function(){
+	self.resetPlugin();
+    });
+
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
     return libQ.resolve();
+};
+
+ControllerVolusonic.prototype.resetPlugin = function() {
+        var self = this;
+	var defer=libQ.defer();
+
+    	self.commandRouter.volumioClearQueue();
+    	self.api.cacheReset();
+	//TO DO - FIND A WAY TO SET NAV TO HOME IN BROWSE PANNEL
+
+	defer.resolve();
+    	return libQ.resolve();
 };
 
 ControllerVolusonic.prototype.onRestart = function() {
@@ -115,7 +132,7 @@ ControllerVolusonic.prototype.getUIConfig = function() {
 
 ControllerVolusonic.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
-}
+};
 
 ControllerVolusonic.prototype.setUIConfig = function(data) {
 	var self = this;
@@ -184,8 +201,7 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
                 });     
 
 	//clearing mpd queue and cache in case of server change
-	self.commandRouter.volumioClearQueue();
-	self.api.cacheReset();
+        self.resetPlugin();
 
 	return defer.promise;
 };
@@ -202,9 +218,8 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
 	
     self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
 
-	//clearing mpd playlist due to seeking depending on transcoding setting
-	self.commandRouter.volumioClearQueue();
-	self.api.cacheReset();
+    //clearing mpd playlist due to seeking depending on transcoding setting
+    self.resetPlugin();
 
     defer.resolve();
     return defer.promise;
