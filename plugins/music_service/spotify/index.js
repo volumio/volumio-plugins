@@ -536,7 +536,7 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
                                 type: 'playlist',
                                 title: playlist.name,
 																albumart: self._getAlbumArt(playlist),
-                                uri: playlist.uri
+                                uri: self._convertToOldUri(uri)
                             });
                         }
 
@@ -549,6 +549,15 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
         );
 
     return defer.promise;
+};
+
+//  Convert new Spotify playlists URIs to old format for SPOP to work
+ControllerSpop.prototype._convertToOldUri=function(uri)
+{
+	var uriSplitted=uri.split(':');
+	var legacyUri='spotify:user:spotify:playlist:' +  uriSplitted[2];
+
+	return legacyUri;
 };
 
 
