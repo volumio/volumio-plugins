@@ -256,3 +256,12 @@ ControllerExamplePlugin.prototype._searchPlaylists = function (results) {
 ControllerExamplePlugin.prototype._searchTracks = function (results) {
 
 };
+
+ControllerExamplePlugin.prototype.goto=function(data){
+    var self=this
+    var defer=libQ.defer()
+
+// Handle go to artist and go to album function
+
+     return defer.promise;
+};
