@@ -477,6 +477,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
  	const state = self.commandRouter.volumioGetState();
   	initvol = (`${state.volume}`);
  	}
+      var initvolr
       const devicename = self.commandRouter.sharedVars.get('system.name');
       const outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
       const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
@@ -488,12 +489,12 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         mixer = '';
         mixeropts = '--logarithmic-volume';
           hwdev = `plughw:${outdev}`;
-	initvol = ('--initial-volume ' + self.config.get('initvol'))
+	initvolr = ('--initial-volume ' + self.config.get('initvol'))
       } else {
         mixer = '--mixer alsa';
         if (volcuve === 'logarithmic') {
           mixlin = '';
-        initvol = ('--initial-volume ' + initvol);
+        initvolr = ('--initial-volume ' + initvol);
         } else {
           mixlin = '--mixer-linear-volume';
 
@@ -502,7 +503,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         if (outdev === 'softvolume') {
           hwdev = outdev;
           mixlin = '--mixer-linear-volume';
-        initvol = ('--initial-volume ' + initvol);
+        initvolr = ('--initial-volume ' + initvol);
         } else {
           hwdev = `plughw:${outdev}`;
         }
@@ -538,7 +539,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         .replace('${outdev}', hwdev)
         .replace('${mixer}', mixer)
         .replace('${mixeropts}', mixeropts)
-        .replace('${initvol}', initvol);
+        .replace('${initvol}', initvolr);
         .replace('${bitrate}', self.config.get("bitrate"));
         // .replace('${initvol}', self.config.get('initvol'));
         /* eslint-enable no-template-curly-in-string */
