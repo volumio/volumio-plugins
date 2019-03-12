@@ -53,6 +53,7 @@ ControllerVolusonic.prototype.onStop = function() {
     this.commandRouter.volumioRemoveToBrowseSources('Volusonic')
     .then(function(){
 	self.resetPlugin();
+	self.config.set('auth','');
     });
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -68,7 +69,7 @@ ControllerVolusonic.prototype.resetPlugin = function() {
     	self.commandRouter.volumioClearQueue();
     	self.api.cacheReset();
 	//TO DO - FIND A WAY TO SET NAV TO HOME IN BROWSE PANNEL
-
+	
 	defer.resolve();
     	return libQ.resolve();
 };
@@ -220,7 +221,6 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
 
 	//clearing mpd playlist due to seeking depending on transcoding setting
 	self.resetPlugin();
-	self.config.set('auth','');
 
 	defer.resolve();
 	return defer.promise;
