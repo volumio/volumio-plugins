@@ -539,7 +539,7 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         .replace('${outdev}', hwdev)
         .replace('${mixer}', mixer)
         .replace('${mixeropts}', mixeropts)
-        .replace('${initvol}', initvolr);
+        .replace('${initvol}', initvolr)
         .replace('${bitrate}', self.config.get("bitrate"));
         // .replace('${initvol}', self.config.get('initvol'));
         /* eslint-enable no-template-curly-in-string */
