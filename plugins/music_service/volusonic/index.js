@@ -207,22 +207,23 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
 };
 
 ControllerVolusonic.prototype.savePluginOptions = function(data) {
-    var self = this;
-    var defer = libQ.defer();
+	var self = this;
+	var defer = libQ.defer();
 
-    self.config.set('transcode', data['transcode'].value);
-    self.config.set('listsSize', data['listsSize'].value);
-    self.config.set('artSize', data['artSize'].value);
-    self.config.set('timeOut', data['timeOut'].value);
-    self.config.set('ID3', data['ID3']);
-	
-    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
+	self.config.set('transcode', data['transcode'].value);
+	self.config.set('listsSize', data['listsSize'].value);
+	self.config.set('artSize', data['artSize'].value);
+	self.config.set('timeOut', data['timeOut'].value);
+	self.config.set('ID3', data['ID3']);
 
-    //clearing mpd playlist due to seeking depending on transcoding setting
-    self.resetPlugin();
+	self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
 
-    defer.resolve();
-    return defer.promise;
+	//clearing mpd playlist due to seeking depending on transcoding setting
+	self.resetPlugin();
+	self.config.set('auth','');
+
+	defer.resolve();
+	return defer.promise;
 };
 
 
@@ -998,7 +999,7 @@ ControllerVolusonic.prototype._formatArtist = function (artist, curUri) {
 			service: 'volusonic', 
 			type: 'item-no-menu', 
 			title: artist.name,
-			icon: '',
+			icon: 'fa fa-microphone',
 			uri: curUri + '/' + artist.id
 	}
         return item;
@@ -1556,13 +1557,15 @@ ControllerVolusonic.prototype.goto = function (data) {
 	var self = this;
 	var defer=libQ.defer();
 
-	if (data.track.channelId !== undefined){
-		defer.resolve(self.handleBrowseUri("volusonic/podcasts/" + data.track.channelId));
+	var track = self.commandRouter.stateMachine.playQueue.getTrack(self.commandRouter.stateMachine.currentPosition);
+
+	if (track.channelId !== undefined){
+		defer.resolve(self.handleBrowseUri("volusonic/podcasts/" + track.channelId));
 	}else{
 		if (data.type == "artist") {
-			defer.resolve(self.handleBrowseUri("volusonic/artists/" + data.track.artistId));
+			defer.resolve(self.handleBrowseUri("volusonic/artists/" + track.artistId));
 		}else{
-			defer.resolve(self.handleBrowseUri("volusonic/artists/" + data.track.artistId + "/" + data.track.albumId));
+			defer.resolve(self.handleBrowseUri("volusonic/artists/" + track.artistId + "/" + track.albumId));
 		}	
 	}
 	return defer.promise;
