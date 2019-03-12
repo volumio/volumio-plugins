@@ -1,6 +1,6 @@
 {
 	"name": "volusonic",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Subsonic API(>1.13.0) plugin for Volumio2",
 	"main": "index.js",
 	"scripts": {

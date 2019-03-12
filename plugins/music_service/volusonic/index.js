@@ -924,7 +924,7 @@ ControllerVolusonic.prototype._formatPodcastEpisode = function (episode, curUri)
                         artist: new Date(episode.publishDate).toLocaleDateString(),
                         album: episode.description, 
                         albumart: self.config.get('server') + '/rest/getCoverArt?id=' + episode.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'), 
-                        uri: 'volusonic/track/' + episode.streamId
+                        uri: 'volusonic/track/' + episode.streamId + "C" + episode.channelId //we had the channelId so it can be passed to the queue (goto call) 
         }
         return item;
 }
@@ -1123,11 +1123,22 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 
 	if (uri.startsWith('volusonic/track')) {
 		command = 'getSong';
-		params = 'id=' + id;
+		//get the podcast ChannelId if needed 
+		if (id.includes("C")) {
+			var idParts = id.split('C');
+			var channelId = idParts.pop();
+			params = 'id=' + idParts.pop();
+		}else{
+			params = 'id=' + id;
+		}
 		var result = self.api.get(command,id,params)
                 .then(function(result) {
 				song = result['subsonic-response']['song'];
-                                defer.resolve(self._getPlayable(song));
+                                var playable = self._getPlayable(song);
+				if (channelId !== undefined) {
+					playable.channelId = channelId;
+				}
+				defer.resolve(playable);
 		})
                 .fail(function(result) {
                         defer.reject(new Error('explodeUri volusonic/track'));
@@ -1247,8 +1258,13 @@ ControllerVolusonic.prototype._getPlayable = function(song) {
 			type: 'song',
 			name: song.title,
 			title: song.title,
-			artist: song.artist,
 			duration: song.duration,
+			artist: song.artist,
+			artistId: song.artistId,
+			album: song.album,
+			albumId: song.albumId,
+			genre: song.genre,
+			type: song.type,
 			albumart: self.config.get('server') + '/rest/getCoverArt?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
 			uri: self.config.get('server') + '/rest/stream?id=' + song.id + '&' + format + '&' + self.config.get('auth'),
 			samplerate: bRate + " kbps",
@@ -1535,3 +1551,20 @@ ControllerVolusonic.prototype.addToFavourites = function (param) {
 	var self = this;
 	self.commandRouter.pushConsoleMessage("volusonic.addToFavourites: " + JSON.stringify(param));
 };
+
+ControllerVolusonic.prototype.goto = function (data) {
+	var self = this;
+	var defer=libQ.defer();
+
+	if (data.track.channelId !== undefined){
+		defer.resolve(self.handleBrowseUri("volusonic/podcasts/" + data.track.channelId));
+	}else{
+		if (data.type == "artist") {
+			defer.resolve(self.handleBrowseUri("volusonic/artists/" + data.track.artistId));
+		}else{
+			defer.resolve(self.handleBrowseUri("volusonic/artists/" + data.track.artistId + "/" + data.track.albumId));
+		}	
+	}
+	return defer.promise;
+};
+
