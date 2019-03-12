@@ -14,6 +14,7 @@
         "data": [
 	"initvol",
 	"normalvolume",
+	"bitrate",
 	"shareddevice",
 	"username",
 	"password"
@@ -47,7 +48,27 @@
           "label": "Volume normalisation",
           "value": false
         },
-	
+	{
+          "id":"bitrate",
+          "element": "select",
+          "doc": "Bitrate",
+          "label": "Bitrate",
+          "value": {"value": 320 ,"label": "320"},
+          "options": [
+            {
+              "value": 320,
+              "label": "320"
+            },
+            {
+              "value": 160,
+              "label": "160"
+            },
+            {
+              "value": 96,
+              "label": "96"
+            }
+          ]
+        },
 	{
           "id":"shareddevice",
           "element": "switch",
