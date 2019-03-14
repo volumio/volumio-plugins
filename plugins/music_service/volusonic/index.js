@@ -568,7 +568,7 @@ ControllerVolusonic.prototype.showArtist = function (uriParts, curUri) {
 					var bio = {
 						title: infos.biography,
 						type: 'folder',
-						availableListViews: 'list',
+						availableListViews: ['list','grid'],
 						items: [{
 							service: 'volusonic',
        		                	 		type: 'song',
@@ -588,7 +588,7 @@ ControllerVolusonic.prototype.showArtist = function (uriParts, curUri) {
 					var topSongs = {
 						title: self.commandRouter.getI18nString('TOP_SONGS'),
 						type: 'song',
-						availableListViews: 'List',
+						availableListViews: ['list','grid'],
 						items: sgs
 					}
 					nav.navigation['lists'].push(topSongs);
@@ -604,7 +604,7 @@ ControllerVolusonic.prototype.showArtist = function (uriParts, curUri) {
 					var albums = {
 						title: self.commandRouter.getI18nString('ALBUMS'),
 						type: 'folder',
-						availableListViews: 'list',
+						availableListViews: ['list','grid'],
 						items: albs
 					}
 					nav.navigation['lists'].push(albums);	
@@ -618,7 +618,7 @@ ControllerVolusonic.prototype.showArtist = function (uriParts, curUri) {
                         		var similars = {
                                 		title: self.commandRouter.getI18nString('SIMILAR_ARTISTS'),
                                 		type: 'folder',
-                                		availableListViews: 'list',
+                                		availableListViews: ['list','grid'],
                                 		items: arts
                         		}
 					nav.navigation['lists'].push(similars);
@@ -775,7 +775,7 @@ ControllerVolusonic.prototype._formatPlay = function (album, artist, coverart, y
 				lists: [{
 					title: '',
 					type: '',					
-					availableListViews: ['list'],
+					availableListViews: ['list','grid'],
 					items: items
 				}],
 				prev: {
@@ -999,6 +999,7 @@ ControllerVolusonic.prototype._formatArtist = function (artist, curUri) {
 			service: 'volusonic', 
 			type: 'item-no-menu', 
 			title: artist.name,
+			//albumart: artist.artistImageUrl,
 			icon: 'fa fa-microphone',
 			uri: curUri + '/' + artist.id
 	}
@@ -1071,6 +1072,7 @@ ControllerVolusonic.prototype.listArtists = function (uriParts, curUri) {
 						service: 'volusonic', 
                                              	type: 'item-no-menu', 
                                             	title: index.name,
+						availableListViews: ['list','grid'],
                                                 icon: '',//"fa fa-microphone",
                                                 uri: curUri + '/' + index.name,
 						items: artists
@@ -1242,7 +1244,7 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 ControllerVolusonic.prototype._getPlayable = function(song) {
 		var self = this;
 
-//self.commandRouter.pushConsoleMessage("song: " + JSON.stringify(song));
+		//self.commandRouter.pushConsoleMessage("song: " + JSON.stringify(song));
 
 		var format="format=mp3&estimateContentLength=true&maxBitRate=" + self.getSetting('transcode');
 		var type = song.transcodedSuffix;
@@ -1550,7 +1552,7 @@ ControllerVolusonic.prototype.pushState = function(state) {
 
 ControllerVolusonic.prototype.addToFavourites = function (param) {
 	var self = this;
-	self.commandRouter.pushConsoleMessage("volusonic.addToFavourites: " + JSON.stringify(param));
+	//self.commandRouter.pushConsoleMessage("volusonic.addToFavourites: " + JSON.stringify(param));
 };
 
 ControllerVolusonic.prototype.goto = function (data) {
