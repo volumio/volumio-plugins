@@ -1,0 +1,8 @@
+{
+  "node": true,
+  "validthis": true,
+  "undef": true,
+  "globals": {
+    "nodetools": false
+}
+}
