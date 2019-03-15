@@ -1,7 +1,7 @@
 {
 	"name": "volusonic",
 	"version": "0.0.9",
-	"description": "Subsonic and derivatives are music storage servers. Major functionalities are: indexing above the file based organization, ID3 tagging, transcoding capacities (for bandwidth saving), lastFM infos, and podcasts management. Web based, they also can be accessed from dedicated apps in both Android and iOS worlds. Thus coupled with Volumio, they can be used to build a complete personal audiophile solution for your hi-res files (studio masters, DSD, ...) at home, and as a bonus, let you access your music from the outside world via a web browser, a phone or a tablet (http://www.subsonic.org | https://airsonic.github.io). This plugin is compatible with Subsonic API > 1.13.0",
+	"description": "This Plugin allows to access music libraries of Subsonic music storage servers. This plugin is compatible with Subsonic API > 1.13.0",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "Volusonic",
-		"icon": "subsonic_logo.png",
+		"icon": "fa-ship",
 		"plugin_type": "music_service"
 	},
 	"dependencies": {
