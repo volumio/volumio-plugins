@@ -1,6 +1,6 @@
 {
 	"name": "volusonic",
-	"version": "0.0.9",
+	"version": "1.0.0",
 	"description": "This Plugin allows to access music libraries of Subsonic music storage servers. This plugin is compatible with Subsonic API > 1.13.0",
 	"main": "index.js",
 	"scripts": {
