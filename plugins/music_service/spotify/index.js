@@ -448,7 +448,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'xxxxxxxxxxxx';
+	var refreshToken = 'AQDJJ3t_96Zwqy6QTjum5nxwc1y-n1D23nOo0bQhKa3044_gL_5TCYDUxbdVWc3PKywJCri_Zi-mmTVQXTGoSI-IzJMleBb59cOk8hEjq_L3Xthj9K7v1k6w5D9jkxSw6B1-tQ';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
@@ -528,15 +528,15 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
 			          		.query({limit : 50})
                     .accept('application/json')
                     .then(function (results) {
-                        self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
+                      //  self.logger.info('Playlist result is: ' + JSON.stringify(results.body));
                         for (var i in results.body.items) {
                             var playlist = results.body.items[i];
                             response.navigation.lists[0].items.push({
                                 service: 'spop',
                                 type: 'playlist',
                                 title: playlist.name,
-																albumart: self._getAlbumArt(playlist),
-                                uri: self._convertToOldUri(uri)
+								albumart: self._getAlbumArt(playlist),
+                                uri: self._convertToOldUri(playlist.uri)
                             });
                         }
 
@@ -556,6 +556,8 @@ ControllerSpop.prototype._convertToOldUri=function(uri)
 {
 	var uriSplitted=uri.split(':');
 	var legacyUri='spotify:user:spotify:playlist:' +  uriSplitted[2];
+	// temp debug
+	self.logger.info('Converted URI is: ' + legacyUri);
 
 	return legacyUri;
 };

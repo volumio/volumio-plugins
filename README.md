@@ -1,1 +1,0 @@
-# volumio-plugins
