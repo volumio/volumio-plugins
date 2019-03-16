@@ -448,7 +448,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
 
 	// Plug in your Spotify Refresh token below - not the access token - the refresh token!
 
-	var refreshToken = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+	var refreshToken = 'xxxxxxxxxxx';
 
 	self.spotifyApi.setRefreshToken(refreshToken);
     self.spotifyApi.refreshAccessToken()
@@ -535,15 +535,15 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
                                 service: 'spop',
                                 type: 'playlist',
                                 title: playlist.name,
-								albumart: self._getAlbumArt(playlist),
-                                uri: self._convertToOldUri(playlist.uri)
+			                	albumart: self._getAlbumArt(playlist),
+                                uri: 'spotify:user:spotify:playlist:' +  playlist.id
                             });
                         }
 
                         defer.resolve(response);
                     })
 					.catch(function (err) {
-                        self.logger.info('An error occurred while listing Spotify my albums ' + err.message);
+                        self.logger.info('An error occurred while listing Spotify getMyPlaylists ' + err.message);
 					});
             }
         );
@@ -552,8 +552,10 @@ ControllerSpop.prototype.getMyPlaylists = function (curUri) {
 };
 
 //  Convert new Spotify playlists URIs to old format for SPOP to work
-ControllerSpop.prototype._convertToOldUri=function(uri)
+ControllerSpop.prototype._spotifyOldUri=function(uri)
 {
+
+	self.logger.info('Entered _spotifyOldUri');
 	var uriSplitted=uri.split(':');
 	var legacyUri='spotify:user:spotify:playlist:' +  uriSplitted[2];
 	// temp debug
