@@ -1852,6 +1852,12 @@ ControllerSpop.prototype.explodeUri = function(uri) {
         response = self.getMyPlaylists();
         defer.resolve(response);
 	}
+	else if (uri.startsWith('spotify:playlist:'))
+	{
+		uriSplitted=uri.split(':');
+		response = self.getPlaylistTracks(uriSplitted[0], uriSplitted[2]);
+		defer.resolve(response);
+	}
 	else if(uri.startsWith('spotify:artist:'))
 	{
 		uriSplitted=uri.split(':');
