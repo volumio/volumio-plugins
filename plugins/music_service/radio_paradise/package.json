@@ -1,7 +1,7 @@
 {
 	"name": "radio_paradise",
-	"version": "1.0.3",
-	"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC version)",
+	"version": "1.0.5",
+	"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC versions)",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
