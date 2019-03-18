@@ -136,10 +136,10 @@
 					"prettyName": "Radio Paradise",
 					"icon": "fa-lightbulb-o",
 					"name": "radio_paradise",
-					"version": "1.0.3",
+					"version": "1.0.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/radio_paradise/radio_paradise.zip",
 					"license": "ISC",
-					"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC version)",
+					"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC versions)",
 					"details": "The plugin adds Radio Paradise as a music service. It offers streams with different quality, including a lossless Flac option.",
 					"author": "marco79cgn",
 					"screenshots": [
@@ -148,7 +148,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "16-1-2019"
+					"updated": "18-3-2019"
 				},
 				{
 					"prettyName": "Podcast",
