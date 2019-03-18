@@ -55,6 +55,9 @@ ControllerRadioParadise.prototype.onStart = function () {
 };
 
 ControllerRadioParadise.prototype.onStop = function () {
+    var self = this;
+
+    self.removeFromBrowseSources();
     return libQ.resolve();
 };
 
@@ -120,6 +123,13 @@ ControllerRadioParadise.prototype.addToBrowseSources = function () {
         plugin_name: "radio_paradise",
         albumart: '/albumart?sourceicon=music_service/radio_paradise/rp.svg'
     });
+};
+
+ControllerRadioParadise.prototype.removeFromBrowseSources = function () {
+    // Use this function to add your music service plugin to music sources
+    var self = this;
+
+    self.commandRouter.volumioRemoveToBrowseSources(self.getRadioI18nString('PLUGIN_NAME'));
 };
 
 ControllerRadioParadise.prototype.handleBrowseUri = function (curUri) {
