@@ -46,7 +46,7 @@
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-spotify",
 					"name": "volspotconnect2",
-					"version": "0.7.4",
+					"version": "0.9.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
 					"license": "GPL 3.0",
 					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium account or Family account",
@@ -58,7 +58,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "16-11-2018"
+					"updated": "15-3-2019"
 				},
 				{
 					"prettyName": "Squeezelite player",
@@ -244,11 +244,11 @@
 					"prettyName": "Volusonic",
 					"icon": "fa-lightbulb-o",
 					"name": "volusonic",
-					"version": "0.0.7",
+					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
 					"license": "ISC",
-					"description": "Subsonic API(>1.13.0) plugin for Volumio2",
-					"details": "",
+					"description": "Subsonic plugin for Volumio",
+					"details": "Subsonic Plugin For Volumio",
 					"author": "foobarjo",
 					"screenshots": [
 						{
@@ -256,7 +256,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "12-3-2019"
+					"updated": "15-3-2019"
 				}
 			]
 		},
