@@ -355,7 +355,7 @@
 					"prettyName": "Kodi Krypton",
 					"icon": "fa fa-tv",
 					"name": "kodi",
-					"version": "2.2.12",
+					"version": "2.2.13",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/kodi/kodi.zip",
 					"license": "",
 					"description": "Installs Kodi Krypton on top of Volumio.",
@@ -367,7 +367,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-3-2019"
+					"updated": "19-3-2019"
 				},
 				{
 					"prettyName": "RemotePi",
