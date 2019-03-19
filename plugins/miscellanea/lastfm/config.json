@@ -27,11 +27,11 @@
     "type": "boolean",
     "value": true
   },
-  "tryScrobbleWebradio": {
+  "scrobbleFromStream": {
     "type": "boolean",
     "value": false
   },
-  "webradioScrobbleThreshold": {
+  "streamScrobbleThreshold": {
     "type": "string",
     "value": "30"
   },
