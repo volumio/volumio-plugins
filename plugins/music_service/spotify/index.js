@@ -426,7 +426,7 @@ ControllerSpop.prototype.spotifyApiConnect=function()
 	// Retrieve an access token
 	self.spotifyClientCredentialsGrant()
 		.then(function(data) {
-				self.logger.info('Spotify credentials grant success');
+				self.logger.info('Spotify credentials grant success - running version from March 23, 2019');
 				defer.resolve();
 			}, function(err) {
 				self.logger.info('Spotify credentials grant failed with ' + err);
@@ -456,7 +456,7 @@ ControllerSpop.prototype.spotifyClientCredentialsGrant=function()
             self.spotifyAccessToken = data.body['access_token'];
             self.spotifyApi.setAccessToken(data.body['access_token']);
             self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
-            self.logger.info('New access token = ' + self.spotifyAccessToken);
+            self.logger.info('New Spotify access token = ' + self.spotifyAccessToken);
             defer.resolve();
         }, function(err) {
                 self.logger.info('Spotify credentials grant failed with ' + err);
