@@ -1,4 +1,4 @@
-March 3rd 2019
+March 24th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+March 24th 2019
+
+- better plugin startup promise
 
 March 03rd 2019
 

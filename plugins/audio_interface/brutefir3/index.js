@@ -83,7 +83,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
   if (error) {
    self.logger.info('failed ' + error);
   } else {
-   self.commandRouter.pushConsoleMessage('MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMlist sample format done');
+   self.commandRouter.pushConsoleMessage('list sample format done');
    try {
     exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh", {
      uid: 1000,
@@ -91,7 +91,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
     })
 
    } catch (err) {
-    self.logger.info('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-sampleformat.txt does not exist');
+   self.logger.info('sampleformat.txt does not exist');
    }
    //  defer.resolve();
   }
@@ -101,7 +101,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
  setTimeout(function() {
 
   //return defer.promise;
- }, 25)
+ }, 2500)
 };
 
 //here we save the volumio config for the next plugin start
@@ -266,21 +266,17 @@ ControllerBrutefir.prototype.autoconfig = function() {
 
 ControllerBrutefir.prototype.onStart = function() {
  var self = this;
- self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
  var defer = libQ.defer();
- self.autoconfig()
+	self.autoconfig()
+	.then(function(e) {
 
- self.rebuildBRUTEFIRAndRestartDaemon()
-
-  .then(function(e) {
-   setTimeout(function() {
-    self.logger.info("Starting brutefir");
-
-   }, 1000);
-  })
-  .fail(function(e) {
-   defer.reject(new Error());
-  });
+	self.logger.info("Starting brutefir");
+	self.rebuildBRUTEFIRAndRestartDaemon(defer);
+	defer.resolve();
+	  })
+	  .fail(function(e) {
+	   defer.reject(new Error());
+	  });
  return defer.promise;
 };
 
@@ -387,21 +383,17 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 	var str22 = sampleformat.toString().replace(/S/g, "HW-Detected-S");
      	var str2 = str22.toString().replace(/\s/g, '');
-	//var str21 = str2.substring(0, str2.length - 1);
-
 	var str21 = str2.substring(0, str2.length - 1);
-	//js = str2.toString().split(', ')
-	js = str21//.split(',')
-	//self.logger.info('jsssssssssssss '+ js)
+	js = str21
 	      }
-if (str2 == null) {
-str2 = "Detection fails, reboot to retry " }
-var result = str2 + sampleformatf 
+	if (str2 == null) {
+	str2 = "Detection fails, reboot to retry " }
+	var result = str2 + sampleformatf 
 
      self.logger.info('result formats ' + result);
      var str1 = result.replace(/\s/g, '');
      var str = str1.substring(0, str1.length - 1);
-  //   console.log('list of formats ' + sampleformato);
+
      sitems = str.split(',');
 
      for (var i in sitems) {
@@ -434,11 +426,7 @@ var result = str2 + sampleformatf
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-    /*
-      value = self.config.get('output_format');
-        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
-        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value))
-    */
+   
 
     var value;
     defer.resolve(uiconf);
@@ -447,19 +435,6 @@ var result = str2 + sampleformatf
    defer.reject(new Error());
   })
  return defer.promise
-
-};
-
-ControllerBrutefir.prototype.getFilterList = function() {
- var results
- var filterfolder = "/data/INTERNAL/brutefirfilters"
- //var filterl = [];
- fs.readdirSync(filterfolder).forEach(file => {
-  results
-  //  console.log(file);
-  self.logger.info(results);
- });
-
 
 };
 
@@ -516,7 +491,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var lattenuation;
    var rattenuation;
 
-   // delay calculation section
+   // delay calculation section for both channels
    var delay
    var sldistance = self.config.get('ldistance');
    var srdistance = self.config.get('rdistance');
@@ -642,8 +617,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
 //here we save the brutefir delay calculation
 ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
  var self = this;
-
-
  var defer = libQ.defer();
 
  self.config.set('ldistance', data['ldistance']);
@@ -890,7 +863,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
  setTimeout(function() {
   //  return new Promise(function(resolve, reject) { 
   //var defer = libQ.defer();
-  var settings = {
+  const settings = {
    // need to set the device that brutefir wants to control volume to
    device: self.config.get('alsa_device'),
    // need to set the device name of the original device brutefir is controlling
@@ -912,9 +885,11 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
   // once completed, uncomment
 
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
+self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- }, 5000);
+ },500);
+
  //});
  // return defer.promise;
 };
@@ -964,7 +939,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
  var defer = libQ.defer();
  setTimeout(function() {
   self.setVolumeParameters()
- }, 2500);
+ }, 4500);
  self.restoreVolumioconfig()
  //  self.rebuildBRUTEFIRAndRestartDaemon()
  defer.resolve()
@@ -977,16 +952,17 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  var defer = libQ.defer();
  var outputp
  outputp = self.config.get('alsa_outputdevicename')
- setTimeout(function() {
+ //setTimeout(function() {
   var stri = {
    "output_device": {
     "value": "Loopback",
     "label": (outputp + " through brutefir")
    }
   }
+ setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 4500);
+ }, 600);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
