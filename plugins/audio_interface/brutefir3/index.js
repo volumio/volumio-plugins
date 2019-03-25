@@ -101,7 +101,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
  setTimeout(function() {
 
   //return defer.promise;
- }, 2500)
+ }, 25)
 };
 
 //here we save the volumio config for the next plugin start
@@ -888,7 +888,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
 self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- },500);
+ },5000);
 
  //});
  // return defer.promise;
@@ -939,7 +939,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
  var defer = libQ.defer();
  setTimeout(function() {
   self.setVolumeParameters()
- }, 4500);
+ }, 2500);
  self.restoreVolumioconfig()
  //  self.rebuildBRUTEFIRAndRestartDaemon()
  defer.resolve()
@@ -962,7 +962,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 600);
+ }, 4500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
@@ -977,7 +977,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume on startup at " + volumeval);
     }
    });
-  }, 23000);
+  }, 4500);
  }
  // retur
  return defer.promise;
