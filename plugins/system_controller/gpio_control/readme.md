@@ -22,7 +22,7 @@ __Remember to use a resistor when connecting LEDs.__
 
 __Do not source more than 16mA per pin with total current from all pins no excedding 51mA.__
 
-If you need more current or wist to control higher voltage devices then you can use a TIP120 darlington transistor in conjunction with your 12v/5v power rail__
+If you need more current or wist to control higher voltage devices then you can use a TIP120 darlington transistor in conjunction with your 12v/5v power rail.
   
 | GPIO Pin      | Default pull  | GPIO Pin      | Default pull  |
 | :-----------: |:-------------:| :-----------: |:-------------:|
