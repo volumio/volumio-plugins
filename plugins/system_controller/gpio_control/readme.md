@@ -8,7 +8,7 @@
  
 - This plugin is based on tomatpasser's gpio-buttons https://github.com/tomatpasser/gpio-buttons/
  
-![GPIO Buttons interface](http://supercrab.co.uk/gpio-control-config.png)
+![GPIO Control Configuration](http://supercrab.co.uk/gpio-control-config.png)
  
 # Instructions
  
@@ -54,5 +54,5 @@ Your Pi is easily fried so here are some ways to connect it to devices.
 1. Single LED on GPIO pin 17 with a resistor
 2. 12v device on GPIO pin 17 with a shared ground connection
 3. 12v device on GPIO pin 17 with both circuits isolated
- 
-<img src="http://supercrab.co.uk/gpio-control-schematic.png" width=500>
+
+![GPIO Control Schematics](http://supercrab.co.uk/gpio-control-schematic.png)
