@@ -1,4 +1,4 @@
-March 12th 2019
+March 26th 2019
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+March 26th 2019
+
+- add debug toggle ['@ash'](https://github.com/ashthespy) 
 
 March 12th 2019
 
