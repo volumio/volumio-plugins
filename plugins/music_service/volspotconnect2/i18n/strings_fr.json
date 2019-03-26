@@ -10,7 +10,7 @@
     "INITVOL": "Volume initial",
     "DESCINITVOL": "Volume par défaut pour Spotify",
     "VOLNORM": "Normalisation du volume",
-    "DESCVOLNORM": "Règle le même volume pour tous les mreceaux",
+    "DESCVOLNORM": "Règle le même volume pour tous les morceaux",
     "DESCDEBUG": "Activation des logs de deboggage"
   }
 }

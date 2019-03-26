@@ -12,6 +12,6 @@
     "VOLNORM": "Normalisation volume",
     "DESCVOLNORM": "Set the same volume level for all songs",
     "DEBUG": "Debug mode",
-    "DESCDEBUG": "Enable verbose logs",
+    "DESCDEBUG": "Enable verbose logs"
   }
 }
