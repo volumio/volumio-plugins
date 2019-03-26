@@ -37,17 +37,22 @@ ERR_UNSUPPROTED="Sorry, your device is not yet supported! \n\
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
 
-# Get a fixed version from the repo
-# TODO We should allocate a field in `package.json` for this?
-# VLS_VER=v0.1.0
-# VLS_REPO=ashthespy/vollibrespot
-
 
 # Download and extract latest release
 cd $libpath
 if [ ${VLS_BIN[$cpu]+ok} ]; then
-  echo "Supported device (arch = $cpu), downloading required packages"
-  DOWNLOAD_URL=$(curl --silent "https://api.github.com/repos/ashthespy/vollibrespot/releases/latest" | \
+  # Check for the latest release first
+  RELEASE_JSON=$(curl --silent "https://api.github.com/repos/ashthespy/vollibrespot/releases/latest")
+  # Get a fixed version from the repo
+  VLS_VER=v$(jq -r '.vollibrespot.version' package.json)
+  echo "Supported device (arch = $cpu), downloading required packages for vollibrespot $VLS_VER"
+  LATEST_VER=$(jq -r  '.tag_name' <<< "${RELEASE_JSON}")
+  if [ $LATEST_VER != $VLS_VER ]; then
+    echo Latest version: ${LATEST_VER} Requested version: ${VLS_VER}
+  fi
+  RELEASE_URL="https://api.github.com/repos/ashthespy/vollibrespot/releases/tags/${VLS_VER}"
+  echo Downloading from "${RELEASE_URL}"
+  DOWNLOAD_URL=$(curl --silent "${RELEASE_URL}" | \
     jq -r --arg VLS_BIN "${VLS_BIN[$cpu]}" '.assets[] | select(.name | contains($VLS_BIN)).browser_download_url')
   echo $DOWNLOAD_URL
   curl -L --output ${VLS_BIN[$cpu]} $DOWNLOAD_URL

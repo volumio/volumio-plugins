@@ -347,7 +347,7 @@ ControllerVolspotconnect.prototype.onStart = function () {
   var self = this;
 
   var defer = libQ.defer();
-  self.createConfigFile()
+  self.createConfigFile();
   self.startVolspotconnectDaemon()
     .then(function (e) {
       self.volspotconnectDaemonConnect(defer);
@@ -397,12 +397,12 @@ ControllerVolspotconnect.prototype.getUIConfig = function () {
     path.join(__dirname, '/UIConfig.json'))
     .then(function (uiconf) {
       // Do we still need the initial volume setting?
-      var mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
-if ((mixname == '') || (mixname == 'None')) {
- uiconf.sections[0].content[0].hidden = false;
-} else {
- uiconf.sections[0].content[0].hidden = true;
-}
+      const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
+      if ((mixname === '') || (mixname === 'None')) {
+        uiconf.sections[0].content[0].hidden = false;
+      } else {
+        uiconf.sections[0].content[0].hidden = true;
+      }
       uiconf.sections[0].content[0].config.bars[0].value = self.config.get('initvol');
 
       uiconf.sections[0].content[1].value = self.config.get('normalvolume');
@@ -411,6 +411,7 @@ if ((mixname == '') || (mixname == 'None')) {
       uiconf.sections[0].content[3].value = self.config.get('shareddevice');
       uiconf.sections[0].content[4].value = self.config.get('username');
       uiconf.sections[0].content[5].value = self.config.get('password');
+      uiconf.sections[0].content[6].value = self.config.get('debug');
 
       defer.resolve(uiconf);
     })
@@ -474,36 +475,33 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
       if (volumestart !== 'disabled') {
         initvol = volumestart;
       } else {
- 	const state = self.commandRouter.volumioGetState();
-  	initvol = (`${state.volume}`);
- 	}
-      var initvolr
+        const state = self.commandRouter.volumioGetState();
+        initvol = (`${state.volume}`);
+      }
       const devicename = self.commandRouter.sharedVars.get('system.name');
       const outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
       const mixname = self.commandRouter.sharedVars.get('alsa.outputdevicemixer');
 
       const volcuve = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
-      let idxcard, hwdev, mixlin, mixer, mixeropts;
-      if ((mixname == '') || (mixname == 'None')) {
+      let idxcard, hwdev, mixlin, mixer, mixeropts, initvolr;
+      if ((mixname === '') || (mixname === 'None')) {
         // No mixer - default to (logarithmic) Spotify volume
         mixer = '';
         mixeropts = '--logarithmic-volume';
-          hwdev = `plughw:${outdev}`;
-	initvolr = ('--initial-volume ' + self.config.get('initvol'))
+        hwdev = `plughw:${outdev}`;
+        initvolr = ('--initial-volume ' + self.config.get('initvol'));
       } else {
+        // Some mixer is defined, set inital volume to startup volume or current volume
+        initvolr = ('--initial-volume ' + initvol);
         mixer = '--mixer alsa';
         if (volcuve === 'logarithmic') {
           mixlin = '';
-        initvolr = ('--initial-volume ' + initvol);
         } else {
           mixlin = '--mixer-linear-volume';
-
         }
-//}
         if (outdev === 'softvolume') {
           hwdev = outdev;
           mixlin = '--mixer-linear-volume';
-        initvolr = ('--initial-volume ' + initvol);
         } else {
           hwdev = `plughw:${outdev}`;
         }
@@ -513,12 +511,12 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         } else if (outdev === 'Loopback') {
           // FIXME: This is so obtuse and roundabout!
           // FIXME: Get a sample file from balbuze and fix it!
-          var datan = fs.readFileSync('/tmp/vconfig.json', 'utf8', function (err, data) {
+          const vconfig = fs.readFileSync('/tmp/vconfig.json', 'utf8', function (err, data) {
             if (err) {
-              console.log('Error reading Loopback config', err);
+              logger.error('Error reading Loopback config', err);
             }
           });
-          var obj = JSON.parse(datan);
+          var obj = JSON.parse(vconfig);
           var outputdevicen = obj.outputdevice;
           var outn = JSON.stringify(outputdevicen);
           var outdn = outn.split('"');
@@ -540,7 +538,8 @@ ControllerVolspotconnect.prototype.createConfigFile = function () {
         .replace('${mixer}', mixer)
         .replace('${mixeropts}', mixeropts)
         .replace('${initvol}', initvolr)
-        .replace('${bitrate}', self.config.get("bitrate"));
+        .replace('${bitrate}', self.config.get('bitrate'))
+        .replace('${debug}', self.config.get('debug') ? '--verbose' : '');
         // .replace('${initvol}', self.config.get('initvol'));
         /* eslint-enable no-template-curly-in-string */
       fs.writeFile('/data/plugins/music_service/volspotconnect2/startconnect.sh', conf, 'utf8', function (err) {
@@ -558,13 +557,13 @@ ControllerVolspotconnect.prototype.saveVolspotconnectAccount = function (data) {
 
   var defer = libQ.defer();
 
- // logger.info('Currently activeqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq:' + state);
   self.config.set('initvol', data['initvol']);
   self.config.set('bitrate', data['bitrate'].value);
   self.config.set('normalvolume', data['normalvolume']);
   self.config.set('shareddevice', data['shareddevice']);
   self.config.set('username', data['username']);
   self.config.set('password', data['password']);
+  self.config.set('debug', data['debug']);
 
   self.rebuildRestartDaemon()
     .then(function (e) {

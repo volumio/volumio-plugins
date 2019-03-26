@@ -1,13 +1,17 @@
 {
- "VOLSPOTCONNECT":{
- "VOLSPOTCONNECTCONF":"Configuration Volumio Spotify connect",
- "VOLSPOTCONNECTACCOUNT":"Compte Spotify",
- "USERNAME":"Nom utilisateur",
- "PASSWORD":"Mot de passe",
- "HIGHBITRATE":"Haute qualité",
- "SHAREDDEVICE":"Périphérique partagé entre plusieurs utilisateurs",
- "SAVE":"Sauver",
- "INITVOL":"Volume initial",
- "DESCINITVOL":"Volume par défaut pour Spotify"
-}
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Configuration Volumio Spotify Connect",
+    "VOLSPOTCONNECTACCOUNT": "Compte Spotify",
+    "USERNAME": "Nom utilisateur",
+    "PASSWORD": "Mot de passe",
+    "HIGHBITRATE": "Haute qualité",
+    "SHAREDDEVICE": "Périphérique partagé entre plusieurs utilisateurs",
+    "SAVE": "Sauver",
+    "INITVOL": "Volume initial",
+    "DESCINITVOL": "Volume par défaut pour Spotify",
+    "VOLNORM": "Normalisation volume",
+    "DESCVOLNORM": "Set the same volume level for all songs",
+    "DEBUG": "Debug mode",
+    "DESCDEBUG": "Enable verbose logs"
+  }
 }
