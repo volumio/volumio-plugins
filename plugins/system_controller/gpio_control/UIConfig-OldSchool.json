@@ -1,0 +1,615 @@
+{
+	"page": {
+		"label": "TRANSLATE.PLUGIN_CONFIGURATION"
+	},
+	"sections": [
+		{
+			"id": "gpio_control_setup",
+			"element": "section",
+			"label": "TRANSLATE.PLUGIN_DESCRIPTION",
+			"icon": "fa-plug",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "system_controller\/gpio_control",
+				"method": "saveConfig"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SAVE",
+				"data": [
+					"systemStartupEnabled",
+					"systemStartupPin",
+					"systemStartupState",
+					"systemShutdownEnabled",
+					"systemShutdownPin",
+					"systemShutdownState",
+					"musicPlayEnabled",
+					"musicPlayPin",
+					"musicPlayState",
+					"musicPauseEnabled",
+					"musicPausePin",
+					"musicPauseState",
+					"musicStopEnabled",
+					"musicStopPin",
+					"musicStopState"
+				]
+			},
+			"content": [
+				{
+					"id": "systemStartupEnabled",
+					"element": "switch",
+					"label": "TRANSLATE.SYSTEM_STARTUP",
+					"doc": "TRANSLATE.SYSTEM_STARTUP_DOC",
+					"value": false
+				},
+				{
+					"id": "systemStartupPin",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_PIN",
+					"doc": "TRANSLATE.GPIO_PIN_DOC",
+					"value": {
+						"value": 0,
+						"label": "0"
+					},
+					"options": [
+						{
+							"value": 0,
+							"label": "0"
+						},
+						{
+							"value": 1,
+							"label": "1"
+						},
+						{
+							"value": 4,
+							"label": "4"
+						},
+						{
+							"value": 7,
+							"label": "7"
+						},
+						{
+							"value": 8,
+							"label": "8"
+						},
+						{
+							"value": 9,
+							"label": "9"
+						},
+						{
+							"value": 10,
+							"label": "10"
+						},
+						{
+							"value": 11,
+							"label": "11"
+						},
+						{
+							"value": 14,
+							"label": "14"
+						},
+						{
+							"value": 15,
+							"label": "15"
+						},
+						{
+							"value": 17,
+							"label": "17"
+						},
+						{
+							"value": 18,
+							"label": "18"
+						},
+						{
+							"value": 22,
+							"label": "22"
+						},
+						{
+							"value": 23,
+							"label": "23"
+						},
+						{
+							"value": 24,
+							"label": "24"
+						},
+						{
+							"value": 25,
+							"label": "25"
+						},
+						{
+							"value": 27,
+							"label": "27"
+						}
+					],
+					"visibleIf": {
+						"field": "systemStartupEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "systemStartupState",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_STATE",
+					"doc": "TRANSLATE.GPIO_STATE_DOC",
+					"value": {
+						"value": 0,
+						"label": "TRANSLATE.OFF"
+					},
+					"options": [
+						{
+							"value": 1,
+							"label": "TRANSLATE.ON"
+						},
+						{
+							"value": 0,
+							"label": "TRANSLATE.OFF"
+						}
+					],
+					"visibleIf": {
+						"field": "systemStartupEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "systemShutdownEnabled",
+					"element": "switch",
+					"label": "TRANSLATE.SYSTEM_SHUTDOWN",
+					"doc": "TRANSLATE.SYSTEM_SHUTDOWN_DOC",
+					"value": false
+				},
+				{
+					"id": "systemShutdownPin",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_PIN",
+					"doc": "TRANSLATE.GPIO_PIN_DOC",
+					"value": {
+						"value": 0,
+						"label": "0"
+					},
+					"options": [
+						{
+							"value": 0,
+							"label": "0"
+						},
+						{
+							"value": 1,
+							"label": "1"
+						},
+						{
+							"value": 4,
+							"label": "4"
+						},
+						{
+							"value": 7,
+							"label": "7"
+						},
+						{
+							"value": 8,
+							"label": "8"
+						},
+						{
+							"value": 9,
+							"label": "9"
+						},
+						{
+							"value": 10,
+							"label": "10"
+						},
+						{
+							"value": 11,
+							"label": "11"
+						},
+						{
+							"value": 14,
+							"label": "14"
+						},
+						{
+							"value": 15,
+							"label": "15"
+						},
+						{
+							"value": 17,
+							"label": "17"
+						},
+						{
+							"value": 18,
+							"label": "18"
+						},
+						{
+							"value": 22,
+							"label": "22"
+						},
+						{
+							"value": 23,
+							"label": "23"
+						},
+						{
+							"value": 24,
+							"label": "24"
+						},
+						{
+							"value": 25,
+							"label": "25"
+						},
+						{
+							"value": 27,
+							"label": "27"
+						}
+					],
+					"visibleIf": {
+						"field": "systemShutdownEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "systemShutdownState",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_STATE",
+					"doc": "TRANSLATE.GPIO_STATE_DOC",
+					"value": {
+						"value": 0,
+						"label": "TRANSLATE.OFF"
+					},
+					"options": [
+						{
+							"value": 1,
+							"label": "TRANSLATE.ON"
+						},
+						{
+							"value": 0,
+							"label": "TRANSLATE.OFF"
+						}
+					],
+					"visibleIf": {
+						"field": "systemShutdownEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicPlayEnabled",
+					"element": "switch",
+					"label": "TRANSLATE.MUSIC_PLAY",
+					"doc": "TRANSLATE.MUSIC_PLAY_DOC",
+					"value": false
+				},
+				{
+					"id": "musicPlayPin",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_PIN",
+					"doc": "TRANSLATE.GPIO_PIN_DOC",
+					"value": {
+						"value": 0,
+						"label": "0"
+					},
+					"options": [
+						{
+							"value": 0,
+							"label": "0"
+						},
+						{
+							"value": 1,
+							"label": "1"
+						},
+						{
+							"value": 4,
+							"label": "4"
+						},
+						{
+							"value": 7,
+							"label": "7"
+						},
+						{
+							"value": 8,
+							"label": "8"
+						},
+						{
+							"value": 9,
+							"label": "9"
+						},
+						{
+							"value": 10,
+							"label": "10"
+						},
+						{
+							"value": 11,
+							"label": "11"
+						},
+						{
+							"value": 14,
+							"label": "14"
+						},
+						{
+							"value": 15,
+							"label": "15"
+						},
+						{
+							"value": 17,
+							"label": "17"
+						},
+						{
+							"value": 18,
+							"label": "18"
+						},
+						{
+							"value": 22,
+							"label": "22"
+						},
+						{
+							"value": 23,
+							"label": "23"
+						},
+						{
+							"value": 24,
+							"label": "24"
+						},
+						{
+							"value": 25,
+							"label": "25"
+						},
+						{
+							"value": 27,
+							"label": "27"
+						}
+					],
+					"visibleIf": {
+						"field": "musicPlayEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicPlayState",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_STATE",
+					"doc": "TRANSLATE.GPIO_STATE_DOC",
+					"value": {
+						"value": 0,
+						"label": "TRANSLATE.OFF"
+					},
+					"options": [
+						{
+							"value": 1,
+							"label": "TRANSLATE.ON"
+						},
+						{
+							"value": 0,
+							"label": "TRANSLATE.OFF"
+						}
+					],
+					"visibleIf": {
+						"field": "musicPlayEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicPauseEnabled",
+					"element": "switch",
+					"label": "TRANSLATE.MUSIC_PAUSE",
+					"doc": "TRANSLATE.MUSIC_PAUSE_DOC",
+					"value": false
+				},
+				{
+					"id": "musicPausePin",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_PIN",
+					"doc": "TRANSLATE.GPIO_PIN_DOC",
+					"value": {
+						"value": 0,
+						"label": "0"
+					},
+					"options": [
+						{
+							"value": 0,
+							"label": "0"
+						},
+						{
+							"value": 1,
+							"label": "1"
+						},
+						{
+							"value": 4,
+							"label": "4"
+						},
+						{
+							"value": 7,
+							"label": "7"
+						},
+						{
+							"value": 8,
+							"label": "8"
+						},
+						{
+							"value": 9,
+							"label": "9"
+						},
+						{
+							"value": 10,
+							"label": "10"
+						},
+						{
+							"value": 11,
+							"label": "11"
+						},
+						{
+							"value": 14,
+							"label": "14"
+						},
+						{
+							"value": 15,
+							"label": "15"
+						},
+						{
+							"value": 17,
+							"label": "17"
+						},
+						{
+							"value": 18,
+							"label": "18"
+						},
+						{
+							"value": 22,
+							"label": "22"
+						},
+						{
+							"value": 23,
+							"label": "23"
+						},
+						{
+							"value": 24,
+							"label": "24"
+						},
+						{
+							"value": 25,
+							"label": "25"
+						},
+						{
+							"value": 27,
+							"label": "27"
+						}
+					],
+					"visibleIf": {
+						"field": "musicPauseEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicPauseState",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_STATE",
+					"doc": "TRANSLATE.GPIO_STATE_DOC",
+					"value": {
+						"value": 0,
+						"label": "TRANSLATE.OFF"
+					},
+					"options": [
+						{
+							"value": 1,
+							"label": "TRANSLATE.ON"
+						},
+						{
+							"value": 0,
+							"label": "TRANSLATE.OFF"
+						}
+					],
+					"visibleIf": {
+						"field": "musicPauseEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicStopEnabled",
+					"element": "switch",
+					"label": "TRANSLATE.MUSIC_STOP",
+					"doc": "TRANSLATE.MUSIC_STOP_DOC",
+					"value": false
+				},
+				{
+					"id": "musicStopPin",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_PIN",
+					"doc": "TRANSLATE.GPIO_PIN_DOC",
+					"value": {
+						"value": 0,
+						"label": "0"
+					},
+					"options": [
+						{
+							"value": 0,
+							"label": "0"
+						},
+						{
+							"value": 1,
+							"label": "1"
+						},
+						{
+							"value": 4,
+							"label": "4"
+						},
+						{
+							"value": 7,
+							"label": "7"
+						},
+						{
+							"value": 8,
+							"label": "8"
+						},
+						{
+							"value": 9,
+							"label": "9"
+						},
+						{
+							"value": 10,
+							"label": "10"
+						},
+						{
+							"value": 11,
+							"label": "11"
+						},
+						{
+							"value": 14,
+							"label": "14"
+						},
+						{
+							"value": 15,
+							"label": "15"
+						},
+						{
+							"value": 17,
+							"label": "17"
+						},
+						{
+							"value": 18,
+							"label": "18"
+						},
+						{
+							"value": 22,
+							"label": "22"
+						},
+						{
+							"value": 23,
+							"label": "23"
+						},
+						{
+							"value": 24,
+							"label": "24"
+						},
+						{
+							"value": 25,
+							"label": "25"
+						},
+						{
+							"value": 27,
+							"label": "27"
+						}
+					],
+					"visibleIf": {
+						"field": "musicStopEnabled",
+						"value": true
+					}
+				},
+				{
+					"id": "musicStopState",
+					"element": "select",
+					"label": "TRANSLATE.GPIO_STATE",
+					"doc": "TRANSLATE.GPIO_STATE_DOC",
+					"value": {
+						"value": 0,
+						"label": "TRANSLATE.OFF"
+					},
+					"options": [
+						{
+							"value": 1,
+							"label": "TRANSLATE.ON"
+						},
+						{
+							"value": 0,
+							"label": "TRANSLATE.OFF"
+						}
+					],
+					"visibleIf": {
+						"field": "musicStopEnabled",
+						"value": true
+					}
+				}
+			]
+		}
+	]
+}
