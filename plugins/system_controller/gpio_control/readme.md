@@ -55,4 +55,4 @@ Your Pi is easily fried so here are some ways to connect it to devices.
 2. 12v device on GPIO pin 17 with a shared ground connection
 3. 12v device on GPIO pin 17 with both circuits isolated
  
-<img src="http://supercrab.co.uk/gpio-control.png" width=500>
+<img src="http://supercrab.co.uk/gpio-control-schematic.png" width=500>
