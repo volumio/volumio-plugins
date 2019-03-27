@@ -61,6 +61,14 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 ## Last changes
 
+March 27th 2019
+
+- new vollibrespot ['@ash'](https://github.com/ashthespy) 
+		[0.1.4] - 2019-03-26
+	-Added support for Dailymixes
+	-Faster track changes
+	-Multiple small fixes
+
 March 26th 2019
 
 - add debug toggle ['@ash'](https://github.com/ashthespy) 
