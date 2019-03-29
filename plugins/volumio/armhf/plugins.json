@@ -257,6 +257,24 @@
 						}
 					],
 					"updated": "15-3-2019"
+				},
+				{
+					"prettyName": "Nanosound CD",
+					"icon": "fa-lightbulb-o",
+					"name": "nanosound_cd",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/nanosound_cd/nanosound_cd.zip",
+					"license": "ISC",
+					"description": "Nanosound CD playback and extraction plug-in",
+					"details": "Cd player and ripper for Volumio by Nanomesher",
+					"author": "Nanomesher",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "29-3-2019"
 				}
 			]
 		},
