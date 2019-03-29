@@ -501,6 +501,24 @@
 						}
 					],
 					"updated": "16-11-2018"
+				},
+				{
+					"prettyName": "Audiophonics ON/OFF",
+					"icon": "fa-lightbulb-o",
+					"name": "audiophonicsonoff",
+					"version": "1.0.3",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/audiophonicsonoff/audiophonicsonoff.zip",
+					"license": "GPL-3.0",
+					"description": "Minimized Audiophonics plugin for button management, copied from RaspDac by Jedail",
+					"details": "RPI power management for Audiophonics board",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "29-3-2019"
 				}
 			]
 		},
