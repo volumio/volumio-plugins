@@ -135,6 +135,10 @@
 							"label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
 						},
 						{
+							"value": "FLOAT_LE",
+							"label": "FLOAT_LE- 32 bits floating point (.pcm)"
+						},
+						{
 							"value": "FLOAT64_LE",
 							"label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
 						}

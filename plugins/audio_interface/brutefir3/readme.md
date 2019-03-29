@@ -1,4 +1,4 @@
-March 25th 2019
+March 29th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+March 29th 2019
+
+- add FLOAT_LE – 32bit floating point (.pcm)
 
 March 25th 2019
 
