@@ -1,0 +1,287 @@
+{
+  "page": {
+    "label": "rpi GPIO Action Buttons"
+  },
+  "sections": [
+    {
+      "id": "RPI_gpio_setup",
+      "element": "section",
+      "label": "Setup your RPI GPIO button actions",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"system_controller/rpi_gpio_action_buttons", "method":"saveConfig"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "SW1Enabled",
+          "SW1Pin",
+          "SW1usage",
+          "SW2Enabled",
+          "SW2Pin",
+          "SW2usage",
+          "SW3Enabled",
+          "SW3Pin",
+          "SW3usage",
+          "SW4Enabled",
+          "SW4Pin",
+          "SW4usage",
+          "SW5Enabled",
+          "SW5Pin",
+          "SW5usage",
+          "SW6Enabled",
+          "SW6Pin",
+          "SW6usage",
+          "SW7Enabled",
+          "SW7Pin",
+          "SW7usage"
+		]
+      },
+  "content": [
+        {
+          "id": "SW1Enabled",
+          "element": "switch",
+          "label": "SW1",
+          "value": false
+        },
+        {
+          "id": "SW1Pin",
+          "element": "select",
+          "label": "SW1 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW1Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW1usage",
+          "element": "select",
+          "label": "SW1 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW1Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW2Enabled",
+          "element": "switch",
+          "label": "SW2",
+          "value": false
+        },
+        {
+          "id": "SW2Pin",
+          "element": "select",
+          "label": "SW2 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW2Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW2usage",
+          "element": "select",
+          "label": "SW2 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW2Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW3Enabled",
+          "element": "switch",
+          "label": "SW3",
+          "value": false
+        },
+        {
+          "id": "SW3Pin",
+          "element": "select",
+          "label": "SW3 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW3Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW3usage",
+          "element": "select",
+          "label": "SW3 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW3Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW4Enabled",
+          "element": "switch",
+          "label": "SW4",
+          "value": false
+        },
+        {
+          "id": "SW4Pin",
+          "element": "select",
+          "label": "SW4 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW4Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW4usage",
+          "element": "select",
+          "label": "SW4 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW4Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW5Enabled",
+          "element": "switch",
+          "label": "SW5",
+          "value": false
+        },
+        {
+          "id": "SW5Pin",
+          "element": "select",
+          "label": "SW5 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW5Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW5usage",
+          "element": "select",
+          "label": "SW5 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW5Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW6Enabled",
+          "element": "switch",
+          "label": "SW6",
+          "value": false
+        },
+        {
+          "id": "SW6Pin",
+          "element": "select",
+          "label": "SW6 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW6Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW6usage",
+          "element": "select",
+          "label": "SW6 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW6Enabled",
+            "value": true
+          }
+        },
+        {
+          "id": "SW7Enabled",
+          "element": "switch",
+          "label": "SW7",
+          "value": false
+        },
+        {
+          "id": "SW7Pin",
+          "element": "select",
+          "label": "SW7 GPIO",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+
+          "options": [
+          ],
+          "visibleIf": {
+            "field": "SW7Enabled",
+            "value": true
+          }
+        },
+		{
+          "id": "SW7usage",
+          "element": "select",
+          "label": "SW7 action",
+          "value": {"value": 0,
+                    "label": "0"
+          },
+		  "options": [
+		  ],
+		    "visibleIf": {
+            "field": "SW7Enabled",
+            "value": true
+          }
+        }
+      ]
+    }
+  ]
+}

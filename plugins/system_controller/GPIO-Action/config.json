@@ -1,0 +1,100 @@
+{
+   "SW1": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 27,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW2": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 4,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW3": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 17,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW4": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 14,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW5": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 15,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW6": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 23,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  },
+     "SW7": {
+    "enabled": {
+      "value": true,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 24,
+      "type": "number"
+    },
+    "value": {
+      "value": {"service":"volumio","name":"stop","uri":""},
+      "type": "object"
+    }
+  }
+}

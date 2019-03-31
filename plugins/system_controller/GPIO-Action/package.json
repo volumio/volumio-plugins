@@ -1,0 +1,22 @@
+{
+	"name": "rpi_gpio_action_buttons",
+	"version": "1.0.0",
+	"description": "Enables control of Volumio on Raspberry, using real buttons.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Bjoern Kristensen",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "RPI GPIO Action Buttons",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "system_controller"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"onoff": "^1.1.1",
+		"socket.io-client": "^1.4.5"	}
+}
