@@ -17,7 +17,8 @@ RIP pin -> button number - button pin number ( GPIO number )
 9 -> 1,2,3,4,5,6,7 pin 1 ( ground / 0Volt )  
 10 -> 3 pin 2 ( GPIO15 )  
 11 -> 4 pin 2 ( GPIO17 )  
-12 no connection, used by Pi-DigiAMP+ for I2S 13 -> 5 pin 2 ( GPIO27 )  
+12 no connection, used by Pi-DigiAMP+ for I2S   
+13 -> 5 pin 2 ( GPIO27 )  
 14 no connection  
 15 no connection is used as HW mute on Pi-DigiAMP+, but could also be used to any other function.  
 16 -> 6 pin 2 ( GPIO23 )  
