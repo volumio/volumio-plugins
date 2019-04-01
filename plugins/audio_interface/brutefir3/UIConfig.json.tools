@@ -291,6 +291,18 @@
       "element": "section",
       "label": "Tools",
       "icon": "fa-wrench",
+"onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/brutefir",
+        "method": "fileconvert"
+      },
+ "saveButton": {
+        "label": "Create filter",
+        "data": [
+	"filetoconvert",
+	"outputfilename"
+        ]
+      },
       "content": [
         {
 		"id": "sweep",
@@ -425,7 +437,8 @@
 		"field": "pink",
 		"value": true
 		}
-        },  
+        }, 
+	
 	{
           "id": "removetools",
           "element": "button",
@@ -446,7 +459,30 @@
             "type": "openUrl",
             "url": "https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html"
           }
-        }
+        },
+{
+          "id": "filetoconvert",
+          "element": "select",
+          "doc": "file to convert",
+          "label": "file to convert",
+          "value": {
+            "value": "fitems",
+            "label": ""
+          },
+          "options": []
+        },  
+	{
+          "id": "outputfilename",
+          "element": "input",
+          "doc": "outputfilename",
+          "label": "output file name",
+          "value": {
+            "value": "azerty",
+            "label": ""
+          },
+          "options": []
+        
+  	}
       ]
     }
   ]

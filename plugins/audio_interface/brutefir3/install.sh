@@ -14,7 +14,7 @@ fi
 
 
 sudo apt-get update
-sudo apt-get -y install brutefir 
+sudo apt-get -y install brutefir drc
 		cp /data/plugins/audio_interface/brutefir/brutefir.service.tar /
 		cd /
 		sudo tar -xvf brutefir.service.tar

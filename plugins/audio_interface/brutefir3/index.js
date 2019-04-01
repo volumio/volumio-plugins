@@ -321,6 +321,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var items;
     var allfilter;
     var oformat;
+    var filetoconvertl;
     //  var sitems;
     // var sampleformat;
 
@@ -328,6 +329,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
+    uiconf.sections[2].content[13].value = self.config.get('outputfilename');
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
@@ -338,6 +340,25 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     valuestoredr = self.config.get('rightfilter');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
+
+ 	filetoconvertl = self.config.get('filetoconvert');
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.value', filetoconvertl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', filetoconvertl);
+
+
+	 fs.readdir(filterfolder, function(err, fitem) {
+	var fitems;
+     var filetoconvert = '' + fitem;
+     fitems = filetoconvert.split(',');
+     self.logger.info('list of available files to convert :' + fitems);
+     console.log(fitems)
+     for (var i in fitems) {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
+       value: fitems[i],
+       label: fitems[i]
+      });
+	}
+	});
 
     fs.readdir(filterfolder, function(err, item) {
 
@@ -815,6 +836,78 @@ ControllerBrutefir.prototype.stopaplay = function(track) {
    };
   });
 };
+
+
+//here we save value to convert file
+ControllerBrutefir.prototype.fileconvert = function(data) {
+var self = this;
+var defer = libQ.defer();
+self.config.set('filetoconvert', data['filetoconvert'].value);
+ self.config.set('outputfilename', data['outputfilename']);
+
+ self.convert()
+ 
+ return defer.promise;
+};
+
+
+
+
+//here we convert file using sox
+ControllerBrutefir.prototype.convert = function(data) {
+var self = this;
+ //var defer = libQ.defer();
+var inpath = "/data/INTERNAL/brutefirfilters/";
+var infile = self.config.get('filetoconvert');
+var outpath = "/data/INTERNAL/brutefirfilters/";
+var outfile = self.config.get('outputfilename');
+var targetcurve = ' /usr/share/drc/config/';
+var outsample = self.config.get('smpl_rate');
+var ftargetcurve
+var curve
+if (outsample == 44100){
+ftargetcurve = '44.1\\ kHz/';
+curve = '44.1';}
+else if (outsample == 48000){
+ftargetcurve = '48.0\\ kHz/';
+curve = '48.0';}
+else if (outsample == 88200){
+ftargetcurve = '88.2\\ kHz/';
+curve = '88.2';}
+else if (outsample == 96000){
+ftargetcurve = '96.0\\ kHz/';
+curve = '96.0';};
+
+var destfile = (outpath + outfile +"-"+ outsample +".pcm");
+
+var BKpath = "/data/plugins/audio_interface/brutefir/"
+
+   try {
+    execSync("/usr/bin/sox -t f32 -r "+ outsample +" -c 1 " + inpath + infile + " -t wav -c 1 /tmp/tempofilter.pcm");
+self.logger.info("/usr/bin/sox -t f32 -r "+ outsample +" -c 1 " + inpath + infile + " -t wav -c 1 /tmp/tempofilter.pcm");
+   } catch (e){
+   self.logger.info('input file does not exist ' + e);
+    
+ };
+ try {
+  //self.commandRouter.pushToastMessage('info', 'Filter ' + destfile + ' is being generated, it may takes up to one minute, please wait!');
+var modalData = {
+  title: 'Filter generation',
+  message: ' Please WAIT until this page is refreshed (about 1 minute).',
+  size: 'lg'
+ };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+	execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath +"bk.txt --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve +".drc");
+self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath +"bk.txt --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
+   } catch (e) {
+   self.logger.info('drc fails to create filter ' + e);
+      self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters');
+ };
+ self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t wav -c 1 " + destfile);
+  self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
+  return self.commandRouter.reloadUi();
+};
+
 
 ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function() {
  var self = this;
