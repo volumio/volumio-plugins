@@ -12,7 +12,7 @@ Pin 9 on the RPI connector is ground, and is connected to pin1 of all my hardwar
 Pin 7 on the RPI connector is GPIO4, and is connected to pin2 of one of my buttons.  
 In short form the connections is:  
 RIP pin -> button number - button pin number ( GPIO number )  
-7 -> 1 pin2 ( GPIO4 )  
+7 -> 1 pin 2 ( GPIO4 )  
 8 -> 2 pin 2 ( GPIO14 )  
 9 -> 1,2,3,4,5,6,7 pin 1 ( ground / 0Volt )  
 10 -> 3 pin 2 ( GPIO15 )  
@@ -25,4 +25,4 @@ RIP pin -> button number - button pin number ( GPIO number )
 17 + 3,3 Volt from RPI. Used to pull up resistors.  
 18 -> 7 pin2 ( GPIO 24 )  
 I made two wires from all the pins on the RPI side, with GPIO. One wire to a button, and one wire to a pullup resistor  
-( I used a 8x3k3 DIL where pin 1 was connected to +3,3 volt, and the single resistors to the GPIOs )  
+( I am using a 8x3k3 DIL where pin 1 is connected to +3,3 volt, and the single resistors is connected to the GPIOs )  
