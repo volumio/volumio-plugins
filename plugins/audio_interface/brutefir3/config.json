@@ -13,6 +13,7 @@
 "rdistance":{"type": "string","value": "0"},
 "outputfilename":{"type": "string","value": "test"},
 "filetoconvert":{"type": "string","value": "choose a file"},
+"bk":{"type": "string","value": "choose a file"},
 "alsa_device":{"type": "string","value": "0"},
 "alsa_outputdevicename":{"type": "string","value": "0"},
 "alsa_mixer":{"type": "string","value": ""},

@@ -318,10 +318,13 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var valuestoredr;
     var valuestoredf;
     var filterfolder = "/data/INTERNAL/brutefirfilters";
+    var filtersources = "/data/INTERNAL/brutefirfilters/filter-sources";
     var items;
     var allfilter;
     var oformat;
     var filetoconvertl;
+    var bkpath = "/data/INTERNAL/brutefirfilters/target-curves";
+    var bkl
     //  var sitems;
     // var sampleformat;
 
@@ -329,7 +332,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
-    uiconf.sections[2].content[13].value = self.config.get('outputfilename');
+    uiconf.sections[2].content[2].value = self.config.get('outputfilename');
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
@@ -342,20 +345,39 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
  	filetoconvertl = self.config.get('filetoconvert');
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.value', filetoconvertl);
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[12].value.label', filetoconvertl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', filetoconvertl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', filetoconvertl);
 
 
-	 fs.readdir(filterfolder, function(err, fitem) {
+	 fs.readdir(filtersources, function(err, fitem) {
 	var fitems;
      var filetoconvert = '' + fitem;
      fitems = filetoconvert.split(',');
      self.logger.info('list of available files to convert :' + fitems);
      console.log(fitems)
      for (var i in fitems) {
-      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[12].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
        value: fitems[i],
        label: fitems[i]
+      });
+	}
+	});
+
+bkl = self.config.get('bk');
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', bkl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', bkl);
+
+
+	 fs.readdir(bkpath, function(err, bitem) {
+	var bitems;
+     var filetoconvert = '' + bitem;
+     bitems = filetoconvert.split(',');
+     self.logger.info('list of available curves :' + bitems);
+     console.log(bitems)
+     for (var i in bitems) {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[1].options', {
+       value: bitems[i],
+       label: bitems[i]
       });
 	}
 	});
@@ -843,6 +865,7 @@ ControllerBrutefir.prototype.fileconvert = function(data) {
 var self = this;
 var defer = libQ.defer();
 self.config.set('filetoconvert', data['filetoconvert'].value);
+self.config.set('bk', data['bk'].value);
  self.config.set('outputfilename', data['outputfilename']);
 
  self.convert()
@@ -857,12 +880,13 @@ self.config.set('filetoconvert', data['filetoconvert'].value);
 ControllerBrutefir.prototype.convert = function(data) {
 var self = this;
  //var defer = libQ.defer();
-var inpath = "/data/INTERNAL/brutefirfilters/";
+var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
 var infile = self.config.get('filetoconvert');
 var outpath = "/data/INTERNAL/brutefirfilters/";
 var outfile = self.config.get('outputfilename');
 var targetcurve = ' /usr/share/drc/config/';
 var outsample = self.config.get('smpl_rate');
+var BK = self.config.get('bk');
 var ftargetcurve
 var curve
 if (outsample == 44100){
@@ -880,11 +904,11 @@ curve = '96.0';};
 
 var destfile = (outpath + outfile +"-"+ outsample +".pcm");
 
-var BKpath = "/data/plugins/audio_interface/brutefir/"
+var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
    try {
-    execSync("/usr/bin/sox -t f32 -r "+ outsample +" -c 1 " + inpath + infile + " -t wav -c 1 /tmp/tempofilter.pcm");
-self.logger.info("/usr/bin/sox -t f32 -r "+ outsample +" -c 1 " + inpath + infile + " -t wav -c 1 /tmp/tempofilter.pcm");
+    execSync("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample );
+self.logger.info("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
    } catch (e){
    self.logger.info('input file does not exist ' + e);
     
@@ -897,8 +921,8 @@ var modalData = {
   size: 'lg'
  };
  self.commandRouter.broadcastMessage("openModal", modalData);
-	execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath +"bk.txt --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve +".drc");
-self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath +"bk.txt --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
+	execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve +".drc");
+self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
    } catch (e) {
    self.logger.info('drc fails to create filter ' + e);
       self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters');

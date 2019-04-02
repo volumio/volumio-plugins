@@ -22,8 +22,11 @@ sudo apt-get -y install brutefir drc
 
 echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
+mkdir -m 777 /data/INTERNAL/brutefirfilters/filter-sources
+mkdir -m 777 /data/INTERNAL/brutefirfilters/target-curves
 echo "copying demo flters"
 sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/brutefirfilters/
+sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/brutefirfilters/target-curves/
 rm -Rf /data/plugins/audio_interface/brutefir/filters
 #required to end the plugin install
 echo "plugininstallend"

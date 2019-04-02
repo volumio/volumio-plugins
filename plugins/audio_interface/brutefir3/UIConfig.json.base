@@ -222,6 +222,10 @@
               "value": "96000",
               "label": "96kHz"
             },
+{
+              "value": "176400",
+              "label": "176.4kHz"
+            },
             {
               "value": "192000",
               "label": "192kHz"
@@ -234,12 +238,11 @@
           "doc": "output format",
           "label": "TRANSLATE.OUTPUT_FORMAT",
           "value": {
-            "value": "",
-            "label": ""
+            "value": "sitems",
+            "label": "sitems"
           },
           "options": [
-           
-          ]
+                     ]
         }
       ]
     },
@@ -284,6 +287,61 @@
 		]
 },
     {
+      "id": "filtercreat",
+      "element": "section",
+      "label": "Filters Creation",
+      "icon": "fa-wrench",
+"onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/brutefir",
+        "method": "fileconvert"
+      },
+ "saveButton": {
+        "label": "Create filter",
+        "data": [
+	"filetoconvert",
+	"bk",
+	"outputfilename"
+        ]
+      },
+"content": [
+{
+          "id": "filetoconvert",
+          "element": "select",
+          "doc": "file to convert",
+          "label": "file to convert",
+          "value": {
+            "value": "fitems",
+            "label": "Choose a file"
+          },
+          "options": []
+        },  
+{
+          "id": "bk",
+          "element": "select",
+          "doc": "Target curves",
+          "label": "Target curves",
+          "value": {
+            "value": "",
+            "label": "Choose a curve"
+          },
+          "options": []
+        }, 
+	{
+          "id": "outputfilename",
+          "element": "input",
+          "doc": "outputfilename",
+          "label": "output file name",
+          "value": {
+            "value": "azerty",
+            "label": ""
+          },
+          "options": []
+        
+  	}
+]
+},
+  {
       "id": "advanced",
       "element": "section",
       "label": "Tools",

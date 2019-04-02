@@ -1,4 +1,4 @@
-April 1st 2019
+April 2nd 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 2nd 2019
+
+- new work on filter generation
 
 April 1st 2019
 

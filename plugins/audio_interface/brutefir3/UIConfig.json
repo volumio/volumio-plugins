@@ -287,9 +287,9 @@
 		]
 },
     {
-      "id": "advanced",
+      "id": "filtercreat",
       "element": "section",
-      "label": "Tools",
+      "label": "Filters Creation",
       "icon": "fa-wrench",
 "onSave": {
         "type": "plugin",
@@ -300,166 +300,11 @@
         "label": "Create filter",
         "data": [
 	"filetoconvert",
+	"bk",
 	"outputfilename"
         ]
       },
-      "content": [
-        {
-		"id": "sweep",
-		"element": "switch",
-		"label": "sweep tools",
-"description":"Sweeps Tools",
-		"value": false
-	},
-        {
-          "id": "playleftsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftsweepfile"
-          },
-	"visibleIf": {
-		"field": "sweep",
-		"value": true
-		}
-        },
-	{
-          "id": "playrightsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightsweepfile"
-          },
-	"visibleIf": {
-		"field": "sweep",
-		"value": true
-		}
-        },
-	{
-          "id": "playbothsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playbothsweepfile"
-          },
-	"visibleIf": {
-		"field": "sweep",
-		"value": true
-		}
-        },
-	{
-          "id": "stopaplay",
-          "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          },
-	"visibleIf": {
-		"field": "sweep",
-		"value": true
-		}
-        },
-	 {
-		"id": "pink",
-		"element": "switch",
-		"label": "pink noise tools",
-	"description":"To play pink noise",
-		"value": false
-	},
-	{
-          "id": "playleftpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_PINK",
-          "description": "TRANSLATE.DESC_PLAY_L_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftpinkfile"
-          },
-	"visibleIf": {
-		"field": "pink",
-		"value": true
-		}
-        },
-	{
-          "id": "playrightpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_PINK",
-          "description": "TRANSLATE.DESC_PLAY_R_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightpinkfile"
-          },
-	"visibleIf": {
-		"field": "pink",
-		"value": true
-		}
-        },
-	{
-          "id": "playlbothpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_PINK",
-          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playbothpinkfile"
-          },
-	"visibleIf": {
-		"field": "pink",
-		"value": true
-		}
-        },
-	{
-          "id": "stopaplay",
-          "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          },
-	"visibleIf": {
-		"field": "pink",
-		"value": true
-		}
-        }, 
-	
-	{
-          "id": "removetools",
-          "element": "button",
-          "label": "TRANSLATE.REMOVE_TOOLS",
-          "description": "TRANSLATE.DESC_REMOVE_TOOLS",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "removetools"
-          }
-	  },
-	{
-          "id": "wikilink",
-          "element": "button",
-          "label": "TRANSLATE.OPEN_WIKI",
-          "doc": "TRANSLATE.DOC_OPENW",
-          "onClick": {
-            "type": "openUrl",
-            "url": "https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html"
-          }
-        },
+"content": [
 {
           "id": "filetoconvert",
           "element": "select",
@@ -467,10 +312,21 @@
           "label": "file to convert",
           "value": {
             "value": "fitems",
-            "label": ""
+            "label": "Choose a file"
           },
           "options": []
         },  
+{
+          "id": "bk",
+          "element": "select",
+          "doc": "Target curves",
+          "label": "Target curves",
+          "value": {
+            "value": "",
+            "label": "Choose a curve"
+          },
+          "options": []
+        }, 
 	{
           "id": "outputfilename",
           "element": "input",
@@ -483,6 +339,36 @@
           "options": []
         
   	}
+]
+},
+  {
+      "id": "advanced",
+      "element": "section",
+      "label": "Tools",
+      "icon": "fa-wrench",
+      "content": [
+        
+	{
+          "id": "installtools",
+          "element": "button",
+          "label": "TRANSLATE.INSTALL_TOOLS",
+          "description": "TRANSLATE.DESC_INSTALL_TOOLS",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "installtools"
+          }
+	  },
+	{
+          "id": "wikilink",
+          "element": "button",
+          "label": "TRANSLATE.OPEN_WIKI",
+          "doc": "TRANSLATE.DOC_OPENW",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html"
+          }
+        }
       ]
     }
   ]

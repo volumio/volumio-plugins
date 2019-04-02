@@ -287,9 +287,9 @@
 		]
 },
     {
-      "id": "advanced",
+      "id": "filtercreat",
       "element": "section",
-      "label": "Tools",
+      "label": "Filters Creation",
       "icon": "fa-wrench",
 "onSave": {
         "type": "plugin",
@@ -300,9 +300,52 @@
         "label": "Create filter",
         "data": [
 	"filetoconvert",
+	"bk",
 	"outputfilename"
         ]
       },
+"content": [
+{
+          "id": "filetoconvert",
+          "element": "select",
+          "doc": "file to convert",
+          "label": "file to convert",
+          "value": {
+            "value": "fitems",
+            "label": "Choose a file"
+          },
+          "options": []
+        },  
+{
+          "id": "bk",
+          "element": "select",
+          "doc": "Target curves",
+          "label": "Target curves",
+          "value": {
+            "value": "",
+            "label": "Choose a curve"
+          },
+          "options": []
+        }, 
+	{
+          "id": "outputfilename",
+          "element": "input",
+          "doc": "outputfilename",
+          "label": "output file name",
+          "value": {
+            "value": "azerty",
+            "label": ""
+          },
+          "options": []
+        
+  	}
+]
+},
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "Tools",
+      "icon": "fa-wrench",
       "content": [
         {
 		"id": "sweep",
@@ -459,30 +502,7 @@
             "type": "openUrl",
             "url": "https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html"
           }
-        },
-{
-          "id": "filetoconvert",
-          "element": "select",
-          "doc": "file to convert",
-          "label": "file to convert",
-          "value": {
-            "value": "fitems",
-            "label": ""
-          },
-          "options": []
-        },  
-	{
-          "id": "outputfilename",
-          "element": "input",
-          "doc": "outputfilename",
-          "label": "output file name",
-          "value": {
-            "value": "azerty",
-            "label": ""
-          },
-          "options": []
-        
-  	}
+        }
       ]
     }
   ]
