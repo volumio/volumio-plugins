@@ -1,4 +1,4 @@
-April 2nd 2019
+April 4th 2019
 
 
 #	BRUTEFIR3 PLUGIN
@@ -74,6 +74,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 4th 2019
+
+- Tools fix
 
 April 2nd 2019
 

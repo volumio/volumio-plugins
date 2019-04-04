@@ -734,15 +734,15 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_L_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+ // .then(function() {
    try {
     exec('/usr/bin/killall aplay');
     exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
    } catch (e) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
-  });
+ // });
 
 };
 
@@ -754,8 +754,8 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_R_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+ // .then(function() {
 
    try {
     exec('/usr/bin/killall aplay');
@@ -764,7 +764,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-  });
+  //});
 };
 
 //here we play both channel when button is pressed
@@ -774,8 +774,8 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_LR_refR.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+  //.then(function() {
    try {
     exec('/usr/bin/killall aplay');
     exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
@@ -783,7 +783,7 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-  });
+  //});
 };
 
 //here we play left pink noise channel when button is pressed
@@ -793,8 +793,8 @@ ControllerBrutefir.prototype.playleftpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_L.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+ // .then(function() {
    try {
     exec('/usr/bin/killall aplay');
     exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
@@ -802,7 +802,7 @@ ControllerBrutefir.prototype.playleftpinkfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-  });
+ // });
 };
 
 //here we play right pink noise channel when button is pressed
@@ -812,8 +812,8 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_R.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+  //.then(function() {
    try {
     exec('/usr/bin/killall aplay');
     exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
@@ -821,7 +821,7 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-  });
+  //});
 };
 
 
@@ -832,8 +832,8 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+// return self.mpdPlugin.sendMpdCommand('stop', [])
+//  .then(function() {
    try {
     exec('/usr/bin/killall aplay');
     exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
@@ -841,7 +841,7 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
     console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
    };
 
-  });
+ // });
 };
 
 //here we stop aplay
@@ -849,14 +849,14 @@ ControllerBrutefir.prototype.stopaplay = function(track) {
  var self = this;
  //self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
 
- return self.mpdPlugin.sendMpdCommand('stop', [])
-  .then(function() {
+ //return self.mpdPlugin.sendMpdCommand('stop', [])
+ // .then(function() {
    try {
     exec('/usr/bin/killall aplay');
    } catch (e) {
     self.data.logger('Stopping aplay')
    };
-  });
+//  });
 };
 
 
@@ -866,7 +866,7 @@ var self = this;
 var defer = libQ.defer();
 self.config.set('filetoconvert', data['filetoconvert'].value);
 self.config.set('bk', data['bk'].value);
- self.config.set('outputfilename', data['outputfilename']);
+self.config.set('outputfilename', data['outputfilename']);
 
  self.convert()
  
@@ -902,7 +902,7 @@ else if (outsample == 96000){
 ftargetcurve = '96.0\\ kHz/';
 curve = '96.0';};
 
-var destfile = (outpath + outfile +"-"+ outsample +".pcm");
+var destfile = (outpath + outfile +"-"+ outsample + "-" + BK + ".pcm");
 
 var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
@@ -911,7 +911,7 @@ var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 self.logger.info("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
    } catch (e){
    self.logger.info('input file does not exist ' + e);
-    
+          self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' +e);
  };
  try {
   //self.commandRouter.pushToastMessage('info', 'Filter ' + destfile + ' is being generated, it may takes up to one minute, please wait!');
@@ -921,13 +921,13 @@ var modalData = {
   size: 'lg'
  };
  self.commandRouter.broadcastMessage("openModal", modalData);
-	execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve +".drc");
+execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
 self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
    } catch (e) {
    self.logger.info('drc fails to create filter ' + e);
-      self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters');
+      self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters' +e);
  };
- self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t wav -c 1 " + destfile);
+ //self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
   self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
   return self.commandRouter.reloadUi();
 };
