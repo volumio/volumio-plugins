@@ -308,30 +308,30 @@
 {
           "id": "filetoconvert",
           "element": "select",
-          "doc": "file to convert",
-          "label": "file to convert",
+          "doc": "TRANSLATE.DOC_FILE_TO_CONVERT",
+          "label": "TRANSLATE.FILE_TO_CONVERT",
           "value": {
             "value": "fitems",
-            "label": "Choose a file"
+            "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": []
         },  
 {
           "id": "bk",
           "element": "select",
-          "doc": "Target curves",
-          "label": "Target curves",
+          "doc": "TRANSLATE.DOC_TARGET_CURVE",
+          "label": "TRANSLATE.TARGET_CURVE",
           "value": {
             "value": "",
-            "label": "Choose a curve"
+            "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": []
         }, 
 	{
           "id": "outputfilename",
           "element": "input",
-          "doc": "outputfilename",
-          "label": "output file name",
+          "doc": "TRANSLATE.DOC_OUTPUT_FILE_NAME",
+          "label": "TRANSLATE.OUTPUT_FILE_NAME",
           "value": {
             "value": "azerty",
             "label": ""

@@ -15,18 +15,19 @@ It provides :
 
 - The use of custom filters - for DRC digital room correction created with RePhase
 
+- Filters (left and right) can be selected in webUI.
+
+- A room settings : add a delay on speakers if distance from listener is not equal left/right to keep a good stereo image.
+
 ## NEW!
 
-The plugin is able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC] (http://drc-fir.sourceforge.net/). It will be documented soon!
+The plugin is able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It will be documented soon!
 
 
 To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html) 
 
 
 
-- Filters (left and right) can be selected in webUI.
-
-- A room settings : add a delay on speakers if distance from listener is not equal left/right to keep a good stereo image.
 
 Base scheme
 
@@ -83,6 +84,8 @@ nearly everythings
 April 5th 2019
 
 - fix no sound at boot time
+- Improve UI
+- Readme
 
 April 4th 2019
 
