@@ -1,5 +1,5 @@
 {
-"smpl_rate":{"type": "string","value": "96000"},
+"smpl_rate":{"type": "string","value": "44100"},
 "attenuation":{"type":"string","value":"10"},
 "leftfilter":{"type": "string","value": "Dirac pulse"},
 "rightfilter":{"type": "string","value": "Dirac pulse"},
