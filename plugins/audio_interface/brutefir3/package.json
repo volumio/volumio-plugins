@@ -1,7 +1,7 @@
 {
   "name": "brutefir",
-  "version": "0.9.1",
-  "description": "Brutefir3 plugin for Volumio2",
+  "version": "0.9.2",
+  "description": "DRC-Digital Room Correction for Volumio2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,7 +1,7 @@
-April 4th 2019
+April 5th 2019
 
 
-#	BRUTEFIR3 PLUGIN
+#	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
 This plugin is designed to use [brutefir](https://www.ludd.ltu.se/~torger/brutefir.html) with volumio2
 
@@ -13,7 +13,12 @@ It provides :
 
 - Hardware capabilities detection for output format using [Alsa-capabilities](https://lacocina.nl/permalink-https-lacocina-nl-detect-alsa-output-capabilities)
 
-- The use of custom filters - for DRC digital room correction
+- The use of custom filters - for DRC digital room correction created with RePhase
+
+## NEW!
+
+The plugin is able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC] (http://drc-fir.sourceforge.net/). It will be documented soon!
+
 
 To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html) 
 
@@ -74,6 +79,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 5th 2019
+
+- fix no sound at boot time
 
 April 4th 2019
 

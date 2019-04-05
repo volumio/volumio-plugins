@@ -263,20 +263,41 @@ ControllerBrutefir.prototype.autoconfig = function() {
 
 };
 
-
+/*
 ControllerBrutefir.prototype.onStart = function() {
  var self = this;
  var defer = libQ.defer();
 	self.autoconfig()
 	.then(function(e) {
-
+   setTimeout(function() {
 	self.logger.info("Starting brutefir");
 	self.rebuildBRUTEFIRAndRestartDaemon(defer);
+   }, 1000);
 	defer.resolve();
 	  })
 	  .fail(function(e) {
 	   defer.reject(new Error());
 	  });
+ return defer.promise;
+};
+*/
+
+ControllerBrutefir.prototype.onStart = function() {
+ var self = this;
+ var defer = libQ.defer();
+ self.autoconfig()
+self.startBrutefirDaemon()
+ //self.rebuildBRUTEFIRAndRestartDaemon()
+
+  .then(function(e) {
+   setTimeout(function() {
+    self.logger.info("Starting brutefir");
+
+   }, 1000);
+  })
+  .fail(function(e) {
+   defer.reject(new Error());
+  });
  return defer.promise;
 };
 
