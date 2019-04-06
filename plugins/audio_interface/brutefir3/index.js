@@ -908,6 +908,7 @@ var outfile = self.config.get('outputfilename');
 var targetcurve = ' /usr/share/drc/config/';
 var outsample = self.config.get('smpl_rate');
 var BK = self.config.get('bk');
+var BKsimplified = BK.replace('.txt','');
 var ftargetcurve
 var curve
 if (outsample == 44100){
@@ -923,7 +924,7 @@ else if (outsample == 96000){
 ftargetcurve = '96.0\\ kHz/';
 curve = '96.0';};
 
-var destfile = (outpath + outfile +"-"+ outsample + "-" + BK + ".pcm");
+var destfile = (outpath + outfile +"-"+ outsample + "-" + BKsimplified + ".pcm");
 
 var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 

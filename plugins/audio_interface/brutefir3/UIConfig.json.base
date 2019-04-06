@@ -290,7 +290,7 @@
       "id": "filtercreat",
       "element": "section",
       "label": "Filters Creation",
-      "icon": "fa-wrench",
+      "icon": "fa-filter",
 "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/brutefir",

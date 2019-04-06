@@ -1,4 +1,4 @@
-April 5th 2019
+April 6th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -80,6 +80,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 6th 2019
+
+- correction in file name generated for filter
 
 April 5th 2019
 
