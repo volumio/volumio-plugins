@@ -22,6 +22,10 @@
     "savepath": {
       "type": "string",
       "value": "INTERNAL"
+    }, 
+    "loadalbumart": {
+      "type": "string",
+      "value": "1"
     }
 }
    

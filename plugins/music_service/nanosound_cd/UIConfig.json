@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "TRANSLATE.SAVE",
           "data": [
-            "upsampling","extractformat","prestart","savepath"
+            "upsampling","extractformat","prestart","savepath","loadalbumart"
           ]
         },
         "content": [
@@ -75,6 +75,25 @@
             "doc": "TRANSLATE.EXTRACT_TO_PATH_DOC",
             "label": "TRANSLATE.EXTRACT_TO_PATH",
             "value": "INTERNAL"
+          },
+          {
+            "id": "loadalbumart",
+            "element":"select",
+            "doc": "Whether to load and show album art from last.fm",
+            "label": "Show Album Art",
+            "value": {"value": "1",
+              "label": "No"
+              },
+              "options": [
+                {
+                  "value": "1",
+                  "label": "No"
+                },
+                {
+                  "value": "2",
+                  "label": "Yes"
+                }
+              ]
           },
           {
             "id": "configaudio",

@@ -90,6 +90,8 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	}
 	self.config.set('extractformat', data['extractformat'].value);
 	self.config.set('prestart', data['prestart']);
+	self.config.set('loadalbumart', data['loadalbumart'].value);
+
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
 
 
@@ -292,11 +294,13 @@ nanosoundCd.prototype.getUIConfig = function() {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('prestart'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('savepath'));
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', self.config.get('loadalbumart'));
 
 	
 				
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label',  uiconf.sections[0].content[4].options[self.config.get('loadalbumart')-1].label);
 			
             defer.resolve(uiconf);
         })
@@ -1133,6 +1137,7 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 					var ttitle =  cachedmeta[i]['track_name'];
 					var tartist = cachedmeta[i]['artist_name'];
 					var talbum = cachedmeta[i]['album_name'];
+					var talbumart = cachedmeta[i]['album_art'];
 
 					if(tname==null)
 					{
@@ -1152,7 +1157,8 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 						album: talbum,
 						streaming: false,
 						//duration: 10,
-						albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd.svg',
+						//albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd_200.png',
+						albumart: talbumart,
 						samplerate: self.samplerate,
 						bitdepth: '16bit',
 						trackType: self.tracktype
@@ -1173,6 +1179,7 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 				var ttitle =  cachedmeta[trackno -1]['track_name'];
 				var tartist = cachedmeta[trackno -1]['artist_name'];
 				var talbum = cachedmeta[trackno -1]['album_name'];
+				var talbumart = cachedmeta[trackno -1]['album_art'];
 
 				if(tname==null)
 				{
@@ -1190,7 +1197,8 @@ nanosoundCd.prototype.explodeUri = function(uri) {
 					title: ttitle,
 					artist:tartist,
 					album: talbum,
-					albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd.svg',
+					//albumart: '/albumart?sourceicon=music_service/nanosound_cd/nanosoundcd_200.png',
+					albumart: talbumart,
 					streaming: false,
 					//duration: 10,
 					//duration: resJson.tracks[i]x`.duration/1000,
