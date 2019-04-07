@@ -1,4 +1,4 @@
-April 6th 2019
+April 7th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -80,6 +80,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+
+April 7th 2019
+
+- Improvement for file name of generated filter. If field empty, use the name of file to convert.
 
 April 6th 2019
 

@@ -374,6 +374,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 	var fitems;
      var filetoconvert = '' + fitem;
      fitems = filetoconvert.split(',');
+//var fitems= zfitems.replace('filter-sources','');
      self.logger.info('list of available files to convert :' + fitems);
      console.log(fitems)
      for (var i in fitems) {
@@ -904,7 +905,9 @@ var self = this;
 var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
 var infile = self.config.get('filetoconvert');
 var outpath = "/data/INTERNAL/brutefirfilters/";
-var outfile = self.config.get('outputfilename');
+var outfile = self.config.get('outputfilename')
+if (outfile == '') {
+outfile = infile.replace('.wav','')};
 var targetcurve = ' /usr/share/drc/config/';
 var outsample = self.config.get('smpl_rate');
 var BK = self.config.get('bk');
@@ -924,7 +927,7 @@ else if (outsample == 96000){
 ftargetcurve = '96.0\\ kHz/';
 curve = '96.0';};
 
-var destfile = (outpath + outfile +"-"+ outsample + "-" + BKsimplified + ".pcm");
+var destfile = (outpath + outfile +"-"+ curve + "kHz-" + BKsimplified + ".pcm");
 
 var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
@@ -945,13 +948,14 @@ var modalData = {
  self.commandRouter.broadcastMessage("openModal", modalData);
 execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
 self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
+self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
+  return self.commandRouter.reloadUi();
    } catch (e) {
    self.logger.info('drc fails to create filter ' + e);
       self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters' +e);
  };
  //self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
-  self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
-  return self.commandRouter.reloadUi();
+  
 };
 
 
@@ -1027,7 +1031,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
 self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- },5000);
+ },25000);
 
  //});
  // return defer.promise;
