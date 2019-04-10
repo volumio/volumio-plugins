@@ -301,6 +301,7 @@
         "data": [
 	"filetoconvert",
 	"bk",
+	"drcconfig",
 	"outputfilename"
         ]
       },
@@ -327,6 +328,46 @@
           },
           "options": []
         }, 
+{
+          "id": "drcconfig",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_DRCCONFIG",
+          "label": "TRANSLATE.DRCCONFIG",
+          "value": {
+            "value": "normal",
+            "label": "TRANSLATE.CHOOSE_A_FILE"
+          },
+          "options": [
+            {
+              "value": "soft",
+              "label": "soft"
+            },
+            {
+              "value": "minimal",
+              "label": "minimal"
+            },
+ 	    {
+              "value": "normal",
+              "label": "normal"
+            },
+	    {
+              "value": "erb",
+              "label": "erb"
+            },
+            {
+              "value": "strong",
+              "label": "strong"
+            },
+	    {
+              "value": "extreme",
+              "label": "extreme"
+            },
+            {
+              "value": "insane",
+              "label": "insane"
+            }
+          ]
+        },
 	{
           "id": "outputfilename",
           "element": "input",

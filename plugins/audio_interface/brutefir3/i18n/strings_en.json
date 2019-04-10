@@ -1,5 +1,5 @@
 {
- "VOLUMIO_DSP":"Volumio DSP center",
+ "VOLUMIO_DSP":"Volumio DRC center",
  "SETTINGS":"Brutefir settings",
  "LINPUT_ATTENUATION":"Input attenuation",
  "DOC_LATT":"Attenuation must be at least equal to the max value in dB of the correction",
@@ -43,6 +43,8 @@
   "TARGET_CURVE":"Target curve",
   "DOC_TARGET_CURVE":"Text file containing the curve you whish for your filter. Placed in /brutefirfilters/target_curves in the shared folder of Volumio",
   "OUTPUT_FILE_NAME":"Name of filter",
-  "DOC_OUTPUT_FILE_NAME":"Leave empty to use the name of the file to convert or give a name. The plugin will add the rample rate, the target curve and the extension (.pcm)"
+  "DOC_OUTPUT_FILE_NAME":"Leave empty to use the name of the file to convert or give a name. The plugin will add the rample rate, the target curve and the extension (.pcm)",
+  "DRCCONFIG":"Choose a config",
+  "DOC_DRCCONFIG":"Config for DRC. Change it if you experience problem with filter generated"
 
 }

@@ -1,5 +1,5 @@
 {
-  "VOLUMIO_DSP":"Centre DSP Volumio",
+  "VOLUMIO_DSP":"Centre DRC de Volumio",
  "SETTINGS":"Réglages de Brutefir",
  "LINPUT_ATTENUATION":"Attenuation d'entrée",
  "DOC_LATT":"Attenuation d'entrée : doit être au moins égale à la valeur max en dB de la correction",

@@ -353,7 +353,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
-    uiconf.sections[2].content[2].value = self.config.get('outputfilename');
+    uiconf.sections[2].content[3].value = self.config.get('outputfilename');
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
@@ -403,6 +403,11 @@ bkl = self.config.get('bk');
       });
 	}
 	});
+
+value = self.config.get('drcconfig');
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[2].options'), value));
+
 
     fs.readdir(filterfolder, function(err, item) {
 
@@ -888,6 +893,7 @@ var self = this;
 var defer = libQ.defer();
 self.config.set('filetoconvert', data['filetoconvert'].value);
 self.config.set('bk', data['bk'].value);
+self.config.set('drcconfig', data['drcconfig'].value);
 self.config.set('outputfilename', data['outputfilename']);
 
  self.convert()
@@ -903,10 +909,11 @@ ControllerBrutefir.prototype.convert = function(data) {
 var self = this;
  //var defer = libQ.defer();
 var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
+var drcconfig = self.config.get('drcconfig');
 var infile = self.config.get('filetoconvert');
 var outpath = "/data/INTERNAL/brutefirfilters/";
 var outfile = self.config.get('outputfilename')
-if (outfile == '') {
+if ((outfile == '') || (outfile =='Empty=name of file to convert')) {
 outfile = infile.replace('.wav','')};
 var targetcurve = ' /usr/share/drc/config/';
 var outsample = self.config.get('smpl_rate');
@@ -927,7 +934,7 @@ else if (outsample == 96000){
 ftargetcurve = '96.0\\ kHz/';
 curve = '96.0';};
 
-var destfile = (outpath + outfile +"-"+ curve + "kHz-" + BKsimplified + ".pcm");
+var destfile = (outpath + outfile +"-" + drcconfig + "-" + curve + "kHz-" + BKsimplified + ".pcm");
 
 var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
@@ -946,8 +953,8 @@ var modalData = {
   size: 'lg'
  };
  self.commandRouter.broadcastMessage("openModal", modalData);
-execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
-self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve +"normal-"+ curve + ".drc");
+execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
 self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
   return self.commandRouter.reloadUi();
    } catch (e) {
@@ -1031,7 +1038,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
 self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- },25000);
+ },8000);
 
  //});
  // return defer.promise;

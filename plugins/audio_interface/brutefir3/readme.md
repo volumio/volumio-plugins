@@ -1,4 +1,4 @@
-April 7th 2019
+April 10th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -81,6 +81,10 @@ nearly everythings
 
 ### 4. Last changes
 
+
+April 10th 2019
+
+- add drcconfig
 
 April 7th 2019
 
