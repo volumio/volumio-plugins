@@ -759,7 +759,7 @@ ControllerBrutefir.prototype.removetools = function(data) {
 ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_L_refR.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_L_refR.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -779,7 +779,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
 ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_R_refR.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_R_refR.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
@@ -799,7 +799,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
 ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_48k_20_to_20000_LR_refR.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_LR_refR.wav';
  var safeUri = track.replace(/"/g, '\\"');
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])

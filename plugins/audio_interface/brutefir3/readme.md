@@ -84,7 +84,7 @@ nearly everythings
 April 11th 2019
 
 - remove target-curves and filters-sources from selectable scrolling list
-
+- sweep files in 44.1Khz 16b for better compatibility
 
 April 10th 2019
 
