@@ -1,4 +1,4 @@
-April 10th 2019
+April 11th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -80,6 +80,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 11th 2019
+
+- remove target-curves and filters-sources from selectable scrolling list
 
 
 April 10th 2019

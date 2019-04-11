@@ -410,9 +410,10 @@ value = self.config.get('drcconfig');
 
 
     fs.readdir(filterfolder, function(err, item) {
-
      allfilter = 'Dirac pulse,' + item
-     items = allfilter.split(',');
+var allfilters = allfilter.replace('filter-sources','');
+var allfilter2 = allfilters.replace('target-curves','');
+     items = allfilter2.split(',');
      self.logger.info('list of available filters for DRC :' + items);
      console.log(items)
      for (var i in items) {
