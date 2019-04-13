@@ -79,8 +79,8 @@
           {
             "id": "loadalbumart",
             "element":"select",
-            "doc": "Whether to load and show album art from last.fm",
-            "label": "Show Album Art",
+            "doc": "TRANSLATE.SHOWALBUMART",
+            "label": "TRANSLATE.SHOWALBUMART",
             "value": {"value": "1",
               "label": "No"
               },
@@ -126,6 +126,17 @@
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
               "method": "upgrade"
+            }
+          },
+          {
+            "id": "eject",
+            "element": "button",
+            "label": "TRANSLATE.EJECT",
+            "doc": "TRANSLATE.EJECT",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "eject"
             }
           }
       ]

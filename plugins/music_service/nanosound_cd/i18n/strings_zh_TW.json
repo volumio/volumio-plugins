@@ -30,5 +30,7 @@
 	"ORDER_NO_DOC": "這是購買的訂單號。對於Kickstarter支持者,請在前面添加'KS'後跟你的支持者編號（例如:KS123）",
 	"REGISTER": "註冊",
 	"SHOWVERSION":"顯示版本",
-	"UPGRADE":"升級軟件"
+	"UPGRADE":"升級軟件",
+	"SHOWALBUMART":"顯示專輯封面",
+	"EJECT":"彈出CD"
 }

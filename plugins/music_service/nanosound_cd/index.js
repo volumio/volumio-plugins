@@ -241,8 +241,28 @@ nanosoundCd.prototype.onStop = function() {
 
 };
 
+nanosoundCd.prototype.eject = function() {
+	var self = this;
+	var defer = libQ.defer();
+	exec('eject', {uid:1000,gid:1000},
+		                                                                    function (error, stdout, stderr) {
+                		                                                        if(error != null) {
+                                		                                                self.logger.error('Error ejecting' + error);
+                                                		                                self.commandRouter.pushToastMessage('error', 'NanoSound CD', 'Error ejecting' + error);
+                                                                		        } else {
+                                                                                		self.logger.info('NanoSound CD daemon started');
+                                                                               			self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'Ejected');
+		                                                                        }
+																				
+																				defer.resolve();
+										  });
+										  
+	return defer.promise;
+};
+
 nanosoundCd.prototype.onRestart = function() {
-    var self = this;
+	var self = this;
+	var defer = libQ.defer();
 	// Optional, use if you need it
 
 	exec('/usr/bin/sudo /bin/systemctl restart nanosoundcd_progressweb', {uid:1000,gid:1000},
@@ -294,13 +314,22 @@ nanosoundCd.prototype.getUIConfig = function() {
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', self.config.get('extractformat'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value', self.config.get('prestart'));
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value', self.config.get('savepath'));
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', self.config.get('loadalbumart'));
-
+			
 	
 				
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label',  uiconf.sections[0].content[0].options[self.config.get('upsampling')-1].label);
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label',  uiconf.sections[0].content[1].options[self.config.get('extractformat')-1].label);
-			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label',  uiconf.sections[0].content[4].options[self.config.get('loadalbumart')-1].label);
+
+			if(self.config.has('loadalbumart'))
+			{
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', self.config.get('loadalbumart'));
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label',  uiconf.sections[0].content[4].options[self.config.get('loadalbumart')-1].label);
+			}
+			else
+			{
+				self.config.set('loadalbumart',"1");
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', "No");
+			}
 			
             defer.resolve(uiconf);
         })

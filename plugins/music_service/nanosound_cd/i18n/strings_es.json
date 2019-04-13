@@ -30,6 +30,8 @@
 	"ORDER_NO_DOC": "Este es el número de pedido de la compra. Para los patrocinadores Kickstarter, prefije con 'KS' seguido de su número de respaldo (Ejemplo:KS123)",
 	"REGISTER": "Registrarse",
 	"SHOWVERSION":"Mostrar versión",
-	"UPGRADE":"Versión de actualización"
+	"UPGRADE":"Versión de actualización",
+	"SHOWALBUMART":"Mostrar portada del álbum",
+	"EJECT":"Expulsar CD"
 }
 }

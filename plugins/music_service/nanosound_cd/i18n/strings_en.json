@@ -30,5 +30,7 @@
   "ORDER_NO_DOC":"This is the order number of the purchase. For Kickstarter backers, please prefix with 'KS' followed bu your backer number (Example: KS123)",
   "REGISTER":"Register",
   "SHOWVERSION":"Show Version",
-  "UPGRADE":"Upgrade Version"
+  "UPGRADE":"Upgrade Version",
+  "SHOWALBUMART":"Show Album Cover",
+  "EJECT":"Eject CD"
 }
