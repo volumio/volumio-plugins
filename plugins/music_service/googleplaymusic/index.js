@@ -106,7 +106,16 @@ playMusicController.prototype.onStart = function () {
   var masterToken = service.config.get("masterToken");
   var androidId = service.config.get("androidId");
   console.log('I am getting token for access');
-  defer.resolve(getTokenFromPlayMusic(service, masterToken, androidId));
+  if (masterToken && androidId) {
+    defer.resolve(getTokenFromPlayMusic(service, masterToken, androidId));
+  } else {
+    service.commandRouter.pushToastMessage(
+      "info",
+      "To Enjoy Play Music",
+      "Please Sign into Play Music to enjoy Google Play Music."
+    );
+    defer.reject('No Google Play Master Token');
+  }
   return defer.promise;
 };
 
