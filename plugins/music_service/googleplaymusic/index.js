@@ -114,7 +114,7 @@ playMusicController.prototype.onStart = function () {
       "To Enjoy Play Music",
       "Please Sign into Play Music to enjoy Google Play Music."
     );
-    defer.reject('No Google Play Master Token');
+    defer.reject('No Google Play Credentials.');
   }
   return defer.promise;
 };
@@ -497,15 +497,25 @@ function getPlaylists(service) {
     }
     var playlistsFormatedData = JSON.parse(JSON.stringify(PLAY_MUSIC_CONSTANTS.FOLDER_OBJECT_STRUCTRE));
     playlistsFormatedData.navigation.prev.uri = "googleplaymusic";
-    playlistsFormatedData.navigation.lists[0].items = apiResponse.data.items.reduce(function (acc, playlist) {
-      var formatedPlaylistData = getFormatedPlaylistData(playlist);
-      acc.push(formatedPlaylistData);
-      return acc;
-    }, []);
+    console.log('what', JSON.stringify(apiResponse));
+    if (apiResponse.data) {
+      playlistsFormatedData.navigation.lists[0].items = apiResponse.data.items.reduce(function (acc, playlist) {
+        var formatedPlaylistData = getFormatedPlaylistData(playlist);
+        acc.push(formatedPlaylistData);
+        return acc;
+      }, []);
 
-    prefetchAllPlaylistTracks(service) // prefetching all playlist songs
-      .then(function () { defer.resolve(playlistsFormatedData); }) // after fetching all tracks from playlist we are sending the array of playlists.
-      .fail(function (error) { defer.reject(error); });
+      prefetchAllPlaylistTracks(service) // prefetching all playlist songs
+        .then(function () { defer.resolve(playlistsFormatedData); }) // after fetching all tracks from playlist we are sending the array of playlists.
+        .fail(function (error) { defer.reject(error); });
+    } else {
+      service.commandRouter.pushToastMessage(
+        "error",
+        "Error getting Playlist",
+        'No playlists found, Perhaps you do not have monthly subscription.'
+      );
+      defer.reject('No song found, Perhaps you do not have monthly subcription.');
+    }
   });
   return defer.promise;
 }
@@ -621,15 +631,24 @@ function getTracksInStation(service, stationInfo) {
       console.error('Error getting station tracks: ', error);
       return defer.reject('Error getting station tracks: ' + error);
     }
-    var stationTracks = apiResponse.data.stations[0].tracks.reduce(function (acc, track) {
-      var stationTrackFormat = getStationSongFormat(track);
-      acc.push(stationTrackFormat);
-      return acc;
-    }, []);
-    service.tracks = service.tracks.concat(stationTracks); // storing to use it further when exploding uri and getting other informaiton of the song
-    if (stationInfo.addToQueue) response = stationTracks; // if the api request was to add songs in the queue then we just need to return array of station songs.
-    else response.navigation.lists[0].items = stationTracks; // else we need to return in a specific format
-    defer.resolve(response);
+    if (apiResponse.data.stations[0].tracks) {
+      var stationTracks = apiResponse.data.stations[0].tracks.reduce(function (acc, track) {
+        var stationTrackFormat = getStationSongFormat(track);
+        acc.push(stationTrackFormat);
+        return acc;
+      }, []);
+      service.tracks = service.tracks.concat(stationTracks); // storing to use it further when exploding uri and getting other informaiton of the song
+      if (stationInfo.addToQueue) response = stationTracks; // if the api request was to add songs in the queue then we just need to return array of station songs.
+      else response.navigation.lists[0].items = stationTracks; // else we need to return in a specific format
+      defer.resolve(response);
+    } else {
+      service.commandRouter.pushToastMessage(
+        "error",
+        "Error getting Station Songs",
+        'No song found, Perhaps you do not have monthly subscription.'
+      );
+      defer.reject('No song found, Perhaps you do not have monthly subcription.');
+    }
   });
   return defer.promise;
 }
