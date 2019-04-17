@@ -230,6 +230,15 @@
           }
         },
         {
+          "id": "nanosoundrange",
+          "element": "button",
+          "label": "NanoSound Info",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosound"
+          }
+        },
+        {
           "id": "support",
           "element": "button",
           "label": "TRANSLATE.SUPPORT_INFO",
