@@ -18,6 +18,11 @@ touch /etc/lirc/lircrc
 sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio python-lirc
 sudo -H pip install --upgrade python-mpd2 socketIO-client
 
+#extra for DAC2
+sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
+sudo pip install --upgrade setuptools
+sudo -H pip install --upgrade luma.oled
+
 #Install OLED service
 cd /tmp
 wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_oled_service.tar.gz
@@ -28,6 +33,9 @@ wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nano
 sudo tar xvf /tmp/nanosound_lirc_service.tar.gz -C /lib/systemd/system/
 rm /tmp/nanosound_lirc_service.tar.gz
 
+wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_rotary_service.tar.gz
+sudo tar xvf /tmp/nanosound_rotary_service.tar.gz -C /lib/systemd/system/
+rm /tmp/nanosound_rotary_service.tar.gz
 
 
 cd /tmp
@@ -53,7 +61,7 @@ sudo sed --in-place '/lirc_rpi/d' /etc/modules
 sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
 
 
-echo "To complete installation, Reboot Pi then enable NanoSound under Plugins"
+echo "To complete installation, go to Plug-in Settings, choose your display and model then reboot."
 
 
 # If you need to differentiate install for armhf and i386 you can get the variable like this
