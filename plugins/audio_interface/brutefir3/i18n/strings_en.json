@@ -35,7 +35,7 @@
   "DESC_REMOVE_TOOLS":"Uninstall tools from your system",
   "INSTALL_TOOLS":"Install tools",
   "DESC_INSTALL_TOOLS":"Install tools to help measurements. PLEASE WAIT UNTIL UI IS REFRESHED",
-  "FILTER_CREATION":"Filter creation",
+  "FILTER_CREATION":"DRC-FIR Filter creation - EXPERIMENTAL",
   "CREATE_FILTER":"Generate filter",
   "FILE_TO_CONVERT":"File to convert",
   "DOC_FILE_TO_CONVERT":"Must be a 32-bit mono wav file impulse from REW. Placed in /brutefirfilters/filter-sources in the shared folder of Volumio",

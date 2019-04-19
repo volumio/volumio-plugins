@@ -1,4 +1,4 @@
-April 11th 2019
+April 19th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -80,6 +80,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+
+April 19th 2019
+
+- add targeet curve HK5 TY Krunok!
+- small cosmetics
 
 April 11th 2019
 
