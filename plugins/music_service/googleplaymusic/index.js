@@ -68,7 +68,6 @@ var PLAY_MUSIC_CONSTANTS = {
   }
 };
 
-
 module.exports = playMusicController;
 
 function playMusicController(context) {
@@ -105,15 +104,11 @@ playMusicController.prototype.onStart = function () {
   service.addToBrowseSources();
   var masterToken = service.config.get("masterToken");
   var androidId = service.config.get("androidId");
-  console.log('I am getting token for access');
   if (masterToken && androidId) {
     defer.resolve(getTokenFromPlayMusic(service, masterToken, androidId));
   } else {
-    service.commandRouter.pushToastMessage(
-      "info",
-      "To Enjoy Play Music",
-      "Please Sign into Play Music to enjoy Google Play Music."
-    );
+    var messageInfo = { messageType: 'info', messageTitle: 'To Enjoy Play Music', messageDisc: 'Please Sign into Play Music to enjoy Google Play Music.' };
+    service.showNotification(messageInfo);
     defer.reject('No Google Play Credentials.');
   }
   return defer.promise;
@@ -131,21 +126,15 @@ function getTokenFromPlayMusic(service, masterToken, androidId) {
   service.playMusic.init(googleAuthData, function (error) {
     if (error) {
       console.error('Failed To get access Token Google Play mUsic', error);
-      service.commandRouter.pushToastMessage(
-        "error",
-        "Failed to get token to access Google Play Music.",
-        error.Error
-      );
+      var messageInfo = { messageType: 'error', messageTitle: 'Failed to get token to access Google Play Music', messageDisc: error.Error };
+      service.showNotification(messageInfo);
       return defer.reject(new Error());
     }
     // Create a proxy server so we can give mpd our own local server streaming url.
     createExpressServer(service.playMusic).then(function (localProxyUrlData) {
       service.localHostProxyUrl = localProxyUrlData.localHostUrl;
-      service.commandRouter.pushToastMessage(
-        "success",
-        "Configuration update",
-        "You have successfully signed in the google account."
-      );
+      var messageInfo = { messageType: 'success', messageTitle: 'Successfully Signed In', messageDisc: 'You have successfully signed in the Play Music Account.' };
+      service.showNotification(messageInfo);
       defer.resolve();
     });
   });
@@ -175,7 +164,8 @@ playMusicController.prototype.saveGoogleAccount = function (credential) {
   service.playMusic.login({ email: email, password: password }, function (err, authTokenData) {
     if (err) {
       console.error("Google login failed", err.Error);
-      service.commandRouter.pushToastMessage('error', 'Google Login Failed');
+      var messageInfo = { messageType: 'error', messageTitle: 'Google Login Failed', messageDisc: '' };
+      service.showNotification(messageInfo);
       return defer.reject(new Error());
     }
     var masterToken = authTokenData.masterToken;
@@ -249,6 +239,11 @@ playMusicController.prototype.handleBrowseUri = function (curUri) {
   var info;
   var listItemsToRender;
   if (curUri == "googleplaymusic") {
+    var masterToken = self.config.get("masterToken");
+    if (!masterToken || masterToken.length == 0) {
+      var messageObj = { messageType: 'info', messageTitle: 'Please Login First', messageDisc: 'After login please click again on Play Music Sign in Browse section.' }
+      self.showNotification(messageObj);
+    }
     listItemsToRender = libQ.resolve(PLAY_MUSIC_CONSTANTS.PLAY_MUSIC_FEATURE); // get's first time options, when we click on the google play music in the browse section.
   } else if (curUri.startsWith("googleplaymusic/playlists")) {
     info = {
@@ -275,7 +270,7 @@ playMusicController.prototype.handleBrowseUri = function (curUri) {
     listItemsToRender = self.getArtistData(curUri);
   }
   return listItemsToRender;
-};
+}
 
 
 
@@ -358,11 +353,8 @@ playMusicController.prototype.renderAlbumTracks = function (curUri) {
       defer.resolve(response);
     })
     .fail(function (error) {
-      self.commandRouter.pushToastMessage(
-        "error",
-        "Error Getting Album Tracks",
-        error
-      );
+      var messageInfo = { messageType: 'error', messageTitle: 'Error Getting Album Tracks', messageDisc: error };
+      self.showNotification(messageInfo);
       defer.reject(response);
     });
   return defer.promise;
@@ -375,11 +367,8 @@ playMusicController.prototype.getArtistData = function (curUri) {
   getArtistData(self, artistId).then(function (categoryData) {
     defer.resolve(categoryData);
   }).fail(function (error) {
-    self.commandRouter.pushToastMessage(
-      "error",
-      "Error Getting Artist data",
-      error
-    );
+    var messageInfo = { messageType: 'error', messageTitle: 'Error Getting Artist data', messageDisc: error };
+    self.showNotification(messageInfo);
     console.error('Error getting artist data from Google Play Music Server.', error);
     defer.reject(error);
   });
@@ -467,6 +456,13 @@ playMusicController.prototype.getAlbumArt = function (data, path) {
   return getStructuredAlbumUrl(web, path);
 };
 
+playMusicController.prototype.showNotification = function (messageObj) {
+  var service = this;
+  var messageType = messageObj.messageType;
+  var messageTitle = messageObj.messageTitle;
+  var messageDisc = messageObj.messageDisc;
+  service.commandRouter.pushToastMessage(messageType, messageTitle, messageDisc);
+};
 function getStructuredAlbumUrl(web, path) {
   var url = "/albumart";
   if (web != undefined) url = url + web;
@@ -497,7 +493,6 @@ function getPlaylists(service) {
     }
     var playlistsFormatedData = JSON.parse(JSON.stringify(PLAY_MUSIC_CONSTANTS.FOLDER_OBJECT_STRUCTRE));
     playlistsFormatedData.navigation.prev.uri = "googleplaymusic";
-    console.log('what', JSON.stringify(apiResponse));
     if (apiResponse.data) {
       playlistsFormatedData.navigation.lists[0].items = apiResponse.data.items.reduce(function (acc, playlist) {
         var formatedPlaylistData = getFormatedPlaylistData(playlist);
@@ -509,11 +504,8 @@ function getPlaylists(service) {
         .then(function () { defer.resolve(playlistsFormatedData); }) // after fetching all tracks from playlist we are sending the array of playlists.
         .fail(function (error) { defer.reject(error); });
     } else {
-      service.commandRouter.pushToastMessage(
-        "error",
-        "Error getting Playlist",
-        'No playlists found, Perhaps you do not have monthly subscription.'
-      );
+      var messageInfo = { messageType: 'error', messageTitle: 'Error Getting Playlist', messageDisc: 'No playlist found, perhaps you do not have monthly subscription.' };
+      service.showNotification(messageInfo);
       defer.reject('No song found, Perhaps you do not have monthly subcription.');
     }
   });
@@ -642,11 +634,8 @@ function getTracksInStation(service, stationInfo) {
       else response.navigation.lists[0].items = stationTracks; // else we need to return in a specific format
       defer.resolve(response);
     } else {
-      service.commandRouter.pushToastMessage(
-        "error",
-        "Error getting Station Songs",
-        'No song found, Perhaps you do not have monthly subscription.'
-      );
+      var messageInfo = { messageType: 'error', messageTitle: 'Error Getting Station Songs', messageDisc: 'No song found, Perhaps you do not have montly subscription.' };
+      service.showNotification(messageInfo);
       defer.reject('No song found, Perhaps you do not have monthly subcription.');
     }
   });
@@ -698,14 +687,23 @@ function getTrackInfo(service, uri) {
     var trackResult = service.tracks.find(function (track) {
       return track.trackId === trackId;
     });
+    if (!trackResult) {
+      var messageInfo = { messageType: 'error', messageTitle: 'Lost Tracks Data', messageDisc: 'Please click on the playlist/album again, or search again.' };
+      service.showNotification(messageInfo);
+      return {};
+    }
     trackInfo = trackResult.track;
   }
+  if (!trackInfo) {
+    var messageObj = { messageType: 'error', messageTitle: 'Lost Tracks Data', messageDisc: 'Please click on the playlist/album again, or search again.' };
+    service.showNotification(messageObj);
+    return {};
+  }// handling if the track info is not available in the system.
   return getVolumioFormatOfSong(trackId, trackInfo);
 }
 
 
 var app = express();
-var PORT = '';
 var LOCAL_HOST = 'http://127.0.0.1:'; // This address, We will use for proxy server to download temperorary stream data
 var playMusicReference;
 var server_timeout = 600000;
