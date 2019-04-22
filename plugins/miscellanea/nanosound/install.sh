@@ -20,7 +20,7 @@ sudo -H pip install --upgrade python-mpd2 socketIO-client
 
 #extra for DAC2
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
-sudo pip install --upgrade setuptools
+sudo -H pip install --upgrade setuptools
 sudo -H pip install --upgrade luma.oled
 
 #Install OLED service
@@ -60,6 +60,9 @@ sudo grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules
 sudo sed --in-place '/lirc_rpi/d' /etc/modules
 sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
 
+#config spi
+sudo sed --in-place '/dtparam=spi=on/d' /boot/config.txt
+sudo sed -i '1 i\dtparam=spi=on' /boot/config.txt
 
 echo "To complete installation, go to Plug-in Settings, choose your display and model then reboot."
 
