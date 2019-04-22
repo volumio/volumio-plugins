@@ -91,7 +91,7 @@ ControllerBrutefir.prototype.sampleformat = function() {
     })
 
    } catch (err) {
-   self.logger.info('sampleformat.txt does not exist');
+    self.logger.info('sampleformat.txt does not exist');
    }
    //  defer.resolve();
   }
@@ -263,25 +263,25 @@ ControllerBrutefir.prototype.autoconfig = function() {
 
 };
 
-/*
+
 ControllerBrutefir.prototype.onStart = function() {
  var self = this;
  var defer = libQ.defer();
-	self.autoconfig()
-	.then(function(e) {
+ self.autoconfig()
+  .then(function(e) {
    setTimeout(function() {
-	self.logger.info("Starting brutefir");
-	self.rebuildBRUTEFIRAndRestartDaemon(defer);
+    self.logger.info("Starting brutefir");
+    self.startBrutefirDaemon(defer);
    }, 1000);
-	defer.resolve();
-	  })
-	  .fail(function(e) {
-	   defer.reject(new Error());
-	  });
+   defer.resolve();
+  })
+  .fail(function(e) {
+   defer.reject(new Error());
+  });
  return defer.promise;
 };
-*/
 
+/*
 ControllerBrutefir.prototype.onStart = function() {
  var self = this;
  var defer = libQ.defer();
@@ -300,6 +300,7 @@ self.startBrutefirDaemon()
   });
  return defer.promise;
 };
+*/
 
 ControllerBrutefir.prototype.onRestart = function() {
  // self.enableLoopBackDevice();
@@ -365,16 +366,16 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
- 	filetoconvertl = self.config.get('filetoconvert');
+    filetoconvertl = self.config.get('filetoconvert');
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', filetoconvertl);
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', filetoconvertl);
 
 
-	 fs.readdir(filtersources, function(err, fitem) {
-	var fitems;
+    fs.readdir(filtersources, function(err, fitem) {
+     var fitems;
      var filetoconvert = '' + fitem;
      fitems = filetoconvert.split(',');
-//var fitems= zfitems.replace('filter-sources','');
+     //var fitems= zfitems.replace('filter-sources','');
      self.logger.info('list of available files to convert :' + fitems);
      console.log(fitems)
      for (var i in fitems) {
@@ -382,16 +383,16 @@ ControllerBrutefir.prototype.getUIConfig = function() {
        value: fitems[i],
        label: fitems[i]
       });
-	}
-	});
+     }
+    });
 
-bkl = self.config.get('bk');
+    bkl = self.config.get('bk');
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', bkl);
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', bkl);
 
 
-	 fs.readdir(bkpath, function(err, bitem) {
-	var bitems;
+    fs.readdir(bkpath, function(err, bitem) {
+     var bitems;
      var filetoconvert = '' + bitem;
      bitems = filetoconvert.split(',');
      self.logger.info('list of available curves :' + bitems);
@@ -401,18 +402,18 @@ bkl = self.config.get('bk');
        value: bitems[i],
        label: bitems[i]
       });
-	}
-	});
+     }
+    });
 
-value = self.config.get('drcconfig');
+    value = self.config.get('drcconfig');
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[2].options'), value));
 
 
     fs.readdir(filterfolder, function(err, item) {
      allfilter = 'Dirac pulse,' + item
-var allfilters = allfilter.replace('filter-sources','');
-var allfilter2 = allfilters.replace('target-curves','');
+     var allfilters = allfilter.replace('filter-sources', '');
+     var allfilter2 = allfilters.replace('target-curves', '');
      items = allfilter2.split(',');
      self.logger.info('list of available filters for DRC :' + items);
      console.log(items)
@@ -447,19 +448,20 @@ var allfilter2 = allfilters.replace('target-curves','');
      var sampleformatf = ('Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ')
      var sampleformato
      var sitems
-	var js
+     var js
      if (sampleformat == "") {
-     sampleformato = sampleformatf;
-	} else {
+      sampleformato = sampleformatf;
+     } else {
 
-	var str22 = sampleformat.toString().replace(/S/g, "HW-Detected-S");
-     	var str2 = str22.toString().replace(/\s/g, '');
-	var str21 = str2.substring(0, str2.length - 1);
-	js = str21
-	      }
-	if (str2 == null) {
-	str2 = "Detection fails, reboot to retry " }
-	var result = str2 + sampleformatf 
+      var str22 = sampleformat.toString().replace(/S/g, "HW-Detected-S");
+      var str2 = str22.toString().replace(/\s/g, '');
+      var str21 = str2.substring(0, str2.length - 1);
+      js = str21
+     }
+     if (str2 == null) {
+      str2 = "Detection fails, reboot to retry "
+     }
+     var result = str2 + sampleformatf
 
      self.logger.info('result formats ' + result);
      var str1 = result.replace(/\s/g, '');
@@ -497,7 +499,7 @@ var allfilter2 = allfilters.replace('target-curves','');
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-   
+
 
     var value;
     defer.resolve(uiconf);
@@ -602,10 +604,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    } else skipf = "";
 
    output_device = 'hw:' + self.config.get('alsa_device');
-console.log(self.config.get('output_format'));
-   
-	var output_formatx
-	output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
+   console.log(self.config.get('output_format'));
+
+   var output_formatx
+   output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
     composeleftfilter = "dirac pulse";
@@ -764,12 +766,12 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  // .then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
  // });
 
 };
@@ -785,14 +787,14 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  // .then(function() {
 
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
 
-  //});
+ //});
 };
 
 //here we play both channel when button is pressed
@@ -803,15 +805,15 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  var safeUri = track.replace(/"/g, '\\"');
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
-  //.then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ //.then(function() {
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
 
-  //});
+ //});
 };
 
 //here we play left pink noise channel when button is pressed
@@ -823,12 +825,12 @@ ControllerBrutefir.prototype.playleftpinkfile = function(track) {
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  // .then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
 
  // });
 };
@@ -841,15 +843,15 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
  var safeUri = track.replace(/"/g, '\\"');
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
-  //.then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ //.then(function() {
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
 
-  //});
+ //});
 };
 
 
@@ -860,14 +862,14 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
  var safeUri = track.replace(/"/g, '\\"');
 
-// return self.mpdPlugin.sendMpdCommand('stop', [])
-//  .then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-   } catch (e) {
-    console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
-   };
+ // return self.mpdPlugin.sendMpdCommand('stop', [])
+ //  .then(function() {
+ try {
+  exec('/usr/bin/killall aplay');
+  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ } catch (e) {
+  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ };
 
  // });
 };
@@ -879,26 +881,26 @@ ControllerBrutefir.prototype.stopaplay = function(track) {
 
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  // .then(function() {
-   try {
-    exec('/usr/bin/killall aplay');
-   } catch (e) {
-    self.data.logger('Stopping aplay')
-   };
-//  });
+ try {
+  exec('/usr/bin/killall aplay');
+ } catch (e) {
+  self.data.logger('Stopping aplay')
+ };
+ //  });
 };
 
 
 //here we save value to convert file
 ControllerBrutefir.prototype.fileconvert = function(data) {
-var self = this;
-var defer = libQ.defer();
-self.config.set('filetoconvert', data['filetoconvert'].value);
-self.config.set('bk', data['bk'].value);
-self.config.set('drcconfig', data['drcconfig'].value);
-self.config.set('outputfilename', data['outputfilename']);
+ var self = this;
+ var defer = libQ.defer();
+ self.config.set('filetoconvert', data['filetoconvert'].value);
+ self.config.set('bk', data['bk'].value);
+ self.config.set('drcconfig', data['drcconfig'].value);
+ self.config.set('outputfilename', data['outputfilename']);
 
  self.convert()
- 
+
  return defer.promise;
 };
 
@@ -907,63 +909,70 @@ self.config.set('outputfilename', data['outputfilename']);
 
 //here we convert file using sox
 ControllerBrutefir.prototype.convert = function(data) {
-var self = this;
+ var self = this;
  //var defer = libQ.defer();
-var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
-var drcconfig = self.config.get('drcconfig');
-var infile = self.config.get('filetoconvert');
-var outpath = "/data/INTERNAL/brutefirfilters/";
-var outfile = self.config.get('outputfilename')
-if ((outfile == '') || (outfile =='Empty=name of file to convert')) {
-outfile = infile.replace('.wav','')};
-var targetcurve = ' /usr/share/drc/config/';
-var outsample = self.config.get('smpl_rate');
-var BK = self.config.get('bk');
-var BKsimplified = BK.replace('.txt','');
-var ftargetcurve
-var curve
-if (outsample == 44100){
-ftargetcurve = '44.1\\ kHz/';
-curve = '44.1';}
-else if (outsample == 48000){
-ftargetcurve = '48.0\\ kHz/';
-curve = '48.0';}
-else if (outsample == 88200){
-ftargetcurve = '88.2\\ kHz/';
-curve = '88.2';}
-else if (outsample == 96000){
-ftargetcurve = '96.0\\ kHz/';
-curve = '96.0';};
+ var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
+ var drcconfig = self.config.get('drcconfig');
+ var infile = self.config.get('filetoconvert');
+ var outpath = "/data/INTERNAL/brutefirfilters/";
+ var outfile = self.config.get('outputfilename')
+ if ((outfile == '') || (outfile == 'Empty=name of file to convert')) {
+  outfile = infile.replace('.wav', '')
+ };
+ var targetcurve = ' /usr/share/drc/config/';
+ var outsample = self.config.get('smpl_rate');
+ var BK = self.config.get('bk');
+ var BKsimplified = BK.replace('.txt', '');
+ var ftargetcurve
+ var curve
+ if ((outsample == 44100) || (outsample == 48000) || (outsample == 88200) || (outsample == 96000)) {
+  if (outsample == 44100) {
+   ftargetcurve = '44.1\\ kHz/';
+   curve = '44.1';
+  } else if (outsample == 48000) {
+   ftargetcurve = '48.0\\ kHz/';
+   curve = '48.0';
+  } else if (outsample == 88200) {
+   ftargetcurve = '88.2\\ kHz/';
+   curve = '88.2';
+  } else if (outsample == 96000) {
+   ftargetcurve = '96.0\\ kHz/';
+   curve = '96.0';
+  };
 
-var destfile = (outpath + outfile +"-" + drcconfig + "-" + curve + "kHz-" + BKsimplified + ".pcm");
+  var destfile = (outpath + outfile + "-" + drcconfig + "-" + curve + "kHz-" + BKsimplified + ".pcm");
 
-var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
+  var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
-   try {
-    execSync("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample );
-self.logger.info("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
-   } catch (e){
+  try {
+   execSync("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+   self.logger.info("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+  } catch (e) {
    self.logger.info('input file does not exist ' + e);
-          self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' +e);
- };
- try {
-  //self.commandRouter.pushToastMessage('info', 'Filter ' + destfile + ' is being generated, it may takes up to one minute, please wait!');
-var modalData = {
-  title: 'Filter generation',
-  message: ' Please WAIT until this page is refreshed (about 1 minute).',
-  size: 'lg'
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK +" --PSOutFile="+ destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
-  return self.commandRouter.reloadUi();
-   } catch (e) {
+   self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
+  };
+  try {
+   //self.commandRouter.pushToastMessage('info', 'Filter ' + destfile + ' is being generated, it may takes up to one minute, please wait!');
+   var modalData = {
+    title: (destfile + ' filter generation in progress!'),
+    message: ' Please WAIT until this page is refreshed (about 1 minute).',
+    size: 'lg'
+   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+   execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+   self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+   self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
+   return self.commandRouter.reloadUi();
+  } catch (e) {
    self.logger.info('drc fails to create filter ' + e);
-      self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters' +e);
+   self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters' + e);
+  };
+ } else {
+  self.commandRouter.pushToastMessage('error', 'fail  !', 'Sample rate must be set to 96Khz maximum', 'for automatic filter generation');
  };
+
  //self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
-  
+
 };
 
 
@@ -1036,10 +1045,10 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
   // once completed, uncomment
 
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
-self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
+  self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- },8000);
+ }, 8000);
 
  //});
  // return defer.promise;
@@ -1104,12 +1113,12 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  var outputp
  outputp = self.config.get('alsa_outputdevicename')
  //setTimeout(function() {
-  var stri = {
-   "output_device": {
-    "value": "Loopback",
-    "label": (outputp + " through brutefir")
-   }
+ var stri = {
+  "output_device": {
+   "value": "Loopback",
+   "label": (outputp + " through brutefir")
   }
+ }
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);

@@ -1,4 +1,4 @@
-April 19th 2019
+April 2th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -81,6 +81,12 @@ nearly everythings
 
 ### 4. Last changes
 
+April 22th 2019
+
+- warning if sample rate >96kHz for DRC-fir generation
+- startup promise
+- code cleaning
+- update doc
 
 April 19th 2019
 
