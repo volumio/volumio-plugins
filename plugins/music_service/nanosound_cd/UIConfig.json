@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "TRANSLATE.SAVE",
           "data": [
-            "upsampling","extractformat","prestart","savepath"
+            "upsampling","extractformat","prestart","savepath","loadalbumart"
           ]
         },
         "content": [
@@ -77,6 +77,25 @@
             "value": "INTERNAL"
           },
           {
+            "id": "loadalbumart",
+            "element":"select",
+            "doc": "TRANSLATE.SHOWALBUMART",
+            "label": "TRANSLATE.SHOWALBUMART",
+            "value": {"value": "1",
+              "label": "No"
+              },
+              "options": [
+                {
+                  "value": "1",
+                  "label": "No"
+                },
+                {
+                  "value": "2",
+                  "label": "Yes"
+                }
+              ]
+          },
+          {
             "id": "configaudio",
             "element": "button",
             "label": "TRANSLATE.AUTO_RECONFIG_AUDIO",
@@ -107,6 +126,17 @@
               "type": "controller",
               "endpoint": "music_service/nanosound_cd",
               "method": "upgrade"
+            }
+          },
+          {
+            "id": "eject",
+            "element": "button",
+            "label": "TRANSLATE.EJECT",
+            "doc": "TRANSLATE.EJECT",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "eject"
             }
           }
       ]
@@ -197,6 +227,15 @@
           "onClick": {
             "type": "openUrl",
             "url": "https://volumio.org/product/nanosound-dac/"
+          }
+        },
+        {
+          "id": "nanosoundrange",
+          "element": "button",
+          "label": "NanoSound Info",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosound"
           }
         },
         {

@@ -30,5 +30,7 @@
 	"ORDER_NO_DOC": "Dies ist die Bestellnummer des Kaufs. Für Kickstarter-Unterstützer ist das Präfix 'KS' gefolgt von Ihrer Backennummer (Beispiel:KS123)",
 	"REGISTER": "Registrieren",
 	"SHOWVERSION":"Version anzeigen",
-	"UPGRADE":"Upgrade Version"
+	"UPGRADE":"Upgrade Version",
+	"SHOWALBUMART":"Albumcover anzeigen",
+	"EJECT":"CD auswerfen"
 }

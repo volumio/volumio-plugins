@@ -24,6 +24,8 @@ echo "Installing VLC"
 sudo apt-get -y install vlc
 sudo pip install python-vlc
 
+echo "Installing Eject"
+sudo apt-get -y install eject
 
 echo "Installing Audio Libraries"
 

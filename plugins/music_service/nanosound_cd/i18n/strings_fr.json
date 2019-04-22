@@ -30,5 +30,7 @@
 	"ORDER_NO_DOC": "Ceci est le numéro de commande de l'achat. Pour les contributeurs Kickstarter, veuillez préfixer 'KS' suivi de votre numéro de contributeur (Exemple:KS123)",
 	"REGISTER": "Enregistrer",
 	"SHOWVERSION":"Afficher la version",
-	"UPGRADE":"Version de mise à jour"
+	"UPGRADE":"Version de mise à jour",
+	"SHOWALBUMART":"Montrer la couverture de l'album",
+	"EJECT":"Éjecter le CD"
 }

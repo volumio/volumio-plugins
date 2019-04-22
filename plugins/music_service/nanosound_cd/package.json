@@ -1,6 +1,6 @@
 {
 	"name": "nanosound_cd",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Nanosound CD playback and extraction plug-in",
 	"main": "index.js",
 	"scripts": {
