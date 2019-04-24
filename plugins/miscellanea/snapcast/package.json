@@ -73,7 +73,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Saiyato/volumio-snapcast-plugin.git"
+    "url": "git+https://github.com/volumio/volumio-plugins.git"
   },
   "keywords": [
     "snapcast",
@@ -82,7 +82,7 @@
     "volumio"
   ],
   "bugs": {
-    "url": "https://github.com/Saiyato/volumio-snapcast-plugin/issues"
+    "url": "https://github.com/volumio/volumio-plugins/issues"
   },
-  "homepage": "https://github.com/Saiyato/volumio-snapcast-plugin#readme"
+  "homepage": "https://github.com/volumio/volumio-plugins#readme"
 }
