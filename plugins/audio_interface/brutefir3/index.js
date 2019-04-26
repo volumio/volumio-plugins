@@ -913,15 +913,19 @@ ControllerBrutefir.prototype.convert = function(data) {
  //var defer = libQ.defer();
  var inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
  var drcconfig = self.config.get('drcconfig');
- var infile = self.config.get('filetoconvert');
  var outpath = "/data/INTERNAL/brutefirfilters/";
+ var infile = self.config.get('filetoconvert');
+if (infile != 'choose a file') {
+
  var outfile = self.config.get('outputfilename')
  if ((outfile == '') || (outfile == 'Empty=name of file to convert')) {
   outfile = infile.replace('.wav', '')
  };
- var targetcurve = ' /usr/share/drc/config/';
+ var targetcurve = ' /usr/share/drc/config/'
+
  var outsample = self.config.get('smpl_rate');
  var BK = self.config.get('bk');
+if (BK != 'choose a file') {
  var BKsimplified = BK.replace('.txt', '');
  var ftargetcurve
  var curve
@@ -970,7 +974,12 @@ ControllerBrutefir.prototype.convert = function(data) {
  } else {
   self.commandRouter.pushToastMessage('error', 'fail  !', 'Sample rate must be set to 96Khz maximum', 'for automatic filter generation');
  };
-
+} else {
+  self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a target curve!');
+};
+} else {
+  self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a file to convert!');
+};
  //self.logger.info("zrrrrrrrrrrrrrrrrrrrrzrrrrrrrrrrrrrrr" + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s "+ outsample);
 
 };

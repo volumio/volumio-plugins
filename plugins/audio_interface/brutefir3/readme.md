@@ -83,6 +83,7 @@ nearly everythings
 
 April 26th 2019
 
+- more warnings in UI
 - new work on timers...
 
 April 22th 2019
