@@ -136,7 +136,7 @@ ControllerBrutefir.prototype.restoreVolumioconfig = function() {
     self.logger.info('config.txt does not exist');
    }
 
-  }, 8000)
+  }, 6000)
   resolve();
  });
 };
@@ -1045,10 +1045,10 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
   // once completed, uncomment
 
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
-  self.logger.info('tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt' + settings)
+  self.logger.info('ttttttttttttttt' + settings)
   //setTimeout(function() {      
   //resolve();
- }, 8000);
+ }, 20);
 
  //});
  // return defer.promise;
@@ -1099,7 +1099,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
  var defer = libQ.defer();
  setTimeout(function() {
   self.setVolumeParameters()
- }, 2500);
+ }, 500);
  self.restoreVolumioconfig()
  //  self.rebuildBRUTEFIRAndRestartDaemon()
  defer.resolve()
@@ -1122,7 +1122,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 4500);
+ }, 500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
