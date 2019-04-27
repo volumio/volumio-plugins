@@ -85,6 +85,7 @@ April 27th 2019
 
 - code cleaning + comments
 - text in UI
+- new demo filter + impulse
 
 
 April 26th 2019
