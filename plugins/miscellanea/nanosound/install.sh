@@ -11,17 +11,20 @@ systemctl disable lirc.service
 systemctl stop lirc.service
 
 echo "Creating lircrc file"
-touch /etc/lirc/lircrc
+sudo touch /etc/lirc/lircrc
 #END OF LIRC
 
 #START OF python devs
 sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio python-lirc
-sudo -H pip install --upgrade python-mpd2 socketIO-client
+
+
+sudo pip install --upgrade setuptools
+sudo easy_install -U pip
+sudo pip install --upgrade python-mpd2 socketIO-client
 
 #extra for DAC2
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
-sudo -H pip install --upgrade setuptools
-sudo -H pip install --upgrade luma.oled
+sudo pip install --upgrade luma.oled
 
 #Install OLED service
 cd /tmp
@@ -39,12 +42,12 @@ rm /tmp/nanosound_rotary_service.tar.gz
 
 
 cd /tmp
-wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_oled2.tar.gz
-sudo tar xvf /tmp/nanosound_oled2.tar.gz -C /home/volumio
+wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_oled3.tar.gz
+sudo tar xvf /tmp/nanosound_oled3.tar.gz -C /home/volumio
 cd /home/volumio/nanosound_oled
 sudo chmod 777 *.py
 sudo chmod 777 lircrc
-rm /tmp/nanosound_oled2.tar.gz
+rm /tmp/nanosound_oled3.tar.gz
 
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable nanosound_oled
