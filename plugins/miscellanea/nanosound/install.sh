@@ -42,12 +42,12 @@ rm /tmp/nanosound_rotary_service.tar.gz
 
 
 cd /tmp
-wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_oled2.tar.gz
-sudo tar xvf /tmp/nanosound_oled2.tar.gz -C /home/volumio
+wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_oled3.tar.gz
+sudo tar xvf /tmp/nanosound_oled3.tar.gz -C /home/volumio
 cd /home/volumio/nanosound_oled
 sudo chmod 777 *.py
 sudo chmod 777 lircrc
-rm /tmp/nanosound_oled2.tar.gz
+rm /tmp/nanosound_oled3.tar.gz
 
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable nanosound_oled
