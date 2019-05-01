@@ -82,7 +82,7 @@
 					"prettyName": "Logitech Media Server",
 					"icon": "fa-lightbulb-o",
 					"name": "lms",
-					"version": "1.0.14",
+					"version": "1.0.15",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/lms/lms.zip",
 					"license": "GPL-3.0",
 					"description": "Installs the Logitech Media Server application and web client",
@@ -94,7 +94,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-11-2018"
+					"updated": "1-5-2019"
 				},
 				{
 					"prettyName": "Personal Radio",
