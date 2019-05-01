@@ -462,7 +462,7 @@
 					"prettyName": "NanoSound by Nanomesher",
 					"icon": "fa-lightbulb-o",
 					"name": "nanosound",
-					"version": "1.7.0",
+					"version": "1.7.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
 					"license": "ISC",
 					"description": "Companion plugin for NanoSound DAC",
@@ -474,7 +474,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "22-4-2019"
+					"updated": "1-5-2019"
 				}
 			]
 		},
