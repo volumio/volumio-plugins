@@ -651,6 +651,24 @@
 						}
 					],
 					"updated": "5-2-2018"
+				},
+				{
+					"prettyName": "Volumio parametric equalizer 0.1.8",
+					"icon": "fa-lightbulb-o",
+					"name": "volparametriceq",
+					"version": "0.1.8",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volparametriceq/volparametriceq.zip",
+					"license": "GPL 3.0",
+					"description": "Parametric equalizer plugin for Volumio2",
+					"details": "4 bands parametric equalizer. Not compatible with Softvolume!",
+					"author": "Balbuze",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "2-5-2019"
 				}
 			]
 		},
