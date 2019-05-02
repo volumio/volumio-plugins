@@ -475,6 +475,24 @@
 						}
 					],
 					"updated": "1-5-2019"
+				},
+				{
+					"prettyName": "SnapCast",
+					"icon": "fa-lightbulb-o",
+					"name": "snapcast",
+					"version": "2.4.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/snapcast/snapcast.zip",
+					"license": "GPL-3.0",
+					"description": "SnapCast integration pack",
+					"details": "",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "2-5-2019"
 				}
 			]
 		},
