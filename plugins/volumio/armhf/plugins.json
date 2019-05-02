@@ -484,7 +484,7 @@
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/snapcast/snapcast.zip",
 					"license": "GPL-3.0",
 					"description": "SnapCast integration pack",
-					"details": "",
+					"details": "Add snapcast features to Volumio",
 					"author": "Saiyato",
 					"screenshots": [
 						{
