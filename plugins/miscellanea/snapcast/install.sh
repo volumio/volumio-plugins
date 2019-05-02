@@ -6,10 +6,21 @@ if [ ! -f $INSTALLING ]; then
 
 	touch $INSTALLING
 	apt-get update
+	
+	echo "Detecting cpu"
+	cpu=$(lscpu | awk 'FNR == 1 {print $2}')
+	echo "cpu: " $cpu
 
 	# Download latest SnapCast packages
 	mkdir /home/volumio/snapcast
-	wget $(curl -s https://api.github.com/repos/badaix/snapcast/releases/latest | grep 'armhf' | cut -d\" -f4) -P /home/volumio/snapcast
+	
+	if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ]; then
+		wget $(curl -s https://api.github.com/repos/badaix/snapcast/releases/latest | grep 'armhf' | cut -d\" -f4) -P /home/volumio/snapcast
+	elif [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
+		echo "Still working on x86/x64 support, need to compile the packages."
+	else 
+		echo "This cpu is not yet supported, you must build the snap*-packages yourself. Detected cpu: " $cpu
+	fi
 
 	# Backup old snap* installations
 	mv /usr/sbin/snapclient /usr/sbin/snapclient.bak
@@ -39,7 +50,13 @@ if [ ! -f $INSTALLING ]; then
 	}
 
 	pcm.snapConverter {
-		
+		type rate
+		slave {
+			pcm writeFile # Direct to the plugin which will write to a file
+			format S16_LE
+			rate 48000
+		}
+	}	
 
 	pcm.writeFile {
 		type file
@@ -56,6 +73,15 @@ if [ ! -f $INSTALLING ]; then
 	pcm.!snapcast {
 		type plug
 		slave.pcm snapConverter
+	}
+	
+	pcm.snapConverter {
+		type rate
+		slave {
+			pcm writeFile # Direct to the plugin which will write to a file
+			format S16_LE
+			rate 48000
+		}
 	}
 
 	pcm.writeFile {
@@ -108,6 +134,13 @@ if [ ! -f $INSTALLING ]; then
 	 *) sed -i -- 's|.*type.*alsa.*|&\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ enabled\ \ \ \ \ \ \ \ \ "no"|g' /etc/mpd.conf ;;
 	esac
 
+	# Create the systemd unit file, if it doesn't already exists
+	#wget -O /etc/init.d/snapclient https://raw.githubusercontent.com/Saiyato/volumio-snapcast-plugin/master/unit/snapclient
+	#wget -O /etc/init.d/snapserver https://raw.githubusercontent.com/Saiyato/volumio-snapcast-plugin/master/unit/snapserver
+	#chmod 755 /etc/init.d/snapclient
+	#chmod 755 /etc/init.d/snapserver
+	systemctl daemon-reload
+
 	# Edit the systemd units
 	systemctl enable /data/plugins/miscellanea/snapcast/spotififo.service
 	systemctl start spotififo.service
@@ -132,6 +165,7 @@ if [ ! -f $INSTALLING ]; then
 	systemctl stop snapserver
 	systemctl stop snapclient
 	
+	rm -rf /home/volumio/snapcast
 	rm $INSTALLING
 
 	#required to end the plugin install

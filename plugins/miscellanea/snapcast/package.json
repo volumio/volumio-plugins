@@ -1,6 +1,6 @@
 {
   "name": "snapcast",
-  "version": "2.3.3",
+  "version": "2.4.2",
   "description": "SnapCast integration pack",
   "main": "index.js",
   "scripts": {
@@ -73,7 +73,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/volumio/volumio-plugins.git"
+    "url": "git+https://github.com/Saiyato/volumio-snapcast-plugin.git"
   },
   "keywords": [
     "snapcast",
@@ -82,7 +82,7 @@
     "volumio"
   ],
   "bugs": {
-    "url": "https://github.com/volumio/volumio-plugins/issues"
+    "url": "https://github.com/Saiyato/volumio-snapcast-plugin/issues"
   },
-  "homepage": "https://github.com/volumio/volumio-plugins#readme"
+  "homepage": "https://github.com/Saiyato/volumio-snapcast-plugin#readme"
 }
