@@ -50,7 +50,8 @@ var PLAY_MUSIC_CONSTANTS = {
     uri: "googleplaymusic",
     plugin_type: "music_service",
     plugin_name: "googleplaymusic",
-    albumart: "/albumart?sourceicon=music_service/googleplaymusic/playMusic.svg"
+    albumart:
+      "/albumart?sourceicon=music_service/googleplaymusic/google-play-music-icon.png"
   },
 
   FOLDER_OBJECT_STRUCTRE: {
