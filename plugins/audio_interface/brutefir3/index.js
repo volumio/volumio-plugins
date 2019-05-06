@@ -1091,7 +1091,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume on startup at " + volumeval);
     }
    });
-  }, 8500);
+  }, 4500);
  }
  return defer.promise;
 };

@@ -81,6 +81,10 @@ nearly everythings
 
 ### 4. Last changes
 
+May 6th 2019
+
+- minor changes in index...
+
 April 30th 2019
 
 - small change in timer....
