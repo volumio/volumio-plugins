@@ -271,7 +271,8 @@ ControllerBrutefir.prototype.onStart = function() {
   .then(function(e) {
    setTimeout(function() {
     self.logger.info("Starting brutefir");
-    self.startBrutefirDaemon(defer);
+self.rebuildBRUTEFIRAndRestartDaemon(defer);
+//    self.startBrutefirDaemon(defer);
    }, 1000);
    defer.resolve();
   })
@@ -914,8 +915,8 @@ ControllerBrutefir.prototype.convert = function(data) {
       size: 'lg'
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
-     execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-     self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
      self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
      return self.commandRouter.reloadUi();
     } catch (e) {
@@ -1076,7 +1077,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 4500);
+ }, 6500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
@@ -1091,7 +1092,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume on startup at " + volumeval);
     }
    });
-  }, 4500);
+  }, 8500);
  }
  return defer.promise;
 };

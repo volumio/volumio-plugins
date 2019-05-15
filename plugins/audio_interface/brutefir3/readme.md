@@ -1,4 +1,4 @@
-April 27th 2019
+May 15th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -80,6 +80,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 15th 2019
+
+- set PPType=N for DRC
+- change onstart cmde in index.js
 
 May 6th 2019
 
