@@ -271,8 +271,8 @@ ControllerBrutefir.prototype.onStart = function() {
   .then(function(e) {
    setTimeout(function() {
     self.logger.info("Starting brutefir");
-self.rebuildBRUTEFIRAndRestartDaemon(defer);
-//    self.startBrutefirDaemon(defer);
+    self.rebuildBRUTEFIRAndRestartDaemon(defer);
+    //    self.startBrutefirDaemon(defer);
    }, 1000);
    defer.resolve();
   })
@@ -324,7 +324,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var filetoconvertl;
     var bkpath = "/data/INTERNAL/brutefirfilters/target-curves";
     var bkl
-   
+
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
     uiconf.sections[2].content[3].value = self.config.get('outputfilename');
@@ -387,7 +387,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      var allfilters = allfilter.replace('filter-sources', '');
      var allfilter2 = allfilters.replace('target-curves', '');
      items = allfilter2.split(',');
-   //  self.logger.info('list of available filters for DRC :' + items);
+     //  self.logger.info('list of available filters for DRC :' + items);
      for (var i in items) {
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
        value: items[i],
@@ -582,7 +582,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    if (self.config.get('rightfilter') == "Dirac pulse")
     composerightfilter = "dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
-//   console.log(output_device);
+   //   console.log(output_device);
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", num_part);
@@ -659,7 +659,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
    defer.resolve({});
   })
   .fail(function(e) {
-
    defer.reject(new Error('Brutefir failed to start. Check your config !'));
    self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
   })
@@ -848,7 +847,7 @@ ControllerBrutefir.prototype.stopaplay = function(track) {
 };
 
 
-//here we save value to convert file
+//here we save value for converted file
 ControllerBrutefir.prototype.fileconvert = function(data) {
  var self = this;
  var defer = libQ.defer();
@@ -915,8 +914,11 @@ ControllerBrutefir.prototype.convert = function(data) {
       size: 'lg'
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
-     execSync("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-     self.logger.info("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     //here we compose cmde for drc
+     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     //and execute it...
+     execSync(composedcmde);
+     self.logger.info(composedcmde);
      self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
      return self.commandRouter.reloadUi();
     } catch (e) {
@@ -1004,8 +1006,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
   // once completed, uncomment
 
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
-  //self.logger.info('ttttttttttttttt' + settings)
-  //resolve();
+  
  }, 8000);
 
  //});
@@ -1056,7 +1057,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
  var defer = libQ.defer();
  setTimeout(function() {
   self.setVolumeParameters()
- }, 2500);
+ }, 4500);
  self.restoreVolumioconfig()
  defer.resolve()
  return defer.promise;
@@ -1077,7 +1078,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 6500);
+ }, 2500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
