@@ -81,6 +81,10 @@ nearly everythings
 
 ### 4. Last changes
 
+May 24th 2019
+
+- no "skip" if dirac pulse and wav format
+
 May 19th 2019
 
 - small adjustements with timer...

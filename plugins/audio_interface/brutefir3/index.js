@@ -564,11 +564,21 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var f_size = self.config.get('filter_size');
    var filter_size = parseInt(f_size);
    var filtersizedivided = filter_size / num_part;
-   var output_device
-   var skipf
-   if ((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) {
-    skipf = "skip:44;";
-   } else skipf = "";
+   var output_device;
+   var skipfl;
+   var skipfr;
+
+   var noldirac = self.config.get('leftfilter');
+ 
+  	 if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
+   		var skipfl = "skip:44;"
+	    } else skipfl = "";
+
+   var nordirac = self.config.get('rightfilter');
+
+   	 if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
+   		var skipfr = "skip:44;"
+	    } else skipfr = "";
 
    output_device = 'hw:' + self.config.get('alsa_device');
    console.log(self.config.get('output_format'));
@@ -590,11 +600,11 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf5 = conf4.replace("${delay}", delay);
    var conf6 = conf5.replace("${leftfilter}", composeleftfilter);
    var conf7 = conf6.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf8 = conf7.replace("${skip_1}", skipf);
+   var conf8 = conf7.replace("${skip_1}", skipfl);
    var conf9 = conf8.replace("${lattenuation}", self.config.get('attenuation'));
    var conf10 = conf9.replace("${rightfilter}", composerightfilter);
    var conf11 = conf10.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf12 = conf11.replace("${skip_2}", skipf);
+   var conf12 = conf11.replace("${skip_2}", skipfr);
    var conf13 = conf12.replace("${rattenuation}", self.config.get('attenuation'));
    var conf14 = conf13.replace("${output_device}", output_device);
    var conf15 = conf14.replace("${output_format}", output_formatx);
