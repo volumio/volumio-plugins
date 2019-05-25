@@ -1,4 +1,4 @@
-May 19th 2019
+May 25th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -81,6 +81,10 @@ nearly everythings
 
 ### 4. Last changes
 
+May 25th 2019
+
+- small fixes in index.js
+ 
 May 24th 2019
 
 - no "skip" if dirac pulse and wav format

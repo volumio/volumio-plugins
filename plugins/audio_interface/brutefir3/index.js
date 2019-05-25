@@ -271,8 +271,8 @@ ControllerBrutefir.prototype.onStart = function() {
   .then(function(e) {
    setTimeout(function() {
     self.logger.info("Starting brutefir");
-    self.rebuildBRUTEFIRAndRestartDaemon(defer);
-    //    self.startBrutefirDaemon(defer);
+  //  self.rebuildBRUTEFIRAndRestartDaemon(defer);
+        self.startBrutefirDaemon(defer);
    }, 1000);
    defer.resolve();
   })
@@ -430,7 +430,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
       js = str21
      }
      if (str2 == null) {
-      str2 = "Detection fails, reboot to retry "
+      str2 = "Detection\ fails.\ Reboot\ to\ retry, "
      }
      var result = str2 + sampleformatf
 
