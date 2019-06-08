@@ -20,7 +20,7 @@
 	"UPSAMPLING_TO_DOC": "Para muestrear su CD por x4 o x2 usando el algoritmo SINC. Solo disponible en la versión completa",
 	"EXTRACT_FORMAT_DOC": "Extraiga audio sin pérdida a su biblioteca de Volumio. Solo disponible en la versión completa",
 	"PRESTART_BY_SEC_DOC": "Comience la siguiente canción más temprano por unos segundos. Esto no es lo mismo que sin espacios, pero da un resultado similar",
-	"EXTRACT_TO_PATH_DOC": "Ruta base de los archivos extraídos en / mnt /. Para microsd interno, use 'INTERNAL'. Para compartir en NAS, recuerde ingresar 'rw' en las opciones de Network Drive para habilitar la escritura. Por ejemplo, si ingresa 'NAS/myshare', la ruta será '/mnt/NAS/myshare'",
+	"EXTRACT_TO_PATH_DOC": "Ruta base de los archivos extraídos en / mnt /. Para microsd interno, use 'INTERNAL'. Para compartir en NAS, recuerde ingresar 'rw' en las opciones de Network Drive para habilitar la escritura. Por ejemplo, si ingresa 'NAS/myshare', la ruta será '/mnt/NAS/myshare'. Para flash USB, ingrese 'USB'",
 	"AUTO_RECONFIG_AUDIO_DOC": "Intente esto cuando haya una salida de audio de CD durante la reproducción. Si la configuración cambia después de la reconfiguración, reinicie",
 	"EXTRACT_CD_DOC": "Extraiga los archivos de audio de su CD en segundo plano. Solo disponible en la versión completa",
 	"EXTRACT_WHOLE_CD_DOC": "Extraiga el CD actual a su biblioteca de Volumio. No reproduzca el CD mientras lo extrae. La extracción se procesa en segundo plano para que pueda seguir utilizando Volumio para otras funciones. Reinicie el complemento del CD de NanoSound si desea abortar proceso actual de extracción de CD",

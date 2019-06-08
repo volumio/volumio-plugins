@@ -20,7 +20,7 @@
 	"UPSAMPLING_TO_DOC": "使用SINC算法通过x4或x2对CD进行采样。仅适用于完整版",
 	"EXTRACT_FORMAT_DOC": "将无损音频提取到您的Volumio库。仅适用于完整版",
 	"PRESTART_BY_SEC_DOC": "提前几秒开始播放下一首歌曲。这与无间隙相同,但给出类似的结果",
-	"EXTRACT_TO_PATH_DOC": "/mnt/ 下提取文件的基本路径。对于内部microsd,使用'INTERNAL'。对于NAS共享,请记住在网络驱动器选项中输入'rw'以启用写入。例如,如果输入' NAS/myshare',路径为/mnt/NAS/myshare",
+	"EXTRACT_TO_PATH_DOC": "/mnt/ 下提取文件的基本路径。对于内部microsd,使用'INTERNAL'。对于NAS共享,请记住在网络驱动器选项中输入'rw'以启用写入。例如,如果输入' NAS/myshare',路径为/mnt/NAS/myshare. 对于USB闪存，请输入'USB'",
 	"AUTO_RECONFIG_AUDIO_DOC": "播放期间有CD音频输出时尝试此操作。如果重新配置后更改配置,请重新启动",
 	"EXTRACT_CD_DOC": "在后台从CD中提取音频文件。仅在完整版中提供",
 	"EXTRACT_WHOLE_CD_DOC": "将当前CD提取到您的Volumio库。提取时不要播放CD。提取在后台处理,因此您仍然可以继续使用Volumio进行其他功能。如果要中止,请重新启动NanoSound CD插件目前的CD提取过程。",
