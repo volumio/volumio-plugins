@@ -981,7 +981,7 @@ var modalData = {
 ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_Both.wav';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
 if (outsample == '44100') {
