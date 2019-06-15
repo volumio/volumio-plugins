@@ -996,7 +996,7 @@ if (outsample == '44100') {
  	};
 } else { 
 var modalData = {
-  title: 'Sweep tools sample rate',
+  title: 'Pink tools sample rate',
   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
   size: 'lg',
 	buttons: [
