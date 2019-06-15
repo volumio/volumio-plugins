@@ -388,14 +388,19 @@
       "label": "Tools",
       "icon": "fa-wrench",
       "content": [
-        {
-		"id": "sweep",
-		"element": "switch",
-		"label": "sweep tools",
-"description":"Sweeps Tools",
-		"value": false
-	},
-        {
+      
+{
+        "id": "rewversion",
+        "element": "switch",
+        "doc": "Rew version. Set to ON if you use REW <=5.19. Set to OFF if you use REW >=5.20 ",
+        "label": "Measure with Rew <=5.19",
+        "value": false,
+"visibleIf": {
+		"field": "sweep",
+		"value": true
+		}
+      },
+             {
           "id": "playleftsweepfile",
           "element": "button",
           "label": "TRANSLATE.PLAY_L_SWEEP",
@@ -405,11 +410,11 @@
             "endpoint": "audio_interface/brutefir",
             "method": "playleftsweepfile"
           },
-	"visibleIf": {
-		"field": "sweep",
+		"visibleIf": {
+		"field": "rewversion",
 		"value": true
 		}
-        },
+},
 	{
           "id": "playrightsweepfile",
           "element": "button",
@@ -420,26 +425,51 @@
             "endpoint": "audio_interface/brutefir",
             "method": "playrightsweepfile"
           },
-	"visibleIf": {
-		"field": "sweep",
+	
+"visibleIf": {
+				
+"field": "rewversion",
+
 		"value": true
 		}
+        
         },
-	{
-          "id": "playbothsweepfile",
+		
+ {
+          "id": "playleftsweepfile520",
           "element": "button",
-          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_SWEEP",
+          "label": "TRANSLATE.PLAY_L_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
-            "method": "playbothsweepfile"
+            "method": "playleftsweepfile520"
+          },
+"visibleIf": {
+		
+		"field": "rewversion",
+		"value": false
+		}
+
+        },
+	{
+          "id": "playrightsweepfile520",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_R_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playrightsweepfile520"
           },
 	"visibleIf": {
-		"field": "sweep",
-		"value": true
+		
+		"field": "rewversion",
+		"value": false
 		}
+        
         },
+	
 	{
           "id": "stopaplay",
           "element": "button",

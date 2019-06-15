@@ -328,6 +328,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
     uiconf.sections[2].content[3].value = self.config.get('outputfilename');
+   //   uiconf.sections[3].content[1].value = self.config.get('rewversion');
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
@@ -727,41 +728,145 @@ ControllerBrutefir.prototype.removetools = function(data) {
 //here we play left sweep when button is pressed
 ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  var self = this;
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_L_refR.wav';
- var safeUri = track.replace(/"/g, '\\"');
 
- //return self.mpdPlugin.sendMpdCommand('stop', [])
- // .then(function() {
- try {
-  exec('/usr/bin/killall aplay');
-  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
- } catch (e) {
-  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_L_refL.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=519');
+
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Rew 5.19 - Sweep tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
  };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+}
+};
+
+
+//here we play left sweep when button is pressed
+ControllerBrutefir.prototype.playleftsweepfile520 = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_L_refL.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+  var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Rew 5.20 - Sweep tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
+ };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+}
+};
  // });
 
-};
 
 
 //here we play right sweep when button is pressed
 ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_R_refR.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_R_refL.WAV';
  var safeUri = track.replace(/"/g, '\\"');
-
- //return self.mpdPlugin.sendMpdCommand('stop', [])
- // .then(function() {
-
- try {
-  exec('/usr/bin/killall aplay');
-  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
- } catch (e) {
-  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Rew 5.19 - Sweep tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
  };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+}
+};
 
- //});
+
+//here we play right sweep when button is pressed
+ControllerBrutefir.prototype.playrightsweepfile520 = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_R_refL.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Rew 5.20 - Sweep tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
+ };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sapmle rate!!!!!!!!!!!'+ outsample);
+}
 };
 
 //here we play both channel when button is pressed
@@ -783,32 +888,14 @@ ControllerBrutefir.prototype.playbothsweepfile = function(track) {
  //});
 };
 
-//here we play left pink noise channel when button is pressed
-ControllerBrutefir.prototype.playleftpinkfile = function(track) {
+
+//here we play both channel when button is pressed
+ControllerBrutefir.prototype.playbothsweepfile520 = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_L.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_LR_refR.wav';
  var safeUri = track.replace(/"/g, '\\"');
-
- //return self.mpdPlugin.sendMpdCommand('stop', [])
- // .then(function() {
- try {
-  exec('/usr/bin/killall aplay');
-  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
- } catch (e) {
-  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
- };
-
- // });
-};
-
-//here we play right pink noise channel when button is pressed
-ControllerBrutefir.prototype.playrightpinkfile = function(track) {
- var self = this;
- self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_R.WAV';
- var safeUri = track.replace(/"/g, '\\"');
-
+console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520');
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  //.then(function() {
  try {
@@ -821,6 +908,74 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
  //});
 };
 
+//here we play left pink noise channel when button is pressed
+ControllerBrutefir.prototype.playleftpinkfile = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_L.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Pink tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
+ };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sample rate!!!!!!!!!!!'+ outsample);
+}
+};
+
+//here we play right pink noise channel when button is pressed
+ControllerBrutefir.prototype.playrightpinkfile = function(track) {
+ var self = this;
+ self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_R.WAV';
+ var safeUri = track.replace(/"/g, '\\"');
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Pink tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
+ };
+ self.commandRouter.broadcastMessage("openModal", modalData);
+//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+}
+};
+
 
 //here we play both pink noise channels when button is pressed
 ControllerBrutefir.prototype.playbothpinkfile = function(track) {
@@ -828,17 +983,32 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
  var safeUri = track.replace(/"/g, '\\"');
-
- // return self.mpdPlugin.sendMpdCommand('stop', [])
- //  .then(function() {
- try {
-  exec('/usr/bin/killall aplay');
-  exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
- } catch (e) {
-  console.log('/usr/bin/aplay --device=plughw:Loopback ' + track)
+ var outsample = self.config.get('smpl_rate');
+if (outsample == '44100') {
+	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+ 	//return self.mpdPlugin.sendMpdCommand('stop', [])
+ 	// .then(function() {
+ 	try {
+  	exec('/usr/bin/killall aplay');
+  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+	 } catch (e) {
+  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+ 	};
+} else { 
+var modalData = {
+  title: 'Sweep tools sample rate',
+  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+  size: 'lg',
+	buttons: [
+                    {
+                      name: 'Close',
+                      class: 'btn btn-warning'
+                    },
+		]
  };
-
- // });
+ self.commandRouter.broadcastMessage("openModal", modalData);
+console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+}
 };
 
 //here we stop aplay

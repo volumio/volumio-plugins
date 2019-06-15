@@ -1,4 +1,4 @@
-May 25th 2019
+June 15th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -28,8 +28,7 @@ To have a idea of what it is, have look here [brutefir plugin wiki](https://volu
 
 
 
-
-Base scheme
+Output Base scheme
 
 [volumio]--->[Loopback]--->[Brutefir]--->[output /DAC]
 
@@ -80,6 +79,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+June 15th 2019
+
+- 44.1kHz sweep tools for REW 5.19 and REW 5.20
+- 44.1kHz pink tools
+- Modal warning if sample rate is not 44.1 when using tools.
 
 May 25th 2019
 

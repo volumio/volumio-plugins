@@ -1,0 +1,82 @@
+#brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
+    sampling_rate: ${smpl_rate};
+    filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
+    overflow_warnings: true;
+    show_progress: false;
+    float_bits: 64;
+    powersave: true;
+    convolver_config: "/data/configuration/audio_interface/brutefir/brutefir_convolver"; # location of convolver config file
+logic:
+ "cli" { port: 3002;};
+#"cli"  { port: "/dev/ttyS1";};
+#"echo" on ;
+input "l_in", "r_in" {
+            device: "alsa" {device: "hw:${input_device}";};
+            sample: "s32_le";   # sample format
+            channels: 2;            # number of open channels / which to use
+delay: ${delay};
+    };
+
+
+coeff "filter_1" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+#format: "text";
+attenuation: ${lattenuation};
+};
+
+filter "l_drc" {
+from_inputs: "l_in";
+#from_filters: "filter_1";
+# to_outputs: "l_out"/0.0;
+to_filters: "l_cross";
+coeff: "filter_1";
+process: -1;
+};
+
+coeff "cross_1" {
+filename: "dirac pulse";
+#format: "${filter_format1}";
+#${skip_1}
+#format: "text";
+#attenuation: ${lattenuation};
+};
+
+filter "l_cross" {
+#from_inputs: "l_in";
+from_filters: "l_drc";
+to_outputs: "l_out"/0.0;
+coeff: "cross_1";
+process: -1;
+};
+
+
+coeff "filter_2" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+#format: "text";
+attenuation: ${rattenuation};
+};
+
+filter "r_drc" {
+from_inputs: "r_in";
+to_outputs: "r_out"/0.0;
+coeff: "filter_2";
+#delay: 0,5;
+process: -1;
+};
+
+   output "l_out","r_out" {
+            device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
+#         device: "file" {path: "/dev/stdout";};
+         sample: "${output_format}";   # sample format
+# sample: "S24_3LE";
+
+            channels: 2;        # number of open channels / which to use
+#	delay: 5,0;
+ #	maxdelay: -1;
+	dither: false;
+    };
+ 
