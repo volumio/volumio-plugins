@@ -24,7 +24,7 @@ function AmpSwitchController(context) {
 
 	// Setup Debugger
 	self.logger.ASdebug = function (data) {
-		self.logger.info('[ASDebug] ' + data);
+		self.logger.info('[AmpSwitch] ' + data);
 	};
 
 	//define shutdown variable
@@ -204,7 +204,7 @@ AmpSwitchController.prototype.parseStatus = function (state) {
 AmpSwitchController.prototype.on = function () {
 	var self = this;
 
-	self.logger.ASdebug('Togle GPIO: ON');
+	self.logger.ASdebug('Toggle GPIO-' + self.config.get('port') + ': ON');
 	if (!self.config.get('inverted')) {
 		self.shutdown.writeSync(1);
 	} else {
@@ -216,7 +216,7 @@ AmpSwitchController.prototype.on = function () {
 AmpSwitchController.prototype.off = function () {
 	var self = this;
 
-	self.logger.ASdebug('Togle GPIO: OFF');
+	self.logger.ASdebug('Toggle GPIO-' + self.config.get('port') + ': OFF');
 	if (!self.config.get('inverted')) {
 		self.shutdown.writeSync(0);
 	} else {
@@ -241,4 +241,3 @@ AmpSwitchController.prototype.freeGPIO = function () {
 
 	self.shutdown.unexport();
 };
-
