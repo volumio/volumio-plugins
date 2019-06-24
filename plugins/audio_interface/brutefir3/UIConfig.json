@@ -22,7 +22,8 @@
 	  "filter_format",
           "filter_size",
           "smpl_rate",
-          "output_format"
+          "output_format",
+	  "vobaf"
         ]
       },
       "content": [
@@ -243,7 +244,14 @@
           },
           "options": [
                      ]
-        }
+        },
+	{
+        "id": "vobaf",
+        "element": "switch",
+        "doc": "Use VoBAF : Volume based adaptativ filtering",
+        "label": "Use VoBAF",
+        "value": false
+	}
       ]
     },
 {

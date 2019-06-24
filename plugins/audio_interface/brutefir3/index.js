@@ -1,7 +1,7 @@
 /*DRC-FIR plugin for volumio2. By balbuze 2019*/
 'use strict';
 
-//var io = require('socket.io-client');
+var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
@@ -12,7 +12,7 @@ var net = require('net');
 var config = new(require('v-conf'))();
 //var Telnet = require('telnet-client')
 //var connection = new Telnet()
-
+var socket = io.connect('http://localhost:3000');
 
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
@@ -267,12 +267,16 @@ ControllerBrutefir.prototype.autoconfig = function() {
 ControllerBrutefir.prototype.onStart = function() {
  var self = this;
  var defer = libQ.defer();
+
+ socket.emit('getState', '');
+ self.sendvolumelevel();
+
  self.autoconfig()
   .then(function(e) {
    setTimeout(function() {
     self.logger.info("Starting brutefir");
-  //  self.rebuildBRUTEFIRAndRestartDaemon(defer);
-        self.startBrutefirDaemon(defer);
+    //  self.rebuildBRUTEFIRAndRestartDaemon(defer);
+    self.startBrutefirDaemon(defer);
    }, 1000);
    defer.resolve();
   })
@@ -280,6 +284,55 @@ ControllerBrutefir.prototype.onStart = function() {
    defer.reject(new Error());
   });
  return defer.promise;
+};
+
+// here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI
+ControllerBrutefir.prototype.sendvolumelevel = function() {
+ var self = this;
+ var leftf = self.config.get('leftfilter');
+ var rightf = self.config.get('rightfilter');
+   socket.on('pushState', function(data) {
+var vobaf = self.config.get('vobaf');
+console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf);
+if (vobaf == true) {
+   if (data.volume <= "20") {
+    // console.log("volume is <= 20 :" + data.volume + brutefircmd);
+    brutefircmd = ('cfc "l_drc" "lfilter_1" "r_drc" "rfilter_1"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + ' and ' + rightf);
+   } else if (data.volume > "20" && data.volume < "40") {
+    //    console.log("volume is > 20 but < 40:" + data.volume + brutefircmd);
+    brutefircmd = ('cfc "l_drc" "lfilter_2" "r_drc" "rfilter_2"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-2 and ' + rightf + '-2');
+   } else if (data.volume >= "40" && data.volume < "70") {
+    //  console.log("volume is >40 but inf 70 :" + data.volume);
+    brutefircmd = ('cfc "l_drc" "lfilter_3" "r_drc" "rfilter_3"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-3 and ' + rightf + '-3');
+   } else if (data.volume >= "70") {
+    //console.log("volume is > 20 but < 40:" + data.volume + brutefircmd);
+    brutefircmd = ('cfc "l_drc" "lfilter_4" "r_drc" "rfilter_4"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-4 and ' + rightf + '-4');
+   }
+//});
+ var brutefircmd
+ var client = new net.Socket();
+ client.connect(3002, '127.0.0.1', function(err) {
+   client.write(brutefircmd);
+   console.log('cmd sent to brutefir = ' + brutefircmd);
+  });
+
+ //error handling section
+ client.on('error', function(e) {
+  if (e.code == 'ECONNREFUSED') {
+   console.log('Huumm, is brutefir running ?');
+   self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+  }
+  });
+  client.on('data', function(data) {
+   console.log('Received: ' + data);
+   client.destroy(); // kill client after server's response
+  });
+};
+});
 };
 
 ControllerBrutefir.prototype.onRestart = function() {
@@ -328,7 +381,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     uiconf.sections[1].content[0].value = self.config.get('ldistance');
     uiconf.sections[1].content[1].value = self.config.get('rdistance');
     uiconf.sections[2].content[3].value = self.config.get('outputfilename');
-   //   uiconf.sections[3].content[1].value = self.config.get('rewversion');
+    //   uiconf.sections[3].content[1].value = self.config.get('rewversion');
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
@@ -471,7 +524,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-
+    uiconf.sections[0].content[7].value = self.config.get('vobaf');
 
     var value;
     defer.resolve(uiconf);
@@ -525,6 +578,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var sbauer;
    var input_device = 'Loopback,1';
    var filter_path = "/data/INTERNAL/brutefirfilters/";
+  // var vobaf_filter_path = "/data/INTERNAL/brutefirfilters/vobaffilters";
    var leftfilter;
    var rightfilter;
    var composeleftfilter = filter_path + self.config.get('leftfilter');
@@ -570,16 +624,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var skipfr;
 
    var noldirac = self.config.get('leftfilter');
- 
-  	 if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
-   		var skipfl = "skip:44;"
-	    } else skipfl = "";
+
+   if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
+    var skipfl = "skip:44;"
+   } else skipfl = "";
 
    var nordirac = self.config.get('rightfilter');
 
-   	 if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
-   		var skipfr = "skip:44;"
-	    } else skipfr = "";
+   if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
+    var skipfr = "skip:44;"
+   } else skipfr = "";
 
    output_device = 'hw:' + self.config.get('alsa_device');
    console.log(self.config.get('output_format'));
@@ -593,7 +647,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    if (self.config.get('rightfilter') == "Dirac pulse")
     composerightfilter = "dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
-   //   console.log(output_device);
+ /*  //   console.log(output_device);
    var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
    var conf2 = conf1.replace("${filter_size}", filtersizedivided);
    var conf3 = conf2.replace("${numb_part}", num_part);
@@ -609,8 +663,49 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var conf13 = conf12.replace("${rattenuation}", self.config.get('attenuation'));
    var conf14 = conf13.replace("${output_device}", output_device);
    var conf15 = conf14.replace("${output_format}", output_formatx);
+*/
 
-   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf15, 'utf8', function(err) {
+let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
+   .replace("${filter_size}", filtersizedivided)
+   .replace("${numb_part}", num_part)
+   .replace("${input_device}", input_device)
+   .replace("${delay}", delay)
+   .replace("${leftfilter}", composeleftfilter)
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipfl)
+   .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${leftfilter}", composeleftfilter +'-2')
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipfl)
+   .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${leftfilter}", composeleftfilter + '-3')
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipfl)
+   .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${leftfilter}", composeleftfilter + '-4')
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipfl)
+   .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter)
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfr)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter + '-2')
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfr)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter + '-3')
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfr)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter + '-4')
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfr)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${output_device}", output_device)
+   .replace("${output_format}", output_formatx);
+      
+   fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
     else defer.resolve();
@@ -643,6 +738,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
+  self.config.set('vobaf', data['vobaf']);
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
@@ -732,34 +828,32 @@ ControllerBrutefir.prototype.playleftsweepfile = function(track) {
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
  var track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_L_refL.WAV';
  var safeUri = track.replace(/"/g, '\\"');
-console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=519');
+ console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=519');
 
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
+ if (outsample == '44100') {
 
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Rew 5.19 - Sweep tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
-}
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Rew 5.19 - Sweep tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+ }
 };
 
 
@@ -769,34 +863,32 @@ ControllerBrutefir.prototype.playleftsweepfile520 = function(track) {
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
  var track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_L_refL.WAV';
  var safeUri = track.replace(/"/g, '\\"');
-  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Rew 5.20 - Sweep tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
-}
+ var outsample = self.config.get('smpl_rate');
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Rew 5.20 - Sweep tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+ }
 };
- // });
+// });
 
 
 
@@ -807,31 +899,29 @@ ControllerBrutefir.prototype.playrightsweepfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_R_refL.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Rew 5.19 - Sweep tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
-}
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Rew 5.19 - Sweep tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+ }
 };
 
 
@@ -842,31 +932,29 @@ ControllerBrutefir.prototype.playrightsweepfile520 = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_R_refL.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Rew 5.20 - Sweep tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sapmle rate!!!!!!!!!!!'+ outsample);
-}
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Rew 5.20 - Sweep tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sapmle rate!!!!!!!!!!!'+ outsample);
+ }
 };
 
 //here we play both channel when button is pressed
@@ -895,7 +983,7 @@ ControllerBrutefir.prototype.playbothsweepfile520 = function(track) {
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
  var track = '/data/plugins/audio_interface/brutefir/tools/512kMeasSweep_20_to_20000_44k_PCM16_LR_refR.wav';
  var safeUri = track.replace(/"/g, '\\"');
-console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520');
+ console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520');
  //return self.mpdPlugin.sendMpdCommand('stop', [])
  //.then(function() {
  try {
@@ -915,31 +1003,29 @@ ControllerBrutefir.prototype.playleftpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_L.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Pink tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sample rate!!!!!!!!!!!'+ outsample);
-}
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Pink tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt sample rate!!!!!!!!!!!'+ outsample);
+ }
 };
 
 //here we play right pink noise channel when button is pressed
@@ -949,31 +1035,29 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
  var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_R.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Pink tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-//console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
-}
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Pink tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  //console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
+ }
 };
 
 
@@ -981,34 +1065,32 @@ var modalData = {
 ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_Both.wav';
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
-if (outsample == '44100') {
-	//console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
- 	//return self.mpdPlugin.sendMpdCommand('stop', [])
- 	// .then(function() {
- 	try {
-  	exec('/usr/bin/killall aplay');
-  	exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-	 } catch (e) {
-  	console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
- 	};
-} else { 
-var modalData = {
-  title: 'Pink tools sample rate',
-  message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
-  size: 'lg',
-	buttons: [
-                    {
-                      name: 'Close',
-                      class: 'btn btn-warning'
-                    },
-		]
- };
- self.commandRouter.broadcastMessage("openModal", modalData);
-console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!'+ outsample);
-}
+ if (outsample == '44100') {
+  //console.log('RRRRREEEEEEEEEWWWWWWVVVVVVVVEEEEEEERRRRRRRRSSSSSIIIIIIIOOOOOOOOOOON=520'+ outsample);
+  //return self.mpdPlugin.sendMpdCommand('stop', [])
+  // .then(function() {
+  try {
+   exec('/usr/bin/killall aplay');
+   exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  } catch (e) {
+   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+  };
+ } else {
+  var modalData = {
+   title: 'Sweep tools sample rate',
+   message: 'Please set sample rate to 44.1kHz and save the configuration in order to use this file',
+   size: 'lg',
+   buttons: [{
+    name: 'Close',
+    class: 'btn btn-warning'
+   }, ]
+  };
+  self.commandRouter.broadcastMessage("openModal", modalData);
+  console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTt ssmaple rate!!!!!!!!!!!' + outsample);
+ }
 };
 
 //here we stop aplay
@@ -1186,7 +1268,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function() {
   // once completed, uncomment
 
   return self.commandRouter.volumioUpdateVolumeSettings(settings)
-  
+
  }, 8000);
 
  //});

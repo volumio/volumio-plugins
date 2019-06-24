@@ -18,34 +18,75 @@ delay: ${delay};
     };
 
 
-coeff "filter_1" {
+coeff "lfilter_1" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
 ${skip_1}
-#format: "text";
+attenuation: ${lattenuation};
+};
+
+coeff "lfilter_2" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+
+coeff "lfilter_3" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+
+coeff "lfilter_4" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
 attenuation: ${lattenuation};
 };
 
 filter "l_drc" {
 from_inputs: "l_in";
-#from_filters: "filter_1";
 to_outputs: "l_out"/0.0;
-coeff: "filter_1";
+coeff: "lfilter_1";
 process: -1;
 };
 
-coeff "filter_2" {
+coeff "rfilter_1" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}
-#format: "text";
+attenuation: ${rattenuation};
+};
+
+coeff "rfilter_2" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rfilter_3" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rfilter_4" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
 attenuation: ${rattenuation};
 };
 
 filter "r_drc" {
 from_inputs: "r_in";
 to_outputs: "r_out"/0.0;
-coeff: "filter_2";
+coeff: "rfilter_1";
 #delay: 0,5;
 process: -1;
 };

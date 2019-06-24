@@ -9,6 +9,7 @@
 "output_format":{"type": "string","value": "S16_LE"},
 "input_device":{"type": "string","value": "Loopback,1"},
 "output_device":{"type": "string","value": "0"},
+"vobaf": {"type": "boolean","value": false },
 "ldistance":{"type": "string","value": "0"},
 "rdistance":{"type": "string","value": "0"},
 "outputfilename":{"type": "string","value": "Empty=name of file to convert"},

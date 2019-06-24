@@ -1,4 +1,4 @@
-June 15th 2019
+June 24th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -21,14 +21,31 @@ It provides :
 
 ## NEW!
 
-The plugin is able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It will be documented soon!
+The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. This is the first version, some improvement are comming.
+
+- Easy to use : create 4 filters for left and right channel, with the following this exact naming :
+
+		- first filter (the one you select in webUI) for volume 0-19: myfilter.ext
+		- second filter for volume 20-39 : myfilter.ext-2
+		- third filter for volume 40-69 : myfilter.ext-3
+		- fourth filter for volume for 70-100 : myfilter.ext-4
+
+- Place all filters in the required shared directory.
+
+- In webUI select first filter and enable VoBAF. Save, it's done!
+
+- Now, when volume is changed, the plugin switches from a filter to an other smmothly!
+
+
+The plugin is also able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It will be documented soon!
 
 
 To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html)
 
 
 
-Output Base scheme
+
+Base scheme
 
 [volumio]--->[Loopback]--->[Brutefir]--->[output /DAC]
 
@@ -80,11 +97,9 @@ nearly everythings
 
 ### 4. Last changes
 
-June 15th 2019
+June 25th 2019
 
-- 44.1kHz sweep tools for REW 5.19 and REW 5.20
-- 44.1kHz pink tools
-- Modal warning if sample rate is not 44.1 when using tools.
+- first VoBAF implementation
 
 May 25th 2019
 
