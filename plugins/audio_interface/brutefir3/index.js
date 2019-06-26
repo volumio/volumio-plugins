@@ -289,12 +289,20 @@ ControllerBrutefir.prototype.onStart = function() {
 // here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI
 ControllerBrutefir.prototype.sendvolumelevel = function() {
  var self = this;
- var leftf = self.config.get('leftfilter');
- var rightf = self.config.get('rightfilter');
+
+ var vobaf = self.config.get('vobaf');
+
    socket.on('pushState', function(data) {
-var vobaf = self.config.get('vobaf');
-console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf);
+
 if (vobaf == true) {
+ var leftfilter;
+ var leftf;
+ var rightfilter;
+ var rightf;
+
+leftf = self.config.get('leftfilter');
+rightf = self.config.get('rightfilter');
+console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf + leftfilter + rightfilter);
    if (data.volume <= "20") {
     // console.log("volume is <= 20 :" + data.volume + brutefircmd);
     brutefircmd = ('cfc "l_drc" "lfilter_1" "r_drc" "rfilter_1"');
@@ -582,7 +590,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var leftfilter;
    var rightfilter;
    var composeleftfilter = filter_path + self.config.get('leftfilter');
+   var composeleftfilter2,composeleftfilter3,composeleftfilter4 
    var composerightfilter = filter_path + self.config.get('rightfilter');
+   var composerightfilter2,composerightfilter3,composerightfilter4
    var lattenuation;
    var rattenuation;
 
@@ -642,29 +652,42 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
-    composeleftfilter = "dirac pulse";
+    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = "dirac pulse";
    } else leftfilter = filter_path + self.config.get('leftfilter');
    if (self.config.get('rightfilter') == "Dirac pulse")
-    composerightfilter = "dirac pulse";
+    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
- /*  //   console.log(output_device);
-   var conf1 = data.replace("${smpl_rate}", self.config.get('smpl_rate'));
-   var conf2 = conf1.replace("${filter_size}", filtersizedivided);
-   var conf3 = conf2.replace("${numb_part}", num_part);
-   var conf4 = conf3.replace("${input_device}", input_device);
-   var conf5 = conf4.replace("${delay}", delay);
-   var conf6 = conf5.replace("${leftfilter}", composeleftfilter);
-   var conf7 = conf6.replace("${filter_format1}", self.config.get('filter_format'));
-   var conf8 = conf7.replace("${skip_1}", skipfl);
-   var conf9 = conf8.replace("${lattenuation}", self.config.get('attenuation'));
-   var conf10 = conf9.replace("${rightfilter}", composerightfilter);
-   var conf11 = conf10.replace("${filter_format2}", self.config.get('filter_format'));
-   var conf12 = conf11.replace("${skip_2}", skipfr);
-   var conf13 = conf12.replace("${rattenuation}", self.config.get('attenuation'));
-   var conf14 = conf13.replace("${output_device}", output_device);
-   var conf15 = conf14.replace("${output_format}", output_formatx);
-*/
 
+var vobaf = self.config.get('vobaf');
+
+var skipflv;
+var skipfrv;
+
+if (vobaf == false) { 
+composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
+
+skipflv = skipfrv = "";
+} else {
+
+
+   if (self.config.get('leftfilter') == "Dirac pulse") {
+   composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = "dirac pulse";
+}else {
+composeleftfilter2 = filter_path + self.config.get('leftfilter')+'-2';
+composeleftfilter3 = filter_path + self.config.get('leftfilter')+'-3';
+composeleftfilter4 = filter_path + self.config.get('leftfilter')+'-4';
+};
+  if (self.config.get('rightfilter') == "Dirac pulse") {
+   composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
+ } else {
+composerightfilter2 = filter_path + self.config.get('rightfilter')+'-2';
+composerightfilter3 = filter_path + self.config.get('rightfilter')+'-3';
+composerightfilter4 = filter_path + self.config.get('rightfilter')+'-4';
+};
+skipflv = skipfl;
+skipfrv = skipfr;
+
+};
 let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
    .replace("${filter_size}", filtersizedivided)
    .replace("${numb_part}", num_part)
@@ -674,33 +697,33 @@ let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
    .replace("${filter_format1}", self.config.get('filter_format'))
    .replace("${skip_1}", skipfl)
    .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter +'-2')
+   .replace("${leftfilter}", composeleftfilter2)
    .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipfl)
+   .replace("${skip_1}", skipflv)
    .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter + '-3')
+   .replace("${leftfilter}", composeleftfilter3)
    .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipfl)
+   .replace("${skip_1}", skipflv)
    .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter + '-4')
+   .replace("${leftfilter}", composeleftfilter4)
    .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipfl)
+   .replace("${skip_1}", skipflv)
    .replace("${lattenuation}", self.config.get('attenuation'))
    .replace("${rightfilter}", composerightfilter)
    .replace("${filter_format2}", self.config.get('filter_format'))
    .replace("${skip_2}", skipfr)
    .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter + '-2')
+   .replace("${rightfilter}", composerightfilter2)
    .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfr)
+   .replace("${skip_2}", skipfrv)
    .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter + '-3')
+   .replace("${rightfilter}", composerightfilter3)
    .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfr)
+   .replace("${skip_2}", skipfrv)
    .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter + '-4')
+   .replace("${rightfilter}", composerightfilter4)
    .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfr)
+   .replace("${skip_2}", skipfrv)
    .replace("${rattenuation}", self.config.get('attenuation'))
    .replace("${output_device}", output_device)
    .replace("${output_format}", output_formatx);
