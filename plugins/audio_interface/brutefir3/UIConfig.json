@@ -23,7 +23,8 @@
           "filter_size",
           "smpl_rate",
           "output_format",
-	  "vobaf"
+	  "vobaf",
+	"vrange"
         ]
       },
       "content": [
@@ -251,7 +252,24 @@
         "doc": "Use VoBAF : Volume based adaptativ filtering",
         "label": "Use VoBAF",
         "value": false
-	}
+},
+{
+             "id": "vrange",
+             "element": "input",
+             "label": "Volume change values",
+             "description": "Desc",
+             "value": {
+	           "value": "10,20,33,56,78",
+		   "label": "dirac pulse"
+			},
+		"options": [],
+		
+		"visibleIf": {
+		"field": "vobaf",
+		"value": true
+		}
+         }
+
       ]
     },
 {

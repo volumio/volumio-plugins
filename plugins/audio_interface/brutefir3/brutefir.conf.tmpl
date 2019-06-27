@@ -32,7 +32,6 @@ ${skip_1}
 attenuation: ${lattenuation};
 };
 
-
 coeff "lfilter_3" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
@@ -40,8 +39,21 @@ ${skip_1}
 attenuation: ${lattenuation};
 };
 
-
 coeff "lfilter_4" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lfilter_5" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lfilter_6" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
 ${skip_1}
@@ -77,6 +89,20 @@ attenuation: ${rattenuation};
 };
 
 coeff "rfilter_4" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rfilter_5" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rfilter_6" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}

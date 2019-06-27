@@ -289,8 +289,10 @@ ControllerBrutefir.prototype.onStart = function() {
 // here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI
 ControllerBrutefir.prototype.sendvolumelevel = function() {
  var self = this;
-
+ 
  var vobaf = self.config.get('vobaf');
+
+
 
    socket.on('pushState', function(data) {
 
@@ -300,26 +302,44 @@ if (vobaf == true) {
  var rightfilter;
  var rightf;
 
+
+	var vrange = self.config.get('vrange');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarray = vrange.split(',');
+    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + coefarray)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarray) {
+    console.log(coefarray[i]);
+    }
+
 leftf = self.config.get('leftfilter');
 rightf = self.config.get('rightfilter');
-console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf + leftfilter + rightfilter);
-   if (data.volume <= "20") {
-    // console.log("volume is <= 20 :" + data.volume + brutefircmd);
+//console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf + leftfilter + rightfilter);
+   if (data.volume <= coefarray[0]) {
     brutefircmd = ('cfc "l_drc" "lfilter_1" "r_drc" "rfilter_1"');
    self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + ' and ' + rightf);
-   } else if (data.volume > "20" && data.volume < "40") {
-    //    console.log("volume is > 20 but < 40:" + data.volume + brutefircmd);
+
+   } else if (data.volume > coefarray[0] && data.volume < coefarray[1]) {
     brutefircmd = ('cfc "l_drc" "lfilter_2" "r_drc" "rfilter_2"');
    self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-2 and ' + rightf + '-2');
-   } else if (data.volume >= "40" && data.volume < "70") {
-    //  console.log("volume is >40 but inf 70 :" + data.volume);
+
+   } else if (data.volume >= coefarray[1] && data.volume < coefarray[2]) {
     brutefircmd = ('cfc "l_drc" "lfilter_3" "r_drc" "rfilter_3"');
    self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-3 and ' + rightf + '-3');
-   } else if (data.volume >= "70") {
-    //console.log("volume is > 20 but < 40:" + data.volume + brutefircmd);
+
+   } else if (data.volume >= coefarray[2] && data.volume < coefarray[3]) {
     brutefircmd = ('cfc "l_drc" "lfilter_4" "r_drc" "rfilter_4"');
    self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-4 and ' + rightf + '-4');
-   }
+
+   } else if (data.volume >= coefarray[3] && data.volume < coefarray[4]) {
+    brutefircmd = ('cfc "l_drc" "lfilter_5" "r_drc" "rfilter_5"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-5 and ' + rightf + '-5');
+
+   }  else if (data.volume >= coefarray[4]) {
+    brutefircmd = ('cfc "l_drc" "lfilter_6" "r_drc" "rfilter_6"');
+   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-6 and ' + rightf + '-6');
+}
+
 //});
  var brutefircmd
  var client = new net.Socket();
@@ -517,6 +537,25 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     //------------------------------------------------------------------
 
+/*
+  //for vrange
+    // we retrieve the coefficient configuration
+    var coefconf = self.config.get('vrange');
+    // it is a string, so to get single values we split them by , and create an array from that
+    var coefarray = coefconf.split(',');
+    //console.log(coefarray)
+    // for every value that we put in array, we set the according bar value
+    for (var i in coefarray) {
+console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + coefarray[i]);
+uiconf.sections[0].content[8].config.bars.value = ["23","30"]
+  //   uiconf.sections[0].content[8].config.bars[i].value = coefarray[i]
+    };
+*/
+  //  var coefconf = self.config.get('vrange');
+  //  uiconf.sections[0].content[8].config.bars1.value = coefconf
+
+    uiconf.sections[0].content[8].value = self.config.get('vrange');
+
     value = self.config.get('attenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
@@ -532,9 +571,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
+   
     uiconf.sections[0].content[7].value = self.config.get('vobaf');
 
-    var value;
     defer.resolve(uiconf);
    })
   .fail(function() {
@@ -676,6 +715,8 @@ skipflv = skipfrv = "";
 composeleftfilter2 = filter_path + self.config.get('leftfilter')+'-2';
 composeleftfilter3 = filter_path + self.config.get('leftfilter')+'-3';
 composeleftfilter4 = filter_path + self.config.get('leftfilter')+'-4';
+composeleftfilter5 = filter_path + self.config.get('leftfilter')+'-5';
+composeleftfilter6 = filter_path + self.config.get('leftfilter')+'-6';
 };
   if (self.config.get('rightfilter') == "Dirac pulse") {
    composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
@@ -683,6 +724,8 @@ composeleftfilter4 = filter_path + self.config.get('leftfilter')+'-4';
 composerightfilter2 = filter_path + self.config.get('rightfilter')+'-2';
 composerightfilter3 = filter_path + self.config.get('rightfilter')+'-3';
 composerightfilter4 = filter_path + self.config.get('rightfilter')+'-4';
+composerightfilter5 = filter_path + self.config.get('rightfilter')+'-5';
+composerightfilter6 = filter_path + self.config.get('rightfilter')+'-6';
 };
 skipflv = skipfl;
 skipfrv = skipfr;
@@ -709,6 +752,14 @@ let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
    .replace("${filter_format1}", self.config.get('filter_format'))
    .replace("${skip_1}", skipflv)
    .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${leftfilter}", composeleftfilter5)
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipflv)
+   .replace("${lattenuation}", self.config.get('attenuation'))
+   .replace("${leftfilter}", composeleftfilter6)
+   .replace("${filter_format1}", self.config.get('filter_format'))
+   .replace("${skip_1}", skipflv)
+   .replace("${lattenuation}", self.config.get('attenuation'))
    .replace("${rightfilter}", composerightfilter)
    .replace("${filter_format2}", self.config.get('filter_format'))
    .replace("${skip_2}", skipfr)
@@ -722,6 +773,14 @@ let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
    .replace("${skip_2}", skipfrv)
    .replace("${rattenuation}", self.config.get('attenuation'))
    .replace("${rightfilter}", composerightfilter4)
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfrv)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter5)
+   .replace("${filter_format2}", self.config.get('filter_format'))
+   .replace("${skip_2}", skipfrv)
+   .replace("${rattenuation}", self.config.get('attenuation'))
+   .replace("${rightfilter}", composerightfilter6)
    .replace("${filter_format2}", self.config.get('filter_format'))
    .replace("${skip_2}", skipfrv)
    .replace("${rattenuation}", self.config.get('attenuation'))
@@ -762,6 +821,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
   self.config.set('vobaf', data['vobaf']);
+  self.config.set('vrange', data['vrange']);
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
