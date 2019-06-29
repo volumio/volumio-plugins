@@ -629,9 +629,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var leftfilter;
    var rightfilter;
    var composeleftfilter = filter_path + self.config.get('leftfilter');
-   var composeleftfilter2,composeleftfilter3,composeleftfilter4 
+   var composeleftfilter2,composeleftfilter3,composeleftfilter4,composeleftfilter5,composeleftfilter6 
    var composerightfilter = filter_path + self.config.get('rightfilter');
-   var composerightfilter2,composerightfilter3,composerightfilter4
+   var composerightfilter2,composerightfilter3,composerightfilter4,composerightfilter5,composerightfilter6
    var lattenuation;
    var rattenuation;
 
@@ -691,10 +691,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
-    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = "dirac pulse";
+    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = "dirac pulse";
    } else leftfilter = filter_path + self.config.get('leftfilter');
    if (self.config.get('rightfilter') == "Dirac pulse")
-    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
+    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = "dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
 
 var vobaf = self.config.get('vobaf');
@@ -703,7 +703,7 @@ var skipflv;
 var skipfrv;
 
 if (vobaf == false) { 
-composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
+composeleftfilter2 = composeleftfilter3 = composeleftfilter4= composeleftfilter5= composeleftfilter6 = composerightfilter2 = composerightfilter3 = composerightfilter4 =composerightfilter5 =composerightfilter6= "dirac pulse";
 
 skipflv = skipfrv = "";
 } else {
