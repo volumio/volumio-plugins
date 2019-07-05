@@ -13,7 +13,8 @@ sudo rm /lib/systemd/system/nanosoundcd_progressweb.service
 sudo rm /lib/systemd/system/nanosoundcd_web.service
 sudo /bin/systemctl daemon-reload
 
-sudo rm -r /home/volumio/nanomesher_nanosoundcd
+sudo rm -r -f /home/volumio/nanomesher_nanosoundcd
+sudo rm -r -f /home/volumio/python-audio-tools/
 
 echo "Done"
 echo "pluginuninstallend"
