@@ -19,13 +19,11 @@
           "attenuation",
           "leftfilter",
           "rightfilter",
-	  "filter_format",
+          "filter_format",
           "filter_size",
           "smpl_rate",
-          "output_format",
-	  "vobaf",
-	"vrange"
-        ]
+          "output_format"
+          ]
       },
       "content": [
         {
@@ -110,46 +108,46 @@
           },
           "options": []
         },
-	{
-					"id": "filter_format",
-					"element": "select",
-					"doc": "filters format",
-					"label": "TRANSLATE.FILTER_FORMAT",
-					"value": {
-						"value": "text",
-						"label": "text"
-					},
-					"options": [
-						{
-							"value": "text",
-							"label": "text- 32/64 bits floats line (.txt) in rephase"
-						},
-						{
-							"value": "S16_LE",
-							"label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
-						},
-						{
-							"value": "S24_LE",
-							"label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
-						},
-						{
-							"value": "S32_LE",
-							"label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
-						},
-						{
-							"value": "FLOAT_LE",
-							"label": "FLOAT_LE- 32 bits floating point (.pcm)"
-						},
-						{
-							"value": "FLOAT64_LE",
-							"label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
-						}
-					],
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					}
-				},
+        {
+          "id": "filter_format",
+          "element": "select",
+          "doc": "filters format",
+          "label": "TRANSLATE.FILTER_FORMAT",
+          "value": {
+            "value": "text",
+            "label": "text"
+          },
+          "options": [
+            {
+              "value": "text",
+              "label": "text- 32/64 bits floats line (.txt) in rephase"
+            },
+            {
+              "value": "S16_LE",
+              "label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "S24_LE",
+              "label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "S32_LE",
+              "label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "FLOAT_LE",
+              "label": "FLOAT_LE- 32 bits floating point (.pcm)"
+            },
+            {
+              "value": "FLOAT64_LE",
+              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
+            }
+          ],
+          "visibleIf": {
+            "field": "enabled",
+            "value": true
+          }
+        },
         {
           "id": "filter_size",
           "element": "select",
@@ -203,7 +201,7 @@
           "element": "select",
           "doc": "sample rate",
           "label": "TRANSLATE.SAMPLE_RATE",
-           "value": {
+          "value": {
             "value": "96000",
             "label": "96kHz"
           },
@@ -216,7 +214,7 @@
               "value": "48000",
               "label": "48kHz"
             },
-	    {
+            {
               "value": "88200",
               "label": "88.2kHz"
             },
@@ -224,7 +222,7 @@
               "value": "96000",
               "label": "96kHz"
             },
-{
+            {
               "value": "176400",
               "label": "176.4kHz"
             },
@@ -243,46 +241,270 @@
             "value": "sitems",
             "label": "sitems"
           },
-          "options": [
-                     ]
-        },
-	{
-        "id": "vobaf",
-        "element": "switch",
-        "doc": "Use VoBAF : Volume based adaptativ filtering",
-        "label": "Use VoBAF",
-        "value": false
-},
-{
-             "id": "vrange",
-             "element": "input",
-             "label": "Volume change values",
-             "description": "Desc",
-             "value": {
-	           "value": "10,20,33,56,78",
-		   "label": "dirac pulse"
-			},
-		"options": [],
-		
-		"visibleIf": {
-		"field": "vobaf",
-		"value": true
-		}
-         }
+          "options": []
+        }
 
       ]
     },
+      {
+      "id": "vobaf",
+      "element": "section",
+      "label": "VoBAF : Volume Based Adaptativ Filtering - EXPERIMENTAL",
+      "icon": "fa-volume-up",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/brutefir",
+        "method": "saveVoBAF"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+          "vobaf",
+	"Lowsw",
+          "Low",
+	"LM1sw",
+	  "LM1",
+	"LM2sw",
+	  "LM2",
+          "M",
+	"HMsw",
+	  "HM",
+	"Highsw",
+	"High",
+	"messon",
+	"maxvolume"
+        ],
+ "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+     },
+      "content": [
+        {
+          "id": "vobaf",
+          "element": "switch",
+          "doc": "Use VoBAF : Volume based adaptativ filtering",
+          "label": "Use VoBAF",
+          "value": false
+        },
+        {
+          "id": "minvolume",
+          "label": "Min Volume",
+	  "type":"text",
+          "element": "select",
+          "description": "Min volume",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [
+            {
+              "value": "0",
+              "label": "0"
+            }
+          ],
+ "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+ 	{
+          "id": "Lowsw",
+          "element": "switch",
+          "doc": "Low",
+          "label": "Low filter",
+          "value": false,
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+        {
+          "id": "Low",
+          "element": "select",
+          "label": "Low volume treshold",
+          "description": "Desc",
+          "value": {
+            "value": "10",
+            "label": "10"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "Lowsw",
+            "value": true
+          }
+	},
+	{
+          "id": "LM1sw",
+          "element": "switch",
+          "doc": "LM1",
+          "label": "LM1 filter",
+          "value": false,
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+        {
+          "id": "LM1",
+          "element": "select",
+          "doc": "VoBAF : LM1 filtering",
+          "label": "LM1 volume treshold",
+          "value": {
+            "value": "10",
+            "label": "10"
+          },
+	  "options": [],
+          "visibleIf": {
+            "field": "LM1sw",
+            "value": true
+          }
+        },
+	{
+          "id": "LM2sw",
+          "element": "switch",
+          "doc": "LM2",
+          "label": "LM2 filter",
+          "value": false,
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+        {
+          "id": "LM2",
+          "element": "select",
+          "label": "LM2 volume treshold",
+          "description": "Desc",
+          "value": {
+            "value": "10",
+            "label": "10"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "LM2sw",
+            "value": true
+          }
+        },
+	{
+          "id": "Msw",
+          "element": "select",
+          "doc": "M",
+          "label": "M filter",
+          "value":  {
+            "value": "Always ON",
+            "label": "Always ON"
+                },
+          "options": [],
+"visibleIf": {
+            "field": "vobaf",
+            "value": true
+          
+          }
+        },
+	{
+          "id": "M",
+          "element": "select",
+          "label": "M Volume treshold",
+          "description": "Desc",
+          "value": {
+            "value": "50",
+            "label": "50"
+		},
+     "options": [],
+ "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          
+          }
+     
+          
+        },
+	{
+          "id": "HMsw",
+          "element": "switch",
+          "doc": "HM",
+          "label": "HM filter",
+          "value": false,
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+        {
+          "id": "HM",
+          "element": "select",
+          "label": "HM Volume treshold",
+          "description": "Desc",
+          "value": {
+            "value": "65",
+            "label": "65"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "HMsw",
+            "value": true
+          }
+        },
+	{
+          "id": "Highsw",
+          "element": "switch",
+          "doc": "High",
+          "label": "High filter",
+          "value": false,
+	 "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+          
+        },
+        {
+          "id": "maxvolume",
+          "label": "Max Volume",
+	  "type" : "text",
+          "element": "select",
+          "description": "Maximum volume",
+          "value": {
+            "value": "100",
+            "label": "100"
+          },
+	"options": [
+	{
+	"value": "100",
+            "label": "100"
+}
+],
+ "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+         
+        },
 {
+          "id": "messon",
+          "element": "switch",
+          "doc": "Enable or disable VoBAF message on volume change",
+          "label": "VoBAF volume messages",
+          "value": true,
+	 "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+          
+        }
+      ]
+    },
+    {
       "id": "roomsettings",
       "element": "section",
       "label": "Room settings",
       "icon": "fas fa-home",
-"onSave": {
+      "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/brutefir",
         "method": "saveBrutefirconfigroom"
       },
- "saveButton": {
+      "saveButton": {
         "label": "TRANSLATE.APPLY",
         "data": [
           "ldistance",
@@ -291,48 +513,48 @@
       },
       "content": [
         {
-		"id": "ldistance",
-		"element": "input",
-		"label": "left speaker distance in cm",
-		"doc":"Left speaker distance from listener in cm. Identical value with right = no effect",
-		"value": {
-        	    "value": "0",
-        	    "label": "0"
-          		}
-	},
-	{
-		"id": "rdistance",
-		"element": "input",
-		"label": "right speaker distance in cm",
-		"doc":"Right speaker distance from listener in cm. Identical value with left = no effect",
-		"value": {
-        	    "value": "0",
-        	    "label": "0"
-          		}
-	}
-		]
-},
-      {
+          "id": "ldistance",
+          "element": "input",
+          "label": "left speaker distance in cm",
+          "doc": "Left speaker distance from listener in cm. Identical value with right = no effect",
+          "value": {
+            "value": "0",
+            "label": "0"
+          }
+        },
+        {
+          "id": "rdistance",
+          "element": "input",
+          "label": "right speaker distance in cm",
+          "doc": "Right speaker distance from listener in cm. Identical value with left = no effect",
+          "value": {
+            "value": "0",
+            "label": "0"
+          }
+        }
+      ]
+    },
+    {
       "id": "filtercreat",
       "element": "section",
       "label": "TRANSLATE.FILTER_CREATION",
       "icon": "fa-filter",
-"onSave": {
+      "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/brutefir",
         "method": "fileconvert"
       },
- "saveButton": {
+      "saveButton": {
         "label": "TRANSLATE.CREATE_FILTER",
         "data": [
-	"filetoconvert",
-	"bk",
-	"drcconfig",
-	"outputfilename"
+          "filetoconvert",
+          "bk",
+          "drcconfig",
+          "outputfilename"
         ]
       },
-"content": [
-{
+      "content": [
+        {
           "id": "filetoconvert",
           "element": "select",
           "doc": "TRANSLATE.DOC_FILE_TO_CONVERT",
@@ -342,8 +564,8 @@
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": []
-        },  
-{
+        },
+        {
           "id": "bk",
           "element": "select",
           "doc": "TRANSLATE.DOC_TARGET_CURVE",
@@ -353,8 +575,8 @@
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": []
-        }, 
-{
+        },
+        {
           "id": "drcconfig",
           "element": "select",
           "doc": "TRANSLATE.DOC_DRCCONFIG",
@@ -372,11 +594,11 @@
               "value": "minimal",
               "label": "minimal"
             },
- 	    {
+            {
               "value": "normal",
               "label": "normal"
             },
-	    {
+            {
               "value": "erb",
               "label": "erb"
             },
@@ -384,7 +606,7 @@
               "value": "strong",
               "label": "strong"
             },
-	    {
+            {
               "value": "extreme",
               "label": "extreme"
             },
@@ -394,7 +616,7 @@
             }
           ]
         },
-	{
+        {
           "id": "outputfilename",
           "element": "input",
           "doc": "TRANSLATE.DOC_OUTPUT_FILE_NAME",
@@ -404,29 +626,180 @@
             "label": ""
           },
           "options": []
-        
-  	}
-]
-},
-	{
+        }
+      ]
+    },
+    {
       "id": "advanced",
       "element": "section",
       "label": "Tools",
       "icon": "fa-wrench",
       "content": [
-        
-	{
-          "id": "installtools",
+        {
+          "id": "rewversion",
+          "element": "switch",
+          "doc": "Rew version. Set to ON if you use REW <=5.19. Set to OFF if you use REW >=5.20 ",
+          "label": "Measure with Rew <=5.19",
+          "value": false,
+          "visibleIf": {
+            "field": "sweep",
+            "value": true
+          }
+        },
+        {
+          "id": "playleftsweepfile",
           "element": "button",
-          "label": "TRANSLATE.INSTALL_TOOLS",
-          "description": "TRANSLATE.DESC_INSTALL_TOOLS",
+          "label": "TRANSLATE.PLAY_L_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
-            "method": "installtools"
+            "method": "playleftsweepfile"
+          },
+          "visibleIf": {
+            "field": "rewversion",
+            "value": true
           }
-	  },
-	{
+        },
+        {
+          "id": "playrightsweepfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_R_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playrightsweepfile"
+          },
+          "visibleIf": {
+            "field": "rewversion",
+            "value": true
+          }
+        },
+        {
+          "id": "playleftsweepfile520",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_L_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playleftsweepfile520"
+          },
+          "visibleIf": {
+            "field": "rewversion",
+            "value": false
+          }
+        },
+        {
+          "id": "playrightsweepfile520",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_R_SWEEP",
+          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playrightsweepfile520"
+          },
+          "visibleIf": {
+            "field": "rewversion",
+            "value": false
+          }
+        },
+        {
+          "id": "stopaplay",
+          "element": "button",
+          "label": "Stop to play",
+          "description": "Stop to play",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "stopaplay"
+          },
+          "visibleIf": {
+            "field": "sweep",
+            "value": true
+          }
+        },
+        {
+          "id": "pink",
+          "element": "switch",
+          "label": "pink noise tools",
+          "description": "To play pink noise",
+          "value": false
+        },
+        {
+          "id": "playleftpinkfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_L_PINK",
+          "description": "TRANSLATE.DESC_PLAY_L_PINK",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playleftpinkfile"
+          },
+          "visibleIf": {
+            "field": "pink",
+            "value": true
+          }
+        },
+        {
+          "id": "playrightpinkfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_R_PINK",
+          "description": "TRANSLATE.DESC_PLAY_R_PINK",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playrightpinkfile"
+          },
+          "visibleIf": {
+            "field": "pink",
+            "value": true
+          }
+        },
+        {
+          "id": "playlbothpinkfile",
+          "element": "button",
+          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_PINK",
+          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_PINK",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "playbothpinkfile"
+          },
+          "visibleIf": {
+            "field": "pink",
+            "value": true
+          }
+        },
+        {
+          "id": "stopaplay",
+          "element": "button",
+          "label": "Stop to play",
+          "description": "Stop to play",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "stopaplay"
+          },
+          "visibleIf": {
+            "field": "pink",
+            "value": true
+          }
+        },
+        {
+          "id": "removetools",
+          "element": "button",
+          "label": "TRANSLATE.REMOVE_TOOLS",
+          "description": "TRANSLATE.DESC_REMOVE_TOOLS",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "removetools"
+          }
+        },
+        {
           "id": "wikilink",
           "element": "button",
           "label": "TRANSLATE.OPEN_WIKI",

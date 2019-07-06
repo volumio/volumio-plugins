@@ -22,6 +22,7 @@ sudo apt-get -y install brutefir drc
 
 echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/brutefirfilters
+mkdir -m 777 /data/INTERNAL/brutefirfilters/VoBAFfilters
 mkdir -m 777 /data/INTERNAL/brutefirfilters/filter-sources
 mkdir -m 777 /data/INTERNAL/brutefirfilters/target-curves
 echo "copying demo flters"

@@ -18,91 +18,26 @@ delay: ${delay};
     };
 
 
-coeff "lfilter_1" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
-attenuation: ${lattenuation};
-};
+#-----------------------
+#room correction filters
+#-----------------------
 
-coeff "lfilter_2" {
+coeff "l_drc" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
 ${skip_1}
-attenuation: ${lattenuation};
-};
-
-coeff "lfilter_3" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
-attenuation: ${lattenuation};
-};
-
-coeff "lfilter_4" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
-attenuation: ${lattenuation};
-};
-
-coeff "lfilter_5" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
-attenuation: ${lattenuation};
-};
-
-coeff "lfilter_6" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
+#format: "text";
 attenuation: ${lattenuation};
 };
 
 filter "l_drc" {
 from_inputs: "l_in";
-to_outputs: "l_out"/0.0;
-coeff: "lfilter_1";
+to_filters: "lVoBAF";
+coeff: "l_drc";
 process: -1;
 };
 
-coeff "rfilter_1" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-attenuation: ${rattenuation};
-};
-
-coeff "rfilter_2" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-attenuation: ${rattenuation};
-};
-
-coeff "rfilter_3" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-attenuation: ${rattenuation};
-};
-
-coeff "rfilter_4" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-attenuation: ${rattenuation};
-};
-
-coeff "rfilter_5" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-attenuation: ${rattenuation};
-};
-
-coeff "rfilter_6" {
+coeff "r_drc" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}
@@ -111,8 +46,114 @@ attenuation: ${rattenuation};
 
 filter "r_drc" {
 from_inputs: "r_in";
+to_filters: "rVoBAF";
+coeff: "r_drc";
+process: -1;
+};
+
+#-------------
+#VoBAF filters
+#-------------
+
+#--------left
+
+coeff "llow" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lLM1" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lLM2" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lM" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lHM" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lHigh" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+filter "lVoBAF" {
+from_filters: "l_drc";
+to_outputs: "l_out"/0.0;
+coeff: "lM";
+process: -1;
+};
+
+#-------------right
+
+coeff "rLow" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM1" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM2" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rM" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rHM" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rHigh" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+filter "rVoBAF" {
+from_filters: "r_drc";
 to_outputs: "r_out"/0.0;
-coeff: "rfilter_1";
+coeff: "rM";
 #delay: 0,5;
 process: -1;
 };

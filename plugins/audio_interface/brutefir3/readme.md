@@ -1,4 +1,4 @@
-June 29th 2019
+July 6th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -21,14 +21,7 @@ It provides :
 
 ## NEW!
 
-The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. This is the first version, some improvement are comming.
-
-- Easy to use : create 4 filters for left and right channel, with the following this exact naming :
-
-		- first filter (the one you select in webUI) for volume 0-19: myfilter.ext
-		- second filter for volume 20-39 : myfilter.ext-2
-		- third filter for volume 40-69 : myfilter.ext-3
-		- fourth filter for volume for 70-100 : myfilter.ext-4
+The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. 
 
 - Place all filters in the required shared directory.
 
@@ -96,6 +89,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+July 6th 2019
+
+- new version of VoBAF...
 
 June 29th 2019
 

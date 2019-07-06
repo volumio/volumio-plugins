@@ -289,78 +289,306 @@ ControllerBrutefir.prototype.onStart = function() {
 // here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI
 ControllerBrutefir.prototype.sendvolumelevel = function() {
  var self = this;
- 
+
+
+
+ socket.on('pushState', function(data) {
  var vobaf = self.config.get('vobaf');
+  if (vobaf == true) {
+console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
+   var brutefircmd
+   var Lowsw = self.config.get('Lowsw');
+   var LM1sw = self.config.get('LM1sw');
+   var LM2sw = self.config.get('LM2sw');
+   var HMsw = self.config.get('HMsw');
+   var Highsw = self.config.get('Highsw');
+   var Low = self.config.get('Low');
+   var LM1 = self.config.get('LM1');
+   var LM2 = self.config.get('LM2');
+   var M = self.config.get('M');
+   var HM = self.config.get('HM');
+   var filmess;
+   var lVoBAF, rVoBAF;
 
+   //1-all filters enabled
+   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == true && Highsw == true) {
+    if (data.volume < Low) {
+     filmess = "Low"
+     lVoBAF = "llow"
+     rVoBAF = "rlow"
 
+    } else if (data.volume > Low && data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
 
-   socket.on('pushState', function(data) {
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
 
-if (vobaf == true) {
- var leftfilter;
- var leftf;
- var rightfilter;
- var rightf;
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
 
+    } else if (data.volume >= M && data.volume < HM) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
 
-	var vrange = self.config.get('vrange');
-    // it is a string, so to get single values we split them by , and create an array from that
-    var coefarray = vrange.split(',');
-    console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + coefarray)
-    // for every value that we put in array, we set the according bar value
-    for (var i in coefarray) {
-    console.log(coefarray[i]);
+    } else if (data.volume >= HM) {
+     filmess = "High"
+     lVoBAF = "lHigh"
+     rVoBAF = "rHigh"
     }
+   }
+   //2-Low not enabled
+   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == true && Highsw == true) {
+    if (data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
 
-leftf = self.config.get('leftfilter');
-rightf = self.config.get('rightfilter');
-//console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + vobaf + leftfilter + rightfilter);
-   if (data.volume <= coefarray[0]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_1" "r_drc" "rfilter_1"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + ' and ' + rightf);
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
 
-   } else if (data.volume > coefarray[0] && data.volume < coefarray[1]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_2" "r_drc" "rfilter_2"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-2 and ' + rightf + '-2');
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
 
-   } else if (data.volume >= coefarray[1] && data.volume < coefarray[2]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_3" "r_drc" "rfilter_3"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-3 and ' + rightf + '-3');
+    } else if (data.volume >= M && data.volume < HM) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
 
-   } else if (data.volume >= coefarray[2] && data.volume < coefarray[3]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_4" "r_drc" "rfilter_4"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-4 and ' + rightf + '-4');
+    } else if (data.volume >= HM) {
+     filmess = "High"
+     lVoBAF = "lHigh"
+     rVoBAF = "rHigh"
+    }
+   }
+   //3-lOW,LM1 not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == true && Highsw == true) {
+    if (data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
 
-   } else if (data.volume >= coefarray[3] && data.volume < coefarray[4]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_5" "r_drc" "rfilter_5"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-5 and ' + rightf + '-5');
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
 
-   }  else if (data.volume >= coefarray[4]) {
-    brutefircmd = ('cfc "l_drc" "lfilter_6" "r_drc" "rfilter_6"');
-   self.commandRouter.pushToastMessage('info', "Filters used : " + leftf + '-6 and ' + rightf + '-6');
-}
+    } else if (data.volume >= M && data.volume < HM) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
 
-//});
- var brutefircmd
- var client = new net.Socket();
- client.connect(3002, '127.0.0.1', function(err) {
-   client.write(brutefircmd);
-   console.log('cmd sent to brutefir = ' + brutefircmd);
-  });
+    } else if (data.volume >= HM) {
+     filmess = "High"
+     lVoBAF = "lHigh"
+     rVoBAF = "rHigh"
+    }
+   }
+   //4-lOW, LM1,LM2 not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == true && Highsw == true) {
+    if (data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
 
- //error handling section
- client.on('error', function(e) {
-  if (e.code == 'ECONNREFUSED') {
-   console.log('Huumm, is brutefir running ?');
-   self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
-  }
-  });
-  client.on('data', function(data) {
-   console.log('Received: ' + data);
-   client.destroy(); // kill client after server's response
-  });
-};
-});
+    } else if (data.volume >= M && data.volume < HM) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+
+    } else if (data.volume >= HM) {
+     filmess = "High"
+     lVoBAF = "lHigh"
+     rVoBAF = "rHigh"
+    }
+   }
+   //5-High not enabled
+   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == true && Highsw == false) {
+    if (data.volume < Low) {
+     filmess = "Low"
+     lVoBAF = "llow"
+     rVoBAF = "rlow"
+
+    } else if (data.volume >= Low && data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
+
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+
+    } else if (data.volume >= M) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+    }
+   }
+
+   //6-HM and High not enabled
+   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == false && Highsw == false) {
+    if (data.volume < Low) {
+     filmess = "Low"
+     lVoBAF = "llow"
+     rVoBAF = "rlow"
+
+    } else if (data.volume >= Low && data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
+
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+    }
+   }
+
+   //7-Low, HM and High not enabled
+   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == false && Highsw == false) {
+    if (data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
+
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+    }
+   }
+
+   //8-Low, LM1, HM and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == false && Highsw == false) {
+    if (data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+    }
+   }
+
+   //9-Low, LM1, LM2 and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == true && Highsw == false) {
+    if (data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+
+    } else if (data.volume >= M) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+    }
+   }
+
+   //10-Low and High not enabled
+   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == true && Highsw == false) {
+    if (data.volume < LM1) {
+     filmess = "LM1"
+     lVoBAF = "lLM1"
+     rVoBAF = "rLM1"
+
+    } else if (data.volume >= LM1 && data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+
+    } else if (data.volume >= M) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+    }
+   }
+
+   //11- Low, LM1 and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == true && Highsw == false) {
+    if (data.volume < LM2) {
+     filmess = "LM2"
+     lVoBAF = "lLM2"
+     rVoBAF = "rLM2"
+
+    } else if (data.volume >= LM2 && data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+
+    } else if (data.volume >= M) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+    }
+   }
+
+   //12- Low, LM1, LM2, HM and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == false && Highsw == false) {
+    filmess = "M"
+    lVoBAF = "lM"
+    rVoBAF = "rM"
+
+   }
+   //  here wend cmd to brutefir
+   var messon = (self.config.get('messon'));
+   if (messon == true) {
+    self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
+   }
+   brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" "rVoBAF" "' + rVoBAF + '"');
+
+
+   var client = new net.Socket();
+   client.connect(3002, '127.0.0.1', function(err) {
+    client.write(brutefircmd);
+    console.log('cmd sent to brutefir = ' + brutefircmd);
+   });
+
+   //error handling section
+   client.on('error', function(e) {
+    if (e.code == 'ECONNREFUSED') {
+     console.log('Huumm, is brutefir running ?');
+     self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+    }
+   });
+   client.on('data', function(data) {
+    console.log('Received: ' + data);
+    client.destroy(); // kill client after server's response
+   });
+  };
+ });
 };
 
 ControllerBrutefir.prototype.onRestart = function() {
@@ -406,9 +634,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     var bkpath = "/data/INTERNAL/brutefirfilters/target-curves";
     var bkl
 
-    uiconf.sections[1].content[0].value = self.config.get('ldistance');
-    uiconf.sections[1].content[1].value = self.config.get('rdistance');
-    uiconf.sections[2].content[3].value = self.config.get('outputfilename');
+    uiconf.sections[2].content[0].value = self.config.get('ldistance');
+    uiconf.sections[2].content[1].value = self.config.get('rdistance');
+    uiconf.sections[3].content[3].value = self.config.get('outputfilename');
     //   uiconf.sections[3].content[1].value = self.config.get('rewversion');
 
     //-----------------------------------
@@ -422,8 +650,8 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
     filetoconvertl = self.config.get('filetoconvert');
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', filetoconvertl);
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', filetoconvertl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', filetoconvertl);
 
 
     fs.readdir(filtersources, function(err, fitem) {
@@ -433,7 +661,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      self.logger.info('list of available files to convert :' + fitems);
      console.log(fitems)
      for (var i in fitems) {
-      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
        value: fitems[i],
        label: fitems[i]
       });
@@ -441,8 +669,8 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     });
 
     bkl = self.config.get('bk');
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', bkl);
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', bkl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.value', bkl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.label', bkl);
 
 
     fs.readdir(bkpath, function(err, bitem) {
@@ -452,7 +680,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      self.logger.info('list of available curves :' + bitems);
      console.log(bitems)
      for (var i in bitems) {
-      self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[1].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[1].options', {
        value: bitems[i],
        label: bitems[i]
       });
@@ -460,15 +688,16 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     });
 
     value = self.config.get('drcconfig');
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[2].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[3].content[2].options'), value));
 
 
     fs.readdir(filterfolder, function(err, item) {
      allfilter = 'Dirac pulse,' + item
      var allfilters = allfilter.replace('filter-sources', '');
      var allfilter2 = allfilters.replace('target-curves', '');
-     items = allfilter2.split(',');
+     var allfilter3 = allfilter2.replace('VoBAFfilters', '');
+     items = allfilter3.split(',');
      //  self.logger.info('list of available filters for DRC :' + items);
      for (var i in items) {
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
@@ -535,26 +764,79 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     }
 
-    //------------------------------------------------------------------
+    //--------VoBAF section----------------------------------------------------------
 
-/*
-  //for vrange
-    // we retrieve the coefficient configuration
-    var coefconf = self.config.get('vrange');
-    // it is a string, so to get single values we split them by , and create an array from that
-    var coefarray = coefconf.split(',');
-    //console.log(coefarray)
-    // for every value that we put in array, we set the according bar value
-    for (var i in coefarray) {
-console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + coefarray[i]);
-uiconf.sections[0].content[8].config.bars.value = ["23","30"]
-  //   uiconf.sections[0].content[8].config.bars[i].value = coefarray[i]
-    };
-*/
-  //  var coefconf = self.config.get('vrange');
-  //  uiconf.sections[0].content[8].config.bars1.value = coefconf
 
-    uiconf.sections[0].content[8].value = self.config.get('vrange');
+    uiconf.sections[1].content[0].value = self.config.get('vobaf');
+
+    uiconf.sections[1].content[2].value = self.config.get('Lowsw');
+    var Low = self.config.get('Low');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
+
+    for (let i = 0; i < 10; i++) {
+
+     //   self.logger.info('list of low values :' + (i));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
+      value: (i),
+      label: (i)
+     });
+    }
+    uiconf.sections[1].content[4].value = self.config.get('LM1sw');
+    var LM1 = self.config.get('LM1');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
+
+    for (let j = 0; j < 40; j++) {
+
+     //   self.logger.info('list of LM1 values :' + (j));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
+      value: (j),
+      label: (j)
+     });
+    }
+    uiconf.sections[1].content[6].value = self.config.get('LM2sw');
+    var LM2 = self.config.get('LM2');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
+
+    for (let k = 0; k < 40; k++) {
+
+     //  self.logger.info('list of LM2 values :' + (k));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
+      value: (k),
+      label: (k)
+     });
+    }
+
+    var M = self.config.get('M');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', M);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', M);
+
+    for (let l = 0; l < 100; l++) {
+
+     //   self.logger.info('list of M values :' + (l));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
+      value: (l),
+      label: (l)
+     });
+    }
+    uiconf.sections[1].content[10].value = self.config.get('HMsw');
+    var HM = self.config.get('HM');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', HM);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', HM);
+
+    for (let m = 50; m < 100; m++) {
+
+     //  self.logger.info('list of HM values :' + (m));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
+      value: (m),
+      label: (m)
+     });
+    }
+    uiconf.sections[1].content[12].value = self.config.get('Highsw');
+    uiconf.sections[1].content[14].value = self.config.get('messon');
+    //    uiconf.sections[0].content[8].value = self.config.get('vrange');
 
     value = self.config.get('attenuation');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
@@ -571,8 +853,8 @@ uiconf.sections[0].content[8].config.bars.value = ["23","30"]
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[5].options'), value));
-   
-    uiconf.sections[0].content[7].value = self.config.get('vobaf');
+
+
 
     defer.resolve(uiconf);
    })
@@ -625,15 +907,29 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var sbauer;
    var input_device = 'Loopback,1';
    var filter_path = "/data/INTERNAL/brutefirfilters/";
-  // var vobaf_filter_path = "/data/INTERNAL/brutefirfilters/vobaffilters";
+   var vobaf_filter_path = "/data/INTERNAL/brutefirfilters/VoBAFfilters";
    var leftfilter;
    var rightfilter;
    var composeleftfilter = filter_path + self.config.get('leftfilter');
-   var composeleftfilter2,composeleftfilter3,composeleftfilter4,composeleftfilter5,composeleftfilter6 
+   var composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7
    var composerightfilter = filter_path + self.config.get('rightfilter');
-   var composerightfilter2,composerightfilter3,composerightfilter4,composerightfilter5,composerightfilter6
+   var composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7
    var lattenuation;
    var rattenuation;
+   var f_ext;
+   //  var f_format = self.config.get('filter_format');
+
+   if (self.config.get('filter_format') == "text") {
+    f_ext = ".txt";
+   } else if (self.config.get('filter_format') == "FLOAT_LE") {
+    f_ext = ".pcm";
+   } else if (self.config.get('filter_format') == "FLOAT64_LE") {
+    f_ext = ".dbl";
+   } else if ((self.config.get('filter_format') == "S16_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S32_LE")) {
+    f_ext = ".wav";
+   }
+
+   //console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + f_ext);
 
    // delay calculation section for both channels
    var delay
@@ -642,7 +938,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var diff
    var cdelay
    var sample_rate = self.config.get('smpl_rate');
-   var sv = 34000 // sound velocity cm/s
+   var sv = 34300 // sound velocity cm/s
 
    if (sldistance > srdistance) {
     diff = sldistance - srdistance
@@ -662,7 +958,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     delay = ('0,0')
    }
 
-
+   //-----------------------------------------
    var n_part = self.config.get('numb_part');
    var num_part = parseInt(n_part);
    var f_size = self.config.get('filter_size');
@@ -691,102 +987,133 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
-    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = "dirac pulse";
+    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = "dirac pulse";
    } else leftfilter = filter_path + self.config.get('leftfilter');
    if (self.config.get('rightfilter') == "Dirac pulse")
-    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = "dirac pulse";
+    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = "dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
 
-var vobaf = self.config.get('vobaf');
+   var vobaf = self.config.get('vobaf');
 
-var skipflv;
-var skipfrv;
+   var skipflv;
+   var skipfrv;
 
-if (vobaf == false) { 
-composeleftfilter2 = composeleftfilter3 = composeleftfilter4= composeleftfilter5= composeleftfilter6 = composerightfilter2 = composerightfilter3 = composerightfilter4 =composerightfilter5 =composerightfilter6= "dirac pulse";
+   if (vobaf == false) {
+    composeleftfilter1 = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composerightfilter1 = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = "dirac pulse";
 
-skipflv = skipfrv = "";
-} else {
+    skipflv = skipfrv = "";
+   } else {
+
+    if (self.config.get('Lowsw') == true) {
+     composeleftfilter2 = composerightfilter2 = vobaf_filter_path + '/Low' + f_ext;
+     skipflv = skipfrv;
+    } else {
+     composeleftfilter2 = composerightfilter2 = "dirac pulse";
+     skipflv = skipfrv = ""
+    }
+
+    if (self.config.get('LM1sw') == true) {
+     composeleftfilter3 = composerightfilter3 = vobaf_filter_path + '/LM1' + f_ext;
+     skipflv = skipfrv = skipfl;
+    } else {
+     composeleftfilter3 = composerightfilter3 = "dirac pulse";
+     skipflv = skipfrv = ""
+    }
+
+    if (self.config.get('LM2sw') == true) {
+     composeleftfilter4 = composerightfilter4 = vobaf_filter_path + '/LM2' + f_ext;
+    } else {
+     composeleftfilter4 = composerightfilter4 = "dirac pulse";
+     skipflv = skipfrv = ""
+    };
+
+    composeleftfilter5 = composerightfilter5 = vobaf_filter_path + '/M' + f_ext;
 
 
-   if (self.config.get('leftfilter') == "Dirac pulse") {
-   composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = "dirac pulse";
-}else {
-composeleftfilter2 = filter_path + self.config.get('leftfilter')+'-2';
-composeleftfilter3 = filter_path + self.config.get('leftfilter')+'-3';
-composeleftfilter4 = filter_path + self.config.get('leftfilter')+'-4';
-composeleftfilter5 = filter_path + self.config.get('leftfilter')+'-5';
-composeleftfilter6 = filter_path + self.config.get('leftfilter')+'-6';
-};
-  if (self.config.get('rightfilter') == "Dirac pulse") {
-   composerightfilter2 = composerightfilter3 = composerightfilter4 = "dirac pulse";
- } else {
-composerightfilter2 = filter_path + self.config.get('rightfilter')+'-2';
-composerightfilter3 = filter_path + self.config.get('rightfilter')+'-3';
-composerightfilter4 = filter_path + self.config.get('rightfilter')+'-4';
-composerightfilter5 = filter_path + self.config.get('rightfilter')+'-5';
-composerightfilter6 = filter_path + self.config.get('rightfilter')+'-6';
-};
-skipflv = skipfl;
-skipfrv = skipfr;
+    if (self.config.get('HMsw') == true) {
+     //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh" + skipfr);
+     composeleftfilter6 = composerightfilter6 = vobaf_filter_path + '/HM' + f_ext;
+     skipflv = skipfr;
 
-};
-let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
-   .replace("${filter_size}", filtersizedivided)
-   .replace("${numb_part}", num_part)
-   .replace("${input_device}", input_device)
-   .replace("${delay}", delay)
-   .replace("${leftfilter}", composeleftfilter)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipfl)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter2)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipflv)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter3)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipflv)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter4)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipflv)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter5)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipflv)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${leftfilter}", composeleftfilter6)
-   .replace("${filter_format1}", self.config.get('filter_format'))
-   .replace("${skip_1}", skipflv)
-   .replace("${lattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfr)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter2)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfrv)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter3)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfrv)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter4)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfrv)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter5)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfrv)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${rightfilter}", composerightfilter6)
-   .replace("${filter_format2}", self.config.get('filter_format'))
-   .replace("${skip_2}", skipfrv)
-   .replace("${rattenuation}", self.config.get('attenuation'))
-   .replace("${output_device}", output_device)
-   .replace("${output_format}", output_formatx);
-      
+    } else {
+     composeleftfilter6 = composerightfilter6 = "dirac pulse";
+     skipflv = skipfrv = "";
+    }
+
+    if (self.config.get('Highsw') == true) {
+     composeleftfilter7 = composerightfilter7 = vobaf_filter_path + '/High' + f_ext;
+
+    } else {
+     composeleftfilter7 = composerightfilter7 = "dirac pulse";
+     skipflv = skipfrv = "";
+    }
+    //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh" + skipfr);
+   };
+
+   let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
+    .replace("${filter_size}", filtersizedivided)
+    .replace("${numb_part}", num_part)
+    .replace("${input_device}", input_device)
+    .replace("${delay}", delay)
+    .replace("${leftfilter}", composeleftfilter)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipfl)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter2)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter3)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter4)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter5)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter6)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${leftfilter}", composeleftfilter7)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfr)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter2)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter3)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter4)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter5)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter6)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rightfilter}", composerightfilter7)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${output_device}", output_device)
+    .replace("${output_format}", output_formatx);
+
    fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf, 'utf8', function(err) {
     if (err)
      defer.reject(new Error(err));
@@ -820,8 +1147,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
-  self.config.set('vobaf', data['vobaf']);
-  self.config.set('vrange', data['vrange']);
 
  self.rebuildBRUTEFIRAndRestartDaemon()
   .then(function(e) {
@@ -834,6 +1159,186 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
   })
  return defer.promise;
 };
+
+//here we save VoBAf parameters
+ControllerBrutefir.prototype.saveVoBAF = function(data) {
+ var self = this;
+ var defer = libQ.defer();
+ var f_ext;
+
+ if (self.config.get('filter_format') == "text") {
+  f_ext = ".txt";
+ } else if (self.config.get('filter_format') == "FLOAT_LE") {
+  f_ext = ".pcm";
+ } else if (self.config.get('filter_format') == "FLOAT64_LE") {
+  f_ext = ".dbl";
+ } else if ((self.config.get('filter_format') == "S16_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S32_LE")) {
+  f_ext = ".wav";
+ }
+
+ self.config.set('vobaf', data['vobaf']);
+ self.config.set('Lowsw', data['Lowsw']);
+ self.config.set('Low', data['Low'].value);
+ self.config.set('LM1sw', data['LM1sw']);
+ self.config.set('LM1', data['LM1'].value);
+ self.config.set('LM2sw', data['LM2sw']);
+ self.config.set('LM2', data['LM2'].value);
+ self.config.set('M', data['M'].value);
+ self.config.set('HMsw', data['HMsw']);
+ self.config.set('HM', data['HM'].value);
+ self.config.set('Highsw', data['Highsw']);
+ self.config.set('maxvolume', data['maxvolume'].value);
+ self.config.set('messon', data['messon']);
+
+ if (self.config.get('vobaf') == true) {
+
+  var Lowsw = (self.config.get('Lowsw'))
+  var LM1sw = (self.config.get('LM1sw'))
+  if ((Lowsw == true) && (LM1sw == false)) {
+   console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
+   var modalData = {
+    title: 'VoBAF filters activation',
+    message: 'Warning !! LM1 and LM2 Must be enabled if you want to use Low filter',
+    size: 'lg',
+    buttons: [{
+     name: 'Close',
+     class: 'btn btn-warning'
+    }, ]
+   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+
+
+  var LM2sw = (self.config.get('LM2sw'))
+  var LM1sw = (self.config.get('LM1sw'))
+  if ((LM1sw == true) && (LM2sw == false)) {
+   console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+   var modalData = {
+    title: 'VoBAF filters activation',
+    message: 'Warning !! LM2 Must be enabled if you want to use LM1 filter',
+    size: 'lg',
+    buttons: [{
+     name: 'Close',
+     class: 'btn btn-warning'
+    }, ]
+   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+
+
+  var HMsw = (self.config.get('HMsw'))
+  var Highsw = (self.config.get('Highsw'))
+  if ((Highsw == true) && (HMsw == false)) {
+   console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
+   var modalData = {
+    title: 'VoBAF filters activation',
+    message: 'Warning !! HM Must be enabled if you want to use High filter',
+    size: 'lg',
+    buttons: [{
+     name: 'Close',
+     class: 'btn btn-warning'
+    }, ]
+   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+
+  if (Lowsw == true) {
+   if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/Low' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! Low' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use Low filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }
+  if (LM1sw == true) {
+   if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM1' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM1' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM1 filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }
+  if (LM2sw == true) {
+   if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM2' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM2' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM2 filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }
+    if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/M' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! M' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use VoBAF',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }
+  if (HMsw == true) {
+   if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/HM' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! HM' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use HM filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }
+  if (Highsw == true) {
+   if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/High' + f_ext) == !true) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! High' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use High filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+  }  else {
+  self.rebuildBRUTEFIRAndRestartDaemon()
+   .then(function(e) {
+    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+    defer.resolve({});
+   })
+   .fail(function(e) {
+    defer.reject(new Error('Brutefir failed to start. Check your config !'));
+    self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+   })
+ 
+}
+return defer.promise;
+};
+
 
 //here we save the brutefir delay calculation
 ControllerBrutefir.prototype.saveBrutefirconfigroom = function(data) {
