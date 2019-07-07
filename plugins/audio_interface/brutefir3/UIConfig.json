@@ -266,6 +266,8 @@
 	  "LM1",
 	"LM2sw",
 	  "LM2",
+	"LM3sw",
+	  "LM3",
           "M",
 	"HMsw",
 	  "HM",
@@ -384,6 +386,32 @@
           "options": [],
           "visibleIf": {
             "field": "LM2sw",
+            "value": true
+          }
+        },
+{
+          "id": "LM3sw",
+          "element": "switch",
+          "doc": "LM3",
+          "label": "LM3 filter",
+          "value": false,
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+        {
+          "id": "LM3",
+          "element": "select",
+          "label": "LM3 volume treshold",
+          "description": "Desc",
+          "value": {
+            "value": "10",
+            "label": "10"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "LM3sw",
             "value": true
           }
         },

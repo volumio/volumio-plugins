@@ -295,23 +295,25 @@ ControllerBrutefir.prototype.sendvolumelevel = function() {
  socket.on('pushState', function(data) {
  var vobaf = self.config.get('vobaf');
   if (vobaf == true) {
-console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
+//console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    var brutefircmd
    var Lowsw = self.config.get('Lowsw');
    var LM1sw = self.config.get('LM1sw');
    var LM2sw = self.config.get('LM2sw');
+   var LM3sw = self.config.get('LM3sw');
    var HMsw = self.config.get('HMsw');
    var Highsw = self.config.get('Highsw');
    var Low = self.config.get('Low');
    var LM1 = self.config.get('LM1');
    var LM2 = self.config.get('LM2');
+   var LM3 = self.config.get('LM3');
    var M = self.config.get('M');
    var HM = self.config.get('HM');
    var filmess;
    var lVoBAF, rVoBAF;
 
    //1-all filters enabled
-   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == true && Highsw == true) {
+   if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
     if (data.volume < Low) {
      filmess = "Low"
      lVoBAF = "llow"
@@ -327,7 +329,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+    } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -344,7 +351,7 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
     }
    }
    //2-Low not enabled
-   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == true && Highsw == true) {
+   if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
     if (data.volume < LM1) {
      filmess = "LM1"
      lVoBAF = "lLM1"
@@ -355,7 +362,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+   } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -372,13 +384,18 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
     }
    }
    //3-lOW,LM1 not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == true && Highsw == true) {
+   if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
     if (data.volume < LM2) {
      filmess = "LM2"
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+     } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+     } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -395,8 +412,13 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
     }
    }
    //4-lOW, LM1,LM2 not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == true && Highsw == true) {
-    if (data.volume < M) {
+   if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == true && Highsw == true) {
+ 	if (data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+     } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -413,7 +435,7 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
     }
    }
    //5-High not enabled
-   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == true && Highsw == false) {
+   if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
     if (data.volume < Low) {
      filmess = "Low"
      lVoBAF = "llow"
@@ -429,7 +451,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+    } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -442,7 +469,7 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    }
 
    //6-HM and High not enabled
-   if (Lowsw == true && LM1sw == true && LM2sw == true && HMsw == false && Highsw == false) {
+   if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
     if (data.volume < Low) {
      filmess = "Low"
      lVoBAF = "llow"
@@ -458,7 +485,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2) {
+   } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -466,7 +498,7 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    }
 
    //7-Low, HM and High not enabled
-   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == false && Highsw == false) {
+   if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
     if (data.volume < LM1) {
      filmess = "LM1"
      lVoBAF = "lLM1"
@@ -477,7 +509,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2) {
+   } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -485,21 +522,26 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    }
 
    //8-Low, LM1, HM and High not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == false && Highsw == false) {
+   if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
     if (data.volume < LM2) {
      filmess = "LM2"
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2) {
+    } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
     }
    }
 
-   //9-Low, LM1, LM2 and High not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == true && Highsw == false) {
+   //9-Low, LM1, LM2, LM3 and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == false) {
     if (data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
@@ -513,7 +555,7 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    }
 
    //10-Low and High not enabled
-   if (Lowsw == false && LM1sw == true && LM2sw == true && HMsw == true && Highsw == false) {
+   if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
     if (data.volume < LM1) {
      filmess = "LM1"
      lVoBAF = "lLM1"
@@ -524,7 +566,12 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+   } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -537,13 +584,18 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
    }
 
    //11- Low, LM1 and High not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == true && HMsw == true && Highsw == false) {
+   if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
     if (data.volume < LM2) {
      filmess = "LM2"
      lVoBAF = "lLM2"
      rVoBAF = "rLM2"
 
-    } else if (data.volume >= LM2 && data.volume < M) {
+    } else if (data.volume >= LM2 && data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3 && data.volume < M) {
      filmess = "M"
      lVoBAF = "lM"
      rVoBAF = "rM"
@@ -555,13 +607,47 @@ console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + vobaf);
     }
    }
 
-   //12- Low, LM1, LM2, HM and High not enabled
-   if (Lowsw == false && LM1sw == false && LM2sw == false && HMsw == false && Highsw == false) {
+   //12- Low, LM1, LM2, LM3, HM and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == false && Highsw == false) {
     filmess = "M"
     lVoBAF = "lM"
     rVoBAF = "rM"
 
    }
+
+  //13-Low, LM1, LM2, HM and High not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == false && Highsw == false) {
+    if (data.volume < LM3) {
+     filmess = "LM3"
+     lVoBAF = "lLM3"
+     rVoBAF = "rLM3"
+
+    } else if (data.volume >= LM3) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+    }
+   }
+
+  //14-Low, LM1, LM2 and LM3 not enabled
+   if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == true) {
+    if (data.volume < M) {
+     filmess = "M"
+     lVoBAF = "lM"
+     rVoBAF = "rM"
+
+    } else if (data.volume >= M && data.volume < HM) {
+     filmess = "HM"
+     lVoBAF = "lHM"
+     rVoBAF = "rHM"
+
+    } else if (data.volume >= HM) {
+     filmess = "High"
+     lVoBAF = "lHigh"
+     rVoBAF = "rHigh"
+    }
+   }
+
    //  here wend cmd to brutefir
    var messon = (self.config.get('messon'));
    if (messon == true) {
@@ -809,47 +895,61 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      });
     }
 
+ uiconf.sections[1].content[8].value = self.config.get('LM3sw');
+    var LM3 = self.config.get('LM3');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
+
+    for (let o = 0; o < 40; o++) {
+
+     //  self.logger.info('list of LM3 values :' + (0));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
+      value: (o),
+      label: (o)
+     });
+    }
+
     var M = self.config.get('M');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', M);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', M);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
 
     for (let l = 0; l < 100; l++) {
 
      //   self.logger.info('list of M values :' + (l));
-     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
       value: (l),
       label: (l)
      });
     }
-    uiconf.sections[1].content[10].value = self.config.get('HMsw');
+    uiconf.sections[1].content[12].value = self.config.get('HMsw');
     var HM = self.config.get('HM');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', HM);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', HM);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
 
     for (let m = 50; m < 100; m++) {
 
      //  self.logger.info('list of HM values :' + (m));
-     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
       value: (m),
       label: (m)
      });
     }
-    uiconf.sections[1].content[12].value = self.config.get('Highsw');
+    uiconf.sections[1].content[14].value = self.config.get('Highsw');
 
  var vatt = self.config.get('vatt');
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[14].value.value', vatt);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[14].value.label', vatt);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.value', vatt);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.label', vatt);
 
     for (let n = 0; n < 30; n++) {
 
      //  self.logger.info('list of HM values :' + (n));
-     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[14].options', {
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[16].options', {
       value: (n),
       label: (n)
      });
     }
 
-    uiconf.sections[1].content[15].value = self.config.get('messon');
+    uiconf.sections[1].content[17].value = self.config.get('messon');
     //    uiconf.sections[0].content[8].value = self.config.get('vrange');
 
     value = self.config.get('attenuation');
@@ -925,9 +1025,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var leftfilter;
    var rightfilter;
    var composeleftfilter = filter_path + self.config.get('leftfilter');
-   var composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7
+   var composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7, composeleftfilter8
    var composerightfilter = filter_path + self.config.get('rightfilter');
-   var composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7
+   var composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7, composerightfilter8
    var lattenuation;
    var rattenuation;
    var f_ext;
@@ -1001,10 +1101,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
    if (self.config.get('leftfilter') == "Dirac pulse") {
-    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = "dirac pulse";
+    composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 ="dirac pulse";
    } else leftfilter = filter_path + self.config.get('leftfilter');
    if (self.config.get('rightfilter') == "Dirac pulse")
-    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = "dirac pulse";
+    composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 ="dirac pulse";
    else rightfilter = filter_path + self.config.get('rightfilter');
 
    var vobaf = self.config.get('vobaf');
@@ -1013,7 +1113,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var skipfrv;
 
    if (vobaf == false) {
-    composeleftfilter1 = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composerightfilter1 = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = "dirac pulse";
+    composeleftfilter1 = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = composerightfilter1 = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
 
     skipflv = skipfrv = "";
    } else {
@@ -1038,6 +1138,13 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
      composeleftfilter4 = composerightfilter4 = vobaf_filter_path + '/LM2' + f_ext;
     } else {
      composeleftfilter4 = composerightfilter4 = "dirac pulse";
+     skipflv = skipfrv = ""
+    };
+
+  if (self.config.get('LM3sw') == true) {
+     composeleftfilter8 = composerightfilter8 = vobaf_filter_path + '/LM3' + f_ext;
+    } else {
+     composeleftfilter8 = composerightfilter8 = "dirac pulse";
      skipflv = skipfrv = ""
     };
 
@@ -1085,6 +1192,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
     .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${leftfilter}", composeleftfilter8)
+    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${skip_1}", skipflv)
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter5)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
@@ -1110,6 +1221,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${skip_2}", skipfrv)
     .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter4)
+    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${skip_2}", skipfrv)
+    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rightfilter}", composerightfilter8)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
     .replace("${rattenuation}", self.config.get('vatt'))
@@ -1197,6 +1312,8 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
  self.config.set('LM1', data['LM1'].value);
  self.config.set('LM2sw', data['LM2sw']);
  self.config.set('LM2', data['LM2'].value);
+ self.config.set('LM3sw', data['LM3sw']);
+ self.config.set('LM3', data['LM3'].value);
  self.config.set('M', data['M'].value);
  self.config.set('HMsw', data['HMsw']);
  self.config.set('HM', data['HM'].value);
@@ -1213,7 +1330,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
    var modalData = {
     title: 'VoBAF filters activation',
-    message: 'Warning !! LM1 and LM2 Must be enabled if you want to use Low filter',
+    message: 'Warning !! LM1, LM2 and LM3 Must be enabled if you want to use Low filter',
     size: 'lg',
     buttons: [{
      name: 'Close',
@@ -1223,14 +1340,29 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
    self.commandRouter.broadcastMessage("openModal", modalData);
   }
 
-
   var LM2sw = (self.config.get('LM2sw'))
   var LM1sw = (self.config.get('LM1sw'))
   if ((LM1sw == true) && (LM2sw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
    var modalData = {
     title: 'VoBAF filters activation',
-    message: 'Warning !! LM2 Must be enabled if you want to use LM1 filter',
+    message: 'Warning !! LM2 and LM3 Must be enabled if you want to use LM1 filter',
+    size: 'lg',
+    buttons: [{
+     name: 'Close',
+     class: 'btn btn-warning'
+    }, ]
+   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+
+  var LM3sw = (self.config.get('LM3sw'))
+  var LM2sw = (self.config.get('LM2sw'))
+  if ((LM2sw == true) && (LM3sw == false)) {
+   console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+   var modalData = {
+    title: 'VoBAF filters activation',
+    message: 'Warning !! LM3 Must be enabled if you want to use LM2 filter',
     size: 'lg',
     buttons: [{
      name: 'Close',
@@ -1289,6 +1421,19 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! LM2' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM2 filter',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+  if ((LM3sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM3' + f_ext) == !true)) {
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM3' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM3 filter',
      size: 'lg',
      buttons: [{
       name: 'Close',

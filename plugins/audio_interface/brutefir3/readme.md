@@ -23,7 +23,7 @@ It provides :
 
 The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. 
 
-- Place all filters in the required shared directory.
+- Place all filters in the required VoBAFfilters shared directory. Up to 7 filters may be used. ( Low, LM1, LM2, LM3, M, HM, High )
 
 - In webUI select first filter and enable VoBAF. Save, it's done!
 
@@ -91,6 +91,7 @@ nearly everythings
 
 July 7th 2019
 
+- add LM3 filter
 - add VoBAF attenuation
 - correction in VoBAF
 

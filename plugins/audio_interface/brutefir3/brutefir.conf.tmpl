@@ -78,6 +78,13 @@ ${skip_1}
 attenuation: ${lattenuation};
 };
 
+coeff "lLM3" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
 coeff "lM" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
@@ -123,6 +130,13 @@ attenuation: ${rattenuation};
 };
 
 coeff "rLM2" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM3" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}
