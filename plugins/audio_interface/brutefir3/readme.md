@@ -1,4 +1,4 @@
-July 6th 2019
+July 7th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -87,8 +87,11 @@ nearly everythings
 - mixer is not properly displayed in Volumio's playback option
 
 
-
 ### 4. Last changes
+
+July 7th 2019
+
+- correction in VoBAF
 
 July 6th 2019
 
