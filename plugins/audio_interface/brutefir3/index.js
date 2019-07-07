@@ -835,7 +835,21 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      });
     }
     uiconf.sections[1].content[12].value = self.config.get('Highsw');
-    uiconf.sections[1].content[14].value = self.config.get('messon');
+
+ var vatt = self.config.get('vatt');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[14].value.value', vatt);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[14].value.label', vatt);
+
+    for (let n = 0; n < 30; n++) {
+
+     //  self.logger.info('list of HM values :' + (n));
+     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[14].options', {
+      value: (n),
+      label: (n)
+     });
+    }
+
+    uiconf.sections[1].content[15].value = self.config.get('messon');
     //    uiconf.sections[0].content[8].value = self.config.get('vrange');
 
     value = self.config.get('attenuation');
@@ -967,7 +981,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var output_device;
    var skipfl;
    var skipfr;
-
+   var vatt = self.config.get('vatt');
    var noldirac = self.config.get('leftfilter');
 
    if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
@@ -1062,27 +1076,27 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${leftfilter}", composeleftfilter2)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter3)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter4)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter5)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter6)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${leftfilter}", composeleftfilter7)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfr)
@@ -1090,27 +1104,27 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${rightfilter}", composerightfilter2)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter3)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter4)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter5)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter6)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${rightfilter}", composerightfilter7)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('vatt'))
     .replace("${output_device}", output_device)
     .replace("${output_format}", output_formatx);
 
@@ -1188,6 +1202,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
  self.config.set('HM', data['HM'].value);
  self.config.set('Highsw', data['Highsw']);
  self.config.set('maxvolume', data['maxvolume'].value);
+ self.config.set('vatt', data['vatt'].value);
  self.config.set('messon', data['messon']);
 
  if (self.config.get('vobaf') == true) {

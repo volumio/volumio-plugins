@@ -91,6 +91,7 @@ nearly everythings
 
 July 7th 2019
 
+- add VoBAF attenuation
 - correction in VoBAF
 
 July 6th 2019

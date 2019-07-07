@@ -271,6 +271,7 @@
 	  "HM",
 	"Highsw",
 	"High",
+	"vatt",
 	"messon",
 	"maxvolume"
         ],
@@ -479,6 +480,21 @@
             "value": true
           }
          
+        },
+{
+          "id": "vatt",
+          "element": "select",
+          "label": "VoBAF attenuation",
+          "description": "Desc",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
         },
 {
           "id": "messon",
