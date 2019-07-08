@@ -1326,6 +1326,11 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
 
   var Lowsw = (self.config.get('Lowsw'))
   var LM1sw = (self.config.get('LM1sw'))
+ var LM2sw = (self.config.get('LM2sw'))
+var LM3sw = (self.config.get('LM3sw'))
+ var HMsw = (self.config.get('HMsw'))
+  var Highsw = (self.config.get('Highsw'))
+
   if ((Lowsw == true) && (LM1sw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
    var modalData = {
@@ -1340,9 +1345,8 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
    self.commandRouter.broadcastMessage("openModal", modalData);
   }
 
-  var LM2sw = (self.config.get('LM2sw'))
-  var LM1sw = (self.config.get('LM1sw'))
-  if ((LM1sw == true) && (LM2sw == false)) {
+ 
+  else if ((LM1sw == true) && (LM2sw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
    var modalData = {
     title: 'VoBAF filters activation',
@@ -1356,9 +1360,8 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
    self.commandRouter.broadcastMessage("openModal", modalData);
   }
 
-  var LM3sw = (self.config.get('LM3sw'))
-  var LM2sw = (self.config.get('LM2sw'))
-  if ((LM2sw == true) && (LM3sw == false)) {
+  
+  else if ((LM2sw == true) && (LM3sw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
    var modalData = {
     title: 'VoBAF filters activation',
@@ -1373,9 +1376,8 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
   }
 
 
-  var HMsw = (self.config.get('HMsw'))
-  var Highsw = (self.config.get('Highsw'))
-  if ((Highsw == true) && (HMsw == false)) {
+ 
+  else if ((Highsw == true) && (HMsw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
    var modalData = {
     title: 'VoBAF filters activation',
@@ -1389,7 +1391,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
    self.commandRouter.broadcastMessage("openModal", modalData);
   }
 
-  if ((Lowsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/Low' + f_ext) == !true)) {
+  else if ((Lowsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/Low' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! Low' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use Low filter',
@@ -1404,7 +1406,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
   
 
 
-  if ((LM1sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM1' + f_ext) == !true)) {
+  else if ((LM1sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM1' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! LM1' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM1 filter',
@@ -1417,7 +1419,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
   
-  if ((LM2sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM2' + f_ext) == !true)) {
+  else if ((LM2sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM2' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! LM2' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM2 filter',
@@ -1430,7 +1432,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
 
-  if ((LM3sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM3' + f_ext) == !true)) {
+  else if ((LM3sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM3' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! LM3' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM3 filter',
@@ -1443,7 +1445,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
 
-    if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/M' + f_ext) == !true) {
+    else if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/M' + f_ext) == !true) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! M' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use VoBAF',
@@ -1456,7 +1458,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
   
-  if ((HMsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/HM' + f_ext) == !true)) {
+  else if ((HMsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/HM' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! HM' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use HM filter',
@@ -1469,7 +1471,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
  
-  if ((Highsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/High' + f_ext) == !true)) {
+  else if ((Highsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/High' + f_ext) == !true)) {
     var modalData = {
      title: 'VoBAF filters activation',
      message: 'Warning !! High' + f_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use High filter',
