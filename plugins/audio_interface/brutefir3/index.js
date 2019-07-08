@@ -1483,8 +1483,8 @@ var LM3sw = (self.config.get('LM3sw'))
     };
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
-
- else {
+}
+//else {
   self.rebuildBRUTEFIRAndRestartDaemon()
    .then(function(e) {
     self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
@@ -1494,8 +1494,8 @@ var LM3sw = (self.config.get('LM3sw'))
     defer.reject(new Error('Brutefir failed to start. Check your config !'));
     self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
    })
- }
-}
+ 
+//}
 return defer.promise;
 };
 
