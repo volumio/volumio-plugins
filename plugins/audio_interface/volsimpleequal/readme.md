@@ -1,4 +1,4 @@
-01st August 2018
+July 07 th 2019
 
 
 	Volsimpleequal volumio simple equalizer
@@ -56,6 +56,10 @@ In volumio webUI, go in plugin section and enable it!
  It still a beta version, need feedback !
 
 ## Last changes
+
+7thh July 19
+
+- sliders step is now 0.5
 
 1st August 18
 
