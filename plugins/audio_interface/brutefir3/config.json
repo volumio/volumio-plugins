@@ -24,6 +24,7 @@
 "Highsw":{"type": "boolean","value": false },
 "maxvolume":{"type": "string","value": "100"},
 "vatt":{"type": "string","value": "0"},
+"vobaf_format":{"type": "string","value": "text"},
 "messon":{"type": "boolean","value": true },
 "ldistance":{"type": "string","value": "0"},
 "rdistance":{"type": "string","value": "0"},

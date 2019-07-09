@@ -949,7 +949,13 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      });
     }
 
-    uiconf.sections[1].content[17].value = self.config.get('messon');
+
+    value = self.config.get('vobaf_format');
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
+
+
+    uiconf.sections[1].content[18].value = self.config.get('messon');
     //    uiconf.sections[0].content[8].value = self.config.get('vrange');
 
     value = self.config.get('attenuation');
@@ -1031,6 +1037,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var lattenuation;
    var rattenuation;
    var f_ext;
+
+   var vatt
+if  (self.config.get('vatt'))
    //  var f_format = self.config.get('filter_format');
 
    if (self.config.get('filter_format') == "text") {
@@ -1111,11 +1120,12 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 
    var skipflv;
    var skipfrv;
-
+   var vatt = self.config.get('vatt');
    if (vobaf == false) {
     composeleftfilter1 = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = composerightfilter1 = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
 
     skipflv = skipfrv = "";
+    vatt = '0';
    } else {
 
     if (self.config.get('Lowsw') == true) {
@@ -1181,65 +1191,65 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${skip_1}", skipfl)
     .replace("${lattenuation}", self.config.get('attenuation'))
     .replace("${leftfilter}", composeleftfilter2)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}",vatt)
     .replace("${leftfilter}", composeleftfilter3)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${leftfilter}", composeleftfilter4)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${leftfilter}", composeleftfilter8)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${leftfilter}", composeleftfilter5)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${leftfilter}", composeleftfilter6)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${leftfilter}", composeleftfilter7)
-    .replace("${filter_format1}", self.config.get('filter_format'))
+    .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
-    .replace("${lattenuation}", self.config.get('vatt'))
+    .replace("${lattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfr)
     .replace("${rattenuation}", self.config.get('attenuation'))
     .replace("${rightfilter}", composerightfilter2)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter3)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter4)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter8)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter5)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter6)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${rightfilter}", composerightfilter7)
-    .replace("${filter_format2}", self.config.get('filter_format'))
+    .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
-    .replace("${rattenuation}", self.config.get('vatt'))
+    .replace("${rattenuation}", vatt)
     .replace("${output_device}", output_device)
     .replace("${output_format}", output_formatx);
 
@@ -1320,6 +1330,7 @@ ControllerBrutefir.prototype.saveVoBAF = function(data) {
  self.config.set('Highsw', data['Highsw']);
  self.config.set('maxvolume', data['maxvolume'].value);
  self.config.set('vatt', data['vatt'].value);
+ self.config.set('vobaf_format', data['vobaf_format'].value);
  self.config.set('messon', data['messon']);
 
  if (self.config.get('vobaf') == true) {

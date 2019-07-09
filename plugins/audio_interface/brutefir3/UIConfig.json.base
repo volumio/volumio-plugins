@@ -274,6 +274,7 @@
 	"Highsw",
 	"High",
 	"vatt",
+	"vobaf_format",
 	"messon",
 	"maxvolume"
         ],
@@ -519,6 +520,46 @@
             "label": "0"
           },
           "options": [],
+          "visibleIf": {
+            "field": "vobaf",
+            "value": true
+          }
+        },
+{
+          "id": "vobaf_format",
+          "element": "select",
+          "doc": "VoBAF filters format",
+          "label": "TRANSLATE.FILTER_FORMAT",
+          "value": {
+            "value": "text",
+            "label": "text"
+          },
+          "options": [
+            {
+              "value": "text",
+              "label": "text- 32/64 bits floats line (.txt) in rephase"
+            },
+            {
+              "value": "S16_LE",
+              "label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "S24_LE",
+              "label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "S32_LE",
+              "label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
+            },
+            {
+              "value": "FLOAT_LE",
+              "label": "FLOAT_LE- 32 bits floating point (.pcm)"
+            },
+            {
+              "value": "FLOAT64_LE",
+              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
+            }
+          ],
           "visibleIf": {
             "field": "vobaf",
             "value": true

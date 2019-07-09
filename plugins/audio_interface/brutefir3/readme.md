@@ -1,4 +1,4 @@
-July 8th 2019
+July 9th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -88,6 +88,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+July 9th 2019
+
+- add vobaf format filters
+- correction
 
 July 8th 2019
 
