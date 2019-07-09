@@ -91,6 +91,7 @@ nearly everythings
 
 July 9th 2019
 
+- treshold detection order
 - add vobaf format filters
 - correction
 

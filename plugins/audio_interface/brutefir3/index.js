@@ -860,7 +860,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
 
      //   self.logger.info('list of low values :' + (i));
      self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
@@ -873,7 +873,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
 
-    for (let j = 0; j < 40; j++) {
+    for (let j = 0; j < 50; j++) {
 
      //   self.logger.info('list of LM1 values :' + (j));
      self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
@@ -886,7 +886,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
 
-    for (let k = 0; k < 40; k++) {
+    for (let k = 0; k < 50; k++) {
 
      //  self.logger.info('list of LM2 values :' + (k));
      self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
@@ -900,7 +900,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
 
-    for (let o = 0; o < 40; o++) {
+    for (let o = 0; o < 50; o++) {
 
      //  self.logger.info('list of LM3 values :' + (0));
      self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
@@ -926,7 +926,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
 
-    for (let m = 50; m < 100; m++) {
+    for (let m = 30; m < 100; m++) {
 
      //  self.logger.info('list of HM values :' + (m));
      self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
@@ -1342,6 +1342,13 @@ var LM3sw = (self.config.get('LM3sw'))
  var HMsw = (self.config.get('HMsw'))
   var Highsw = (self.config.get('Highsw'))
 
+  var Low = (self.config.get('Low'))
+  var LM1 = (self.config.get('LM1'))
+ var LM2 = (self.config.get('LM2'))
+var LM3 = (self.config.get('LM3'))
+ var HM = (self.config.get('HM'))
+ var M = (self.config.get('M'))
+
   if ((Lowsw == true) && (LM1sw == false)) {
    console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
    var modalData = {
@@ -1494,6 +1501,79 @@ var LM3sw = (self.config.get('LM3sw'))
     };
     self.commandRouter.broadcastMessage("openModal", modalData);
    }
+
+  else if ((Lowsw == true) && (parseInt(Low) >= parseInt(LM1))) {
+
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! Low treshold must be less than LM1 treshold',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+ else if ((LM1sw == true) && (parseInt(LM1) >= parseInt(LM2))) {
+
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM1 treshold must be less than LM2 treshold',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+ else if ((LM2sw == true) && (parseInt(LM2) >= parseInt(LM3))) {
+
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM2 treshold must be less than LM3 treshold',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+ else if ((LM3sw == true) && (parseInt(LM3) >= parseInt(M))) {
+
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! LM3 treshold must be less than H treshold',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+else if ((HMsw == true) && (parseInt(M) >= parseInt(HM))) {
+
+    var modalData = {
+     title: 'VoBAF filters activation',
+     message: 'Warning !! M treshold must be less than HM treshold',
+     size: 'lg',
+     buttons: [{
+      name: 'Close',
+      class: 'btn btn-warning'
+     }, ]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+   }
+
+
+//console.log(Lowsw + Low + LM1 + 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
 }
 //else {
   self.rebuildBRUTEFIRAndRestartDaemon()
