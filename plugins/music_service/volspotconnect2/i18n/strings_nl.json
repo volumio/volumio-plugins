@@ -12,6 +12,11 @@
     "VOLNORM": "Volume normaliseren",
     "DESCVOLNORM": "Stel hetzelfde volume in voor alle nummers",
     "DEBUG": "Debugmodus",
-    "DESCDEBUG": "debuggen logs activeren"
+    "DESCDEBUG": "debuggen logs activeren",
+    "VOLUMECTRL": "Volumeregeling methode",
+    "VOLUMECTRL_LINEAR": "Lineaire",
+    "VOLUMECTRL_LOG": "Logaritmisch",
+    "VOLUMECTRL_FIXED": "Vast",
+    "DESCPVOLUMECTRL": "Methode voor de (software) volumeregeling"
   }
 }
