@@ -316,10 +316,10 @@ ControllerBrutefir.prototype.sendvolumelevel = function() {
    if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
     if (data.volume < Low) {
      filmess = "Low"
-     lVoBAF = "llow"
-     rVoBAF = "rlow"
+     lVoBAF = "lLow"
+     rVoBAF = "rLow"
 
-    } else if (data.volume > Low && data.volume < LM1) {
+    } else if (data.volume >= Low && data.volume < LM1) {
      filmess = "LM1"
      lVoBAF = "lLM1"
      rVoBAF = "rLM1"
@@ -438,8 +438,8 @@ ControllerBrutefir.prototype.sendvolumelevel = function() {
    if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
     if (data.volume < Low) {
      filmess = "Low"
-     lVoBAF = "llow"
-     rVoBAF = "rlow"
+     lVoBAF = "lLow"
+     rVoBAF = "rLow"
 
     } else if (data.volume >= Low && data.volume < LM1) {
      filmess = "LM1"
@@ -472,8 +472,8 @@ ControllerBrutefir.prototype.sendvolumelevel = function() {
    if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
     if (data.volume < Low) {
      filmess = "Low"
-     lVoBAF = "llow"
-     rVoBAF = "rlow"
+     lVoBAF = "lLow"
+     rVoBAF = "rLow"
 
     } else if (data.volume >= Low && data.volume < LM1) {
      filmess = "LM1"
@@ -653,7 +653,7 @@ ControllerBrutefir.prototype.sendvolumelevel = function() {
    if (messon == true) {
     self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
    }
-   brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" "rVoBAF" "' + rVoBAF + '"');
+   brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" ;cfc "rVoBAF" "' + rVoBAF + '"');
 
 
    var client = new net.Socket();
@@ -1037,7 +1037,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    var lattenuation;
    var rattenuation;
    var f_ext;
-
+   var vf_ext;
    var vatt
 if  (self.config.get('vatt'))
    //  var f_format = self.config.get('filter_format');
@@ -1050,6 +1050,16 @@ if  (self.config.get('vatt'))
     f_ext = ".dbl";
    } else if ((self.config.get('filter_format') == "S16_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S32_LE")) {
     f_ext = ".wav";
+   }
+
+  if (self.config.get('vobaf_format') == "text") {
+    vf_ext = ".txt";
+   } else if (self.config.get('vobaf_format') == "FLOAT_LE") {
+    vf_ext = ".pcm";
+   } else if (self.config.get('vobaf_format') == "FLOAT64_LE") {
+    f_ext = ".dbl";
+   } else if ((self.config.get('vobaf_format') == "S16_LE") || (self.config.get('vobaf_format') == "S24_LE") || (self.config.get('vobaf_format') == "S32_LE")) {
+    vf_ext = ".wav";
    }
 
    //console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ' + f_ext);
@@ -1129,7 +1139,7 @@ if  (self.config.get('vatt'))
    } else {
 
     if (self.config.get('Lowsw') == true) {
-     composeleftfilter2 = composerightfilter2 = vobaf_filter_path + '/Low' + f_ext;
+     composeleftfilter2 = composerightfilter2 = vobaf_filter_path + '/Low' + vf_ext;
      skipflv = skipfrv;
     } else {
      composeleftfilter2 = composerightfilter2 = "dirac pulse";
@@ -1137,7 +1147,7 @@ if  (self.config.get('vatt'))
     }
 
     if (self.config.get('LM1sw') == true) {
-     composeleftfilter3 = composerightfilter3 = vobaf_filter_path + '/LM1' + f_ext;
+     composeleftfilter3 = composerightfilter3 = vobaf_filter_path + '/LM1' + vf_ext;
      skipflv = skipfrv = skipfl;
     } else {
      composeleftfilter3 = composerightfilter3 = "dirac pulse";
@@ -1145,25 +1155,25 @@ if  (self.config.get('vatt'))
     }
 
     if (self.config.get('LM2sw') == true) {
-     composeleftfilter4 = composerightfilter4 = vobaf_filter_path + '/LM2' + f_ext;
+     composeleftfilter4 = composerightfilter4 = vobaf_filter_path + '/LM2' + vf_ext;
     } else {
      composeleftfilter4 = composerightfilter4 = "dirac pulse";
      skipflv = skipfrv = ""
     };
 
   if (self.config.get('LM3sw') == true) {
-     composeleftfilter8 = composerightfilter8 = vobaf_filter_path + '/LM3' + f_ext;
+     composeleftfilter8 = composerightfilter8 = vobaf_filter_path + '/LM3' + vf_ext;
     } else {
      composeleftfilter8 = composerightfilter8 = "dirac pulse";
      skipflv = skipfrv = ""
     };
 
-    composeleftfilter5 = composerightfilter5 = vobaf_filter_path + '/M' + f_ext;
+    composeleftfilter5 = composerightfilter5 = vobaf_filter_path + '/M' + vf_ext;
 
 
     if (self.config.get('HMsw') == true) {
      //console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh" + skipfr);
-     composeleftfilter6 = composerightfilter6 = vobaf_filter_path + '/HM' + f_ext;
+     composeleftfilter6 = composerightfilter6 = vobaf_filter_path + '/HM' + vf_ext;
      skipflv = skipfr;
 
     } else {
@@ -1172,7 +1182,7 @@ if  (self.config.get('vatt'))
     }
 
     if (self.config.get('Highsw') == true) {
-     composeleftfilter7 = composerightfilter7 = vobaf_filter_path + '/High' + f_ext;
+     composeleftfilter7 = composerightfilter7 = vobaf_filter_path + '/High' + vf_ext;
 
     } else {
      composeleftfilter7 = composerightfilter7 = "dirac pulse";
