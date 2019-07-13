@@ -326,7 +326,7 @@
         {
           "id": "Low",
           "element": "select",
-          "label": "Low volume treshold",
+          "label": "Low volume threshold",
           "description": "Desc",
           "value": {
             "value": "10",
@@ -353,7 +353,7 @@
           "id": "LM1",
           "element": "select",
           "doc": "VoBAF : LM1 filtering",
-          "label": "LM1 volume treshold",
+          "label": "LM1 volume threshold",
           "value": {
             "value": "10",
             "label": "10"
@@ -378,7 +378,7 @@
         {
           "id": "LM2",
           "element": "select",
-          "label": "LM2 volume treshold",
+          "label": "LM2 volume threshold",
           "description": "Desc",
           "value": {
             "value": "10",
@@ -404,7 +404,7 @@
         {
           "id": "LM3",
           "element": "select",
-          "label": "LM3 volume treshold",
+          "label": "LM3 volume threshold",
           "description": "Desc",
           "value": {
             "value": "10",
@@ -435,7 +435,7 @@
 	{
           "id": "M",
           "element": "select",
-          "label": "M Volume treshold",
+          "label": "M Volume threshold",
           "description": "Desc",
           "value": {
             "value": "50",
@@ -464,7 +464,7 @@
         {
           "id": "HM",
           "element": "select",
-          "label": "HM Volume treshold",
+          "label": "HM Volume threshold",
           "description": "Desc",
           "value": {
             "value": "65",

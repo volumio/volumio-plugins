@@ -920,7 +920,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     var M = self.config.get('M');
     self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
-    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
+    self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', M);
 
     for (let l = 0; l < 100; l++) {
 
@@ -1525,7 +1525,7 @@ var LM3 = (self.config.get('LM3'))
 
     var modalData = {
      title: 'VoBAF filters activation',
-     message: 'Warning !! Low treshold must be less than LM1 treshold',
+     message: 'Warning !! Low threshold must be less than LM1 threshold',
      size: 'lg',
      buttons: [{
       name: 'Close',
@@ -1539,7 +1539,7 @@ var LM3 = (self.config.get('LM3'))
 
     var modalData = {
      title: 'VoBAF filters activation',
-     message: 'Warning !! LM1 treshold must be less than LM2 treshold',
+     message: 'Warning !! LM1 threshold must be less than LM2 threshold',
      size: 'lg',
      buttons: [{
       name: 'Close',
@@ -1553,7 +1553,7 @@ var LM3 = (self.config.get('LM3'))
 
     var modalData = {
      title: 'VoBAF filters activation',
-     message: 'Warning !! LM2 treshold must be less than LM3 treshold',
+     message: 'Warning !! LM2 threshold must be less than LM3 threshold',
      size: 'lg',
      buttons: [{
       name: 'Close',
@@ -1567,7 +1567,7 @@ var LM3 = (self.config.get('LM3'))
 
     var modalData = {
      title: 'VoBAF filters activation',
-     message: 'Warning !! LM3 treshold must be less than H treshold',
+     message: 'Warning !! LM3 threshold must be less than H threshold',
      size: 'lg',
      buttons: [{
       name: 'Close',
@@ -1581,7 +1581,7 @@ else if ((HMsw == true) && (parseInt(M) >= parseInt(HM))) {
 
     var modalData = {
      title: 'VoBAF filters activation',
-     message: 'Warning !! M treshold must be less than HM treshold',
+     message: 'Warning !! M threshold must be less than HM threshold',
      size: 'lg',
      buttons: [{
       name: 'Close',

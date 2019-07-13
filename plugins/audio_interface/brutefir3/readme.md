@@ -91,7 +91,9 @@ nearly everythings
 
 July 13th 2019
 
-- correction in VoBAF messages wxhen a filter does not exist.
+- correction in VoBAF messages when a filter does not exist.
+- M threshold was not saved
+- spelling correction
 
 July 10th 2019
 
