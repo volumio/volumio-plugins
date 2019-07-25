@@ -32,6 +32,8 @@ echo "Installing Audio Libraries"
 sudo apt-get -y install libasound2-plugins
 
 cd /home/volumio/
+sudo rm -r -f python-audio-tools/
+sudo dpkg --configure -a
 git clone https://github.com/nanomesher/python-audio-tools.git
 sudo apt-get -y install build-essential libcdio-dev  libcdio-paranoia-dev
 cd python-audio-tools
