@@ -1,0 +1,21 @@
+{
+	"name": "new_50",
+	"version": "1.0.0",
+	"description": "Display the last 50 albums added in the library (local, NAS)",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "PattdePanick",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Last 50 added",
+		"icon": "new_50_icon.png",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
