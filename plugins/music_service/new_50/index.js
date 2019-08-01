@@ -117,7 +117,7 @@ new50.prototype.addToBrowseSources = function () {
         uri: 'new_50',
         plugin_type: 'music_service',
         plugin_name: "new_50",
-        albumart: '/albumart?sourceicon=music_service/new_50/new.svg'
+        albumart: '/albumart?sourceicon=music_service/new_50/new.png'
     });
 };
 

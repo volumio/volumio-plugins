@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "Last 50 added",
-		"icon": "new_50_icon.png",
+		"icon": "fa-headphones",
 		"plugin_type": "music_service"
 	},
 	"dependencies": {
