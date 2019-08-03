@@ -62,7 +62,8 @@ IrController.prototype.onStart = function() {
     var defer = libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
     if (device == "Raspberry PI") {
-        self.enablePIOverlay();
+        // Set default to 25 so existing configs don't break.
+        self.enablePIOverlay(self.config.get('pi_gpio_in',"25"));
     }
 
     var ir_profile = self.config.get('ir_profile', "JustBoom IR Remote");
@@ -143,6 +144,15 @@ IrController.prototype.restartLirc = function (message) {
     });
 }
 
+IrController.prototype.savePiOptions = function(data) {
+    var self = this;
+
+    self.config.set("pi_gpio_in",data.pi_gpio_in);
+
+    self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+
+}
+
 IrController.prototype.saveIROptions = function (data) {
     var self = this;
 
@@ -205,6 +215,8 @@ IrController.prototype.getUIConfig = function() {
                 });
             }
 
+            uiconf.sections[1].content[0].value = self.config.get('pi_gpio_in');
+
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -215,13 +227,13 @@ IrController.prototype.getUIConfig = function() {
     return defer.promise;
 };
 
-IrController.prototype.enablePIOverlay = function() {
+IrController.prototype.enablePIOverlay = function(gpio_in_pin) {
     var defer = libQ.defer();
     var self = this;
 
     if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
         self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
-        exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', {uid:1000,gid:1000},
+        exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=' + gpio_in_pin, {uid:1000,gid:1000},
             function (error, stdout, stderr) {
                 if(error != null) {
                     self.logger.info('Error enabling lirc-rpi overlay: '+error);

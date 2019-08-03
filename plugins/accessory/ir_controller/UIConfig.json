@@ -30,6 +30,29 @@
 
         }
       ]
+    },
+    {
+      "id":"rpi_conf",
+      "element": "section",
+      "label": "TRANSLATE.PI_CONFIGURATION",
+      "icon":"fa-microchip",
+      "onSave": {"type":"controller","endpoint":"accessory/ir_controller","method":"savePiOptions"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "pi_gpio_in"
+        ]
+      },
+      "content": [
+        {
+          "id": "pi_gpio_in",
+          "element" : "input",
+          "type": "text",
+          "doc":"TRANSLATE.GPIO_IN_DOC",
+          "label":"TRANSLATE.GPIO_IN",
+          "value": {}
+        }
+      ]
     }
   ]
 }
