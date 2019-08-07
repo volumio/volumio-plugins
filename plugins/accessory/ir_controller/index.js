@@ -4,6 +4,9 @@ var libQ = require('kew');
 var fs=require('fs-extra');
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
+const os = require('os');
+const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
+const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
 
 // Define the IrController class
 module.exports = IrController;
@@ -102,7 +105,11 @@ IrController.prototype.createHardwareConf = function(device){
                 conf = data.replace("${module}", "meson-ir");
             }
             else{
-                conf = data.replace("${module}", "lirc_rpi");
+                if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
+                    conf = data.replace('${module}', 'lirc_rpi');
+                } else {
+                    conf = data.replace('${module}', 'gpio_ir_recv');
+                }
             }
 
             fs.writeFile("/etc/lirc/hardware.conf", conf, 'utf8', function (err) {
@@ -219,20 +226,38 @@ IrController.prototype.enablePIOverlay = function() {
     var defer = libQ.defer();
     var self = this;
 
-    if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
-        self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
-        exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', {uid:1000,gid:1000},
-            function (error, stdout, stderr) {
-                if(error != null) {
-                    self.logger.info('Error enabling lirc-rpi overlay: '+error);
-                    defer.reject();
-                } else {
-                    self.logger.info('lirc-rpi overlay enabled');
-                    defer.resolve();
-                }
-            });
+    if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
+        if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
+            self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
+            exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=25', { uid: 1000, gid: 1000 },
+                function (error, stdout, stderr) {
+                    if(error != null) {
+                        self.logger.info('Error enabling lirc-rpi overlay: ' + error);
+                        defer.reject();
+                    } else {
+                        self.logger.info('lirc-rpi overlay enabled');
+                        defer.resolve();
+                    }
+                });
+        } else {
+            self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
+        }
     } else {
-        self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
+        if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
+            self.logger.info('HAT did not load /proc/device-tree/ir_receiver!');
+            exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir gpio_pin=25', { uid: 1000, gid: 1000 },
+                function (error, stdout, stderr) {
+                    if (error != null) {
+                        self.logger.info('Error enabling gpio-ir overlay: ' + error);
+                        defer.reject();
+                    } else {
+                        self.logger.info('gpio-ir overlay enabled');
+                        defer.resolve();
+                    }
+                });
+        } else {
+            self.logger.info('HAT already loaded /proc/device-tree/ir_receiver!');
+        }
     }
     return defer.promise;
 };
