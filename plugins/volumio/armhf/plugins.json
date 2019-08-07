@@ -172,11 +172,11 @@
 					"prettyName": "80s80s Radio",
 					"icon": "fa-lightbulb-o",
 					"name": "80s80s",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/80s80s/80s80s.zip",
 					"license": "ISC",
 					"description": "80s80s Radio Plugin for Volumio2",
-					"details": "",
+					"details": "80s80s Radio Plugin for Volumio2",
 					"author": "marco79cgn",
 					"screenshots": [
 						{
@@ -184,7 +184,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "25-6-2018"
+					"updated": "7-8-2019"
 				},
 				{
 					"prettyName": "Phish.in",
