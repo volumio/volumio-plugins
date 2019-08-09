@@ -6,6 +6,14 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
+/* *************************************** */
+/* *************** OPTIONS *************** */
+/* *************************************** */
+var encodingFilename = 'utf8';
+var statsAttribute = "ctimeMs"; // can be one of [atimeMs, mtimeMs, ctimeMs]
+var foldersToScan = ["/mnt/INTERNAL/", "/mnt/NAS/test/", "/mnt/USB/"];
+var numberOfLastAdded = 100;
+/* *************************************** */
 
 module.exports = new50;
 function new50(context) {
@@ -17,7 +25,6 @@ function new50(context) {
 	this.configManager = this.context.configManager;
 
 }
-
 
 
 new50.prototype.onVolumioStart = function()
@@ -34,6 +41,7 @@ new50.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 
+    self.logger.info('Entering onStart');
         self.addToBrowseSources();
 
 	// Once the Plugin has successfull started resolve the promise
@@ -69,14 +77,10 @@ new50.prototype.getUIConfig = function() {
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
-        .then(function(uiconf)
-        {
-
-
+        .then(function(uiconf) {
             defer.resolve(uiconf);
         })
-        .fail(function()
-        {
+        .fail(function() {
             defer.reject(new Error());
         });
 
@@ -112,9 +116,9 @@ new50.prototype.addToBrowseSources = function () {
     var self = this;
 	// Use this function to add your music service plugin to music sources
     self.commandRouter.volumioAddToBrowseSources({
-        name: 'NEW_50',
+        name: 'new_50',
         //name: self.getRadioI18nString('NEW_50'),
-        uri: 'new_50',
+        uri: 'New_50',
         plugin_type: 'music_service',
         plugin_name: "new_50",
         albumart: '/albumart?sourceicon=music_service/new_50/new.png'
@@ -123,15 +127,42 @@ new50.prototype.addToBrowseSources = function () {
 
 new50.prototype.handleBrowseUri = function (curUri) {
     var self = this;
+    //var lastPlayed = [];
+    //var defer = libQ.defer();
 
-    //self.commandRouter.logger.info(curUri);
-    var response;
+    self.logger.info('Entering handleBrowseUri');
+    var response = {
+        "navigation": {
+            "prev": {
+                "uri": "music-library"
+            },
+            "lists": [{
+                "availableListViews": ["list", "grid"],
+                "items": [
+    			'music-library/NAS'
+		]
+            }]
+        },
+    };
+    //var list = response.navigation.lists[0].items;
 
+    self.logger.info('2 in  handleBrowseUri');
+    self.commandRouter.logger.info(curUri);
 
+    var list = ControllerMpd.prototype.lsInfo('music-library/NAS');
+    for (var i in list) { 
+	self.logger.info(i);
+    }
+    response.navigation.lists[0].items = list;
+
+    self.logger.info('3 in  handleBrowseUri');
+    //for (var j in ['toto', 'titi']) { 
+	//self.logger.info(j);
+    //}
+
+    self.logger.info('before return handleBrowseUri');
     return response;
 };
-
-
 
 // Define a method to clear, add, and play an array of tracks
 new50.prototype.clearAddPlayTrack = function(track) {
@@ -233,8 +264,6 @@ new50.prototype.getAlbumArt = function (data, path) {
 
 	return url;
 };
-
-
 
 
 
