@@ -12,10 +12,10 @@
     "VOLNORM": "Normalisation du volume",
     "DESCVOLNORM": "Règle le même volume pour tous les morceaux",
     "DESCDEBUG": "Activation des logs de deboggage",
-    "VOLUMECTRL": "Internal Volume Control",
+    "VOLUMECTRL": "Contrôle du Volume interne",
     "VOLUMECTRL_LINEAR": "Linéaire",
     "VOLUMECTRL_LOG": "Logarithmique",
-    "VOLUMECTRL_FIXED": "Fixed",
-    "DESCPVOLUMECTRL": "Method of (software) volume control"
+    "VOLUMECTRL_FIXED": "Fixe",
+    "DESCPVOLUMECTRL": "Methode de contrôle du volume"
   }
 }

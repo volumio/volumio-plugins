@@ -23,12 +23,12 @@
     "type": "string",
     "value": ""
   },
+ "volume_ctrl": {
+    "type": "string",
+    "value": "fixed"
+  },
   "debug": {
     "type": "boolean",
     "value": false
-  },
-  "volume_ctrl": {
-    "type": "string",
-    "value": "fixed"
   }
 }
