@@ -1,4 +1,4 @@
-April 30th 2019
+August 10th 2019
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,14 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+August 10th 2019
+
+- vls 0.1.7 ['@ash'](https://github.com/ashthespy) 
+ 
+    Refine dropped session handling
+    Add a flag (LIBRESPOT_RATE_RESAMPLE) to allow resampling with ALSA
+    Refactor Volume control, allow for a fixed volume option
 
 April 30th 2019
 
