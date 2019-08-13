@@ -21,7 +21,8 @@
         "shareddevice",
         "username",
         "password",
-        "debug"
+        "volume_ctrl",
+	"debug"
       ]
     },
     "content": [{
@@ -107,13 +108,37 @@
         }
       },
       {
+        "id": "volume_ctrl",
+	"type":"text",
+        "element": "select",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCPVOLUMECTRL",
+        "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL",
+        "value": {
+            "value": "fixed",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
+          },
+        
+        "options": [{
+            "value": "linear",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_LINEAR"
+          },
+          {
+            "value": "log",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_LOG"
+          },
+          {
+            "value": "fixed",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
+          }
+        ]
+      },
+      {
         "id": "debug",
         "element": "switch",
         "doc": "TRANSLATE.VOLSPOTCONNECT.DESCDEBUG",
         "label": "TRANSLATE.VOLSPOTCONNECT.DEBUG",
         "value": false
       }
-
     ]
   }]
 }
