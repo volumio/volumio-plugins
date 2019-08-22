@@ -64,7 +64,7 @@
 					"prettyName": "Youtube Playback",
 					"icon": "fa-lightbulb-o",
 					"name": "youtube",
-					"version": "0.0.9",
+					"version": "0.1.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/youtube/youtube.zip",
 					"license": "MIT",
 					"description": "Youtube playback and public sharing for the Volumio",
@@ -76,7 +76,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "3-4-2018"
+					"updated": "22-8-2019"
 				},
 				{
 					"prettyName": "TuneIn Radio",
