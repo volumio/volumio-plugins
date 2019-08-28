@@ -1,0 +1,38 @@
+{
+
+  "baseNavigation": {
+    "navigation": {
+      "prev": {
+        "uri": "/"
+      },
+      "lists": [
+        {
+        "availableListViews": [ "grid" ],
+        "items": [
+          {
+            "title": "Volume Down",
+            "uri": "ap3/down",
+            "icon": "fa fa-volume-down"
+          },
+          {
+            "title": "Volume Up",
+            "uri": "ap3/up",
+            "icon": "fa fa-volume-up"
+          },
+          {
+            "title": "Select",
+            "uri": "ap3/sel",
+            "icon": "fa fa-map-signs"
+          },
+          {
+            "title": "Stand-By",
+            "uri": "ap3/stb",
+            "icon": "fa fa-plug"
+          }
+        ]
+        }
+      ]
+    }
+  }
+
+}
