@@ -4,7 +4,7 @@ Information on New 50 plugin setup
 - pretty name is related to name in configuration panel
 - i18n in conf files is related to configuration panel not main panel
 - to translate string in main panel, edit the file /volumio/app/musiclibrary.js to add an entry point (correponding to the uri in index.js in the plugin directory)
-- Add an entry into /volumio/app/i18n/strings_en.json and /volumio/app/i18n/strings_fr.json for your Tile Label name
+- Add an entry into /volumio/app/i18n/strings_en.json and /volumio/app/i18n/strings_fr.json for your Tile Label name, using the TYPE.LABEL approach declared in the previous file
 
 - To install the plugin use: volumio plugin install
 - For refreshing after modifications: volumio plugin refresh 
