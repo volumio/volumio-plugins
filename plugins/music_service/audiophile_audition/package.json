@@ -1,0 +1,22 @@
+{
+	"name": "audiophile_audition",
+	"version": "1.0.0",
+	"description": "Audiophile Audition Plugin for Volumio2 - Music makes one feel so romantic - at least it always gets on one s nerves - which is the same thing nowadays - Oscar Wilde",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Pattdepanick",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Audiophile Audition",
+		"icon": "fa-headphones",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"nanotimer": "^0.3.15"
+	}
+}
