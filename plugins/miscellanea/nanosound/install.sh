@@ -5,17 +5,20 @@ sudo apt-get update
 # Install the required packages via apt-get
 
 #START OF LIRC
-sudo apt-get -y install lirc
-echo "Applying LIRC starting policy"
-systemctl disable lirc.service
-systemctl stop lirc.service
+#sudo apt-get -y install lirc
+#echo "Applying LIRC starting policy"
+#systemctl disable lirc.service
+#systemctl stop lirc.service
+sudo apt-get -y remove lirc
 
-echo "Creating lircrc file"
-touch /etc/lirc/lircrc
+#echo "Creating lircrc file"
+#touch /etc/lirc/lircrc
 #END OF LIRC
 
 #START OF python devs
-sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio python-lirc
+sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio
+sudo apt-get -y remove python-pip
+sudo -H easy_install pip
 sudo -H pip install --upgrade python-mpd2 socketIO-client
 
 #extra for DAC2
@@ -51,14 +54,17 @@ sudo /bin/systemctl enable nanosound_oled
 sudo /bin/systemctl enable nanosound_lirc
 
 # install LIRC config
-cd /tmp
-wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_lirc.tar.gz
-sudo tar xvf /tmp/nanosound_lirc.tar.gz -C /etc/lirc
+#cd /tmp
+#wget https://github.com/nanomesher/Nanomesher_NanoSound/raw/master/packages/nanosound_lirc.tar.gz
+#sudo tar xvf /tmp/nanosound_lirc.tar.gz -C /etc/lirc
 
-sudo cp /etc/modules /etc/modules_nanosound.bak
-sudo grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules || echo "lirc_dev" >> /etc/modules
-sudo sed --in-place '/lirc_rpi/d' /etc/modules
-sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
+#sudo cp /etc/modules /etc/modules_nanosound.bak
+#sudo grep -q lirc_dev /etc/modules && sed -i 's/lirc_dev/lirc_dev/' /etc/modules || echo "lirc_dev" >> /etc/modules
+#sudo sed --in-place '/lirc_rpi/d' /etc/modules
+#sudo echo "lirc_rpi gpio_in_pin=17" >> /etc/modules
+
+sed -i '/lirc_dev/d' /etc/modules
+sed -i '/lirc_rpi/d' /etc/modules
 
 #config spi
 sudo sed --in-place '/dtparam=spi=on/d' /boot/config.txt
