@@ -1,4 +1,4 @@
-July 13th 2019
+September 8th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -88,6 +88,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+September 8th 2019
+
+- correction for PINK noise both channels
 
 July 13th 2019
 

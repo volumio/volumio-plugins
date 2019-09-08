@@ -1,0 +1,212 @@
+#brutefir config for volumio - 
+    sampling_rate: ${smpl_rate};
+    filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
+    overflow_warnings: true;
+    show_progress: false;
+    float_bits: 64;
+    powersave: true;
+    convolver_config: "/data/configuration/audio_interface/brutefir/brutefir_convolver"; # location of convolver config file
+logic:
+ "cli" { port: 3002;};
+#"cli"  { port: "/dev/ttyS1";};
+#"echo" on ;
+
+#-----------------------
+#Input configuration
+#-----------------------
+
+input "l_in", "r_in" {
+            device: "alsa" {device: "hw:${input_device}";};
+            sample: "s32_le";   # sample format
+            channels: 2;            # number of open channels / which to use
+delay: ${delay};
+    };
+
+#-----------------------
+#room correction filters
+#-----------------------
+
+coeff "l_drc" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+#format: "text";
+attenuation: ${lattenuation};
+};
+
+filter "l_drc" {
+#from_inputs: "l_in";
+from_filters: "lVoBAF";
+to_outputs: "l_out"/0.0;
+#to_filters: "lVoBAF";
+coeff: "l_drc";
+process: -1;
+};
+
+coeff "r_drc" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+filter "r_drc" {
+#from_inputs: "r_in";
+from_filters: "rVoBAF";
+to_outputs: "r_out"/0.0;
+#to_filters: "rVoBAF";
+coeff: "r_drc";
+process: -1;
+};
+
+#coeff "l_sub" {filename: "${leftsubfilter}";format: "${filters_format2}";${skip_2s};attenuation: ${lsattenuation};};
+#filter "r_drc" {from_filters: "rVoBAF";to_outputs: "l_sub_out"/0.0;coeff: "l_sub";process: -1;};
+
+
+#coeff "r_sub" {filename: "${rightsubfilter}";format: "${filters_format2}";${skip_2s};attenuation: ${rsattenuation};};
+#filter "r_drc" {from_filters: "rVoBAF";to_outputs: "r_sub_out"/0.0;coeff: "r_sub";process: -1;};
+
+#-------------
+#VoBAF filters
+#-------------
+
+#--------left
+
+coeff "lLow" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lLM1" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lLM2" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lLM3" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lM" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lHM" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+coeff "lHigh" {
+filename: "${leftfilter}";
+format: "${filter_format1}";
+${skip_1}
+attenuation: ${lattenuation};
+};
+
+filter "lVoBAF" {
+#from_filters: "l_drc";
+from_inputs: "l_in";
+#to_outputs: "l_out"/0.0;
+to_filters: "l_drc";
+coeff: "lM";
+process: -1;
+};
+
+#-------------right
+
+coeff "rLow" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM1" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM2" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rLM3" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rM" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rHM" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+coeff "rHigh" {
+filename: "${rightfilter}";
+format: "${filter_format2}";
+${skip_2}
+attenuation: ${rattenuation};
+};
+
+filter "rVoBAF" {
+#from_filters: "r_drc";
+from_inputs: "r_in";
+#to_outputs: "r_out"/0.0;
+to_filters: "r_drc";
+coeff: "rM";
+#delay: 0,5;
+process: -1;
+};
+
+#-----------------
+#Output configuration
+#-----------------
+
+  output "l_out","r_out"${enablesub}{
+#   output "l_out","r_out" {
+           device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
+#          device: "alsa" {device: "softvolume"; ignore_xrun: true; };
+
+#         device: "file" {path: "/dev/stdout";};
+         sample: "${output_format}";   # sample format
+# sample: "S24_3LE";
+           ${nchannels}       # number of open channels / which to use
+#           channels: 2;        # number of open channels / which to use
+#	delay: 5,0;
+ #	maxdelay: -1;
+	dither: false;
+    };
+ 
