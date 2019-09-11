@@ -1,3 +1,50 @@
 {
-
+  "timeout": {
+    "type": "number",
+    "value": 120
+  },
+  "afterPlay": {
+    "type": "boolean",
+    "value": false
+  },
+  "autoMode": {
+    "type": "boolean",
+    "value": false
+  },
+  "minBr": {
+    "type": "number",
+    "value": 15
+  },
+  "maxBr": {
+    "type": "number",
+    "value": 255
+  },
+  "brightnessCurve": {
+    "type": "boolean",
+    "value": false
+  },
+  "midBr": {
+    "type": "number",
+    "value": 255
+  },
+  "manualBr": {
+    "type": "number",
+    "value": 255
+  },
+  "minAls": {
+    "type": "number",
+    "value": 0
+  },
+  "maxAls": {
+    "type": "number",
+    "value": 0
+  },
+  "flip": {
+    "type": "boolean",
+    "value": false
+  },
+  "showPointer": {
+    "type": "boolean",
+    "value": false
+  }
 }

@@ -1,6 +1,6 @@
 ## Template uninstallation script
-echo "Uninstalling Template and its dependencies..."
-INSTALLING="/home/volumio/template-plugin.uninstalling"
+echo "Uninstalling LastFM and its dependencies..."
+INSTALLING="/home/volumio/lastfm.uninstalling"
 
 if [ ! -f $INSTALLING ]; then
 

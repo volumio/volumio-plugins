@@ -6,5 +6,6 @@
   "STOP_RADIO_CHANNEL": "Stopped Radio Paradise",
   "ERROR_STREAM_SERVER":  "There is a problem in {0} radio streaming server.",
   "INCORRECT_RESPONSE":  "There is incorrect response from {0} radio streaming server.",
-  "SAVE":"Save"
+  "SAVE":"Save",
+  "SAVE_CONFIG_MESSAGE":"Configuration saved successfully."
 }

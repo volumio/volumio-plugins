@@ -8,7 +8,7 @@
       "element": "section",
       "label": "TRANSLATE.KODI.KODITITLE",
       "icon": "fa-cogs",
-      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"updateBootConfig"},
+      "onSave": {"type":"controller", "endpoint":"miscellanea/kodi", "method":"updateBootConfig"},
       "saveButton": {
         "label": "TRANSLATE.KODI.SAVE",
         "data": [
@@ -57,7 +57,7 @@
       "element": "section",
       "label": "TRANSLATE.KODI.KODISOUNDTITLE",
       "icon": "fa-volume-up",
-      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"updateSoundConfig"},
+      "onSave": {"type":"controller", "endpoint":"miscellanea/kodi", "method":"updateSoundConfig"},
       "saveButton": {
         "label": "TRANSLATE.KODI.SAVE",
         "data": [
@@ -90,7 +90,7 @@
       "element": "section",
       "label": "TRANSLATE.KODI.KODI_SETTINGS",
       "icon": "fa-wrench",
-      "onSave": {"type":"controller", "endpoint":"miscellanea/Kodi", "method":"optimiseKodi"},
+      "onSave": {"type":"controller", "endpoint":"miscellanea/kodi", "method":"optimiseKodi"},
       "saveButton": {
         "label": "TRANSLATE.KODI.SAVE",
         "data": [

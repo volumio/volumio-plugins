@@ -1,0 +1,15 @@
+#!/bin/sh
+ALSA_ENABLED=$(sed -n "/.*type.*\"alsa\"/{n;p}" /etc/mpd.conf)
+FIFO_ENABLED=$(sed -n "/.*type.*\"fifo\"/{n;p}" /etc/mpd.conf)
+
+case $ALSA_ENABLED in
+ *enabled*) sed -i -- '/.*type.*alsa.*/!b;n;c\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ enabled\ \ \ \ \ \ \ \ \ "ENABLE_ALSA"' /etc/mpd.conf ;;
+ *) sed -i -- 's|.*type.*alsa.*|&\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ enabled\ \ \ \ \ \ \ \ \ "ENABLE_ALSA"|g' /etc/mpd.conf ;;
+esac
+
+case $FIFO_ENABLED in
+ *enabled*) sed -i -- '/.*type.*fifo.*/!b;n;c\ \ \ \ enabled\ \ \ \ \ \ \ \ \ "ENABLE_FIFO"' /etc/mpd.conf ;;
+ *) sed -i -- 's|.*type.*fifo.*|&\n\ \ \ \ enabled\ \ \ \ \ \ \ \ \ "ENABLE_FIFO"|g' /etc/mpd.conf ;;
+esac
+
+sed -i -- 's/.*format.*/\ \ \ \ format\ \ \ \ \ \ \ \ \ \ "${SAMPLE_RATE}:${BIT_DEPTH}:${CHANNELS}"/g' /etc/mpd.conf

@@ -13,14 +13,6 @@ function Timer(context, enable_debug_logging) {
 	self.timeRemaining = undefined;
 	self.cb = undefined;
 	self.timer = null;
-	
-	this.isCounting = function () {
-		return this.isActive;
-	};
-	
-	this.isPaused = function () {
-		return this.isActive;
-	};
 };
 
 
