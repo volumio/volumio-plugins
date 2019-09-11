@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 echo "Installing nanosound cd Dependencies"
 echo "NanoSound CD takes around 15 minutes to install. Please be patient."
 sudo apt-get update
