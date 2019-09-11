@@ -1,0 +1,17 @@
+{
+	"AUDIOPHONICSONOFF":{
+	"PLUGINCONF":"Audiophonics on/off button configuration",
+	"GPIOCONFIG":"GPIO configuration",
+	"D_GPIOCONFIG":"Configure the GPIO pins to use for the Audiophonics card and on/off button. The Audiophonics Sabre soundcard has scripts on the chip to flash the power button while booting/shutting down (faster blinking) and it will light it up once booted. This plugin allows for easy configuration of this behavior.",
+		"SOFTSHUTDOWN": "Software shutdown GPIO pin",
+		"D_SOFTSHUTDOWN":"Controls which GPIO pin is activated (HIGH) when a shutdown is initiated from software.",
+		"DD_SOFTSHUTDOWN":"Default = 4, set to HIGH when Volumio receives a shutdown command",
+		"SHUTDOWNBUTTON":"Shutdown button GPIO pin",
+		"D_SHUTDOWNBUTTON":"Controls which GPIO pin is activated (HIGH) when the hardware button is pressed.",
+		"DD_SHUTDOWNBUTTON":"Default = 17, set to HIGH when the power button is pressed",
+		"BOOTOK": "Successful boot GPIO pin",
+		"D_BOOTOK":"Controls which GPIO pin is activated (HIGH) after booting successfully.",
+		"DD_BOOTOK":"Default = 22, set to HIGH after boot",
+	"SAVE": "Save"
+	}
+}

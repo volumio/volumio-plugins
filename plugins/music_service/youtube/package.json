@@ -1,6 +1,6 @@
 {
 	"name": "youtube",
-	"version": "0.0.9",
+	"version": "0.1.0",
 	"description": "Youtube playback and public sharing for the Volumio",
 	"main": "index.js",
 	"scripts": {
@@ -15,10 +15,10 @@
 		"boot_priority": 10
 	},
 	"dependencies": {
-		"ytdl-core": "^0.20.1",
-		"kew": "0.7.0",
 		"googleapis": "19.0.0",
 		"iso8601-duration": "1.0.6",
-		"v-conf": "^1.4.0"
+		"kew": "0.7.0",
+		"v-conf": "^1.4.0",
+		"ytdl-core": "^0.29.5"
 	}
 }

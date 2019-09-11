@@ -1,4 +1,4 @@
 {"encodings":[
-  {"label":"Gray encoding","enc": 0},
-  {"label":"KY040 custom encoding","enc": 1}
+  {"label":"Default","enc": 0},
+  {"label":"4x speed","enc": 1}
 ]}

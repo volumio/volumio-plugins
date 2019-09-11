@@ -1,6 +1,6 @@
 {
 	"name": "rotaryencoder",
-	"version": "1.0.6",
+	"version": "1.2.2",
 	"description": "Provides a rotary encoder interface for use in Volumio 2.x",
 	"main": "index.js",
 	"scripts": {
@@ -16,7 +16,7 @@
 	"dependencies": {
 		"balanced-match": "^1.0.0",
 		"bindings": "^1.3.0",
-		"brace-expansion": "^1.1.8",
+		"brace-expansion": "^1.1.11",
 		"concat-map": "^0.0.1",
 		"epoll": "^1.0.2",
 		"fs-extra": "^0.28.0",
@@ -31,16 +31,18 @@
 		"klaw": "^1.3.1",
 		"minimatch": "^3.0.4",
 		"multimap": "^1.0.2",
+		"nan": "^2.8.0",
 		"net": "^1.0.2",
 		"once": "^1.4.0",
-		"onoff": "^1.1.9",
-		"onoff-rotary": "https://github.com/Saiyato/onoff-rotary/tarball/ebfbc16a0806762b2e08ab40a539f0fcd3302506",
+		"onoff": "^1.2.0",
+		"onoff-rotary": "https://github.com/Saiyato/onoff-rotary/tarball/2336ea47d95ab57ab1091e429db9dd4930abbfaf",
 		"path-is-absolute": "^1.0.1",
 		"rimraf": "^2.6.2",
 		"slide": "^1.1.6",
-		"v-conf": "^1.4.0",
+		"v-conf": "^1.4.2",
 		"wrappy": "^1.0.2",
-		"write-file-atomic": "^1.3.1"
+		"write-file-atomic": "^1.3.4",
+		"socket.io-client": "^1.4.5"
 	},
 	"devDependencies": {},
 	"repository": {

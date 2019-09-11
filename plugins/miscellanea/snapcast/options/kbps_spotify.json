@@ -1,0 +1,5 @@
+{"kbps":[
+  {"name":"96 kbps (low quality)","bits":"96"},
+  {"name":"160 kbps (normal quality)","bits":"160"},
+  {"name":"320 kbps (high quality)","bits":"320"}
+]}

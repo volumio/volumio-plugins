@@ -1,0 +1,72 @@
+{
+  "systemStartup": {
+    "enabled": {
+      "value": false,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 2,
+      "type": "number"
+    },
+    "state": {
+      "value": true,
+      "type": "boolean"
+    }
+  },
+  "systemShutdown": {
+    "enabled": {
+      "value": false,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 2,
+      "type": "number"
+    },
+    "state": {
+      "value": false,
+      "type": "boolean"
+    }
+  },
+  "musicPlay": {
+    "enabled": {
+      "value": false,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 3,
+      "type": "number"
+    },
+    "state": {
+      "value": true,
+      "type": "boolean"
+    }
+  },
+  "musicPause": {
+    "enabled": {
+      "value": false,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 3,
+      "type": "number"
+    },
+    "state": {
+      "value": false,
+      "type": "boolean"
+    }
+  },
+  "musicStop": {
+    "enabled": {
+      "value": false,
+      "type": "boolean"
+    },
+    "pin": {
+      "value": 3,
+      "type": "number"
+    },
+    "state": {
+      "value": false,
+      "type": "boolean"
+    }
+  }
+}
