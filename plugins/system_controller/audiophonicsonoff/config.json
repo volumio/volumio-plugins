@@ -1,0 +1,14 @@
+{
+  "soft_shutdown": {
+    "type": "string",
+    "value": "4"
+  },
+  "shutdown_button": {
+    "type": "string",
+    "value": "17"
+  },
+  "boot_ok": {
+    "type": "string",
+    "value": "22"
+  }
+}

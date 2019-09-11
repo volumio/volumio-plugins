@@ -1,6 +1,6 @@
 {
 	"name": "kodi",
-	"version": "2.2.11",
+	"version": "2.2.13",
 	"description": "Installs Kodi Krypton on top of Volumio.",
 	"main": "index.js",
 	"scripts": {

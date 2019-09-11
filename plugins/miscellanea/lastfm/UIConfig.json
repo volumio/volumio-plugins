@@ -83,8 +83,8 @@
 			"data": [
 				"scrobbleThreshold",
 				"pushToastOnScrobble",
-				"tryScrobbleWebradio",
-				"webradioScrobbleThreshold"
+				"scrobbleFromStream",
+				"streamScrobbleThreshold"
 			]
 		},
 		"content": [
@@ -107,21 +107,21 @@
 			  "value": true
 			},
 			{
-			  "id":"tryScrobbleWebradio",
+			  "id":"scrobbleFromStream",
 			  "element": "switch",
-			  "label": "TRANSLATE.LASTFM.SCROBBLE_WEBRADIO",
-			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_WEBRADIO",
+			  "label": "TRANSLATE.LASTFM.SCROBBLE_STREAM",
+			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_STREAM",
 			  "value": false
 			},
 			{
-				"id":"webradioScrobbleThreshold",
+				"id":"streamScrobbleThreshold",
 				"type":"text",
 				"element": "input",
-				"label": "TRANSLATE.LASTFM.WEBRADIOSCROBBLETHRESHOLD",
-				"doc": "TRANSLATE.LASTFM.D_WEBRADIOSCROBBLETHRESHOLD",
+				"label": "TRANSLATE.LASTFM.STREAMSCROBBLETHRESHOLD",
+				"doc": "TRANSLATE.LASTFM.D_STREAMSCROBBLETHRESHOLD",
 				"value": "30",
 				"visibleIf": {
-					"field": "tryScrobbleWebradio",
+					"field": "scrobbleFromStream",
 					"value": true
 				}
 			}

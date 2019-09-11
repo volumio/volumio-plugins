@@ -1,6 +1,6 @@
 {
 	"name": "80s80s",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "80s80s Radio Plugin for Volumio2",
 	"main": "index.js",
 	"scripts": {

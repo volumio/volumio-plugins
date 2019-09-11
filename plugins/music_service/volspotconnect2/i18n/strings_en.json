@@ -1,13 +1,22 @@
 {
- "VOLSPOTCONNECT":{
- "VOLSPOTCONNECTCONF":"Volumio Spotify connect Configuration",
- "VOLSPOTCONNECTACCOUNT":"Spotify account",
- "USERNAME":"username",
- "PASSWORD":"password",
- "HIGHBITRATE":"stream bitrate",
- "SHAREDDEVICE":"Multi-user device",
- "SAVE":"Save",
- "INITVOL":"Initial volume",
- "DESCINITVOL":"Spotify volume when starts"
-}
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Volumio Spotify Connect Configuration",
+    "VOLSPOTCONNECTACCOUNT": "Spotify account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "HIGHBITRATE": "Stream bitrate",
+    "SHAREDDEVICE": "Multi-user device",
+    "SAVE": "Save",
+    "INITVOL": "Initial volume",
+    "DESCINITVOL": "Spotify volume when starts",
+    "VOLNORM": "Normalisation volume",
+    "DESCVOLNORM": "Set the same volume level for all songs",
+    "DEBUG": "Debug mode",
+    "DESCDEBUG": "Enable verbose logs",
+    "VOLUMECTRL": "Internal Volume Control",
+    "VOLUMECTRL_LINEAR": "Linear",
+    "VOLUMECTRL_LOG": "Logarithmic",
+    "VOLUMECTRL_FIXED": "Fixed",
+    "DESCPVOLUMECTRL": "Volume control (software) method"
+  }
 }

@@ -1,0 +1,55 @@
+begin
+prog = irexec
+button = KEY_POWER
+config = /sbin/shutdown -h now
+end
+begin
+prog = irexec
+button = KEY_OK
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_UP
+config =
+end
+begin
+prog = irexec
+button = KEY_DOWN
+config =
+end
+begin
+prog = irexec
+button = KEY_LEFT
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_RIGHT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_MENU
+config = if amixer -c 1 cget numid=5 | grep ": values=0" -q ; then amixer -c 1 cset numid=5 1; elif amixer -c 1 cget numid=5 | grep ": values=1" -q ; then amixer -c 1 cset numid=5 0 ; fi
+end
+begin
+prog = irexec
+button = KEY_BACK
+config = /usr/local/bin/volumio repeat
+end
+begin
+prog = irexec
+button = KEY_HOME
+config = /usr/local/bin/volumio random
+end
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+end
