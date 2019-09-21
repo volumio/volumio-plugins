@@ -80,10 +80,6 @@ nanosound.prototype.onStart = function() {
 
  	var device = self.getAdditionalConf("system_controller", "system", "device");
  	
-	//Now done by install.sh
-	if (device == "Raspberry PI") {
- 	    self.enablePIOverlay();
-	}
 
 	//-------------- START OF LIRC SETUP --------------------
 	//setup LIRC hardware.conf
@@ -121,8 +117,7 @@ nanosound.prototype.onStart = function() {
         });
 	*/
 
-	self.restartLirc(true);
-
+	
 	//---------------- End of LIRC setup -------------------
 	self.restartNSLirc(true);
 	
@@ -296,13 +291,6 @@ nanosound.prototype.onStop = function() {
 	self.clearTriggers()
 		.then (function (result) {
 			self.logger.info("Button triggers stopped");
-			    exec('/usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
-				function (error, stdout, stderr) {
-					if(error != null) {
-						self.logger.info('Error stopping LIRC: '+error);
-					} else {
-						self.logger.info('LIRC correctly stopped');
-
 					exec('/usr/bin/sudo /bin/systemctl stop nanosound_oled.service', {uid:1000,gid:1000},
 						function (error, stdout, stderr) {
 							if(error != null) {
@@ -315,9 +303,9 @@ nanosound.prototype.onStop = function() {
 							exec('/usr/bin/sudo /bin/systemctl stop nanosound_lirc.service', {uid:1000,gid:1000},
 							function (error, stdout, stderr) {
 								if(error != null) {
-									self.logger.info('Cannot stop NanoSound LIRC service: '+error);
+									self.logger.info('Cannot stop NanoSound Infrared service: '+error);
 								} else {
-									self.logger.info('NanoSound LIRC stopped');
+									self.logger.info('NanoSound Infrared stopped');
 									
 								}
 								
@@ -342,9 +330,7 @@ nanosound.prototype.onStop = function() {
 
 
 					  
-					}
-				});
-		});
+					});
 
 
 
@@ -626,33 +612,6 @@ nanosound.prototype.createHardwareConf = function(device){
 	}
 }
 
-nanosound.prototype.restartLirc = function (message) {
-	var self = this;
-
-    exec('/usr/bin/sudo /bin/systemctl stop lirc.service', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Cannot kill irexec: '+error);
-            }
-            setTimeout(function(){
-
-	exec('/usr/bin/sudo /bin/systemctl start lirc.service', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Error restarting LIRC: '+error);
-                if (message){
-                    self.commandRouter.pushToastMessage('error', 'NanoSound', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
-                }
-            } else {
-                self.logger.info('lirc correctly started');
-                if (message){
-                    self.commandRouter.pushToastMessage('success', 'NanoSound', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
-                }
-            }
-        });
-            },1000)
-    });
-}
 
 nanosound.prototype.restartNSLirc = function (message) {
 	var self = this;
@@ -667,14 +626,14 @@ nanosound.prototype.restartNSLirc = function (message) {
 	exec('/usr/bin/sudo /bin/systemctl start nanosound_lirc', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
-                self.logger.info('Error restarting NanoSound LIRC: '+error);
+                self.logger.info('Error restarting NanoSound Infrared: '+error);
                 if (message){
-                    self.commandRouter.pushToastMessage('error', 'NanoSound', "NanoSound LIRC cannot start");
+                    self.commandRouter.pushToastMessage('error', 'NanoSound', "NanoSound Infrared cannot start");
                 }
             } else {
                 self.logger.info('NanoSound lirc correctly started');
                 if (message){
-                    self.commandRouter.pushToastMessage('success', 'NanoSound', "NanoSound LIRC started");
+                    self.commandRouter.pushToastMessage('success', 'NanoSound', "NanoSound Infrared started");
                 }
             }
         });
@@ -715,21 +674,3 @@ nanosound.prototype.restartRotary = function (message) {
 	return defer.promise;
 }
 
-
-nanosound.prototype.enablePIOverlay = function() {
-    var defer = libQ.defer();
-    var self = this;
-
-    exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=17', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Error enabling lirc-rpi overlay: '+error);
-                defer.reject();
-            } else {
-                self.logger.info('lirc-rpi overlay enabled');
-                defer.resolve();
-            }
-        });
-
-    return defer.promise;
-};
