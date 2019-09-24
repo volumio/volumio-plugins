@@ -9,7 +9,7 @@ sudo apt-get update
 #echo "Applying LIRC starting policy"
 #systemctl disable lirc.service
 #systemctl stop lirc.service
-sudo apt-get -y remove lirc
+#sudo apt-get -y remove lirc
 
 #echo "Creating lircrc file"
 #touch /etc/lirc/lircrc
