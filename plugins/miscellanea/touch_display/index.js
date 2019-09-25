@@ -884,30 +884,6 @@ TouchDisplay.prototype.getAlsValue = function (data) {
   }
 };
 
-TouchDisplay.prototype.writeBootStr = function () {
-  const self = this;
-  const searchexp = new RegExp(configTxtBanner + 'lcd_rotate=.*' + os.EOL);
-  const bootstring = 'lcd_rotate=2' + os.EOL;
-
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
-    if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
-    } else if (configTxt.search(configTxtBanner + bootstring) === -1) {
-      let newConfigTxt = configTxt.replace(searchexp, configTxtBanner + bootstring);
-      if (configTxt === newConfigTxt) {
-        newConfigTxt = configTxt + os.EOL + configTxtBanner + bootstring + os.EOL;
-      }
-      fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
-        }
-      });
-    }
-  });
-};
-
 TouchDisplay.prototype.systemctl = function (systemctlCmd) {
   const self = this;
   const defer = libQ.defer();
