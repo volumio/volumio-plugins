@@ -18,7 +18,7 @@ var alsProgression = [];
 var timeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
+var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3, setScrToTimer4;
 
 module.exports = TouchDisplay;
 
@@ -106,10 +106,7 @@ TouchDisplay.prototype.onStart = function () {
             });
           }
         });
-        // screen orientation
-        if (self.config.get('flip')) {
-          self.writeBootStr();
-        }
+        self.updateSystemConfig(self.config.get('angle'));
       }
       // screensaver
       if (self.commandRouter.volumioGetState().status === 'play') {
@@ -164,7 +161,6 @@ TouchDisplay.prototype.onStop = function () {
   clearTimeout(setScrToTimer2);
   clearTimeout(setScrToTimer3);
   if (device === 'Raspberry PI') {
-    self.rmBootStr();
     clearTimeout(autoBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
@@ -246,10 +242,9 @@ TouchDisplay.prototype.getUIConfig = function () {
           }
         ];
       }
-      if (rpiScreen) {
-        uiconf.sections[2].hidden = false;
-        uiconf.sections[2].content[0].value = self.config.get('flip');
-      }
+      uiconf.sections[2].content[0].value.value = self.config.get('angle');
+      uiconf.sections[2].content[0].value.label = self.commandRouter.getI18nString('TOUCH_DISPLAY.' + self.config.get('angle'));
+
       uiconf.sections[3].content[0].value = self.config.get('showPointer');
       defer.resolve(uiconf);
     })
@@ -457,14 +452,9 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
       }
     ]
   };
-
-  if (self.config.get('flip') !== confData.flip) {
-    self.config.set('flip', confData.flip);
-    if (confData.flip) {
-      self.writeBootStr();
-    } else {
-      self.rmBootStr();
-    }
+  if (self.config.get('angle') !== confData.angle.value) {
+    self.config.set('angle', confData.angle.value);
+    self.updateSystemConfig(confData.angle.value);
     self.commandRouter.broadcastMessage('openModal', responseData);
   }
 };
@@ -863,10 +853,28 @@ TouchDisplay.prototype.getAlsValue = function (data) {
   }
 };
 
-TouchDisplay.prototype.writeBootStr = function () {
+TouchDisplay.prototype.updateSystemConfig = function (angle) {
   const self = this;
-  const searchexp = new RegExp(configTxtBanner + 'lcd_rotate=.*' + os.EOL);
-  const bootstring = 'lcd_rotate=2' + os.EOL;
+  const searchexp = new RegExp(configTxtBanner + 'display_hdmi_rotate=.*' + os.EOL + 'display_lcd_rotate=.*' + os.EOL);
+  let bootstring = 'display_hdmi_rotate=0' + os.EOL + 'display_lcd_rotate=0' + os.EOL;
+
+  self.logger.info("updating display_rotate for "+angle);
+  switch(angle) {
+  case "NORMAL":
+        bootstring = 'display_hdmi_rotate=0' + os.EOL + 'display_lcd_rotate=0' + os.EOL;
+        break;
+  case "CLOCKWISE":
+        bootstring = 'display_hdmi_rotate=1' + os.EOL + 'display_lcd_rotate=1' + os.EOL;
+        break;
+  case "UPSIDE_DOWN":
+        bootstring = 'display_hdmi_rotate=2' + os.EOL + 'display_lcd_rotate=2' + os.EOL;
+        break;
+  case "COUNTER_CLOCKWISE":
+        bootstring = 'display_hdmi_rotate=3' + os.EOL + 'display_lcd_rotate=3' + os.EOL;
+        break;
+  }
+
+  self.logger.info("bootstring now "+bootstring);
 
   fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
     if (err) {
@@ -881,28 +889,49 @@ TouchDisplay.prototype.writeBootStr = function () {
         if (err) {
           self.logger.error('Error writing /boot/config.txt: ' + err);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+        } else {
+          self.writeCalibrationMatrix(angle);
         }
       });
     }
   });
 };
 
-TouchDisplay.prototype.rmBootStr = function () {
+TouchDisplay.prototype.writeCalibrationMatrix = function (angle) {
   const self = this;
-  const searchexp = new RegExp(os.EOL + os.EOL + '*' + configTxtBanner + 'lcd_rotate=2' + os.EOL + '*');
+  const configFile = '/etc/X11/xorg.conf.d/40-libinput.conf';
+  let matrix = '1 0 0 0 1 0 0 0 1';
 
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+  self.logger.info("updating calibrationmatrix for "+angle);
+
+  switch(angle) {
+  case "NORMAL":
+        matrix = '1 0 0 0 1 0 0 0 1';
+        break;
+  case "CLOCKWISE":
+        matrix = '0 1 0 -1 0 1 0 0 1';
+        break;
+  case "UPSIDE_DOWN":
+        matrix = '-1 0 1 0 -1 1 0 0 1';
+        break;
+  case "COUNTER_CLOCKWISE":
+        matrix = '0 -1 1 1 0 0 0 0 1';
+        break;
+  }
+
+  const configContents = 
+                 'Section "InputClass"' + os.EOL +
+                 '      Identifier "Touchscreen"' + os.EOL +
+                 '       Driver "libinput"' + os.EOL +
+                 '       MatchIsTouchscreen "on"' + os.EOL +
+                 '       MatchDevicePath "/dev/input/event*"' + os.EOL +
+                 '       Option "calibrationmatrix" "' + matrix + '"' + os.EOL +
+                 'EndSection' + os.EOL;
+
+  fs.writeFile(configFile, configContents, 'utf8', function (err) {
     if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
-    } else {
-      configTxt = configTxt.replace(searchexp, os.EOL);
-      fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
-        }
-      });
+      self.logger.error('Error writing /boot/config.txt: ' + err);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + configFile +': ' + err);
     }
   });
 };

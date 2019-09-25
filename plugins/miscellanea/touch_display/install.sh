@@ -113,5 +113,9 @@ sudo systemctl daemon-reload
 echo "Allowing volumio to start an xsession"
 sudo /bin/sed -i "s/allowed_users=console/allowed_users=anybody/" /etc/X11/Xwrapper.config
 
+echo "Creating xorg.conf.d directory"
+sudo mkdir -p -m 755 /etc/X11/xorg.conf.d
+sudo chown volumio:volumio /etc/X11/xorg.conf.d
+
 #required to end the plugin install
 echo "plugininstallend"
