@@ -3,6 +3,7 @@
 HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
 
 RASPI_ROTATE_VERSION="1.0"
+SPLASH_DIRECTORY="/usr/share/plymouth/themes/volumio/"
 
 if [ "$HW" = "pi" ];
 then
@@ -126,8 +127,44 @@ if [ "$FBTURBO_OK" != "" ]; then
     echo "Modifying template for fbturbo"
     sed -i "s/fbdev/fbturbo/" etc/xorg.conf.d/99-raspi-rotate.conf.tmpl
 fi
+
 echo "Installing make"
-sudo apt-get -y install make
+sudo apt-get install -y make
+
+echo "Generating rotated boot splashscreens"
+if [ ! -f "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png" ]; then
+        IMAGICK_INSTALLED=$(which convert)
+        if [ "$IMAGICK_INSTALLED" = "" ]; then
+                echo "Installing imagemagick"
+                sudo apt-get install -y imagemagick
+        fi
+        sudo cp "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png"
+        sudo rm "${SPLASH_DIRECTORY}/volumio-logo16.png"
+        sudo cp "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png" "${SPLASH_DIRECTORY}/volumio-logo16.png"
+
+        sudo convert -rotate 90  "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-CW.png"
+        sudo convert -rotate 180 "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-UD.png"
+        sudo convert -rotate 270 "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-CCW.png"
+
+        if [ "$IMAGICK_INSTALLED" = "" ]; then
+                echo "Removing imagemagick"
+                sudo apt-get remove -y imagemagick
+                sudo apt-get autoremove -y
+        fi
+fi
+
+echo "Adding bootsplash hook"
+cat > etc/hooks.d/01-bootsplash.sh << EOF
+#!/bin/bash
+
+if [ "\${ROTATE}" != "" ]; then
+	if [ -f "${SPLASH_DIRECTORY}/volumio-logo16-\${ROTATE}.png" ]; then
+		rm -f ${SPLASH_DIRECTORY}/volumio-logo16.png
+		cp "${SPLASH_DIRECTORY}/volumio-logo16-\${ROTATE}.png" "${SPLASH_DIRECTORY}/volumio-logo16.png"
+	fi
+fi
+EOF
+
 echo "Installing raspi-rotate"
 sudo make install
 cd ..
