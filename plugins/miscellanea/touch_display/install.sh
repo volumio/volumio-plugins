@@ -2,6 +2,8 @@
 
 HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
 
+RASPI_ROTATE_VERSION="1.0"
+
 if [ "$HW" = "pi" ];
 then
 
@@ -112,6 +114,25 @@ sudo systemctl daemon-reload
 
 echo "Allowing volumio to start an xsession"
 sudo /bin/sed -i "s/allowed_users=console/allowed_users=anybody/" /etc/X11/Xwrapper.config
+
+echo "Downloading raspi-rotate"
+wget -O raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz https://github.com/colinleroy/raspi-rotate/archive/v${RASPI_ROTATE_VERSION}.tar.gz
+tar -xf raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz
+cd raspi-rotate-${RASPI_ROTATE_VERSION}
+
+echo "Checking whether fbturbo is installed"
+FBTURBO_OK=$(dpkg -L xserver-xorg-video-fbturbo|grep fbturbo_drv)
+if [ "$FBTURBO_OK" != "" ]; then
+    echo "Modifying template for fbturbo"
+    sed -i "s/fbdev/fbturbo/" etc/xorg.conf.d/99-raspi-rotate.conf.tmpl
+fi
+echo "Installing make"
+sudo apt-get -y install make
+echo "Installing raspi-rotate"
+sudo make install
+cd ..
+echo "Cleaning up raspi-rotate source"
+rm -rf raspi-rotate-${RASPI_ROTATE_VERSION} raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz
 
 #required to end the plugin install
 echo "plugininstallend"

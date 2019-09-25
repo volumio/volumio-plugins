@@ -435,33 +435,57 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
   let t = 0;
+  let raspi_rotate_arg = "normal";
 
   if (self.config.get('angle') !== confData.angle.value) {
     self.config.set('angle', confData.angle.value);
 
-    clearTimeout(setScrToTimer4);
-    self.systemctl('daemon-reload')
-      .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
-      .then(function () {
-        self.logger.info('Restarting volumio-kiosk.service succeeded.');
-        fs.stat(xorgSocket, function (err, stats) {
-          if (err !== null || !stats.isSocket()) {
-            t = 2000;
-            self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
-          }
-          setScrToTimer4 = setTimeout(function () {
-            if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
-              self.setScreenTimeout(0);
-            } else {
-              self.setScreenTimeout(self.config.get('timeout'));
-            }
-          }, t);
-          defer.resolve();
-        });
-      })
-      .fail(function () {
-        defer.reject(new Error());
-      });
+    switch(confData.angle.value) {
+    case "NORMAL":
+        raspi_rotate_arg = "normal";
+        break;
+    case "CLOCKWISE":
+        raspi_rotate_arg = "cw";
+        break;
+    case "UPSIDE_DOWN":
+        raspi_rotate_arg = "ud";
+        break;
+    case "COUNTER_CLOCKWISE":
+        raspi_rotate_arg = "ccw";
+        break;
+    }
+
+    exec("/bin/echo volumio | /usr/bin/sudo -S /usr/local/bin/raspi-rotate-screen "+raspi_rotate_arg, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+        if (error !== null) {
+          self.logger.error('Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/lib/systemd/system/volumio-kiosk.service: ' + error);
+          defer.reject();
+        } else {
+          clearTimeout(setScrToTimer4);
+          self.systemctl('daemon-reload')
+            .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
+            .then(function () {
+              self.logger.info('Restarting volumio-kiosk.service succeeded.');
+              fs.stat(xorgSocket, function (err, stats) {
+                if (err !== null || !stats.isSocket()) {
+                  t = 2000;
+                  self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
+                }
+                setScrToTimer4 = setTimeout(function () {
+                  if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
+                    self.setScreenTimeout(0);
+                  } else {
+                    self.setScreenTimeout(self.config.get('timeout'));
+                  }
+                }, t);
+                defer.resolve();
+              });
+            })
+            .fail(function () {
+              defer.reject(new Error());
+            });
+        }
+    });
   }
   return defer.promise;
 };
