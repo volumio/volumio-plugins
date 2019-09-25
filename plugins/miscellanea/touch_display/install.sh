@@ -105,6 +105,7 @@ After=volumio.service
 Type=simple
 User=volumio
 Group=volumio
+Restart=Always
 ExecStart=/usr/bin/startx /etc/X11/Xsession /opt/volumiokiosk.sh -- -nocursor
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300
