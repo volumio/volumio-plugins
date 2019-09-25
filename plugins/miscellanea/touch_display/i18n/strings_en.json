@@ -53,7 +53,7 @@
     "GETMIDALS_MSG":"Expose your system to the ambience brightness at which a certain screen brightness (\"reference brightness\") should be reached. Click \"Ok\" to assign this ambience brightness to the \"reference brightness\".",
     "ORIENTATION_CONF":"Orientation settings",
     "ORIENTATION_DESC":"",
-    "ANGLE_DOC":"Choose your screen orientation°.",
+    "ANGLE_DOC":"Choose your screen orientation.",
     "ANGLE":"Rotation angle",
     "NORMAL": "0° (normal)",
     "CLOCKWISE": "90° clockwise",
