@@ -18,7 +18,7 @@ var alsProgression = [];
 var timeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3, setScrToTimer4;
+var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
 
 module.exports = TouchDisplay;
 
@@ -106,6 +106,10 @@ TouchDisplay.prototype.onStart = function () {
             });
           }
         });
+        // screen orientation
+        if (self.config.get('flip')) {
+          self.writeBootStr();
+        }
       }
       // screensaver
       if (self.commandRouter.volumioGetState().status === 'play') {
@@ -159,8 +163,8 @@ TouchDisplay.prototype.onStop = function () {
   clearTimeout(setScrToTimer1);
   clearTimeout(setScrToTimer2);
   clearTimeout(setScrToTimer3);
-  clearTimeout(setScrToTimer4);
   if (device === 'Raspberry PI') {
+    self.rmBootStr();
     clearTimeout(autoBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
@@ -242,9 +246,10 @@ TouchDisplay.prototype.getUIConfig = function () {
           }
         ];
       }
-      uiconf.sections[2].content[0].value.value = self.config.get('angle');
-      uiconf.sections[2].content[0].value.label = self.commandRouter.getI18nString('TOUCH_DISPLAY.' + self.config.get('angle'));
-
+      if (rpiScreen) {
+        uiconf.sections[2].hidden = false;
+        uiconf.sections[2].content[0].value = self.config.get('flip');
+      }
       uiconf.sections[3].content[0].value = self.config.get('showPointer');
       defer.resolve(uiconf);
     })
@@ -433,61 +438,35 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
 
 TouchDisplay.prototype.saveOrientationConf = function (confData) {
   const self = this;
-  const defer = libQ.defer();
-  let t = 0;
-  let raspi_rotate_arg = "normal";
+  const responseData = {
+    title: self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'),
+    message: self.commandRouter.getI18nString('TOUCH_DISPLAY.REBOOT_MSG'),
+    size: 'lg',
+    buttons: [
+      {
+        name: self.commandRouter.getI18nString('COMMON.RESTART'),
+        class: 'btn btn-default',
+        emit: 'reboot',
+        payload: ''
+      },
+      {
+        name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
+        class: 'btn btn-info',
+        emit: 'callMethod',
+        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'closeModals'}
+      }
+    ]
+  };
 
-  if (self.config.get('angle') !== confData.angle.value) {
-    self.config.set('angle', confData.angle.value);
-
-    switch(confData.angle.value) {
-    case "NORMAL":
-        raspi_rotate_arg = "normal";
-        break;
-    case "CLOCKWISE":
-        raspi_rotate_arg = "cw";
-        break;
-    case "UPSIDE_DOWN":
-        raspi_rotate_arg = "ud";
-        break;
-    case "COUNTER_CLOCKWISE":
-        raspi_rotate_arg = "ccw";
-        break;
+  if (self.config.get('flip') !== confData.flip) {
+    self.config.set('flip', confData.flip);
+    if (confData.flip) {
+      self.writeBootStr();
+    } else {
+      self.rmBootStr();
     }
-
-    exec("/bin/echo volumio | /usr/bin/sudo -S /usr/local/bin/raspi-rotate-screen "+raspi_rotate_arg, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
-        if (error !== null) {
-          self.logger.error('Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/lib/systemd/system/volumio-kiosk.service: ' + error);
-          defer.reject();
-        } else {
-          clearTimeout(setScrToTimer4);
-          self.systemctl('daemon-reload')
-            .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
-            .then(function () {
-              self.logger.info('Restarting volumio-kiosk.service succeeded.');
-              fs.stat(xorgSocket, function (err, stats) {
-                if (err !== null || !stats.isSocket()) {
-                  t = 2000;
-                  self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
-                }
-                setScrToTimer4 = setTimeout(function () {
-                  if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
-                    self.setScreenTimeout(0);
-                  } else {
-                    self.setScreenTimeout(self.config.get('timeout'));
-                  }
-                }, t);
-                defer.resolve();
-              });
-            })
-            .fail(function () {
-              defer.reject(new Error());
-            });
-        }
-    });
+    self.commandRouter.broadcastMessage('openModal', responseData);
   }
-  return defer.promise;
 };
 
 TouchDisplay.prototype.savePointerConf = function (confData) {
@@ -882,6 +861,50 @@ TouchDisplay.prototype.getAlsValue = function (data) {
   } else {
     self.commandRouter.broadcastMessage('openModal', responseData);
   }
+};
+
+TouchDisplay.prototype.writeBootStr = function () {
+  const self = this;
+  const searchexp = new RegExp(configTxtBanner + 'lcd_rotate=.*' + os.EOL);
+  const bootstring = 'lcd_rotate=2' + os.EOL;
+
+  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+    if (err) {
+      self.logger.error('Error reading /boot/config.txt: ' + err);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+    } else if (configTxt.search(configTxtBanner + bootstring) === -1) {
+      let newConfigTxt = configTxt.replace(searchexp, configTxtBanner + bootstring);
+      if (configTxt === newConfigTxt) {
+        newConfigTxt = configTxt + os.EOL + configTxtBanner + bootstring + os.EOL;
+      }
+      fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
+        if (err) {
+          self.logger.error('Error writing /boot/config.txt: ' + err);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+        }
+      });
+    }
+  });
+};
+
+TouchDisplay.prototype.rmBootStr = function () {
+  const self = this;
+  const searchexp = new RegExp(os.EOL + os.EOL + '*' + configTxtBanner + 'lcd_rotate=2' + os.EOL + '*');
+
+  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+    if (err) {
+      self.logger.error('Error reading /boot/config.txt: ' + err);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+    } else {
+      configTxt = configTxt.replace(searchexp, os.EOL);
+      fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
+        if (err) {
+          self.logger.error('Error writing /boot/config.txt: ' + err);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+        }
+      });
+    }
+  });
 };
 
 TouchDisplay.prototype.systemctl = function (systemctlCmd) {

@@ -39,9 +39,9 @@
     "type": "number",
     "value": 0
   },
-  "angle": {
-    "type": "string",
-    "value": "NORMAL"
+  "flip": {
+    "type": "boolean",
+    "value": false
   },
   "showPointer": {
     "type": "boolean",
