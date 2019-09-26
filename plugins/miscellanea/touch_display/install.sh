@@ -2,9 +2,6 @@
 
 HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
 
-RASPI_ROTATE_VERSION="1.0"
-SPLASH_DIRECTORY="/usr/share/plymouth/themes/volumio/"
-
 if [ "$HW" = "pi" ];
 then
 
@@ -105,7 +102,6 @@ After=volumio.service
 Type=simple
 User=volumio
 Group=volumio
-Restart=Always
 ExecStart=/usr/bin/startx /etc/X11/Xsession /opt/volumiokiosk.sh -- -nocursor
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300
@@ -116,61 +112,6 @@ sudo systemctl daemon-reload
 
 echo "Allowing volumio to start an xsession"
 sudo /bin/sed -i "s/allowed_users=console/allowed_users=anybody/" /etc/X11/Xwrapper.config
-
-echo "Downloading raspi-rotate"
-wget -O raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz https://github.com/colinleroy/raspi-rotate/archive/v${RASPI_ROTATE_VERSION}.tar.gz
-tar -xf raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz
-cd raspi-rotate-${RASPI_ROTATE_VERSION}
-
-echo "Checking whether fbturbo is installed"
-FBTURBO_OK=$(dpkg -L xserver-xorg-video-fbturbo|grep fbturbo_drv)
-if [ "$FBTURBO_OK" != "" ]; then
-    echo "Modifying template for fbturbo"
-    sed -i "s/fbdev/fbturbo/" etc/xorg.conf.d/99-raspi-rotate.conf.tmpl
-fi
-
-echo "Installing make"
-sudo apt-get install -y make
-
-echo "Generating rotated boot splashscreens"
-if [ ! -f "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png" ]; then
-        IMAGICK_INSTALLED=$(which convert)
-        if [ "$IMAGICK_INSTALLED" = "" ]; then
-                echo "Installing imagemagick"
-                sudo apt-get install -y imagemagick
-        fi
-        sudo cp "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png"
-        sudo rm "${SPLASH_DIRECTORY}/volumio-logo16.png"
-        sudo cp "${SPLASH_DIRECTORY}/volumio-logo16-NORMAL.png" "${SPLASH_DIRECTORY}/volumio-logo16.png"
-
-        sudo convert -rotate 90  "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-CW.png"
-        sudo convert -rotate 180 "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-UD.png"
-        sudo convert -rotate 270 "${SPLASH_DIRECTORY}/volumio-logo16.png" "${SPLASH_DIRECTORY}/volumio-logo16-CCW.png"
-
-        if [ "$IMAGICK_INSTALLED" = "" ]; then
-                echo "Removing imagemagick"
-                sudo apt-get remove -y imagemagick
-                sudo apt-get autoremove -y
-        fi
-fi
-
-echo "Adding bootsplash hook"
-cat > etc/hooks.d/01-bootsplash.sh << EOF
-#!/bin/bash
-
-if [ "\${ROTATE}" != "" ]; then
-	if [ -f "${SPLASH_DIRECTORY}/volumio-logo16-\${ROTATE}.png" ]; then
-		rm -f ${SPLASH_DIRECTORY}/volumio-logo16.png
-		cp "${SPLASH_DIRECTORY}/volumio-logo16-\${ROTATE}.png" "${SPLASH_DIRECTORY}/volumio-logo16.png"
-	fi
-fi
-EOF
-
-echo "Installing raspi-rotate"
-sudo make install
-cd ..
-echo "Cleaning up raspi-rotate source"
-rm -rf raspi-rotate-${RASPI_ROTATE_VERSION} raspi-rotate-v${RASPI_ROTATE_VERSION}.tar.gz
 
 #required to end the plugin install
 echo "plugininstallend"

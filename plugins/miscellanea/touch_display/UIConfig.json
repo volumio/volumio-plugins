@@ -161,38 +161,21 @@
                 "label": "TRANSLATE.TOUCH_DISPLAY.ORIENTATION_CONF",
                 "description": "TRANSLATE.TOUCH_DISPLAY.ORIENTATION_DESC",
                 "icon": "fa-compass",
+                "hidden": "false",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveOrientationConf"},
                 "saveButton": {
                               "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
                               "data": [
-                                      "angle"
+                                      "flip"
                                       ]
                               },
                 "content": [
                              {
-                             "id": "angle",
-                             "element": "select",
-                             "doc": "TRANSLATE.TOUCH_DISPLAY.ANGLE_DOC",
-                             "label": "TRANSLATE.TOUCH_DISPLAY.ANGLE",
-                             "value": {"value": "NORMAL", "label": "TRANSLATE.TOUCH_DISPLAY.NORMAL" },
-                             "options": [
-                                {
-                                  "value": "NORMAL",
-                                  "label": "TRANSLATE.TOUCH_DISPLAY.NORMAL"
-                                },
-                                {
-                                  "value": "CLOCKWISE",
-                                  "label": "TRANSLATE.TOUCH_DISPLAY.CLOCKWISE"
-                                },
-                                {
-                                  "value": "UPSIDE_DOWN",
-                                  "label": "TRANSLATE.TOUCH_DISPLAY.UPSIDE_DOWN"
-                                },
-                                {
-                                  "value": "COUNTER_CLOCKWISE",
-                                  "label": "TRANSLATE.TOUCH_DISPLAY.COUNTER_CLOCKWISE"
-                                }
-                             ]
+                             "id": "flip",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.FLIP_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.FLIP",
+                             "value": false
                              }
                            ]
                 },
