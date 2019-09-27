@@ -7,7 +7,6 @@ const path = require('path');
 const os = require('os');
 const io = require('socket.io-client');
 const socket = io.connect('http://localhost:3000');
-const configTxtBanner = '#### Touch Display setting below: do not alter ####' + os.EOL;
 const blInterface = '/sys/devices/platform/rpi_backlight/backlight/rpi_backlight';
 const xorgSocket = '/tmp/.X11-unix/X0';
 const als = '/etc/als'; // The plugin awaits the current value of an optional ambient light sensor (ALS) as a single number in /etc/als.
@@ -75,14 +74,14 @@ TouchDisplay.prototype.onStart = function () {
       device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
       if (device === 'Raspberry PI') {
         // detect Raspberry Pi Foundation original touch screen
-        exec('/bin/grep "^rpi_ft5406\\>" /proc/modules', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+        exec('/bin/grep "^rpi_ft5406\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
             self.logger.info('No Raspberry Pi Foundation touch screen detected.');
           } else {
             rpiScreen = true;
             self.logger.info('Raspberry Pi Foundation touch screen detected.');
             // check for backlight module of Raspberry Pi Foundation original touch screen
-            exec('/bin/grep "^rpi_backlight\\>" /proc/modules', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+            exec('/bin/grep "^rpi_backlight\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
               if (error !== null) {
                 self.logger.info('No backlight module of a Raspberry Pi Foundation touch screen detected.');
               } else {
@@ -107,9 +106,7 @@ TouchDisplay.prototype.onStart = function () {
           }
         });
         // screen orientation
-        if (self.config.get('flip')) {
-          self.writeBootStr();
-        }
+        self.setOrientation(self.config.get('angle'));
       }
       // screensaver
       if (self.commandRouter.volumioGetState().status === 'play') {
@@ -134,7 +131,7 @@ TouchDisplay.prototype.onStart = function () {
       socket.on('pushState', function (state) {
         if (state.status === 'play' && !lastStateIsPlaying) {
           if (self.config.get('afterPlay')) {
-            exec('/usr/bin/xset -display :0 s reset dpms force on', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+            exec('/usr/bin/xset -display :0 s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
               if (error !== null) {
                 self.logger.error('Error waking up the screen: ' + error);
               }
@@ -164,7 +161,7 @@ TouchDisplay.prototype.onStop = function () {
   clearTimeout(setScrToTimer2);
   clearTimeout(setScrToTimer3);
   if (device === 'Raspberry PI') {
-    self.rmBootStr();
+    self.setOrientation('0');
     clearTimeout(autoBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
@@ -246,9 +243,10 @@ TouchDisplay.prototype.getUIConfig = function () {
           }
         ];
       }
-      if (rpiScreen) {
+      if (device === 'Raspberry PI') {
         uiconf.sections[2].hidden = false;
-        uiconf.sections[2].content[0].value = self.config.get('flip');
+        uiconf.sections[2].content[0].value.value = self.config.get('angle');
+        uiconf.sections[2].content[0].value.label = self.commandRouter.getI18nString('TOUCH_DISPLAY.' + self.config.get('angle'));
       }
       uiconf.sections[3].content[0].value = self.config.get('showPointer');
       defer.resolve(uiconf);
@@ -313,7 +311,7 @@ TouchDisplay.prototype.saveScreensaverConf = function (confData) {
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCREENSAVER'));
           } else {
             if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
-              exec('/usr/bin/xset -display :0 s reset dpms force on', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+              exec('/usr/bin/xset -display :0 s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
                 if (error !== null) {
                   self.logger.error('Error waking up the screen: ' + error);
                 }
@@ -344,19 +342,19 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.TESTBRIGHTNESS'),
         class: 'btn btn-default',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'testBrightness', 'data': confData}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'testBrightness', data: confData }
       },
       {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'saveBrightnessConf', 'data': {'autoMode': confData.autoMode, 'minBr': confData.minBr, 'maxBr': confData.maxBr, 'brightnessCurve': confData.brightnessCurve, 'midBr': confData.midBr, 'manualBr': confData.manualBr, 'modalResult': true}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: confData.minBr, maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: confData.manualBr, modalResult: true } }
       },
       {
         name: self.commandRouter.getI18nString('COMMON.CANCEL'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'saveBrightnessConf', 'data': {'autoMode': confData.autoMode, 'minBr': self.config.get('minBr'), 'maxBr': confData.maxBr, 'brightnessCurve': confData.brightnessCurve, 'midBr': confData.midBr, 'manualBr': self.config.get('manualBr'), 'modalResult': false}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: self.config.get('minBr'), maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: self.config.get('manualBr'), modalResult: false } }
       }
     ]
   };
@@ -396,12 +394,12 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
       // minAls and maxAls can only be the same value if the ALS range has not been determined before
       if (self.config.get('maxAls') <= self.config.get('minAls')) {
         if (confData.brightnessCurve) {
-          self.getAlsValue({'confData': confData, 'action': 'minmaxmid'});
+          self.getAlsValue({ confData: confData, action: 'minmaxmid' });
         } else {
-          self.getAlsValue({'confData': confData, 'action': 'minmax'});
+          self.getAlsValue({ confData: confData, action: 'minmax' });
         }
       } else if (confData.brightnessCurve && (!self.config.has('midAls') || self.config.get('midAls') <= self.config.get('minAls') || self.config.get('midAls') >= self.config.get('maxAls'))) {
-        self.getAlsValue({'confData': confData, 'action': 'mid'});
+        self.getAlsValue({ confData: confData, action: 'mid' });
       } else {
         self.config.set('brightnessCurve', confData.brightnessCurve);
         self.config.set('autoMode', confData.autoMode);
@@ -453,18 +451,14 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'closeModals'}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'closeModals' }
       }
     ]
   };
 
-  if (self.config.get('flip') !== confData.flip) {
-    self.config.set('flip', confData.flip);
-    if (confData.flip) {
-      self.writeBootStr();
-    } else {
-      self.rmBootStr();
-    }
+  if (self.config.get('angle') !== confData.angle.value) {
+    self.config.set('angle', confData.angle.value);
+    self.setOrientation(confData.angle.value);
     self.commandRouter.broadcastMessage('openModal', responseData);
   }
 };
@@ -488,7 +482,7 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
         if (confData.showPointer) {
           pointerOpt = "'";
         }
-        exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/" + execStartLine + '/c\\' + execStartLine + pointerOpt + ' /lib/systemd/system/volumio-kiosk.service', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+        exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/" + execStartLine + '/c\\' + execStartLine + pointerOpt + ' /lib/systemd/system/volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
             self.logger.error('Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/lib/systemd/system/volumio-kiosk.service: ' + error);
@@ -555,7 +549,7 @@ TouchDisplay.prototype.setScreenTimeout = function (timeout) {
     if (err !== null || !stats.isSocket()) {
       self.logger.error('xserver is not ready: Screensaver timeout cannot be set.');
     } else {
-      exec('/bin/bash -c "/usr/bin/xset -display :0 s off +dpms dpms 0 0 ' + timeout + '"', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+      exec('/bin/bash -c "/usr/bin/xset -display :0 s off +dpms dpms 0 0 ' + timeout + '"', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
         if (error !== null) {
           self.logger.error('Error setting screensaver timeout: ' + error);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + error);
@@ -598,13 +592,13 @@ TouchDisplay.prototype.testBrightness = function (confData) {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.YES'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'saveBrightnessConf', 'data': {'autoMode': confData.autoMode, 'minBr': confData.minBr, 'maxBr': confData.maxBr, 'brightnessCurve': confData.brightnessCurve, 'midBr': confData.midBr, 'manualBr': confData.manualBr, 'modalResult': true}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: confData.minBr, maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: confData.manualBr, modalResult: true } }
       },
       {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.NO'),
         class: 'btn btn-default',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'saveBrightnessConf', 'data': {'autoMode': confData.autoMode, 'minBr': self.config.get('minBr'), 'maxBr': confData.maxBr, 'brightnessCurve': confData.brightnessCurve, 'midBr': confData.midBr, 'manualBr': self.config.get('manualBr'), 'modalResult': false}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: self.config.get('minBr'), maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: self.config.get('manualBr'), modalResult: false } }
       }
     ]
   };
@@ -675,12 +669,12 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
                 if (!self.config.get('brightnessCurve')) {
                   targetBrightness = self.checkLimits('', Math.round((newAls - self.config.get('minAls')) / (self.config.get('maxAls') - self.config.get('minAls')) * ((self.config.get('maxBr') - self.config.get('minBr'))), 10) + self.config.get('minBr'), 0, maxBrightness);
                 } else {
-                  let minAls = self.config.get('minAls');
-                  let minBr = self.config.get('minBr');
-                  let maxAls = self.config.get('maxAls');
-                  let maxBr = self.config.get('maxBr');
+                  const minAls = self.config.get('minAls');
+                  const minBr = self.config.get('minBr');
+                  const maxAls = self.config.get('maxAls');
+                  const maxBr = self.config.get('maxBr');
                   let midAls = self.config.get('midAls');
-                  let midBr = self.config.get('midBr');
+                  const midBr = self.config.get('midBr');
                   if (midAls === maxAls / 2) {
                     midAls++;
                   }
@@ -698,12 +692,12 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
                     // with the limited cPointAls calculate an appropriate value for t before caluclating the second control point coordinate cPointBr
                     t = Math.sqrt((-Math.pow(minAls, 2) * maxAls + Math.pow(minAls, 2) * midAls + minAls * Math.pow(cPointAls, 2) + 2 * minAls * cPointAls * maxAls - 4 * minAls * cPointAls * midAls - minAls * Math.pow(maxAls, 2) + 2 * minAls * maxAls * midAls - 2 * Math.pow(cPointAls, 3) + Math.pow(cPointAls, 2) * maxAls + 4 * Math.pow(cPointAls, 2) * midAls - 4 * cPointAls * maxAls * midAls + Math.pow(maxAls, 2) * midAls) / (Math.pow(minAls, 3) - 6 * Math.pow(minAls, 2) * cPointAls + 3 * Math.pow(minAls, 2) * maxAls + 12 * minAls * Math.pow(cPointAls, 2) - 12 * minAls * cPointAls * maxAls + 3 * minAls * Math.pow(maxAls, 2) - 8 * Math.pow(cPointAls, 3) + 12 * Math.pow(cPointAls, 2) * maxAls - 6 * cPointAls * Math.pow(maxAls, 2) + Math.pow(maxAls, 3))) + (minAls - cPointAls) / (minAls - 2 * cPointAls + maxAls);
                   }
-                  let cPointBr = (1 / (2 * (1 - t) * t)) * midBr - ((1 - t) / (2 * t)) * minBr - (t / (2 * (1 - t))) * maxBr;
+                  const cPointBr = (1 / (2 * (1 - t) * t)) * midBr - ((1 - t) / (2 * t)) * minBr - (t / (2 * (1 - t))) * maxBr;
                   // calculate t according to the newAls value and find the corresponding targetBrightness value on the Bezier curve defined by the cPoint above
                   t = Math.sqrt((-Math.pow(minAls, 2) * maxAls + Math.pow(minAls, 2) * newAls + minAls * Math.pow(cPointAls, 2) + 2 * minAls * cPointAls * maxAls - 4 * minAls * cPointAls * newAls - minAls * Math.pow(maxAls, 2) + 2 * minAls * maxAls * newAls - 2 * Math.pow(cPointAls, 3) + Math.pow(cPointAls, 2) * maxAls + 4 * Math.pow(cPointAls, 2) * newAls - 4 * cPointAls * maxAls * newAls + Math.pow(maxAls, 2) * newAls) / (Math.pow(minAls, 3) - 6 * Math.pow(minAls, 2) * cPointAls + 3 * Math.pow(minAls, 2) * maxAls + 12 * minAls * Math.pow(cPointAls, 2) - 12 * minAls * cPointAls * maxAls + 3 * minAls * Math.pow(maxAls, 2) - 8 * Math.pow(cPointAls, 3) + 12 * Math.pow(cPointAls, 2) * maxAls - 6 * cPointAls * Math.pow(maxAls, 2) + Math.pow(maxAls, 3))) + (minAls - cPointAls) / (minAls - 2 * cPointAls + maxAls);
                   targetBrightness = self.checkLimits('', Math.round((1 - t) * ((1 - t) * minBr + t * cPointBr) + t * ((1 - t) * cPointBr + t * maxBr), 10), minBr, maxBr);
                 }
-                let startBrightness = currentBrightness;
+                const startBrightness = currentBrightness;
                 let newBrightness = startBrightness;
                 (function loop () {
                   if (newBrightness !== targetBrightness && !timeoutCleared) {
@@ -756,7 +750,7 @@ TouchDisplay.prototype.assignCurrentAls = function (data) {
       if (data.action.substr(0, 3) === 'min') {
         self.config.set('minAls', parseFloat(currentAls));
         data.action = data.action.slice(3);
-        self.getAlsValue({'confData': data.confData, 'action': data.action});
+        self.getAlsValue({ confData: data.confData, action: data.action });
       } else {
         if (data.action !== 'cancel') {
           self.config.set(data.action.slice(0, 3) + 'Als', parseFloat(currentAls));
@@ -776,7 +770,7 @@ TouchDisplay.prototype.assignCurrentAls = function (data) {
           if (data.action !== 'cancel') {
             if (!self.config.has('midAls') || self.config.get('midAls') <= self.config.get('minAls') || (self.config.get('midAls') >= self.config.get('maxAls'))) {
               if (data.action === 'maxmid') {
-                self.getAlsValue({'confData': data.confData, 'action': 'mid'});
+                self.getAlsValue({ confData: data.confData, action: 'mid' });
               } else if (self.config.has('midAls')) {
                 if (self.config.get('midAls') <= self.config.get('minAls')) {
                   self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.MIDALS_TOO_LOW'));
@@ -817,19 +811,19 @@ TouchDisplay.prototype.getAlsValue = function (data) {
       name: self.commandRouter.getI18nString('TOUCH_DISPLAY.OK'),
       class: 'btn btn-default',
       emit: 'callMethod',
-      payload: {'endpoint': 'miscellanea/touch_display', 'method': 'assignCurrentAls', 'data': {'confData': data.confData, 'action': data.action}}
+      payload: { endpoint: 'miscellanea/touch_display', method: 'assignCurrentAls', data: { confData: data.confData, action: data.action } }
     },
     {
       name: self.commandRouter.getI18nString('TOUCH_DISPLAY.SKIP'),
       class: 'btn btn-info',
       emit: 'callMethod',
-      payload: {'endpoint': 'miscellanea/touch_display', 'method': 'getAlsValue', 'data': {'confData': data.confData, 'action': data.action.slice(3)}}
+      payload: { endpoint: 'miscellanea/touch_display', method: 'getAlsValue', data: { confData: data.confData, action: data.action.slice(3) } }
     },
     {
       name: self.commandRouter.getI18nString('COMMON.CANCEL'),
       class: 'btn btn-info',
       emit: 'callMethod',
-      payload: {'endpoint': 'miscellanea/touch_display', 'method': 'assignCurrentAls', 'data': {'confData': data.confData, 'action': 'cancel'}}
+      payload: { endpoint: 'miscellanea/touch_display', method: 'assignCurrentAls', data: { confData: data.confData, action: 'cancel' } }
     }
   ];
 
@@ -839,13 +833,13 @@ TouchDisplay.prototype.getAlsValue = function (data) {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.OK'),
         class: 'btn btn-default',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'assignCurrentAls', 'data': {'confData': data.confData, 'action': data.action}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'assignCurrentAls', data: { confData: data.confData, action: data.action } }
       },
       {
         name: self.commandRouter.getI18nString('COMMON.CANCEL'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: {'endpoint': 'miscellanea/touch_display', 'method': 'assignCurrentAls', 'data': {'confData': data.confData, 'action': 'cancel'}}
+        payload: { endpoint: 'miscellanea/touch_display', method: 'assignCurrentAls', data: { confData: data.confData, action: 'cancel' } }
       }
     ];
   }
@@ -863,55 +857,90 @@ TouchDisplay.prototype.getAlsValue = function (data) {
   }
 };
 
-TouchDisplay.prototype.writeBootStr = function () {
+TouchDisplay.prototype.setOrientation = function (angle) {
   const self = this;
-  const searchexp = new RegExp(configTxtBanner + 'lcd_rotate=.*' + os.EOL);
-  const bootstring = 'lcd_rotate=2' + os.EOL;
+  const configTxtBanner = '#### Touch Display setting below: do not alter ####' + os.EOL;
+  let searchexp, bootstring, transformationMatrix, newConfigTxt;
 
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
-    if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
-    } else if (configTxt.search(configTxtBanner + bootstring) === -1) {
-      let newConfigTxt = configTxt.replace(searchexp, configTxtBanner + bootstring);
-      if (configTxt === newConfigTxt) {
-        newConfigTxt = configTxt + os.EOL + configTxtBanner + bootstring + os.EOL;
-      }
-      fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
-        }
-      });
-    }
-  });
-};
-
-TouchDisplay.prototype.rmBootStr = function () {
-  const self = this;
-  const searchexp = new RegExp(os.EOL + os.EOL + '*' + configTxtBanner + 'lcd_rotate=2' + os.EOL + '*');
-
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
-    if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+  exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Option \"TransformationMatrix\"/d' /etc/X11/xorg.conf.d/40-libinput.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+    if (error !== null) {
+      self.logger.error('Error modifying /etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
     } else {
-      configTxt = configTxt.replace(searchexp, os.EOL);
-      fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+      self.logger.info('Touchscreen transformation matrix modified.');
+    }
+  });
+  switch (angle) {
+    case '90':
+      bootstring = 'display_lcd_rotate=1' + os.EOL + 'display_hdmi_rotate=1' + os.EOL;
+      transformationMatrix = '0 1 0 -1 0 1 0 0 1';
+      break;
+    case '180':
+      if (rpiScreen) {
+        bootstring = 'lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2' + os.EOL;
+      } else {
+        bootstring = 'display_lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2' + os.EOL;
+        transformationMatrix = '-1 0 1 0 -1 1 0 0 1';
+      }
+      break;
+    case '270':
+      bootstring = 'display_lcd_rotate=3' + os.EOL + 'display_hdmi_rotate=3' + os.EOL;
+      transformationMatrix = '0 -1 1 1 0 0 0 0 1';
+      break;
+  }
+  if (angle === '0') {
+    searchexp = new RegExp(os.EOL + os.EOL + '*' + configTxtBanner + '.*lcd_rotate=.*' + os.EOL + 'display_hdmi_rotate=.*' + os.EOL + '*');
+    fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+      if (err) {
+        self.logger.error('Error reading /boot/config.txt: ' + err);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+      } else {
+        configTxt = configTxt.replace(searchexp, os.EOL);
+        fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
+          if (err) {
+            self.logger.error('Error writing /boot/config.txt: ' + err);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+          }
+        });
+      }
+    });
+  } else {
+    fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+      if (err) {
+        self.logger.error('Error reading /boot/config.txt: ' + err);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+      } else if (configTxt.search(configTxtBanner + bootstring) === -1) {
+        searchexp = new RegExp(configTxtBanner + '.*lcd_rotate=.*' + os.EOL + 'display_hdmi_rotate=.*' + os.EOL);
+        newConfigTxt = configTxt.replace(searchexp, configTxtBanner + bootstring);
+        if (configTxt === newConfigTxt) {
+          newConfigTxt = configTxt + os.EOL + configTxtBanner + bootstring + os.EOL;
+        }
+        fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
+          if (err) {
+            self.logger.error('Error writing /boot/config.txt: ' + err);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+          }
+        });
+      }
+    });
+    if (!(rpiScreen && angle === '180')) {
+      exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Identifier \"libinput touchscreen catchall\"/a\\        Option \"TransformationMatrix\" \"" + transformationMatrix + "\"' /etc/X11/xorg.conf.d/40-libinput.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        if (error !== null) {
+          self.logger.error('Error modifying /etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
+        } else {
+          self.logger.info('Touchscreen transformation matrix modified.');
         }
       });
     }
-  });
+  }
 };
 
 TouchDisplay.prototype.systemctl = function (systemctlCmd) {
   const self = this;
   const defer = libQ.defer();
 
-  exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+  exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
       self.logger.error('Failed to ' + systemctlCmd + ': ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.GENERIC_FAILED') + systemctlCmd + ': ' + error);
