@@ -18,7 +18,7 @@ var alsProgression = [];
 var timeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3, setScrToTimer4;
+var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
 
 module.exports = TouchDisplay;
 
