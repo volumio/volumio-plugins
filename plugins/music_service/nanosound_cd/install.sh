@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 echo "Installing nanosound cd Dependencies"
 echo "NanoSound CD takes around 15 minutes to install. Please be patient."
 sudo apt-get update
@@ -32,21 +30,38 @@ echo "Installing Audio Libraries"
 sudo apt-get -y install libasound2-plugins
 
 cd /home/volumio/
-sudo rm -r -f python-audio-tools/
-sudo dpkg --configure -a
 git clone https://github.com/nanomesher/python-audio-tools.git
 sudo apt-get -y install build-essential libcdio-dev  libcdio-paranoia-dev
 cd python-audio-tools
 sudo make install
 
 echo "Installing NanoSound CD Service"
+
+
+echo "Detecting cpu"
+cpu=$(lscpu | awk 'FNR == 1 {print $2}')
+echo "cpu: " $cpu
+
 cd /tmp
-wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd.tar.gz
-sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
+if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
+		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_x86.tar.gz
+		sudo tar xvf /tmp/nanomesher_nanosoundcd_x86.tar.gz -C /home/volumio/
+else
+		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd.tar.gz
+		sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
+fi
+
 cd /home/volumio/nanomesher_nanosoundcd
 sudo chmod 777 nanosoundcd_progressweb
 sudo chmod 777 nanosoundcd_web
-rm /tmp/nanomesher_nanosoundcd.tar.gz
+
+if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
+		rm /tmp/nanomesher_nanosoundcd_x86.tar.gz
+else
+		rm /tmp/nanomesher_nanosoundcd.tar.gz		
+fi
+
+
 
 echo "Configuring alsa devices"
 cd /tmp

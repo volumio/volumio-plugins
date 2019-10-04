@@ -1,5 +1,6 @@
 'use strict';
 
+
 var libQ = require('kew');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
@@ -8,7 +9,7 @@ var execSync = require('child_process').execSync;
 var request = require("request");
 var NanoTimer = require('nanotimer');
 var moment = require('moment');
-var sleep = require('sleep');
+var sleep = require('system-sleep');
 
 module.exports = nanosoundCd;
 function nanosoundCd(context) {
@@ -106,7 +107,7 @@ nanosoundCd.prototype.saveConfig = function(data) {
 
 
 	//Wait for file to save
-	sleep.sleep(2);
+	sleep(2000);
 	var vState = self.commandRouter.stateMachine.getState();
 	if(vState.trackType == self.tracktype)
 	{
@@ -276,7 +277,7 @@ nanosoundCd.prototype.onRestart = function() {
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound CD daemon started');
                                                                                			self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'NanoSound CD daemon restarting. Please wait around 10s before playing CD');
-																						sleep.sleep(3);
+																						sleep(3000);
 		                                                                        }
 																				
 																				defer.resolve();
@@ -492,7 +493,7 @@ nanosoundCd.prototype.upgrade=function()
 																												} else {
 																														self.logger.info('NanoSound CD updated');
 																														self.commandRouter.pushToastMessage('success', 'NanoSound CD', 'Volumio and NanoSound CD daemon restarting');
-																														sleep.sleep(3);
+																														sleep(3000);
 
 																														exec('/usr/bin/sudo volumio vrestart', {uid:1000,gid:1000},
 																														function (error, stdout, stderr) {
