@@ -17,8 +17,7 @@ sudo apt-get update
 
 #START OF python devs
 sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio
-sudo apt-get -y remove python-pip
-sudo -H easy_install pip
+sudo -H pip install --upgrade pip
 sudo -H pip install --upgrade python-mpd2 socketIO-client
 
 #extra for DAC2
