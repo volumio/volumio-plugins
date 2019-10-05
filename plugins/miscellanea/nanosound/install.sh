@@ -9,7 +9,7 @@ sudo apt-get update
 #echo "Applying LIRC starting policy"
 #systemctl disable lirc.service
 #systemctl stop lirc.service
-sudo apt-get -y remove lirc
+#sudo apt-get -y remove lirc
 
 #echo "Creating lircrc file"
 #touch /etc/lirc/lircrc
@@ -17,14 +17,13 @@ sudo apt-get -y remove lirc
 
 #START OF python devs
 sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio
-sudo apt-get -y remove python-pip
-sudo -H easy_install pip
+sudo -H pip install --upgrade pip
 sudo -H pip install --upgrade python-mpd2 socketIO-client
-
 
 #extra for DAC2
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
-sudo pip install --upgrade luma.oled
+sudo -H pip install --upgrade setuptools
+sudo -H pip install --upgrade luma.oled
 
 #Install OLED service
 cd /tmp
