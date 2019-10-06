@@ -1,4 +1,4 @@
-#brutefir config for volumio - other variable to be added later for setting (filter lenght, float_bits output etc)
+#brutefir config for volumio - 
     sampling_rate: ${smpl_rate};
     filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
     overflow_warnings: true;
@@ -10,6 +10,11 @@ logic:
  "cli" { port: 3002;};
 #"cli"  { port: "/dev/ttyS1";};
 #"echo" on ;
+
+#-----------------------
+#Input configuration
+#-----------------------
+
 input "l_in", "r_in" {
             device: "alsa" {device: "hw:${input_device}";};
             sample: "s32_le";   # sample format
@@ -17,12 +22,11 @@ input "l_in", "r_in" {
 delay: ${delay};
     };
 
-
 #-----------------------
 #room correction filters
 #-----------------------
 
-coeff "l_drc" {
+coeff "l_out" {
 filename: "${leftfilter}";
 format: "${filter_format1}";
 ${skip_1}
@@ -30,26 +34,58 @@ ${skip_1}
 attenuation: ${lattenuation};
 };
 
-filter "l_drc" {
-from_inputs: "l_in";
-to_filters: "lVoBAF";
-coeff: "l_drc";
+filter "l_out" {
+#from_inputs: "l_in";
+from_filters: "lVoBAF";
+to_outputs: "l_out"/0.0;
+#to_filters: "lVoBAF";
+coeff: "l_out";
 process: -1;
 };
 
-coeff "r_drc" {
+coeff "r_out" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}
 attenuation: ${rattenuation};
 };
 
-filter "r_drc" {
-from_inputs: "r_in";
-to_filters: "rVoBAF";
-coeff: "r_drc";
+filter "r_out" {
+#from_inputs: "r_in";
+from_filters: "rVoBAF";
+to_outputs: "r_out"/0.0;
+#to_filters: "rVoBAF";
+coeff: "r_out";
 process: -1;
 };
+
+
+#-------------
+#Multichannels section
+#-------------
+
+${enablefc2} coeff "l_c2_out" {filename: "${leftc2filter}";format: "${filter_format1}";${skip_c2} attenuation: ${lattenuation};};
+${enablefc2} filter "l_c2_out" {from_filters: "lVoBAF";to_outputs: "l_c2_out"/0.0;coeff: "l_c2_out";process: -1;};
+
+
+${enablefc3} coeff "r_c2_out" {filename: "${rightc2filter}";format: "${filter_format1}";${skip_c2} attenuation: ${rattenuation};};
+${enablefc3} filter "r_c2_out" {from_filters: "rVoBAF";to_outputs: "r_c2_out"/0.0;coeff: "r_c2_out";process: -1;};
+
+
+${enablefc4} coeff "l_c3_out" {filename: "${leftc3filter}";format: "${filter_format1}";${skip_c2} attenuation: ${lattenuation};};
+${enablefc4} filter "l_c3_out" {from_filters: "lVoBAF";to_outputs: "l_c3_out"/0.0;coeff: "l_c3_out";process: -1;};
+
+
+${enablefc5} coeff "r_c3_out" {filename: "${rightc3filter}";format: "${filter_format1}";${skip_c2} attenuation: ${rattenuation};};
+${enablefc5} filter "r_c3_out" {from_filters: "rVoBAF";to_outputs: "r_c3_out"/0.0;coeff: "r_c3_out";process: -1;};
+
+
+${enablefc6} coeff "l_c4_out" {filename: "${leftc4filter}";format: "${filter_format1}";${skip_c2} attenuation: ${lattenuation};};
+${enablefc6} filter "l_c4_out" {from_filters: "lVoBAF";to_outputs: "l_c4_out"/0.0;coeff: "l_c4_out";process: -1;};
+
+${enablefc7} coeff "r_c4_out" {filename: "${rightc4filter}";format: "${filter_format1}";${skip_c2} attenuation: ${rattenuation};};
+${enablefc7} filter "r_c4_out" {from_filters: "rVoBAF";to_outputs: "r_c4_out"/0.0;coeff: "r_c4_out";process: -1;};
+
 
 #-------------
 #VoBAF filters
@@ -107,8 +143,10 @@ attenuation: ${lattenuation};
 };
 
 filter "lVoBAF" {
-from_filters: "l_drc";
-to_outputs: "l_out"/0.0;
+#from_filters: "l_drc";
+from_inputs: "l_in";
+#to_outputs: "l_out"/0.0;
+to_filters: "${tolfilters}";
 coeff: "lM";
 process: -1;
 };
@@ -165,22 +203,24 @@ attenuation: ${rattenuation};
 };
 
 filter "rVoBAF" {
-from_filters: "r_drc";
-to_outputs: "r_out"/0.0;
+#from_filters: "r_drc";
+from_inputs: "r_in";
+#to_outputs: "r_out"/0.0;
+to_filters: "${torfilters}";
 coeff: "rM";
 #delay: 0,5;
 process: -1;
 };
 
-   output "l_out","r_out" {
-            device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
-#         device: "file" {path: "/dev/stdout";};
-         sample: "${output_format}";   # sample format
-# sample: "S24_3LE";
+#-----------------
+#Output configuration
+#-----------------
 
-            channels: 2;        # number of open channels / which to use
-#	delay: 5,0;
- #	maxdelay: -1;
-	dither: false;
-    };
+output "l_out","r_out"${enablec2}{
+device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
+sample: "${output_format}";   # sample format
+${nchannels}       # number of open channels / which to use
+${tdelay};
+dither: false;
+};
  

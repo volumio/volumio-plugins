@@ -1,4 +1,4 @@
-October 6th 2019
+September 20th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -11,7 +11,7 @@ It provides :
 
 - A automatic configuration - Just install and enable the plugin. It's ready for use !
 
-- Hardware capabilities detection for output format and number of channels
+- Hardware capabilities detection for output format using [Alsa-capabilities](https://lacocina.nl/permalink-https-lacocina-nl-detect-alsa-output-capabilities)
 
 - The use of custom filters - for DRC digital room correction created with RePhase
 
@@ -21,7 +21,7 @@ It provides :
 
 ## NEW!
 
-First experimental multi channel up to 2x4 !!!
+First experimental multi channel (2x2)
 
 The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. 
 
@@ -90,12 +90,6 @@ nearly everythings
 
 
 ### 4. Last changes
-
-October 6th 2019
-
-- 2x4 multi channels
-- new hw detection
-- Tons of mod....
 
 September 20th 2019
 

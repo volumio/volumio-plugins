@@ -18,14 +18,28 @@
         "data": [
           "attenuation",
           "leftfilter",
+	  "lc1delay",
           "rightfilter",
-	  "leftsubfilter",
-	  "rightsubfilter",
+	  "rc1delay",
+	  "addchannels",
+	  "leftc2filter",
+	  "lc2delay",
+	  "rightc2filter",
+	  "rc2delay",
+	  "leftc3filter",
+	  "lc3delay",
+          "rightc3filter",
+	  "rc3delay",
+	  "leftc4filter",
+	  "lc4delay",
+	  "rightc4filter",
+	  "rc4delay",
           "filter_format",
           "filter_size",
           "smpl_rate",
           "output_format"
           ]
+
       },
       "content": [
         {
@@ -99,6 +113,17 @@
           },
           "options": []
         },
+	{
+          "id": "lc1delay",
+          "element": "input",
+          "label": "Channel 1 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          }
+	},
+  
         {
           "id": "rightfilter",
           "element": "select",
@@ -110,28 +135,197 @@
           },
           "options": []
         },
-{
-          "id": "leftsubfilter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_LFILTER",
-          "label": "TRANSLATE.LEFT_FILTER_SUB",
+	{
+          "id": "rc1delay",
+          "element": "input",
+          "label": "Channel 2 delay",
+          "doc": "delay in ms",
           "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": []
+            "value": "0",
+            "label": "0"
+          }
+	},
+ 	{
+          "id": "addchannels",
+          "element": "switch",
+          "doc": "Enable other channels. The DAC must handle it",
+          "label": "Enable Multi-channel",
+          "value": false
         },
         {
-          "id": "rightsubfilter",
+          "id": "leftc2filter",
           "element": "select",
-          "doc": "TRANSLATE.DOC_RFILTER",
-          "label": "TRANSLATE.RIGHT_FILTER_SUB",
+          "doc": "TRANSLATE.DOC_LFILTERC2",
+          "label": "TRANSLATE.LEFT_FILTER_C2",
           "value": {
             "value": "items",
             "label": "none if empty"
           },
-          "options": []
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
         },
+{
+          "id": "lc2delay",
+          "element": "input",
+          "label": "Channel 3 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+},
+        {
+          "id": "rightc2filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC2",
+          "label": "TRANSLATE.RIGHT_FILTER_C2",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc2delay",
+          "element": "input",
+          "label": "Channel 4 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+  	{
+          "id": "leftc3filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTERC3",
+          "label": "TRANSLATE.LEFT_FILTER_C3",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "lc3delay",
+          "element": "input",
+          "label": "Channel 5 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+        {
+          "id": "rightc3filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC3",
+          "label": "TRANSLATE.RIGHT_FILTER_C3",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc3delay",
+          "element": "input",
+          "label": "Channel 6 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+{
+          "id": "leftc4filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTERC4",
+          "label": "TRANSLATE.LEFT_FILTER_C4",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "lc4delay",
+          "element": "input",
+          "label": "Channel 7 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+        {
+          "id": "rightc4filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC4",
+          "label": "TRANSLATE.RIGHT_FILTER_C4",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc4delay",
+          "element": "input",
+          "label": "Channel 8 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
         {
           "id": "filter_format",
           "element": "select",
@@ -617,8 +811,7 @@
         "label": "TRANSLATE.APPLY",
         "data": [
           "ldistance",
-          "rdistance",
-	  "subdelay"
+          "rdistance"
         ]
       },
       "content": [
@@ -641,16 +834,6 @@
             "value": "0",
             "label": "0"
           }
-        },
-	{
-          "id": "subdelay",
-          "element": "input",
-          "label": "SubWoofer delay in ms",
-          "doc": "SubWoofer delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          }
         }
       ]
     },
@@ -668,7 +851,7 @@
         "label": "TRANSLATE.CREATE_FILTER",
         "data": [
           "filetoconvert",
-          "bk",
+          "tc",
           "drcconfig",
           "outputfilename"
         ]
@@ -686,7 +869,7 @@
           "options": []
         },
         {
-          "id": "bk",
+          "id": "tc",
           "element": "select",
           "doc": "TRANSLATE.DOC_TARGET_CURVE",
           "label": "TRANSLATE.TARGET_CURVE",
@@ -749,177 +932,25 @@
         }
       ]
     },
-    {
+ 	{
       "id": "advanced",
       "element": "section",
       "label": "Tools",
       "icon": "fa-wrench",
       "content": [
-        {
-          "id": "rewversion",
-          "element": "switch",
-          "doc": "Rew version. Set to ON if you use REW <=5.19. Set to OFF if you use REW >=5.20 ",
-          "label": "Measure with Rew <=5.19",
-          "value": false,
-          "visibleIf": {
-            "field": "sweep",
-            "value": true
-          }
-        },
-        {
-          "id": "playleftsweepfile",
+        
+	{
+          "id": "installtools",
           "element": "button",
-          "label": "TRANSLATE.PLAY_L_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
+          "label": "TRANSLATE.INSTALL_TOOLS",
+          "description": "TRANSLATE.DESC_INSTALL_TOOLS",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
-            "method": "playleftsweepfile"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": true
+            "method": "installtools"
           }
-        },
-        {
-          "id": "playrightsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightsweepfile"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": true
-          }
-        },
-        {
-          "id": "playleftsweepfile520",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftsweepfile520"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": false
-          }
-        },
-        {
-          "id": "playrightsweepfile520",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightsweepfile520"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": false
-          }
-        },
-        {
-          "id": "stopaplay",
-          "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          },
-          "visibleIf": {
-            "field": "sweep",
-            "value": true
-          }
-        },
-        {
-          "id": "pink",
-          "element": "switch",
-          "label": "pink noise tools",
-          "description": "To play pink noise",
-          "value": false
-        },
-        {
-          "id": "playleftpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_PINK",
-          "description": "TRANSLATE.DESC_PLAY_L_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "playrightpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_PINK",
-          "description": "TRANSLATE.DESC_PLAY_R_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "playlbothpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_PINK",
-          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playbothpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "stopaplay",
-          "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "removetools",
-          "element": "button",
-          "label": "TRANSLATE.REMOVE_TOOLS",
-          "description": "TRANSLATE.DESC_REMOVE_TOOLS",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "removetools"
-          }
-        },
-        {
+	  },
+	{
           "id": "wikilink",
           "element": "button",
           "label": "TRANSLATE.OPEN_WIKI",

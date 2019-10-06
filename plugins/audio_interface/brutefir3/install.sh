@@ -30,5 +30,21 @@ sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/brutefir
 sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/brutefirfilters/target-curves/
 sudo cp /data/plugins/audio_interface/brutefir/filter-sources/* /data/INTERNAL/brutefirfilters/filter-sources/
 rm -Rf /data/plugins/audio_interface/brutefir/filters
+echo "copying hw detection script"
+# Find arch
+cpu=$(lscpu | awk 'FNR == 1 {print $2}')
+echo "Detected cpu architecture as $cpu"
+if [ $cpu = "arm7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv61" ]
+then
+sudo cp /data/plugins/audio_interface/brutefir/c/hw_params_arm /data/plugins/audio_interface/brutefir/hw_params
+elif [ $cpu = "x86_64" ]
+then
+sudo cp /data/plugins/audio_interface/brutefir/c/hw_params_x86 /data/plugins/audio_interface/brutefir/hw_params
+else
+        echo "Sorry, cpu is $cpu and your device is not yet supported !"
+	echo "exit now..."
+	exit -1
+fi
+
 #required to end the plugin install
 echo "plugininstallend"

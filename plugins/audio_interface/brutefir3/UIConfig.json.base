@@ -18,12 +18,28 @@
         "data": [
           "attenuation",
           "leftfilter",
+	  "lc1delay",
           "rightfilter",
+	  "rc1delay",
+	  "addchannels",
+	  "leftc2filter",
+	  "lc2delay",
+	  "rightc2filter",
+	  "rc2delay",
+	  "leftc3filter",
+	  "lc3delay",
+          "rightc3filter",
+	  "rc3delay",
+	  "leftc4filter",
+	  "lc4delay",
+	  "rightc4filter",
+	  "rc4delay",
           "filter_format",
           "filter_size",
           "smpl_rate",
           "output_format"
           ]
+
       },
       "content": [
         {
@@ -97,6 +113,17 @@
           },
           "options": []
         },
+	{
+          "id": "lc1delay",
+          "element": "input",
+          "label": "Channel 1 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          }
+	},
+  
         {
           "id": "rightfilter",
           "element": "select",
@@ -108,6 +135,197 @@
           },
           "options": []
         },
+	{
+          "id": "rc1delay",
+          "element": "input",
+          "label": "Channel 2 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          }
+	},
+ 	{
+          "id": "addchannels",
+          "element": "switch",
+          "doc": "Enable other channels. The DAC must handle it",
+          "label": "Enable Multi-channel",
+          "value": false
+        },
+        {
+          "id": "leftc2filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTERC2",
+          "label": "TRANSLATE.LEFT_FILTER_C2",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+{
+          "id": "lc2delay",
+          "element": "input",
+          "label": "Channel 3 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+},
+        {
+          "id": "rightc2filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC2",
+          "label": "TRANSLATE.RIGHT_FILTER_C2",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc2delay",
+          "element": "input",
+          "label": "Channel 4 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+  	{
+          "id": "leftc3filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTERC3",
+          "label": "TRANSLATE.LEFT_FILTER_C3",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "lc3delay",
+          "element": "input",
+          "label": "Channel 5 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+        {
+          "id": "rightc3filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC3",
+          "label": "TRANSLATE.RIGHT_FILTER_C3",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc3delay",
+          "element": "input",
+          "label": "Channel 6 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+{
+          "id": "leftc4filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTERC4",
+          "label": "TRANSLATE.LEFT_FILTER_C4",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+		"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "lc4delay",
+          "element": "input",
+          "label": "Channel 7 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
+        {
+          "id": "rightc4filter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTERC4",
+          "label": "TRANSLATE.RIGHT_FILTER_C4",
+          "value": {
+            "value": "items",
+            "label": "none if empty"
+          },
+          "options": [],
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
+          "id": "rc4delay",
+          "element": "input",
+          "label": "Channel 8 delay",
+          "doc": "delay in ms",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+	},
         {
           "id": "filter_format",
           "element": "select",
@@ -390,7 +608,7 @@
             "value": true
           }
         },
-{
+	{
           "id": "LM3sw",
           "element": "switch",
           "doc": "LM3",
@@ -510,7 +728,7 @@
           }
          
         },
-{
+ {
           "id": "vatt",
           "element": "select",
           "label": "VoBAF attenuation",
@@ -633,7 +851,7 @@
         "label": "TRANSLATE.CREATE_FILTER",
         "data": [
           "filetoconvert",
-          "bk",
+          "tc",
           "drcconfig",
           "outputfilename"
         ]
@@ -651,7 +869,7 @@
           "options": []
         },
         {
-          "id": "bk",
+          "id": "tc",
           "element": "select",
           "doc": "TRANSLATE.DOC_TARGET_CURVE",
           "label": "TRANSLATE.TARGET_CURVE",
@@ -713,8 +931,8 @@
           "options": []
         }
       ]
-},
-	{
+    },
+ 	{
       "id": "advanced",
       "element": "section",
       "label": "Tools",
