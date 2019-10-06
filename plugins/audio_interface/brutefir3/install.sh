@@ -38,7 +38,7 @@ if [ $cpu = "arm7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv61" ]
 then
 sudo cp /data/plugins/audio_interface/brutefir/c/hw_params_arm /data/plugins/audio_interface/brutefir/hw_params
 sudo chmod +x /data/plugins/audio_interface/brutefir/hw_params
-elif [ $cpu = "x86_64" ]
+elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
 sudo cp /data/plugins/audio_interface/brutefir/c/hw_params_x86 /data/plugins/audio_interface/brutefir/hw_params
 sudo chmod +x /data/plugins/audio_interface/brutefir/hw_params
