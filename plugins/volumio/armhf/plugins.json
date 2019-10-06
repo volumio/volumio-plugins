@@ -501,7 +501,7 @@
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/volumio_usb_reset/volumio_usb_reset.zip",
 					"license": "ISC",
-					"description": "This plugin resets all the USB device connections. Often useful when Volumio becomes unresponsive.",
+					"description": "This plugin resets all the USB device connections. Useful when Volumio behaves erratically",
 					"details": "This plugin gives the ability to reset the entire USB chain connected to the Volumio server. Many times I noticed that when Volumio became unresponsive, one solution was to disconnect all USB devices and reconnect them. This plugin provides a way to reset the connected USB devices and recover from an unresponsive volumio installation. Probably the problem is related to some specific DACs, I experienced the problem with a SMSL SU-8. I hope the plugin can be useful.",
 					"author": "Alfonso",
 					"screenshots": [
