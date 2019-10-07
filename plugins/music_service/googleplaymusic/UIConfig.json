@@ -1,0 +1,96 @@
+{
+  "login": {
+    "page": {
+      "label": "Google Play Music"
+    },
+    "sections": [
+      {
+        "id": "section_account",
+        "element": "section",
+        "label": "Importatn Login Information",
+        "description": "You can use your google password to login here. You can also use one time password, that is called app password by google. You can provide app password instead of your normal password.",
+        "icon": "fa-user"
+      },
+      {
+        "id": "section_account",
+        "label": "Some info for Volumio's Play Music Access:",
+        "element": "section",
+        "content": [
+          {
+            "id": "turnOnLessSecureApp",
+            "element": "button",
+            "label": "Go to Google Setting Page.",
+            "description": "To get Play Music Access for Volumio, The Google account needs to have the 'Allow less secure apps' setting set to 'ON'. To turn it on click 'Go to Google Setting page'",
+            "onClick": {
+              "type": "openUrl",
+              "url": "https://myaccount.google.com/security#connectedapps"
+            }
+          },
+          {
+            "id": "appPasswordLink",
+            "element": "button",
+            "label": "Create a app password",
+            "description": "Please go to this link and get a app password(Kind of otp for application access) for Volumio, by providing app name 'Volumio'.",
+            "onClick": {
+              "type": "openUrl",
+              "url": "https://myaccount.google.com/u/2/apppasswords?utm_source=google-account&utm_medium=web"
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_account",
+        "label": "Play Music Access:",
+        "element": "section",
+        "onSave": {
+          "type": "controller",
+          "endpoint": "music_service/googleplaymusic",
+          "method": "saveGoogleAccount"
+        },
+        "saveButton": {
+          "label": "TRANSLATE.LOGIN",
+          "data": ["email", "password", "bitrate"]
+        },
+        "content": [
+          {
+            "id": "email",
+            "type": "text",
+            "element": "input",
+            "doc": "This is the email id of your Google account",
+            "label": "Email",
+            "value": ""
+          },
+          {
+            "id": "password",
+            "type": "password",
+            "element": "input",
+            "doc": "This is the password/app password for Volumio of your Google account",
+            "label": "Password",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "logout": {
+    "page": {
+      "label": "Google Play Music"
+    },
+    "sections": [
+      {
+        "id": "section_account",
+        "label": "Play Music Access:",
+        "element": "section",
+        "onSave": {
+          "type": "controller",
+          "endpoint": "music_service/googleplaymusic",
+          "method": "logoutGoogleAccount"
+        },
+        "saveButton": {
+          "label": "Logout"
+        },
+        "content": []
+      }
+    ]
+  }
+}

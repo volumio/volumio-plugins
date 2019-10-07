@@ -1,0 +1,19 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": true
+  },
+  "username": {
+      "type": "string",
+      "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "bitrate": {
+    "type": "boolean",
+    "value": true
+  }
+ 
+}
