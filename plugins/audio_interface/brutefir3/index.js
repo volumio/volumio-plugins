@@ -926,7 +926,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 
     fs.readdir(filterfolder, function(err, item) {
-     allfilter = 'Dirac pulse,' + 'None' + item;
+     allfilter = 'Dirac pulse,' + 'None,' + item;
      var allfilters = allfilter.replace('filter-sources', '');
      var allfilter2 = allfilters.replace('target-curves', '');
      var allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(',,', ',');

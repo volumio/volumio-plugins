@@ -91,6 +91,10 @@ nearly everythings
 
 ### 4. Last changes
 
+October 8th 2019
+
+- small correction in filters list display
+
 October 6th 2019
 
 - 2x4 multi channels
