@@ -1,4 +1,4 @@
-October 6th 2019
+October 10th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -90,6 +90,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 10th 2019
+
+- fix install for armv7l
 
 October 8th 2019
 

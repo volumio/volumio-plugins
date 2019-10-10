@@ -34,7 +34,7 @@ echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
-if [ $cpu = "arm7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv61" ]
+if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
 sudo cp /data/plugins/audio_interface/brutefir/c/hw_params_arm /data/plugins/audio_interface/brutefir/hw_params
 sudo chmod +x /data/plugins/audio_interface/brutefir/hw_params
