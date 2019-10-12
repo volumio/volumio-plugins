@@ -1,3 +1,4 @@
+
 {
   "page": {
     "label": "TRANSLATE.VOLUMIO_DSP"
@@ -16,24 +17,27 @@
       "saveButton": {
         "label": "TRANSLATE.APPLY",
         "data": [
-          "attenuation",
           "leftfilter",
 	  "lc1delay",
           "rightfilter",
 	  "rc1delay",
+  	  "attenuation",
 	  "addchannels",
 	  "leftc2filter",
 	  "lc2delay",
 	  "rightc2filter",
 	  "rc2delay",
+	  "attenuationlr2",
 	  "leftc3filter",
 	  "lc3delay",
           "rightc3filter",
 	  "rc3delay",
+	  "attenuationlr3",
 	  "leftc4filter",
 	  "lc4delay",
 	  "rightc4filter",
 	  "rc4delay",
+	  "attenuationlr4",
           "filter_format",
           "filter_size",
           "smpl_rate",
@@ -42,66 +46,6 @@
 
       },
       "content": [
-        {
-          "id": "attenuation",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_LATT",
-          "label": "TRANSLATE.LINPUT_ATTENUATION",
-          "value": {
-            "value": "10",
-            "label": "10"
-          },
-          "options": [
-            {
-              "value": "0",
-              "label": "0"
-            },
-            {
-              "value": "2",
-              "label": "2"
-            },
-            {
-              "value": "4",
-              "label": "4"
-            },
-            {
-              "value": "6",
-              "label": "6"
-            },
-            {
-              "value": "8",
-              "label": "8"
-            },
-            {
-              "value": "10",
-              "label": "10"
-            },
-            {
-              "value": "12",
-              "label": "12"
-            },
-            {
-              "value": "14",
-              "label": "14"
-            },
-            {
-              "value": "16",
-              "label": "16"
-            },
-            {
-              "value": "18",
-              "label": "18"
-            },
-            {
-              "value": "20",
-              "label": "20"
-            },
-            {
-              "value": "22",
-              "label": "22"
-            }
-          ]
-        },
         {
           "id": "leftfilter",
           "element": "select",
@@ -117,7 +61,7 @@
           "id": "lc1delay",
           "element": "input",
           "label": "Channel 1 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -139,12 +83,23 @@
           "id": "rc1delay",
           "element": "input",
           "label": "Channel 2 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
           }
 	},
+	{
+          "id": "attenuation",
+          "element": "select",
+          "label": "l and r channels attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": []
+          },
  	{
           "id": "addchannels",
           "element": "switch",
@@ -167,11 +122,11 @@
             "value": true
           }
         },
-{
+	{
           "id": "lc2delay",
           "element": "input",
           "label": "Channel 3 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -180,7 +135,7 @@
             "field": "addchannels",
             "value": true
           }
-},
+	},
         {
           "id": "rightc2filter",
           "element": "select",
@@ -200,7 +155,7 @@
           "id": "rc2delay",
           "element": "input",
           "label": "Channel 4 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -210,6 +165,21 @@
             "value": true
           }
 	},
+ 	{
+          "id": "attenuationlr2",
+          "element": "select",
+          "label": "l3 and r4 channels attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
   	{
           "id": "leftc3filter",
           "element": "select",
@@ -229,7 +199,7 @@
           "id": "lc3delay",
           "element": "input",
           "label": "Channel 5 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -258,7 +228,7 @@
           "id": "rc3delay",
           "element": "input",
           "label": "Channel 6 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -268,7 +238,22 @@
             "value": true
           }
 	},
-{
+	{	
+          "id": "attenuationlr3",
+          "element": "select",
+          "label": "l5 and r6 channels attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
+	{
           "id": "leftc4filter",
           "element": "select",
           "doc": "TRANSLATE.DOC_LFILTERC4",
@@ -287,7 +272,7 @@
           "id": "lc4delay",
           "element": "input",
           "label": "Channel 7 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -316,7 +301,7 @@
           "id": "rc4delay",
           "element": "input",
           "label": "Channel 8 delay",
-          "doc": "delay in ms",
+          "description": "delay in ms",
           "value": {
             "value": "0",
             "label": "0"
@@ -326,6 +311,21 @@
             "value": true
           }
 	},
+	{
+          "id": "attenuationlr4",
+          "element": "select",
+          "label": "l7 and r8 channels  attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "addchannels",
+            "value": true
+          }
+        },
         {
           "id": "filter_format",
           "element": "select",
@@ -545,7 +545,7 @@
           "id": "Low",
           "element": "select",
           "label": "Low volume threshold",
-          "description": "Desc",
+          "description": "Low volume threshold",
           "value": {
             "value": "10",
             "label": "10"
@@ -597,7 +597,7 @@
           "id": "LM2",
           "element": "select",
           "label": "LM2 volume threshold",
-          "description": "Desc",
+          "description": "LM2 volume threshold",
           "value": {
             "value": "10",
             "label": "10"
@@ -623,7 +623,7 @@
           "id": "LM3",
           "element": "select",
           "label": "LM3 volume threshold",
-          "description": "Desc",
+          "description": "LM3 volume threshold",
           "value": {
             "value": "10",
             "label": "10"
@@ -654,7 +654,7 @@
           "id": "M",
           "element": "select",
           "label": "M Volume threshold",
-          "description": "Desc",
+          "description": "M Volume threshold",
           "value": {
             "value": "50",
             "label": "50"
@@ -683,7 +683,7 @@
           "id": "HM",
           "element": "select",
           "label": "HM Volume threshold",
-          "description": "Desc",
+          "description": "HM Volume threshold",
           "value": {
             "value": "65",
             "label": "65"
@@ -732,7 +732,7 @@
           "id": "vatt",
           "element": "select",
           "label": "VoBAF attenuation",
-          "description": "Desc",
+          "description": "VoBAF attenuation",
           "value": {
             "value": "0",
             "label": "0"
@@ -931,8 +931,8 @@
           "options": []
         }
       ]
-    },
-   {
+    },  
+ {
       "id": "advanced",
       "element": "section",
       "label": "Tools",

@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "DRC-Digital Room Correction for Volumio2",
   "main": "index.js",
   "scripts": {

@@ -1,4 +1,4 @@
-October 10th 2019
+October 12th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -90,6 +90,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 12th
+
+- dedicated attenuation for each pair of channels
+- correction for filter generation (hang of volumio) 
 
 October 10th 2019
 

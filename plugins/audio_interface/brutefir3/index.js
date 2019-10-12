@@ -114,42 +114,6 @@ ControllerBrutefir.prototype.hwinfo = function() {
 }
 
 
-//here we generate the file containing samples format available on the used hw
-ControllerBrutefir.prototype.sampleformat = function() {
- var self = this;
- //var defer = libQ.defer();
- var output_device;
- output_device = self.config.get('alsa_device')
-
- exec('/bin/bash /data/plugins/audio_interface/brutefir/alsa-capabilities -a hw:' + output_device + ',0 2>&1 | /usr/bin/tee /data/configuration/audio_interface/brutefir/sampleformat.txt ', {
-
-  uid: 1000,
-  gid: 1000
- }, function(error, stdout, stderr) {
-  if (error) {
-   self.logger.info('failed ' + error);
-  } else {
-   self.commandRouter.pushConsoleMessage('list sample format done');
-   try {
-    exec("/bin/bash data/plugins/audio_interface/brutefir/sortsample.sh", {
-     uid: 1000,
-     gid: 1000
-    })
-
-   } catch (err) {
-    self.logger.info('sampleformat.txt does not exist');
-   }
-   //  defer.resolve();
-  }
- });
-
-
- setTimeout(function() {
-
-  //return defer.promise;
- }, 25)
-};
-
 //here we save the volumio config for the next plugin start
 ControllerBrutefir.prototype.saveVolumioconfig = function() {
  var self = this;
@@ -301,7 +265,6 @@ ControllerBrutefir.prototype.autoconfig = function() {
  var defer = libQ.defer();
  self.saveVolumioconfig()
   .then(self.hwinfo())
-  // .then(self.sampleformat())
   .then(self.modprobeLoopBackDevice())
   .then(self.saveHardwareAudioParameters())
   .then(self.setLoopbackoutput())
@@ -787,26 +750,30 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
     //-----------------------------------
     // here we list the content of the folder to populate filter scrolling list
-    value = self.config.get('attenuation');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+   // value = self.config.get('attenuation');
+   // self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
+   // self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
 
 
     valuestoredl = self.config.get('leftfilter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', valuestoredl);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', valuestoredl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', valuestoredl);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredl);
 
-    uiconf.sections[0].content[2].value = self.config.get('lc1delay');
+    uiconf.sections[0].content[1].value = self.config.get('lc1delay');
 
     valuestoredr = self.config.get('rightfilter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
 
-    uiconf.sections[0].content[4].value = self.config.get('rc1delay');
+    uiconf.sections[0].content[3].value = self.config.get('rc1delay');
+
+    value = self.config.get('attenuation');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', value);
 
 
     var nchannelssection = self.config.get('nchannels');
-    self.logger.info('RRRRRRRRRRRRRRRr' + nchannelssection);
+    self.logger.info('Number of channels detected : ----------->' + nchannelssection);
     if (nchannelssection == '2') {
      uiconf.sections[0].content[5].hidden = true;
 
@@ -826,7 +793,11 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[15].hidden = true;
      uiconf.sections[0].content[16].hidden = true;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+/*
     if (nchannelssection == '3') { //&& (addchannels == true)) {
      uiconf.sections[0].content[8].hidden = true;
      uiconf.sections[0].content[9].hidden = true;
@@ -838,9 +809,13 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[15].hidden = true;
      uiconf.sections[0].content[16].hidden = true;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+*/
     if (nchannelssection == '4') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[10].hidden = true;
+     uiconf.sections[0].content[10].hidden = false;
      uiconf.sections[0].content[11].hidden = true;
      uiconf.sections[0].content[12].hidden = true;
      uiconf.sections[0].content[13].hidden = true;
@@ -848,7 +823,11 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[15].hidden = true;
      uiconf.sections[0].content[16].hidden = true;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+/*
     if (nchannelssection == '5') { //&& (addchannels == true)) {
      uiconf.sections[0].content[12].hidden = true;
      uiconf.sections[0].content[13].hidden = true;
@@ -856,21 +835,33 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[15].hidden = true;
      uiconf.sections[0].content[16].hidden = true;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+*/
     if (nchannelssection == '6') { //&& (addchannels == true)) {
      uiconf.sections[0].content[10].hidden = false;
      uiconf.sections[0].content[11].hidden = false;
      uiconf.sections[0].content[12].hidden = false;
      uiconf.sections[0].content[13].hidden = false;
-     uiconf.sections[0].content[14].hidden = true;
-     uiconf.sections[0].content[15].hidden = true;
+     uiconf.sections[0].content[14].hidden = false;
+     uiconf.sections[0].content[15].hidden = false;
      uiconf.sections[0].content[16].hidden = true;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+/*
     if (nchannelssection == '7') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[16].hidden = true;
+     uiconf.sections[0].content[16].hidden = false;
      uiconf.sections[0].content[17].hidden = true;
+     uiconf.sections[0].content[18].hidden = true;
+     uiconf.sections[0].content[19].hidden = true;
+     uiconf.sections[0].content[20].hidden = true;
     }
+*/
     if (nchannelssection == '8') { //&& (addchannels == true)) {
      uiconf.sections[0].content[10].hidden = false;
      uiconf.sections[0].content[11].hidden = false;
@@ -880,6 +871,9 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[15].hidden = false;
      uiconf.sections[0].content[16].hidden = false;
      uiconf.sections[0].content[17].hidden = false;
+     uiconf.sections[0].content[18].hidden = false;
+     uiconf.sections[0].content[19].hidden = false;
+     uiconf.sections[0].content[20].hidden = false;
     }
 
 
@@ -897,33 +891,65 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', valuestoredrs);
 
     uiconf.sections[0].content[9].value = self.config.get('rc2delay');
+					
+ 	var attenuationlr2 = self.config.get('attenuationlr2');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', attenuationlr2);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', attenuationlr2);
 
-    valuestoredls = self.config.get('leftc3filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', valuestoredls);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', valuestoredls);
+       valuestoredls = self.config.get('leftc3filter');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.value', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.label', valuestoredls);
 
-    uiconf.sections[0].content[11].value = self.config.get('lc3delay');
+    uiconf.sections[0].content[12].value = self.config.get('lc3delay');
 
     valuestoredrs = self.config.get('rightc3filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.value', valuestoredrs);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.label', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[13].value.value', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[13].value.label', valuestoredrs);
 
-    uiconf.sections[0].content[13].value = self.config.get('rc3delay');
+    uiconf.sections[0].content[14].value = self.config.get('rc3delay');
+
+var attenuationlr3 = self.config.get('attenuationlr3');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[15].value.value', attenuationlr3);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[15].value.label', attenuationlr3);
 
 
     valuestoredls = self.config.get('leftc4filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.value', valuestoredls);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.label', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.value', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.label', valuestoredls);
 
-    uiconf.sections[0].content[15].value = self.config.get('lc4delay');
+    uiconf.sections[0].content[17].value = self.config.get('lc4delay');
 
 
     valuestoredrs = self.config.get('rightc4filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.value', valuestoredrs);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.label', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.value', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.label', valuestoredrs);
 
-    uiconf.sections[0].content[17].value = self.config.get('rc4delay');
+    uiconf.sections[0].content[19].value = self.config.get('rc4delay');
 
+var attenuationlr4 = self.config.get('attenuationlr4');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.value', attenuationlr4);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.label', attenuationlr4);
+
+
+ 	for (let n = 0; n < 22; n++) {
+     self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[4].options', {
+      value: (n),
+      label: (n)
+     });
+	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[10].options', {
+      value: (n),
+      label: (n)
+     });
+	 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[15].options', {
+      value: (n),
+      label: (n)
+     });
+ 	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[20].options', {
+      value: (n),
+      label: (n)
+     });
+ 
+    }
 
     fs.readdir(filterfolder, function(err, item) {
      allfilter = 'Dirac pulse,' + 'None,' + item;
@@ -934,11 +960,11 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      items.pop();
      self.logger.info('list of available filters for DRC :' + items);
      for (var i in items) {
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
        value: items[i],
        label: items[i]
       });
@@ -950,19 +976,19 @@ ControllerBrutefir.prototype.getUIConfig = function() {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[10].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[11].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
-       value: items[i],
-       label: items[i]
-      });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[14].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[13].options', {
        value: items[i],
        label: items[i]
       });
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[16].options', {
+       value: items[i],
+       label: items[i]
+      });
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[18].options', {
        value: items[i],
        label: items[i]
       });
@@ -974,24 +1000,24 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 
     value = self.config.get('filter_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[18].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[21].options'), value));
 
     value = self.config.get('filter_size');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[19].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[22].options'), value));
 
     value = self.config.get('smpl_rate');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[20].options'), value));
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
 
     //-------------------------------------------------
     //here we read the content of the file sortsamplec.txt (it will be generated by a script to detect hw capabilities).
 
 
     valuestoredf = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.value', valuestoredf);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.label', valuestoredf);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', valuestoredf);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', valuestoredf);
 
 
     //  var filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
@@ -1024,7 +1050,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      sitems.shift();
      for (var i in sitems) {
       self.logger.info('list of available output formatUI :' + sitems[i]);
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[21].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[24].options', {
        value: sitems[i],
        label: sitems[i]
       });
@@ -1558,12 +1584,12 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${rightc3filter}", composerightc3filter)
     .replace("${leftc4filter}", composeleftc4filter)
     .replace("${rightc4filter}", composerightc4filter)
-    .replace("${rattenuation}", self.config.get('attenuation'))
-    .replace("${lattenuation}", self.config.get('attenuation'))
-    .replace("${rattenuation}", self.config.get('attenuation'))
-    .replace("${lattenuation}", self.config.get('attenuation'))
-    .replace("${rattenuation}", self.config.get('attenuation'))
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${attenuationlr2}", self.config.get('attenuationlr2'))
+    .replace("${attenuationlr2}", self.config.get('attenuationlr2'))
+    .replace("${attenuationlr3}", self.config.get('attenuationlr3'))
+    .replace("${attenuationlr3}", self.config.get('attenuationlr3'))
+    .replace("${attenuationlr4}", self.config.get('attenuationlr4'))
+    .replace("${attenuationlr4}", self.config.get('attenuationlr4'))
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${filter_format1}", self.config.get('filter_format'))
@@ -1680,17 +1706,17 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('lc2delay', data['lc2delay']);
  self.config.set('rightc2filter', data['rightc2filter'].value);
  self.config.set('rc2delay', data['rc2delay']);
-
+ self.config.set('attenuationlr2', data['attenuationlr2'].value);
  self.config.set('leftc3filter', data['leftc3filter'].value);
  self.config.set('lc3delay', data['lc3delay']);
  self.config.set('rightc3filter', data['rightc3filter'].value);
  self.config.set('rc3delay', data['rc3delay']);
-
+ self.config.set('attenuationlr3', data['attenuationlr3'].value);
  self.config.set('leftc4filter', data['leftc4filter'].value);
  self.config.set('lc4delay', data['lc4delay']);
  self.config.set('rightc4filter', data['rightc4filter'].value);
  self.config.set('rc4delay', data['rc4delay']);
-
+ self.config.set('attenuationlr4', data['attenuationlr4'].value);
  self.config.set('filter_format', data['filter_format'].value);
  self.config.set('filter_size', data['filter_size'].value);
  self.config.set('smpl_rate', data['smpl_rate'].value);
@@ -2361,9 +2387,9 @@ ControllerBrutefir.prototype.convert = function(data) {
   };
   var targetcurve = ' /usr/share/drc/config/'
   var outsample = self.config.get('smpl_rate');
-  var BK = self.config.get('bk');
-  if (BK != 'choose a file') {
-   var BKsimplified = BK.replace('.txt', '');
+  var tc = self.config.get('tc');
+  if (tc != 'choose a file') {
+   var tcsimplified = tc.replace('.txt', '');
    var ftargetcurve
    var curve
    if ((outsample == 44100) || (outsample == 48000) || (outsample == 88200) || (outsample == 96000)) {
@@ -2381,8 +2407,8 @@ ControllerBrutefir.prototype.convert = function(data) {
      curve = '96.0';
     };
 
-    var destfile = (outpath + outfile + "-" + drcconfig + "-" + curve + "kHz-" + BKsimplified + ".pcm");
-    var BKpath = "/data/INTERNAL/brutefirfilters/target-curves/"
+    var destfile = (outpath + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
+    var tcpath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
     try {
      execSync("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
@@ -2399,7 +2425,7 @@ ControllerBrutefir.prototype.convert = function(data) {
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
      //here we compose cmde for drc
-     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + BKpath + BK + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
      //and execute it...
      execSync(composedcmde);
      self.logger.info(composedcmde);
@@ -2634,3 +2660,4 @@ ControllerBrutefir.prototype.getAdditionalConf = function(type, controller, data
  var self = this;
  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 }
+
