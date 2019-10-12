@@ -97,13 +97,15 @@ ControllerBrutefir.prototype.hwinfo = function() {
       nchannels = hwinfoJSON.channels.value;
       formats = hwinfoJSON.formats.value;
 
-      self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAaa');
-      self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAaa');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
       self.config.set('nchannels', nchannels);
       self.config.set('formats', formats);
-
+	var output_format = formats.split(" ").pop();
+      self.logger.info('Auto set output format : ------->', output_format);
+      self.config.set('output_format', output_format);
      } catch (e) {
-      self.logger.info('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTError reading hwinfo.json, detection failed', e);
+      self.logger.info('Error reading hwinfo.json, detection failed', e);
       // nchannels = 2;
      }
     }

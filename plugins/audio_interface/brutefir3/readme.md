@@ -94,7 +94,9 @@ nearly everythings
 October 12th
 
 - dedicated attenuation for each pair of channels
-- correction for filter generation (hang of volumio) 
+- correction for filter generation (hang of volumio)
+- auto set output format when enabling the plugin
+- default format for filter is FLOAT_LE (.pcm) 
 
 October 10th 2019
 
