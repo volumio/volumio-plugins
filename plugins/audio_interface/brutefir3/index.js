@@ -2315,7 +2315,7 @@ ControllerBrutefir.prototype.playrightpinkfile = function(track) {
 ControllerBrutefir.prototype.playbothpinkfile = function(track) {
  var self = this;
  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
- var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_48k_16-bit_BOTH.WAV';
+ var track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_BOTH.WAV';
  var safeUri = track.replace(/"/g, '\\"');
  var outsample = self.config.get('smpl_rate');
  if (outsample == '44100') {
@@ -2326,7 +2326,7 @@ ControllerBrutefir.prototype.playbothpinkfile = function(track) {
    exec('/usr/bin/killall aplay');
    exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
   } catch (e) {
-   console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+   self.logger.info('/usr/bin/aplay --device=plughw:Loopback ' + track);
   };
  } else {
   var modalData = {
@@ -2427,7 +2427,7 @@ ControllerBrutefir.prototype.convert = function(data) {
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
      //here we compose cmde for drc
-     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=S --PSNormFactor=2 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
      //and execute it...
      execSync(composedcmde);
      self.logger.info(composedcmde);
