@@ -955,7 +955,7 @@ var attenuationlr4 = self.config.get('attenuationlr4');
      allfilter = 'Dirac pulse,' + 'None,' + item;
      var allfilters = allfilter.replace('filter-sources', '');
      var allfilter2 = allfilters.replace('target-curves', '');
-     var allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(',,', ',');
+     var allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(',,', ',').replace(',,',',');
      var items = allfilter3.split(',');
      items.pop();
      self.logger.info('list of available filters for DRC :' + items);
