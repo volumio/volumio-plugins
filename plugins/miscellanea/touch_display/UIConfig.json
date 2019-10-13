@@ -9,6 +9,7 @@
                 "label": "TRANSLATE.TOUCH_DISPLAY.SCREENSAVER_CONF",
                 "description": "TRANSLATE.TOUCH_DISPLAY.SCREENSAVER_DESC",
                 "icon": "fa-clock-o",
+                "hidden": "false",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveScreensaverConf"},
                 "saveButton": {
                               "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
@@ -166,16 +167,34 @@
                 "saveButton": {
                               "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
                               "data": [
-                                      "flip"
+                                      "angle"
                                       ]
                               },
                 "content": [
                              {
-                             "id": "flip",
-                             "element": "switch",
-                             "doc": "TRANSLATE.TOUCH_DISPLAY.FLIP_DOC",
-                             "label": "TRANSLATE.TOUCH_DISPLAY.FLIP",
-                             "value": false
+                               "id": "angle",
+                               "element": "select",
+                               "doc": "TRANSLATE.TOUCH_DISPLAY.ANGLE_DOC",
+                               "label": "TRANSLATE.TOUCH_DISPLAY.ANGLE",
+                               "value": {"value": "0", "label": "TRANSLATE.TOUCH_DISPLAY.0" },
+                               "options": [
+                                  {
+                                    "value": "0",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.0"
+                                  },
+                                  {
+                                    "value": "90",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.90"
+                                  },
+                                  {
+                                    "value": "180",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.180"
+                                  },
+                                  {
+                                    "value": "270",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.270"
+                                  }
+                               ]
                              }
                            ]
                 },
@@ -185,6 +204,7 @@
                 "label": "TRANSLATE.TOUCH_DISPLAY.POINTER_CONF",
                 "description": "TRANSLATE.TOUCH_DISPLAY.POINTER_DESC",
                 "icon": "fa-mouse-pointer",
+                "hidden": "false",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"savePointerConf"},
                 "saveButton": {
                               "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
