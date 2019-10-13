@@ -1,4 +1,4 @@
-October 12th 2019
+October 13th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -17,22 +17,28 @@ It provides :
 
 - Filters (left and right) can be selected in webUI.
 
-- A room settings : add a delay on speakers if distance from listener is not equal left/right to keep a good stereo image.
+- Specific attenuation for each pair of channels.
+
+
 
 ## NEW!
 
-First experimental multi channel up to 2x4 !!!
+First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
 
-The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. 
 
-- Place all filters in the required VoBAFfilters shared directory. Up to 7 filters may be used. ( Low, LM1, LM2, LM3, M, HM, High )
+
+The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. With that, it can apply filters such as adaptativ loudness.
+
+- Place all VoBAF filters in the required VoBAFfilters shared directory. Up to 7 filters may be used. ( Low, LM1, LM2, LM3, M, HM, High )
 
 - In webUI select first filter and enable VoBAF. Save, it's done!
 
 - Now, when volume is changed, the plugin switches from a filter to an other smmothly!
 
 
-The plugin is also able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It will be documented soon!
+The plugin is also able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It gives very good results in few click!!!
+
+ It will be documented soon!
 
 
 To have a idea of what it is, have look here [brutefir plugin wiki](https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html)
@@ -40,7 +46,7 @@ To have a idea of what it is, have look here [brutefir plugin wiki](https://volu
 
 
 
-Base scheme
+__Base scheme - signal path__
 
 [volumio]--->[Loopback]--->[Brutefir]--->[output /DAC]
 
@@ -51,14 +57,11 @@ First, you must have a working configuration with volumio, the dac you want to u
 
 ## To install
 
-Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
-
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
+Before intalling the dev version, __REMOVE__, if exists, the plugin from your system using the webUI plugins page and __REBOOT BEFORE INSTALLING__ a new version!
 
 ### 1. Enable SSH and connect to Volumio
 
 To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/User_Manual/SSH.html)
-
 
 ### 2. Download and install the plugin
 
@@ -90,6 +93,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 13th
+
+- update readme.md  
 
 October 12th
 
@@ -168,7 +175,7 @@ June 25th 2019
 May 25th 2019
 
 - small fixes in index.js
- 
+
 May 24th 2019
 
 - no "skip" if dirac pulse and wav format
