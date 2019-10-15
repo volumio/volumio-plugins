@@ -36,8 +36,11 @@ then
   if [ -f /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness ]; then
     echo "Installing UDEV rule adjusting backlight brightness permissions"
     sudo echo "SUBSYSTEM==\"backlight\", RUN+=\"/bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness\"" > /etc/udev/rules.d/99-backlight.rules
-    sudo udevadm control --reload-rules
+    sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
   fi
+
+  sudo mkdir /etc/X11/xorg.conf.d
+  sudo cp /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
 
 else
 
@@ -46,7 +49,7 @@ else
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12 xserver-xorg-legacy
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12
 
   echo "Downloading Chromium"
   cd /home/volumio/
