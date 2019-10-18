@@ -11,9 +11,9 @@ var channelMix;
 var metadataUrl;
 var audioFormat = "flac";
 
-module.exports = AudiophileAudition;
+module.exports = ControllerAudiophileAudition;
 
-function AudiophileAudition(context) {
+function ControllerAudiophileAudition(context) {
     var self = this;
 
     self.context = context;
@@ -25,7 +25,7 @@ function AudiophileAudition(context) {
     self.timer = null;
 };
 
-AudiophileAudition.prototype.onVolumioStart = function () {
+ControllerAudiophileAudition.prototype.onVolumioStart = function () {
     var self = this;
     self.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
 	self.getConf(self.configFile);
@@ -35,11 +35,11 @@ AudiophileAudition.prototype.onVolumioStart = function () {
     return libQ.resolve();
 };
 
-AudiophileAudition.prototype.getConfigurationFiles = function () {
+ControllerAudiophileAudition.prototype.getConfigurationFiles = function () {
     return ['config.json'];
 };
 
-AudiophileAudition.prototype.onStart = function () {
+ControllerAudiophileAudition.prototype.onStart = function () {
     var self = this;
 
     var defer=libQ.defer();
@@ -55,7 +55,7 @@ AudiophileAudition.prototype.onStart = function () {
     self.addToBrowseSources();
     self.logger.info('After Addtobrowse onStart');
 
-    //self.serviceName = "audiophile_audition";
+    self.serviceName = "audiophile_audition";
 
     // Once the Plugin has successfull started resolve the promise
     //return libQ.resolve();
@@ -64,14 +64,14 @@ AudiophileAudition.prototype.onStart = function () {
     return defer.promise;
 };
 
-AudiophileAudition.prototype.onStop = function () {
+ControllerAudiophileAudition.prototype.onStop = function () {
     var self = this;
 
     self.removeFromBrowseSources();
     return libQ.resolve();
 };
 
-AudiophileAudition.prototype.onRestart = function () {
+ControllerAudiophileAudition.prototype.onRestart = function () {
     var self = this;
     // Optional, use if you need it
     return libQ.resolve();
@@ -79,7 +79,7 @@ AudiophileAudition.prototype.onRestart = function () {
 
 
 // Configuration Methods -----------------------------------------------------------------------------
-AudiophileAudition.prototype.getUIConfig = function () {
+ControllerAudiophileAudition.prototype.getUIConfig = function () {
     var defer = libQ.defer();
     var self = this;
 
@@ -101,26 +101,26 @@ AudiophileAudition.prototype.getUIConfig = function () {
 };
 
 
-AudiophileAudition.prototype.setUIConfig = function (data) {
+ControllerAudiophileAudition.prototype.setUIConfig = function (data) {
     var self = this;
     var uiconf = fs.readJsonSync(__dirname + '/UIConfig.json');
 
     return libQ.resolve();
 };
 
-AudiophileAudition.prototype.getConf = function (configFile) {
+ControllerAudiophileAudition.prototype.getConf = function (configFile) {
     var self = this;
 
     self.config = new (require('v-conf'))();
     self.config.loadFile(configFile);
 };
 
-AudiophileAudition.prototype.setConf = function (varName, varValue) {
+ControllerAudiophileAudition.prototype.setConf = function (varName, varValue) {
     var self = this;
     fs.writeJsonSync(self.configFile, JSON.stringify(conf));
 };
 
-AudiophileAudition.prototype.updateConfig = function (data) {
+ControllerAudiophileAudition.prototype.updateConfig = function (data) {
     var self = this;
     var defer = libQ.defer();
     var configUpdated = false;
@@ -149,7 +149,7 @@ AudiophileAudition.prototype.updateConfig = function (data) {
 };
 
 // Playback Controls ---------------------------------------------------------------------------------------
-AudiophileAudition.prototype.addToBrowseSources = function () {
+ControllerAudiophileAudition.prototype.addToBrowseSources = function () {
     // Use this function to add your music service plugin to music sources
     var self = this;
 
@@ -164,14 +164,14 @@ AudiophileAudition.prototype.addToBrowseSources = function () {
     });
 };
 
-AudiophileAudition.prototype.removeFromBrowseSources = function () {
+ControllerAudiophileAudition.prototype.removeFromBrowseSources = function () {
     // Use this function to add your music service plugin to music sources
     var self = this;
 
     self.commandRouter.volumioRemoveToBrowseSources(self.getRadioI18nString('PLUGIN_NAME'));
 };
 
-AudiophileAudition.prototype.handleBrowseUri = function (curUri) {
+ControllerAudiophileAudition.prototype.handleBrowseUri = function (curUri) {
     var self = this;
     var response;
     self.logger.info('Entering handleBrowseUri with ' + curUri);
@@ -186,7 +186,7 @@ AudiophileAudition.prototype.handleBrowseUri = function (curUri) {
         });
 };
 
-AudiophileAudition.prototype.getRadioContent = function (station) {
+ControllerAudiophileAudition.prototype.getRadioContent = function (station) {
     var self = this;
     var response;
     var radioStation;
@@ -194,6 +194,7 @@ AudiophileAudition.prototype.getRadioContent = function (station) {
 
     radioStation = self.radioStations.audiophile_audition;
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] entering getRadioContent');
     response = self.radioNavigation;
     response.navigation.lists[0].items = [];
     for (var i in radioStation) {
@@ -214,7 +215,7 @@ AudiophileAudition.prototype.getRadioContent = function (station) {
 };
 
 // Define a method to clear, add, and play an array of tracks
-AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
+ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
     var self = this;
     if (self.timer) {
         self.timer.clear();
@@ -242,8 +243,11 @@ AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
             })
             .then(function () {
                 self.commandRouter.pushToastMessage('info',
-                    self.getRadioI18nString('PLUGIN_NAME'),
-                    self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
+                    'audiophile_audition',
+                    'WAIT_FOR_RADIO_CHANNEL');
+                //self.commandRouter.pushToastMessage('info',
+                    //self.getRadioI18nString('PLUGIN_NAME'),
+                    //self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
                 self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before play');
 
                 return self.mpdPlugin.sendMpdCommand('play', []);
@@ -255,7 +259,7 @@ AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
             });
 };
 
-AudiophileAudition.prototype.seek = function (position) {
+ControllerAudiophileAudition.prototype.seek = function (position) {
     var self = this;
     this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + '[AudiophileAudition] seek to ' + position);
     return libQ.resolve();
@@ -263,7 +267,7 @@ AudiophileAudition.prototype.seek = function (position) {
 };
 
 // Stop
-AudiophileAudition.prototype.stop = function () {
+ControllerAudiophileAudition.prototype.stop = function () {
     var self = this;
     if (self.timer) {
         self.timer.clear();
@@ -282,7 +286,7 @@ AudiophileAudition.prototype.stop = function () {
 };
 
 // Pause
-AudiophileAudition.prototype.pause = function () {
+ControllerAudiophileAudition.prototype.pause = function () {
     var self = this;
 
     // stop timer
@@ -301,7 +305,7 @@ AudiophileAudition.prototype.pause = function () {
 };
 
 // Resume
-AudiophileAudition.prototype.resume = function () {
+ControllerAudiophileAudition.prototype.resume = function () {
     var self = this;
 
     return self.mpdPlugin.sendMpdCommand('play', [])
@@ -313,16 +317,19 @@ AudiophileAudition.prototype.resume = function () {
     });
 };
 
-AudiophileAudition.prototype.explodeUri = function (uri) {
+ControllerAudiophileAudition.prototype.explodeUri = function (uri) {
     var self = this;
     var defer = libQ.defer();
     var response = [];
 
     self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri');
     var uris = uri.split("/");
+    // The channel is the number behind webaa 
+    // in the radio_station.json file
     var channel = parseInt(uris[1]);
     var query;
     var station;
+    var sleep = require('sleep');
 
     station = uris[0].substring(3);
 
@@ -332,11 +339,12 @@ AudiophileAudition.prototype.explodeUri = function (uri) {
             if (self.timer) {
                 self.timer.clear();
             }
-            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri: before push');
+            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri [url]:' + self.radioStations.audiophile_audition[channel].url);
             response.push({
                 service: self.serviceName,
                 type: 'track',
-                trackType: self.getRadioI18nString('PLUGIN_NAME'),
+                trackType: 'audiophile_audition',
+                //trackType: self.getRadioI18nString('PLUGIN_NAME'),
                 radioType: station,
                 albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa-cover-black.png',
                 uri: self.radioStations.audiophile_audition[channel].url,
@@ -350,10 +358,11 @@ AudiophileAudition.prototype.explodeUri = function (uri) {
     return defer.promise;
 };
 
-AudiophileAudition.prototype.getAlbumArt = function (data, path) {
+ControllerAudiophileAudition.prototype.getAlbumArt = function (data, path) {
 
     var artist, album;
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] entering getAlbumArt');
     if (data != undefined && data.path != undefined) {
         path = data.path;
     }
@@ -385,7 +394,7 @@ AudiophileAudition.prototype.getAlbumArt = function (data, path) {
     return url;
 };
 
-AudiophileAudition.prototype.addRadioResource = function () {
+ControllerAudiophileAudition.prototype.addRadioResource = function () {
     var self = this;
 
     var radioResource = fs.readJsonSync(__dirname + '/radio_stations.json');
@@ -396,7 +405,7 @@ AudiophileAudition.prototype.addRadioResource = function () {
     self.radioNavigation = JSON.parse(JSON.stringify(baseNavigation));
 };
 
-AudiophileAudition.prototype.getMetadata = function (url) {
+ControllerAudiophileAudition.prototype.getMetadata = function (url) {
     var self = this;
     self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] getMetadata started with url ' + url);
     var defer = libQ.defer();    
@@ -429,13 +438,13 @@ AudiophileAudition.prototype.getMetadata = function (url) {
     return defer.promise;
 };
 
-AudiophileAudition.prototype.loadRadioI18nStrings = function () {
+ControllerAudiophileAudition.prototype.loadRadioI18nStrings = function () {
     var self = this;
     self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
     self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };
 
-AudiophileAudition.prototype.getRadioI18nString = function (key) {
+ControllerAudiophileAudition.prototype.getRadioI18nString = function (key) {
     var self = this;
 
     if (self.i18nStrings[key] !== undefined)
@@ -444,11 +453,11 @@ AudiophileAudition.prototype.getRadioI18nString = function (key) {
         return self.i18nStringsDefaults[key];
 };
 
-AudiophileAudition.prototype.search = function (query) {
+ControllerAudiophileAudition.prototype.search = function (query) {
     return libQ.resolve();
 };
 
-AudiophileAudition.prototype.errorToast = function (station, msg) {
+ControllerAudiophileAudition.prototype.errorToast = function (station, msg) {
     var self = this;
 
     var errorMessage = self.getRadioI18nString(msg);
@@ -457,7 +466,7 @@ AudiophileAudition.prototype.errorToast = function (station, msg) {
         self.getRadioI18nString('PLUGIN_NAME'), errorMessage);
 };
 
-AudiophileAudition.prototype.pushSongState = function (metadata) {
+ControllerAudiophileAudition.prototype.pushSongState = function (metadata) {
     var self = this;
     var rpState = {
         status: 'play',
@@ -480,7 +489,7 @@ AudiophileAudition.prototype.pushSongState = function (metadata) {
         channels: 2
     };
 
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] .pushSongState');
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] pushSongState' + metadata.title);
     self.state = rpState;
 
     //workaround to allow state to be pushed when not in a volatile state
@@ -510,8 +519,10 @@ AudiophileAudition.prototype.pushSongState = function (metadata) {
     self.commandRouter.servicePushState(rpState, self.serviceName);
 };
 
-AudiophileAudition.prototype.setMetadata = function (metadataUrl) {
+ControllerAudiophileAudition.prototype.setMetadata = function (metadataUrl) {
     var self = this;
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] setmetadata: ' + metadataUrl);
+
     return self.getMetadata(metadataUrl)
     .then(function (eventResponse) {
         if (eventResponse !== null) {
