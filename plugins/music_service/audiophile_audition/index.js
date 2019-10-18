@@ -153,6 +153,7 @@ AudiophileAudition.prototype.addToBrowseSources = function () {
     // Use this function to add your music service plugin to music sources
     var self = this;
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] addToBrowseSources: ');
     self.commandRouter.volumioAddToBrowseSources({
         //name: self.getRadioI18nString('PLUGIN_NAME'),
         name: 'audiophile_audition',
@@ -173,7 +174,7 @@ AudiophileAudition.prototype.removeFromBrowseSources = function () {
 AudiophileAudition.prototype.handleBrowseUri = function (curUri) {
     var self = this;
     var response;
-    self.logger.info('Entering handleBrowseUri');
+    self.logger.info('Entering handleBrowseUri with ' + curUri);
     if (curUri.startsWith('audiophile_audition')) {
         response = self.getRadioContent('audiophile_audition');
     }
@@ -219,42 +220,20 @@ AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
         self.timer.clear();
     }
 
-    if (!track.uri.includes("flac")) {
-        // normal radio streams
-        return self.mpdPlugin.sendMpdCommand('stop', [])
-            .then(function () {
-                return self.mpdPlugin.sendMpdCommand('clear', []);
-            })
-            .then(function () {
-                return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
-            })
-            .then(function () {
-                self.commandRouter.pushToastMessage('info',
-                    self.getRadioI18nString('PLUGIN_NAME'),
-                    self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
-                return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-                    self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
-                    return libQ.resolve();
-                })
-            });
-    } else {
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] clearAddPlayTrack: ' + track.url);
         // Advanced stream via API
-        flacUri = track.uri;
+        flacUri = track.url;
 
-        if (track.uri.includes("mellow")) {
-            channelMix = "Mellow";
-            metadataUrl = "https://api.AudiophileAudition.com/api/now_playing?chan=1";
-        } else {
-            channelMix = "Main";
-            metadataUrl = "https://api.AudiophileAudition.com/api/now_playing?chan=0"
-        }
+        metadataUrl =  ""
         
         var songs;
         return self.mpdPlugin.sendMpdCommand('stop', [])
             .then(function () {
+                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before clear');
                 return self.mpdPlugin.sendMpdCommand('clear', []);
             })
             .then(function () {
+                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before consume');
                 return self.mpdPlugin.sendMpdCommand('consume 1', []);
             })
             .then(function () {
@@ -265,6 +244,7 @@ AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
                 self.commandRouter.pushToastMessage('info',
                     self.getRadioI18nString('PLUGIN_NAME'),
                     self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
+                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before play');
 
                 return self.mpdPlugin.sendMpdCommand('play', []);
             }).then(function () {
@@ -273,7 +253,6 @@ AudiophileAudition.prototype.clearAddPlayTrack = function (track) {
             .fail(function (e) {
                 return libQ.reject(new Error());
             });
-    }
 };
 
 AudiophileAudition.prototype.seek = function (position) {
@@ -339,6 +318,7 @@ AudiophileAudition.prototype.explodeUri = function (uri) {
     var defer = libQ.defer();
     var response = [];
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri');
     var uris = uri.split("/");
     var channel = parseInt(uris[1]);
     var query;
@@ -346,37 +326,23 @@ AudiophileAudition.prototype.explodeUri = function (uri) {
 
     station = uris[0].substring(3);
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri: ' + station);
     switch (uris[0]) {
-        case 'webrp':
+        case 'webaa':
             if (self.timer) {
                 self.timer.clear();
             }
-            if (channel === 0) {
-                // FLAC option chosen
-                response.push({
-                    service: self.serviceName,
-                    type: 'track',
-                    trackType: audioFormat,
-                    radioType: station,
-                    albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa-cover-black.png',
-                    uri: self.radioStations.audiophile_audition[channel].url,
-                    name: self.radioStations.audiophile_audition[channel].title,
-                    duration: 1000
-                });
-                defer.resolve(response);
-            } else {
-                // non flac webradio chosen
-                response.push({
-                    service: self.serviceName,
-                    type: 'track',
-                    trackType: self.getRadioI18nString('PLUGIN_NAME'),
-                    radioType: station,
-                    albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa-cover-black.png',
-                    uri: self.radioStations.audiophile_audition[channel].url,
-                    name: self.radioStations.audiophile_audition[channel].title
-                });
-                defer.resolve(response);
-            }
+            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri: before push');
+            response.push({
+                service: self.serviceName,
+                type: 'track',
+                trackType: self.getRadioI18nString('PLUGIN_NAME'),
+                radioType: station,
+                albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa-cover-black.png',
+                uri: self.radioStations.audiophile_audition[channel].url,
+                name: self.radioStations.audiophile_audition[channel].title
+            });
+            defer.resolve(response);
             break;
         default:
             defer.resolve();
@@ -514,6 +480,7 @@ AudiophileAudition.prototype.pushSongState = function (metadata) {
         channels: 2
     };
 
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] .pushSongState');
     self.state = rpState;
 
     //workaround to allow state to be pushed when not in a volatile state
@@ -539,6 +506,7 @@ AudiophileAudition.prototype.pushSongState = function (metadata) {
     self.commandRouter.stateMachine.simulateStopStartDone=false;
 
     //volumio push state
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] .pushSongState: before push');
     self.commandRouter.servicePushState(rpState, self.serviceName);
 };
 

@@ -16,38 +16,38 @@
   "stations": {
     "audiophile_audition": [
       {
-        "title": "Radio Paradise Main Mix (FLAC)",
-        "uri": "webrp/0",
-        "url": "http://stream.radioparadise.com/flac"
+        "title": "Audiophile Baroque",
+        "uri": "webaa/0",
+        "url": "http://94.23.201.38:2199/tunein/baroque.pls"
       },
       {
         "title": "Radio Paradise Mellow Mix (FLAC)",
-        "uri": "webrp/1",
+        "uri": "webaa/1",
         "url": "http://stream.radioparadise.com/mellow-flac"
       },
       {
         "title": "Radio Paradise (AAC 320k)",
-        "uri": "webrp/2",
+        "uri": "webaa/2",
         "url": "http://stream-uk1.radioparadise.com/aac-320"
       },
       {
         "title": "Radio Paradise (AAC 128k)",
-        "uri": "webrp/3",
+        "uri": "webaa/3",
         "url": "http://stream-uk1.radioparadise.com/aac-128"
       },
       {
         "title": "Radio Paradise (AAC 64k)",
-        "uri": "webrp/4",
+        "uri": "webaa/4",
         "url": "http://stream-uk1.radioparadise.com/aac-64"
       },
       {
         "title": "Radio Paradise (MP3 192k)",
-        "uri": "webrp/5",
+        "uri": "webaa/5",
         "url": "http://stream-uk1.radioparadise.com/mp3-192"
       },
       {
         "title": "Radio Paradise (MP3 128k)",
-        "uri": "webrp/6",
+        "uri": "webaa/6",
         "url": "http://stream-uk1.radioparadise.com/mp3-128"
       }
     ]

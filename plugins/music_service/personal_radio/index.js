@@ -258,6 +258,7 @@ ControllerPersonalRadio.prototype.clearAddPlayTrack = function(track) {
   var self = this;
   var defer = libQ.defer();
 
+  self.logger.info('[' + Date.now() + '] ' + 'ControllerPersonalRadio::.clearAddPlayTrack');
   return self.mpdPlugin.sendMpdCommand('stop', [])
   .then(function() {
     return self.mpdPlugin.sendMpdCommand('clear', []);
