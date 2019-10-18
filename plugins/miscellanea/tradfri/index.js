@@ -197,8 +197,8 @@ TradfriController.prototype.tradfriDisconnect = function(data) {
 TradfriController.prototype.saveTradfriSettings = function(data) {
     var self = this;
 
-    self.logger.info(`tradfri settings / device_or_group: [old](${self.config.get('tradfri.device_or_group')}) [new](${data['tradfri_device_or_group']})`);
-    self.logger.info(`tradfri settings / switch_off_delay: [old](${self.config.get('tradfri.switch_off_delay')}) [new](${data['switch_off_delay']})`);
+    self.logger.debug(`tradfri settings / device_or_group: [old](${self.config.get('tradfri.device_or_group')}) [new](${data['tradfri_device_or_group']})`);
+    self.logger.debug(`tradfri settings / switch_off_delay: [old](${self.config.get('tradfri.switch_off_delay')}) [new](${data['switch_off_delay']})`);
 
     if (data['tradfri_device_or_group'] !== self.config.get('tradfri.device_or_group')) {
         if (self.tradfriDeviceOrGroup) {
@@ -301,7 +301,7 @@ TradfriController.prototype.onTradfriGatewayDiscovered = function(security_code,
         return;
     }
 
-    self.logger.info(`tradfri gateway ${gateway.name} discovered`);
+    self.logger.debug(`tradfri gateway ${gateway.name} discovered`);
 
     self.tradfriClient = new TradfriClient(gateway.host, {
         watchConnection: true,
@@ -325,7 +325,7 @@ TradfriController.prototype.onTradfriGatewayDiscovered = function(security_code,
 TradfriController.prototype.onTradfriAuthenticated = function(token) {
     var self = this;
 
-    self.logger.info('tradfri authentication successful');
+    self.logger.debug('tradfri authentication successful');
 
     self.config.set('tradfri.gateway.identity', token.identity);
     self.config.set('tradfri.gateway.psk', token.psk);
@@ -359,7 +359,7 @@ TradfriController.prototype.onDeviceOrGroupUpdated = function(deviceOrGroup) {
     var switchOn = false;
 
     if (deviceOrGroup instanceof tradfriLib.Accessory) {
-        self.logger.info(`device updated: ${deviceOrGroup.instanceId}:${deviceOrGroup.name}`);
+        self.logger.debug(`device updated: ${deviceOrGroup.instanceId}:${deviceOrGroup.name}`);
         self.tradfriDevices[deviceOrGroup.instanceId] = deviceOrGroup;
 
         if (!SUPPORTED_DEVICES[deviceOrGroup.type]) {
@@ -367,7 +367,7 @@ TradfriController.prototype.onDeviceOrGroupUpdated = function(deviceOrGroup) {
             return;
         }
     } else {
-        self.logger.info(`group updated: ${deviceOrGroup.instanceId}:${deviceOrGroup.name}`);
+        self.logger.debug(`group updated: ${deviceOrGroup.instanceId}:${deviceOrGroup.name}`);
         self.tradfriGroups[deviceOrGroup.instanceId] = deviceOrGroup;
     }
 
@@ -410,17 +410,16 @@ TradfriController.prototype.onDeviceOrGroupRemoved = function(instanceId, isGrou
     var self = this;
 
     if (isGroup) {
-        self.logger.info(`group removed: ${instanceId}`);
+        self.logger.debug(`group removed: ${instanceId}`);
         delete self.tradfriGroups[instanceId];
     } else {
-        self.logger.info(`device removed: ${instanceId}`);
+        self.logger.debug(`device removed: ${instanceId}`);
         delete self.tradfriDevices[instanceId];
     }
 
     if (self.tradfriDeviceOrGroup && self.tradfriDeviceOrGroup.instanceId == instanceId) {
         // the device of interest was removed
         self.tradfriDeviceOrGroup = null;
-        self.logger.info(`device ${tradfriDeviceOrGroup.instanceId}:${tradfriDeviceOrGroup.name} removed`);
     }
 }
 
