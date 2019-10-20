@@ -1,0 +1,21 @@
+{
+	"name": "hue_control",
+	"version": "1.0.0",
+	"description": "hue_control",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "André Iske",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "hue_control",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
