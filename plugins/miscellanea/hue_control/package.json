@@ -1,7 +1,7 @@
 {
 	"name": "hue_control",
 	"version": "1.0.0",
-	"description": "hue_control",
+	"description": "Connect with a Philips Hue bridge and control bulbs or smart power outlets based on the Volumio playback status.",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
 	"author": "André Iske",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "hue_control",
+		"prettyName": "Philips Hue Control",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "miscellanea"
 	},

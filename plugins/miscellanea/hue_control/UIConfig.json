@@ -3,5 +3,65 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
+    {
+      "id": "section_hue_connection",
+      "element": "section",
+      "label": "TRANSLATE.HUE_CONNECTION_CONFIG",
+      "icon": "fa-link",
+      "description": "TRANSLATE.HUE_CONNECTION_CONFIG_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "pairBridge"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.HUE_PAIR_BTN",
+        "data": [
+          "hue_bridge_address"
+        ]
+      },
+      "content": [
+        {
+          "id": "hue_bridge_address",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.HUE_BRIDGE_ADDRESS_DOC",
+          "label": "TRANSLATE.HUE_BRIDGE_ADDRESS",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_hue_unpair",
+      "element": "section",
+      "label": "TRANSLATE.HUE_UNPAIR_CONFIG",
+      "icon": "fa-link",
+      "description": "TRANSLATE.HUE_UNPAIR_CONFIG_DESC",
+      "content": [
+        {
+          "id": "hue_unpair_btn",
+          "type": "button",
+          "label": "TRANSLATE.HUE_UNPAIR_BTN",
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/hue_control",
+            "method": "unpairBridge"
+          }
+        },
+        {
+          "id": "hue_bridge_address",
+          "type": "text",
+          "element": "input",
+          "attributes": [
+            {
+              "readonly": true
+            }
+          ],
+          "doc": "TRANSLATE.HUE_BRIDGE_ADDRESS_DOC",
+          "label": "TRANSLATE.HUE_BRIDGE_ADDRESS",
+          "value": ""
+        }
+      ]
+    }
   ]
 }

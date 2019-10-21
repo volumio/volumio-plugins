@@ -63,14 +63,23 @@ hueControl.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
 
-    var lang_code = this.commandRouter.sharedVars.get('language_code');
+	var lang_code = this.commandRouter.sharedVars.get('language_code');
+	
+	//TODO: Replace later
+	var isConnected = false
 
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+			uiconf.sections[0].content[0].value = self.config.get('hue_bridge_address');
+			uiconf.sections[1].content[1].value = self.config.get('hue_bridge_address');
 
+            // remove either the authenticate on or logout section
+			var indexOfSectionToRemove = (isConnected) ? 0 : 1;
+			
+			uiconf.sections.splice(indexOfSectionToRemove, 1);
 
             defer.resolve(uiconf);
         })

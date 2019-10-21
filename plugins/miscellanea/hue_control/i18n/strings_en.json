@@ -1,4 +1,12 @@
 {
-  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
+  "HUE_PLUGIN_CONFIGURATION": "Hue Control Plugin Configuration",
+  "HUE_CONNECTION_CONFIG": "Hue Bridge Config",
+  "HUE_CONNECTION_CONFIG_DESC": "Enter the ip address or hostname of the Hue bridge, press the link button on the bridge and press Connect within 30 seconds.",
+  "HUE_UNPAIR_CONFIG": "Unpair Hue Bridge",
+  "HUE_UNPAIR_CONFIG_DESC": "Press Unpair button to disconnect Volumio from Hue bridge",
+  "HUE_PAIR_BTN":"Pair",
+  "HUE_UNPAIR_BTN":"Unpair",
+  "HUE_BRIDGE_ADDRESS": "Hue Bridge Address",
+  "HUE_BRIDGE_ADDRESS_DOC": "The the ip address or hostname of the Hue bridge",
   "SAVE":"Save"
 }

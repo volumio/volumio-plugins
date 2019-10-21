@@ -1,3 +1,6 @@
 {
- 
+    "hue_bridge_address": {
+        "type": "string",
+        "value": ""
+    }
 }
