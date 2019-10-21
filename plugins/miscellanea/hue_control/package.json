@@ -6,8 +6,12 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "André Iske",
-	"license": "ISC",
+	"author": {
+		"name": "André Iske",
+		"email": "andre.iske@mailbox.org",
+		"url": "https://github.com/a-i-ks"
+	},
+	"license": "GPL-3.0-only",
 	"volumio_info": {
 		"prettyName": "Philips Hue Control",
 		"icon": "fa-lightbulb-o",
