@@ -23,6 +23,10 @@ function hueControl(context) {
 hueControl.prototype.onVolumioStart = function()
 {
 	var self = this;
+
+	self.logger.debug('onVolumioStart');
+	
+	var self = this;
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
@@ -31,6 +35,10 @@ hueControl.prototype.onVolumioStart = function()
 }
 
 hueControl.prototype.onStart = function() {
+	var self = this;
+
+	self.logger.debug('onStart');
+	
     var self = this;
 	var defer=libQ.defer();
 
@@ -42,6 +50,10 @@ hueControl.prototype.onStart = function() {
 };
 
 hueControl.prototype.onStop = function() {
+	var self = this;
+
+    self.logger.debug('onStop');
+
     var self = this;
     var defer=libQ.defer();
 
@@ -73,10 +85,15 @@ hueControl.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+			
+			// Bridge Address
 			uiconf.sections[0].content[0].value = self.config.get('hue_bridge_address');
 			uiconf.sections[1].content[1].value = self.config.get('hue_bridge_address');
 
-            // remove either the authenticate on or logout section
+			// switch off delay
+			uiconf.sections[2].content[0].value = self.config.get('switch_off_delay');
+
+            // remove either the connect on or disconnect section
 			var indexOfSectionToRemove = (isConnected) ? 0 : 1;
 			
 			uiconf.sections.splice(indexOfSectionToRemove, 1);

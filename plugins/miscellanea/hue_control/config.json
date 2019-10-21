@@ -2,5 +2,9 @@
     "hue_bridge_address": {
         "type": "string",
         "value": ""
-    }
+    },
+    "switch_off_delay": {
+        "type": "number",
+        "value": 60
+      }
 }

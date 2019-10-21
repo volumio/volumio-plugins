@@ -35,7 +35,7 @@
       "id": "section_hue_unpair",
       "element": "section",
       "label": "TRANSLATE.HUE_UNPAIR_CONFIG",
-      "icon": "fa-link",
+      "icon": "fa-chain-broken",
       "description": "TRANSLATE.HUE_UNPAIR_CONFIG_DESC",
       "content": [
         {
@@ -60,6 +60,34 @@
           "doc": "TRANSLATE.HUE_BRIDGE_ADDRESS_DOC",
           "label": "TRANSLATE.HUE_BRIDGE_ADDRESS",
           "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.HUE_SETTINGS",
+      "icon": "fa-cog",
+      "description": "TRANSLATE.HUE_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "saveSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "switch_off_delay"
+        ]
+      },
+      "content": [
+        {
+          "id": "switch_off_delay",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.HUE_SWITCH_OFF_DELAY_DOC",
+          "label": "TRANSLATE.HUE_SWITCH_OFF_DELAY",
+          "value": 60
         }
       ]
     }
