@@ -12,5 +12,7 @@
   "HUE_SETTINGS_DESC": "The settings for the Hue Control plugin",
   "HUE_SWITCH_OFF_DELAY_DOC": "The number of seconds to wait before switching off the Hue device(s) after the playback has stopped.",
   "HUE_SWITCH_OFF_DELAY": "Switch Off Delay",
+  "HUE_DEVICE_DOC": "Hue bulb or smart power outlet to contol",
+  "HUE_DEVICE": "Device",
   "SAVE":"Save"
 }

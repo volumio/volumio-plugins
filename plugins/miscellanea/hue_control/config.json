@@ -6,5 +6,9 @@
     "switch_off_delay": {
         "type": "number",
         "value": 60
-      }
+    },
+    "hue_device" :{
+        "type": "number",
+        "value": null
+    }
 }

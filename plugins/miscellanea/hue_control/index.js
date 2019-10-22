@@ -16,8 +16,11 @@ function hueControl(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 
-}
+	this.volumioClient = null;
+    this.playerStatus = null;
 
+    this.switchOffTimer = null;
+}
 
 
 hueControl.prototype.onVolumioStart = function()
@@ -38,8 +41,13 @@ hueControl.prototype.onStart = function() {
 	var self = this;
 
 	self.logger.debug('onStart');
+
+	// connect to the volumio service and listen for player state changes
+	self.volumioClient = io.connect('http://localhost:3000');
+	self.volumioClient.on('pushState', self.onVolumioState.bind(self));
+	// request the value of the current player state
+	self.volumioClient.emit('getState', '');
 	
-    var self = this;
 	var defer=libQ.defer();
 
 
@@ -52,9 +60,13 @@ hueControl.prototype.onStart = function() {
 hueControl.prototype.onStop = function() {
 	var self = this;
 
-    self.logger.debug('onStop');
+	self.logger.debug('onStop');
+	
+	if (self.volumioClient) {
+        self.volumioClient.disconnect();
+        self.volumioClient = null;
+    }
 
-    var self = this;
     var defer=libQ.defer();
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -68,6 +80,58 @@ hueControl.prototype.onRestart = function() {
     // Optional, use if you need it
 };
 
+// Volumio Connection -----------------------------------------------------------------------------
+
+hueControl.prototype.onVolumioState = function(state) {
+    var self = this;
+
+    if (state.status != self.playerStatus) {
+        self.playerStatus = state.status;
+
+        self.logger.debug(`new player status: ${self.playerStatus}`);
+
+        if (self.playerStatus == 'play') {
+            // volumio is playing
+            // stop timer if started
+            if (self.switchOffTimer) {
+                clearTimeout(self.switchOffTimer);
+                self.switchOffTimer = null;
+            }
+			// switch on volumio device if available
+			// TODO: Replace with hue function
+            // if (self.tradfriDeviceOrGroup) {
+            //     // tradfri device available
+            //     self.logger.info(`switch on ${self.tradfriDeviceOrGroup.name}`);
+            //     turnTradfriDeviceOrGroupOn(self.tradfriDeviceOrGroup);
+            // }
+        } else {
+            // volumio is not playing
+            // start timer if not already started
+            if (!self.switchOffTimer) {
+                self.logger.debug(`starting switch off timer`);
+                self.switchOffTimer = setTimeout(
+                    self.switchOffTimeout.bind(self),
+                    self.config.get('switch_off_delay') * 1000
+                );
+            }
+        }
+    }
+}
+
+hueControl.prototype.switchOffTimeout = function() {
+    var self = this;
+
+    // timeout expired
+    self.switchOffTimer = null;
+
+	// switch off volumio device if available
+	// TODO: Replace with hue function
+    // if (self.tradfriDeviceOrGroup) {
+    //     // tradfri device available
+    //     self.logger.info(`switch off ${self.tradfriDeviceOrGroup.name}`);
+    //     turnTradfriDeviceOrGroupOff(self.tradfriDeviceOrGroup);
+    // }
+}
 
 // Configuration Methods -----------------------------------------------------------------------------
 
@@ -95,8 +159,12 @@ hueControl.prototype.getUIConfig = function() {
 
             // remove either the connect on or disconnect section
 			var indexOfSectionToRemove = (isConnected) ? 0 : 1;
-			
 			uiconf.sections.splice(indexOfSectionToRemove, 1);
+
+			// Remove device selection if bridge is not connected
+			if(!isConnected) {
+				uiconf.sections[2].sections.splice(1,1);
+			}
 
             defer.resolve(uiconf);
         })
@@ -129,165 +197,3 @@ hueControl.prototype.setConf = function(varName, varValue) {
 
 
 
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
-
-
-hueControl.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
-};
-
-hueControl.prototype.handleBrowseUri = function (curUri) {
-    var self = this;
-
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
-};
-
-
-
-// Define a method to clear, add, and play an array of tracks
-hueControl.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-hueControl.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-hueControl.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::stop');
-
-
-};
-
-// Spop pause
-hueControl.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::pause');
-
-
-};
-
-// Get state
-hueControl.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::getState');
-
-
-};
-
-//Parse state
-hueControl.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-hueControl.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'hueControl::pushState');
-
-	return self.commandRouter.servicePushState(state, self.servicename);
-};
-
-
-hueControl.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-hueControl.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-hueControl.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-hueControl.prototype._searchArtists = function (results) {
-
-};
-
-hueControl.prototype._searchAlbums = function (results) {
-
-};
-
-hueControl.prototype._searchPlaylists = function (results) {
-
-
-};
-
-hueControl.prototype._searchTracks = function (results) {
-
-};
-
-hueControl.prototype.goto=function(data){
-    var self=this
-    var defer=libQ.defer()
-
-// Handle go to artist and go to album function
-
-     return defer.promise;
-};
