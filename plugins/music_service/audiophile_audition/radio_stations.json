@@ -21,34 +21,29 @@
         "url": "http://94.23.201.38:8000/stream"
       },
       {
-        "title": "Radio Paradise Mellow Mix (FLAC)",
+        "title": "Audiophile Classical",
         "uri": "webaa/1",
-        "url": "http://stream.radioparadise.com/mellow-flac"
+        "url": "http://94.23.201.38:8010/stream"
       },
       {
-        "title": "Radio Paradise (AAC 320k)",
+        "title": "Audiophile Jazz",
         "uri": "webaa/2",
-        "url": "http://stream-uk1.radioparadise.com/aac-320"
+        "url": "http://94.23.201.38:8020/stream"
       },
       {
-        "title": "Radio Paradise (AAC 128k)",
+        "title": "Audiophile Lounge",
         "uri": "webaa/3",
-        "url": "http://stream-uk1.radioparadise.com/aac-128"
+        "url": "http://94.23.201.38:8030/stream"
       },
       {
-        "title": "Radio Paradise (AAC 64k)",
+        "title": "Audiophile Rock-Blues",
         "uri": "webaa/4",
-        "url": "http://stream-uk1.radioparadise.com/aac-64"
+        "url": "http://94.23.201.38:8040/stream"
       },
       {
-        "title": "Radio Paradise (MP3 192k)",
+        "title": "Audiophile Xtream-Live",
         "uri": "webaa/5",
-        "url": "http://stream-uk1.radioparadise.com/mp3-192"
-      },
-      {
-        "title": "Radio Paradise (MP3 128k)",
-        "uri": "webaa/6",
-        "url": "http://stream-uk1.radioparadise.com/mp3-128"
+        "url": "http://94.23.201.38:8050/stream"
       }
     ]
   }
