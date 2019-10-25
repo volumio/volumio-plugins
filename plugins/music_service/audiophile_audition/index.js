@@ -222,24 +222,15 @@ ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
     }
 
     self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] clearAddPlayTrack: ' + track.url);
-        // Advanced stream via API
-        flacUri = track.url;
-
-        metadataUrl =  ""
         
-        var songs;
         return self.mpdPlugin.sendMpdCommand('stop', [])
             .then(function () {
                 self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before clear');
                 return self.mpdPlugin.sendMpdCommand('clear', []);
             })
             .then(function () {
-                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before consume');
-                return self.mpdPlugin.sendMpdCommand('consume 1', []);
-            })
-            .then(function () {
-                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] set to consume mode, adding url: ' + flacUri);
-                return self.mpdPlugin.sendMpdCommand('add "' + flacUri + '"', []);
+                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] set to consume mode, adding url: ' + track.uri);
+                return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
             })
             .then(function () {
                 self.commandRouter.pushToastMessage('info',
@@ -251,8 +242,10 @@ ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
                 self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before play');
 
                 return self.mpdPlugin.sendMpdCommand('play', []);
-            }).then(function () {
-                return self.setMetadata(metadataUrl);
+            })
+            .then(function () {
+		self.commandRouter.stateMachine.setConsumeUpdateService('mpd');
+		return libQ.resolve();
             })
             .fail(function (e) {
                 return libQ.reject(new Error());
