@@ -16,32 +16,32 @@
   "stations": {
     "audiophile_audition": [
       {
-        "title": "Audiophile Baroque",
+        "title": "Audiophile Audition Baroque",
         "uri": "webaa/0",
         "url": "http://94.23.201.38:8000/stream"
       },
       {
-        "title": "Audiophile Classical",
+        "title": "Audiophile Audition Classical",
         "uri": "webaa/1",
         "url": "http://94.23.201.38:8010/stream"
       },
       {
-        "title": "Audiophile Jazz",
+        "title": "Audiophile Audition Jazz",
         "uri": "webaa/2",
         "url": "http://94.23.201.38:8020/stream"
       },
       {
-        "title": "Audiophile Lounge",
+        "title": "Audiophile Audition Lounge",
         "uri": "webaa/3",
         "url": "http://94.23.201.38:8030/stream"
       },
       {
-        "title": "Audiophile Rock-Blues",
+        "title": "Audiophile Audition Rock-Blues",
         "uri": "webaa/4",
         "url": "http://94.23.201.38:8040/stream"
       },
       {
-        "title": "Audiophile Xtream-Live",
+        "title": "Audiophile Audition Xtream-Live",
         "uri": "webaa/5",
         "url": "http://94.23.201.38:8050/stream"
       }
