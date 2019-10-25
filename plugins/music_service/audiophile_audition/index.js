@@ -3,13 +3,7 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
 var config = new (require('v-conf'))();
-var NanoTimer = require('nanotimer');
 const http = require('https');
-
-var flacUri;
-var channelMix;
-var metadataUrl;
-var audioFormat = "flac";
 
 module.exports = ControllerAudiophileAudition;
 
@@ -22,7 +16,6 @@ function ControllerAudiophileAudition(context) {
     self.configManager = this.context.configManager;
 
     self.state = {};
-    self.timer = null;
 };
 
 ControllerAudiophileAudition.prototype.onVolumioStart = function () {
@@ -47,13 +40,9 @@ ControllerAudiophileAudition.prototype.onStart = function () {
 
     self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
-    self.logger.info('Before Loadradio onStart');
     self.loadRadioI18nStrings();
-    self.logger.info('Before Addradio onStart');
     self.addRadioResource();
-    self.logger.info('Before Addtobrowse onStart');
     self.addToBrowseSources();
-    self.logger.info('After Addtobrowse onStart');
 
     self.serviceName = "audiophile_audition";
 
@@ -178,7 +167,6 @@ ControllerAudiophileAudition.prototype.handleBrowseUri = function (curUri) {
     if (curUri.startsWith('audiophile_audition')) {
         response = self.getRadioContent('audiophile_audition');
     }
-    self.logger.info('Exiting handleBrowseUri');
     return response
         .fail(function (e) {
             self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] handleBrowseUri failed');
@@ -217,19 +205,14 @@ ControllerAudiophileAudition.prototype.getRadioContent = function (station) {
 // Define a method to clear, add, and play an array of tracks
 ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
     var self = this;
-    if (self.timer) {
-        self.timer.clear();
-    }
 
     self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] clearAddPlayTrack: ' + track.url);
         
         return self.mpdPlugin.sendMpdCommand('stop', [])
             .then(function () {
-                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before clear');
                 return self.mpdPlugin.sendMpdCommand('clear', []);
             })
             .then(function () {
-                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] set to consume mode, adding url: ' + track.uri);
                 return self.mpdPlugin.sendMpdCommand('add "' + track.uri + '"', []);
             })
             .then(function () {
@@ -239,7 +222,6 @@ ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
                 //self.commandRouter.pushToastMessage('info',
                     //self.getRadioI18nString('PLUGIN_NAME'),
                     //self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
-                self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] before play');
 
                 return self.mpdPlugin.sendMpdCommand('play', []);
             })
@@ -262,9 +244,6 @@ ControllerAudiophileAudition.prototype.seek = function (position) {
 // Stop
 ControllerAudiophileAudition.prototype.stop = function () {
     var self = this;
-    if (self.timer) {
-        self.timer.clear();
-    }
     self.commandRouter.pushToastMessage(
         'info',
         self.getRadioI18nString('PLUGIN_NAME'),
@@ -282,11 +261,6 @@ ControllerAudiophileAudition.prototype.stop = function () {
 ControllerAudiophileAudition.prototype.pause = function () {
     var self = this;
 
-    // stop timer
-    if (self.timer) {
-        self.timer.clear();
-    }
-
     // pause the song
     return self.mpdPlugin.sendMpdCommand('pause', [1])
     .then(function () {
@@ -301,13 +275,11 @@ ControllerAudiophileAudition.prototype.pause = function () {
 ControllerAudiophileAudition.prototype.resume = function () {
     var self = this;
 
-    return self.mpdPlugin.sendMpdCommand('play', [])
-        .then(function () {
-            // adapt play status and update state machine
-            self.state.status = 'play';
-            self.commandRouter.servicePushState(self.state, self.serviceName);
-            return self.setMetadata(metadataUrl);
+  return self.mpdPlugin.resume().then(function () {
+    return self.mpdPlugin.getState().then(function (state) {
+      return self.commandRouter.stateMachine.syncState(state, self.serviceName);
     });
+  });
 };
 
 ControllerAudiophileAudition.prototype.explodeUri = function (uri) {
@@ -315,7 +287,7 @@ ControllerAudiophileAudition.prototype.explodeUri = function (uri) {
     var defer = libQ.defer();
     var response = [];
 
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri');
+    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri' + uri);
     var uris = uri.split("/");
     // The channel is the number behind webaa 
     // in the radio_station.json file
@@ -326,13 +298,8 @@ ControllerAudiophileAudition.prototype.explodeUri = function (uri) {
 
     station = uris[0].substring(3);
 
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri: ' + station);
     switch (uris[0]) {
         case 'webaa':
-            if (self.timer) {
-                self.timer.clear();
-            }
-            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] explodeUri [url]:' + self.radioStations.audiophile_audition[channel].url);
             response.push({
                 service: self.serviceName,
                 type: 'track',
@@ -398,39 +365,6 @@ ControllerAudiophileAudition.prototype.addRadioResource = function () {
     self.radioNavigation = JSON.parse(JSON.stringify(baseNavigation));
 };
 
-ControllerAudiophileAudition.prototype.getMetadata = function (url) {
-    var self = this;
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] getMetadata started with url ' + url);
-    var defer = libQ.defer();    
-    
-    http.get(url, (resp) => {
-    	if (resp.statusCode < 200 || resp.statusCode > 299) {
-        	self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] Failed to query radio AudiophileAudition api, status code: ' + resp.statusCode);
-        	defer.resolve(null);
-        	self.errorToast(url, 'ERROR_STREAM_SERVER');
-		} else {
-        let data = '';
-
-        // A chunk of data has been recieved.
-        resp.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        // The whole response has been received.
-        resp.on('end', () => {
-            defer.resolve(data);
-        });
-        }
-
-	}).on("error", (err) => {
-		self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] Error: ' + err.message);
-  		defer.resolve(null);
-        self.errorToast(url, 'ERROR_STREAM_SERVER');
-	});
-    
-    return defer.promise;
-};
-
 ControllerAudiophileAudition.prototype.loadRadioI18nStrings = function () {
     var self = this;
     self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
@@ -448,117 +382,4 @@ ControllerAudiophileAudition.prototype.getRadioI18nString = function (key) {
 
 ControllerAudiophileAudition.prototype.search = function (query) {
     return libQ.resolve();
-};
-
-ControllerAudiophileAudition.prototype.errorToast = function (station, msg) {
-    var self = this;
-
-    var errorMessage = self.getRadioI18nString(msg);
-    errorMessage.replace('{0}', station.toUpperCase());
-    self.commandRouter.pushToastMessage('error',
-        self.getRadioI18nString('PLUGIN_NAME'), errorMessage);
-};
-
-ControllerAudiophileAudition.prototype.pushSongState = function (metadata) {
-    var self = this;
-    var rpState = {
-        status: 'play',
-        service: self.serviceName,
-        type: 'track',
-        trackType: audioFormat,
-        radioType: 'audiophile_audition',
-        albumart: metadata.cover,
-        uri: flacUri,
-        name: metadata.artist + ' - ' + metadata.title,
-        title: metadata.title,
-        artist: 'Audiophile Audition ' + channelMix,
-        album: metadata.album,
-        streaming: true,
-        disableUiControls: true,
-        duration: metadata.time,
-        seek: 0,
-        samplerate: '44.1 KHz',
-        bitdepth: '16 bit',
-        channels: 2
-    };
-
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] pushSongState' + metadata.title);
-    self.state = rpState;
-
-    //workaround to allow state to be pushed when not in a volatile state
-    var vState = self.commandRouter.stateMachine.getState();
-    var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
-
-    queueItem.name = metadata.artist + ' - ' + metadata.title;
-    queueItem.artist = 'Audiophile Audition ' + channelMix;
-    queueItem.album = metadata.album;
-    queueItem.albumart = metadata.cover;
-    queueItem.trackType = audioFormat;
-    queueItem.duration = metadata.time;
-    queueItem.samplerate = '44.1 KHz';
-    queueItem.bitdepth = '16 bit';
-    queueItem.channels = 2;
-
-    //reset volumio internal timer
-    self.commandRouter.stateMachine.currentSeek = 0;
-    self.commandRouter.stateMachine.playbackStart=Date.now();
-    self.commandRouter.stateMachine.currentSongDuration=metadata.time;
-    self.commandRouter.stateMachine.askedForPrefetch=false;
-    self.commandRouter.stateMachine.prefetchDone=false;
-    self.commandRouter.stateMachine.simulateStopStartDone=false;
-
-    //volumio push state
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] .pushSongState: before push');
-    self.commandRouter.servicePushState(rpState, self.serviceName);
-};
-
-ControllerAudiophileAudition.prototype.setMetadata = function (metadataUrl) {
-    var self = this;
-    self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] setmetadata: ' + metadataUrl);
-
-    return self.getMetadata(metadataUrl)
-    .then(function (eventResponse) {
-        if (eventResponse !== null) {
-            var result = JSON.parse(eventResponse);
-            if (result.time === undefined) {
-                self.errorToast('web', 'INCORRECT_RESPONSE');
-            }
-            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] received new metadata: ' + JSON.stringify(result));
-            return result;
-        }
-    }).then(function(metadata) {
-        // show metadata and adjust time of playback and timer
-        if(self.apiDelay) {
-            metadata.time = parseInt(metadata.time) + parseInt(self.apiDelay);
-        }
-        var duration = metadata.time * 1000;
-        return libQ.resolve(self.pushSongState(metadata))
-        .then(function () {
-            self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] setting new timer with duration of ' + duration + ' seconds.');
-            self.timer = new RPTimer(self.setMetadata.bind(self), [metadataUrl], duration);
-        });
-    });
-};
-
-function RPTimer(callback, args, delay) {
-    var start, remaining = delay;
-
-    var nanoTimer = new NanoTimer();
-
-    RPTimer.prototype.pause = function () {
-        nanoTimer.clearTimeout();
-        remaining -= new Date() - start;
-    };
-
-    RPTimer.prototype.resume = function () {
-        start = new Date();
-        nanoTimer.clearTimeout();
-        nanoTimer.setTimeout(callback, args, remaining + 'm');
-    };
-
-    RPTimer.prototype.clear = function () {
-        nanoTimer.clearTimeout();
-    };
-
-    this.resume();
 };
