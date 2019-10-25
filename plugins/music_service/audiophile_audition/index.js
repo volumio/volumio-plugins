@@ -144,8 +144,7 @@ ControllerAudiophileAudition.prototype.addToBrowseSources = function () {
 
     self.logger.info('[' + Date.now() + '] ' + '[AudiophileAudition] addToBrowseSources: ');
     self.commandRouter.volumioAddToBrowseSources({
-        //name: self.getRadioI18nString('PLUGIN_NAME'),
-        name: 'audiophile_audition',
+        name: self.getRadioI18nString('PLUGIN_NAME'),
         uri: 'audiophile_audition',
         plugin_type: 'music_service',
         plugin_name: "audiophile_audition",
@@ -217,10 +216,8 @@ ControllerAudiophileAudition.prototype.clearAddPlayTrack = function (track) {
             })
             .then(function () {
                 self.commandRouter.pushToastMessage('info',
-                    'audiophile_audition',
+                    self.getRadioI18nString('PLUGIN_NAME'),
                     'WAIT_FOR_RADIO_CHANNEL');
-                //self.commandRouter.pushToastMessage('info',
-                    //self.getRadioI18nString('PLUGIN_NAME'),
                     //self.getRadioI18nString('WAIT_FOR_RADIO_CHANNEL'));
 
                 return self.mpdPlugin.sendMpdCommand('play', []);
@@ -303,8 +300,7 @@ ControllerAudiophileAudition.prototype.explodeUri = function (uri) {
             response.push({
                 service: self.serviceName,
                 type: 'track',
-                trackType: 'audiophile_audition',
-                //trackType: self.getRadioI18nString('PLUGIN_NAME'),
+                trackType: self.getRadioI18nString('PLUGIN_NAME'),
                 radioType: station,
                 albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa-cover-black.png',
                 uri: self.radioStations.audiophile_audition[channel].url,
