@@ -1,4 +1,4 @@
-October 13th 2019
+October 27th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,13 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 27th 2019
+
+- number of partition is now 32 to reduce latency
+- remove -1 process flag and set to 0 and 1 (brutefir multicore handling)
+- small code cleaning
+
 
 October 13th
 

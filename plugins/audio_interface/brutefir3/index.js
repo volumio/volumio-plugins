@@ -1051,7 +1051,7 @@ var attenuationlr4 = self.config.get('attenuationlr4');
      sitems = str.split(',');
      sitems.shift();
      for (var i in sitems) {
-      self.logger.info('list of available output formatUI :' + sitems[i]);
+   //   self.logger.info('list of available output formatUI :' + sitems[i]);
       self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[24].options', {
        value: sitems[i],
        label: sitems[i]
@@ -1075,7 +1075,7 @@ var attenuationlr4 = self.config.get('attenuationlr4');
      var fitems;
      var filetoconvert = '' + fitem;
      fitems = filetoconvert.split(',');
-     self.logger.info('list of available files to convert :' + fitems);
+  //   self.logger.info('list of available files to convert :' + fitems);
      console.log(fitems)
      for (var i in fitems) {
       self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {

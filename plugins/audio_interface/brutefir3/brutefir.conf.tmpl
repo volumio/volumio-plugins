@@ -1,4 +1,4 @@
-#brutefir config for volumio - 
+#brutefir config for volumio - b@lbuze 2019
     sampling_rate: ${smpl_rate};
     filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
     overflow_warnings: true;
@@ -9,7 +9,7 @@
 logic:
  "cli" { port: 3002;};
 #"cli"  { port: "/dev/ttyS1";};
-#"echo" on ;
+#"echo": true;
 
 #-----------------------
 #Input configuration
@@ -40,7 +40,7 @@ from_filters: "lVoBAF";
 to_outputs: "l_out"/0.0;
 #to_filters: "lVoBAF";
 coeff: "l_out";
-process: -1;
+process: 0;
 };
 
 coeff "r_out" {
@@ -56,7 +56,7 @@ from_filters: "rVoBAF";
 to_outputs: "r_out"/0.0;
 #to_filters: "rVoBAF";
 coeff: "r_out";
-process: -1;
+process: 1;
 };
 
 
@@ -148,7 +148,7 @@ from_inputs: "l_in";
 #to_outputs: "l_out"/0.0;
 to_filters: "${tolfilters}";
 coeff: "lM";
-process: -1;
+process: 0;
 };
 
 #-------------right
@@ -209,7 +209,7 @@ from_inputs: "r_in";
 to_filters: "${torfilters}";
 coeff: "rM";
 #delay: 0,5;
-process: -1;
+process: 1;
 };
 
 #-----------------
