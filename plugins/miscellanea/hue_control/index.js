@@ -42,7 +42,7 @@ hueControl.prototype.onVolumioStart = function()
 hueControl.prototype.onStart = function() {
 	var self = this;
 
-	self.logger.debug('onStart');
+	self.logger.info('onStart');
 
 	// connect to the volumio service and listen for player state changes
 	self.volumioClient = io.connect('http://localhost:3000');
