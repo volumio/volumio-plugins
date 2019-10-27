@@ -8,6 +8,8 @@ var execSync = require('child_process').execSync;
 
 
 module.exports = hueControl;
+const io = require('socket.io-client');
+
 function hueControl(context) {
 	var self = this;
 
