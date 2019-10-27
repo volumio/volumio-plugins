@@ -12,8 +12,7 @@ const io = require('socket.io-client');
 
 function hueControl(context) {
     var self = this;
-    //TODO remove this debug msg
-    self.logger.info("hue-control::constructor Hello there :)");
+
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = new HueLogger(this.context.logger);
@@ -33,22 +32,22 @@ function HueLogger(volumioLogger) {
 
 HueLogger.prototype.info = function(message) {
     var self = this;
-    self.logger.info(`tradfri_plugin: ${message}`);
+    self.logger.info(`hue-control: ${message}`);
 }
 
 HueLogger.prototype.warn = function(message) {
     var self = this;
-    self.logger.warn(`tradfri_plugin: ${message}`);
+    self.logger.warn(`hue-control: ${message}`);
 }
 
 HueLogger.prototype.error = function(message) {
     var self = this;
-    self.logger.error(`tradfri_plugin: ${message}`);
+    self.logger.error(`hue-control: ${message}`);
 }
 
 HueLogger.prototype.debug = function(message) {
     var self = this;
-    self.logger.debug(`tradfri_plugin: ${message}`);
+    self.logger.debug(`hue-control: ${message}`);
 }
 
 hueControl.prototype.onVolumioStart = function()
@@ -69,7 +68,8 @@ hueControl.prototype.onStart = function() {
 	var self = this;
 
     self.logger.debug('onStart');
-    console.log("onStart+");
+    self.logger.info('onStart');
+    console.log("onStart from console");
 
 	// connect to the volumio service and listen for player state changes
 	self.volumioClient = io.connect('http://localhost:3000');
