@@ -7,19 +7,27 @@ if [ ! -f $INSTALLING ]; then
 	touch $INSTALLING
 	apt-get update
 	
-	echo "Detecting cpu"
-	cpu=$(lscpu | awk 'FNR == 1 {print $2}')
-	echo "cpu: " $cpu
+	echo "Detecting CPU architecture and Debian version..."
+	ARCH=$(lscpu | awk 'FNR == 1 {print $2}')
+	DEBIAN_VERSION=$(cat /etc/os-release | grep '^VERSION=' | cut -d '(' -f2 | tr -d ')"')
+	echo "CPU architecture: " $ARCH
+	echo "Debian version: " $DEBIAN_VERSION
 
 	# Download latest SnapCast packages
 	mkdir /home/volumio/snapcast
 	
-	if [ $cpu = "armv6l" ] || [ $cpu = "armv7l" ]; then
-		wget $(curl -s https://api.github.com/repos/badaix/snapcast/releases/latest | grep 'armhf' | cut -d\" -f4) -P /home/volumio/snapcast
-	elif [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
+	if [ $ARCH = "armv6l" ] || [ $ARCH = "armv7l" ]; then
+		if [ $DEBIAN_VERSION = "jessie" ]; then
+			echo "Defaulting to known working version of SnapCast components (0.15.0)"
+			cp -f /data/plugins/miscellanea/snapcast/binaries/snap*.deb /home/volumio/snapcast
+		else
+			echo "Fetching latest releases of SnapCast components..."
+			wget $(curl -s https://api.github.com/repos/badaix/snapcast/releases/latest | grep 'armhf' | cut -d\" -f4) -P /home/volumio/snapcast
+		fi
+	elif [ $ARCH = "i686" ] || [ $ARCH = "x86_64" ]; then
 		echo "Still working on x86/x64 support, need to compile the packages."
 	else 
-		echo "This cpu is not yet supported, you must build the snap*-packages yourself. Detected cpu: " $cpu
+		echo "This architecture is not yet supported, you must build the snap*-packages yourself. Detected architecture: " $ARCH
 	fi
 
 	# Backup old snap* installations
@@ -134,11 +142,7 @@ if [ ! -f $INSTALLING ]; then
 	 *) sed -i -- 's|.*type.*alsa.*|&\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ enabled\ \ \ \ \ \ \ \ \ "no"|g' /etc/mpd.conf ;;
 	esac
 
-	# Create the systemd unit file, if it doesn't already exists
-	#wget -O /etc/init.d/snapclient https://raw.githubusercontent.com/Saiyato/volumio-snapcast-plugin/master/unit/snapclient
-	#wget -O /etc/init.d/snapserver https://raw.githubusercontent.com/Saiyato/volumio-snapcast-plugin/master/unit/snapserver
-	#chmod 755 /etc/init.d/snapclient
-	#chmod 755 /etc/init.d/snapserver
+	# Reload the systemd manager config
 	systemctl daemon-reload
 
 	# Edit the systemd units
