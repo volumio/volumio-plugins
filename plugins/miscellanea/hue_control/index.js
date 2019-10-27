@@ -32,22 +32,22 @@ function HueLogger(volumioLogger) {
 
 HueLogger.prototype.info = function(message) {
     var self = this;
-    self.logger.info(`hue-control: ${message}`);
+    self.logger.info(`hue_control: ${message}`);
 }
 
 HueLogger.prototype.warn = function(message) {
     var self = this;
-    self.logger.warn(`hue-control: ${message}`);
+    self.logger.warn(`hue_control: ${message}`);
 }
 
 HueLogger.prototype.error = function(message) {
     var self = this;
-    self.logger.error(`hue-control: ${message}`);
+    self.logger.error(`hue_control: ${message}`);
 }
 
 HueLogger.prototype.debug = function(message) {
     var self = this;
-    self.logger.debug(`hue-control: ${message}`);
+    self.logger.debug(`hue_control: ${message}`);
 }
 
 hueControl.prototype.onVolumioStart = function()
@@ -68,8 +68,6 @@ hueControl.prototype.onStart = function() {
 	var self = this;
 
     self.logger.debug('onStart');
-    self.logger.info('onStart');
-    console.log("onStart from console");
 
 	// connect to the volumio service and listen for player state changes
 	self.volumioClient = io.connect('http://localhost:3000');
