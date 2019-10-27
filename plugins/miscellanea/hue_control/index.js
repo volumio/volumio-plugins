@@ -11,8 +11,9 @@ module.exports = hueControl;
 const io = require('socket.io-client');
 
 function hueControl(context) {
-	var self = this;
-
+    var self = this;
+    //TODO remove this debug msg
+    self.logger.info("hue-control::constructor Hello there :)");
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = new HueLogger(this.context.logger);
