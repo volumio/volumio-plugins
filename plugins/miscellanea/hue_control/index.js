@@ -190,7 +190,7 @@ hueControl.prototype.getUIConfig = function() {
 
 			// Remove device selection if bridge is not connected
 			if(!isConnected) {
-				uiconf.sections[2].sections.splice(1,1);
+				uiconf.sections[1].sections.splice(1,1);
 			}
 
             defer.resolve(uiconf);
