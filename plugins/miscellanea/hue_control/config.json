@@ -7,8 +7,12 @@
         "type": "number",
         "value": 60
     },
-    "hue_device" :{
+    "hue_device" : {
         "type": "number",
+        "value": null
+    },
+    "hue_api_username": {
+        "type": "string",
         "value": null
     }
 }
