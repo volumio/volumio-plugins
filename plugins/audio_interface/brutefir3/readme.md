@@ -1,4 +1,4 @@
-October 27th 2019
+October 28th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 28th 2019
+
+- miscellaneous change in template file
 
 October 27th 2019
 

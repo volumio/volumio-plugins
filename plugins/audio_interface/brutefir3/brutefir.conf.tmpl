@@ -1,15 +1,24 @@
+#-----------------------
 #brutefir config for volumio - b@lbuze 2019
+#-----------------------
+#This file is used as a template to generate the configuration file of brutefir in the plugin
+#-----------------------
+
     sampling_rate: ${smpl_rate};
     filter_length: ${filter_size},${numb_part}; # number of taps N,number of partition P = N*P= filter length
     overflow_warnings: true;
     show_progress: false;
+    monitor_rate: true;        # monitor sample rate
+    sdf_length: -1;             # subsample filter half length in samples
+    lock_memory: true;          # try to lock memory if realtime prio is set
     float_bits: 64;
     powersave: true;
     convolver_config: "/data/configuration/audio_interface/brutefir/brutefir_convolver"; # location of convolver config file
-logic:
- "cli" { port: 3002;};
-#"cli"  { port: "/dev/ttyS1";};
-#"echo": true;
+
+    logic:
+      "cli" { port: 3002;};
+
+	#"echo": true;
 
 #-----------------------
 #Input configuration
@@ -220,7 +229,10 @@ output "l_out","r_out"${enablec2}{
 device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
 sample: "${output_format}";   # sample format
 ${nchannels}       # number of open channels / which to use
-${tdelay};
+${tdelay}; #delay for each channel if set in the plugin
 dither: false;
 };
- 
+
+#------------------
+#end of configuration
+#------------------
