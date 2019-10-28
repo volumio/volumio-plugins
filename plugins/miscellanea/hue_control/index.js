@@ -148,6 +148,7 @@ hueControl.prototype.pairBridge = function(data) {
 // Hue Connection -----------------------------------------------------------------------------
 
 function isConnected() {
+    let self = this;
     const apiUsername = self.config.get('hue_api_username');
     return (!apiUsername || 0 === apiUsername.length);
 }
@@ -232,6 +233,7 @@ hueControl.prototype.switchOffTimeout = function() {
 // Configuration Methods -----------------------------------------------------------------------------
 
 hueControl.prototype.getUIConfig = function() {
+    console.log("getUIConfig")
     var defer = libQ.defer();
     var self = this;
 
