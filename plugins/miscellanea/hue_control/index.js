@@ -126,22 +126,7 @@ hueControl.prototype.pairBridge = function (data) {
     }
     // save ip address into config file
     self.config.set("hue_bridge_address", data['hue_bridge_address']);
-    let apiUsername = null;
-    try {
-        apiUsername = self.createUser(data['hue_bridge_address'])
-    } catch (err) {
-        if (err.getHueErrorType() === 101) {
-            self.logger.error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
-            self.commandRouter.pushToastMessage('error', "Connect failed", "The Link button on the bridge was not pressed. Please press the Link button and try again.");
-        } else {
-            self.logger.error(`Unexpected Error: ${err.message}`);
-            self.commandRouter.pushToastMessage('error', "Connect failed", `Unexpected Error: ${err.message}`);
-        }
-    }
-    if (apiUsername) {
-        self.commandRouter.pushToastMessage('success', "Bridge connected.", "Successfully connected to bridge!");
-        self.config.set("hue_api_username", apiUsername)
-    }
+    self.createUser(data['hue_bridge_address']);
 };
 
 // Hue Connection -----------------------------------------------------------------------------
@@ -158,22 +143,37 @@ hueControl.prototype.createUser = async function(ipAddress) {
     const unauthenticatedApi = await hueApi.createLocal(ipAddress).connect();
 
     let createdUser;
-    createdUser = await unauthenticatedApi.users.createUser(hueAppName, hueDeviceName);
-    self.logger.info('*******************************************************************************\n');
-    self.logger.info('User has been created on the Hue Bridge. The following username can be used to\n' +
-        'authenticate with the Bridge and provide full local access to the Hue Bridge.\n' +
-        'YOU SHOULD TREAT THIS LIKE A PASSWORD\n');
-    self.logger.info(`Hue Bridge User: ${createdUser.username}`);
-    self.logger.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
-    self.logger.info('*******************************************************************************\n');
+    try {
+        createdUser = await unauthenticatedApi.users.createUser(hueAppName, hueDeviceName);
+        self.logger.info('*******************************************************************************\n');
+        self.logger.info('User has been created on the Hue Bridge. The following username can be used to\n' +
+            'authenticate with the Bridge and provide full local access to the Hue Bridge.\n' +
+            'YOU SHOULD TREAT THIS LIKE A PASSWORD\n');
+        self.logger.info(`Hue Bridge User: ${createdUser.username}`);
+        self.logger.info(`Hue Bridge User Client Key: ${createdUser.clientkey}`);
+        self.logger.info('*******************************************************************************\n');
 
-    // Create a new API instance that is authenticated with the new user we created
-    hueClient = await hueApi.createLocal(ipAddress).connect(createdUser.username);
+        // Create a new API instance that is authenticated with the new user we created
+        hueClient = await hueApi.createLocal(ipAddress).connect(createdUser.username);
 
-    // Do something with the authenticated user/api
-    const bridgeConfig = await hueClient.configuration.get();
-    self.logger.info(`Connected to Hue Bridge: ${bridgeConfig.name} :: ${bridgeConfig.ipaddress}`);
-    return createdUser.username;
+        // Do something with the authenticated user/api
+        const bridgeConfig = await hueClient.configuration.get();
+        self.logger.info(`Connected to Hue Bridge: ${bridgeConfig.name} :: ${bridgeConfig.ipaddress}`);
+    } catch(err) {
+        if (err.getHueErrorType() === 101) {
+            self.logger.error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
+            self.commandRouter.pushToastMessage('error', "Connect failed", "The Link button on the bridge was not pressed. Please press the Link button and try again.");
+            console.error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
+        } else {
+            console.error(`Unexpected Error: ${err.message}`);
+            self.logger.error(`Unexpected Error: ${err.message}`);
+            self.commandRouter.pushToastMessage('error', "Connect failed", `Unexpected Error: ${err.message}`);
+        }
+    }
+    if (createdUser.username) {
+        self.commandRouter.pushToastMessage('success', "Bridge connected.", "Successfully connected to bridge!");
+        self.config.set("hue_api_username", createdUser.username)
+    }
 };
 
 // Volumio Connection -----------------------------------------------------------------------------
