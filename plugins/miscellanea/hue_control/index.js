@@ -75,7 +75,7 @@ hueControl.prototype.onVolumioStart = function () {
 hueControl.prototype.onStart = function () {
     var self = this;
 
-    self.logger.debug('onStart');
+    self.logger.info('onStart');
 
     // connect to the volumio service and listen for player state changes
     self.volumioClient = io.connect('http://localhost:3000');
@@ -95,7 +95,7 @@ hueControl.prototype.onStart = function () {
 hueControl.prototype.onStop = function () {
     var self = this;
 
-    self.logger.debug('onStop');
+    self.logger.info('onStop');
 
     if (self.volumioClient) {
         self.volumioClient.disconnect();
@@ -128,7 +128,7 @@ hueControl.prototype.pairBridge = function (data) {
     self.config.set("hue_bridge_address", data['hue_bridge_address']);
     let apiUsername = null;
     try {
-        apiUsername = createUser(data['hue_bridge_address'])
+        apiUsername = self.createUser(data['hue_bridge_address'])
     } catch (err) {
         if (err.getHueErrorType() === 101) {
             self.logger.error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
@@ -146,13 +146,13 @@ hueControl.prototype.pairBridge = function (data) {
 
 // Hue Connection -----------------------------------------------------------------------------
 
-function isConnected() {
+hueControl.prototype.isConnected =  function() {
     let self = this;
     const apiUsername = self.config.get('hue_api_username');
-    return (!apiUsername || 0 === apiUsername.length);
-}
+    return !(!apiUsername || 0 === apiUsername.length);
+};
 
-async function createUser(ipAddress) {
+hueControl.prototype.createUser = async function(ipAddress) {
 
     // Create an unauthenticated instance of the Hue API so that we can create a new user
     const unauthenticatedApi = await hueApi.createLocal(ipAddress).connect();
@@ -174,7 +174,7 @@ async function createUser(ipAddress) {
     const bridgeConfig = await hueClient.configuration.get();
     self.logger.info(`Connected to Hue Bridge: ${bridgeConfig.name} :: ${bridgeConfig.ipaddress}`);
     return createdUser.username;
-}
+};
 
 // Volumio Connection -----------------------------------------------------------------------------
 
@@ -251,11 +251,11 @@ hueControl.prototype.getUIConfig = function () {
             uiconf.sections[2].content[0].value = self.config.get('switch_off_delay');
 
             // remove either the connect on or disconnect section
-            var indexOfSectionToRemove = (isConnected()) ? 0 : 1;
+            var indexOfSectionToRemove = (self.isConnected()) ? 0 : 1;
             uiconf.sections.splice(indexOfSectionToRemove, 1);
 
             // Remove device selection if bridge is not connected
-            if (!isConnected()) {
+            if (!self.isConnected()) {
                 uiconf.sections[1].content.splice(1, 1);
             }
 
