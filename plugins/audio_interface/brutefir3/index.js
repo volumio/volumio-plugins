@@ -95,7 +95,7 @@ ControllerBrutefir.prototype.hwinfo = function() {
      try {
       const hwinfoJSON = JSON.parse(hwinfo);
       nchannels = hwinfoJSON.channels.value;
-      formats = hwinfoJSON.formats.value;
+      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,','').replace(',,','');
 
       self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
       self.logger.info('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');

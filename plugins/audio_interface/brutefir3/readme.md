@@ -1,4 +1,4 @@
-October 28th 2019
+October 30th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 30 th
+
+- better handling for autoselect output formats (khadas board)
+- target curve
 
 October 28th 2019
 
