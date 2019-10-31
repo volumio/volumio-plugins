@@ -64,6 +64,10 @@
           "value": {
             "value": "0",
             "label": "0"
+          },
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
           }
 	},
   
@@ -86,6 +90,10 @@
           "value": {
             "value": "0",
             "label": "0"
+          },
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
           }
 	},
 	{
@@ -97,7 +105,10 @@
             "value": "0",
             "label": "0"
           },
-          "options": []
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
           },
  	{
           "id": "addchannels",
@@ -360,8 +371,8 @@
               "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
             }
           ],
-          "visibleIf": {
-            "field": "enabled",
+	"visibleIf": {
+            "field": "advsettings",
             "value": true
           }
         },
@@ -411,7 +422,11 @@
               "value": "262144",
               "label": "262144"
             }
-          ]
+          ],
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
         },
         {
           "id": "smpl_rate",
@@ -447,7 +462,11 @@
               "value": "192000",
               "label": "192kHz"
             }
-          ]
+          ],
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
         },
         {
           "id": "output_format",
@@ -458,7 +477,17 @@
             "value": "sitems",
             "label": "sitems"
           },
-          "options": []
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
+        },
+	{
+          "id": "advsettings",
+          "element": "switch",
+          "doc": "Avanced settings",
+          "label": "Advanced settings",
+          "value": false
         }
 
       ]
@@ -853,8 +882,12 @@
           "tc",
           "drcconfig",
           "outputfilename"
-        ]
-      },
+        ],
+	"visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+	},
       "content": [
         {
           "id": "filetoconvert",
@@ -865,7 +898,10 @@
             "value": "fitems",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
-          "options": []
+	"visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
         },
         {
           "id": "tc",
@@ -876,7 +912,10 @@
             "value": "",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
-          "options": []
+	"visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
         },
         {
           "id": "drcconfig",
@@ -916,7 +955,11 @@
               "value": "insane",
               "label": "insane"
             }
-          ]
+          ],
+	"visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
         },
         {
           "id": "outputfilename",
@@ -927,7 +970,17 @@
             "value": "azerty",
             "label": ""
           },
-          "options": []
+	"visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+	{
+          "id": "drcsettings",
+          "element": "switch",
+          "doc": "DRC-FIR settings",
+          "label": "DRC-FIR settings",
+          "value": false
         }
       ]
     },
