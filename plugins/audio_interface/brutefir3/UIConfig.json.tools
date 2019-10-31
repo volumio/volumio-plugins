@@ -105,6 +105,7 @@
             "value": "0",
             "label": "0"
           },
+	"options": [],
 	"visibleIf": {
             "field": "advsettings",
             "value": true
@@ -477,6 +478,7 @@
             "value": "sitems",
             "label": "sitems"
           },
+	"options": [],
 	"visibleIf": {
             "field": "advsettings",
             "value": true
@@ -898,6 +900,7 @@
             "value": "fitems",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
+	"options": [],
 	"visibleIf": {
             "field": "drcsettings",
             "value": true
@@ -912,6 +915,7 @@
             "value": "",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
+	"options": [],
 	"visibleIf": {
             "field": "drcsettings",
             "value": true
