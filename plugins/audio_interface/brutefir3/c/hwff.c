@@ -1,7 +1,8 @@
 /*
  * hw_params.c - print hardware capabilities
  * in json formated for brutefir plugin for Volumio
- * compile with: gcc -o hw_params hw_ff.c -lasound
+ * Adapted by b@lbuze
+ * compile with: gcc -o hw_params hwff.c -lasound
  */
 
 #include <stdio.h>
@@ -59,15 +60,8 @@ static const snd_pcm_format_t formats[] = {
 };
 
 static const unsigned int rates[] = {
-	5512,
-	8000,
-	11025,
-	16000,
-	22050,
-	32000,
 	44100,
 	48000,
-	64000,
 	88200,
 	96000,
 	176400,
@@ -129,11 +123,42 @@ int main(int argc, char *argv[])
 	printf("\"channels\":");	
 		if (!snd_pcm_hw_params_test_channels(pcm, hw_params, max))
 			//printf(" %d", max);
-			printf("{\"value\":\"%d\"}", max);
+			printf("{\"value\":\"%d\"},", max);
+	putchar('\n');
+
+
+	err = snd_pcm_hw_params_get_rate_min(hw_params, &min, NULL);
+	if (err < 0) {
+		fprintf(stderr, "cannot get minimum rate: %s\n", snd_strerror(err));
+		snd_pcm_close(pcm);
+		return 1;
+	}
+	err = snd_pcm_hw_params_get_rate_max(hw_params, &max, NULL);
+	if (err < 0) {
+		fprintf(stderr, "cannot get maximum rate: %s\n", snd_strerror(err));
+		snd_pcm_close(pcm);
+		return 1;
+	}
+	printf("\"samplerates\":{\"value\":\"");
+	if (min == max)
+		printf(" %u", min);
+	else if (!snd_pcm_hw_params_test_rate(pcm, hw_params, min + 1, 0))
+		printf("{\"value\": %u-%u", min, max);
+	else {
+		any_rate = 0;
+		for (i = 0; i < ARRAY_SIZE(rates); ++i) {
+			if (!snd_pcm_hw_params_test_rate(pcm, hw_params, rates[i], 0)) {
+				any_rate = 1;
+				printf(" %u", rates[i]);
+			}
+		}
+		if (!any_rate)
+			printf(" %u-%u", min, max);
+	}
+	printf("\"}");
 	putchar('\n');
 	printf("}");
 	putchar('\n');
-
  
 	snd_pcm_close(pcm);
 	return 0;

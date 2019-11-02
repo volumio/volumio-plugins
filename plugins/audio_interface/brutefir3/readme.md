@@ -1,4 +1,4 @@
-October 31th 2019
+November 2nd 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -94,6 +94,10 @@ nearly everythings
 
 ### 4. Last changes
 
+November 2nd 2019
+
+- new hw detection for sample rate. Now only hw supported displayed
+
 October 31 th
 
 - work in UI
@@ -112,7 +116,6 @@ October 27th 2019
 - number of partition is now 32 to reduce latency
 - remove -1 process flag and set to 0 and 1 (brutefir multicore handling)
 - small code cleaning
-
 
 October 13th
 

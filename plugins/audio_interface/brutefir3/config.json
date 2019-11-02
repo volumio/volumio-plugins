@@ -2,6 +2,7 @@
 "nchannels":{"type": "string","value": "2"},
 "formats":{"type": "string","value": ""},
 "smpl_rate":{"type": "string","value": "44100"},
+"probesmplerate":{"type": "string", "value":""},
 "attenuation":{"type":"string","value":"0"},
 "leftfilter":{"type": "string","value": "Dirac pulse"},
 "lc1delay":{"type": "string","value": "0"},

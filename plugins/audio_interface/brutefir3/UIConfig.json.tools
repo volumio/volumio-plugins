@@ -429,41 +429,16 @@
             "value": true
           }
         },
-        {
+          {
           "id": "smpl_rate",
           "element": "select",
           "doc": "sample rate",
           "label": "TRANSLATE.SAMPLE_RATE",
           "value": {
-            "value": "96000",
-            "label": "96kHz"
+            "value": "probesmplerate",
+            "label": "probesmplerate"
           },
-          "options": [
-            {
-              "value": "44100",
-              "label": "44.1kHz"
-            },
-            {
-              "value": "48000",
-              "label": "48kHz"
-            },
-            {
-              "value": "88200",
-              "label": "88.2kHz"
-            },
-            {
-              "value": "96000",
-              "label": "96kHz"
-            },
-            {
-              "value": "176400",
-              "label": "176.4kHz"
-            },
-            {
-              "value": "192000",
-              "label": "192kHz"
-            }
-          ],
+          "options": [],
 	"visibleIf": {
             "field": "advsettings",
             "value": true
