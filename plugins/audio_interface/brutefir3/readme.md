@@ -1,4 +1,4 @@
-November 2nd 2019
+November 3rd 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+november 3rd 2019
+
+- drc config order
+- revert some hw detection for samplerate as some dac does not returns what expected...
 
 November 2nd 2019
 

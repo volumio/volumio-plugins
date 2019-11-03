@@ -438,7 +438,32 @@
             "value": "probesmplerate",
             "label": "probesmplerate"
           },
-          "options": [],
+          "options": [
+  	    {
+              "value": "44100",
+              "label": "44.1kHz"
+            },
+            {
+              "value": "48000",
+              "label": "48kHz"
+            },
+            {
+              "value": "88200",
+              "label": "88.2kHz"
+            },
+            {
+              "value": "96000",
+              "label": "96kHz"
+            },
+            {
+              "value": "176400",
+              "label": "176.4kHz"
+            },
+            {
+              "value": "192000",
+              "label": "192kHz"
+            }
+	],
 	"visibleIf": {
             "field": "advsettings",
             "value": true
@@ -906,13 +931,14 @@
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": [
-            {
-              "value": "soft",
-              "label": "soft"
-            },
+           
             {
               "value": "minimal",
               "label": "minimal"
+            },
+ 	    {
+              "value": "soft",
+              "label": "soft"
             },
             {
               "value": "normal",
