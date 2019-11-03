@@ -8,7 +8,6 @@ const os = require('os');
 const io = require('socket.io-client');
 const socket = io.connect('http://localhost:3000');
 const blInterface = '/sys/devices/platform/rpi_backlight/backlight/rpi_backlight';
-const xorgSocket = '/tmp/.X11-unix/X0';
 const als = '/etc/als'; // The plugin awaits the current value of an optional ambient light sensor (ALS) as a single number in /etc/als.
 var rpiScreen = false;
 var rpiBacklight = false;
@@ -17,7 +16,7 @@ var alsProgression = [];
 var timeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
+var device, displayNumber, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
 
 module.exports = TouchDisplay;
 
@@ -107,41 +106,60 @@ TouchDisplay.prototype.onStart = function () {
         });
         // screen orientation
         self.setOrientation(self.config.get('angle'));
+        // GPU memory size
+        fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
+          if (err) {
+            self.logger.error('Error reading /boot/config.txt: ' + err);
+          } else {
+            configTxt = configTxt.slice(configTxt.lastIndexOf('gpu_mem=') + 8);
+            self.config.set('gpuMem', parseInt(configTxt.slice(0, configTxt.search(os.EOL))), 10);
+          }
+        });
       }
       // screensaver
       if (self.commandRouter.volumioGetState().status === 'play') {
         lastStateIsPlaying = true;
       }
-      // check presence of unix domain socket for Xorg to test if the xserver has finished starting up
-      fs.stat(xorgSocket, function (err, stats) {
-        if (err !== null || !stats.isSocket()) {
-          t = 2000;
-          self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
-        }
-        setScrToTimer1 = setTimeout(function () {
-          if (lastStateIsPlaying && self.config.get('afterPlay')) {
-            self.setScreenTimeout(0);
-          } else {
-            self.setScreenTimeout(self.config.get('timeout'));
-          }
-        }, t);
-      });
-      // catch state related events and react to changes of the playing status
-      socket.emit('getState', '');
-      socket.on('pushState', function (state) {
-        if (state.status === 'play' && !lastStateIsPlaying) {
-          if (self.config.get('afterPlay')) {
-            exec('/usr/bin/xset -display :0 s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-              if (error !== null) {
-                self.logger.error('Error waking up the screen: ' + error);
+      exec('/bin/systemctl status volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        if (error !== null) {
+          displayNumber = '';
+          self.logger.error('Xorg socket cannot be determined.');
+        } else {
+          stdout = stdout.slice(stdout.indexOf('/usr/bin/X :') + 12);
+          displayNumber = stdout.slice(0, stdout.indexOf(' '));
+          self.logger.info('Using Xorg socket /tmp/.X11-unix/X' + displayNumber);
+          // check presence of unix domain socket for Xorg to test if the xserver has finished starting up
+          fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
+            if (err !== null || !stats.isSocket()) {
+              t = 2000;
+              self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
+            }
+            setScrToTimer1 = setTimeout(function () {
+              if (lastStateIsPlaying && self.config.get('afterPlay')) {
+                self.setScreenTimeout(0);
+              } else {
+                self.setScreenTimeout(self.config.get('timeout'));
               }
-            });
-            self.setScreenTimeout(0);
-          }
-          lastStateIsPlaying = true;
-        } else if (state.status !== 'play' && lastStateIsPlaying) {
-          self.setScreenTimeout(self.config.get('timeout'));
-          lastStateIsPlaying = false;
+            }, t);
+          });
+          // catch state related events and react to changes of the playing status
+          socket.emit('getState', '');
+          socket.on('pushState', function (state) {
+            if (state.status === 'play' && !lastStateIsPlaying) {
+              if (self.config.get('afterPlay')) {
+                exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                  if (error !== null) {
+                    self.logger.error('Error waking up the screen: ' + error);
+                  }
+                });
+                self.setScreenTimeout(0);
+              }
+              lastStateIsPlaying = true;
+            } else if (state.status !== 'play' && lastStateIsPlaying) {
+              self.setScreenTimeout(self.config.get('timeout'));
+              lastStateIsPlaying = false;
+            }
+          });
         }
       });
       defer.resolve();
@@ -189,16 +207,19 @@ TouchDisplay.prototype.getUIConfig = function () {
     path.join(__dirname, 'i18n', 'strings_en.json'),
     path.join(__dirname, 'UIConfig.json'))
     .then(function (uiconf) {
-      uiconf.sections[0].content[0].value = self.config.get('timeout');
-      uiconf.sections[0].content[0].attributes = [
-        {
-          placeholder: 120,
-          maxlength: Number.MAX_SAFE_INTEGER.toString().length,
-          min: 0,
-          max: Number.MAX_SAFE_INTEGER
-        }
-      ];
-      uiconf.sections[0].content[1].value = self.config.get('afterPlay');
+      if (displayNumber !== '') {
+        uiconf.sections[0].hidden = false;
+        uiconf.sections[0].content[0].value = self.config.get('timeout');
+        uiconf.sections[0].content[0].attributes = [
+          {
+            placeholder: 120,
+            maxlength: Number.MAX_SAFE_INTEGER.toString().length,
+            min: 0,
+            max: Number.MAX_SAFE_INTEGER
+          }
+        ];
+        uiconf.sections[0].content[1].value = self.config.get('afterPlay');
+      }
       if (rpiBacklight) {
         uiconf.sections[1].hidden = false;
         if (fs.existsSync(als)) {
@@ -247,8 +268,21 @@ TouchDisplay.prototype.getUIConfig = function () {
         uiconf.sections[2].hidden = false;
         uiconf.sections[2].content[0].value.value = self.config.get('angle');
         uiconf.sections[2].content[0].value.label = self.commandRouter.getI18nString('TOUCH_DISPLAY.' + self.config.get('angle'));
+        uiconf.sections[3].hidden = false;
+        uiconf.sections[3].content[0].value = self.config.get('gpuMem');
+        uiconf.sections[3].content[0].attributes = [
+          {
+            placeholder: 32,
+            maxlength: 3,
+            min: 32,
+            max: 128
+          }
+        ];
       }
-      uiconf.sections[3].content[0].value = self.config.get('showPointer');
+      if (displayNumber !== '') {
+        uiconf.sections[4].hidden = false;
+        uiconf.sections[4].content[0].value = self.config.get('showPointer');
+      }
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -298,20 +332,20 @@ TouchDisplay.prototype.saveScreensaverConf = function (confData) {
     confData.timeout = self.checkLimits('timeout', confData.timeout, 0, Number.MAX_SAFE_INTEGER);
     self.config.set('timeout', confData.timeout);
     self.config.set('afterPlay', confData.afterPlay);
-    fs.stat(xorgSocket, function (err, stats) {
+    fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
       if (err !== null || !stats.isSocket()) {
         t = 2000;
         self.logger.info('xserver is not ready: Delay applying screensaver config by 2 seconds.');
       }
       clearTimeout(setScrToTimer2);
       setScrToTimer2 = setTimeout(function () {
-        fs.stat(xorgSocket, function (err, stats) {
+        fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
           if (err !== null || !stats.isSocket()) {
             self.logger.error('xserver is not ready: Screensaver config cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new screensaver config
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCREENSAVER'));
           } else {
             if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
-              exec('/usr/bin/xset -display :0 s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+              exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
                 if (error !== null) {
                   self.logger.error('Error waking up the screen: ' + error);
                 }
@@ -463,6 +497,59 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
   }
 };
 
+TouchDisplay.prototype.saveGpuMemConf = function (confData) {
+  const self = this;
+  const responseData = {
+    title: self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'),
+    message: self.commandRouter.getI18nString('TOUCH_DISPLAY.REBOOT_MSG'),
+    size: 'lg',
+    buttons: [
+      {
+        name: self.commandRouter.getI18nString('COMMON.RESTART'),
+        class: 'btn btn-default',
+        emit: 'reboot',
+        payload: ''
+      },
+      {
+        name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
+        class: 'btn btn-info',
+        emit: 'callMethod',
+        payload: { endpoint: 'miscellanea/touch_display', method: 'closeModals' }
+      }
+    ]
+  };
+
+  if (Number.isNaN(parseInt(confData.gpuMem, 10)) || !isFinite(confData.gpuMem)) {
+    uiNeedsUpdate = true;
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.GPUMEM') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
+  } else {
+    confData.gpuMem = self.checkLimits('gpuMem', confData.gpuMem, 32, 128);
+    if (self.config.get('gpuMem') !== confData.gpuMem) {
+      try {
+        let configTxt = fs.readFileSync('/boot/config.txt', 'utf8');
+        configTxt = configTxt.replace(/gpu_mem=.*$/gm, 'gpu_mem=' + confData.gpuMem);
+        fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
+          if (err) {
+            uiNeedsUpdate = true;
+            self.logger.error('Error writing /boot/config.txt: ' + err);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+          } else {
+            self.config.set('gpuMem', confData.gpuMem);
+            self.commandRouter.broadcastMessage('openModal', responseData);
+          }
+        });
+      } catch (err) {
+        uiNeedsUpdate = true;
+        self.logger.error('Error reading /boot/config.txt: ' + err);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/boot/config.txt: ' + err);
+      }
+    }
+  }
+  if (uiNeedsUpdate) {
+    self.updateUIConfig();
+  }
+};
+
 TouchDisplay.prototype.savePointerConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
@@ -471,7 +558,7 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
   let t = 0;
 
   if (self.config.get('showPointer') !== confData.showPointer) {
-    fs.stat(xorgSocket, function (err, stats) {
+    fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
       if (err !== null || !stats.isSocket()) {
         self.updateUIConfig();
         self.logger.error('xserver is not ready: Pointer setting cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new pointer config
@@ -493,18 +580,27 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
               .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
               .then(function () {
                 self.logger.info('Restarting volumio-kiosk.service succeeded.');
-                fs.stat(xorgSocket, function (err, stats) {
-                  if (err !== null || !stats.isSocket()) {
-                    t = 2000;
-                    self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
+                exec('/bin/systemctl status volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                  if (error !== null) {
+                    displayNumber = '';
+                    self.logger.error('Xorg socket cannot be determined.');
+                  } else {
+                    stdout = stdout.slice(stdout.indexOf('/usr/bin/X :') + 12);
+                    displayNumber = stdout.slice(0, stdout.indexOf(' '));
+                    fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
+                      if (err !== null || !stats.isSocket()) {
+                        t = 2000;
+                        self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
+                      }
+                      setScrToTimer3 = setTimeout(function () {
+                        if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
+                          self.setScreenTimeout(0);
+                        } else {
+                          self.setScreenTimeout(self.config.get('timeout'));
+                        }
+                      }, t);
+                    });
                   }
-                  setScrToTimer3 = setTimeout(function () {
-                    if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
-                      self.setScreenTimeout(0);
-                    } else {
-                      self.setScreenTimeout(self.config.get('timeout'));
-                    }
-                  }, t);
                   defer.resolve();
                 });
               })
@@ -545,11 +641,11 @@ TouchDisplay.prototype.setScreenTimeout = function (timeout) {
   const self = this;
   const defer = libQ.defer();
 
-  fs.stat(xorgSocket, function (err, stats) {
+  fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
     if (err !== null || !stats.isSocket()) {
       self.logger.error('xserver is not ready: Screensaver timeout cannot be set.');
     } else {
-      exec('/bin/bash -c "/usr/bin/xset -display :0 s off +dpms dpms 0 0 ' + timeout + '"', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+      exec('/bin/bash -c "/usr/bin/xset -display :' + displayNumber + ' s off +dpms dpms 0 0 ' + timeout + '"', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
         if (error !== null) {
           self.logger.error('Error setting screensaver timeout: ' + error);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + error);

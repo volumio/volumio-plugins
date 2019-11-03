@@ -43,6 +43,10 @@
     "type": "string",
     "value": "0"
   },
+  "gpuMem": {
+    "type": "number",
+    "value": 32
+  },
   "showPointer": {
     "type": "boolean",
     "value": false
