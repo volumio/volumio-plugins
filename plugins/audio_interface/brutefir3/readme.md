@@ -1,4 +1,4 @@
-November 3rd 2019
+November 4th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+november 4th 2019
+
+- new hw detection for sample rate available on DAC
 
 november 3rd 2019
 

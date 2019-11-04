@@ -142,20 +142,14 @@ int main(int argc, char *argv[])
 	printf("\"samplerates\":{\"value\":\"");
 	if (min == max)
 		printf(" %u", min);
-	else if (!snd_pcm_hw_params_test_rate(pcm, hw_params, min + 1, 0))
-		printf("{\"value\": %u-%u", min, max);
-	else {
-		any_rate = 0;
-		for (i = 0; i < ARRAY_SIZE(rates); ++i) {
+ 	else { for (i = 0; i < ARRAY_SIZE(rates); ++i) {
 			if (!snd_pcm_hw_params_test_rate(pcm, hw_params, rates[i], 0)) {
 				any_rate = 1;
 				printf(" %u", rates[i]);
 			}
-		}
-		if (!any_rate)
-			printf(" %u-%u", min, max);
 	}
-	printf("\"}");
+	}
+		printf("\"}");
 	putchar('\n');
 	printf("}");
 	putchar('\n');
