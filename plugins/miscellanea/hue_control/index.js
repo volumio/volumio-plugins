@@ -155,7 +155,10 @@ HueControl.prototype.pairBridge = function (data) {
             self.getAllLights().then(lights => {
                 self.hueDeviceOptionSelection = self.mapDevicesToOptionArray(lights);
             });
-            self.commandRouter.broadcastMessage('pushUiConfig', config);
+            var respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'hue_control', {});
+            respconfig.then(function (config) {
+                self.commandRouter.broadcastMessage('pushUiConfig', config);
+            });
         }
     });
 };
@@ -167,7 +170,10 @@ HueControl.prototype.unpairBridge = function () {
     self.hueUsername = null;
     self.hueDevice = null;
     self.commandRouter.pushToastMessage('success', "Bridge unpaired", `Bridge is now unpaired. Please delete Volumio from App List `);
-    self.commandRouter.broadcastMessage('pushUiConfig', config);
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'hue_control', {});
+    respconfig.then(function (config) {
+        self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
 };
 
 HueControl.prototype.saveSettings = function (data) {
@@ -343,8 +349,6 @@ HueControl.prototype.switchOffTimeout = function () {
 HueControl.prototype.getUIConfig = function () {
     const self = this;
     const defer = libQ.defer();
-
-    self.logger.info("getUIConfig ...");
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
