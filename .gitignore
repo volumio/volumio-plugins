@@ -5,3 +5,6 @@ volumio-plugins.iml
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+
+# Ignore all node_modules in all sub dirs
+node_modules/
