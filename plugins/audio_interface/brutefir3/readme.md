@@ -1,4 +1,4 @@
-November 4th 2019
+November 6th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+november 6th
+
+- new auto format selection for filter. No more need to select it.
+- simplified interface
 
 november 4th 2019
 
