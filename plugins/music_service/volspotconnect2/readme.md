@@ -65,9 +65,9 @@ November 7th 2019
 
 - vls 0.1.8 ['@ash'](https://github.com/ashthespy) 
 		
-    Add support for podcasts
-    Autoplay similar songs when your music ends
-    Small performance tweaks
+    * Add support for podcasts
+    * Autoplay similar songs when your music ends
+    * Small performance tweaks
 
 August 10th 2019
 
