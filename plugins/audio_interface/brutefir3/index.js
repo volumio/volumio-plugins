@@ -97,7 +97,7 @@ ControllerBrutefir.prototype.hwinfo = function() {
      try {
       const hwinfoJSON = JSON.parse(hwinfo);
       nchannels = hwinfoJSON.channels.value;
-      formats = hwinfoJSON.formats.value;//.replace(' SPECIAL', '').replace(', ,','').replace(',,','');
+      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,','').replace(',,','');
       samplerates = hwinfoJSON.samplerates.value;
      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
@@ -1800,6 +1800,7 @@ var filext=self.config.get('leftfilter').split('.').pop().toString();
 	}
 	else if ((self.config.get('leftfilter') == 'None') || (self.config.get('leftfilter') == 'Dirac pulse')) {
 	self.logger.info('Filter is ' + self.config.get('leftfilter'));
+	self.config.set('filter_format', 'text');
 	}
 	else { 
  	var modalData = {
