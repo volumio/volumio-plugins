@@ -96,6 +96,7 @@ nearly everythings
 
 november 7th 2019
 
+- revert simplified UI for output format, waiting hw detect to be reliable....
 - new fix for "sPECIAL" output format handling
 - case for "None" filter for auto select
 
