@@ -10,7 +10,7 @@
 	"author": "Balbuze & Ashthespy",
 	"license": "GPL 3.0",
 	"vollibrespot": {
-		"version": "0.1.8"
+		"version": "0.1.9"
 	},
 	"volumio_info": {
 		"prettyName": "Volumio Spotify Connect2",
