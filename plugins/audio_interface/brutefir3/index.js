@@ -1722,6 +1722,19 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  output_device = self.config.get('alsa_device');
  var defer = libQ.defer();
 
+if ((self.config.get('leftfilter').split('.').pop().toString()) != (self.config.get('rightfilter').split('.').pop().toString())) {
+var modalData = {
+	    title: 'Different filter type',
+	    message: 'Both filter must be of the same type',
+	    size: 'lg',
+	    buttons: [{
+	     name: 'Close',
+	     class: 'btn btn-warning'
+	    }, ]
+	   };
+   self.commandRouter.broadcastMessage("openModal", modalData);
+	}
+}
 
  self.config.set('attenuation', data['attenuation'].value);
  self.config.set('leftfilter', data['leftfilter'].value);
