@@ -1,4 +1,4 @@
-November 9th 2019
+November 10th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+november 10th 2019
+
+- improved messages for filter type
 
 november 9th 2019
 

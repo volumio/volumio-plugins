@@ -1705,8 +1705,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 
  } catch (err) {
 
-
-
  }
 
  return defer.promise;
@@ -1717,7 +1715,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 ControllerBrutefir.prototype.dfiltertype = function(data) {
  var self = this;
 
-
 var extset
 var filtername=self.config.get('leftfilter');
 var filterpath = '/data/INTERNAL/brutefirfilters/';
@@ -1727,7 +1724,7 @@ var filext=self.config.get('leftfilter').split('.').pop().toString();
 	if (filext == 'pcm') {
 	auto_filter_format = 'FLOAT_LE';
    self.config.set('filter_format', auto_filter_format);
-	self.logger.info('666---------6666666666----filter '+ filext + ' FLOAT_LE');
+	self.logger.info('------->filter '+ filext + ' FLOAT_LE');
 	}
 	else if (filext == 'wav') {
 	try {
@@ -1737,17 +1734,17 @@ var filext=self.config.get('leftfilter').split('.').pop().toString();
 		  		if (wavetype == '16') {
 				auto_filter_format = 'S16_LE';
    self.config.set('filter_format', auto_filter_format);
-				self.logger.info('666---------6666666666----filter '+ filext + auto_filter_format + wavetype);
+				self.logger.info('------->filter '+ filext + auto_filter_format + wavetype);
 				}
 				else if (wavetype == '24') {
 				auto_filter_format = 'S24_LE';
    self.config.set('filter_format', auto_filter_format);
-				self.logger.info('666---------6666666666----filter '+ filext + ' S24_LE ' + wavetype);
+				self.logger.info('------->filter '+ filext + ' S24_LE ' + wavetype);
 				 }
 				else if (wavetype == '32') {
 				auto_filter_format = 'S32_LE';
    self.config.set('filter_format', auto_filter_format);
-				self.logger.info('666---------6666666666----filter '+ filext + ' S32_LE ' + wavetype);
+				self.logger.info('------>filter '+ filext + ' S32_LE ' + wavetype);
 				}
 	  		})
 	}
@@ -1758,12 +1755,12 @@ var filext=self.config.get('leftfilter').split('.').pop().toString();
 	else if (filext == 'txt') {
 	auto_filter_format = 'text';
    self.config.set('filter_format', auto_filter_format);
-	self.logger.info('666---------6666666666----filter '+ filext + ' text');
+	self.logger.info('-------->filter '+ filext + ' text');
 	}
 	else if (filext == 'dbl') {
 	auto_filter_format = 'FLOAT64_LE';
    self.config.set('filter_format', auto_filter_format);
-	self.logger.info('666---------6666666666----filter '+ filext + ' FLOAT64_LE');
+	self.logger.info('--------->filter '+ filext + ' FLOAT64_LE');
 	}
 	else if ((self.config.get('leftfilter') == 'None') || (self.config.get('leftfilter') == 'Dirac pulse')) {
 	self.logger.info('Filter is ' + self.config.get('leftfilter'));
@@ -1772,7 +1769,7 @@ var filext=self.config.get('leftfilter').split('.').pop().toString();
 	else {
  	var modalData = {
 	    title: 'Unsuported filter format',
-	    message: 'Unsupported filter format, please choose one :',
+	    message:  "<br>Your file is not supported. Please choose one of the supported format :<br>Supported type:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
 	    size: 'lg',
 	    buttons: [{
 	     name: 'Close',
@@ -1794,7 +1791,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  output_device = self.config.get('alsa_device');
  var defer = libQ.defer();
  try {
-   var cp3 = exec('/bin/cp /data/configuration/audio_interface/brutefir/config.json /data/configuration/audio_interface/brutefir/config.json-save');
+   var cp3 = execSync('/bin/cp /data/configuration/audio_interface/brutefir/config.json /data/configuration/audio_interface/brutefir/config.json-save');
 
   } catch (err) {
    self.logger.info('/data/configuration/audio_interface/brutefir/config.json does not exist');
@@ -1841,16 +1838,18 @@ if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get
 		    }, ]
 		   }
 	   self.commandRouter.broadcastMessage("openModal", modalData);
-		try {
-		   //var cp2 = execSync('/bin/rm /data/configuration/audio_interface/brutefir/config.json')
-		   var cp3 = execSync('/bin/cp /data/configuration/audio_interface/brutefir/config.json-save /data/configuration/audio_interface/brutefir/config.json');
+//		try {
+		   var cp2 = execSync('/bin/rm /data/configuration/audio_interface/brutefir/config.json')
+		   var cp3 = exec('/bin/cp /data/configuration/audio_interface/brutefir/config.json-save /data/configuration/audio_interface/brutefir/config.json');
 		   self.logger.info('/data/configuration/audio_interface/brutefir/config.json restored!');
-		  } catch (err) {
+	/*	  } catch (err) {
 		   self.logger.info('/data/configuration/audio_interface/brutefir/config.json does not exist');
 		  }
+      */
  //}, 2000);
-//setTimeout(function() {
+
 } else {
+  setTimeout(function() {
  self.dfiltertype()
 
  self.rebuildBRUTEFIRAndRestartDaemon()
@@ -1864,7 +1863,7 @@ if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get
    self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
   })
 
- //}, 2500);
+ }, 2500);
 }
  return defer.promise;
 
