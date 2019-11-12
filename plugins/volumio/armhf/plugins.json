@@ -115,24 +115,6 @@
 					"updated": "30-3-2019"
 				},
 				{
-					"prettyName": "TuneIn Radio",
-					"icon": "fa-lightbulb-o",
-					"name": "tunein_radio",
-					"version": "1.1.0",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/tunein_radio/tunein_radio.zip",
-					"license": "ISC",
-					"description": "Support radio streaming from the TuneIn Radio service",
-					"details": "Support radio streaming from the TuneIn Radio service",
-					"author": "Piffio",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "19-3-2018"
-				},
-				{
 					"prettyName": "Radio Paradise",
 					"icon": "fa-lightbulb-o",
 					"name": "radio_paradise",
