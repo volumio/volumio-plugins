@@ -203,6 +203,24 @@
 						}
 					],
 					"updated": "24-9-2019"
+				},
+				{
+					"prettyName": "Roon Bridge",
+					"icon": "fa-lightbulb-o",
+					"name": "RoonBridge",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/RoonBridge/RoonBridge.zip",
+					"license": "ISC",
+					"description": "Stream music from Roon to Volumio",
+					"details": "",
+					"author": "Christopher Rieke",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "12-11-2019"
 				}
 			]
 		},
