@@ -1,0 +1,126 @@
+{
+  "show_more": {
+    "type": "boolean",
+    "value": false
+  },
+  "media_dir_a": {
+    "type": "string",
+    "value": "/data/INTERNAL"
+  },
+  "media_dir_p": {
+    "type": "string",
+    "value": "/data/INTERNAL"
+  },
+  "media_dir_v": {
+    "type": "string",
+    "value": "/data/INTERNAL"
+  },
+  "db_dir": {
+    "type": "string",
+    "value": "/data/configuration/miscellanea/minidlna"
+  },
+  "log_dir": {
+    "type": "string",
+    "value": "/var/log"
+  },
+  "root_container": {
+    "type": "string",
+    "value": "."
+  },
+  "network_interface": {
+    "type": "string",
+    "value": "eth0,wlan0"
+  },
+  "port": {
+    "type": "number",
+    "value": 8200
+  },
+  "presentation_url": {
+    "type": "string",
+    "value": "/"
+  },
+  "friendly_name": {
+    "type": "string",
+    "value": "VolumioDLNA"
+  },
+  "serial": {
+    "type": "string",
+    "value": "00000000"
+  },
+  "model_name": {
+    "type": "string",
+    "value": "Windows Media Connect compatible (MiniDLNA)"
+  },
+  "model_number": {
+    "type": "string",
+    "value": "Volumio Edition"
+  },
+  "inotify": {
+    "type": "boolean",
+    "value": true
+  },
+  "album_art_names": {
+    "type": "string",
+    "value": "Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg/AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg/Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg"
+  },
+  "strict_dlna": {
+    "type": "boolean",
+    "value": false
+  },
+  "enable_tivo": {
+    "type": "boolean",
+    "value": false
+  },
+  "notify_interval": {
+    "type": "number",
+    "value": 5
+  },
+  "minissdpdsocket": {
+    "type": "string",
+    "value": "/run/minissdpd.sock"
+  },
+  "force_sort_criteria": {
+    "type": "string",
+    "value": ""
+  },
+  "max_connections": {
+    "type": "number",
+    "value": 50
+  },
+  "loglevel_general": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_artwork": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_database": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_inotify": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_scanner": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_metadata": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_http": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_ssdp": {
+    "type": "string",
+    "value": "warn"
+  },
+  "loglevel_tivo": {
+    "type": "string",
+    "value": "warn"
+  }
+}
