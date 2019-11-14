@@ -511,6 +511,24 @@
 						}
 					],
 					"updated": "18-10-2019"
+				},
+				{
+					"prettyName": "miniDLNA",
+					"icon": "fa-lightbulb-o",
+					"name": "minidlna",
+					"version": "1.1.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/minidlna/minidlna.zip",
+					"license": "ISC",
+					"description": "The plugin installs and configures a miniDLNA server.",
+					"details": "",
+					"author": "gvolt",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "14-11-2019"
 				}
 			]
 		},
