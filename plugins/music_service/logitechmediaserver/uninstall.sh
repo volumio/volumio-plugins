@@ -6,15 +6,8 @@ if [ ! -f $INSTALLING ]; then
 
 	touch $INSTALLING
 
-	# Uninstall LMS and cleaning up
+	# Uninstall LMS
 	dpkg -P squeezeboxserver
-	rm -rf /var/lib/squeezeboxserver
-	rm -rf /usr/share/squeezeboxserver
-	rm -rf /opt/CPAN
-	rm /usr/sbin/squeezeboxserver*
-	rm /etc/systemd/system/logitechmediaserver.service
-	
-	# Not uninstalling dependencies, because they might be used by other plugins.
 
 	rm $INSTALLING
 

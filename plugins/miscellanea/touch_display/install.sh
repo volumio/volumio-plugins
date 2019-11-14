@@ -4,7 +4,6 @@ HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | se
 
 if [ "$HW" = "pi" ];
 then
-
   echo "Raspberry Pi install script"
 
   echo "Installing fake packages for kernel, bootloader and pi lib"
@@ -23,22 +22,16 @@ then
   echo "raspberrypi-bootloader hold" | dpkg --set-selections
   echo "raspberrypi-kernel hold" | dpkg --set-selections
 
+
   echo "Installing Chromium Dependencies"
   sudo apt-get update
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12 xserver-xorg-legacy
+  sudo apt-get install -y xinit xorg openbox libexif12
 
   echo "Installing Chromium"
   sudo apt-get install -y chromium-browser
-
-  if [ -f /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness ]; then
-    echo "Installing UDEV rule adjusting backlight brightness permissions"
-    sudo echo "SUBSYSTEM==\"backlight\", RUN+=\"/bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness\"" > /etc/udev/rules.d/99-backlight.rules
-    sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
-  fi
-
 else
 
   echo "Installing Chromium Dependencies"
@@ -46,14 +39,14 @@ else
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12
+  sudo apt-get install -y xinit xorg openbox libexif12
 
-  echo "Downloading Chromium"
+  echo "Download Chromium"
   cd /home/volumio/
   wget http://launchpadlibrarian.net/234969703/chromium-browser_48.0.2564.82-0ubuntu0.15.04.1.1193_armhf.deb
   wget http://launchpadlibrarian.net/234969705/chromium-codecs-ffmpeg-extra_48.0.2564.82-0ubuntu0.15.04.1.1193_armhf.deb
 
-  echo "Installing Chromium"
+  echo "Install  Chromium"
   sudo dpkg -i /home/volumio/chromium-*.deb
   sudo apt-get install -y -f
   sudo dpkg -i /home/volumio/chromium-*.deb
@@ -63,16 +56,18 @@ else
 fi
 
 echo "Installing Japanese, Korean, Chinese and Taiwanese fonts"
-sudo apt-get -y install fonts-arphic-ukai fonts-arphic-gbsn00lp fonts-unfonts-core
+apt-get -y install fonts-arphic-ukai fonts-arphic-gbsn00lp fonts-unfonts-core
 
 echo "Dependencies installed"
 
 echo "Creating Kiosk Data dir"
 mkdir /data/volumiokiosk
-chown volumio:volumio /data/volumiokiosk
 
-echo "Creating chromium kiosk start script"
-sudo echo "#!/bin/bash
+echo "  Creating chromium kiosk start script"
+echo "#!/bin/bash
+xset +dpms
+xset s blank
+xset dpms 0 0 120
 sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/' /data/volumiokiosk/Default/Preferences
 sed -i 's/\"exit_type\":\"Crashed\"/\"exit_type\":\"None\"/' /data/volumiokiosk/Default/Preferences
 openbox-session &
@@ -91,27 +86,31 @@ while true; do
 	--no-sandbox \
     http://localhost:3000
 done" > /opt/volumiokiosk.sh
-sudo /bin/chmod +x /opt/volumiokiosk.sh
+/bin/chmod +x /opt/volumiokiosk.sh
 
 echo "Creating Systemd Unit for Kiosk"
-sudo echo "[Unit]
-Description=Volumio Kiosk
+echo "[Unit]
+Description=Start Volumio Kiosk
 Wants=volumio.service
 After=volumio.service
 [Service]
 Type=simple
-User=volumio
-Group=volumio
+User=root
+Group=root
 ExecStart=/usr/bin/startx /etc/X11/Xsession /opt/volumiokiosk.sh -- -nocursor
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300
 [Install]
 WantedBy=multi-user.target
 " > /lib/systemd/system/volumio-kiosk.service
-sudo systemctl daemon-reload
+/bin/ln -s /lib/systemd/system/volumio-kiosk.service /etc/systemd/system/multi-user.target.wants/volumio-kiosk.service
 
-echo "Allowing volumio to start an xsession"
-sudo /bin/sed -i "s/allowed_users=console/allowed_users=anybody/" /etc/X11/Xwrapper.config
 
-#required to end the plugin install
+echo "  Allowing volumio to start an xsession"
+/bin/sed -i "s/allowed_users=console/allowed_users=anybody/" /etc/X11/Xwrapper.config
+
+echo "Disabling Kiosk Service"
+
+
+#requred to end the plugin install
 echo "plugininstallend"

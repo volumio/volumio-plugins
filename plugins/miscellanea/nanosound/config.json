@@ -2,9 +2,5 @@
  "oledDisplay": {
     "type": "string",
     "value": "1"
-  },
- "model": {
-    "type": "string",
-    "value": "DAC"
- }
+  }
 }

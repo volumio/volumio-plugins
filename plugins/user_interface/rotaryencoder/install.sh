@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Installing Rotary Encoder and its dependencies"
+echo "Installing rotaryencoder Dependencies"
 
 echo "No additional packages needed."
 echo "Continuing..."

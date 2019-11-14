@@ -18,36 +18,66 @@
       {
         "title": "Radio Paradise Main Mix (FLAC)",
         "uri": "webrp/0",
-        "url": "http://stream.radioparadise.com/flac"
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=4&chan=0&info=true"
       },
       {
         "title": "Radio Paradise Mellow Mix (FLAC)",
         "uri": "webrp/1",
-        "url": "http://stream.radioparadise.com/mellow-flac"
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=4&chan=1&info=true"
+      },
+      {
+        "title": "Radio Paradise Rock Mix (FLAC)",
+        "uri": "webrp/2",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=4&chan=2&info=true"
+      },
+      {
+        "title": "Radio Paradise Groovy Mix (FLAC)",
+        "uri": "webrp/3",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=4&chan=3&info=true"
+      },
+      {
+        "title": "Radio Paradise Main Mix (AAC 320k)",
+        "uri": "webrp/4",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=3&chan=0&info=true"
+      },
+      {
+        "title": "Radio Paradise Mellow Mix (AAC 320k)",
+        "uri": "webrp/5",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=3&chan=1&info=true"
+      },
+      {
+        "title": "Radio Paradise Rock Mix (AAC 320k)",
+        "uri": "webrp/6",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=3&chan=2&info=true"
+      },
+      {
+        "title": "Radio Paradise Groovy Mix (AAC 320k)",
+        "uri": "webrp/7",
+        "url": "https://api.radioparadise.com/api/get_block?bitrate=3&chan=3&info=true"
       },
       {
         "title": "Radio Paradise (AAC 320k)",
-        "uri": "webrp/2",
+        "uri": "webrp/8",
         "url": "http://stream-uk1.radioparadise.com/aac-320"
       },
       {
         "title": "Radio Paradise (AAC 128k)",
-        "uri": "webrp/3",
+        "uri": "webrp/9",
         "url": "http://stream-uk1.radioparadise.com/aac-128"
       },
       {
         "title": "Radio Paradise (AAC 64k)",
-        "uri": "webrp/4",
+        "uri": "webrp/10",
         "url": "http://stream-uk1.radioparadise.com/aac-64"
       },
       {
         "title": "Radio Paradise (MP3 192k)",
-        "uri": "webrp/5",
+        "uri": "webrp/11",
         "url": "http://stream-uk1.radioparadise.com/mp3-192"
       },
       {
         "title": "Radio Paradise (MP3 128k)",
-        "uri": "webrp/6",
+        "uri": "webrp/12",
         "url": "http://stream-uk1.radioparadise.com/mp3-128"
       }
     ]

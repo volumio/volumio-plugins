@@ -1,12 +1,17 @@
 'use strict';
 
+var http = require('http');
 var spawn = require('child_process').spawn;
+var url = require('url');
+var querystring = require('querystring');
 var fs = require('fs');
 var ytdl = require('ytdl-core');
 var libQ = require('kew');
 var path = require('path');
-const {google} = require('googleapis');
+var gapis = require('googleapis');
+var request = require('request');
 var dur = require("iso8601-duration");
+var OAuth2Client = gapis.auth.OAuth2;
 var querystring = require('querystring');
 var https = require('https');
 
@@ -28,7 +33,7 @@ function Youtube(context) {
   self.state = {};
   self.stateMachine = self.commandRouter.stateMachine;
 
-  self.yt = google.youtube({
+  self.yt = gapis.youtube({
     version: 'v3',
     auth: ytapi_key
   });
@@ -174,13 +179,12 @@ Youtube.prototype.addPlaylist = function (playlistId, pageToken) {
   if (pageToken != undefined)
     request.pageToken = pageToken;
 
-  self.yt.playlistItems.list(request, function (err, result) {
+  self.yt.playlistItems.list(request, function (err, res) {
     if (err) {
       //Holy crap, something went wrong :/
       self.logger.error(err.message + "\n" + err.stack);
       deferred.reject(err);
     } else {
-      var res = result.data;
       var videos = res.items;
       for (var i = 0; i < videos.length; i++) {
         var video = {
@@ -271,25 +275,24 @@ Youtube.prototype.explodeUri = function (uri) {
     self.yt.videos.list({
       part: "snippet,contentDetails",
       id: uri
-    }, function (err, result) {
+    }, function (err, res) {
       if (err) {
         //Holy crap, something went wrong :/
         self.logger.error(err.message + "\n" + err.stack);
         deferred.reject(err);
-      } else if (result.data.items.length == 0) {
+      } else if (res.items.length == 0) {
         deferred.reject(new Error("Video is not valid"));
       } else {
-        var clip = result.data.items[0];
-        self.logger.info("Youtube -> " + JSON.stringify(clip));
+        self.logger.info("Youtube -> " + JSON.stringify(res));
         deferred.resolve({
           uri: uri,
           service: 'youtube',
-          name: clip.snippet.title,
-          title: clip.snippet.title,
+          name: res.items[0].snippet.title,
+          title: res.items[0].snippet.title,
           artist: "Youtube",
           type: 'track',
-          albumart: clip.snippet.thumbnails.default.url,
-          duration: dur.toSeconds(dur.parse(clip.contentDetails.duration)),
+          albumart: res.items[0].snippet.thumbnails.default.url,
+          duration: dur.toSeconds(dur.parse(res.items[0].contentDetails.duration)),
           trackType: "YouTube",
           samplerate: '44 KHz',
           bitdepth: '24 bit'
@@ -559,7 +562,8 @@ Youtube.prototype.getUserSubscriptions = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.subscriptions.list(request); },
+    apiFunc: self.yt.subscriptions.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube subscriptions'
@@ -577,7 +581,8 @@ Youtube.prototype.getUserLikedVideos = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.videos.list(request); },
+    apiFunc: self.yt.videos.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Liked Videos',
@@ -595,7 +600,8 @@ Youtube.prototype.getUserPlaylists = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlists.list(request); },
+    apiFunc: self.yt.playlists.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'My Youtube playlists'
@@ -613,7 +619,8 @@ Youtube.prototype.getActivities = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.activities.list(request); },
+    apiFunc: self.yt.activities.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube activities',
@@ -630,7 +637,8 @@ Youtube.prototype.getChannelSections = function (channelId) {
 
   // always load all playlist items contained in channel sections response
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.channelSections.list(request); },
+    apiFunc: self.yt.channelSections.list,
+    apiRequest: request,
     loadAll: true,
     plainResult: true,
   }).then(function (result) {
@@ -687,7 +695,8 @@ Youtube.prototype.getTrend = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.videos.list(request); },
+    apiFunc: self.yt.videos.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: '/',
     title: 'Youtube trendy videos'
@@ -706,7 +715,8 @@ Youtube.prototype.doSearch = function (query) {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.search.list(request); },
+    apiFunc: self.yt.search.list,
+    apiRequest: request,
     loadAll: true,
     title: 'Youtube Search Results',
   });
@@ -724,7 +734,8 @@ Youtube.prototype.getPlaylists = function (playlistIds) {
 
   // always load all playlists
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlists.list(request); },
+    apiFunc: self.yt.playlists.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube Playlists'
@@ -744,7 +755,8 @@ Youtube.prototype.getPlaylistItems = function (playlistId) {
 
   // always load all playlist items
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlistItems.list(request); },
+    apiFunc: self.yt.playlistItems.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube Playlist'
@@ -766,11 +778,11 @@ Youtube.prototype.youtubeRequest = function (request, cacheList, pageToken, defe
     request.pageToken = pageToken;
   }
 
-  request.apiFunc().catch(function (err) {
+  request.apiFunc(request.apiRequest, function (err, res) {
+    if (err) {
       self.logger.error(err.message + "\n" + err.stack);
       deferred.reject(err);
-    }).then(function(result) {
-      var res = result.data;
+    } else {
       cacheList = cacheList.concat(request.plainResult
         ? res.items
         : self.processResponse(res.items, cacheList.length, request.loadAll));
@@ -802,6 +814,7 @@ Youtube.prototype.youtubeRequest = function (request, cacheList, pageToken, defe
           }
         }
       }
+    }
   });
 
   return deferred.promise;
@@ -1101,7 +1114,7 @@ Youtube.prototype.refreshAuthToken = function () {
 
 Youtube.prototype.updateYtApiAccessToken = function () {
   var self = this;
-  var oauth2Client = new google.auth.OAuth2(
+  var oauth2Client = new OAuth2Client(
     secrets.volumio.client_id,
     secrets.volumio.client_secret,
     secrets.volumio.redirect_uris[0]
@@ -1109,7 +1122,7 @@ Youtube.prototype.updateYtApiAccessToken = function () {
 
   oauth2Client.setCredentials(self.accessToken);
 
-  self.yt = google.youtube({
+  self.yt = gapis.youtube({
     version: 'v3',
     auth: oauth2Client
   });
