@@ -1,0 +1,31 @@
+{
+    "upsampling": {
+       "type": "string",
+       "value": "3"
+     },
+    "extractformat": {
+      "type": "string",
+      "value": "1"
+    },
+    "email": {
+      "type": "string",
+      "value": ""
+    },
+    "orderno": {
+      "type": "string",
+      "value": ""
+    },
+    "prestart": {
+      "type": "number",
+      "value": 0
+    },
+    "savepath": {
+      "type": "string",
+      "value": "INTERNAL"
+    }, 
+    "loadalbumart": {
+      "type": "string",
+      "value": "1"
+    }
+}
+   

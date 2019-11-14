@@ -1,0 +1,254 @@
+{
+    "page": {
+      "label": "NanoSound CD"
+    },
+    "sections": [      
+      {
+        "id": "section_display",
+        "element": "section",
+        "label": "TRANSLATE.SETTINGS",
+        "icon": "fa-plug",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveConfig"},
+        "saveButton": {
+          "label": "TRANSLATE.SAVE",
+          "data": [
+            "upsampling","extractformat","prestart","savepath","loadalbumart"
+          ]
+        },
+        "content": [
+          {
+            "id": "upsampling",
+            "element": "select",
+            "label": "TRANSLATE.UPSAMPLING_TO",
+            "doc": "TRANSLATE.UPSAMPLING_TO_DOC",
+            "value": {"value": "3",
+                      "label": "Disable"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "176.4kHz (x4)"
+              },
+              {
+                "value": "2",
+                "label": "88.2kHz (x2)"
+              },
+              {
+                "value": "3",
+                "label": "Disable"
+              }
+            ]
+          },
+          {
+            "id": "extractformat",
+            "element": "select",
+            "label": "TRANSLATE.EXTRACT_FORMAT",
+            "doc": "TRANSLATE.EXTRACT_FORMAT_DOC",
+            "value": {"value": "1",
+                      "label": "FLAC"
+            },
+  
+            "options": [
+              {
+                "value": "1",
+                "label": "FLAC"
+              },
+              {
+                "value": "2",
+                "label": "wav"
+              }
+            ]
+          },
+          {
+            "id": "prestart",
+            "type":"number",
+            "element": "input",
+            "doc": "TRANSLATE.PRESTART_BY_SEC_DOC",
+            "label": "TRANSLATE.PRESTART_BY_SEC",
+            "value": 0
+          },
+          {
+            "id": "savepath",
+            "type":"string",
+            "element": "input",
+            "doc": "TRANSLATE.EXTRACT_TO_PATH_DOC",
+            "label": "TRANSLATE.EXTRACT_TO_PATH",
+            "value": "INTERNAL"
+          },
+          {
+            "id": "loadalbumart",
+            "element":"select",
+            "doc": "TRANSLATE.SHOWALBUMART",
+            "label": "TRANSLATE.SHOWALBUMART",
+            "value": {"value": "1",
+              "label": "No"
+              },
+              "options": [
+                {
+                  "value": "1",
+                  "label": "No"
+                },
+                {
+                  "value": "2",
+                  "label": "Yes"
+                }
+              ]
+          },
+          {
+            "id": "configaudio",
+            "element": "button",
+            "label": "TRANSLATE.AUTO_RECONFIG_AUDIO",
+            "doc": "TRANSLATE.AUTO_RECONFIG_AUDIO_DOC",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "setupAudio"
+            }
+          },
+          {
+            "id": "showversion",
+            "element": "button",
+            "label": "TRANSLATE.SHOWVERSION",
+            "doc": "TRANSLATE.SHOWVERSION",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "showversion"
+            }
+          },
+          {
+            "id": "upgradeversion",
+            "element": "button",
+            "label": "TRANSLATE.UPGRADE",
+            "doc": "TRANSLATE.UPGRADE",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "upgrade"
+            }
+          },
+          {
+            "id": "eject",
+            "element": "button",
+            "label": "TRANSLATE.EJECT",
+            "doc": "TRANSLATE.EJECT",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "eject"
+            }
+          }
+      ]
+      },
+      {
+        "id": "section_extract",
+        "element": "section",
+        "label": "TRANSLATE.EXTRACT_CD",
+        "icon": "fa-file",
+        "description": "TRANSLATE.EXTRACT_CD_DOC",
+        "content": [
+          {
+            "id": "extractall",
+            "element": "button",
+            "label": "TRANSLATE.EXTRACT_WHOLE_CD",
+            "doc": "TRANSLATE.EXTRACT_WHOLE_CD_DOC",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractAll"
+            }
+          },
+          {
+            "id": "extractstatus",
+            "element": "button",
+            "label": "TRANSLATE.CHECK_EXTRACT_PROGRESS",
+            "doc": "TRANSLATE.CHECK_EXTRACT_PROGRESS_DOC",
+            "onClick": {
+              "type": "controller",
+              "endpoint": "music_service/nanosound_cd",
+              "method": "extractStatus"
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_reg",
+        "element": "section",
+        "label": "TRANSLATE.REGISTRATION_INFO",
+        "icon": "fa-key",
+        "description": "TRANSLATE.REGISTRATION_INFO",
+        "onSave": {"type":"controller", "endpoint":"music_service/nanosound_cd", "method":"saveReg"},
+        "saveButton": {
+          "label": "TRANSLATE.REGISTER",
+          "data": [
+            "email",
+            "orderno"
+          ]
+        },
+        "content": [
+          {
+            "id": "email",
+            "type":"text",
+            "element": "input",
+            "doc": "TRANSLATE.EMAIL_DOC",
+            "label": "TRANSLATE.EMAIL",
+            "value": ""
+          },
+          {
+            "id": "orderno",
+            "type":"text",
+            "element": "input",
+            "doc": "TRANSLATE.ORDER_NO_DOC",
+            "label": "TRANSLATE.ORDER_NO",
+            "value": ""
+          }
+        ]
+     },
+     {
+      "id": "section_resources",
+      "element": "section",
+      "label": "TRANSLATE.RESOURCES",
+      "icon": "fa-book",
+      "content": [
+        {
+          "id": "shop",
+          "element": "button",
+          "label": "TRANSLATE.GET_FULLVERSION",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosoundcd"
+          }
+        },
+        {
+          "id": "shopnanosound",
+          "element": "button",
+          "label": "TRANSLATE.GET_NANOSOUND",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.org/product/nanosound-dac/"
+          }
+        },
+        {
+          "id": "nanosoundrange",
+          "element": "button",
+          "label": "NanoSound Info",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/nanosound"
+          }
+        },
+        {
+          "id": "support",
+          "element": "button",
+          "label": "TRANSLATE.SUPPORT_INFO",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://nanomesher.com/support"
+          }
+        }
+      ]
+      }
+    ]
+  }
+  

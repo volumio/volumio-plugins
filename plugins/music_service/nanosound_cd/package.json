@@ -1,0 +1,25 @@
+{
+	"name": "nanosound_cd",
+	"version": "1.1.5",
+	"description": "Nanosound CD playback and extraction plug-in by Nanomesher",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Nanomesher",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Nanosound CD",
+		"icon": "fa-music",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"request": "^2.83.0",
+		"nanotimer": "^0.3.15",
+		"moment": "2.22.1",
+		"system-sleep": "^1.3.6"
+	}
+}

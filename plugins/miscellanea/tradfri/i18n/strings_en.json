@@ -1,0 +1,18 @@
+{
+  "TRADFRI_CONFIGURATION":"Tradfri Plugin Configuration",
+  "TRADFRI_CONNECT": "Tradfri Connection",
+  "TRADFRI_CONNECT_DESC": "Connect to the Tradfri Gateway with the Security Code printed on the back of the Gateway.",
+  "TRADFRI_CONNECT_BUTTON": "Connect",
+  "TRADFRI_SECURITY_CODE": "Security Code",
+  "TRADFRI_SECURITY_CODE_DOC": "The Security Code printed on the back of the Tradfri Gateway.",
+  "TRADFRI_DISCONNECT": "Tradfri Connection",
+  "TRADFRI_DISCONNECT_DESC": "Disconnect from the Tradfri Gateway.",
+  "TRADFRI_DISCONNECT_BUTTON": "Disconnect",
+  "TRADFRI_SETTINGS": "Settings",
+  "TRADFRI_SETTINGS_DESC": "The settings for the Tradfri plugin",
+  "TRADFRI_DEVICE_GROUP": "Tradfri Device or Group name",
+  "TRADFRI_DEVICE_GROUP_DOC": "The name of a Tradfri Device (power outlet, light bulb etc.) or a Tradfri Group which should be controlled based on the playback state.",
+  "TRADFRI_SWITCH_OFF_DELAY": "Switch Off Delay",
+  "TRADFRI_SWITCH_OFF_DELAY_DOC": "The number of seconds to wait before switching off the Tradfri Device(s) after the playback has stopped.",
+  "SAVE_BUTTON": "Save"
+}

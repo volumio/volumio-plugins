@@ -1,7 +1,7 @@
 {
 	"name": "nanosound",
-	"version": "1.1.5",
-	"description": "Companion plugin for Nano Sound products",
+	"version": "1.8.3",
+	"description": "Companion plugin for NanoSound DAC",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
