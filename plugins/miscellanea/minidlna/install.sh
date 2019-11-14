@@ -13,4 +13,7 @@ echo "Setting values for \"network_interface\" and \"model_number\" in /data/plu
 sed -i "/\"value\": \"eth0,wlan0\"/s/\"eth0,wlan0\"/\"$(ip -o link show | grep -v ": lo:" | cut -s -d":" -f2 | cut -s -d" " -f2 | tr "[:cntrl:]" "," | head --bytes -1)\"/1" /data/plugins/miscellanea/minidlna/config.json
 sed -i "/\"value\": \"Volumio Edition\"/s/\"Volumio Edition\"/\"$(minidlnad -V | tr -d "[:cntrl:]")\"/1" /data/plugins/miscellanea/minidlna/config.json
 
+echo "Setting Permissions to miniDLNA folders"
+sudo chown -R volumio:volumio /var/cache/minidlna/
+
 echo "plugininstallend"
