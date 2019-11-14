@@ -5,15 +5,15 @@
   },
   "media_dir_a": {
     "type": "string",
-    "value": "/data/INTERNAL"
+    "value": "/mnt/"
   },
   "media_dir_p": {
     "type": "string",
-    "value": "/data/INTERNAL"
+    "value": "/mnt/"
   },
   "media_dir_v": {
     "type": "string",
-    "value": "/data/INTERNAL"
+    "value": "/mnt/"
   },
   "db_dir": {
     "type": "string",
@@ -49,7 +49,7 @@
   },
   "model_name": {
     "type": "string",
-    "value": "Windows Media Connect compatible (MiniDLNA)"
+    "value": "MiniDLNA on Volumio"
   },
   "model_number": {
     "type": "string",

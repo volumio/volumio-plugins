@@ -210,14 +210,14 @@ minidlna.prototype.initialConf = function () {
   const self = this;
   const defer = libQ.defer();
 
-  if (!fs.existsSync('/etc/minidlna.conf')) {
+  if (!fs.existsSync('/data/minidlna.conf')) {
     self.createMinidlnaConf()
       .then(function (e) {
         defer.resolve();
       })
       .fail(function (e) {
-        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_CREATE') + '/etc/minidlna.conf.');
-        defer.reject(new Error('on creating /etc/minidlna.conf.'));
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_CREATE') + '/data/minidlna.conf.');
+        defer.reject(new Error('on creating /data/minidlna.conf.'));
       });
   } else {
     return libQ.resolve();
@@ -251,13 +251,19 @@ minidlna.prototype.createMinidlnaConf = function () {
         }
         data = data.replace('${' + configItem + '}', value);
       });
-      fs.writeFile('/etc/minidlna.conf', data, 'utf8', function (err) {
+
+      try {
+
+      } catch(e) {
+        self.logger.error('Cannot create emtpy minidlna.conf file');
+      }
+      fs.writeFile('/data/minidlna.conf', data, 'utf8', function (err) {
         if (err) {
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_WRITE') + '/etc/minidlna.conf: ' + err);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_WRITE') + '/data/minidlna.conf: ' + err);
           defer.reject();
-          return console.log('error: Error writing /etc/minidlna.conf: ' + err);
+          return console.log('error: Error writing /data/minidlna.conf: ' + err);
         } else {
-          self.logger.info('/etc/minidlna.conf written');
+          self.logger.info('/data/minidlna.conf written');
           defer.resolve();
         }
       });
