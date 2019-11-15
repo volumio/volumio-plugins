@@ -2,6 +2,11 @@ November 15th
 
 This plugin returns informations about your system such as cpu, mem, kernel...
 
+
+
+![Alt text](Systeminffos.png?raw=true "Systeminfos window")
+
+
 ###  Download and install the plugin
 
 Type the following commands to download and install plugin:
