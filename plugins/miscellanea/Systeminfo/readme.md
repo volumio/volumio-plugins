@@ -13,7 +13,7 @@ miniunzip Systeminfo.zip -d ./Systeminfo
 cd ./Systeminfo
 volumio plugin install
 cd ..
-rm -Rf brutefir*
+rm -Rf Systeminfo*
 ```
 
 
