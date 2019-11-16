@@ -28,7 +28,6 @@ minidlna.prototype.onVolumioStart = function () {
 
   self.config = new (require('v-conf'))();
   self.config.loadFile(configFile);
-
   return libQ.resolve();
 };
 
@@ -40,7 +39,7 @@ minidlna.prototype.onStart = function () {
   self.initialConf()
     .then(function (e) {
       self.logger.info('Starting minidlna.service');
-      self.systemctl('start', 'minidlna.service')
+      self.systemctl('start minidlna.service')
         .then(function (e) {
           defer.resolve();
         });
@@ -48,7 +47,6 @@ minidlna.prototype.onStart = function () {
     .fail(function (e) {
       defer.reject(new Error('on starting miniDLNA plugin'));
     });
-
   return defer.promise;
 };
 
@@ -57,14 +55,13 @@ minidlna.prototype.onStop = function () {
   const defer = libQ.defer();
 
   self.logger.info('Stopping minidlna.service');
-  self.systemctl('stop', 'minidlna.service')
+  self.systemctl('stop minidlna.service')
     .then(function (e) {
       defer.resolve();
     })
     .fail(function (e) {
       defer.reject(new Error('on stopping miniDLNA plugin'));
     });
-
   return defer.promise;
 };
 
@@ -76,13 +73,12 @@ minidlna.prototype.getLabelForSelect = function (options, key) {
       return options[i].label;
     }
   }
-
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
 minidlna.prototype.getUIConfig = function () {
-  const defer = libQ.defer();
   const self = this;
+  const defer = libQ.defer();
   const langCode = self.commandRouter.sharedVars.get('language_code');
 
   self.commandRouter.i18nJson(path.join(__dirname, 'i18n', 'strings_' + langCode + '.json'),
@@ -90,7 +86,7 @@ minidlna.prototype.getUIConfig = function () {
     path.join(__dirname, 'UIConfig.json'))
     .then(function (uiconf) {
       configItems.forEach(function (configItem, i) {
-        let value = self.config.get(configItem);
+        const value = self.config.get(configItem);
         switch (configItem) {
           case 'root_container':
           case 'loglevel_general':
@@ -114,7 +110,18 @@ minidlna.prototype.getUIConfig = function () {
     .fail(function () {
       defer.reject(new Error());
     });
+  return defer.promise;
+};
 
+minidlna.prototype.updateUIConfig = function () {
+  const self = this;
+  const defer = libQ.defer();
+
+  self.commandRouter.getUIConfigOnPlugin('miscellanea', 'minidlna', {})
+    .then(function (uiconf) {
+      self.commandRouter.broadcastMessage('pushUiConfig', uiconf);
+    });
+  self.commandRouter.broadcastMessage('pushUiConfig');
   return defer.promise;
 };
 
@@ -130,7 +137,6 @@ minidlna.prototype.getI18nFile = function (langCode) {
   if (i18nFiles.some(function (i18nFile) { return i18nFile === langFile; })) {
     return path.join(__dirname, 'i18n', langFile);
   }
-
   // return default i18n file
   return path.join(__dirname, 'i18n', 'strings_en.json');
 };
@@ -154,13 +160,13 @@ minidlna.prototype.saveConf = function (data) {
         self.config.set(configItem, data[configItem].value);
         break;
       case 'port':
-        self.checkVal(configItem, data[configItem], 0, 65535);
+        self.checkVal(configItem, 0, 8, data[configItem], 0, 65535);
         break;
       case 'notify_interval':
-        self.checkVal(configItem, data[configItem], 0, Number.MAX_SAFE_INTEGER);
+        self.checkVal(configItem, 0, 18, data[configItem], 0, Number.MAX_SAFE_INTEGER);
         break;
       case 'max_connections':
-        self.checkVal(configItem, data[configItem], 0, Number.MAX_SAFE_INTEGER);
+        self.checkVal(configItem, 0, 21, data[configItem], 0, Number.MAX_SAFE_INTEGER);
         break;
       case 'media_dir_a':
       case 'media_dir_p':
@@ -176,7 +182,7 @@ minidlna.prototype.saveConf = function (data) {
   self.createMinidlnaConf()
     .then(function (e) {
       self.logger.info('Restarting minidlna.service');
-      self.systemctl('restart', 'minidlna.service')
+      self.systemctl('restart minidlna.service')
         .then(function (e) {
           self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.CONF_UPDATED'));
           self.logger.success('The miniDLNA configuration has been updated.');
@@ -186,20 +192,21 @@ minidlna.prototype.saveConf = function (data) {
     .fail(function (e) {
       defer.reject();
     });
-
   return defer.promise;
 };
 
-minidlna.prototype.checkVal = function (item, data, min, max) {
+minidlna.prototype.checkVal = function (item, sectionId, contentId, value, min, max) {
   const self = this;
 
-  if (!Number.isNaN(parseInt(data, 10)) && isFinite(data)) {
-    if (data < min || data > max) {
+  if (!Number.isNaN(parseInt(value, 10)) && isFinite(value)) {
+    if (value < min || value > max) {
+      self.updateUIConfig();
       self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.' + item.toUpperCase()) + self.commandRouter.getI18nString('MINIDLNA.INFO_RANGE') + '(' + min + '-' + max + ').');
     } else {
-      self.config.set(item, parseInt(data, 10));
+      self.config.set(item, parseInt(value, 10));
     }
   } else {
+    self.updateUIConfig();
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.' + item.toUpperCase()) + self.commandRouter.getI18nString('MINIDLNA.NAN'));
   }
 };
@@ -222,7 +229,6 @@ minidlna.prototype.initialConf = function () {
   } else {
     return libQ.resolve();
   }
-
   return defer.promise;
 };
 
@@ -251,13 +257,7 @@ minidlna.prototype.createMinidlnaConf = function () {
         }
         data = data.replace('${' + configItem + '}', value);
       });
-
-      try {
-
-      } catch(e) {
-        self.logger.error('Cannot create emtpy minidlna.conf file');
-      }
-      fs.writeFile('/data/minidlna.conf', data, 'utf8', function (err) {
+      fs.writeFile('/etc/minidlna.conf', data, 'utf8', function (err) {
         if (err) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_WRITE') + '/data/minidlna.conf: ' + err);
           defer.reject();
@@ -269,26 +269,23 @@ minidlna.prototype.createMinidlnaConf = function () {
       });
     }
   });
-
   return defer.promise;
 };
 
-minidlna.prototype.systemctl = function (systemctlCmd, arg) {
+minidlna.prototype.systemctl = function (systemctlCmd) {
   const self = this;
   const defer = libQ.defer();
-  const cmd = '/usr/bin/sudo /bin/systemctl ' + systemctlCmd + ' ' + arg;
 
-  exec(cmd, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+  exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Failed to ' + systemctlCmd + ' ' + arg + ': ' + error);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.GENERIC_FAILED') + systemctlCmd + ' ' + arg + ': ' + error);
+      self.logger.error('Failed to ' + systemctlCmd + ': ' + error);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.GENERIC_FAILED') + systemctlCmd + ' ' + ': ' + error);
       defer.reject();
     } else {
-      self.logger.info(systemctlCmd + ' of ' + arg + ' succeeded.');
+      self.logger.info('systemctl ' + systemctlCmd + ' succeeded.');
       defer.resolve();
     }
   });
-
   return defer.promise;
 };
 
@@ -296,7 +293,7 @@ minidlna.prototype.forceRescan = function () {
   const self = this;
   const defer = libQ.defer();
 
-  exec('/usr/bin/minidlnad -R', {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+  exec('/usr/bin/minidlnad -R', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
       self.logger.error('Failed to rescan the media directories: ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.RESCAN_FAILED') + error);
@@ -307,6 +304,5 @@ minidlna.prototype.forceRescan = function () {
       defer.resolve();
     }
   });
-
   return defer.promise;
 };

@@ -58,9 +58,9 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.AUDIO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.AUDIO_FOLDER",
-                             "value": "/data/INTERNAL",
+                             "value": "/mnt/",
                              "attributes": [
-                                             {"placeholder": "/data/INTERNAL"}
+                                             {"placeholder": "/mnt/"}
                                            ]
                              },
                              {
@@ -69,9 +69,9 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.PICTURE_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.PICTURE_FOLDER",
-                             "value": "/data/INTERNAL",
+                             "value": "/mnt/",
                              "attributes": [
-                                             {"placeholder": "/data/INTERNAL"}
+                                             {"placeholder": "/mnt/"}
                                            ]
                              },
                              {
@@ -80,9 +80,9 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.VIDEO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.VIDEO_FOLDER",
-                             "value": "/data/INTERNAL",
+                             "value": "/mnt/",
                              "attributes": [
-                                             {"placeholder": "/data/INTERNAL"}
+                                             {"placeholder": "/mnt/"}
                                            ]
                              },
                              {
@@ -160,7 +160,10 @@
                              "visibleIf": {"field": "show_more", "value": true},
                              "value": 8200,
                              "attributes": [
-                                             {"placeholder": 8200}
+                                             {"placeholder": 8200},
+                                             {"maxlength": 5},
+                                             {"min": 0},
+                                             {"max": 65535}
                                            ]
                              },
                              {
@@ -206,9 +209,9 @@
                              "doc": "TRANSLATE.MINIDLNA.MODEL_NAME_DOC",
                              "label": "TRANSLATE.MINIDLNA.MODEL_NAME",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": "Windows Media Connect compatible (MiniDLNA)",
+                             "value": "MiniDLNA on Volumio",
                              "attributes": [
-                                             {"placeholder": "Windows Media Connect compatible (MiniDLNA)"}
+                                             {"placeholder": "MiniDLNA on Volumio"}
                                            ]
                              },
                              {
@@ -268,7 +271,10 @@
                              "visibleIf": {"field": "show_more", "value": true},
                              "value": 5,
                              "attributes": [
-                                             {"placeholder": 5}
+                                             {"placeholder": 5},
+                                             {"maxlength": 16},
+                                             {"min": 0},
+                                             {"max": 9007199254740991}
                                            ]
                              },
                              {
@@ -298,7 +304,10 @@
                              "visibleIf": {"field": "show_more", "value": true},
                              "value": 50,
                              "attributes": [
-                                             {"placeholder": 50}
+                                             {"placeholder": 50},
+                                             {"maxlength": 16},
+                                             {"min": 0},
+                                             {"max": 9007199254740991}
                                            ]
                              },
                              {
