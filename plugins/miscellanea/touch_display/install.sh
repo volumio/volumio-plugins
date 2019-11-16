@@ -39,6 +39,9 @@ then
     sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
   fi
 
+  sudo mkdir /etc/X11/xorg.conf.d
+  sudo cp /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
+
 else
 
   echo "Installing Chromium Dependencies"

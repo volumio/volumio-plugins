@@ -39,9 +39,13 @@
     "type": "number",
     "value": 0
   },
-  "flip": {
-    "type": "boolean",
-    "value": false
+  "angle": {
+    "type": "string",
+    "value": "0"
+  },
+  "gpuMem": {
+    "type": "number",
+    "value": 32
   },
   "showPointer": {
     "type": "boolean",
