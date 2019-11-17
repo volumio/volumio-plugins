@@ -30,6 +30,7 @@
 				"element": "input",
 				"label": "TRANSLATE.LASTFM.API_KEY",
 				"doc": "TRANSLATE.LASTFM.D_API_KEY",
+				"description": "TRANSLATE.LASTFM.DD_API_KEY",
 				"value": ""
 			},
 			{
@@ -81,13 +82,24 @@
 		"saveButton": {
 			"label": "TRANSLATE.LASTFM.SAVE",
 			"data": [
+				"supportedSongServices",
 				"scrobbleThreshold",
 				"pushToastOnScrobble",
 				"scrobbleFromStream",
+				"supportedStreamingServices",
 				"streamScrobbleThreshold"
 			]
 		},
 		"content": [
+			{
+			  "id":"supportedSongServices",
+			  "element": "input",
+			  "type":"text",
+			  "label": "TRANSLATE.LASTFM.SUPPORTED_SONG_SERVICES",
+			  "doc": "TRANSLATE.LASTFM.D_SUPPORTED_SONG_SERVICES",
+			  "description": "TRANSLATE.LASTFM.DD_SUPPORTED_SONG_SERVICES",
+			  "value": "mpd, airplay, volspotconnect, volspotconnect2, spop, radio_paradise, 80s80s"
+			},
 			{
 				"id": "scrobbleThreshold",
 				"element": "select",
@@ -114,9 +126,21 @@
 			  "value": false
 			},
 			{
+			  "id":"supportedStreamingServices",
+			  "element": "input",
+			  "label": "TRANSLATE.LASTFM.SUPPORTED_STREAMING_SERVICES",
+			  "doc": "TRANSLATE.LASTFM.D_SUPPORTED_STREAMING_SERVICES",
+			  "description": "TRANSLATE.LASTFM.DD_SUPPORTED_STREAMING_SERVICES",
+			  "value": "webradio",
+			  "visibleIf": {
+				"field": "scrobbleFromStream",
+				"value": true
+				}
+			},			
+			{
 				"id":"streamScrobbleThreshold",
-				"type":"text",
 				"element": "input",
+				"type":"text",
 				"label": "TRANSLATE.LASTFM.STREAMSCROBBLETHRESHOLD",
 				"doc": "TRANSLATE.LASTFM.D_STREAMSCROBBLETHRESHOLD",
 				"value": "30",
