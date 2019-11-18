@@ -257,7 +257,7 @@ minidlna.prototype.createMinidlnaConf = function () {
         }
         data = data.replace('${' + configItem + '}', value);
       });
-      fs.writeFile('/etc/minidlna.conf', data, 'utf8', function (err) {
+      fs.writeFile('/data/minidlna.conf', data, 'utf8', function (err) {
         if (err) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_WRITE') + '/data/minidlna.conf: ' + err);
           defer.reject();
