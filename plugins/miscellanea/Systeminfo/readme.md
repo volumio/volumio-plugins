@@ -1,4 +1,4 @@
-November 15th
+November 18th
 
 This plugin returns informations about your system such as cpu, mem, kernel...
 
@@ -20,6 +20,10 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+Nov 18th 2019
 
+- add average cpu load
+
+Nov 15th 2019
 
 - first commit
