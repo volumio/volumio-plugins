@@ -131,11 +131,25 @@ Systeminfo.prototype.getsysteminfo = function() {
 	var memtotal = data.mem.total/1024 + ' Ko';
 	var memfree = data.mem.free/1024 + ' Ko';
 	var memused = data.mem.used/1024 + ' Ko';
+	var uptime = data.time.uptime;
+
+	var seconds = parseInt(uptime, 10);
+
+	var days = Math.floor(seconds / (3600*24));
+	seconds  -= days*3600*24;
+	var hrs   = Math.floor(seconds / 3600);
+	seconds  -= hrs*3600;
+	var mnts = Math.floor(seconds / 60);
+	seconds  -= mnts*60;
+	console.log(days+" days, "+hrs+" Hrs, "+mnts+" Minutes, "+seconds+" Seconds");
+	var cuptime = (days+" days, "+hrs+" Hrs, "+mnts+" Minutes, "+seconds+" Seconds");
+
+	//var uptime = (data.time.uptime => `${parseInt(seconds / 86400)}d ${new Date(seconds * 1000).toISOString().substr(11, 8)}`);
 	var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer +"</li><li>Model: " + data.system.model +"</li><li>Version: " + data.system.version +"</li></ul>";
 	var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand +"</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores +"</li><li>Physical cores: " + data.cpu.physicalCores+"</li><li>Average load: " + data.currentLoad.avgload +"</li></ul>";
 	var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal +"</li><li>Free: " + memfree +"</li><li>Used: " + memused+"</li></ul>";
 
-	var messages4 = "<br><li>OS infos</br></li><ul><li>Hostname: " + data.os.hostname +"</li><li>Kernel: " + data.os.kernel +"</li><li>Governor: " + data.cpu.governor +"</li></ul>";
+	var messages4 = "<br><li>OS infos</br></li><ul><li>Hostname: " + data.os.hostname +"</li><li>Kernel: " + data.os.kernel +"</li><li>Governor: " + data.cpu.governor +"</li><li>Uptime: " + cuptime +"</li></ul>";
 				var modalData = {
 							title: 'System Informations',
 							message: messages1 + messages2 + messages3 + messages4,

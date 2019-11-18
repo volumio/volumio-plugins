@@ -23,6 +23,7 @@ rm -Rf Systeminfo*
 Nov 18th 2019
 
 - add average cpu load
+- add uptime
 
 Nov 15th 2019
 
