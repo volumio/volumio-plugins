@@ -1,3 +1,4 @@
 {
-   
-}
+"nchannels":{"type": "string","value": ""},
+"smpl_rate":{"type": "string","value": ""}
+ }
