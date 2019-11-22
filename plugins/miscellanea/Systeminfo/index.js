@@ -220,7 +220,7 @@ Systeminfo.prototype.getsysteminfo = function() {
         var messages6 = "<br><li>Audio infos</br></li><ul><li>Hw audio configured: " + cout + "</li><li>Mixer type: " + cmixt + "</li><li>Number of channels: " + nchannels + "</li><li>Supported sample rate: " + samplerate + "</li></ul>";
 
         var modalData = {
-         title: 'System Informations',
+         title: 'System Information',
          message: messages1 + messages2 + messages3 + messages4 + messages6,
          size: 'lg',
          buttons: [{

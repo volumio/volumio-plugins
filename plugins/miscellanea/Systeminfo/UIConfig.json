@@ -1,12 +1,12 @@
 {
   "page": {
-    "label": "System Informations"
+    "label": "System Information"
   },
   "sections": [
    {
       "id": "sysinfo",
       "element": "section",
-      "label": "System Informations",
+      "label": "System Information",
       "icon": "fa-plug",
 
       "content": [
