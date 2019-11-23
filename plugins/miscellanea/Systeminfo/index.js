@@ -213,7 +213,7 @@ Systeminfo.prototype.getsysteminfo = function() {
        try {
         var result = info.systemversion
 
-        var messages4 = "<br><li>OS infos</br></li><ul><li>Hostname: " + data.os.hostname + "</li><li>Version of Volumio: " + result + "</li><li>Kernel: " + data.os.kernel + "</li><li>Governor: " + data.cpu.governor + "</li><li>Uptime: " + cuptime + "</li></ul>";
+        var messages4 = "<br><li>OS infos</br></li><ul><li>Version of Volumio: " + result + "</li><li>Hostname: " + data.os.hostname + "</li><li>Kernel: " + data.os.kernel + "</li><li>Governor: " + data.cpu.governor + "</li><li>Uptime: " + cuptime + "</li></ul>";
 
         //var messages5 = "<br><li>Disks infos</br></li><ul><li>Disks: " + data.fsSize.size +"</li><li>Size: " + data.fsSize.size +"</li><li>Used: " + data.fsSize.use+"</li></ul>";
 
@@ -221,7 +221,7 @@ Systeminfo.prototype.getsysteminfo = function() {
 
         var modalData = {
          title: 'System Information',
-         message: messages1 + messages2 + messages3 + messages4 + messages6,
+         message: messages4 + messages6 + messages1 + messages2 + messages3,
          size: 'lg',
          buttons: [{
           name: 'Close',

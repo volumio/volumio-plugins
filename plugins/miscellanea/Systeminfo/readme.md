@@ -1,4 +1,4 @@
-November 22th
+November 23th
 
 This plugin returns informations about your system such as cpu, mem, kernel...
 
@@ -20,6 +20,10 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+Nov 23th 2019
+
+- reorganised information
+
 Nov 22th 2019
 
 - add audio hw info
