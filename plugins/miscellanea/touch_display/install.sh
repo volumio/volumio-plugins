@@ -66,7 +66,7 @@ else
 fi
 
 echo "Installing Japanese, Korean, Chinese and Taiwanese fonts"
-sudo apt-get -y install fonts-arphic-ukai fonts-arphic-gbsn00lp fonts-unfonts-core netcat
+sudo apt-get -y install fonts-arphic-ukai fonts-arphic-gbsn00lp fonts-unfonts-core
 
 echo "Dependencies installed"
 
@@ -76,7 +76,7 @@ chown volumio:volumio /data/volumiokiosk
 
 echo "Creating chromium kiosk start script"
 sudo echo "#!/bin/bash
-while true; do nc -z -v -w 3 localhost 3000 && break; done
+while true; do timeout 3 bash -c \"</dev/tcp/127.0.0.1/3000\" >/dev/null 2>&1 && break; done
 sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/' /data/volumiokiosk/Default/Preferences
 sed -i 's/\"exit_type\":\"Crashed\"/\"exit_type\":\"None\"/' /data/volumiokiosk/Default/Preferences
 openbox-session &
