@@ -10,11 +10,12 @@
       "icon": "fa-plug",
       "onSave": {"type":"controller", "endpoint":"music_service/spop", "method":"saveSpotifyAccount"},
       "saveButton": {
-        "label": "TRANSLATE.SAVE",
+        "label": "TRANSLATE.LOGIN",
         "data": [
           "username",
           "password",
-          "bitrate"
+          "bitrate",
+	      "refresh_token"
         ]
       },
       "content": [
@@ -39,7 +40,15 @@
           "element": "switch",
           "doc": "High bitrate",
           "label": "TRANSLATE.HIGH_BITRATE",
-          "value": true
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id":"oauth",
+          "element": "button",
+          "label": "TRANSLATE.AUTHORIZE",
+          "description": "TRANSLATE.AUTHORIZE_PERSONAL_CONTENT",
+          "onClick": {"type":"oauth", "performerUrl":"http://oauth-performer.dfs.volumio.org/spotify","plugin":"music_service/spop", "scopes":[]}
         }
       ]
    }

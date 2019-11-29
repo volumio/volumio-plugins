@@ -16,7 +16,6 @@ wget http://repo.volumio.org/Packages/Spop/spop-${DPKG_ARCH}.tar.gz
 sudo tar xvf /tmp/spop-${DPKG_ARCH}.tar.gz -C /
 rm /tmp/spop-${DPKG_ARCH}.tar.gz
 
-ldconfig
 sudo chmod 777 /etc/spopd.conf
 
 #requred to end the plugin install
