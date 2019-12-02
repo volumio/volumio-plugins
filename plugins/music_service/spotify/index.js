@@ -402,7 +402,7 @@ ControllerSpop.prototype.spotifyCheckAccessToken = function () {
     var now = d.getTime();
 
     if (self.spotifyAccessTokenExpiration < now) {
-        self.spotifyApi.refreshAccessToken()
+        self.refreshAccessToken()
             .then(function (data) {
                 self.spotifyAccessToken = data.body['access_token'];
                 self.spotifyApi.setAccessToken(data.body['access_token']);
