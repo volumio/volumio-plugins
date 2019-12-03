@@ -404,14 +404,15 @@ ControllerSpop.prototype.spotifyCheckAccessToken = function () {
     if (self.spotifyAccessTokenExpiration < now) {
         self.refreshAccessToken()
             .then(function (data) {
-                self.spotifyAccessToken = data.body['access_token'];
-                self.spotifyApi.setAccessToken(data.body['access_token']);
-                self.spotifyAccessTokenExpiration = data.body['expires_in'] * 1000 + now;
+                self.spotifyAccessToken = data.body.accessToken;
+                self.spotifyApi.setAccessToken(data.body.accessToken);
+                self.spotifyAccessTokenExpiration = data.body.expiresInSeconds * 1000 + now;
                 self.logger.info('New access token = ' + self.spotifyAccessToken);
+                defer.resolve();
             });
+    } else {
+        defer.resolve();
     }
-
-    defer.resolve();
 
     return defer.promise;
 
