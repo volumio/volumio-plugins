@@ -6,7 +6,7 @@
    {
       "id": "section_account",
       "element": "section",
-      "label": "TRANSLATE.SPOTIFY_ACCOUNT",
+      "label": "TRANSLATE.SPOTIFY",
       "icon": "fa-spotify",
       "onSave": {"type":"controller", "endpoint":"music_service/spop", "method":"saveSpotifyAccount"},
       "saveButton": {
@@ -24,7 +24,7 @@
           "type":"text",
           "element": "input",
           "doc": "This is the username of your Spotify account",
-          "label": "TRANSLATE.SPOTIFY_USERNAME",
+          "label": "TRANSLATE.USERNAME",
           "value": ""
         },
         {
@@ -32,7 +32,7 @@
           "type":"password",
           "element": "input",
           "doc": "This is the password of your Spotify account",
-          "label": "TRANSLATE.SPOTIFY_PASSWORD",
+          "label": "TRANSLATE.PASSWORD",
           "value": ""
         },
         {
