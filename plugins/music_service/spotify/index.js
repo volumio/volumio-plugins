@@ -2121,10 +2121,14 @@ ControllerSpop.prototype.createSPOPDFile = function () {
 
 };
 
-ControllerSpop.prototype.saveSpotifyAccount = function (data) {
+ControllerSpop.prototype.saveSpotifyAccount = function (data, avoidBroadcastUiConfig) {
     var self = this;
-
     var defer = libQ.defer();
+    var broadcastUiConfig = true;
+
+    if (avoidBroadcastUiConfig){
+        broadcastUiConfig = false;
+    }
 
     if (data && data['username'] && data['password']) {
         self.config.set('username', data['username']);
@@ -2144,7 +2148,9 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 
             var config = self.getUIConfig();
             config.then(function(conf) {
-                self.commandRouter.broadcastMessage('pushUiConfig', conf);
+                if (broadcastUiConfig) {
+                    self.commandRouter.broadcastMessage('pushUiConfig', conf);
+                }
                 self.showAuthorizationModal();
                 defer.resolve(conf)
             });
@@ -2156,6 +2162,12 @@ ControllerSpop.prototype.saveSpotifyAccount = function (data) {
 
     return defer.promise;
 };
+
+ControllerSpop.prototype.saveSpotifyAccountMyMusic = function (data) {
+    var self = this;
+
+    return self.saveSpotifyAccount(data, true)
+}
 
 ControllerSpop.prototype.showAuthorizationModal = function () {
     var self = this;
@@ -2401,6 +2413,26 @@ ControllerSpop.prototype.oauthLogin = function (data) {
     }
 };
 
+ControllerSpop.prototype.externalOauthLogin = function (data) {
+    var self=this;
+    var defer = libQ.defer();
+
+    if (data && data.refresh_token) {
+        self.logger.info('Saving Spotify Refresh Token');
+        self.config.set('refresh_token', data.refresh_token);
+        self.spopDaemonConnect();
+        self.commandRouter.pushToastMessage('success', self.getI18n('SPOTIFY_LOGIN'), self.getI18n('SUCCESSFULLY_AUTHORIZED'));
+        setTimeout(()=>{
+            defer.resolve('');
+        },150);
+    } else {
+        self.logger.error('Could not receive oauth data');
+        defer.resolve('');
+    }
+    return defer.promise
+};
+
+
 ControllerSpop.prototype.systemLanguageChanged = function () {
     var self=this;
 
@@ -2449,8 +2481,14 @@ ControllerSpop.prototype.getI18n = function (key) {
     }
 };
 
-ControllerSpop.prototype.logout = function () {
+ControllerSpop.prototype.logout = function (avoidBroadcastUiConfig) {
     var self=this;
+    var defer = libQ.defer();
+    var broadcastUiConfig = true;
+
+    if (avoidBroadcastUiConfig){
+        broadcastUiConfig = false;
+    }
 
     self.config.set('username', 'none');
     self.config.set('password', 'none');
@@ -2463,7 +2501,17 @@ ControllerSpop.prototype.logout = function () {
     self.commandRouter.pushToastMessage('success', self.getI18n('LOGOUT'), self.getI18n('LOGOUT_SUCCESSFUL'));
     var config = self.getUIConfig();
     config.then(function(conf) {
-        self.commandRouter.broadcastMessage('pushUiConfig', conf);
+        if (broadcastUiConfig) {
+            self.commandRouter.broadcastMessage('pushUiConfig', conf);
+        }
         defer.resolve(conf)
     });
+
+    return defer.promise
+};
+
+ControllerSpop.prototype.logoutMyMusic = function () {
+    var self=this;
+
+    return self.logout(true)
 };

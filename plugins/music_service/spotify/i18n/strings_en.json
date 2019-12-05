@@ -1,4 +1,7 @@
 {
+  "SPOTIFY":"Spotify",
+  "USERNAME":"Username",
+  "PASSWORD":"Password",
   "SPOTIFY_USERNAME":"Spotify username",
   "SPOTIFY_PASSWORD":"Spotify password",
   "HIGH_BITRATE":"High quality",

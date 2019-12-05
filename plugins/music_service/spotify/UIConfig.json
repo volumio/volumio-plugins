@@ -7,7 +7,7 @@
       "id": "section_account",
       "element": "section",
       "label": "TRANSLATE.SPOTIFY_ACCOUNT",
-      "icon": "fa-plug",
+      "icon": "fa-spotify",
       "onSave": {"type":"controller", "endpoint":"music_service/spop", "method":"saveSpotifyAccount"},
       "saveButton": {
         "label": "TRANSLATE.LOGIN",

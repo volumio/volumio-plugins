@@ -1,4 +1,7 @@
 {
+  "SPOTIFY":"Spotify",
+  "USERNAME":"Utlisateur",
+  "PASSWORD":"Mot de passe",
   "SPOTIFY_USERNAME":"Nom d'utilisateur Spotify",
   "SPOTIFY_PASSWORD":"Mot de passe Spotify",
   "HIGH_BITRATE":"Haute qualité",
