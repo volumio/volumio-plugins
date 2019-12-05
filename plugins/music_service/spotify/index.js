@@ -2085,9 +2085,15 @@ ControllerSpop.prototype.createSPOPDFile = function () {
                 return console.log(err);
             }
             var outdev = self.commandRouter.sharedVars.get('alsa.outputdevice');
-            var hwdev = 'hw:' + outdev;
+
             if (outdev === 'softvolume') {
-                hwdev = 'softvolume';
+                var hwdev = 'softvolume';
+            } else {
+                if (outdev.indexOf(',') >= 0) {
+                    var hwdev = 'plughw:'+outdev;
+                } else {
+                    var hwdev = 'plughw:'+outdev+',0';
+                }
             }
             var bitrate = self.config.get('bitrate');
             var bitratevalue = 'true';
