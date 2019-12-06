@@ -1,4 +1,4 @@
-November 10th 2019
+December 6th 2019
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+December 06th 2019
+
+- small tweak for better support for Primo
 
 november 10th 2019
 

@@ -164,7 +164,22 @@ Systeminfo.prototype.hwinfo = function() {
 
   }
  })
-}
+fs.readFile('/data/configuration/audio_interface/alsa_controller/config.json', 'utf8', function(err, config) {
+    if (err) {
+     self.logger.info('Error reading config.json', err);
+    } else {
+     try {
+      const hwinfoJSON = JSON.parse(config);
+      var cmixt = hwinfoJSON.mixer_type.value;
+      var cout = hwinfoJSON.outputdevicename.value
+	self.config.set('cmixt', cmixt);
+	self.config.set('cout', cout);
+
+     } catch (e) {
+      self.logger.info('Error reading config.json, detection failed', e);
+
+     }
+});
 
 
 
@@ -191,17 +206,10 @@ Systeminfo.prototype.getsysteminfo = function() {
 
    var nchannels = self.config.get('channels');
    var samplerate = self.config.get('samplerates');
+   var cmixt = self.config.get('cmixt');
+   var cout = self.config.get('cout');
 
-   fs.readFile('/data/configuration/audio_interface/alsa_controller/config.json', 'utf8', function(err, config) {
-    if (err) {
-     self.logger.info('Error reading config.json', err);
-    } else {
-     try {
-      const hwinfoJSON = JSON.parse(config);
-      var cmixt = hwinfoJSON.mixer_type.value;
-      var cout = hwinfoJSON.outputdevicename.value
-
-
+   
       var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li></ul>";
 
       var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + data.currentLoad.avgload + "%</li></ul>";
@@ -232,19 +240,13 @@ Systeminfo.prototype.getsysteminfo = function() {
 
         console.log(result);
        } catch (e) {
-        self.logger.error('Could not establish connection with Push Updates Facility: ' + e);
+        self.logger.error('Could not get info ' + e);
        }
       });
 
 
-     } catch (e) {
-      self.logger.info('Error reading config.json, detection failed', e);
-
-     }
-
-    }
+    })
    });
-   //console.log(data);
   })
   .catch(error => console.error(error));
 

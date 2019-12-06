@@ -2743,7 +2743,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 4500);
+ }, 6500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
@@ -2766,7 +2766,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume mixer!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         });
 
-  }, 8500);
+  }, 12500);
  }
  return defer.promise;
 };
