@@ -1781,7 +1781,7 @@ ControllerSpop.prototype.getPlaylistTracks = function (userId, playlistId) {
 
     self.spotifyCheckAccessToken()
         .then(function (data) {
-            var spotifyDefer = self.spotifyApi.getPlaylist(userId, playlistId);
+            var spotifyDefer = self.spotifyApi.getPlaylist(playlistId);
             spotifyDefer.then(function (results) {
 
                 var response = [];
@@ -1912,7 +1912,7 @@ ControllerSpop.prototype.getPlaylistInfo = function (userId, playlistId) {
     var info = {};
     self.spotifyCheckAccessToken()
         .then(function (data) {
-            var spotifyDefer = self.spotifyApi.getPlaylist(userId, playlistId);
+            var spotifyDefer = self.spotifyApi.getPlaylist(playlistId);
             spotifyDefer.then(function (results) {
                 if (results && results.body && results.body.name) {
                     info.title = results.body.name;

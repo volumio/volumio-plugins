@@ -20,7 +20,7 @@
 		"net": "^1.0.2",
 		"node-cache": "^4.1.1",
 		"nodetools": "^1.0.0",
-		"spotify-web-api-node": "^2.3.0",
+		"spotify-web-api-node": "^4.0.0",
 		"v-conf": "^1.4.2"
 	}
 }
