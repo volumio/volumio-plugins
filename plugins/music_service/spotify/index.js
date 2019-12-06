@@ -2492,7 +2492,8 @@ ControllerSpop.prototype.logout = function (avoidBroadcastUiConfig) {
     var defer = libQ.defer();
     var broadcastUiConfig = true;
 
-    if (avoidBroadcastUiConfig){
+
+    if (avoidBroadcastUiConfig === true){
         broadcastUiConfig = false;
     }
 
