@@ -9,7 +9,5 @@ echo "Installing hue control Dependencies"
 #DPKG_ARCH=`dpkg --print-architecture`
 # Then use it to differentiate your install
 
-npm install
-
 #requred to end the plugin install
 echo "plugininstallend"

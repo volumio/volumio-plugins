@@ -37,17 +37,15 @@
       "label": "TRANSLATE.HUE_UNPAIR_CONFIG",
       "icon": "fa-chain-broken",
       "description": "TRANSLATE.HUE_UNPAIR_CONFIG_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "unpairBridge"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.HUE_UNPAIR_BTN"
+      },
       "content": [
-        {
-          "id": "hue_unpair_btn",
-          "type": "button",
-          "label": "TRANSLATE.HUE_UNPAIR_BTN",
-          "onClick": {
-            "type": "controller",
-            "endpoint": "miscellanea/hue_control",
-            "method": "unpairBridge"
-          }
-        },
         {
           "id": "hue_bridge_address",
           "type": "text",
@@ -77,7 +75,8 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "switch_off_delay"
+          "switch_off_delay",
+          "hue_device"
         ]
       },
       "content": [
@@ -94,9 +93,10 @@
           "element": "select",
           "doc": "TRANSLATE.HUE_DEVICE_DOC",
           "label": "TRANSLATE.HUE_DEVICE",
-          "options": [
-            {"value": 1, "label": "Light 1"}
-          ]
+          "value": {
+            "value": -1,
+            "label": "Please select ..."
+          }
         }
 
       ]
