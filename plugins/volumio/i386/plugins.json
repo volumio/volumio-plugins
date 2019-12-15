@@ -329,7 +329,7 @@
 					"prettyName": "System information",
 					"icon": "fa-lightbulb-o",
 					"name": "Systeminfo",
-					"version": "0.0.6",
+					"version": "0.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/Systeminfo/Systeminfo.zip",
 					"license": "",
 					"description": "Gives information about your system",
