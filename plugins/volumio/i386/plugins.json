@@ -10,7 +10,7 @@
 					"prettyName": "Spotify",
 					"icon": "fa-spotify",
 					"name": "spop",
-					"version": "2.0.1",
+					"version": "2.0.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/spop/spop.zip",
 					"license": "Free for non commercial USE",
 					"description": "Spotify plugin for Volumio2",
@@ -22,7 +22,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "3-12-2019"
+					"updated": "15-12-2019"
 				},
 				{
 					"prettyName": "Volumio Spotify Connect2",
