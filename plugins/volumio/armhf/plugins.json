@@ -529,6 +529,24 @@
 						}
 					],
 					"updated": "14-11-2019"
+				},
+				{
+					"prettyName": "System information",
+					"icon": "fa-lightbulb-o",
+					"name": "Systeminfo",
+					"version": "0.0.6",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/Systeminfo/Systeminfo.zip",
+					"license": "",
+					"description": "Gives information about your system",
+					"details": "Gives information about your system",
+					"author": "Balbuze",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "15-12-2019"
 				}
 			]
 		},
