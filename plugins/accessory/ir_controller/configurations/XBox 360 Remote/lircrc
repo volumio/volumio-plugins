@@ -1,0 +1,57 @@
+### Playback commands ###
+begin
+prog = irexec
+button = KEY_PLAY
+config = /usr/local/bin/volumio play
+end
+begin
+prog = irexec
+button = KEY_PAUSE
+config = /usr/local/bin/volumio pause
+end
+begin
+prog = irexec
+button = KEY_STOP
+config = /usr/local/bin/volumio stop
+end
+begin
+prog = irexec
+button = KEY_PREVIOUS
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_NEXT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_FASTFORWARD
+config = /usr/local/bin/volumio seek plus
+end
+begin
+prog = irexec
+button = KEY_REWIND
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_DELETE
+config = /usr/local/bin/volumio clear
+end
+### Volume commands ###
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+end
+begin
+prog = irexec
+button = KEY_MUTE
+config = /usr/local/bin/volumio volume toggle
+end
