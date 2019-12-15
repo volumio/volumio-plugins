@@ -1,0 +1,26 @@
+{
+  "page": {
+    "label": "System Information"
+  },
+  "sections": [
+   {
+      "id": "sysinfo",
+      "element": "section",
+      "label": "System Information",
+      "icon": "fa-plug",
+
+      "content": [
+        {
+                "id": "getsysteminfo",
+                "element": "button",
+                "label": "Probe the system",
+                "onClick": {
+                  "type": "plugin",
+                  "endpoint": "miscellanea/Systeminfo",
+                  "method": "getsysteminfo"
+                }
+      	  }
+      ]
+   }
+  ]
+}
