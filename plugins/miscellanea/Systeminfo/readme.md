@@ -26,6 +26,7 @@ rm -Rf Systeminfo*
 Dec 15th 2019
 
 - correction for cpu load
+- warning with hw detection
 
 Nov 23th 2019
 

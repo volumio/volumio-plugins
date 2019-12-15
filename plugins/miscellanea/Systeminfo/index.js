@@ -152,7 +152,8 @@ Systeminfo.prototype.hwinfo = function() {
   gid: 1000
  }, function(error, stdout, stderr) {
   if (error) {
-   self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
+   self.logger.info('failed ' + error);
+   self.commandRouter.pushToastMessage('error', 'Audio Hardware detection seems to fail  !', 'Do not play music or equalizer while probing system and retry');
   } else {
 
    fs.readFile('/data/configuration/miscellanea/Systeminfo/config.json', 'utf8', function(err, hwinfo) {
@@ -217,7 +218,7 @@ console.log('output'+ cout + 'cmixt' + cmixt)
 
       var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li></ul>";
 
-      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + data.currentLoad.avgload*100 + "%</li></ul>";
+      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(2) + "%</li></ul>";
 
       var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
