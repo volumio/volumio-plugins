@@ -127,13 +127,26 @@ Systeminfo.prototype.setConf = function(varName, varValue) {
 //here we detect hw info
 Systeminfo.prototype.hwinfo = function() {
  var self = this;
- //setTimeout(function() {
- var output_device = self.commandRouter.sharedVars.get('alsa.outputdevice');
- console.log('oooooooooooooooooooooooooooooooooo' + output_device);
  var nchannels;
  var hwinfo;
  var samplerates, probesmplerates;
- execSync('/data/plugins/miscellanea/Systeminfo/hw_params hw:' + output_device + ' >/data/configuration/miscellanea/Systeminfo/config.json ', {
+ fs.readFile('/data/configuration/audio_interface/alsa_controller/config.json', 'utf8', function(err, config) {
+     if (err) {
+      self.logger.info('Error reading config.json', err);
+     } else {
+      try {
+       const hwinfoJSON = JSON.parse(config);
+       var cmixt = hwinfoJSON.mixer_type.value;
+       var cout = hwinfoJSON.outputdevicename.value
+       var output_device = hwinfoJSON.outputdevice.value
+    //   console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + output_device + ' <-AAAAAAAAAAAAA');
+
+ 	self.config.set('cmixt', cmixt);
+ 	self.config.set('cout', cout);
+
+
+
+ exec('/data/plugins/miscellanea/Systeminfo/hw_params hw:' + output_device + ' >/data/configuration/miscellanea/Systeminfo/config.json ', {
 
   uid: 1000,
   gid: 1000
@@ -152,11 +165,11 @@ Systeminfo.prototype.hwinfo = function() {
       samplerates = hwinfoJSON.samplerates.value;
       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-      self.config.set('channels', channels);
-      self.config.set('samplerates', samplerates);
-      var output_format = formats.split(" ").pop();
+      self.config.set('nchannels', nchannels);
+      self.config.set('smpl_rate', samplerates);
+  //    var output_format = formats.split(" ").pop();
      } catch (e) {
-      self.logger.info('Error reading config.json, detection failed', e);
+      self.logger.info('Error reading Systeminfo/config.json, detection failed', e);
 
      }
     }
@@ -164,23 +177,15 @@ Systeminfo.prototype.hwinfo = function() {
 
   }
  })
-fs.readFile('/data/configuration/audio_interface/alsa_controller/config.json', 'utf8', function(err, config) {
-    if (err) {
-     self.logger.info('Error reading config.json', err);
-    } else {
-     try {
-      const hwinfoJSON = JSON.parse(config);
-      var cmixt = hwinfoJSON.mixer_type.value;
-      var cout = hwinfoJSON.outputdevicename.value
-	self.config.set('cmixt', cmixt);
-	self.config.set('cout', cout);
 
-     } catch (e) {
-      self.logger.info('Error reading config.json, detection failed', e);
 
-     }
-});
+       } catch (e) {
+        self.logger.info('Error reading config.json, detection failed', e);
+  }
+       }
+  });
 
+};
 
 
 Systeminfo.prototype.getsysteminfo = function() {
@@ -204,15 +209,15 @@ Systeminfo.prototype.getsysteminfo = function() {
    console.log(days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds");
    var cuptime = (days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds");
 
-   var nchannels = self.config.get('channels');
-   var samplerate = self.config.get('samplerates');
+   var nchannels = self.config.get('nchannels');
+   var samplerate = self.config.get('smpl_rate');
    var cmixt = self.config.get('cmixt');
    var cout = self.config.get('cout');
+console.log('output'+ cout + 'cmixt' + cmixt)
 
-   
       var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li></ul>";
 
-      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + data.currentLoad.avgload + "%</li></ul>";
+      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + data.currentLoad.avgload*100 + "%</li></ul>";
 
       var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
@@ -240,15 +245,14 @@ Systeminfo.prototype.getsysteminfo = function() {
 
         console.log(result);
        } catch (e) {
-        self.logger.error('Could not get info ' + e);
+        self.logger.error('Could not establish connection with Push Updates Facility: ' + e);
        }
       });
 
 
     })
-   });
-  })
+
+   //console.log(data);
+
   .catch(error => console.error(error));
-
-
 };

@@ -1,8 +1,10 @@
-November 23th
+December 15th
+
+###  About the plugin
 
 This plugin returns informations about your system such as cpu, mem, kernel...
 
-
+It uses the very good [Systeminformation](https://systeminformation.io/) and some other custom tools ;-)
 
 ![Alt text](Systeminfo.png?raw=true "Systeminfos window")
 
@@ -20,6 +22,11 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+
+Dec 15th 2019
+
+- correction for cpu load
+
 Nov 23th 2019
 
 - reorganised information
