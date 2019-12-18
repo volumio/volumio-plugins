@@ -945,14 +945,14 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 							// Try to correct the artist
 							if(result.correction.artist.name != undefined && result.correction.artist.name != '' && self.scrobbleData.artist != result.correction.artist.name)
 							{	
-								self.logger.info('[LastFM] corrected artist from: ' + artist + ' to: ' + result.correction.artist.name);
+								self.logger.info('[LastFM] corrected artist from: ' + self.scrobbleData.artist + ' to: ' + result.correction.artist.name);
 								self.scrobbleData.artist = result.correction.artist.name;
 							}
 							
 							// Try to correct the track title
 							if(result.correction.name != undefined && result.correction.name != '' && self.scrobbleData.title != result.correction.name)
 							{	
-								self.logger.info('[LastFM] corrected track title from: ' + title + ' to: ' + result.correction.name);
+								self.logger.info('[LastFM] corrected track title from: ' + self.scrobbleData.title + ' to: ' + result.correction.name);
 								self.scrobbleData.title = result.correction.name;
 							}
 						}
