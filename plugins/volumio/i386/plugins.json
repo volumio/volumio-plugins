@@ -311,10 +311,10 @@
 					"prettyName": "LastFM Scrobbler",
 					"icon": "fa-lightbulb-o",
 					"name": "lastfm",
-					"version": "1.2.9",
+					"version": "1.3.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/lastfm/lastfm.zip",
 					"license": "GPL-3.0",
-					"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info (doesn't work with librespot).",
+					"description": "(Installs a LastFM scrobbler which uses the Volumio artist and track info (doesn't ",
 					"details": "",
 					"author": "Saiyato",
 					"screenshots": [
@@ -323,7 +323,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "17-11-2019"
+					"updated": "19-12-2019"
 				},
 				{
 					"prettyName": "System information",
