@@ -49,3 +49,13 @@ prog = irexec
 button = Menu
 config = /usr/local/bin/volumio random
 end
+begin
+prog = irexec
+button = Power
+config = /usr/bin/sudo systemctl poweroff
+end
+begin
+prog = irexec
+button = Home
+config = /usr/local/bin/volumio clear
+end

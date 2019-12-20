@@ -1,0 +1,107 @@
+{
+  "page": {
+    "label": "NanoSound"
+  },
+  "sections": [
+    {
+      "id": "section_display",
+      "element": "section",
+      "label": "Settings",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/nanosound", "method":"saveConfig"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "oledDisplay","model"
+        ]
+      },
+      "content": [
+        {
+          "id": "oledDisplay",
+          "element": "select",
+          "label": "OLED Display",
+          "value": {"value": "1",
+                    "label": "1.3inch OLED"
+          },
+
+          "options": [
+            {
+              "value": "1",
+              "label": "1.3inch OLED"
+            },
+            {
+              "value": "2",
+              "label": "0.96inch OLED"
+            },
+            {
+              "value": "3",
+              "label": "1.5inch OLED Colour"
+            }
+          ]
+        },
+        {
+          "id": "model",
+          "element": "select",
+          "label": "Model",
+          "value": {"value": "DAC",
+                    "label": "DAC"
+          },
+
+          "options": [
+            {
+              "value": "DAC",
+              "label": "DAC"
+            },
+            {
+              "value": "DAC2",
+              "label": "DAC2"
+            },
+            {
+              "value": "ProdBoard",
+              "label": "ProdBoard"
+            },
+            {
+              "value": "PiSwitchCap",
+              "label": "Pi Switch Cap"
+            }
+          ]
+        }
+	]
+	},
+  {
+   "id": "section_resources",
+   "element": "section",
+   "label": "TRANSLATE.RESOURCES",
+   "icon": "fa-book",
+   "content": [
+     {
+       "id": "shopnanosound",
+       "element": "button",
+       "label": "TRANSLATE.GET_NANOSOUND",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://volumio.org/product/nanosound-dac/"
+       }
+     },
+     {
+      "id": "nanosoundrange",
+      "element": "button",
+      "label": "NanoSound Product Info",
+      "onClick": {
+        "type": "openUrl",
+        "url": "https://nanomesher.com/nanosound"
+      }
+    },
+     {
+       "id": "support",
+       "element": "button",
+       "label": "TRANSLATE.SUPPORT_INFO",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://nanomesher.com/support"
+       }
+     }
+   ]
+   }
+  ]
+}

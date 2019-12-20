@@ -1,0 +1,400 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/bin/node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.0
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly install normalizeTree
+8 silly loadCurrentTree Finishing
+9 silly loadIdealTree Starting
+10 silly install loadIdealTree
+11 silly cloneCurrentTree Starting
+12 silly install cloneCurrentTreeToIdealTree
+13 silly cloneCurrentTree Finishing
+14 silly loadShrinkwrap Starting
+15 silly install loadShrinkwrap
+16 silly loadShrinkwrap Finishing
+17 silly loadAllDepsIntoIdealTree Starting
+18 silly install loadAllDepsIntoIdealTree
+19 silly fetchNamedPackageData fs-extra
+20 silly mapToRegistry name fs-extra
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry data Result {
+23 silly mapToRegistry   raw: 'fs-extra',
+23 silly mapToRegistry   scope: null,
+23 silly mapToRegistry   escapedName: 'fs-extra',
+23 silly mapToRegistry   name: 'fs-extra',
+23 silly mapToRegistry   rawSpec: '',
+23 silly mapToRegistry   spec: 'latest',
+23 silly mapToRegistry   type: 'tag' }
+24 silly mapToRegistry uri https://registry.npmjs.org/fs-extra
+25 silly fetchNamedPackageData kew
+26 silly mapToRegistry name kew
+27 silly mapToRegistry using default registry
+28 silly mapToRegistry registry https://registry.npmjs.org/
+29 silly mapToRegistry data Result {
+29 silly mapToRegistry   raw: 'kew',
+29 silly mapToRegistry   scope: null,
+29 silly mapToRegistry   escapedName: 'kew',
+29 silly mapToRegistry   name: 'kew',
+29 silly mapToRegistry   rawSpec: '',
+29 silly mapToRegistry   spec: 'latest',
+29 silly mapToRegistry   type: 'tag' }
+30 silly mapToRegistry uri https://registry.npmjs.org/kew
+31 silly fetchNamedPackageData v-conf
+32 silly mapToRegistry name v-conf
+33 silly mapToRegistry using default registry
+34 silly mapToRegistry registry https://registry.npmjs.org/
+35 silly mapToRegistry data Result {
+35 silly mapToRegistry   raw: 'v-conf',
+35 silly mapToRegistry   scope: null,
+35 silly mapToRegistry   escapedName: 'v-conf',
+35 silly mapToRegistry   name: 'v-conf',
+35 silly mapToRegistry   rawSpec: '',
+35 silly mapToRegistry   spec: 'latest',
+35 silly mapToRegistry   type: 'tag' }
+36 silly mapToRegistry uri https://registry.npmjs.org/v-conf
+37 verbose request uri https://registry.npmjs.org/fs-extra
+38 verbose request no auth needed
+39 info attempt registry request try #1 at 5:43:05 PM
+40 verbose request id 6b5eaf624b961801
+41 verbose etag W/"599c79d9-209ea"
+42 verbose lastModified Tue, 22 Aug 2017 18:37:13 GMT
+43 http request GET https://registry.npmjs.org/fs-extra
+44 verbose request uri https://registry.npmjs.org/kew
+45 verbose request no auth needed
+46 info attempt registry request try #1 at 5:43:05 PM
+47 verbose etag W/"58be88f9-8aba"
+48 verbose lastModified Tue, 07 Mar 2017 10:18:33 GMT
+49 http request GET https://registry.npmjs.org/kew
+50 verbose request uri https://registry.npmjs.org/v-conf
+51 verbose request no auth needed
+52 info attempt registry request try #1 at 5:43:05 PM
+53 verbose etag W/"58d8c70e-5274"
+54 verbose lastModified Mon, 27 Mar 2017 08:02:22 GMT
+55 http request GET https://registry.npmjs.org/v-conf
+56 http 304 https://registry.npmjs.org/kew
+57 verbose headers { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+57 verbose headers   via: '1.1 varnish',
+57 verbose headers   'cache-control': 'max-age=300',
+57 verbose headers   etag: 'W/"58be88f9-8aba"',
+57 verbose headers   age: '0',
+57 verbose headers   connection: 'keep-alive',
+57 verbose headers   'x-served-by': 'cache-fra1227-FRA',
+57 verbose headers   'x-cache': 'HIT',
+57 verbose headers   'x-cache-hits': '1',
+57 verbose headers   'x-timer': 'S1504114986.107295,VS0,VE45',
+57 verbose headers   vary: 'Accept-Encoding, Accept' }
+58 silly get cb [ 304,
+58 silly get   { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+58 silly get     via: '1.1 varnish',
+58 silly get     'cache-control': 'max-age=300',
+58 silly get     etag: 'W/"58be88f9-8aba"',
+58 silly get     age: '0',
+58 silly get     connection: 'keep-alive',
+58 silly get     'x-served-by': 'cache-fra1227-FRA',
+58 silly get     'x-cache': 'HIT',
+58 silly get     'x-cache-hits': '1',
+58 silly get     'x-timer': 'S1504114986.107295,VS0,VE45',
+58 silly get     vary: 'Accept-Encoding, Accept' } ]
+59 verbose etag https://registry.npmjs.org/kew from cache
+60 verbose get saving kew to /home/volumio/.npm/registry.npmjs.org/kew/.cache.json
+61 verbose correctMkdir /home/volumio/.npm correctMkdir not in flight; initializing
+62 silly resolveWithNewModule kew@0.7.0 checking installable status
+63 silly cache add args [ 'kew@^0.7.0', null ]
+64 verbose cache add spec kew@^0.7.0
+65 silly cache add parsed spec Result {
+65 silly cache add   raw: 'kew@^0.7.0',
+65 silly cache add   scope: null,
+65 silly cache add   escapedName: 'kew',
+65 silly cache add   name: 'kew',
+65 silly cache add   rawSpec: '^0.7.0',
+65 silly cache add   spec: '>=0.7.0 <0.8.0',
+65 silly cache add   type: 'range' }
+66 silly addNamed kew@>=0.7.0 <0.8.0
+67 verbose addNamed ">=0.7.0 <0.8.0" is a valid semver range for kew
+68 silly addNameRange { name: 'kew', range: '>=0.7.0 <0.8.0', hasData: false }
+69 silly mapToRegistry name kew
+70 silly mapToRegistry using default registry
+71 silly mapToRegistry registry https://registry.npmjs.org/
+72 silly mapToRegistry data Result {
+72 silly mapToRegistry   raw: 'kew',
+72 silly mapToRegistry   scope: null,
+72 silly mapToRegistry   escapedName: 'kew',
+72 silly mapToRegistry   name: 'kew',
+72 silly mapToRegistry   rawSpec: '',
+72 silly mapToRegistry   spec: 'latest',
+72 silly mapToRegistry   type: 'tag' }
+73 silly mapToRegistry uri https://registry.npmjs.org/kew
+74 verbose addNameRange registry:https://registry.npmjs.org/kew not in flight; fetching
+75 verbose get https://registry.npmjs.org/kew not expired, no request
+76 silly addNameRange number 2 { name: 'kew', range: '>=0.7.0 <0.8.0', hasData: true }
+77 silly addNameRange versions [ 'kew',
+77 silly addNameRange   [ '0.0.1',
+77 silly addNameRange     '0.0.2',
+77 silly addNameRange     '0.0.3',
+77 silly addNameRange     '0.0.4',
+77 silly addNameRange     '0.1.0',
+77 silly addNameRange     '0.1.1',
+77 silly addNameRange     '0.1.2',
+77 silly addNameRange     '0.1.3',
+77 silly addNameRange     '0.1.4',
+77 silly addNameRange     '0.1.5',
+77 silly addNameRange     '0.1.6',
+77 silly addNameRange     '0.1.7',
+77 silly addNameRange     '0.2.1',
+77 silly addNameRange     '0.2.2',
+77 silly addNameRange     '0.3.0',
+77 silly addNameRange     '0.3.1',
+77 silly addNameRange     '0.3.2',
+77 silly addNameRange     '0.3.3',
+77 silly addNameRange     '0.3.4',
+77 silly addNameRange     '0.4.0',
+77 silly addNameRange     '0.5.0-alpha',
+77 silly addNameRange     '0.5.0-alpha.1',
+77 silly addNameRange     '0.5.0',
+77 silly addNameRange     '0.6.0',
+77 silly addNameRange     '0.7.0' ] ]
+78 silly addNamed kew@0.7.0
+79 verbose addNamed "0.7.0" is a plain semver version for kew
+80 http 304 https://registry.npmjs.org/v-conf
+81 verbose headers { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+81 verbose headers   via: '1.1 varnish',
+81 verbose headers   'cache-control': 'max-age=300',
+81 verbose headers   etag: 'W/"58d8c70e-5274"',
+81 verbose headers   age: '175',
+81 verbose headers   connection: 'keep-alive',
+81 verbose headers   'x-served-by': 'cache-fra1224-FRA',
+81 verbose headers   'x-cache': 'HIT',
+81 verbose headers   'x-cache-hits': '1',
+81 verbose headers   'x-timer': 'S1504114987.513429,VS0,VE0',
+81 verbose headers   vary: 'Accept-Encoding, Accept' }
+82 silly get cb [ 304,
+82 silly get   { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+82 silly get     via: '1.1 varnish',
+82 silly get     'cache-control': 'max-age=300',
+82 silly get     etag: 'W/"58d8c70e-5274"',
+82 silly get     age: '175',
+82 silly get     connection: 'keep-alive',
+82 silly get     'x-served-by': 'cache-fra1224-FRA',
+82 silly get     'x-cache': 'HIT',
+82 silly get     'x-cache-hits': '1',
+82 silly get     'x-timer': 'S1504114987.513429,VS0,VE0',
+82 silly get     vary: 'Accept-Encoding, Accept' } ]
+83 verbose etag https://registry.npmjs.org/v-conf from cache
+84 verbose get saving v-conf to /home/volumio/.npm/registry.npmjs.org/v-conf/.cache.json
+85 verbose correctMkdir /home/volumio/.npm correctMkdir not in flight; initializing
+86 silly resolveWithNewModule v-conf@1.4.0 checking installable status
+87 silly cache add args [ 'v-conf@^1.4.0', null ]
+88 verbose cache add spec v-conf@^1.4.0
+89 silly cache add parsed spec Result {
+89 silly cache add   raw: 'v-conf@^1.4.0',
+89 silly cache add   scope: null,
+89 silly cache add   escapedName: 'v-conf',
+89 silly cache add   name: 'v-conf',
+89 silly cache add   rawSpec: '^1.4.0',
+89 silly cache add   spec: '>=1.4.0 <2.0.0',
+89 silly cache add   type: 'range' }
+90 silly addNamed v-conf@>=1.4.0 <2.0.0
+91 verbose addNamed ">=1.4.0 <2.0.0" is a valid semver range for v-conf
+92 silly addNameRange { name: 'v-conf', range: '>=1.4.0 <2.0.0', hasData: false }
+93 silly mapToRegistry name v-conf
+94 silly mapToRegistry using default registry
+95 silly mapToRegistry registry https://registry.npmjs.org/
+96 silly mapToRegistry data Result {
+96 silly mapToRegistry   raw: 'v-conf',
+96 silly mapToRegistry   scope: null,
+96 silly mapToRegistry   escapedName: 'v-conf',
+96 silly mapToRegistry   name: 'v-conf',
+96 silly mapToRegistry   rawSpec: '',
+96 silly mapToRegistry   spec: 'latest',
+96 silly mapToRegistry   type: 'tag' }
+97 silly mapToRegistry uri https://registry.npmjs.org/v-conf
+98 verbose addNameRange registry:https://registry.npmjs.org/v-conf not in flight; fetching
+99 verbose get https://registry.npmjs.org/v-conf not expired, no request
+100 silly addNameRange number 2 { name: 'v-conf', range: '>=1.4.0 <2.0.0', hasData: true }
+101 silly addNameRange versions [ 'v-conf',
+101 silly addNameRange   [ '0.0.1',
+101 silly addNameRange     '0.0.2',
+101 silly addNameRange     '0.2.0',
+101 silly addNameRange     '0.3.0',
+101 silly addNameRange     '0.3.1',
+101 silly addNameRange     '0.9.0',
+101 silly addNameRange     '0.10.0',
+101 silly addNameRange     '0.11.0',
+101 silly addNameRange     '1.0.0',
+101 silly addNameRange     '1.1.0',
+101 silly addNameRange     '1.2.0',
+101 silly addNameRange     '1.3.0',
+101 silly addNameRange     '1.4.0' ] ]
+102 silly addNamed v-conf@1.4.0
+103 verbose addNamed "1.4.0" is a plain semver version for v-conf
+104 http 304 https://registry.npmjs.org/fs-extra
+105 verbose headers { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+105 verbose headers   via: '1.1 varnish',
+105 verbose headers   'cache-control': 'max-age=300',
+105 verbose headers   etag: 'W/"599c79d9-209ea"',
+105 verbose headers   age: '79',
+105 verbose headers   connection: 'keep-alive',
+105 verbose headers   'x-served-by': 'cache-fra1236-FRA',
+105 verbose headers   'x-cache': 'HIT',
+105 verbose headers   'x-cache-hits': '1',
+105 verbose headers   'x-timer': 'S1504114987.616021,VS0,VE0',
+105 verbose headers   vary: 'Accept-Encoding, Accept' }
+106 silly get cb [ 304,
+106 silly get   { date: 'Wed, 30 Aug 2017 17:43:06 GMT',
+106 silly get     via: '1.1 varnish',
+106 silly get     'cache-control': 'max-age=300',
+106 silly get     etag: 'W/"599c79d9-209ea"',
+106 silly get     age: '79',
+106 silly get     connection: 'keep-alive',
+106 silly get     'x-served-by': 'cache-fra1236-FRA',
+106 silly get     'x-cache': 'HIT',
+106 silly get     'x-cache-hits': '1',
+106 silly get     'x-timer': 'S1504114987.616021,VS0,VE0',
+106 silly get     vary: 'Accept-Encoding, Accept' } ]
+107 verbose etag https://registry.npmjs.org/fs-extra from cache
+108 verbose get saving fs-extra to /home/volumio/.npm/registry.npmjs.org/fs-extra/.cache.json
+109 verbose correctMkdir /home/volumio/.npm correctMkdir not in flight; initializing
+110 silly resolveWithNewModule fs-extra@0.28.0 checking installable status
+111 silly cache add args [ 'fs-extra@^0.28.0', null ]
+112 verbose cache add spec fs-extra@^0.28.0
+113 silly cache add parsed spec Result {
+113 silly cache add   raw: 'fs-extra@^0.28.0',
+113 silly cache add   scope: null,
+113 silly cache add   escapedName: 'fs-extra',
+113 silly cache add   name: 'fs-extra',
+113 silly cache add   rawSpec: '^0.28.0',
+113 silly cache add   spec: '>=0.28.0 <0.29.0',
+113 silly cache add   type: 'range' }
+114 silly addNamed fs-extra@>=0.28.0 <0.29.0
+115 verbose addNamed ">=0.28.0 <0.29.0" is a valid semver range for fs-extra
+116 silly addNameRange { name: 'fs-extra', range: '>=0.28.0 <0.29.0', hasData: false }
+117 silly mapToRegistry name fs-extra
+118 silly mapToRegistry using default registry
+119 silly mapToRegistry registry https://registry.npmjs.org/
+120 silly mapToRegistry data Result {
+120 silly mapToRegistry   raw: 'fs-extra',
+120 silly mapToRegistry   scope: null,
+120 silly mapToRegistry   escapedName: 'fs-extra',
+120 silly mapToRegistry   name: 'fs-extra',
+120 silly mapToRegistry   rawSpec: '',
+120 silly mapToRegistry   spec: 'latest',
+120 silly mapToRegistry   type: 'tag' }
+121 silly mapToRegistry uri https://registry.npmjs.org/fs-extra
+122 verbose addNameRange registry:https://registry.npmjs.org/fs-extra not in flight; fetching
+123 verbose get https://registry.npmjs.org/fs-extra not expired, no request
+124 silly addNameRange number 2 { name: 'fs-extra', range: '>=0.28.0 <0.29.0', hasData: true }
+125 silly addNameRange versions [ 'fs-extra',
+125 silly addNameRange   [ '0.0.1',
+125 silly addNameRange     '0.0.11',
+125 silly addNameRange     '0.0.3',
+125 silly addNameRange     '0.0.4',
+125 silly addNameRange     '0.1.0',
+125 silly addNameRange     '0.1.1',
+125 silly addNameRange     '0.1.2',
+125 silly addNameRange     '0.1.3',
+125 silly addNameRange     '0.2.0',
+125 silly addNameRange     '0.2.1',
+125 silly addNameRange     '0.3.0',
+125 silly addNameRange     '0.3.1',
+125 silly addNameRange     '0.3.2',
+125 silly addNameRange     '0.4.0',
+125 silly addNameRange     '0.5.0',
+125 silly addNameRange     '0.6.0',
+125 silly addNameRange     '0.6.1',
+125 silly addNameRange     '0.6.2',
+125 silly addNameRange     '0.6.3',
+125 silly addNameRange     '0.6.4',
+125 silly addNameRange     '0.7.0',
+125 silly addNameRange     '0.7.1',
+125 silly addNameRange     '0.8.0',
+125 silly addNameRange     '0.8.1',
+125 silly addNameRange     '0.9.0',
+125 silly addNameRange     '0.9.1',
+125 silly addNameRange     '0.10.0',
+125 silly addNameRange     '0.11.0',
+125 silly addNameRange     '0.11.1',
+125 silly addNameRange     '0.12.0',
+125 silly addNameRange     '0.13.0',
+125 silly addNameRange     '0.14.0',
+125 silly addNameRange     '0.15.0',
+125 silly addNameRange     '0.16.0',
+125 silly addNameRange     '0.16.1',
+125 silly addNameRange     '0.16.2',
+125 silly addNameRange     '0.16.3',
+125 silly addNameRange     '0.16.4',
+125 silly addNameRange     '0.16.5',
+125 silly addNameRange     '0.17.0',
+125 silly addNameRange     '0.18.0',
+125 silly addNameRange     '0.18.1',
+125 silly addNameRange     '0.18.2',
+125 silly addNameRange     '0.18.3',
+125 silly addNameRange     '0.18.4',
+125 silly addNameRange     '0.19.0',
+125 silly addNameRange     '0.20.0',
+125 silly addNameRange     '0.20.1',
+125 silly addNameRange     '0.21.0',
+125 silly addNameRange     '0.22.0',
+125 silly addNameRange     '0.22.1',
+125 silly addNameRange     '0.23.0',
+125 silly addNameRange     '0.23.1',
+125 silly addNameRange     '0.24.0',
+125 silly addNameRange     '0.25.0',
+125 silly addNameRange     '0.26.0',
+125 silly addNameRange     '0.26.1',
+125 silly addNameRange     '0.26.2',
+125 silly addNameRange     '0.26.3',
+125 silly addNameRange     '0.26.4',
+125 silly addNameRange     '0.26.5',
+125 silly addNameRange     '0.26.6',
+125 silly addNameRange     '0.26.7',
+125 silly addNameRange     '0.27.0',
+125 silly addNameRange     '0.28.0',
+125 silly addNameRange     '0.29.0',
+125 silly addNameRange     '0.30.0',
+125 silly addNameRange     '1.0.0',
+125 silly addNameRange     '2.0.0',
+125 silly addNameRange     '2.1.0',
+125 silly addNameRange     '2.1.1',
+125 silly addNameRange     '2.1.2',
+125 silly addNameRange     '3.0.0',
+125 silly addNameRange     '3.0.1',
+125 silly addNameRange     '4.0.0',
+125 silly addNameRange     '4.0.1' ] ]
+126 silly addNamed fs-extra@0.28.0
+127 verbose addNamed "0.28.0" is a plain semver version for fs-extra
+128 silly rollbackFailedOptional Starting
+129 silly rollbackFailedOptional Finishing
+130 silly runTopLevelLifecycles Finishing
+131 silly install printInstalled
+132 verbose stack Error: Failed to parse json
+132 verbose stack No data, empty input at 1:1
+132 verbose stack
+132 verbose stack ^
+132 verbose stack     at parseError (/lib/node_modules/npm/node_modules/read-package-json/read-json.js:390:11)
+132 verbose stack     at parseJson (/lib/node_modules/npm/node_modules/read-package-json/read-json.js:79:23)
+132 verbose stack     at /lib/node_modules/npm/node_modules/read-package-json/read-json.js:48:5
+132 verbose stack     at /lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
+132 verbose stack     at tryToString (fs.js:456:3)
+132 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:443:12)
+133 verbose cwd /home/volumio/volumio-plugins/plugins/accessory/allo_relay_volume_attenuator
+134 error Linux 4.9.41-v7+
+135 error argv "/bin/node" "/usr/local/bin/npm" "install"
+136 error node v6.11.0
+137 error npm  v3.10.10
+138 error file /home/volumio/.npm/kew/0.7.0/package/package.json
+139 error code EJSONPARSE
+140 error Failed to parse json
+140 error No data, empty input at 1:1
+140 error
+140 error ^
+141 error File: /home/volumio/.npm/kew/0.7.0/package/package.json
+142 error Failed to parse package.json data.
+142 error package.json must be actual JSON, not just JavaScript.
+142 error
+142 error This is not a bug in npm.
+142 error Tell the package author to fix their package.json file. JSON.parse
+143 verbose exit [ 1, true ]

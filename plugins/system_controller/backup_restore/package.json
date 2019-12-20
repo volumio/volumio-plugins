@@ -1,0 +1,21 @@
+{
+	"name": "backup_restore",
+	"version": "0.7.2",
+	"description": "This plugin allows User to locally backup volumio data (playlists, settings, etc) and restore later",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "macmpi",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Backup & Restore Data",
+		"icon": "fa-floppy-o",
+		"plugin_type": "system_controller"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

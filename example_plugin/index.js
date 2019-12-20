@@ -82,6 +82,9 @@ ControllerExamplePlugin.prototype.getUIConfig = function() {
     return defer.promise;
 };
 
+ControllerExamplePlugin.prototype.getConfigurationFiles = function() {
+	return ['config.json'];
+}
 
 ControllerExamplePlugin.prototype.setUIConfig = function(data) {
 	var self = this;
@@ -252,4 +255,13 @@ ControllerExamplePlugin.prototype._searchPlaylists = function (results) {
 
 ControllerExamplePlugin.prototype._searchTracks = function (results) {
 
+};
+
+ControllerExamplePlugin.prototype.goto=function(data){
+    var self=this
+    var defer=libQ.defer()
+
+// Handle go to artist and go to album function
+
+     return defer.promise;
 };

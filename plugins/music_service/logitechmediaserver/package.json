@@ -1,0 +1,44 @@
+{
+	"name": "lms",
+	"version": "1.0.15",
+	"description": "Installs the Logitech Media Server application and web client",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Saiyato",
+	"license": "GPL-3.0",
+	"volumio_info": {
+		"prettyName": "Logitech Media Server",
+		"icon": "fa fa-music",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"child-process": "^1.0.2",
+		"fs-extra": "^0.28.0",
+		"ip": "^1.1.5",
+		"kew": "^0.7.0",
+		"wireless-tools": "^0.19.0"
+	},
+	"directories": {
+		"example": "examples"
+	},
+	"devDependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Saiyato/volumio-lms-plugin.git"
+	},
+	"keywords": [
+		"lms",
+		"multiroom",
+		"audio",
+		"Logitech",
+		"Media",
+		"Server",
+		"volumio"
+	],
+	"bugs": {
+		"url": "https://github.com/Saiyato/volumio-lms-plugin/issues"
+	},
+	"homepage": "https://github.com/Saiyato/volumio-lms-plugin#readme"
+}

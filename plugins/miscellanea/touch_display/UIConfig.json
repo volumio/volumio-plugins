@@ -1,19 +1,257 @@
 {
   "page": {
-	"label": "TRANSLATE.TOUCHSCREEN_CONFIGURATION"
-  },
+          "label": "TRANSLATE.TOUCH_DISPLAY.PLUGIN_CONFIGURATION"
+          },
   "sections": [
-	{
-	  "id": "no_setting",
-	  "element": "section",
-	  "label": "TRANSLATE.NO_SETTINGS_AVAILABLE",
-	  "icon": "fa-plug",
-	  "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveDisplayOptions"},
-	  "content": [
-		{
-
-		}
-	  ]
-	}
-  ]
+                {
+                "id": "screensaver_conf",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.SCREENSAVER_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.SCREENSAVER_DESC",
+                "icon": "fa-clock-o",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveScreensaverConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "timeout",
+                                      "afterPlay"
+                                      ]
+                              },
+                "content": [
+                             {
+                             "id": "timeout",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.TIMEOUT_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.TIMEOUT",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 120
+                             },
+                             {
+                             "id": "afterPlay",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.AFTER_PLAY_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.AFTER_PLAY",
+                             "value": false
+                             }
+                           ]
+                },
+                {
+                "id": "brightness_conf",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.BRIGHTNESS_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.BRIGHTNESS_DESC",
+                "icon": "fa-sun-o",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveBrightnessConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "autoMode",
+                                      "minBr",
+                                      "maxBr",
+                                      "brightnessCurve",
+                                      "midBr",
+                                      "manualBr"
+                                      ]
+                              },
+                "content": [
+                             {
+                             "id": "autoMode",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.AUTO_MODE_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.AUTO_MODE",
+                             "value": false,
+                             "hidden": true
+                             },
+                             {
+                             "id": "minBr",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.MINBR_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.MINBR",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 15,
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "maxBr",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.MAXBR_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.MAXBR",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 255,
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "calibration",
+                             "element": "button",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.CALIBRATION_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.CALIBRATION",
+                             "onClick": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"getAlsValue", "data":{"confData": "", "action": "minmax"}},
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "brightnessCurve",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.BRIGHTNESS_CURVE_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.BRIGHTNESS_CURVE",
+                             "value": false,
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "midBr",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.MIDBR_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.MIDBR",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": {},
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "getMidAls",
+                             "element": "button",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.GET_MID_ALS_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.GET_MID_ALS",
+                             "onClick": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"getAlsValue", "data":{"confData": "", "action": "mid"}},
+                             "visibleIf": {"field": "autoMode", "value": true}
+                             },
+                             {
+                             "id": "manualBr",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.MANUALBR_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.MANUALBR",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 255,
+                             "visibleIf": {"field": "autoMode", "value": false}
+                             }
+                          ]
+                },
+                {
+                "id": "orientation_conf",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.ORIENTATION_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.ORIENTATION_DESC",
+                "icon": "fa-compass",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveOrientationConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "angle"
+                                      ]
+                              },
+                "content": [
+                             {
+                               "id": "angle",
+                               "element": "select",
+                               "doc": "TRANSLATE.TOUCH_DISPLAY.ANGLE_DOC",
+                               "label": "TRANSLATE.TOUCH_DISPLAY.ANGLE",
+                               "value": {"value": "0", "label": "TRANSLATE.TOUCH_DISPLAY.0" },
+                               "options": [
+                                  {
+                                    "value": "0",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.0"
+                                  },
+                                  {
+                                    "value": "90",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.90"
+                                  },
+                                  {
+                                    "value": "180",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.180"
+                                  },
+                                  {
+                                    "value": "270",
+                                    "label": "TRANSLATE.TOUCH_DISPLAY.270"
+                                  }
+                               ]
+                             }
+                           ]
+                },
+                {
+                "id": "gpumem_conf",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.GPUMEM_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.GPUMEM_DESC",
+                "icon": "fa-microchip",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveGpuMemConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "gpuMem"
+                                      ]
+                              },
+                "content": [
+                             {
+                               "id": "gpuMem",
+                               "element": "input",
+                               "type": "number",
+                               "doc": "TRANSLATE.TOUCH_DISPLAY.GPUMEM_DOC",
+                               "label": "TRANSLATE.TOUCH_DISPLAY.GPUMEM",
+                               "attributes": [
+                                               {"placeholder": {}},
+                                               {"maxlength": {}},
+                                               {"min": {}},
+                                               {"max": {}}
+                                             ],
+                               "value": 32
+                               }
+                           ]
+                },
+                {
+                "id": "pointer_conf",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.POINTER_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.POINTER_DESC",
+                "icon": "fa-mouse-pointer",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"savePointerConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "showPointer"
+                                      ]
+                              },
+                "content": [
+                             {
+                             "id": "showPointer",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.SHOWPOINTER_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.SHOWPOINTER",
+                             "value": false
+                             }
+                           ]
+                }
+              ]
 }

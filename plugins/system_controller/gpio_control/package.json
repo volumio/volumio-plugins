@@ -1,0 +1,26 @@
+{
+	"name": "gpio_control",
+	"version": "0.0.1",
+	"description": "GPIO output control plugin for Volumio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "supercrab",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "GPIO Control",
+		"icon": "fa-microchip",
+		"plugin_type": "system_controller",
+		"boot_priority": 1
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"onoff": "^1.1.1",
+		"socket.io-client": "^1.4.5",
+		"sleep": "^5.1.1",
+		"child_process": ""
+	}
+}

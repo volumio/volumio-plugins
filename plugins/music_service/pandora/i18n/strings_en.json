@@ -1,0 +1,13 @@
+{
+    "CONFIGURATION" : {
+        "PANDORA_CONFIGURATION_LABEL": "Configuration for Pandora Web Radio plugin",
+        "PANDORA_ACCOUNT_LABEL": "Enter your Pandora account details:",
+        "PANDORA_SAVE_LABEL": "Save",
+        "PANDORA_EMAIL_DOC": "Enter your email address you registered with Pandora.",
+        "PANDORA_EMAIL_LABEL": "Email Address",
+        "PANDORA_PASSWORD_DOC": "Enter your Pandora account password.",
+        "PANDORA_PASSWORD_LABEL": "Password",
+        "PANDORA_USE_CURL_302_WORKAROUND_DOC":"Rewrite stream URLs to use Pandora server's IP address rather than host name",
+        "PANDORA_USE_CURL_302_WORKAROUND":"Use Mpd Curl 302 workaround"
+    }
+}

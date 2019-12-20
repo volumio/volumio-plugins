@@ -1,0 +1,91 @@
+{
+  "page": {
+    "label": "TRANSLATE.TRADFRI_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_tradfri_auth",
+      "element": "section",
+      "label": "TRANSLATE.TRADFRI_CONNECT",
+      "icon": "fa-user",
+      "description": "TRANSLATE.TRADFRI_CONNECT_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/tradfri",
+        "method": "tradfriConnect"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.TRADFRI_CONNECT_BUTTON",
+        "data": [
+          "security_code"
+        ]
+      },
+      "content": [
+        {
+          "id": "security_code",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.TRADFRI_SECURITY_CODE_DOC",
+          "label": "TRANSLATE.TRADFRI_SECURITY_CODE",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_tradfri_disconnect",
+      "element": "section",
+      "label": "TRANSLATE.TRADFRI_DISCONNECT",
+      "icon": "fa-user",
+      "description": "TRANSLATE.TRADFRI_DISCONNECT_DESC",
+      "content": [
+        {
+          "id": "disconnect",
+          "element": "button",
+          "label": "TRANSLATE.TRADFRI_DISCONNECT_BUTTON",
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/tradfri",
+            "method": "tradfriDisconnect"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.TRADFRI_SETTINGS",
+      "icon": "fa-plug",
+      "description": "TRANSLATE.TRADFRI_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/tradfri",
+        "method": "saveTradfriSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE_BUTTON",
+        "data": [
+          "tradfri_device_or_group",
+          "switch_off_delay"
+        ]
+      },
+      "content": [
+        {
+          "id": "tradfri_device_or_group",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.TRADFRI_DEVICE_GROUP_DOC",
+          "label": "TRANSLATE.TRADFRI_DEVICE_GROUP",
+          "value": ""
+        },
+        {
+          "id": "switch_off_delay",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.TRADFRI_SWITCH_OFF_DELAY_DOC",
+          "label": "TRANSLATE.TRADFRI_SWITCH_OFF_DELAY",
+          "value": 60
+        }
+      ]
+    }
+  ]
+}

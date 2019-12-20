@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Choose Backup or Restore",
+  "BACKUP_LABEL":"Backup options",
+  "BACKUP_DESC":"volumio_data.tgz file will be created on root of SMB Share: you may copy it to other device in same location. WARNING: New backup will erase previous.",
+  "BACKUP_DO":"Backup",
+  "RESTORE_LABEL":"Restore",
+  "RESTORE_DESC":"volumio_data.tgz file from root of SMB Share is used to restore settings: make sure file is present !  Reboot advised after restore.",
+  "RESTORE_DO":"Restore",
+  "QUEUE":"Queue",
+  "QUEUE_DOC":"Select if you want to backup current play queue",
+  "PLAYLIST":"Playlist",
+  "PLAYLIST_DOC":"Select if you want to backup playlists",
+  "FAVOURITES":"Favourites",
+  "FAVOURITES_DOC":"Select if you want to backup Favourites (includes my Web Radios, etc...)",
+  "CONFIGURATION":"Configuration",
+  "CONFIGURATION_DOC":"Select if you want to backup all settings. This will also save plugins settings. On restore on a new image, actual plugins will need to be re-installed, but their settings will be the kept. Some settings may need to be re-applied through UI to be activated.",
+  "ALBUMART":"Album Art",
+  "ALBUMART_DOC":"Select if you want to backup Album Arts"
+}
+
+

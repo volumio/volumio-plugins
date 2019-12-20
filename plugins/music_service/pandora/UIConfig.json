@@ -1,0 +1,48 @@
+{
+  "page": {
+    "label": "TRANSLATE.CONFIGURATION.PANDORA_CONFIGURATION_LABEL"
+  },
+  "sections": [
+    {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.PANDORA_ACCOUNT_LABEL",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
+        "data": [
+          "email",
+          "password",
+          "useCurl302WorkAround"
+        ]
+      },
+      "content": [
+        {
+          "id": "email",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_LABEL",
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
+          "value": ""
+        },
+        {
+          "id": "useCurl302WorkAround",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND",
+          "value": "false"
+        }
+      ]
+    }
+  ]
+}

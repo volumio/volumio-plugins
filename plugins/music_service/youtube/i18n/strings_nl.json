@@ -1,0 +1,15 @@
+{
+  "YOUTUBE_CONFIGURATION":"Youtube configuratie",
+  "YOUTUBE_SETTINGS":" Instellingen",
+  "YOUTUBE_RESULTS_LIMIT": "Maximaal aantal resultaten",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Configureer het aantal video's dat wordt getoond bij het zoeken naar iets op YouTube. Afspeellijsten zijn altijd volledig geladen! Standaard: 50",
+  "YOUTUBE_SAVE": "Opslaan",
+	"YOUTUBE_ACCOUNT": "Account instellingen",
+	"YOUTUBE_LOGIN": "Inloggen",
+	"YOUTUBE_LOGOUT": "Uitloggen",
+	"YOUTUBE_USERNAME": "Gebruikersnaam",
+	"YOUTUBE_USERNAME_DOC": "UW YouTube account",
+	"YOUTUBE_GRANT_ACCESS": "Geef Volumio alleen-lezen toegang tot je YouTube-account. Voer de volgende code in op {0}:",
+	"YOUTUBE_ACCESS_CODE":"Code:",
+	"YOUTUBE_ACCESS_CODE_DOC":"Voer deze code in op https://www.google.com/device."
+}

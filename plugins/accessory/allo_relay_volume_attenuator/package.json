@@ -1,0 +1,21 @@
+{
+	"name": "allo_relay_volume_attenuator",
+	"version": "1.3.0",
+	"description": "This plugin enables Allo's Relay Volume Attenuator",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Volumio Team",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Allo Relay Volume Attenuator",
+		"icon": "fa-volume-up",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

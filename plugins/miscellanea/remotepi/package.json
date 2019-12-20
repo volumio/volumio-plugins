@@ -1,0 +1,22 @@
+{
+	"name": "remotepi",
+	"version": "1.1.5",
+	"description": "The plugin enables support for the RemotePi board.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "gvolt",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "RemotePi",
+		"icon": "fa-power-off",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^8.1.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.2",
+		"onoff": "^5.0.0"
+	}
+}

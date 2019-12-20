@@ -6,15 +6,16 @@
    {
       "id": "section_account",
       "element": "section",
-      "label": "TRANSLATE.SPOTIFY_ACCOUNT",
-      "icon": "fa-plug",
+      "label": "TRANSLATE.SPOTIFY",
+      "icon": "fa-spotify",
       "onSave": {"type":"controller", "endpoint":"music_service/spop", "method":"saveSpotifyAccount"},
       "saveButton": {
-        "label": "TRANSLATE.SAVE",
+        "label": "TRANSLATE.LOGIN",
         "data": [
           "username",
           "password",
-          "bitrate"
+          "bitrate",
+	      "refresh_token"
         ]
       },
       "content": [
@@ -23,7 +24,7 @@
           "type":"text",
           "element": "input",
           "doc": "This is the username of your Spotify account",
-          "label": "TRANSLATE.SPOTIFY_USERNAME",
+          "label": "TRANSLATE.USERNAME",
           "value": ""
         },
         {
@@ -31,7 +32,7 @@
           "type":"password",
           "element": "input",
           "doc": "This is the password of your Spotify account",
-          "label": "TRANSLATE.SPOTIFY_PASSWORD",
+          "label": "TRANSLATE.PASSWORD",
           "value": ""
         },
         {
@@ -39,7 +40,15 @@
           "element": "switch",
           "doc": "High bitrate",
           "label": "TRANSLATE.HIGH_BITRATE",
-          "value": true
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id":"oauth",
+          "element": "button",
+          "label": "TRANSLATE.AUTHORIZE",
+          "description": "TRANSLATE.AUTHORIZE_PERSONAL_CONTENT",
+          "onClick": {"type":"oauth", "performerUrl":"http://oauth-performer.dfs.volumio.org/spotify","plugin":"music_service/spop", "scopes":[]}
         }
       ]
    }

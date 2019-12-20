@@ -1,0 +1,142 @@
+{
+  "server_enabled": {
+    "type": "boolean",
+    "value": true
+  },
+  "mpd_pipe_name": {
+    "type": "string",
+    "value": "VOLUMIO-MPD"
+  },    
+  "sample_rate": {
+    "type": "string",
+    "value": "44100"
+  },
+  "bit_depth": {
+    "type": "string",
+    "value": "16" 
+  },
+  "channels": {
+    "type": "string",
+    "value": "2"
+  },
+  "codec": {
+    "type": "string",
+    "value": "2"
+  },
+  "server_cli": {
+    "type": "string",
+    "value": ""
+  },
+  "client_enabled": {
+    "type": "boolean",
+    "value": true
+  },
+  "client_id": {
+    "type": "string",
+    "value": ""
+  },
+  "volumio_host": {
+    "type": "string",
+    "value": "127.0.0.1"
+  },
+  "custom_host": {
+    "type": "boolean",
+    "value": false
+  },
+  "host": {
+    "type": "string",
+    "value": ""
+  },
+  "soundcard": {
+    "type": "string",
+    "value": "ALSA"
+  },  
+  "custom_host_id": {
+    "type": "boolean",
+    "value": false
+  },
+  "host_id": {
+    "type": "string",
+    "value": ""
+  },
+  "client_cli": {
+	"type": "string",
+    "value": ""
+  },
+  "patch_mpd_conf": {
+    "type": "boolean",
+    "value": true
+  },
+  "mpd_sample_rate": {
+    "type": "string",
+    "value": "44100"
+  },
+  "mpd_bit_depth": {
+    "type": "string",
+    "value": "16" 
+  },
+  "mpd_channels": {
+    "type": "string",
+    "value": "2"
+  },
+  "enable_alsa_mpd": {
+    "type": "boolean",
+    "value": false
+  },
+  "enable_fifo_mpd": {
+    "type": "boolean",
+    "value": true
+  },
+  "spotify_dedicated_stream": {
+    "type": "boolean",
+    "value": false
+  },
+  "spotify_pipe": {
+    "type": "string",
+    "value": "/tmp/snapfifo"
+  },
+  "spotify_pipe_name": {
+    "type": "string",
+    "value": "VOLUMIO-SPOTIFY"
+  },
+  "spotify_implementation": {
+    "type": "string",
+    "value": "volspotconnect"
+  },
+  "spotify_sample_rate": {
+    "type": "string",
+    "value": "44100"
+  },
+  "spotify_bit_depth": {
+    "type": "string",
+    "value": "16" 
+  },
+  "spotify_channels": {
+    "type": "string",
+    "value": "2"
+  },
+  "expose_additional_spotify_settings": {
+    "type": "boolean",
+    "value": false
+  },
+  "librespot_location": {
+    "type": "string",
+    "value": ""
+  },
+  "spotify_username": {
+    "type": "string",
+    "value": ""
+  },
+  "spotify_password": {
+    "type": "string",
+    "value": ""
+  },
+  "spotify_devicename": {
+    "type": "string",
+    "value": "SNAPCAST"
+  },
+  "spotify_bitrate": {
+    "type": "string",
+    "value": "320"
+  }
+}

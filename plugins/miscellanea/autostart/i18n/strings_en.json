@@ -1,0 +1,11 @@
+{
+  "PLUGIN_CONFIGURATION":"AutoStart Plugin Configuration",
+  "HEADING": "Enable this plugin in order to play music when volumio starts",
+  "SAVE":"Save",
+  "AUTOSTART_SETTINGS":"Autostart Settings",
+  "AUTOSTART_SETTINGS_DESC":"",
+  "AUTOSTART_SAVEFROMLASTPOS_DOC":"Play from the last position in the queue before Volumio was shutdown, otherwise Autostart will play from the start of the queue",
+  "AUTOSTART_SAVEFROMLASTPOS": "Play From Last Position",
+  "AUTOSTART_DELAY_DOC":"You may need to adjust this depending on how long your device takes to reach a state where music can be played",
+  "AUTOSTART_DELAY":"Delay Before Music Starts (milliseconds)"
+}
