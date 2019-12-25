@@ -39,6 +39,9 @@ then
     sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
   fi
 
+  sudo mkdir /etc/X11/xorg.conf.d
+  sudo cp /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
+
 else
 
   echo "Installing Chromium Dependencies"
@@ -73,6 +76,7 @@ chown volumio:volumio /data/volumiokiosk
 
 echo "Creating chromium kiosk start script"
 sudo echo "#!/bin/bash
+while true; do timeout 3 bash -c \"</dev/tcp/127.0.0.1/3000\" >/dev/null 2>&1 && break; done
 sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/' /data/volumiokiosk/Default/Preferences
 sed -i 's/\"exit_type\":\"Crashed\"/\"exit_type\":\"None\"/' /data/volumiokiosk/Default/Preferences
 openbox-session &
@@ -103,8 +107,6 @@ Type=simple
 User=volumio
 Group=volumio
 ExecStart=/usr/bin/startx /etc/X11/Xsession /opt/volumiokiosk.sh -- -nocursor
-# Give a reasonable amount of time for the server to start up/shut down
-TimeoutSec=300
 [Install]
 WantedBy=multi-user.target
 " > /lib/systemd/system/volumio-kiosk.service

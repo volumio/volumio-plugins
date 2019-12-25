@@ -1,6 +1,6 @@
 {
 	"name": "lastfm",
-	"version": "1.2.9",
+	"version": "1.3.4",
 	"description": "Installs a LastFM scrobbler which uses the Volumio artist and track info (doesn't work with librespot).",
 	"main": "index.js",
 	"scripts": {
@@ -56,7 +56,7 @@
 		"jquery": "^3.3.1",
 		"rimraf": "^2.5.4",
 		"sax": "^1.2.4",
-		"simple-lastfm": "https://github.com/Saiyato/simple-lastfm/tarball/71414e867ee261d5362929d14ceb8c1c2d06748f",
+		"simple-lastfm": "https://github.com/Saiyato/simple-lastfm/tarball/f5f1d1010d9e5abfb354d8db623c7d07c34d70db",
 		"socket.io-client": "^1.4.8",
 		"socket.io-parser": "^2.2.6",
 		"to-array": "^0.1.4",
