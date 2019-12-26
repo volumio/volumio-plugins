@@ -8,6 +8,7 @@ if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
 sudo cp /data/plugins/miscellanea/Systeminfo/c/hw_params_arm /data/plugins/miscellanea/Systeminfo/hw_params
 sudo chmod +x /data/plugins/miscellanea/Systeminfo/hw_params
+sudo chmod +x /data/plugins/miscellanea/Systeminfo/firmware.sh
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
 sudo cp /data/plugins/miscellanea/Systeminfo/c/hw_params_x86 /data/plugins/miscellanea/Systeminfo/hw_params
