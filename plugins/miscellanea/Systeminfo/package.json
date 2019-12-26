@@ -1,6 +1,6 @@
 {
   "name": "Systeminfo",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Gives information about your system",
   "main": "index.js",
   "scripts": {
