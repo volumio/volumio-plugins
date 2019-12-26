@@ -12,6 +12,7 @@ elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
 sudo cp /data/plugins/miscellanea/Systeminfo/c/hw_params_x86 /data/plugins/miscellanea/Systeminfo/hw_params
 sudo chmod +x /data/plugins/miscellanea/Systeminfo/hw_params
+sudo chmod +x /data/plugins/miscellanea/Systeminfo/firmware.sh
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
