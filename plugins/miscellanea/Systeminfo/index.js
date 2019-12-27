@@ -183,6 +183,8 @@ Systeminfo.prototype.hwinfo = function() {
   });
 
 };
+
+
 //here we detect the firmware version for the rpi
 Systeminfo.prototype.firmwareversion = function() {
  var self = this;
@@ -219,13 +221,30 @@ var firmware;
   
 
 };
-
+//here we detect the temperature for the cpu
+Systeminfo.prototype.temperature = function() {
+ var self = this; 
+ var temperature;
+ var roundtemp;
+ exec("/bin/cat /sys/class/thermal/thermal_zone0/temp", function(error, stdout, stderr) {
+  if (error) {
+	   self.logger.info('failed ' + error);
+	   self.commandRouter.pushToastMessage('error', 'temperature detection failed');
+	   roundtemp = 'not applicable';
+  } else {
+	roundtemp = (stdout/1000).toFixed(0)
+	console.log('BBBBBBBBBBBBBB-CPU Temp ' + roundtemp  +' °C');
+	self.config.set('temperature', roundtemp);
+	}
+ })
+};
 
 Systeminfo.prototype.getsysteminfo = function() {
  var self = this;
  var data;
- self.hwinfo();
-self.firmwareversion();
+	self.hwinfo();
+	self.firmwareversion();
+	self.temperature();
  si.getAllData()
   .then(data => {
    var memtotal = data.mem.total / 1024 + ' Ko';
@@ -253,14 +272,18 @@ console.log('output'+ cout + 'cmixt' + cmixt);
    var firm;
 	if (self.config.get('firmware') =='undefined')
 	 {
-	 firmware = 'Result only for RPI'
+	 firmware = 'Available only for RPI'
 	} else {
 	 firmware = self.config.get('firmware')
 	} ;
-console.log ('MMMMMMMMMMMMMMMMMMMMMMmmm' + firmware);
+//console.log ('MMMMMMMMMMMMMMMMMMMMMMmmm' + firmware);
+
+  var roundtemp = self.config.get('temperature');
+
+//messages generation
       var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li><li>Firmware Version: " + firmware + "</li></ul>";
 
-      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li></ul>";
+      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
 
       var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
@@ -298,4 +321,7 @@ console.log ('MMMMMMMMMMMMMMMMMMMMMMmmm' + firmware);
    //console.log(data);
 
   .catch(error => console.error(error));
+
+
+
 };

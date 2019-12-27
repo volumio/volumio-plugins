@@ -1,4 +1,4 @@
-December 26th
+December 27th
 
 ###  About the plugin
 
@@ -22,6 +22,10 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+
+Dec 27th 2019
+
+- Cpu temperature
 
 Dec 26th 2019
 
