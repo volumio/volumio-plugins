@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "TRANSLATE.SAVE",
           "data": [
-            "upsampling","extractformat","prestart","savepath","loadalbumart"
+            "upsampling","extractformat","prestart","savepath","loadalbumart","autorip"
           ]
         },
         "content": [
@@ -81,6 +81,25 @@
             "element":"select",
             "doc": "TRANSLATE.SHOWALBUMART",
             "label": "TRANSLATE.SHOWALBUMART",
+            "value": {"value": "1",
+              "label": "No"
+              },
+              "options": [
+                {
+                  "value": "1",
+                  "label": "No"
+                },
+                {
+                  "value": "2",
+                  "label": "Yes"
+                }
+              ]
+          },
+          {
+            "id": "autorip",
+            "element":"select",
+            "doc": "TRANSLATE.AUTORIP",
+            "label": "TRANSLATE.AUTORIP_DOC",
             "value": {"value": "1",
               "label": "No"
               },
