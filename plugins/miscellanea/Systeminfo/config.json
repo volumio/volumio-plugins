@@ -2,7 +2,5 @@
 "nchannels":{"type": "string","value": ""},
 "smpl_rate":{"type": "string","value": ""},
 "cmixt":{"type": "string","value": ""},
-"cout":{"type": "string","value": ""},
-"firmware":{"type": "string","value": ""},
-"temperature":{"type": "string","value": ""}
+"cout":{"type": "string","value": ""}
  }

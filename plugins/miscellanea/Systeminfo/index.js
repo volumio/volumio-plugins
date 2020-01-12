@@ -7,7 +7,7 @@ var config = new(require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 const si = require('systeminformation');
-var spawn = require('child_process').spawn;
+
 // Define the Systeminfo class
 module.exports = Systeminfo;
 
@@ -139,7 +139,7 @@ Systeminfo.prototype.hwinfo = function() {
        var cmixt = hwinfoJSON.mixer_type.value;
        var cout = hwinfoJSON.outputdevicename.value
        var output_device = hwinfoJSON.outputdevice.value
-       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + output_device + ' <-AAAAAAAAAAAAA');
+    //   console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + output_device + ' <-AAAAAAAAAAAAA');
 
  	self.config.set('cmixt', cmixt);
  	self.config.set('cout', cout);
@@ -147,6 +147,7 @@ Systeminfo.prototype.hwinfo = function() {
 
 
  exec('/data/plugins/miscellanea/Systeminfo/hw_params hw:' + output_device + ' >/data/configuration/miscellanea/Systeminfo/config.json ', {
+
   uid: 1000,
   gid: 1000
  }, function(error, stdout, stderr) {
@@ -174,8 +175,11 @@ Systeminfo.prototype.hwinfo = function() {
      }
     }
    });
+
   }
  })
+
+
        } catch (e) {
         self.logger.info('Error reading config.json, detection failed', e);
   }
@@ -185,66 +189,10 @@ Systeminfo.prototype.hwinfo = function() {
 };
 
 
-//here we detect the firmware version for the rpi
-Systeminfo.prototype.firmwareversion = function() {
- var self = this;
-var firmware;
-       try { 
- exec("/bin/echo volumio | /usr/bin/sudo -S /data/plugins/miscellanea/Systeminfo/firmware.sh >/data/configuration/miscellanea/Systeminfo/firmware.json", {uid: 1000,gid: 1000 }, function(error, stdout, stderr) {
-  if (error) {
-   self.logger.info('failed ' + error);
-   self.commandRouter.pushToastMessage('error', 'firmware detection failed');
-   firmware = 'not applicable';
-  } else {
-
- fs.readFile('/data/configuration/miscellanea/Systeminfo/firmware.json', 'utf8', function(err, firmware) {
-    if (err) {
-     self.logger.info('Error reading config', err);
-    } else {
-     try {
-      const hwinfoJSON = JSON.parse(firmware);
-      firmware = hwinfoJSON.firmware.value;
-      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + firmware + ' <-AAAAAAAAAAAAA');
-      self.config.set('firmware', firmware);
-   
-     } catch (e) {
-      self.logger.info('Error reading Systeminfo/firmware.json, detection failed', e);
-
-     }
-    }
-   });
-  }
- })
-       } catch (e) {
-        self.logger.info('Error reading firmware.json, detection failed', e);
- }
-  
-
-};
-//here we detect the temperature for the cpu
-Systeminfo.prototype.temperature = function() {
- var self = this; 
- var temperature;
- var roundtemp;
- exec("/bin/cat /sys/class/thermal/thermal_zone0/temp", function(error, stdout, stderr) {
-  if (error) {
-	   self.logger.info('failed ' + error);
-	   self.commandRouter.pushToastMessage('error', 'temperature detection failed');
-	   roundtemp = 'not applicable';
-  } else {
-	roundtemp = (stdout/1000).toFixed(0)
-	console.log('BBBBBBBBBBBBBB-CPU Temp ' + roundtemp  +' °C');
-	self.config.set('temperature', roundtemp);
-	}
- })
-};
-
 Systeminfo.prototype.getsysteminfo = function() {
  var self = this;
  var data;
-	self.hwinfo();
-	self.firmwareversion();
-	self.temperature();
+ self.hwinfo();
  si.getAllData()
   .then(data => {
    var memtotal = data.mem.total / 1024 + ' Ko';
@@ -266,24 +214,11 @@ Systeminfo.prototype.getsysteminfo = function() {
    var samplerate = self.config.get('smpl_rate');
    var cmixt = self.config.get('cmixt');
    var cout = self.config.get('cout');
-console.log('output'+ cout + 'cmixt' + cmixt);
+console.log('output'+ cout + 'cmixt' + cmixt)
 
-   var firmware;
-   var firm;
-	if (self.config.get('firmware') =='undefined')
-	 {
-	 firmware = 'Available only for RPI'
-	} else {
-	 firmware = self.config.get('firmware')
-	} ;
-//console.log ('MMMMMMMMMMMMMMMMMMMMMMmmm' + firmware);
+      var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li></ul>";
 
-  var roundtemp = self.config.get('temperature');
-
-//messages generation
-      var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li><li>Firmware Version: " + firmware + "</li></ul>";
-
-      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
+      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(2) + "%</li></ul>";
 
       var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
@@ -321,7 +256,4 @@ console.log('output'+ cout + 'cmixt' + cmixt);
    //console.log(data);
 
   .catch(error => console.error(error));
-
-
-
 };

@@ -1,4 +1,4 @@
-December 27th
+December 15th
 
 ###  About the plugin
 
@@ -22,14 +22,6 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
-
-Dec 27th 2019
-
-- Cpu temperature
-
-Dec 26th 2019
-
-- add firmware version for RPI
 
 Dec 15th 2019
 
