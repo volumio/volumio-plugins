@@ -32,7 +32,5 @@
 	"SHOWVERSION":"Mostra versione",
 	"UPGRADE":"Aggiornamento versione",
 	"SHOWALBUMART":"Mostra copertina dell'album",
-	"EJECT":"Espelli CD",
-	"AUTORIP":"Auto Extract",
-	"AUTORIP_DOC":"Automatically start CD Extract after insert CD"
+	"EJECT":"Espelli CD"
 }
