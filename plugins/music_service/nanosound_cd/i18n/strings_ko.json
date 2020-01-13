@@ -32,5 +32,7 @@
 	"SHOWVERSION":"버전 표시",
 	"UPGRADE":"소프트웨어 업그레이드",
 	"SHOWALBUMART":"앨범 표지보기",
-	"EJECT":"CD 꺼내기"
+	"EJECT":"CD 꺼내기",
+	"AUTORIP":"Auto Extract",
+	"AUTORIP_DOC":"Automatically start CD Extract after insert CD"
 }
