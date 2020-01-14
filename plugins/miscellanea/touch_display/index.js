@@ -108,7 +108,11 @@ TouchDisplay.prototype.onStart = function () {
           // screen orientation
           self.setOrientation(self.config.get('angle'));
           // GPU memory size
-          self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + self.config.get('gpuMem'));
+          self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + self.config.get('gpuMem'))
+            .then(self.modBootConfig.bind(self, '^gpu_mem', '#GPU_MEM'))
+            .fail(function () {
+              self.logger.info('Writing the touch display plugin\'s gpu_mem setting failed. Previous gpu_mem settings in /boot/config.txt have not been commented.');
+            });
         });
       }
       // screensaver
@@ -175,7 +179,11 @@ TouchDisplay.prototype.onStop = function () {
   clearTimeout(setScrToTimer3);
   if (device === 'Raspberry PI') {
     self.setOrientation('0');
-    self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', '');
+    self.modBootConfig('^#GPU_MEM', 'gpu_mem')
+      .then(self.modBootConfig.bind(self, configTxtGpuMemBanner + 'gpu_mem=.*', ''))
+      .fail(function () {
+        self.logger.info('Restoring gpu_mem settings in /boot/config.txt failed. The touch display plugin\'s gpu_mem settings have been preserved.');
+      });
     clearTimeout(autoBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
@@ -389,7 +397,7 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
     ]
   };
 
-  self.closeModals();
+  self.commandRouter.broadcastMessage('closeAllModals', '');
   if (confData.autoMode) {
     if (Number.isNaN(parseInt(confData.minBr, 10)) || !isFinite(confData.minBr)) {
       confData.minBr = self.config.get('minBr');
@@ -480,16 +488,18 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
       {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
-        emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'closeModals' }
+        emit: 'closeModals',
+        payload: ''
       }
     ]
   };
 
   if (self.config.get('angle') !== confData.angle.value) {
-    self.setOrientation(confData.angle.value);
     self.config.set('angle', confData.angle.value);
-    self.commandRouter.broadcastMessage('openModal', responseData);
+    self.setOrientation(confData.angle.value)
+      .then(function () {
+        self.commandRouter.broadcastMessage('openModal', responseData);
+      });
   }
 };
 
@@ -509,8 +519,8 @@ TouchDisplay.prototype.saveGpuMemConf = function (confData) {
       {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
-        emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'closeModals' }
+        emit: 'closeModals',
+        payload: ''
       }
     ]
   };
@@ -521,9 +531,11 @@ TouchDisplay.prototype.saveGpuMemConf = function (confData) {
   } else {
     confData.gpuMem = self.checkLimits('gpuMem', confData.gpuMem, 32, 128);
     if (self.config.get('gpuMem') !== confData.gpuMem) {
-      self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + confData.gpuMem);
       self.config.set('gpuMem', confData.gpuMem);
-      self.commandRouter.broadcastMessage('openModal', responseData);
+      self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + confData.gpuMem)
+        .then(function () {
+          self.commandRouter.broadcastMessage('openModal', responseData);
+        });
     }
   }
   if (uiNeedsUpdate) {
@@ -680,7 +692,7 @@ TouchDisplay.prototype.testBrightness = function (confData) {
     ]
   };
 
-  self.closeModals();
+  self.commandRouter.broadcastMessage('closeAllModals', '');
   fs.readFile(blInterface + '/brightness', 'utf8', function (err, data) {
     if (err !== null) {
       self.logger.error('Error reading ' + blInterface + '/brightness: ' + err);
@@ -816,7 +828,7 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
 TouchDisplay.prototype.assignCurrentAls = function (data) {
   const self = this;
 
-  self.closeModals();
+  self.commandRouter.broadcastMessage('closeAllModals', '');
   fs.readFile(als, 'utf8', function (err, currentAls) {
     if (err) {
       self.logger.error('Error reading ' + als + ': ' + err);
@@ -936,37 +948,39 @@ TouchDisplay.prototype.getAlsValue = function (data) {
 
 TouchDisplay.prototype.setOrientation = function (angle) {
   const self = this;
-  let bootstring, transformationMatrix;
+  const defer = libQ.defer();
+  let newEntry = '';
+  let transformationMatrix;
 
   switch (angle) {
     case '90':
-      bootstring = 'display_lcd_rotate=1' + os.EOL + 'display_hdmi_rotate=1';
+      newEntry = configTxtRotationBanner + 'display_lcd_rotate=1' + os.EOL + 'display_hdmi_rotate=1';
       transformationMatrix = '0 1 0 -1 0 1 0 0 1';
       break;
     case '180':
       if (rpiScreen) {
-        bootstring = 'lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2';
+        newEntry = configTxtRotationBanner + 'lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2';
       } else {
-        bootstring = 'display_lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2';
+        newEntry = configTxtRotationBanner + 'display_lcd_rotate=2' + os.EOL + 'display_hdmi_rotate=2';
         transformationMatrix = '-1 0 1 0 -1 1 0 0 1';
       }
       break;
     case '270':
-      bootstring = 'display_lcd_rotate=3' + os.EOL + 'display_hdmi_rotate=3';
+      newEntry = configTxtRotationBanner + 'display_lcd_rotate=3' + os.EOL + 'display_hdmi_rotate=3';
       transformationMatrix = '0 -1 1 1 0 0 0 0 1';
       break;
   }
-  exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Option \"TransformationMatrix\"/d' /etc/X11/xorg.conf.d/40-libinput.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+  exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Option \"TransformationMatrix\"/d' /etc/X11/xorg.conf.d/95-touch_display-plugin.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Error modifying /etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
+      self.logger.error('Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
     } else {
       self.logger.info('Touchscreen transformation matrix removed.');
       if (!(rpiScreen && angle === '180')) {
-        exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Identifier \"libinput touchscreen catchall\"/a\\        Option \"TransformationMatrix\" \"" + transformationMatrix + "\"' /etc/X11/xorg.conf.d/40-libinput.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Identifier \"Touch rotation\"/a\\        Option \"TransformationMatrix\" \"" + transformationMatrix + "\"' /etc/X11/xorg.conf.d/95-touch_display-plugin.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
-            self.logger.error('Error modifying /etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
-            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/40-libinput.conf: ' + error);
+            self.logger.error('Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
           } else {
             self.logger.info('Touchscreen transformation matrix written.');
           }
@@ -974,66 +988,93 @@ TouchDisplay.prototype.setOrientation = function (angle) {
       }
     }
   });
-  if (angle === '0') {
-    self.modBootConfig(configTxtRotationBanner + '.*lcd_rotate=.*' + os.EOL + 'display_hdmi_rotate=.*', '');
-  } else {
-    self.modBootConfig(configTxtRotationBanner + '.*lcd_rotate=.*' + os.EOL + 'display_hdmi_rotate=.*', configTxtRotationBanner + bootstring);
-  }
+  self.modBootConfig(configTxtRotationBanner + '.*lcd_rotate=.*' + os.EOL + 'display_hdmi_rotate=.*', newEntry)
+    .then(function () {
+      defer.resolve();
+    })
+    .fail(function () {
+      defer.reject(new Error());
+    });
+  return defer.promise;
 };
 
 TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
   const self = this;
+  const defer = libQ.defer();
   let configFile = '/boot/userconfig.txt';
 
   try {
+    if (/^#?gpu_mem/i.test(newEntry)) {
+      self.logger.info('Un-/commenting gpu_mem settings in /boot/config.txt.');
+      throw new Error();
+    }
     if (fs.statSync(configFile).isFile()) {
-      // if /boot/userconfig.txt exists remove touch display related banner and bootstring from /boot/config.txt
+      // if /boot/userconfig.txt exists remove touch display related entry from /boot/config.txt
       try {
         const configTxt = fs.readFileSync('/boot/config.txt', 'utf8');
         const newConfigTxt = configTxt.replace(new RegExp(os.EOL + '*' + searchexp + os.EOL + '*'), '');
         if (newConfigTxt !== configTxt) {
           try {
             fs.writeFileSync('/boot/config.txt', newConfigTxt, 'utf8');
-          } catch (err) {
-            self.logger.error('Error writing /boot/config.txt: ' + err);
-            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + err);
+          } catch (e) {
+            self.logger.error('Error writing /boot/config.txt: ' + e);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + e);
           }
         }
-      } catch (err) {
-        self.logger.error('Error reading /boot/config.txt: ' + err);
-        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + ' /boot/config.txt: ' + err);
+      } catch (e) {
+        self.logger.error('Error reading /boot/config.txt: ' + e);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + ' /boot/config.txt: ' + e);
       }
     } else {
-      throw new Error('/boot/userconfig.txt is not a file');
+      self.logger.info('Using /boot/config.txt instead of /boot/userconfig.txt. Reason: /boot/userconfig.txt is not a file.');
+      throw new Error();
     }
-  } catch (err) {
+  } catch (e) {
     configFile = '/boot/config.txt';
-    self.logger.info('Using /boot/config.txt instead of /boot/userconfig.txt. Reason: ' + err);
   } finally {
     try {
       const configTxt = fs.readFileSync(configFile, 'utf8');
       let newConfigTxt = configTxt;
-      if (newEntry === '') {
-        newConfigTxt = configTxt.replace(new RegExp(os.EOL + '*' + searchexp), newEntry);
-      } else if (configTxt.search(newEntry) === -1) {
-        newConfigTxt = configTxt.replace(new RegExp(searchexp), newEntry);
-        if (newConfigTxt === configTxt) {
-          newConfigTxt = configTxt + os.EOL + os.EOL + newEntry;
-        }
+      switch (newEntry) {
+        case 'gpu_mem':
+        case '#GPU_MEM':
+          var i = configTxt.lastIndexOf(configTxtGpuMemBanner);
+          if (i === -1) {
+            newConfigTxt = configTxt.replace(new RegExp(searchexp, 'gm'), newEntry);
+          } else {
+            newConfigTxt = configTxt.substring(0, i).replace(new RegExp(searchexp, 'gm'), newEntry) + configTxt.substring(i, i + configTxtGpuMemBanner.length + 7) + configTxt.substring(i + configTxtGpuMemBanner.length + 7).replace(new RegExp(searchexp, 'gm'), newEntry);
+          }
+          break;
+        case '':
+          newConfigTxt = configTxt.replace(new RegExp(os.EOL + '*' + searchexp), newEntry);
+          break;
+        default:
+          if (configTxt.search(newEntry) === -1) {
+            newConfigTxt = configTxt.replace(new RegExp(searchexp), newEntry);
+            if (newConfigTxt === configTxt) {
+              newConfigTxt = configTxt + os.EOL + os.EOL + newEntry;
+            }
+          }
       }
       if (newConfigTxt !== configTxt) {
         try {
           fs.writeFileSync(configFile, newConfigTxt, 'utf8');
-        } catch (err) {
-          self.logger.error('Error writing ' + configFile + ': ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + configFile + ': ' + err);
+          defer.resolve();
+        } catch (e) {
+          self.logger.error('Error writing ' + configFile + ': ' + e);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + configFile + ': ' + e);
+          defer.reject(new Error());
         }
+      } else {
+        defer.resolve();
       }
-    } catch (err) {
-      self.logger.error('Error reading ' + configFile + ': ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + configFile + ': ' + err);
+    } catch (e) {
+      self.logger.error('Error reading ' + configFile + ': ' + e);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + configFile + ': ' + e);
+      defer.reject(new Error());
     }
   }
+  return defer.promise;
 };
 
 TouchDisplay.prototype.systemctl = function (systemctlCmd) {
@@ -1051,10 +1092,4 @@ TouchDisplay.prototype.systemctl = function (systemctlCmd) {
     }
   });
   return defer.promise;
-};
-
-TouchDisplay.prototype.closeModals = function () {
-  const self = this;
-
-  self.commandRouter.closeModals();
 };

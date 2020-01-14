@@ -34,13 +34,23 @@ then
   sudo apt-get install -y chromium-browser
 
   if [ -f /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness ]; then
-    echo "Installing UDEV rule adjusting backlight brightness permissions"
+    echo "Creating UDEV rule adjusting backlight brightness permissions"
     sudo echo "SUBSYSTEM==\"backlight\", RUN+=\"/bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness\"" > /etc/udev/rules.d/99-backlight.rules
     sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
   fi
 
+  echo "Creating /etc/X11/xorg.conf.d dir"
   sudo mkdir /etc/X11/xorg.conf.d
-  sudo cp /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
+
+  echo "Creating Xorg configuration file"
+  sudo echo "# This file is managed by the Touch Display plugin: Do not alter!
+# It will be deleted when the Touch Display plugin gets uninstalled.
+Section \"InputClass\"
+        Identifier \"Touch rotation\"
+        MatchIsTouchscreen \"on\"
+        MatchDevicePath \"/dev/input/event*\"
+        MatchDriver \"libinput|evdev\"
+EndSection" > /etc/X11/xorg.conf.d/95-touch_display-plugin.conf
 
 else
 
