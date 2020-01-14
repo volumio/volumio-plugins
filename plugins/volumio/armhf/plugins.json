@@ -288,14 +288,14 @@
 					"prettyName": "Touch Display Plugin",
 					"icon": "fa-hand-pointer-o",
 					"name": "touch_display",
-					"version": "1.1.4",
+					"version": "1.1.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/touch_display/touch_display.zip",
 					"license": "Free for non commercial USE",
 					"description": "The plugin enables the touch display controller for the original Raspberry 7\" touchscreen.",
 					"details": "<strong>Using this plugin is not recommended with Raspberry PI B+! Suggested, Raspberry PI 3, Odroid C1 or C2</strong>",
 					"author": "Volumio Team",
 					"screenshots": [],
-					"updated": "17-12-2019"
+					"updated": "14-1-2020"
 				},
 				{
 					"prettyName": "Allo Relay Volume Attenuator",
