@@ -239,18 +239,57 @@ Systeminfo.prototype.temperature = function() {
  })
 };
 
+//local storage probe
+Systeminfo.prototype.storages = function() {
+ var self = this; 
+ var storages;
+ exec("/bin/df -hBM --output=size,used,avail /data | /usr/bin/tail -1", function(error, stdout, stderr) {
+  if (error) {
+	   self.logger.info('failed ' + error);
+	   self.commandRouter.pushToastMessage('error', 'storage detection failed');
+	   storages = 'not applicable';
+  } else {
+
+	
+	while(stdout.charAt(0) === ' ')
+{
+
+	stdout = stdout.substr(1).replace(/  /g,' ');
+	console.log('Storage info ' + stdout);
+	self.config.set('storages', stdout);
+}
+
+	}
+ })
+};
+
 Systeminfo.prototype.getsysteminfo = function() {
  var self = this;
  var data;
 	self.hwinfo();
 	self.firmwareversion();
 	self.temperature();
+	self.storages();
  si.getAllData()
   .then(data => {
+
+//memory
    var memtotal = data.mem.total / 1024 + ' Ko';
    var memfree = data.mem.free / 1024 + ' Ko';
    var memused = data.mem.used / 1024 + ' Ko';
 
+//local storage
+   var storages = self.config.get('storages');
+   var fields = storages.split(' ');
+   var size = fields[0];
+   var used = fields[1];
+   var avail = fields[2];
+   var savail = avail.slice(0, -2)
+   var ssize = size.slice(0, -1)
+   var pcent = ((savail/ssize)*100).toFixed(0);
+console.log( 'internal       ' + avail +'   '+ savail );
+
+//human readable uptime
    var uptime = data.time.uptime;
    var seconds = parseInt(uptime, 10);
    var days = Math.floor(seconds / (3600 * 24));
@@ -262,12 +301,14 @@ Systeminfo.prototype.getsysteminfo = function() {
    console.log(days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds");
    var cuptime = (days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds");
 
+//audio hw
    var nchannels = self.config.get('nchannels');
    var samplerate = self.config.get('smpl_rate');
    var cmixt = self.config.get('cmixt');
    var cout = self.config.get('cout');
 console.log('output'+ cout + 'cmixt' + cmixt);
 
+//firmware
    var firmware;
    var firm;
 	if (self.config.get('firmware') =='undefined')
@@ -278,29 +319,32 @@ console.log('output'+ cout + 'cmixt' + cmixt);
 	} ;
 //console.log ('MMMMMMMMMMMMMMMMMMMMMMmmm' + firmware);
 
+
+//temperature
   var roundtemp = self.config.get('temperature');
 
 //messages generation
-      var messages1 = "<br><li>Board infos</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li><li>Firmware Version: " + firmware + "</li></ul>";
+      var messages1 = "<br><li>Board info</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li><li>Firmware Version: " + firmware + "</li></ul>";
 
-      var messages2 = "<br><li>CPU infos</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
+      var messages2 = "<br><li>CPU info</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
 
-      var messages3 = "<br><li>Memory infos</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
+      var messages3 = "<br><li>Memory info</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
       var sysversionf = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getSystemVersion', '')
       sysversionf.then((info) => {
        try {
         var result = info.systemversion
 
-        var messages4 = "<br><li>OS infos</br></li><ul><li>Version of Volumio: " + result + "</li><li>Hostname: " + data.os.hostname + "</li><li>Kernel: " + data.os.kernel + "</li><li>Governor: " + data.cpu.governor + "</li><li>Uptime: " + cuptime + "</li></ul>";
+        var messages4 = "<br><li>OS info</br></li><ul><li>Version of Volumio: " + result + "</li><li>Hostname: " + data.os.hostname + "</li><li>Kernel: " + data.os.kernel + "</li><li>Governor: " + data.cpu.governor + "</li><li>Uptime: " + cuptime + "</li></ul>";
 
         //var messages5 = "<br><li>Disks infos</br></li><ul><li>Disks: " + data.fsSize.size +"</li><li>Size: " + data.fsSize.size +"</li><li>Used: " + data.fsSize.use+"</li></ul>";
 
-        var messages6 = "<br><li>Audio infos</br></li><ul><li>Hw audio configured: " + cout + "</li><li>Mixer type: " + cmixt + "</li><li>Number of channels: " + nchannels + "</li><li>Supported sample rate: " + samplerate + "</li></ul>";
+        var messages6 = "<br><li>Audio info</br></li><ul><li>Hw audio configured: " + cout + "</li><li>Mixer type: " + cmixt + "</li><li>Number of channels: " + nchannels + "</li><li>Supported sample rate: " + samplerate + "</li></ul>";
+	var messages7 = "<br><li>Storage info</br></li><ul><li>INTERNAL storage - Size: " + size +"o Used: " + used + "o Available: " + savail + "Mo (" + pcent + "%)</li></ul>";
 
         var modalData = {
          title: 'System Information',
-         message: messages4 + messages6 + messages1 + messages2 + messages3,
+         message: messages4 + messages6 + messages1 + messages2 + messages3 + messages7,
          size: 'lg',
          buttons: [{
           name: 'Close',
