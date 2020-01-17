@@ -534,7 +534,7 @@
 					"prettyName": "System information",
 					"icon": "fa-lightbulb-o",
 					"name": "Systeminfo",
-					"version": "0.1.1",
+					"version": "0.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/Systeminfo/Systeminfo.zip",
 					"license": "",
 					"description": "Information about your system",
