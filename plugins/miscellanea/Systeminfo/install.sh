@@ -1,6 +1,19 @@
 #!/bin/bash
 echo "Installing systeminfo"
 
+configpath=/data/configuration/miscellanea/Systeminfo
+
+## Removing previous config
+if [ ! -f "${configpath}/config.json" ];
+then
+  echo "Configuration file doesn't exist, nothing to do"
+else
+  echo "Configuration File exists removing it"
+  sudo rm ${configpath}/config.json
+fi
+
+
+
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
