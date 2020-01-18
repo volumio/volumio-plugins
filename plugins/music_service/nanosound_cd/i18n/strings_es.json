@@ -32,6 +32,8 @@
 	"SHOWVERSION":"Mostrar versión",
 	"UPGRADE":"Versión de actualización",
 	"SHOWALBUMART":"Mostrar portada del álbum",
-	"EJECT":"Expulsar CD"
+	"EJECT":"Expulsar CD",
+	"AUTORIP":"Auto Extract",
+	"AUTORIP_DOC":"Automatically start CD Extract after insert CD"
 }
 }

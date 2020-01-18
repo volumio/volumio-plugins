@@ -61,7 +61,9 @@ else
 		rm /tmp/nanomesher_nanosoundcd.tar.gz		
 fi
 
+# post_insertion_command = "/bin/echo 1 > /tmp/cd && /usr/bin/curl http://localhost:5002/autorip"
 
+sudo sed -i 's/post_insertion_command.*/post_insertion_command = \"\/bin\/echo 1 > \/tmp\/cd \&\& \/usr\/bin\/curl http:\/\/localhost:5002\/autorip\"/'  /etc/udisks-glue.conf
 
 echo "Configuring alsa devices"
 cd /tmp

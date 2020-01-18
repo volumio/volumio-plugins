@@ -26,6 +26,10 @@
     "loadalbumart": {
       "type": "string",
       "value": "1"
+    }, 
+    "autorip": {
+      "type": "string",
+      "value": "1"
     }
 }
    
