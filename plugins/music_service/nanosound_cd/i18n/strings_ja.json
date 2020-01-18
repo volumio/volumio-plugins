@@ -32,7 +32,5 @@
 	"SHOWVERSION":"バージョンを表示",
 	"UPGRADE":"ソフトウェアをアップグレードする",
 	"SHOWALBUMART":"アルバムカバーを表示",
-	"EJECT":"CDを取り出す",
-	"AUTORIP":"Auto Extract",
-	"AUTORIP_DOC":"Automatically start CD Extract after insert CD"
+	"EJECT":"CDを取り出す"
 }

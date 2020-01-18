@@ -32,7 +32,5 @@
 	"SHOWVERSION":"显示版本",
 	"UPGRADE":"升级软件",
 	"SHOWALBUMART":"显示专辑封面",
-	"EJECT":"弹出CD",
-	"AUTORIP":"Auto Extract",
-	"AUTORIP_DOC":"Automatically start CD Extract after insert CD"
+	"EJECT":"弹出CD"
 }
