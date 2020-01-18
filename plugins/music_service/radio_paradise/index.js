@@ -28,7 +28,7 @@ function ControllerRadioParadise(context) {
 ControllerRadioParadise.prototype.onVolumioStart = function () {
     var self = this;
     self.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-	self.getConf(self.configFile);
+    self.getConf(self.configFile);
     self.apiDelay = self.config.get('apiDelay');
     self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] API delay: ' + self.apiDelay);
 
@@ -231,6 +231,13 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         if (track.uri.includes("mellow")) {
             channelMix = "Mellow";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=1";
+        } else if (track.uri.includes("rock")) {
+            channelMix = "Rock";
+            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=2";
+        }
+        if (track.uri.includes("eclectic")) {
+            channelMix = "Eclectic";
+            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=3";
         } else {
             channelMix = "Main";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=0"
@@ -423,11 +430,11 @@ ControllerRadioParadise.prototype.getMetadata = function (url) {
     var defer = libQ.defer();    
     
     http.get(url, (resp) => {
-    	if (resp.statusCode < 200 || resp.statusCode > 299) {
-        	self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
-        	defer.resolve(null);
-        	self.errorToast(url, 'ERROR_STREAM_SERVER');
-		} else {
+        if (resp.statusCode < 200 || resp.statusCode > 299) {
+            self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
+            defer.resolve(null);
+            self.errorToast(url, 'ERROR_STREAM_SERVER');
+        } else {
         let data = '';
 
         // A chunk of data has been recieved.
@@ -441,11 +448,11 @@ ControllerRadioParadise.prototype.getMetadata = function (url) {
         });
         }
 
-	}).on("error", (err) => {
-		self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
-  		defer.resolve(null);
+    }).on("error", (err) => {
+        self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
+          defer.resolve(null);
         self.errorToast(url, 'ERROR_STREAM_SERVER');
-	});
+    });
     
     return defer.promise;
 };

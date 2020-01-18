@@ -1,4 +1,4 @@
-December 15th
+2020 January 17th
 
 ###  About the plugin
 
@@ -22,6 +22,18 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+
+January 17th 2020
+
+- add internal storage info
+
+Dec 27th 2019
+
+- Cpu temperature
+
+Dec 26th 2019
+
+- add firmware version for RPI
 
 Dec 15th 2019
 
