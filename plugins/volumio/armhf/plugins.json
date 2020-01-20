@@ -118,7 +118,7 @@
 					"prettyName": "Radio Paradise",
 					"icon": "fa-lightbulb-o",
 					"name": "radio_paradise",
-					"version": "1.1.1",
+					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/radio_paradise/radio_paradise.zip",
 					"license": "ISC",
 					"description": "Radio Paradise Plugin for Volumio2 (incl. FLAC versions)",
@@ -130,7 +130,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "11-1-2020"
+					"updated": "20-1-2020"
 				},
 				{
 					"prettyName": "Podcast",
