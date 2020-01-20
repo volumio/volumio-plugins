@@ -234,8 +234,7 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         } else if (track.uri.includes("rock")) {
             channelMix = "Rock";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=2";
-        }
-        if (track.uri.includes("eclectic")) {
+        } else if (track.uri.includes("eclectic")) {
             channelMix = "Eclectic";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=3";
         } else {
