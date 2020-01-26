@@ -124,8 +124,9 @@ TouchDisplay.prototype.onStart = function () {
           displayNumber = '';
           self.logger.error('Xorg socket cannot be determined.');
         } else {
-          stdout = stdout.slice(stdout.indexOf('/usr/bin/X :') + 12);
-          displayNumber = stdout.slice(0, stdout.indexOf(' '));
+          stdout = stdout.slice(stdout.indexOf(' xinit '));
+          stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
+          displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
           self.logger.info('Using Xorg socket /tmp/.X11-unix/X' + displayNumber);
           // check presence of unix domain socket for Xorg to test if the xserver has finished starting up
           fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
@@ -547,7 +548,7 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
   const execStartLine = 'ExecStart=\\/usr\\/bin\\/startx \\/etc\\/X11\\/Xsession \\/opt\\/volumiokiosk.sh';
-  let pointerOpt = " -- -nocursor'";
+  const pointerOpt = (confData.showPointer) ? "'" : " -- -nocursor'";
   let t = 0;
 
   if (self.config.get('showPointer') !== confData.showPointer) {
@@ -559,9 +560,6 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
         defer.reject(err);
       } else {
         self.config.set('showPointer', confData.showPointer);
-        if (confData.showPointer) {
-          pointerOpt = "'";
-        }
         exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/" + execStartLine + '/c\\' + execStartLine + pointerOpt + ' /lib/systemd/system/volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
             self.logger.error('Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
@@ -578,8 +576,9 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
                     displayNumber = '';
                     self.logger.error('Xorg socket cannot be determined.');
                   } else {
-                    stdout = stdout.slice(stdout.indexOf('/usr/bin/X :') + 12);
-                    displayNumber = stdout.slice(0, stdout.indexOf(' '));
+                    stdout = stdout.slice(stdout.indexOf(' xinit '));
+                    stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
+                    displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
                     fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
                       if (err !== null || !stats.isSocket()) {
                         t = 2000;
