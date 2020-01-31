@@ -337,7 +337,7 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
     filter: "audioonly"
   }, function (err, info) {
     if (err) {
-      console.log("Error opening Youtube stream, video is probably not valid.");
+      console.error("Error opening Youtube stream, video is probably not valid.", err);
     } else {
       self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
@@ -558,7 +558,7 @@ Youtube.prototype.getChannelSections = function (channelId) {
   }).then(function (result) {
     // 1. collect all playlist ids
     var playlistIds = [];
-    for (var i = 0; i < result.length; i++) {
+    for (var i = 0; i < 50; i++) {
       var item = result[i];
       // channel sections may do not contain any playlists -> we need to skip them
       if (item && item.kind === 'youtube#channelSection' &&
@@ -568,7 +568,7 @@ Youtube.prototype.getChannelSections = function (channelId) {
     }
 
     // 2. fetch the content details of the playlists
-    return self.getPlaylists(playlistIds).then(function (playlists) {
+    return self.getPlaylists(playlistIds.slice(0, 50)).then(function (playlists) {
       if (playlists.navigation.lists.length > 0) {
         var playlistItems = playlists.navigation.lists.pop().items;
 
@@ -697,6 +697,7 @@ Youtube.prototype.youtubeRequest = function (request, cacheList, pageToken, defe
       self.logger.error(err.message + "\n" + err.stack);
       deferred.reject(err);
     } else {
+      console.log('Youtube API call: ', request, res);
       cacheList = cacheList.concat(request.plainResult
         ? res.items
         : self.processResponse(res.items, cacheList.length, request.loadAll));
@@ -767,13 +768,13 @@ Youtube.prototype.calcItemsLimit = function (numLoadedItems, numAvailableItems) 
 Youtube.prototype.parseResponseItemData = function (item) {
   var albumart, url, type;
 
-  if (item.snippet.thumbnails != null) {
+  if (item.snippet.thumbnails && typeof item.snippet.thumbnails === 'object') {
     //try to get highest quality image first
-    if (item.snippet.thumbnails.high !== null) {
+    if (item.snippet.thumbnails.high && typeof item.snippet.thumbnails.high === 'object') {
       albumart = item.snippet.thumbnails.high.url;
-    } else if (item.snippet.thumbnails.medium !== null) {
+    } else if (item.snippet.thumbnails.medium && typeof item.snippet.thumbnails.medium === 'object') {
       albumart = item.snippet.thumbnails.medium.url;
-    } else if (item.snippet.thumbnails.default !== null) {
+    } else if (item.snippet.thumbnails.default && typeof item.snippet.thumbnails.default === 'object') {
       albumart = item.snippet.thumbnails.default.url;
     }
   }
