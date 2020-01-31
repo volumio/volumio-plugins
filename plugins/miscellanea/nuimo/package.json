@@ -1,0 +1,22 @@
+{
+	"name": "nuimo",
+	"version": "1.0.0",
+	"description": "Allows the use of SENIC Nuimo tactile control ",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Volumio Team",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Nuimo Control",
+		"icon": "fa-circle-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"nuimojs": "git+https://github.com/volumio/nuimojs.git",
+		"v-conf": "^1.4.0"
+	}
+}
