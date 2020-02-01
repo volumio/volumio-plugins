@@ -1,4 +1,4 @@
-December 6th 2019
+Febuary - 1st 2020
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,14 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary 1st 2020
+
+- add VoBAFfilters
+- attenuation step is now 0.5dB
+- add HK8 target curve
+- remove .rephase in format name
+- Use of --PSNormType=S --PSNormFactor=1 to avoid clipping with DRC-fir generation
 
 December 06th 2019
 

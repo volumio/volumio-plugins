@@ -349,19 +349,19 @@
           "options": [
             {
               "value": "text",
-              "label": "text- 32/64 bits floats line (.txt) in rephase"
+              "label": "text- 32/64 bits floats line (.txt)"
             },
             {
               "value": "S16_LE",
-              "label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
+              "label": "S16_LE- 16 bits LPCM mono (.wav)"
             },
             {
               "value": "S24_LE",
-              "label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
+              "label": "S24_LE- 24 bits LPCM mono (.wav)"
             },
             {
               "value": "S32_LE",
-              "label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
+              "label": "S32_LE- 32 bits LPCM mono (.wav)"
             },
             {
               "value": "FLOAT_LE",
@@ -369,7 +369,7 @@
             },
             {
               "value": "FLOAT64_LE",
-              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
+              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl)"
             }
           ],
 	"visibleIf": {
@@ -760,19 +760,19 @@
           "options": [
             {
               "value": "text",
-              "label": "text- 32/64 bits floats line (.txt) in rephase"
+              "label": "text- 32/64 bits floats line (.txt)"
             },
             {
               "value": "S16_LE",
-              "label": "S16_LE- 16 bits LPCM mono (.wav) in rePhase"
+              "label": "S16_LE- 16 bits LPCM mono (.wav)"
             },
             {
               "value": "S24_LE",
-              "label": "S24_LE- 24 bits LPCM mono (.wav) in rePhase"
+              "label": "S24_LE- 24 bits LPCM mono (.wav)"
             },
             {
               "value": "S32_LE",
-              "label": "S32_LE- 32 bits LPCM mono (.wav) in rePhase"
+              "label": "S32_LE- 32 bits LPCM mono (.wav)"
             },
             {
               "value": "FLOAT_LE",
@@ -780,7 +780,7 @@
             },
             {
               "value": "FLOAT64_LE",
-              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase"
+              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl)"
             }
           ],
           "visibleIf": {

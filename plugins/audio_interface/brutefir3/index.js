@@ -937,7 +937,8 @@ var attenuationlr4 = self.config.get('attenuationlr4');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.label', attenuationlr4);
 
 
- 	for (let n = 0; n < 22; n++) {
+ //	for (let n = 0; n < 22; n++) {
+for (let n = 0; n < 22; n=n+0.5) {
      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[4].options', {
       value: (n),
       label: (n)
@@ -2555,7 +2556,8 @@ ControllerBrutefir.prototype.convert = function(data) {
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
      //here we compose cmde for drc
-     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=S --PSNormFactor=2 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=S --PSNormFactor=1 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+ //var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
      //and execute it...
      execSync(composedcmde);
      self.logger.info(composedcmde);
@@ -2743,7 +2745,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
- }, 6500);
+ }, 5500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
   setTimeout(function() {
@@ -2766,7 +2768,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
      self.logger.info("Setting volume mixer!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         });
 
-  }, 12500);
+  }, 13500);
  }
  return defer.promise;
 };
