@@ -33,9 +33,7 @@ Youtube.prototype.onVolumioStart = function () {
   self.config = new (require('v-conf'))();
   self.config.loadFile(configFile);
   self.resultsLimit = self.config.get('results_limit');
-
   this.loadI18n();
-  this.initializeAuth();
 
   return libQ.resolve();
 };
@@ -43,12 +41,14 @@ Youtube.prototype.onVolumioStart = function () {
 Youtube.prototype.onStart = function () {
   //Getting the mdp plugin
   this.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
+  this.initializeAuth();
   this.logger.info("Youtube::onStart Adding to browse sources");
   this.addToBrowseSources();
   return libQ.resolve();
 }
 
 Youtube.prototype.onStop = function () {
+  this.removeToBrowseSources();
   return libQ.resolve();
 };
 
@@ -94,7 +94,6 @@ Youtube.prototype.getUIConfigAsync = async function () {
     uiconf.sections[0].content[1].hidden = true;
   }
   uiconf.sections[1].content[0].value = this.config.get('results_limit');
-  console.log('Youtube UIConfig: ', uiconf);
   return uiconf;
 }
 
@@ -326,6 +325,11 @@ Youtube.prototype.getState = function () {
 Youtube.prototype.addToBrowseSources = function () {
   var self = this;
   self.commandRouter.volumioAddToBrowseSources(BROWSE_SOURCE);
+};
+
+Youtube.prototype.removeToBrowseSources = function () {
+
+    this.commandRouter.volumioRemoveToBrowseSources(BROWSE_SOURCE.name);
 };
 
 Youtube.prototype.clearAddPlayTrack = function (track) {
