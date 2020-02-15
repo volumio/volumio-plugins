@@ -5,7 +5,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-var Nuimo = require("nuimojs");
+var Nuimo =  require("./lib/nuimo.js");
 var nuimo = null;
 
 var nuimoDevice;
