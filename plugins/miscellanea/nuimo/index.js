@@ -119,6 +119,7 @@ controllerNuimo.prototype.initializeListeners = function () {
     device.on("disconnect", () => {
         this.logger.info("Nuimo disconnected");
     // restarting scan
+    nuimo.scan();
 });
 
     device.on("press", () => {

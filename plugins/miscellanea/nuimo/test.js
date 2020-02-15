@@ -1,5 +1,8 @@
-let Nuimo = require("nuimojs"),
+let Nuimo =  require("./lib/nuimo.js"),
     nuimo = new Nuimo();
+
+// Required for Max Compatibility
+process.env.NOBLE_REPORT_ALL_HCI_EVENTS=1
 
 nuimo.on("discover", (device) => {
 

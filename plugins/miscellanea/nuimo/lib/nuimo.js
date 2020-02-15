@@ -1,5 +1,5 @@
 let fs = require("fs"),
-    noble = require("noble"),
+    noble = require("@abandonware/noble"),
     debug = require('debug')('nuimojs'),
     EventEmitter = require("events").EventEmitter;
 
@@ -25,6 +25,7 @@ class Nuimo extends EventEmitter {
     constructor (whitelist) {
         super();
         this._connectedDevices = {};
+        this._discoveredDevices = [];
         this._useWhitelist = false;
 
         if (whitelist) {
@@ -78,10 +79,19 @@ class Nuimo extends EventEmitter {
 
             if (advertisement.localName === "Nuimo") {
 
+                if (this._discoveredDevices.includes(peripheral.uuid)) {
+                    // avoid double discoveries
+                    return
+                } else {
+                    this._discoveredDevices.push(peripheral.uuid);
+                }
+
                 if (this._useWhitelist && this._whitelist.indexOf(peripheral.uuid) < 0) {
                     debug("Discovered device not in UUID whitelist");
                     return;
                 }
+
+
 
                 peripheral.removeAllListeners();
                 noble.stopScanning();
@@ -97,6 +107,8 @@ class Nuimo extends EventEmitter {
                 device._peripheral.on("disconnect", () => {
                     debug("Peripheral disconnected");
                     delete this._connectedDevices[device.uuid];
+                    var index = this._discoveredDevices.indexOf(device.uuid);
+                    if (index !== -1) this._discoveredDevices.splice(index, 1);
 
                     if (wantScan) {
                         noble.startScanning();
