@@ -552,7 +552,7 @@
 					"prettyName": "lastfmscrobble",
 					"icon": "fa-lightbulb-o",
 					"name": "lastfmscrobble",
-					"version": "3.3.4",
+					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfmscrobble/lastfmscrobble.zip",
 					"license": "ISC",
 					"description": "Scrobbles to last.fm",
