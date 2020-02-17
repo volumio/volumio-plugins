@@ -550,7 +550,7 @@
 				},
 				{
 					"prettyName": "lastfmscrobble",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-lastfm-square",
 					"name": "lastfmscrobble",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfmscrobble/lastfmscrobble.zip",
