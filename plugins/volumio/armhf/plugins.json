@@ -547,6 +547,24 @@
 						}
 					],
 					"updated": "17-1-2020"
+				},
+				{
+					"prettyName": "lastfmscrobble",
+					"icon": "fa-lightbulb-o",
+					"name": "lastfmscrobble",
+					"version": "0.3.3",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfmscrobble/lastfmscrobble.zip",
+					"license": "ISC",
+					"description": "Scrobbles to last.fm",
+					"details": "Scrobbles songs to last.fm",
+					"author": "Øistein Kjos",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "17-2-2020"
 				}
 			]
 		},
