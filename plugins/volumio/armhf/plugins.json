@@ -552,11 +552,11 @@
 					"prettyName": "lastfmscrobble",
 					"icon": "fa-lightbulb-o",
 					"name": "lastfmscrobble",
-					"version": "0.3.3",
+					"version": "3.3.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfmscrobble/lastfmscrobble.zip",
 					"license": "ISC",
 					"description": "Scrobbles to last.fm",
-					"details": "Scrobbles songs to last.fm",
+					"details": "Scrobbles songs and compatible webradios to last.fm, there's no other functionality from last.fm included - you have to check on last.fm to get suggestions for new music.",
 					"author": "Øistein Kjos",
 					"screenshots": [
 						{
