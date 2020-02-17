@@ -24,6 +24,7 @@ sudo -H pip install --upgrade python-mpd2 socketIO-client
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
 sudo -H pip install --upgrade setuptools
 sudo -H pip install --upgrade luma.oled
+sudo -H pip install --upgrade pymemcache
 
 #Install OLED service
 cd /tmp
