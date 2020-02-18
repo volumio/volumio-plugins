@@ -1,0 +1,128 @@
+### Playback commands ###
+begin
+prog = irexec
+button = KEY_CLEAR
+config = /usr/local/bin/volumio clear
+end
+begin
+prog = irexec
+button = KEY_PLAY
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_ENTER
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_PAUSE
+config = /usr/local/bin/volumio pause
+end
+begin
+prog = irexec
+button = KEY_STOP
+config = /usr/local/bin/volumio stop
+end
+begin
+prog = irexec
+button = KEY_PREVIOUS
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_NEXT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_RIGHT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_LEFT
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_UP
+config = /usr/local/bin/volumio seek plus
+end
+begin
+prog = irexec
+button = KEY_DOWN
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_SHUFFLE
+config = /usr/local/bin/volumio random
+end
+begin
+prog = irexec
+button = KEY_AGAIN
+config = /usr/local/bin/volumio repeat
+end
+### Volume commands ###
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+end
+begin
+prog = irexec
+button = KEY_MUTE
+config = /usr/local/bin/volumio volume mute
+end
+### START name=playlistname with button = KEY, so name a playlist "1" to start with button"1" ###
+begin
+prog = irexec
+button = KEY_1
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=1"
+end
+begin
+prog = irexec
+button = KEY_2
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=2"
+end
+begin
+prog = irexec
+button = KEY_3
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=3"
+end
+begin
+prog = irexec
+button = KEY_4
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=4"
+end
+begin
+prog = irexec
+button = KEY_5
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=5"
+end
+begin
+prog = irexec
+button = KEY_6
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=6"
+end
+begin
+prog = irexec
+button = KEY_7
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=7"
+end
+begin
+prog = irexec
+button = KEY_8
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=8"
+end
+begin
+prog = irexec
+button = KEY_9
+config =  curl -v "localhost:3000/api/v1/commands/?cmd=playplaylist&name=9"
+end
