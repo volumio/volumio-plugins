@@ -43,7 +43,7 @@ Youtube.prototype.onStart = function () {
   this.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
   this.initializeAuth();
   this.logger.info("Youtube::onStart Adding to browse sources");
-  this.addToBrowseSources();
+
   return libQ.resolve();
 }
 
@@ -878,6 +878,7 @@ Youtube.prototype.logout = function () {
   console.log('Youtube: ', 'LOGOUT');
   this.config.delete('refresh_token');
   this.config.delete('access_token');
+  this.removeToBrowseSources();
 }
 
 Youtube.prototype.initializeAuth = async function () {
@@ -885,6 +886,7 @@ Youtube.prototype.initializeAuth = async function () {
   const refreshToken = this.config.get('refresh_token');
   if (refreshToken) {
     const accessTokenExpiry = this.config.get('access_token_expiry');
+    this.addToBrowseSources();
     if (!accessToken || accessTokenExpiry <= Date.now()) {
       await this.refreshAccessToken();
     }
