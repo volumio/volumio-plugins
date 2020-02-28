@@ -25,7 +25,7 @@
 "rc4delay":{"type": "string","value": "0"},
 "attenuationlr4":{"type":"string","value":"0"},
 "filter_size":{"type": "string","value": "65536"},
-"numb_part":{"type": "string","value": "32"},
+"numb_part":{"type": "string","value": "8"},
 "filter_format":{"type": "string","value": "FLOAT_LE"},
 "output_format":{"type": "string","value": "S16_LE"},
 "input_device":{"type": "string","value": "Loopback,1"},

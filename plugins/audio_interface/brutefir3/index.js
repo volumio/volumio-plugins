@@ -16,6 +16,8 @@ var socket = io.connect('http://localhost:3000');
 var path = require('path');
 var wavFileInfo = require('wav-file-info');
 var nchannels;
+const Journalctl = require('journalctl');
+
 
 
 // Define the ControllerBrutefir class
@@ -107,7 +109,7 @@ ControllerBrutefir.prototype.hwinfo = function() {
       self.config.set('probesmplerate', samplerates);
 	var output_format = formats.split(" ").pop();
       self.logger.info('Auto set output format : ------->', output_format);
-      self.config.set('output_format', output_format);
+    //  self.config.set('output_format', output_format);
      } catch (e) {
       self.logger.info('Error reading hwinfo.json, detection failed', e);
       // nchannels = 2;
@@ -275,6 +277,7 @@ ControllerBrutefir.prototype.autoconfig = function() {
   .then(self.saveHardwareAudioParameters())
   .then(self.setLoopbackoutput())
   .then(self.rebuildBRUTEFIRAndRestartDaemon()) //no sure to keep it..
+
   .catch(function(err) {
    console.log(err);
   });
@@ -288,9 +291,10 @@ ControllerBrutefir.prototype.onStart = function() {
  var self = this;
  var defer = libQ.defer();
 
+
  socket.emit('getState', '');
  self.sendvolumelevel();
-
+ self.getjournalctl();
  self.autoconfig()
   .then(function(e) {
    setTimeout(function() {
@@ -1272,6 +1276,38 @@ ControllerBrutefir.prototype.setUIConfig = function(data) {
 
 };
 
+
+ControllerBrutefir.prototype.getjournalctl = function() {
+ var self = this;
+/*
+let opts = {
+unit: ['brutefir']
+}
+
+const journalctl = new Journalctl([opts]);
+
+journalctl.on('event', (event) => {
+console.log('log from brutefir : ' + event)
+});
+*/
+var datajournalctl
+  // console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZddddddddddddddddddZ');
+exec("/usr/bin/sudo /bin/journalctl -o json -f -u brutefir", {
+  uid: 1000,
+  gid: 1000
+ }, function(error,stdout, datajournalctl ) {
+  if (error) {
+   console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
+  } else {
+   console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWAAAAAAAAAAAAAAAAAAAAAAAAAAA' + datajournalctl);
+  // defer.resolve();
+  }
+ });
+
+ //  self.logger.info('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWAAAAAAAAAAAAAAAAAAAAAAAAAAA' + datajournalctl);
+
+};
+
 ControllerBrutefir.prototype.getConf = function(varName) {
  var self = this;
  //Perform your installation tasks here
@@ -1285,6 +1321,7 @@ ControllerBrutefir.prototype.setConf = function(varName, varValue) {
 
 ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  var self = this;
+
  var defer = libQ.defer();
  try {
   fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function(err, data) {
@@ -1707,7 +1744,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
  } catch (err) {
 
  }
-
+ self.getjournalctl();
  return defer.promise;
 
 };
@@ -1788,7 +1825,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  var output_device
  var input_device = "Loopback,1";
 
-
+var numb_part=8;
  output_device = self.config.get('alsa_device');
  var defer = libQ.defer();
  try {
@@ -1819,10 +1856,13 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function(data) {
  self.config.set('rightc4filter', data['rightc4filter'].value);
  self.config.set('rc4delay', data['rc4delay']);
  self.config.set('attenuationlr4', data['attenuationlr4'].value);
- self.config.set('filter_format', data['filter_format'].value);
  self.config.set('filter_size', data['filter_size'].value);
+ //self.config.set('numb_part', data['numb_part']);
+ //   self.config.set('numb_part', data['numb_part'].value);
+ self.config.set('filter_format', data['filter_format'].value);
+ 
  self.config.set('smpl_rate', data['smpl_rate'].value);
- //  self.config.set('numb_part', data['numb_part']);
+
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);
@@ -2516,7 +2556,7 @@ ControllerBrutefir.prototype.convert = function(data) {
   if ((outfile == '') || (outfile == 'Empty=name of file to convert')) {
    outfile = infile.replace('.wav', '')
   };
-  var targetcurve = ' /usr/share/drc/config/'
+  var targetcurve = '\ /usr/share/drc/config/'
   var outsample = self.config.get('smpl_rate');
   var tc = self.config.get('tc');
   if (tc != 'choose a file') {
@@ -2556,8 +2596,8 @@ ControllerBrutefir.prototype.convert = function(data) {
      };
      self.commandRouter.broadcastMessage("openModal", modalData);
      //here we compose cmde for drc
-     var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=S --PSNormFactor=1 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
- //var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+   //  var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+ var composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
      //and execute it...
      execSync(composedcmde);
      self.logger.info(composedcmde);

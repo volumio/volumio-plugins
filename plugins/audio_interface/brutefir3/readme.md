@@ -1,4 +1,4 @@
-Febuary - 1st 2020
+Febuary - 28st 2020
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,13 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary 28st 2020
+
+- reverse to 8 partition
+- fix for hw outyput format detection
+- DRC remove normalization : Warning, clipping may occurs if no attenuation set
+
 
 Febuary 1st 2020
 
