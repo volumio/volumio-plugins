@@ -2,6 +2,15 @@
 
 echo "Installing nanosound cd Dependencies"
 echo "NanoSound CD takes around 15 minutes to install. Please be patient."
+
+HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
+
+if [ "$HW" = "tinkerboard" ];
+then
+   echo "Sorry, Tinkerboard is not supported via repository. Please visit https://nanomesher.com/nanosound-cd-support/ for more detail"
+   echo "plugininstallend"
+fi
+
 sudo apt-get update
 # Install the required packages via apt-get
 #sudo apt-get -y install
