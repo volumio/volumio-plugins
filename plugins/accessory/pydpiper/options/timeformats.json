@@ -1,0 +1,4 @@
+{"formats":[
+  {"name":"24H","format":"24H"},
+  {"name":"AM/PM","format":"12H"}
+]}
