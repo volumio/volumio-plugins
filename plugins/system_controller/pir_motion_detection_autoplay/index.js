@@ -96,6 +96,8 @@ module.exports = class pirMotionDetectionAutoplay {
 		const self = this;
 	  const defer = libQ.defer();
 
+		if(!this.gpioPir) return;
+
 	  this.initGPIO();
 
 		const timeframeEnabled = this.config.get("enable_timeframe");
