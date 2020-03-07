@@ -209,24 +209,33 @@
                 "saveButton": {
                               "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
                               "data": [
+                                      "controlGpuMem",
                                       "gpuMem"
                                       ]
                               },
                 "content": [
                              {
-                               "id": "gpuMem",
-                               "element": "input",
-                               "type": "number",
-                               "doc": "TRANSLATE.TOUCH_DISPLAY.GPUMEM_DOC",
-                               "label": "TRANSLATE.TOUCH_DISPLAY.GPUMEM",
-                               "attributes": [
-                                               {"placeholder": {}},
-                                               {"maxlength": {}},
-                                               {"min": {}},
-                                               {"max": {}}
-                                             ],
-                               "value": 32
-                               }
+                             "id": "controlGpuMem",
+                             "element": "switch",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.CONTROLGPUMEM_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.CONTROLGPUMEM",
+                             "value": false
+                             },
+                             {
+                             "id": "gpuMem",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.GPUMEM_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.GPUMEM",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 32,
+                             "visibleIf": {"field": "controlGpuMem", "value": true}
+                             }
                            ]
                 },
                 {
