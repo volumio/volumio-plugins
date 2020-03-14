@@ -1,5 +1,5 @@
 {
-"toolsinstalled":{"type":"boolean","value":"false"},
+"toolsinstalled":{"type":"boolean","value": false},
 "nchannels":{"type": "string","value": "2"},
 "formats":{"type": "string","value": ""},
 "smpl_rate":{"type": "string","value": "44100"},
