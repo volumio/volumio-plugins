@@ -1,4 +1,10 @@
-/*DRC-FIR plugin for volumio2. By balbuze 2019*/
+/*DRC-FIR plugin for volumio2. By balbuze March 14th 2020
+todo :
+restore mixer in UI
+report clipping when it occurs to set attenuation (using journalctl node)
+...
+*/
+
 'use strict';
 
 var io = require('socket.io-client');
@@ -1138,8 +1144,40 @@ var probesmplerate;
 
 
     var value
-
-
+    //--------Tools section------------------------------------------------
+    
+    var ttools = self.config.get('toolsinstalled');
+    if (ttools == false) {
+         uiconf.sections[4].content[0].hidden = true;
+         uiconf.sections[4].content[1].hidden = true;
+         uiconf.sections[4].content[2].hidden = true;
+         uiconf.sections[4].content[3].hidden = true;
+         uiconf.sections[4].content[4].hidden = true;
+         uiconf.sections[4].content[5].hidden = true;
+         uiconf.sections[4].content[6].hidden = true;
+         uiconf.sections[4].content[7].hidden = true;
+         uiconf.sections[4].content[8].hidden = true;
+         uiconf.sections[4].content[9].hidden = true;
+         uiconf.sections[4].content[10].hidden = true;
+         uiconf.sections[4].content[11].hidden = true;
+         uiconf.sections[4].content[12].hidden = false;
+    } else {
+         uiconf.sections[4].content[0].hidden = false;
+         uiconf.sections[4].content[1].hidden = false;
+         uiconf.sections[4].content[2].hidden = false;
+         uiconf.sections[4].content[3].hidden = false;
+         uiconf.sections[4].content[4].hidden = false;
+         uiconf.sections[4].content[5].hidden = false;
+         uiconf.sections[4].content[6].hidden = false;
+         uiconf.sections[4].content[7].hidden = false;
+         uiconf.sections[4].content[8].hidden = false;
+         uiconf.sections[4].content[9].hidden = false;
+         uiconf.sections[4].content[10].hidden = false;
+         uiconf.sections[4].content[11].hidden = false;
+         uiconf.sections[4].content[12].hidden = true;
+    }
+    
+    
     //--------VoBAF section----------------------------------------------------------
 
 
@@ -2206,15 +2244,16 @@ ControllerBrutefir.prototype.installtools = function(data) {
    var cp4 = execSync('/bin/mkdir /data/plugins/audio_interface/brutefir/tools');
    var cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
    var cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
-   var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
+  // var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
 
-   var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
+  // var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.tools /data/plugins/audio_interface/brutefir/UIConfig.json');
   } catch (err) {
    self.logger.info('An error occurs while downloading or installing tools');
    self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
   }
   resolve();
   self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !', 'Refresh the page to see them');
+  self.config.set('toolsinstalled', true);
   return self.commandRouter.reloadUi();
  });
 };
@@ -2227,15 +2266,16 @@ ControllerBrutefir.prototype.removetools = function(data) {
   try {
 
    var cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
-   var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
+ //  var cp7 = execSync('/bin/rm /data/plugins/audio_interface/brutefir/UIConfig.json');
 
-   var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
+  // var cp8 = execSync('/bin/cp /data/plugins/audio_interface/brutefir/UIConfig.json.base /data/plugins/audio_interface/brutefir/UIConfig.json')
   } catch (err) {
    self.logger.info('An error occurs while removing tools');
    self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
   }
   resolve();
   self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
+    self.config.set('toolsinstalled', false);
   return self.commandRouter.reloadUi();
  });
 };
@@ -2758,7 +2798,7 @@ ControllerBrutefir.prototype.outputDeviceCallback = function() {
  return defer.promise;
 };
 
-//here we set the Loopback output
+//here we set the Loopback output and restore mixer and volume level
 ControllerBrutefir.prototype.setLoopbackoutput = function() {
  var self = this;
  var defer = libQ.defer();
@@ -2782,9 +2822,12 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
    "label": self.config.get('alsa_softvolumenubmer')
   }
  }
+ 
+  
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+
  }, 5500);
  var volumeval = self.config.get('alsa_volumestart')
  if (volumeval != 'disabled') {
@@ -2805,7 +2848,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
         respconfig.then(function(stri)
         {
             self.commandRouter.broadcastMessage('pushUiConfig', stri);
-     self.logger.info("Setting volume mixer!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
         });
 
   }, 13500);

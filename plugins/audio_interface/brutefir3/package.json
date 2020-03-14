@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "DRC -Digital Room Correction - for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,8 @@
   "volumio_info": {
     "prettyName": "DRC for Volumio",
     "plugin_type": "audio_interface",
-    "icon": "fa-sliders fa-rotate-90"
+    "icon": "fa-sliders fa-rotate-90",
+    "boot_priority": 10
   },
   "dependencies": {
     "child_process": "",
