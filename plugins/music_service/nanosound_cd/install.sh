@@ -43,14 +43,19 @@ echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "cpu: " $cpu
 
-mkdir /data/configuration/music_service/nanosound_cd
-cd /data/configuration/music_service/nanosound_cd
+
+if [ ! -d "/data/nanosound_cd" ] 
+then
+    mkdir /data/nanosound_cd
+fi
+
+cd /data/nanosound_cd
 if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
 		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_x86.tar.gz
-		sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz -C /home/volumio/
+		sudo tar xvf /data/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz -C /home/volumio/
 else
 		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd.tar.gz
-		sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
+		sudo tar xvf /data/nanosound_cd/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
 fi
 
 cd /home/volumio/nanomesher_nanosoundcd
@@ -58,25 +63,25 @@ sudo chmod 777 nanosoundcd_progressweb
 sudo chmod 777 nanosoundcd_web
 
 if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
-		rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz
+		rm /data/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz
 else
-		rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd.tar.gz		
+		rm /data/nanosound_cd/nanomesher_nanosoundcd.tar.gz		
 fi
 
 
 
 echo "Configuring alsa devices"
-
+cd /data/nanosound_cd
 wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_asound.tar.gz
-sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz -C /data/configuration/music_service/nanosound_cd
-echo "</data/configuration/music_service/nanosound_cd/asound.conf>" | sudo tee -a /etc/asound.conf
-rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz
+sudo tar xvf /data/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz -C /data/nanosound_cd
+echo "</data/nanosound_cd/asound.conf>" | sudo tee -a /etc/asound.conf
+rm /data/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz
 
 
 echo "Configuring NanoSound CD Service to autostart"
 wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_services.tar.gz
-sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
-rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz
+sudo tar xvf /data/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
+rm /data/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz
 
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable nanosoundcd_web
