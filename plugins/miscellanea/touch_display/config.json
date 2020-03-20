@@ -43,6 +43,10 @@
     "type": "string",
     "value": "0"
   },
+  "controlGpuMem": {
+    "type": "boolean",
+    "value": false
+  },
   "gpuMem": {
     "type": "number",
     "value": 32

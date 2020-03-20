@@ -108,11 +108,13 @@ TouchDisplay.prototype.onStart = function () {
           // screen orientation
           self.setOrientation(self.config.get('angle'));
           // GPU memory size
-          self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + self.config.get('gpuMem'))
-            .then(self.modBootConfig.bind(self, '^gpu_mem', '#GPU_MEM'))
-            .fail(function () {
-              self.logger.info('Writing the touch display plugin\'s gpu_mem setting failed. Previous gpu_mem settings in /boot/config.txt have not been commented.');
-            });
+          if (self.config.get('controlGpuMem')) {
+            self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + self.config.get('gpuMem'))
+              .then(self.modBootConfig.bind(self, '^gpu_mem', '#GPU_MEM'))
+              .fail(function () {
+                self.logger.info('Writing the touch display plugin\'s gpu_mem setting failed. Previous gpu_mem settings in /boot/config.txt have not been commented.');
+              });
+          }
         });
       }
       // screensaver
@@ -180,11 +182,13 @@ TouchDisplay.prototype.onStop = function () {
   clearTimeout(setScrToTimer3);
   if (device === 'Raspberry PI') {
     self.setOrientation('0');
-    self.modBootConfig('^#GPU_MEM', 'gpu_mem')
-      .then(self.modBootConfig.bind(self, configTxtGpuMemBanner + 'gpu_mem=.*', ''))
-      .fail(function () {
-        self.logger.info('Restoring gpu_mem settings in /boot/config.txt failed. The touch display plugin\'s gpu_mem settings have been preserved.');
-      });
+    if (self.config.get('controlGpuMem')) {
+      self.modBootConfig('^#GPU_MEM', 'gpu_mem')
+        .then(self.modBootConfig.bind(self, configTxtGpuMemBanner + 'gpu_mem=.*', ''))
+        .fail(function () {
+          self.logger.info('Restoring gpu_mem settings in /boot/config.txt failed. The touch display plugin\'s gpu_mem settings have been preserved.');
+        });
+    }
     clearTimeout(autoBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
@@ -274,8 +278,9 @@ TouchDisplay.prototype.getUIConfig = function () {
         uiconf.sections[2].content[0].value.value = self.config.get('angle');
         uiconf.sections[2].content[0].value.label = self.commandRouter.getI18nString('TOUCH_DISPLAY.' + self.config.get('angle'));
         uiconf.sections[3].hidden = false;
-        uiconf.sections[3].content[0].value = self.config.get('gpuMem');
-        uiconf.sections[3].content[0].attributes = [
+        uiconf.sections[3].content[0].value = self.config.get('controlGpuMem');
+        uiconf.sections[3].content[1].value = self.config.get('gpuMem');
+        uiconf.sections[3].content[1].attributes = [
           {
             placeholder: 32,
             maxlength: 3,
@@ -329,43 +334,54 @@ TouchDisplay.prototype.saveScreensaverConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
   let t = 0;
+  let noChanges = true;
 
   if (Number.isNaN(parseInt(confData.timeout, 10)) || !isFinite(confData.timeout)) {
     uiNeedsUpdate = true;
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
   } else {
     confData.timeout = self.checkLimits('timeout', confData.timeout, 0, Number.MAX_SAFE_INTEGER);
-    self.config.set('timeout', confData.timeout);
-    self.config.set('afterPlay', confData.afterPlay);
-    fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-      if (err !== null || !stats.isSocket()) {
-        t = 2000;
-        self.logger.info('xserver is not ready: Delay applying screensaver config by 2 seconds.');
-      }
-      clearTimeout(setScrToTimer2);
-      setScrToTimer2 = setTimeout(function () {
-        fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-          if (err !== null || !stats.isSocket()) {
-            self.logger.error('xserver is not ready: Screensaver config cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new screensaver config
-            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCREENSAVER'));
-          } else {
-            if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
-              exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-                if (error !== null) {
-                  self.logger.error('Error waking up the screen: ' + error);
-                }
-              });
-              self.setScreenTimeout(0);
+    if (self.config.get('timeout') !== confData.timeout) {
+      self.config.set('timeout', confData.timeout);
+      fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
+        if (err !== null || !stats.isSocket()) {
+          t = 2000;
+          self.logger.info('xserver is not ready: Delay applying screensaver config by 2 seconds.');
+        }
+        clearTimeout(setScrToTimer2);
+        setScrToTimer2 = setTimeout(function () {
+          fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
+            if (err !== null || !stats.isSocket()) {
+              self.logger.error('xserver is not ready: Screensaver config cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new screensaver config
+              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCREENSAVER'));
             } else {
-              self.setScreenTimeout(confData.timeout);
+              if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
+                exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                  if (error !== null) {
+                    self.logger.error('Error waking up the screen: ' + error);
+                  }
+                });
+                self.setScreenTimeout(0);
+              } else {
+                self.setScreenTimeout(confData.timeout);
+              }
             }
-          }
-        });
-      }, t);
-    });
+          });
+        }, t);
+      });
+      noChanges = false;
+    }
+  }
+  if (self.config.get('afterPlay') !== confData.afterPlay) {
+    self.config.set('afterPlay', confData.afterPlay);
+    noChanges = false;
   }
   if (uiNeedsUpdate) {
     self.updateUIConfig();
+  } else if (noChanges) {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
+  } else {
+    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
   }
   defer.resolve();
 };
@@ -397,8 +413,12 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
       }
     ]
   };
+  let noChanges = true;
 
   self.commandRouter.broadcastMessage('closeAllModals', '');
+  if (self.config.get('autoMode') !== confData.autoMode) {
+    noChanges = false;
+  }
   if (confData.autoMode) {
     if (Number.isNaN(parseInt(confData.minBr, 10)) || !isFinite(confData.minBr)) {
       confData.minBr = self.config.get('minBr');
@@ -412,7 +432,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
       if (confData.modalResult === false) {
         uiNeedsUpdate = true;
       } else {
-        self.config.set('minBr', confData.minBr);
+        if (self.config.get('minBr') !== confData.minBr) {
+          self.config.set('minBr', confData.minBr);
+          noChanges = false;
+        }
       }
       if (Number.isNaN(parseInt(confData.maxBr, 10)) || !isFinite(confData.maxBr)) {
         confData.maxBr = self.config.get('maxBr');
@@ -420,7 +443,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.MAXBR') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
       }
       confData.maxBr = self.checkLimits('maxBr', confData.maxBr, confData.minBr, maxBrightness);
-      self.config.set('maxBr', confData.maxBr);
+      if (self.config.get('maxBr') !== confData.maxBr) {
+        self.config.set('maxBr', confData.maxBr);
+        noChanges = false;
+      }
       if (confData.brightnessCurve) {
         if (Number.isNaN(parseInt(confData.midBr, 10)) || !isFinite(confData.midBr)) {
           confData.midBr = self.config.get('midBr');
@@ -428,7 +454,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.MIDBR') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
         }
         confData.midBr = self.checkLimits('midBr', confData.midBr, confData.minBr, confData.maxBr);
-        self.config.set('midBr', confData.midBr);
+        if (self.config.get('midBr') !== confData.midBr) {
+          self.config.set('midBr', confData.midBr);
+          noChanges = false;
+        }
       }
       // minAls and maxAls can only be the same value if the ALS range has not been determined before
       if (self.config.get('maxAls') <= self.config.get('minAls')) {
@@ -440,7 +469,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
       } else if (confData.brightnessCurve && (!self.config.has('midAls') || self.config.get('midAls') <= self.config.get('minAls') || self.config.get('midAls') >= self.config.get('maxAls'))) {
         self.getAlsValue({ confData: confData, action: 'mid' });
       } else {
-        self.config.set('brightnessCurve', confData.brightnessCurve);
+        if (self.config.get('brightnessCurve') !== confData.brightnessCurve) {
+          self.config.set('brightnessCurve', confData.brightnessCurve);
+          noChanges = false;
+        }
         self.config.set('autoMode', confData.autoMode);
         clearTimeout(autoBrTimer);
         timeoutCleared = true;
@@ -460,7 +492,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
       if (confData.modalResult === false) {
         uiNeedsUpdate = true;
       } else {
-        self.config.set('manualBr', confData.manualBr);
+        if (self.config.get('manualBr') !== confData.manualBr) {
+          self.config.set('manualBr', confData.manualBr);
+          noChanges = false;
+        }
       }
       self.config.set('autoMode', confData.autoMode);
       clearTimeout(autoBrTimer);
@@ -470,6 +505,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
   }
   if (uiNeedsUpdate) {
     self.updateUIConfig();
+  } else if (noChanges) {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
+  } else {
+    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
   }
 };
 
@@ -501,6 +540,8 @@ TouchDisplay.prototype.saveOrientationConf = function (confData) {
       .then(function () {
         self.commandRouter.broadcastMessage('openModal', responseData);
       });
+  } else {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
   }
 };
 
@@ -526,21 +567,55 @@ TouchDisplay.prototype.saveGpuMemConf = function (confData) {
     ]
   };
 
-  if (Number.isNaN(parseInt(confData.gpuMem, 10)) || !isFinite(confData.gpuMem)) {
-    uiNeedsUpdate = true;
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.GPUMEM') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
-  } else {
-    confData.gpuMem = self.checkLimits('gpuMem', confData.gpuMem, 32, 128);
-    if (self.config.get('gpuMem') !== confData.gpuMem) {
-      self.config.set('gpuMem', confData.gpuMem);
+  if (confData.controlGpuMem) {
+    if (Number.isNaN(parseInt(confData.gpuMem, 10)) || !isFinite(confData.gpuMem)) {
+      confData.gpuMem = self.config.get('gpuMem');
+      uiNeedsUpdate = true;
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.GPUMEM') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
+    } else {
+      confData.gpuMem = self.checkLimits('gpuMem', confData.gpuMem, 32, 128);
+    }
+    if (self.config.get('gpuMem') !== confData.gpuMem || self.config.get('controlGpuMem') !== confData.controlGpuMem) {
       self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + confData.gpuMem)
         .then(function () {
+          self.config.set('gpuMem', confData.gpuMem);
+          if (self.config.get('controlGpuMem') !== confData.controlGpuMem) {
+            self.modBootConfig('^gpu_mem', '#GPU_MEM');
+          }
+        })
+        .then(function () {
+          self.config.set('controlGpuMem', confData.controlGpuMem);
           self.commandRouter.broadcastMessage('openModal', responseData);
+        })
+        .fail(function () {
+          uiNeedsUpdate = true;
+          self.logger.error('Changing gpu_mem settings failed.');
+        })
+        .done(function () {
+          if (uiNeedsUpdate) {
+            self.updateUIConfig();
+          }
         });
+    } else if (uiNeedsUpdate) {
+      self.updateUIConfig();
+    } else {
+      self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
     }
-  }
-  if (uiNeedsUpdate) {
-    self.updateUIConfig();
+  } else if (self.config.get('controlGpuMem') !== confData.controlGpuMem) {
+    self.modBootConfig('^#GPU_MEM', 'gpu_mem')
+      .then(function () {
+        self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', '');
+      })
+      .then(function () {
+        self.config.set('controlGpuMem', confData.controlGpuMem);
+        self.commandRouter.broadcastMessage('openModal', responseData);
+      })
+      .fail(function () {
+        self.updateUIConfig();
+        self.logger.error('Uncommenting gpu_mem settings in /boot/config.txt failed.');
+      });
+  } else {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
   }
 };
 
@@ -603,6 +678,8 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
         });
       }
     });
+  } else {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
   }
   return defer.promise;
 };
@@ -1007,8 +1084,8 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
       self.logger.info('Un-/commenting gpu_mem settings in /boot/config.txt.');
       throw new Error();
     }
-    if (fs.statSync(configFile).isFile()) {
-      // if /boot/userconfig.txt exists remove touch display related entry from /boot/config.txt
+    if (fs.statSync(configFile).isFile() && new RegExp('^' + configTxtRotationBanner).test(searchexp)) {
+      // if /boot/userconfig.txt exists remove plugin related screen rotation entries from /boot/config.txt
       try {
         const configTxt = fs.readFileSync('/boot/config.txt', 'utf8');
         const newConfigTxt = configTxt.replace(new RegExp(os.EOL + '*' + searchexp + os.EOL + '*'), '');
@@ -1025,7 +1102,7 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + ' /boot/config.txt: ' + e);
       }
     } else {
-      self.logger.info('Using /boot/config.txt instead of /boot/userconfig.txt. Reason: /boot/userconfig.txt is not a file.');
+      self.logger.info('Using /boot/config.txt instead of /boot/userconfig.txt.');
       throw new Error();
     }
   } catch (e) {
