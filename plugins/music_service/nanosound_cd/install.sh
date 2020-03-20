@@ -16,9 +16,12 @@ sudo apt-get update
 #sudo apt-get -y install
 
 echo "Installing Flask"
-sudo apt-get -y remove python-pip
+
+cd /home/volumio
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+sudo python get-pip.py
+
 sudo apt-get -y install python-setuptools python-dev
-sudo easy_install pip
 sudo pip install Flask
 sudo pip install flask_table
 sudo pip install flask_cors
@@ -31,11 +34,7 @@ echo "Installing VLC"
 sudo apt-get -y install vlc
 sudo pip install python-vlc
 
-echo "Installing Eject"
-sudo apt-get -y install eject
-
 echo "Installing Audio Libraries"
-
 sudo apt-get -y install libasound2-plugins
 
 cd /home/volumio/
@@ -51,13 +50,14 @@ echo "Detecting cpu"
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "cpu: " $cpu
 
-cd /tmp
+mkdir /data/configuration/music_service/nanosound_cd
+cd /data/configuration/music_service/nanosound_cd
 if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
 		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_x86.tar.gz
-		sudo tar xvf /tmp/nanomesher_nanosoundcd_x86.tar.gz -C /home/volumio/
+		sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz -C /home/volumio/
 else
 		wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd.tar.gz
-		sudo tar xvf /tmp/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
+		sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd.tar.gz -C /home/volumio/
 fi
 
 cd /home/volumio/nanomesher_nanosoundcd
@@ -65,25 +65,25 @@ sudo chmod 777 nanosoundcd_progressweb
 sudo chmod 777 nanosoundcd_web
 
 if [ $cpu = "i686" ] || [ $cpu = "x86_64" ]; then
-		rm /tmp/nanomesher_nanosoundcd_x86.tar.gz
+		rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_x86.tar.gz
 else
-		rm /tmp/nanomesher_nanosoundcd.tar.gz		
+		rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd.tar.gz		
 fi
 
 
 
 echo "Configuring alsa devices"
-cd /tmp
+
 wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_asound.tar.gz
-sudo tar xvf /tmp/nanomesher_nanosoundcd_asound.tar.gz -C /etc/
-rm /tmp/nanomesher_nanosoundcd_asound.tar.gz
+sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz -C /data/configuration/music_service/nanosound_cd
+echo "</data/configuration/music_service/nanosound_cd/asound.conf>" | sudo tee -a /etc/asound.conf
+rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_asound.tar.gz
 
 
 echo "Configuring NanoSound CD Service to autostart"
-cd /tmp
 wget https://github.com/nanomesher/nanomesher_nanosoundcd_dist/raw/master/packages/nanomesher_nanosoundcd_services.tar.gz
-sudo tar xvf /tmp/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
-rm /tmp/nanomesher_nanosoundcd_services.tar.gz
+sudo tar xvf /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz -C /lib/systemd/system/
+rm /data/configuration/music_service/nanosound_cd/nanomesher_nanosoundcd_services.tar.gz
 
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable nanosoundcd_web
