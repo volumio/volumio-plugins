@@ -1,4 +1,4 @@
-2020 January 17th
+2020 March 22th
 
 ###  About the plugin
 
@@ -22,6 +22,9 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+March 22th 2020
+
+- code cleaning
 
 January 17th 2020
 
