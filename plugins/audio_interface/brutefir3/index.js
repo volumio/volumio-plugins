@@ -770,30 +770,36 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     valuestoredl = self.config.get('leftfilter');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', valuestoredl);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredl);
+    
+    value = self.config.get('attenuationl');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', value);
 
-    uiconf.sections[0].content[1].value = self.config.get('lc1delay');
+    uiconf.sections[0].content[2].value = self.config.get('lc1delay');
 
     valuestoredr = self.config.get('rightfilter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', valuestoredr);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', valuestoredr);
-
-    uiconf.sections[0].content[3].value = self.config.get('rc1delay');
-
-    value = self.config.get('attenuation');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
+    
+      value = self.config.get('attenuationr');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', value);
+
+    uiconf.sections[0].content[5].value = self.config.get('rc1delay');
+
+       
 
 
     let nchannelssection = self.config.get('nchannels');
     self.logger.info('Number of channels detected : ----------->' + nchannelssection);
     if (nchannelssection == '2') {
-     uiconf.sections[0].content[5].hidden = true;
+     uiconf.sections[0].content[6].hidden = true;
 
     } else {
-     uiconf.sections[0].content[5].hidden = false;
+     uiconf.sections[0].content[6].hidden = false;
     }
     if (nchannelssection == '2') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[6].hidden = true;
+
      uiconf.sections[0].content[7].hidden = true;
      uiconf.sections[0].content[8].hidden = true;
      uiconf.sections[0].content[9].hidden = true;
@@ -808,6 +814,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 /*
     if (nchannelssection == '3') { //&& (addchannels == true)) {
@@ -890,74 +897,78 @@ ControllerBrutefir.prototype.getUIConfig = function() {
 
 
 
-    uiconf.sections[0].content[5].value = self.config.get('addchannels');
+    uiconf.sections[0].content[6].value = self.config.get('addchannels');
 
     valuestoredls = self.config.get('leftc2filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', valuestoredls);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', valuestoredls);
 
-    uiconf.sections[0].content[7].value = self.config.get('lc2delay');
+    uiconf.sections[0].content[8].value = self.config.get('lc2delay');
 
     valuestoredrs = self.config.get('rightc2filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.value', valuestoredrs);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[8].value.label', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', valuestoredrs);
 
-    uiconf.sections[0].content[9].value = self.config.get('rc2delay');
+    uiconf.sections[0].content[10].value = self.config.get('rc2delay');
 
  	let attenuationlr2 = self.config.get('attenuationlr2');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.value', attenuationlr2);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[10].value.label', attenuationlr2);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.value', attenuationlr2);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.label', attenuationlr2);
 
        valuestoredls = self.config.get('leftc3filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.value', valuestoredls);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.label', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.value', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.label', valuestoredls);
 
-    uiconf.sections[0].content[12].value = self.config.get('lc3delay');
+    uiconf.sections[0].content[13].value = self.config.get('lc3delay');
 
     valuestoredrs = self.config.get('rightc3filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[13].value.value', valuestoredrs);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[13].value.label', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.value', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.label', valuestoredrs);
 
-    uiconf.sections[0].content[14].value = self.config.get('rc3delay');
+    uiconf.sections[0].content[15].value = self.config.get('rc3delay');
 
-let attenuationlr3 = self.config.get('attenuationlr3');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[15].value.value', attenuationlr3);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[15].value.label', attenuationlr3);
+     let attenuationlr3 = self.config.get('attenuationlr3');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.value', attenuationlr3);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.label', attenuationlr3);
 
 
     valuestoredls = self.config.get('leftc4filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.value', valuestoredls);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.label', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[17].value.value', valuestoredls);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[17].value.label', valuestoredls);
 
-    uiconf.sections[0].content[17].value = self.config.get('lc4delay');
+    uiconf.sections[0].content[18].value = self.config.get('lc4delay');
 
 
     valuestoredrs = self.config.get('rightc4filter');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.value', valuestoredrs);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[18].value.label', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.value', valuestoredrs);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.label', valuestoredrs);
 
-    uiconf.sections[0].content[19].value = self.config.get('rc4delay');
+    uiconf.sections[0].content[20].value = self.config.get('rc4delay');
 
 let attenuationlr4 = self.config.get('attenuationlr4');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.value', attenuationlr4);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[20].value.label', attenuationlr4);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.value', attenuationlr4);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.label', attenuationlr4);
 
 
  //	for (let n = 0; n < 22; n++) {
 for (let n = 0; n < 22; n=n+0.5) {
-     self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[4].options', {
+     self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
       value: (n),
       label: (n)
      });
-	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[10].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[4].options', {
       value: (n),
       label: (n)
      });
-	 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[15].options', {
+	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[11].options', {
       value: (n),
       label: (n)
      });
- 	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[20].options', {
+	 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[16].options', {
+      value: (n),
+      label: (n)
+     });
+ 	self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[21].options', {
       value: (n),
       label: (n)
      });
@@ -977,31 +988,31 @@ for (let n = 0; n < 22; n=n+0.5) {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[6].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[7].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[8].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[9].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[11].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[13].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[14].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[16].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[17].options', {
        value: items[i],
        label: items[i]
       });
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[18].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[19].options', {
        value: items[i],
        label: items[i]
       });
@@ -1011,22 +1022,22 @@ for (let n = 0; n < 22; n=n+0.5) {
 
     });
 
-    uiconf.sections[0].content[21].hidden = true;
+    uiconf.sections[0].content[22].hidden = true;
     value = self.config.get('filter_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[21].options'), value));
-
-    value = self.config.get('filter_size');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[22].options'), value));
+
+    value = self.config.get('filter_size');
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
 /*
     value = self.config.get('smpl_rate');
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
     self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
 */
  value = self.config.get('smpl_rate');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', value);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', value);
 
 let probesmplerate;
   let probesmpleratehw = self.config.get('probesmplerate').split(' ');
@@ -1035,7 +1046,7 @@ let probesmplerate;
      self.logger.info('list of available HW sample rate :' + probesmpleratehw);
   for (let i in probesmpleratehw) {
   //   self.logger.info('list of available HW sample rate :' + probesmplerate[i]);
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[23].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[24].options', {
        value: probesmpleratehw[i],
        label: probesmpleratehw[i]
       });
@@ -1046,8 +1057,8 @@ let probesmplerate;
 
     uiconf.sections[0].content[24].hidden = false;
     valuestoredf = self.config.get('output_format');
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', valuestoredf);
-    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', valuestoredf);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.value', valuestoredf);
+    self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.label', valuestoredf);
 
 
     //  let filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
@@ -1081,7 +1092,7 @@ let probesmplerate;
      sitems.shift();
      for (let i in sitems) {
    //   self.logger.info('list of available output formatUI :' + sitems[i]);
-      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[24].options', {
+      self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[25].options', {
        value: sitems[i],
        label: sitems[i]
       });
@@ -1701,7 +1712,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${leftfilter}", composeleftfilter)
     .replace("${filter_format1}", self.config.get('filter_format'))
     .replace("${skip_1}", skipfl)
-    .replace("${lattenuation}", self.config.get('attenuation'))
+    .replace("${lattenuation}", self.config.get('attenuationl'))
     .replace("${leftfilter}", composeleftfilter2)
     .replace("${filter_format1}", self.config.get('vobaf_format'))
     .replace("${skip_1}", skipflv)
@@ -1733,7 +1744,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
     .replace("${rightfilter}", composerightfilter)
     .replace("${filter_format2}", self.config.get('filter_format'))
     .replace("${skip_2}", skipfr)
-    .replace("${rattenuation}", self.config.get('attenuation'))
+    .replace("${rattenuation}", self.config.get('attenuationr'))
     .replace("${rightfilter}", composerightfilter2)
     .replace("${filter_format2}", self.config.get('vobaf_format'))
     .replace("${skip_2}", skipfrv)
@@ -1868,10 +1879,12 @@ let numb_part=8;
    self.logger.info('/data/configuration/audio_interface/brutefir/config.json does not exist');
   }
 
- self.config.set('attenuation', data['attenuation'].value);
+
  self.config.set('leftfilter', data['leftfilter'].value);
  self.config.set('lc1delay', data['lc1delay']);
+ self.config.set('attenuationl', data['attenuationl'].value);
  self.config.set('rightfilter', data['rightfilter'].value);
+ self.config.set('attenuationr', data['attenuationr'].value);
  self.config.set('rc1delay', data['rc1delay']);
  self.config.set('addchannels', data['addchannels']);
  self.config.set('leftc2filter', data['leftc2filter'].value);
@@ -1893,9 +1906,7 @@ let numb_part=8;
  //self.config.set('numb_part', data['numb_part']);
  //   self.config.set('numb_part', data['numb_part'].value);
  self.config.set('filter_format', data['filter_format'].value);
- 
  self.config.set('smpl_rate', data['smpl_rate'].value);
-
  self.config.set('input_device', data['input_device']);
  self.config.set('output_device', data['output_device']);
  self.config.set('output_format', data['output_format'].value);

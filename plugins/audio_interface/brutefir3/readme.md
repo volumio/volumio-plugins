@@ -98,6 +98,7 @@ nearly everythings
 March 23th 2020
 
 - add missing demo filters
+- separated attenuation for left and right channels
 - code cleaning and modernised...
 
 March 14th 2020

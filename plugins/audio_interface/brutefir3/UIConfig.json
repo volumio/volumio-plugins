@@ -18,9 +18,10 @@
         "data": [
           "leftfilter",
 	  "lc1delay",
+	  "attenuationl",
           "rightfilter",
 	  "rc1delay",
-  	  "attenuation",
+  	  "attenuationr",
 	  "addchannels",
 	  "leftc2filter",
 	  "lc2delay",
@@ -56,6 +57,21 @@
           },
           "options": []
         },
+         {
+          "id": "attenuationl",
+          "element": "select",
+          "label": "left channel attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"options": [],
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
+          },
 	{
           "id": "lc1delay",
           "element": "input",
@@ -70,7 +86,7 @@
             "value": true
           }
 	},
-  
+ 	
         {
           "id": "rightfilter",
           "element": "select",
@@ -82,6 +98,21 @@
           },
           "options": []
         },
+        {
+          "id": "attenuationr",
+          "element": "select",
+          "label": "right channel attenuation",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+	"options": [],
+	"visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
+          },
 	{
           "id": "rc1delay",
           "element": "input",
@@ -96,21 +127,7 @@
             "value": true
           }
 	},
-	{
-          "id": "attenuation",
-          "element": "select",
-          "label": "l and r channels attenuation",
-          "description": "dB",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-	"options": [],
-	"visibleIf": {
-            "field": "advsettings",
-            "value": true
-          }
-          },
+	
  	{
           "id": "addchannels",
           "element": "switch",
