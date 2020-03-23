@@ -1,4 +1,4 @@
-Marcg 14th 2020
+March 23th 2020
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -93,6 +93,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+
+March 23th 2020
+
+- add missing demo filters
+- code cleaning and modernised...
 
 March 14th 2020
 
