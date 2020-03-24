@@ -818,7 +818,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
     }
 /*
     if (nchannelssection == '3') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[8].hidden = true;
+
      uiconf.sections[0].content[9].hidden = true;
      uiconf.sections[0].content[10].hidden = true;
      uiconf.sections[0].content[11].hidden = true;
@@ -831,11 +831,12 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 */
     if (nchannelssection == '4') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[10].hidden = false;
-     uiconf.sections[0].content[11].hidden = true;
+
+     uiconf.sections[0].content[11].hidden = false;
      uiconf.sections[0].content[12].hidden = true;
      uiconf.sections[0].content[13].hidden = true;
      uiconf.sections[0].content[14].hidden = true;
@@ -845,6 +846,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 /*
     if (nchannelssection == '5') { //&& (addchannels == true)) {
@@ -857,10 +859,10 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 */
     if (nchannelssection == '6') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[10].hidden = false;
      uiconf.sections[0].content[11].hidden = false;
      uiconf.sections[0].content[12].hidden = false;
      uiconf.sections[0].content[13].hidden = false;
@@ -871,18 +873,19 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 /*
     if (nchannelssection == '7') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[16].hidden = false;
-     uiconf.sections[0].content[17].hidden = true;
+
+     uiconf.sections[0].content[17].hidden = false;
      uiconf.sections[0].content[18].hidden = true;
      uiconf.sections[0].content[19].hidden = true;
      uiconf.sections[0].content[20].hidden = true;
+     uiconf.sections[0].content[21].hidden = true;
     }
 */
     if (nchannelssection == '8') { //&& (addchannels == true)) {
-     uiconf.sections[0].content[10].hidden = false;
      uiconf.sections[0].content[11].hidden = false;
      uiconf.sections[0].content[12].hidden = false;
      uiconf.sections[0].content[13].hidden = false;
@@ -893,6 +896,7 @@ ControllerBrutefir.prototype.getUIConfig = function() {
      uiconf.sections[0].content[18].hidden = false;
      uiconf.sections[0].content[19].hidden = false;
      uiconf.sections[0].content[20].hidden = false;
+     uiconf.sections[0].content[21].hidden = false;
     }
 
 
@@ -1420,10 +1424,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
    let delay
    let sldistance = self.config.get('ldistance');
    let srdistance = self.config.get('rdistance');
-   let diff
-   let cdelay
+   let diff;
+   let cdelay;
    let sample_rate = self.config.get('smpl_rate');
-   let sv = 34300 // sound velocity cm/s
+   let sv = 34300; // sound velocity cm/s
 
    if (sldistance > srdistance) {
     diff = sldistance - srdistance
@@ -1460,13 +1464,19 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 
    if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
     let skipfl = "skip:44;"
-   } else skipfl = "";
+   } if 
+   ((self.config.get('filter_format') == "FLOAT64_LE") &&  (f_ext = ".wav")) {
+    skipfl = "skip:44;"
+   }else skipfl = "";
 
    let nordirac = self.config.get('rightfilter');
 
    if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
     let skipfr = "skip:44;"
-   } else skipfr = "";
+   } if 
+   ((self.config.get('filter_format') == "FLOAT64_LE") &&  (f_ext = ".wav")) {
+    skipfr = "skip:44;"
+   }else skipfr = "";
    let routput_device = self.config.get('alsa_device');
    //console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' + routput_device);
    if (routput_device == 'softvolume') {
@@ -1797,7 +1807,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function() {
 ControllerBrutefir.prototype.dfiltertype = function(data) {
  const self = this;
 
-let extset
+let extset;
 let filtername=self.config.get('leftfilter');
 let filterpath = '/data/INTERNAL/brutefirfilters/';
 let auto_filter_format;
@@ -1813,6 +1823,7 @@ let filext=self.config.get('leftfilter').split('.').pop().toString();
 		wavFileInfo.infoByFilename(filterpath + filtername, function(err, info){
 
 	let wavetype =(info.header.bits_per_sample);
+	self.logger.info(info.header);
 		  		if (wavetype == '16') {
 				auto_filter_format = 'S16_LE';
    self.config.set('filter_format', auto_filter_format);
@@ -1828,6 +1839,11 @@ let filext=self.config.get('leftfilter').split('.').pop().toString();
    self.config.set('filter_format', auto_filter_format);
 				self.logger.info('------>filter '+ filext + ' S32_LE ' + wavetype);
 				}
+				else if (wavetype == '64') {
+				auto_filter_format = 'FLOAT64_LE';
+   self.config.set('filter_format', auto_filter_format);
+				self.logger.info('------>filter '+ filext + ' FLOAT64_LE ' + wavetype);
+				}			
 	  		})
 	}
 	catch(err) {
@@ -2827,6 +2843,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function() {
  setTimeout(function() {
   self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+
  }, 5500);
  
  let volumeval = self.config.get('alsa_volumestart')

@@ -1,4 +1,4 @@
-March 23th 2020
+March 24th 2020
 
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
@@ -94,6 +94,11 @@ nearly everythings
 
 ### 4. Last changes
 
+
+March 24th 2020
+
+- now supprts acourate Float64_le wav file
+- correction for multi channels
 
 March 23th 2020
 
