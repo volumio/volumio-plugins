@@ -17,33 +17,32 @@
         "label": "TRANSLATE.APPLY",
         "data": [
           "leftfilter",
-	  "lc1delay",
-	  "attenuationl",
+          "lc1delay",
+          "attenuationl",
           "rightfilter",
-	  "rc1delay",
-  	  "attenuationr",
-	  "addchannels",
-	  "leftc2filter",
-	  "lc2delay",
-	  "rightc2filter",
-	  "rc2delay",
-	  "attenuationlr2",
-	  "leftc3filter",
-	  "lc3delay",
+          "rc1delay",
+          "attenuationr",
+          "addchannels",
+          "leftc2filter",
+          "lc2delay",
+          "rightc2filter",
+          "rc2delay",
+          "attenuationlr2",
+          "leftc3filter",
+          "lc3delay",
           "rightc3filter",
-	  "rc3delay",
-	  "attenuationlr3",
-	  "leftc4filter",
-	  "lc4delay",
-	  "rightc4filter",
-	  "rc4delay",
-	  "attenuationlr4",
+          "rc3delay",
+          "attenuationlr3",
+          "leftc4filter",
+          "lc4delay",
+          "rightc4filter",
+          "rc4delay",
+          "attenuationlr4",
           "filter_format",
           "filter_size",
           "smpl_rate",
           "output_format"
-          ]
-
+        ]
       },
       "content": [
         {
@@ -57,7 +56,7 @@
           },
           "options": []
         },
-         {
+        {
           "id": "attenuationl",
           "element": "select",
           "label": "left channel attenuation",
@@ -66,13 +65,13 @@
             "value": "0",
             "label": "0"
           },
-	"options": [],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
-          },
-	{
+        },
+        {
           "id": "lc1delay",
           "element": "input",
           "label": "Channel 1 delay",
@@ -81,12 +80,11 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
-	},
- 	
+        },
         {
           "id": "rightfilter",
           "element": "select",
@@ -107,13 +105,13 @@
             "value": "0",
             "label": "0"
           },
-	"options": [],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
-          },
-	{
+        },
+        {
           "id": "rc1delay",
           "element": "input",
           "label": "Channel 2 delay",
@@ -122,13 +120,12 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
-	},
-	
- 	{
+        },
+        {
           "id": "addchannels",
           "element": "switch",
           "doc": "Enable other channels. The DAC must handle it",
@@ -145,12 +142,12 @@
             "label": "none if empty"
           },
           "options": [],
-		"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "lc2delay",
           "element": "input",
           "label": "Channel 3 delay",
@@ -159,11 +156,11 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
+        },
         {
           "id": "rightc2filter",
           "element": "select",
@@ -174,12 +171,12 @@
             "label": "none if empty"
           },
           "options": [],
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "rc2delay",
           "element": "input",
           "label": "Channel 4 delay",
@@ -188,12 +185,12 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
- 	{
+        },
+        {
           "id": "attenuationlr2",
           "element": "select",
           "label": "l3 and r4 channels attenuation",
@@ -208,7 +205,7 @@
             "value": true
           }
         },
-  	{
+        {
           "id": "leftc3filter",
           "element": "select",
           "doc": "TRANSLATE.DOC_LFILTERC3",
@@ -218,12 +215,12 @@
             "label": "none if empty"
           },
           "options": [],
-		"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "lc3delay",
           "element": "input",
           "label": "Channel 5 delay",
@@ -232,11 +229,11 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
+        },
         {
           "id": "rightc3filter",
           "element": "select",
@@ -247,12 +244,12 @@
             "label": "none if empty"
           },
           "options": [],
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "rc3delay",
           "element": "input",
           "label": "Channel 6 delay",
@@ -261,12 +258,12 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
-	{	
+        },
+        {
           "id": "attenuationlr3",
           "element": "select",
           "label": "l5 and r6 channels attenuation",
@@ -281,7 +278,7 @@
             "value": true
           }
         },
-	{
+        {
           "id": "leftc4filter",
           "element": "select",
           "doc": "TRANSLATE.DOC_LFILTERC4",
@@ -291,12 +288,12 @@
             "label": "none if empty"
           },
           "options": [],
-		"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "lc4delay",
           "element": "input",
           "label": "Channel 7 delay",
@@ -305,11 +302,11 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
+        },
         {
           "id": "rightc4filter",
           "element": "select",
@@ -320,12 +317,12 @@
             "label": "none if empty"
           },
           "options": [],
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
         },
-	{
+        {
           "id": "rc4delay",
           "element": "input",
           "label": "Channel 8 delay",
@@ -334,12 +331,12 @@
             "value": "0",
             "label": "0"
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "addchannels",
             "value": true
           }
-	},
-	{
+        },
+        {
           "id": "attenuationlr4",
           "element": "select",
           "label": "l7 and r8 channels  attenuation",
@@ -389,7 +386,7 @@
               "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl)"
             }
           ],
-	"visibleIf": {
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
@@ -441,12 +438,12 @@
               "label": "262144"
             }
           ],
-	"visibleIf": {
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
         },
-          {
+        {
           "id": "smpl_rate",
           "element": "select",
           "doc": "sample rate",
@@ -455,8 +452,8 @@
             "value": "probesmplerate",
             "label": "probesmplerate"
           },
-          "options": [	],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
@@ -470,23 +467,22 @@
             "value": "sitems",
             "label": "sitems"
           },
-	"options": [],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "advsettings",
             "value": true
           }
         },
-	{
+        {
           "id": "advsettings",
           "element": "switch",
           "doc": "Avanced settings",
           "label": "Advanced settings",
           "value": false
         }
-
       ]
     },
-      {
+    {
       "id": "vobaf",
       "element": "section",
       "label": "VoBAF : Volume Based Adaptativ Filtering - EXPERIMENTAL",
@@ -500,29 +496,29 @@
         "label": "TRANSLATE.APPLY",
         "data": [
           "vobaf",
-	"Lowsw",
+          "Lowsw",
           "Low",
-	"LM1sw",
-	  "LM1",
-	"LM2sw",
-	  "LM2",
-	"LM3sw",
-	  "LM3",
+          "LM1sw",
+          "LM1",
+          "LM2sw",
+          "LM2",
+          "LM3sw",
+          "LM3",
           "M",
-	"HMsw",
-	  "HM",
-	"Highsw",
-	"High",
-	"vatt",
-	"vobaf_format",
-	"messon",
-	"maxvolume"
+          "HMsw",
+          "HM",
+          "Highsw",
+          "High",
+          "vatt",
+          "vobaf_format",
+          "messon",
+          "maxvolume"
         ],
- "visibleIf": {
-            "field": "vobaf",
-            "value": true
-          }
-     },
+        "visibleIf": {
+          "field": "vobaf",
+          "value": true
+        }
+      },
       "content": [
         {
           "id": "vobaf",
@@ -534,7 +530,7 @@
         {
           "id": "minvolume",
           "label": "Min Volume",
-	  "type":"text",
+          "type": "text",
           "element": "select",
           "description": "Min volume",
           "value": {
@@ -547,12 +543,12 @@
               "label": "0"
             }
           ],
- "visibleIf": {
+          "visibleIf": {
             "field": "vobaf",
             "value": true
           }
         },
- 	{
+        {
           "id": "Lowsw",
           "element": "switch",
           "doc": "Low",
@@ -577,8 +573,8 @@
             "field": "Lowsw",
             "value": true
           }
-	},
-	{
+        },
+        {
           "id": "LM1sw",
           "element": "switch",
           "doc": "LM1",
@@ -598,13 +594,13 @@
             "value": "10",
             "label": "10"
           },
-	  "options": [],
+          "options": [],
           "visibleIf": {
             "field": "LM1sw",
             "value": true
           }
         },
-	{
+        {
           "id": "LM2sw",
           "element": "switch",
           "doc": "LM2",
@@ -630,7 +626,7 @@
             "value": true
           }
         },
-	{
+        {
           "id": "LM3sw",
           "element": "switch",
           "doc": "LM3",
@@ -656,23 +652,22 @@
             "value": true
           }
         },
-	{
+        {
           "id": "Msw",
           "element": "select",
           "doc": "M",
           "label": "M filter",
-          "value":  {
+          "value": {
             "value": "Always ON",
             "label": "Always ON"
-                },
+          },
           "options": [],
-"visibleIf": {
+          "visibleIf": {
             "field": "vobaf",
             "value": true
-          
           }
         },
-	{
+        {
           "id": "M",
           "element": "select",
           "label": "M Volume threshold",
@@ -680,17 +675,14 @@
           "value": {
             "value": "50",
             "label": "50"
-		},
-     "options": [],
- "visibleIf": {
+          },
+          "options": [],
+          "visibleIf": {
             "field": "vobaf",
             "value": true
-          
           }
-     
-          
         },
-	{
+        {
           "id": "HMsw",
           "element": "switch",
           "doc": "HM",
@@ -716,41 +708,39 @@
             "value": true
           }
         },
-	{
+        {
           "id": "Highsw",
           "element": "switch",
           "doc": "High",
           "label": "High filter",
           "value": false,
-	 "visibleIf": {
+          "visibleIf": {
             "field": "vobaf",
             "value": true
           }
-          
         },
         {
           "id": "maxvolume",
           "label": "Max Volume",
-	  "type" : "text",
+          "type": "text",
           "element": "select",
           "description": "Maximum volume",
           "value": {
             "value": "100",
             "label": "100"
           },
-	"options": [
-	{
-	"value": "100",
-            "label": "100"
-}
-],
- "visibleIf": {
+          "options": [
+            {
+              "value": "100",
+              "label": "100"
+            }
+          ],
+          "visibleIf": {
             "field": "vobaf",
             "value": true
           }
-         
         },
- {
+        {
           "id": "vatt",
           "element": "select",
           "label": "VoBAF attenuation",
@@ -765,7 +755,7 @@
             "value": true
           }
         },
-{
+        {
           "id": "vobaf_format",
           "element": "select",
           "doc": "VoBAF filters format",
@@ -805,17 +795,16 @@
             "value": true
           }
         },
-{
+        {
           "id": "messon",
           "element": "switch",
           "doc": "Enable or disable VoBAF message on volume change",
           "label": "VoBAF volume messages",
           "value": true,
-	 "visibleIf": {
+          "visibleIf": {
             "field": "vobaf",
             "value": true
           }
-          
         }
       ]
     },
@@ -877,11 +866,11 @@
           "drcconfig",
           "outputfilename"
         ],
-	"visibleIf": {
-            "field": "drcsettings",
-            "value": true
-          }
-	},
+        "visibleIf": {
+          "field": "drcsettings",
+          "value": true
+        }
+      },
       "content": [
         {
           "id": "filetoconvert",
@@ -892,8 +881,8 @@
             "value": "fitems",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
-	"options": [],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "drcsettings",
             "value": true
           }
@@ -907,8 +896,8 @@
             "value": "",
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
-	"options": [],
-	"visibleIf": {
+          "options": [],
+          "visibleIf": {
             "field": "drcsettings",
             "value": true
           }
@@ -923,12 +912,11 @@
             "label": "TRANSLATE.CHOOSE_A_FILE"
           },
           "options": [
-            
             {
               "value": "minimal",
               "label": "minimal"
             },
-	    {
+            {
               "value": "soft",
               "label": "soft"
             },
@@ -953,7 +941,7 @@
               "label": "insane"
             }
           ],
-	"visibleIf": {
+          "visibleIf": {
             "field": "drcsettings",
             "value": true
           }
@@ -967,12 +955,12 @@
             "value": "azerty",
             "label": ""
           },
-	"visibleIf": {
+          "visibleIf": {
             "field": "drcsettings",
             "value": true
           }
         },
-	{
+        {
           "id": "drcsettings",
           "element": "switch",
           "doc": "DRC-FIR settings",
@@ -981,7 +969,7 @@
         }
       ]
     },
- {
+    {
       "id": "advanced",
       "element": "section",
       "label": "Tools",
@@ -1161,7 +1149,7 @@
             "endpoint": "audio_interface/brutefir",
             "method": "installtools"
           }
-	  },
+        },
         {
           "id": "wikilink",
           "element": "button",
