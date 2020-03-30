@@ -94,6 +94,10 @@ nearly everythings
 
 ### 4. Last changes
 
+March 30th 2020
+
+- fix auto filter format regression
+
 March 28th 2020
 
 - code cleaning

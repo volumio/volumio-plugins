@@ -1,7 +1,7 @@
-/*DRC-FIR plugin for volumio2. By balbuze March 14th 2020
+/*DRC-FIR plugin for volumio2. By balbuze March 30th 2020
 todo :
 restore mixer in UI
-report clipping when it occurs to set attenuation (using journalctl node)
+report clipping when it occurs to set attenuation (using journalctl node). implemented. Need to add volumio user in systemd-journal group
 ...
 */
 
@@ -723,7 +723,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       uiconf.sections[3].content[3].value = self.config.get('outputfilename');
 
       //-----------------------------------
-      
+
       valuestoredl = self.config.get('leftfilter');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', valuestoredl);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredl);
@@ -1248,30 +1248,23 @@ ControllerBrutefir.prototype.setUIConfig = function (data) {
   const self = this;
 };
 
+//------------Here we detect if clipping occurs while playing------
 ControllerBrutefir.prototype.getjournalctl = function () {
   const self = this;
-  /*
   let opts = {
-  unit: ['brutefir']
+    unit: 'brutefir'
   }
-  
-  const journalctl = new Journalctl([opts]);
-  
+  const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
-  console.log('log from brutefir : ' + event)
+    let pevent = event.MESSAGE.indexOf("peak");
+    if (pevent != -1) {
+      self.commandRouter.pushToastMessage('error', 'Clipping occurs!!! Increase attenuation values ' + event.MESSAGE);
+      console.log('Clipping occurs!!! Increase attenuation values ' + event.MESSAGE);
+    }
   });
-  */
-  let datajournalctlb;
-  const datajournalctl = () => {
-    return exec("/usr/bin/sudo /bin/journalctl -o json -f -u brutefir", {
-      uid: 1000,
-      gid: 1000
-    });
-    // defer.resolve();
-  }
-  const data = datajournalctl();
-  console.log('ttttttttttttttttttttttttttttttttttttttttttttttttttttt' + data);
 };
+
+//---------------------------------------------------------------
 
 ControllerBrutefir.prototype.getConf = function (varName) {
   const self = this;
@@ -1368,20 +1361,15 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       let vatt = self.config.get('vatt');
       let noldirac = self.config.get('leftfilter');
 
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
-        let skipfl = "skip:44;"
-      } if
-        ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav")) {
+      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") ||  ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
         skipfl = "skip:44;"
-      } else skipfl = "";
+           } else skipfl = "";
 
       let nordirac = self.config.get('rightfilter');
 
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE")) && (noldirac != "Dirac pulse")) {
-        let skipfr = "skip:44;"
-      } if
-        ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav")) {
+      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav")) ) && (noldirac != "Dirac pulse")) {
         skipfr = "skip:44;"
+     
       } else skipfr = "";
       let routput_device = self.config.get('alsa_device');
       if (routput_device == 'softvolume') {
@@ -1698,7 +1686,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
 
   } catch (err) {
   }
-  self.getjournalctl();
   return defer.promise;
 };
 
