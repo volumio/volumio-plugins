@@ -40,13 +40,13 @@ filename: "${leftfilter}";
 format: "${filter_format1}";
 ${skip_1}
 #format: "text";
-attenuation: ${lattenuation};
+#attenuation: {lattenuation};
 };
 
 filter "l_out" {
 #from_inputs: "l_in";
 from_filters: "lVoBAF";
-to_outputs: "l_out"/0.0;
+to_outputs: "l_out"/${lattenuation};
 #to_filters: "lVoBAF";
 coeff: "l_out";
 process: -1;
@@ -56,13 +56,13 @@ coeff "r_out" {
 filename: "${rightfilter}";
 format: "${filter_format2}";
 ${skip_2}
-attenuation: ${rattenuation};
+#attenuation: {rattenuation};
 };
 
 filter "r_out" {
 #from_inputs: "r_in";
 from_filters: "rVoBAF";
-to_outputs: "r_out"/0.0;
+to_outputs: "r_out"/${rattenuation};
 #to_filters: "rVoBAF";
 coeff: "r_out";
 process: -1;

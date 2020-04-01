@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze March 30th 2020
+/*DRC-FIR plugin for volumio2. By balbuze April 1st 2020
 todo :
 restore mixer in UI
 report clipping when it occurs to set attenuation (using journalctl node). implemented. Need to add volumio user in systemd-journal group
@@ -15,8 +15,6 @@ const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
 const config = new (require('v-conf'))();
-//let Telnet = require('telnet-client')
-//let connection = new Telnet()
 const socket = io.connect('http://localhost:3000');
 const path = require('path');
 const wavFileInfo = require('wav-file-info');
@@ -77,7 +75,6 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
 //here we detect hw info
 ControllerBrutefir.prototype.hwinfo = function () {
   const self = this;
-  //setTimeout(function() {
   let output_device = self.config.get('alsa_device');
   let nchannels;
   let formats;
@@ -110,7 +107,6 @@ ControllerBrutefir.prototype.hwinfo = function () {
             //  self.config.set('output_format', output_format);
           } catch (e) {
             self.logger.info('Error reading hwinfo.json, detection failed', e);
-            // nchannels = 2;
           }
         }
       });
@@ -166,75 +162,6 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function () {
   });
 };
 
-/*
- //here we connect to brutefir to read peak errors
- ControllerBrutefir.prototype.brutefirDaemonConnect = function(defer) {
-  const self = this;
-let params = {
-  host: '127.0.0.1',
-  port: 3002,
- // shellPrompt: '/ # ',
-  timeout: 1500,
-  // removeEcho: 4
-}
-connection.connect(params)
-
-connection.on('ready', function(prompt) {
-  connection.exec(cmd, function(err, response) {
-    console.log('brutefir connection' + response)
-  })
-})
-/*
-connection.on('timeout', function() {
-  console.log('socket timeout!')
-  connection.end()
-})
-
-connection.on('data', function() {
-  console.log('from cli '+ data)
-//  connection.end()
-})
-connection.on('close', function() {
-  console.log('connection closed')
-})
-
-*/
-
-/*  let client = new net.Socket();
-  client.connect(3002, '127.0.0.1', function(err) {
-   defer.resolve();
-//setTimeout(function() {
-   let brutefircmd
-
-  brutefircmd = ('upk;lf');
-   //here we send the command to brutefir
-
-   client.write(brutefircmd);
-//client.write('lf');
-   console.log('cmd sent to brutefir = ' + brutefircmd);
-
-  });
-  //error handling section
-  client.on('error', function(e) {
-
-   if (e.code == 'ECONNREFUSED') {
-    console.log('Huumm, is brutefir running ?');
-    self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
-
-   }
-  });
-
-  //   setTimeout(function() {
-  client.on('data', function(data) {
-   console.log('Received from brutefir cli: ' + data);
-
- // client.destroy(); // kill client after server's response
-  });
-//}, 5000);
-
- };
-*/
-
 ControllerBrutefir.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
@@ -245,7 +172,7 @@ ControllerBrutefir.prototype.onStop = function () {
       gid: 1000
     }, function (error, stdout, stderr) { })
     self.restoresettingwhendisabling()
-    socket.off()
+    socket.off();
   });
   defer.resolve();
   return libQ.resolve();
@@ -271,15 +198,12 @@ ControllerBrutefir.prototype.autoconfig = function () {
 ControllerBrutefir.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
-
   socket.emit('getState', '');
   self.sendvolumelevel();
-  self.getjournalctl();
   self.autoconfig()
     .then(function (e) {
       setTimeout(function () {
         self.logger.info("Starting brutefir");
-        //  self.rebuildBRUTEFIRAndRestartDaemon(defer);
         self.startBrutefirDaemon(defer);
       }, 1000);
       defer.resolve();
@@ -296,7 +220,6 @@ ControllerBrutefir.prototype.sendvolumelevel = function () {
   socket.on('pushState', function (data) {
     let vobaf = self.config.get('vobaf');
     if (vobaf == true) {
-
       let brutefircmd
       let Lowsw = self.config.get('Lowsw');
       let LM1sw = self.config.get('LM1sw');
@@ -656,23 +579,7 @@ ControllerBrutefir.prototype.sendvolumelevel = function () {
           self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
         }, 500);
       };
-      let client = new net.Socket();
-      client.connect(3002, '127.0.0.1', function (err) {
-        client.write(brutefircmd);
-        console.log('cmd sent to brutefir = ' + brutefircmd);
-      });
-
-      //error handling section
-      client.on('error', function (e) {
-        if (e.code == 'ECONNREFUSED') {
-          console.log('Huumm, is brutefir running ?');
-          self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
-        }
-      });
-      client.on('data', function (data) {
-        console.log('Received: ' + data);
-        client.destroy(); // kill client after server's response
-      });
+      self.sendCommandToBrutefir(brutefircmd);
     };
   });
 };
@@ -932,7 +839,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         allfilter = 'Dirac pulse,' + 'None,' + item;
         let allfilters = allfilter.replace('filter-sources', '');
         let allfilter2 = allfilters.replace('target-curves', '');
-        let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(',,', ',').replace(',,', ',');
+        let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
         let items = allfilter3.split(',');
         items.pop();
         self.logger.info('list of available filters for DRC :' + items);
@@ -1007,9 +914,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.value', valuestoredf);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.label', valuestoredf);
 
-      //  let filetoread = "/data/configuration/audio_interface/brutefir/sortsample.txt";
       try {
-        //  let sampleformat = fs.readFileSync(filetoread, 'utf8').toString().split('\n');
         let sampleformat = self.config.get("formats").split(' ');
         let sampleformatf = (', Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ');
         let sampleformato;
@@ -1028,7 +933,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
           str2 = "Detection\ fails.\ Reboot\ to\ retry, "
         }
         let result = str2 + sampleformatf
-
         self.logger.info('result formats ' + result);
         let str1 = result.replace(/\s/g, '');
         let str = str1.substring(0, str1.length - 1);
@@ -1036,7 +940,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         sitems = str.split(',');
         sitems.shift();
         for (let i in sitems) {
-          //   self.logger.info('list of available output formatUI :' + sitems[i]);
           self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[25].options', {
             value: sitems[i],
             label: sitems[i]
@@ -1055,7 +958,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         let fitems;
         let filetoconvert = '' + fitem;
         fitems = filetoconvert.split(',');
-        //   self.logger.info('list of available files to convert :' + fitems);
         console.log(fitems)
         for (let i in fitems) {
           self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
@@ -1218,15 +1120,11 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         });
       }
 
-
       value = self.config.get('vobaf_format');
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
 
-
       uiconf.sections[1].content[18].value = self.config.get('messon');
-      //    uiconf.sections[0].content[8].value = self.config.get('vrange');
-
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -1248,20 +1146,106 @@ ControllerBrutefir.prototype.setUIConfig = function (data) {
   const self = this;
 };
 
-//------------Here we detect if clipping occurs while playing------
-ControllerBrutefir.prototype.getjournalctl = function () {
+//------------Here we define a function to send command to brutefir through its CLI---------------------
+ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
   const self = this;
+  let client = new net.Socket();
+
+  client.connect(3002, '127.0.0.1', function (err) {
+    client.write(brutefircmd);
+    console.log('cmd sent to brutefir = ' + brutefircmd);
+  });
+
+  //error handling section
+  client.on('error', function (e) {
+    if (e.code == 'ECONNREFUSED') {
+      console.log('Huumm, is brutefir running ?');
+      self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+    }
+  });
+  client.on('data', function (data) {
+    console.log('Received: ' + data);
+    client.destroy(); // kill client after server's response
+  });
+};
+
+//------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
+ControllerBrutefir.prototype.testclipping = function () {
+  const self = this;
+  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+  let messageDisplayed;
+  let firstPeak = 0;
+  let secondPeak = 0;
+  let brutefircmd = ('cfoa "l_out" "l_out" 0 ;cfoa "r_out" "r_out"  0');
+  self.sendCommandToBrutefir(brutefircmd);
+  console.log('Cmd sent to brutefir' + brutefircmd);
+  let ititle = 'Detecting clipping';
+  let imessage = 'Please wait (10sec)';
+  let track = '/data/plugins/audio_interface/brutefir/testclipping/testclipping.wav';
+  let outsample = self.config.get('smpl_rate');
+  socket.emit('mute', '')
+  if (outsample == '44100') {
+    try {
+
+      exec('/usr/bin/killall aplay');
+      setTimeout(function () {
+        execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+      }, 500);//2000
+      socket.emit('unmute', '')
+    } catch (e) {
+      console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+    };
+  } else {
+    let modalData = {
+      title: ititle,
+      message: imessage,
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+
   let opts = {
     unit: 'brutefir'
   }
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
+
     let pevent = event.MESSAGE.indexOf("peak");
     if (pevent != -1) {
-      self.commandRouter.pushToastMessage('error', 'Clipping occurs!!! Increase attenuation values ' + event.MESSAGE);
-      console.log('Clipping occurs!!! Increase attenuation values ' + event.MESSAGE);
+      let filteredMessage = event.MESSAGE.replace("peak: 0/", " ");
+      let posFirstSlash = filteredMessage.indexOf("/");
+      let posLastSlash = filteredMessage.lastIndexOf("/");
+      secondPeak = filteredMessage.slice(posLastSlash + 2);
+      firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
+      let leftAttSet = 0;
+      let rightAttSet = 0;
+      let corr = 0.5;
+      let leftSuggested = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
+      let rightSuggested = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
+      if (leftSuggested > rightSuggested) {
+        messageDisplayed = leftSuggested
+      } else {
+        messageDisplayed = rightSuggested
+      };
+    } else {
+      messageDisplayed = 0;
     }
+    self.config.set('attenuationl', messageDisplayed);
+    self.config.set('attenuationr', messageDisplayed);
   });
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + messageDisplayed + ' dB');
+    self.rebuildBRUTEFIRAndRestartDaemon();
+    journalctl.stop();
+  }, 550);
 };
 
 //---------------------------------------------------------------
@@ -1361,15 +1345,15 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       let vatt = self.config.get('vatt');
       let noldirac = self.config.get('leftfilter');
 
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") ||  ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
+      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
         skipfl = "skip:44;"
-           } else skipfl = "";
+      } else skipfl = "";
 
       let nordirac = self.config.get('rightfilter');
 
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav")) ) && (noldirac != "Dirac pulse")) {
+      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
         skipfr = "skip:44;"
-     
+
       } else skipfr = "";
       let routput_device = self.config.get('alsa_device');
       if (routput_device == 'softvolume') {
@@ -1842,10 +1826,30 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
           self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
         })
 
-    }, 2500);
+    }, 1500);//2500
   }
-  return defer.promise;
 
+  var responseData = {
+    title: 'Test clipping and set attenuation',
+    message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. Press "test" to do that or exit.',
+    size: 'lg',
+    buttons: [
+      {
+        name: 'Exit',
+        class: 'btn btn-cancel',
+        emit: '',
+        payload: ''
+      },
+      {
+        name: 'Test',
+        class: 'btn btn-info',
+        emit: 'callMethod',
+        payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
+      }
+    ]
+  }
+  self.commandRouter.broadcastMessage("openModal", responseData);
+  return defer.promise;
 };
 
 //here we save VoBAf parameters
@@ -2378,7 +2382,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
             setTimeout(function () {
               socket.emit('unmute', '');
             }, 100);
-          }, 3500)
+          }, 1500); //3500
           return defer.promise;
         }
         edefer.resolve();
@@ -2431,7 +2435,7 @@ ControllerBrutefir.prototype.setVolumeParameters = function () {
     console.log(settings)
     // once completed, uncomment
     return self.commandRouter.volumioUpdateVolumeSettings(settings)
-  }, 8000);
+  }, 2000);//8000
 };
 
 ControllerBrutefir.prototype.saveHardwareAudioParameters = function () {
@@ -2471,6 +2475,9 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters = function () {
 
 ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, data) {
   const self = this;
+  conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+  conf = 'hardware';
+  //mixer
   return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
 };
 
@@ -2529,11 +2536,11 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
           self.logger.info("Setting volume on startup at " + volumeval);
         }
       });
-      let respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
-      respconfig.then(function (stri) {
-        self.commandRouter.broadcastMessage('pushUiConfig', stri);
+      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
+      respconfig.then(function (config) {
+        self.commandRouter.broadcastMessage('pushUiConfig', config);
       });
-    }, 13500);
+    }, 100);//13500
   }
   return defer.promise;
 };

@@ -1,5 +1,4 @@
-March 28th 2020
-
+April 1st 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -19,7 +18,9 @@ It provides :
 
 - Specific attenuation for each pair of channels.
 
+# Special thanks
 
+- Thanks a lot @krunok for your great help and suggestion to design this plugin. Your knowledge was more than helpful! ;-)
 
 ## NEW!
 
@@ -93,6 +94,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 1st 2020
+
+- first version with clipping detection
 
 March 30th 2020
 
