@@ -24,7 +24,8 @@ It provides :
 
 ## NEW!
 
-New automatic clipping detection. Attenuation can be set automatcally.
+New automatic clipping detection. Attenuation can be set automatcally. 
+## warning : need to add volumio as member of the group systemd-journal ```sudo usermod -a -G systemd-journal volumio``` 
 
 First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
 
