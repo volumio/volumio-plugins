@@ -1,4 +1,4 @@
-April 1st 2020
+April 2nd 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -16,7 +16,7 @@ It provides :
 
 - Filters (left and right) can be selected in webUI.
 
-- Specific attenuation for each pair of channels.
+- Specific attenuation for each pair of channels, with detection for the 2 first channels.
 
 # Special thanks
 
@@ -24,8 +24,9 @@ It provides :
 
 ## NEW!
 
-First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
+New automatic clipping detection. Attenuation can be set automatcally.
 
+First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
 
 
 The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. With that, it can apply filters such as adaptativ loudness.
@@ -94,6 +95,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 2nd 2020
+
+- code reorganisation
 
 April 1st 2020
 

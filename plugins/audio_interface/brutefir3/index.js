@@ -46,155 +46,6 @@ ControllerBrutefir.prototype.onVolumioStart = function () {
   return libQ.resolve();
 };
 
-ControllerBrutefir.prototype.getConfigurationFiles = function () {
-  return ['config.json'];
-};
-
-// Plugin methods -----------------------------------------------------------------------------
-//here we load snd_aloop module to provide a Loopback device
-ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
-  const self = this;
-  let defer = libQ.defer();
-  //self.hwinfo();
-  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('failed to load snd_aloop' + error);
-    } else {
-      self.commandRouter.pushConsoleMessage('snd_aloop loaded');
-      defer.resolve();
-    }
-  });
-  setTimeout(function () {
-    return defer.promise;
-  }, 500)
-};
-
-//here we detect hw info
-ControllerBrutefir.prototype.hwinfo = function () {
-  const self = this;
-  let output_device = self.config.get('alsa_device');
-  let nchannels;
-  let formats;
-  let hwinfo;
-  let samplerates, probesmplerates;
-  exec('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
-    } else {
-      fs.readFile('/data/configuration/audio_interface/brutefir/hwinfo.json', 'utf8', function (err, hwinfo) {
-        if (err) {
-          self.logger.info('Error reading hwinfo', err);
-        } else {
-          try {
-            const hwinfoJSON = JSON.parse(hwinfo);
-            nchannels = hwinfoJSON.channels.value;
-            formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
-            samplerates = hwinfoJSON.samplerates.value;
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-            self.config.set('nchannels', nchannels);
-            self.config.set('formats', formats);
-            self.config.set('probesmplerate', samplerates);
-            let output_format = formats.split(" ").pop();
-            self.logger.info('Auto set output format : ------->', output_format);
-            //  self.config.set('output_format', output_format);
-          } catch (e) {
-            self.logger.info('Error reading hwinfo.json, detection failed', e);
-          }
-        }
-      });
-    }
-  })
-};
-
-//here we save the volumio config for the next plugin start
-ControllerBrutefir.prototype.saveVolumioconfig = function () {
-  const self = this;
-  return new Promise(function (resolve, reject) {
-    let cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
-    let cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
-    try {
-      let cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
-    } catch (err) {
-      self.logger.info('config.txt does not exist');
-    }
-    resolve();
-  });
-};
-
-//here we define the volumio restore config
-ControllerBrutefir.prototype.restoreVolumioconfig = function () {
-  const self = this;
-  return new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      let cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
-      let cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
-      try {
-        let cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
-      } catch (err) {
-        self.logger.info('config.txt does not exist');
-      }
-    }, 8000)
-    resolve();
-  });
-};
-
-ControllerBrutefir.prototype.startBrutefirDaemon = function () {
-  const self = this;
-  let defer = libQ.defer();
-  exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('brutefir failed to start. Check your configuration ' + error);
-    } else {
-      self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
-      defer.resolve();
-    }
-  });
-};
-
-ControllerBrutefir.prototype.onStop = function () {
-  const self = this;
-  let defer = libQ.defer();
-  self.logger.info("Stopping Brutefir service");
-  self.commandRouter.stateMachine.stop().then(function () {
-    exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {
-      uid: 1000,
-      gid: 1000
-    }, function (error, stdout, stderr) { })
-    self.restoresettingwhendisabling()
-    socket.off();
-  });
-  defer.resolve();
-  return libQ.resolve();
-};
-
-ControllerBrutefir.prototype.autoconfig = function () {
-  const self = this;
-  let defer = libQ.defer();
-  self.saveVolumioconfig()
-    .then(self.hwinfo())
-    .then(self.modprobeLoopBackDevice())
-    .then(self.saveHardwareAudioParameters())
-    .then(self.setLoopbackoutput())
-    .then(self.rebuildBRUTEFIRAndRestartDaemon()) //no sure to keep it..
-
-    .catch(function (err) {
-      console.log(err);
-    });
-  defer.resolve()
-  return defer.promise;
-};
-
 ControllerBrutefir.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
@@ -214,374 +65,20 @@ ControllerBrutefir.prototype.onStart = function () {
   return defer.promise;
 };
 
-// here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI
-ControllerBrutefir.prototype.sendvolumelevel = function () {
+ControllerBrutefir.prototype.onStop = function () {
   const self = this;
-  socket.on('pushState', function (data) {
-    let vobaf = self.config.get('vobaf');
-    if (vobaf == true) {
-      let brutefircmd
-      let Lowsw = self.config.get('Lowsw');
-      let LM1sw = self.config.get('LM1sw');
-      let LM2sw = self.config.get('LM2sw');
-      let LM3sw = self.config.get('LM3sw');
-      let HMsw = self.config.get('HMsw');
-      let Highsw = self.config.get('Highsw');
-      let Low = self.config.get('Low');
-      let LM1 = self.config.get('LM1');
-      let LM2 = self.config.get('LM2');
-      let LM3 = self.config.get('LM3');
-      let M = self.config.get('M');
-      let HM = self.config.get('HM');
-      let filmess;
-      let lVoBAF, rVoBAF;
-
-      //1-all filters enabled
-      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
-        if (data.volume < Low) {
-          filmess = "Low"
-          lVoBAF = "lLow"
-          rVoBAF = "rLow"
-
-        } else if (data.volume >= Low && data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M && data.volume < HM) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-
-        } else if (data.volume >= HM) {
-          filmess = "High"
-          lVoBAF = "lHigh"
-          rVoBAF = "rHigh"
-        }
-      }
-      //2-Low not enabled
-      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
-        if (data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M && data.volume < HM) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-
-        } else if (data.volume >= HM) {
-          filmess = "High"
-          lVoBAF = "lHigh"
-          rVoBAF = "rHigh"
-        }
-      }
-      //3-lOW,LM1 not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
-        if (data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M && data.volume < HM) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-
-        } else if (data.volume >= HM) {
-          filmess = "High"
-          lVoBAF = "lHigh"
-          rVoBAF = "rHigh"
-        }
-      }
-      //4-lOW, LM1,LM2 not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == true && Highsw == true) {
-        if (data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M && data.volume < HM) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-
-        } else if (data.volume >= HM) {
-          filmess = "High"
-          lVoBAF = "lHigh"
-          rVoBAF = "rHigh"
-        }
-      }
-      //5-High not enabled
-      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
-        if (data.volume < Low) {
-          filmess = "Low"
-          lVoBAF = "lLow"
-          rVoBAF = "rLow"
-
-        } else if (data.volume >= Low && data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-        }
-      }
-
-      //6-HM and High not enabled
-      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
-        if (data.volume < Low) {
-          filmess = "Low"
-          lVoBAF = "lLow"
-          rVoBAF = "rLow"
-
-        } else if (data.volume >= Low && data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-        }
-      }
-
-      //7-Low, HM and High not enabled
-      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
-        if (data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-        }
-      }
-
-      //8-Low, LM1, HM and High not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
-        if (data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-        }
-      }
-
-      //9-Low, LM1, LM2, LM3 and High not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == false) {
-        if (data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-        }
-      }
-
-      //10-Low and High not enabled
-      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
-        if (data.volume < LM1) {
-          filmess = "LM1"
-          lVoBAF = "lLM1"
-          rVoBAF = "rLM1"
-
-        } else if (data.volume >= LM1 && data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-        }
-      }
-
-      //11- Low, LM1 and High not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
-        if (data.volume < LM2) {
-          filmess = "LM2"
-          lVoBAF = "lLM2"
-          rVoBAF = "rLM2"
-
-        } else if (data.volume >= LM2 && data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3 && data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-        }
-      }
-
-      //12- Low, LM1, LM2, LM3, HM and High not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == false && Highsw == false) {
-        filmess = "M"
-        lVoBAF = "lM"
-        rVoBAF = "rM"
-
-      }
-
-      //13-Low, LM1, LM2, HM and High not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == false && Highsw == false) {
-        if (data.volume < LM3) {
-          filmess = "LM3"
-          lVoBAF = "lLM3"
-          rVoBAF = "rLM3"
-
-        } else if (data.volume >= LM3) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-        }
-      }
-
-      //14-Low, LM1, LM2 and LM3 not enabled
-      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == true) {
-        if (data.volume < M) {
-          filmess = "M"
-          lVoBAF = "lM"
-          rVoBAF = "rM"
-
-        } else if (data.volume >= M && data.volume < HM) {
-          filmess = "HM"
-          lVoBAF = "lHM"
-          rVoBAF = "rHM"
-
-        } else if (data.volume >= HM) {
-          filmess = "High"
-          lVoBAF = "lHigh"
-          rVoBAF = "rHigh"
-        }
-      }
-
-      //  here wend cmd to brutefir
-      brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" ;cfc "rVoBAF" "' + rVoBAF + '"');
-      if (self.config.get('messon') == true) {
-        setTimeout(function () {
-          self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
-        }, 500);
-      };
-      self.sendCommandToBrutefir(brutefircmd);
-    };
+  let defer = libQ.defer();
+  self.logger.info("Stopping Brutefir service");
+  self.commandRouter.stateMachine.stop().then(function () {
+    exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {
+      uid: 1000,
+      gid: 1000
+    }, function (error, stdout, stderr) { })
+    self.restoresettingwhendisabling()
+    socket.off();
   });
+  defer.resolve();
+  return libQ.resolve();
 };
 
 ControllerBrutefir.prototype.onRestart = function () {
@@ -595,6 +92,8 @@ ControllerBrutefir.prototype.onInstall = function () {
 ControllerBrutefir.prototype.onUninstall = function () {
   const self = this;
 };
+
+// Configuration methods------------------------------------------------------------------------
 
 ControllerBrutefir.prototype.getUIConfig = function () {
   const self = this;
@@ -1133,6 +632,24 @@ ControllerBrutefir.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
+ControllerBrutefir.prototype.getConfigurationFiles = function () {
+  return ['config.json'];
+};
+
+ControllerBrutefir.prototype.setUIConfig = function (data) {
+  const self = this;
+};
+
+ControllerBrutefir.prototype.getConf = function (varName) {
+  const self = this;
+  //Perform your installation tasks here
+};
+
+ControllerBrutefir.prototype.setConf = function (varName, varValue) {
+  const self = this;
+  //Perform your installation tasks here
+};
+
 ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
   let n = options.length;
   for (let i = 0; i < n; i++) {
@@ -1142,11 +659,346 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
-ControllerBrutefir.prototype.setUIConfig = function (data) {
+ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, data) {
   const self = this;
+  conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+  conf = 'hardware';
+  //mixer
+  return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
 };
 
-//------------Here we define a function to send command to brutefir through its CLI---------------------
+ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
+  const self = this;
+  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+}
+// Plugin methods -----------------------------------------------------------------------------
+//here we load snd_aloop module to provide a Loopback device
+ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
+  const self = this;
+  let defer = libQ.defer();
+  //self.hwinfo();
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('failed to load snd_aloop' + error);
+    } else {
+      self.commandRouter.pushConsoleMessage('snd_aloop loaded');
+      defer.resolve();
+    }
+  });
+  setTimeout(function () {
+    return defer.promise;
+  }, 500)
+};
+
+//here we detect hw info
+ControllerBrutefir.prototype.hwinfo = function () {
+  const self = this;
+  let output_device = self.config.get('alsa_device');
+  let nchannels;
+  let formats;
+  let hwinfo;
+  let samplerates, probesmplerates;
+  exec('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
+    } else {
+      fs.readFile('/data/configuration/audio_interface/brutefir/hwinfo.json', 'utf8', function (err, hwinfo) {
+        if (err) {
+          self.logger.info('Error reading hwinfo', err);
+        } else {
+          try {
+            const hwinfoJSON = JSON.parse(hwinfo);
+            nchannels = hwinfoJSON.channels.value;
+            formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+            samplerates = hwinfoJSON.samplerates.value;
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+            self.config.set('nchannels', nchannels);
+            self.config.set('formats', formats);
+            self.config.set('probesmplerate', samplerates);
+            let output_format = formats.split(" ").pop();
+            self.logger.info('Auto set output format : ------->', output_format);
+            //  self.config.set('output_format', output_format);
+          } catch (e) {
+            self.logger.info('Error reading hwinfo.json, detection failed', e);
+          }
+        }
+      });
+    }
+  })
+};
+
+//here we save the volumio config for the next plugin start
+ControllerBrutefir.prototype.saveVolumioconfig = function () {
+  const self = this;
+  return new Promise(function (resolve, reject) {
+    let cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
+    let cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
+    try {
+      let cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
+    } catch (err) {
+      self.logger.info('config.txt does not exist');
+    }
+    resolve();
+  });
+};
+
+//here we define the volumio restore config
+ControllerBrutefir.prototype.restoreVolumioconfig = function () {
+  const self = this;
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      let cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
+      let cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
+      try {
+        let cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+      } catch (err) {
+        self.logger.info('config.txt does not exist');
+      }
+    }, 8000)
+    resolve();
+  });
+};
+
+ControllerBrutefir.prototype.startBrutefirDaemon = function () {
+  const self = this;
+  let defer = libQ.defer();
+  exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('brutefir failed to start. Check your configuration ' + error);
+    } else {
+      self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
+      defer.resolve();
+    }
+  });
+};
+
+ControllerBrutefir.prototype.autoconfig = function () {
+  const self = this;
+  let defer = libQ.defer();
+  self.saveVolumioconfig()
+    .then(self.hwinfo())
+    .then(self.modprobeLoopBackDevice())
+    .then(self.saveHardwareAudioParameters())
+    .then(self.setLoopbackoutput())
+    .then(self.rebuildBRUTEFIRAndRestartDaemon()) //no sure to keep it..
+
+    .catch(function (err) {
+      console.log(err);
+    });
+  defer.resolve()
+  return defer.promise;
+};
+
+ControllerBrutefir.prototype.outputDeviceCallback = function () {
+  const self = this;
+  let defer = libQ.defer();
+  setTimeout(function () {
+    self.setVolumeParameters()
+  }, 4500);
+  self.restoreVolumioconfig()
+  defer.resolve()
+  return defer.promise;
+};
+
+//------------here we set the Loopback output and restore mixer and volume level
+ControllerBrutefir.prototype.setLoopbackoutput = function () {
+  const self = this;
+  let defer = libQ.defer();
+  let outputp
+  outputp = self.config.get('alsa_outputdevicename')
+  let stri = {
+    "output_device": {
+      "value": "Loopback",
+      "label": (outputp + " through brutefir"),
+    },
+    "mixer_type": {
+      "value": self.config.get('alsa_mixer_type'),
+      "label": self.config.get('alsa_mixer_type')
+    },
+    "mixer": {
+      "value": self.config.get('alsa_mixer'),
+      "label": self.config.get('alsa_mixer')
+    },
+    "softvolumenumber": {
+      "value": self.config.get('alsa_softvolumenumber'),
+      "label": self.config.get('alsa_softvolumenubmer')
+    }
+  }
+
+  setTimeout(function () {
+    self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+    self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
+  }, 5500);
+
+  let volumeval = self.config.get('alsa_volumestart')
+  if (volumeval != 'disabled') {
+    setTimeout(function () {
+      exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {
+        uid: 1000,
+        gid: 1000,
+        encoding: 'utf8'
+      }, function (error, stdout, stderr) {
+        if (error) {
+          self.logger.error('Cannot set startup volume: ' + error);
+        } else {
+          self.logger.info("Setting volume on startup at " + volumeval);
+        }
+      });
+      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
+      respconfig.then(function (config) {
+        self.commandRouter.broadcastMessage('pushUiConfig', config);
+      });
+    }, 100);//13500
+  }
+  return defer.promise;
+};
+
+//----------------we restart the daemon-------------------
+ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
+  const self = this;
+  let defer = libQ.defer();
+  self.createBRUTEFIRFile()
+    .then(function (e) {
+      let edefer = libQ.defer();
+      exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {
+        uid: 1000,
+        gid: 1000
+      }, function (error, stdout, stderr) {
+        if (error) {
+          self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+        } else {
+          self.commandRouter.pushToastMessage('success', 'Attempt to start Brutefir...');
+          setTimeout(function () {
+            socket.emit('mute', '')
+            setTimeout(function () {
+              socket.emit('unmute', '');
+            }, 100);
+          }, 1500); //3500
+          return defer.promise;
+        }
+        edefer.resolve();
+      });
+
+      return edefer.promise;
+    })
+    .then(self.startBrutefirDaemon.bind(self))
+    .then(function (e) {
+      setTimeout(function () {
+        self.logger.info("Connecting to daemon");
+      }, 2000)
+        .fail(function (e) {
+          self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+          self.logger.info("Brutefir failed to start. Check your config !");
+        });
+    });
+  return defer.promise;
+};
+
+//-------------here we set the volume controller in /volumio/app/volumecontrol.js
+ControllerBrutefir.prototype.setVolumeParameters = function () {
+  const self = this;
+  // we need to do it since it will be automatically set to the loopback device by alsa controller
+  // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
+  // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
+  setTimeout(function () {
+    //  return new Promise(function(resolve, reject) {
+    //let defer = libQ.defer();
+    const settings = {
+      // need to set the device that brutefir wants to control volume to
+      device: self.config.get('alsa_device'),
+      // need to set the device name of the original device brutefir is controlling
+      name: self.config.get('alsa_outputdevicename'),
+      // Mixer name
+      mixer: self.config.get('alsa_mixer'),
+      // hardware, software, none
+      mixertype: self.config.get('alsa_mixer_type'),
+      // max volume setting
+      maxvolume: self.config.get('alsa_volumemax'),
+      // log or linear
+      volumecurve: self.config.get('alsa_volumecurvemode'),
+      //
+      volumestart: self.config.get('alsa_volumestart'),
+      //
+      volumesteps: self.config.get('alsa_volumesteps'),
+      //
+      softvolumenumber: self.config.get('alsa_softvolumenumber')
+    }
+    console.log(settings)
+    // once completed, uncomment
+    return self.commandRouter.volumioUpdateVolumeSettings(settings)
+  }, 2000);//8000
+};
+
+//----------- we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
+ControllerBrutefir.prototype.saveHardwareAudioParameters = function () {
+  const self = this;
+  let defer = libQ.defer();
+  let conf;
+  //volumestart
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumestart');
+  self.config.set('alsa_volumestart', conf);
+  //maxvolume
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumemax');
+  self.config.set('alsa_volumemax', conf);
+  //volumecurve
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumecurvemode');
+  self.config.set('alsa_volumecurvemode', conf);
+  //device
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+  self.config.set('alsa_device', conf);
+  //mixer_type
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+  self.config.set('alsa_mixer_type', conf);
+  //mixer
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer');
+  self.config.set('alsa_mixer', conf);
+  //volumesteps
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
+  self.config.set('alsa_volumesteps', conf);
+  //name
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
+  self.config.set('alsa_outputdevicename', conf);
+  //softvolumenumber
+  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
+  self.config.set('alsa_softvolumenumber', conf);
+  return defer.promise;
+}
+
+//------------here we restore config of volumio when the plugin is disabled-------------
+ControllerBrutefir.prototype.restoresettingwhendisabling = function () {
+  const self = this;
+  let output_restored = self.config.get('alsa_device')
+  let output_label = self.config.get('alsa_outputdevicename')
+  let mixert = self.config.get('alsa_mixer')
+  let mixerty = self.config.get('mixer_type')
+  let str = {
+    "output_device": {
+      "value": output_restored,
+      "label": output_label
+    },
+    "mixer": {
+      "value": mixert,
+      "value": mixerty
+    }
+  }
+  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
+  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+}
+
+
+
+//------------Here we define a function to send a command to brutefir through its CLI---------------------
 ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
   const self = this;
   let client = new net.Socket();
@@ -1249,16 +1101,6 @@ ControllerBrutefir.prototype.testclipping = function () {
 };
 
 //---------------------------------------------------------------
-
-ControllerBrutefir.prototype.getConf = function (varName) {
-  const self = this;
-  //Perform your installation tasks here
-};
-
-ControllerBrutefir.prototype.setConf = function (varName, varValue) {
-  const self = this;
-  //Perform your installation tasks here
-};
 
 ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
   const self = this;
@@ -1852,7 +1694,377 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
   return defer.promise;
 };
 
-//here we save VoBAf parameters
+//------------VoBAf here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI-----
+ControllerBrutefir.prototype.sendvolumelevel = function () {
+  const self = this;
+  socket.on('pushState', function (data) {
+    let vobaf = self.config.get('vobaf');
+    if (vobaf == true) {
+      let brutefircmd
+      let Lowsw = self.config.get('Lowsw');
+      let LM1sw = self.config.get('LM1sw');
+      let LM2sw = self.config.get('LM2sw');
+      let LM3sw = self.config.get('LM3sw');
+      let HMsw = self.config.get('HMsw');
+      let Highsw = self.config.get('Highsw');
+      let Low = self.config.get('Low');
+      let LM1 = self.config.get('LM1');
+      let LM2 = self.config.get('LM2');
+      let LM3 = self.config.get('LM3');
+      let M = self.config.get('M');
+      let HM = self.config.get('HM');
+      let filmess;
+      let lVoBAF, rVoBAF;
+
+      //1-all filters enabled
+      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
+        if (data.volume < Low) {
+          filmess = "Low"
+          lVoBAF = "lLow"
+          rVoBAF = "rLow"
+
+        } else if (data.volume >= Low && data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M && data.volume < HM) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+
+        } else if (data.volume >= HM) {
+          filmess = "High"
+          lVoBAF = "lHigh"
+          rVoBAF = "rHigh"
+        }
+      }
+      //2-Low not enabled
+      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
+        if (data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M && data.volume < HM) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+
+        } else if (data.volume >= HM) {
+          filmess = "High"
+          lVoBAF = "lHigh"
+          rVoBAF = "rHigh"
+        }
+      }
+      //3-lOW,LM1 not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == true) {
+        if (data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M && data.volume < HM) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+
+        } else if (data.volume >= HM) {
+          filmess = "High"
+          lVoBAF = "lHigh"
+          rVoBAF = "rHigh"
+        }
+      }
+      //4-lOW, LM1,LM2 not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == true && Highsw == true) {
+        if (data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M && data.volume < HM) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+
+        } else if (data.volume >= HM) {
+          filmess = "High"
+          lVoBAF = "lHigh"
+          rVoBAF = "rHigh"
+        }
+      }
+      //5-High not enabled
+      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
+        if (data.volume < Low) {
+          filmess = "Low"
+          lVoBAF = "lLow"
+          rVoBAF = "rLow"
+
+        } else if (data.volume >= Low && data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+        }
+      }
+
+      //6-HM and High not enabled
+      if (Lowsw == true && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
+        if (data.volume < Low) {
+          filmess = "Low"
+          lVoBAF = "lLow"
+          rVoBAF = "rLow"
+
+        } else if (data.volume >= Low && data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+        }
+      }
+
+      //7-Low, HM and High not enabled
+      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
+        if (data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+        }
+      }
+
+      //8-Low, LM1, HM and High not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == false && Highsw == false) {
+        if (data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+        }
+      }
+
+      //9-Low, LM1, LM2, LM3 and High not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == false) {
+        if (data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+        }
+      }
+
+      //10-Low and High not enabled
+      if (Lowsw == false && LM1sw == true && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
+        if (data.volume < LM1) {
+          filmess = "LM1"
+          lVoBAF = "lLM1"
+          rVoBAF = "rLM1"
+
+        } else if (data.volume >= LM1 && data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+        }
+      }
+
+      //11- Low, LM1 and High not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == true && LM3sw == true && HMsw == true && Highsw == false) {
+        if (data.volume < LM2) {
+          filmess = "LM2"
+          lVoBAF = "lLM2"
+          rVoBAF = "rLM2"
+
+        } else if (data.volume >= LM2 && data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3 && data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+        }
+      }
+
+      //12- Low, LM1, LM2, LM3, HM and High not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == false && Highsw == false) {
+        filmess = "M"
+        lVoBAF = "lM"
+        rVoBAF = "rM"
+
+      }
+
+      //13-Low, LM1, LM2, HM and High not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == true && HMsw == false && Highsw == false) {
+        if (data.volume < LM3) {
+          filmess = "LM3"
+          lVoBAF = "lLM3"
+          rVoBAF = "rLM3"
+
+        } else if (data.volume >= LM3) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+        }
+      }
+
+      //14-Low, LM1, LM2 and LM3 not enabled
+      if (Lowsw == false && LM1sw == false && LM2sw == false && LM3sw == false && HMsw == true && Highsw == true) {
+        if (data.volume < M) {
+          filmess = "M"
+          lVoBAF = "lM"
+          rVoBAF = "rM"
+
+        } else if (data.volume >= M && data.volume < HM) {
+          filmess = "HM"
+          lVoBAF = "lHM"
+          rVoBAF = "rHM"
+
+        } else if (data.volume >= HM) {
+          filmess = "High"
+          lVoBAF = "lHigh"
+          rVoBAF = "rHigh"
+        }
+      }
+
+      //  here wend cmd to brutefir
+      brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" ;cfc "rVoBAF" "' + rVoBAF + '"');
+      if (self.config.get('messon') == true) {
+        setTimeout(function () {
+          self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
+        }, 500);
+      };
+      self.sendCommandToBrutefir(brutefircmd);
+    };
+  });
+};
+
+//-----------here we save VoBAf parameters
 ControllerBrutefir.prototype.saveVoBAF = function (data) {
   const self = this;
   let defer = libQ.defer();
@@ -2104,7 +2316,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
   return defer.promise;
 };
 
-//here we save the brutefir delay calculation NOT MORE IN USE NOW!!!
+//-----------here we save the brutefir delay calculation NOT MORE IN USE NOW!!!
 ControllerBrutefir.prototype.saveBrutefirconfigroom = function (data) {
   const self = this;
   let defer = libQ.defer();
@@ -2196,7 +2408,7 @@ ControllerBrutefir.prototype.playFile = function (track, ititle, imessage) {
   }
 };
 
-//------ actions for sweep tools-------
+//------ actions for sweep tools------------
 
 //here we play left sweep when button is pressed for REW <= 5.19
 ControllerBrutefir.prototype.playleftsweepfile = function () {
@@ -2361,212 +2573,8 @@ ControllerBrutefir.prototype.convert = function (data) {
   } else {
     self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a file to convert!');
   };
-};
-
-ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
-  const self = this;
-  let defer = libQ.defer();
-  self.createBRUTEFIRFile()
-    .then(function (e) {
-      let edefer = libQ.defer();
-      exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {
-        uid: 1000,
-        gid: 1000
-      }, function (error, stdout, stderr) {
-        if (error) {
-          self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
-        } else {
-          self.commandRouter.pushToastMessage('success', 'Attempt to start Brutefir...');
-          setTimeout(function () {
-            socket.emit('mute', '')
-            setTimeout(function () {
-              socket.emit('unmute', '');
-            }, 100);
-          }, 1500); //3500
-          return defer.promise;
-        }
-        edefer.resolve();
-      });
-
-      return edefer.promise;
-    })
-    .then(self.startBrutefirDaemon.bind(self))
-    .then(function (e) {
-      setTimeout(function () {
-        self.logger.info("Connecting to daemon");
-      }, 2000)
-        .fail(function (e) {
-          self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
-          self.logger.info("Brutefir failed to start. Check your config !");
-        });
-    });
-  return defer.promise;
-};
-
-ControllerBrutefir.prototype.setVolumeParameters = function () {
-  const self = this;
-  // here we set the volume controller in /volumio/app/volumecontrol.js
-  // we need to do it since it will be automatically set to the loopback device by alsa controller
-  // to retrieve those values we need to save the configuration of the system, found in /data/configuration/audio_interface/alsa_controller/config.json
-  // before enabling the loopback device. We do this in saveHardwareAudioParameters(), which needs to be invoked just before brutefir is enabled
-  setTimeout(function () {
-    //  return new Promise(function(resolve, reject) {
-    //let defer = libQ.defer();
-    const settings = {
-      // need to set the device that brutefir wants to control volume to
-      device: self.config.get('alsa_device'),
-      // need to set the device name of the original device brutefir is controlling
-      name: self.config.get('alsa_outputdevicename'),
-      // Mixer name
-      mixer: self.config.get('alsa_mixer'),
-      // hardware, software, none
-      mixertype: self.config.get('alsa_mixer_type'),
-      // max volume setting
-      maxvolume: self.config.get('alsa_volumemax'),
-      // log or linear
-      volumecurve: self.config.get('alsa_volumecurvemode'),
-      //
-      volumestart: self.config.get('alsa_volumestart'),
-      //
-      volumesteps: self.config.get('alsa_volumesteps'),
-      //
-      softvolumenumber: self.config.get('alsa_softvolumenumber')
-    }
-    console.log(settings)
-    // once completed, uncomment
-    return self.commandRouter.volumioUpdateVolumeSettings(settings)
-  }, 2000);//8000
-};
-
-ControllerBrutefir.prototype.saveHardwareAudioParameters = function () {
-  const self = this;
-  let defer = libQ.defer();
-  let conf;
-  // we save the alsa configuration for future needs here, note we prepend alsa_ to avoid confusion with other brutefir settings
-  //volumestart
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumestart');
-  self.config.set('alsa_volumestart', conf);
-  //maxvolume
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumemax');
-  self.config.set('alsa_volumemax', conf);
-  //volumecurve
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumecurvemode');
-  self.config.set('alsa_volumecurvemode', conf);
-  //device
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
-  self.config.set('alsa_device', conf);
-  //mixer_type
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
-  self.config.set('alsa_mixer_type', conf);
-  //mixer
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer');
-  self.config.set('alsa_mixer', conf);
-  //volumesteps
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'volumesteps');
-  self.config.set('alsa_volumesteps', conf);
-  //name
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevicename');
-  self.config.set('alsa_outputdevicename', conf);
-  //softvolumenumber
-  conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
-  self.config.set('alsa_softvolumenumber', conf);
-  return defer.promise;
-};
-
-ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, data) {
-  const self = this;
-  conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
-  conf = 'hardware';
-  //mixer
-  return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
-};
-
-ControllerBrutefir.prototype.outputDeviceCallback = function () {
-  const self = this;
-  let defer = libQ.defer();
-  setTimeout(function () {
-    self.setVolumeParameters()
-  }, 4500);
-  self.restoreVolumioconfig()
-  defer.resolve()
-  return defer.promise;
-};
-
-//here we set the Loopback output and restore mixer and volume level
-ControllerBrutefir.prototype.setLoopbackoutput = function () {
-  const self = this;
-  let defer = libQ.defer();
-  let outputp
-  outputp = self.config.get('alsa_outputdevicename')
-  let stri = {
-    "output_device": {
-      "value": "Loopback",
-      "label": (outputp + " through brutefir"),
-    },
-    "mixer_type": {
-      "value": self.config.get('alsa_mixer_type'),
-      "label": self.config.get('alsa_mixer_type')
-    },
-    "mixer": {
-      "value": self.config.get('alsa_mixer'),
-      "label": self.config.get('alsa_mixer')
-    },
-    "softvolumenumber": {
-      "value": self.config.get('alsa_softvolumenumber'),
-      "label": self.config.get('alsa_softvolumenubmer')
-    }
-  }
-
-  setTimeout(function () {
-    self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
-    self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
-  }, 5500);
-
-  let volumeval = self.config.get('alsa_volumestart')
-  if (volumeval != 'disabled') {
-    setTimeout(function () {
-      exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {
-        uid: 1000,
-        gid: 1000,
-        encoding: 'utf8'
-      }, function (error, stdout, stderr) {
-        if (error) {
-          self.logger.error('Cannot set startup volume: ' + error);
-        } else {
-          self.logger.info("Setting volume on startup at " + volumeval);
-        }
-      });
-      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
-      respconfig.then(function (config) {
-        self.commandRouter.broadcastMessage('pushUiConfig', config);
-      });
-    }, 100);//13500
-  }
-  return defer.promise;
-};
-
-//here we restore config of volumio when the plugin is disabled
-ControllerBrutefir.prototype.restoresettingwhendisabling = function () {
-  const self = this;
-  let output_restored = self.config.get('alsa_device')
-  let output_label = self.config.get('alsa_outputdevicename')
-  let mixert = self.config.get('alsa_mixer')
-  let mixerty = self.config.get('mixer_type')
-  let str = {
-    "output_device": {
-      "value": output_restored,
-      "label": output_label
-    },
-    "mixer": {
-      "value": mixert,
-      "value": mixerty
-    }
-  }
-  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
-};
-
-ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
-  const self = this;
-  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 }
+
+
+
+
