@@ -1,4 +1,4 @@
-April 2nd 2020
+April 3rd 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -96,6 +96,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 3rd 2020
+
+- clipping detection as an option
 
 April 2nd 2020
 

@@ -448,6 +448,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         self.logger.error('Could not read file: ' + e)
         console.log(sampleformat)
       }
+      uiconf.sections[0].content[26].value = self.config.get('enableclipdetect');
+
 
       filetoconvertl = self.config.get('filetoconvert');
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
@@ -1635,6 +1637,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
   self.config.set('input_device', data['input_device']);
   self.config.set('output_device', data['output_device']);
   self.config.set('output_format', data['output_format'].value);
+  self.config.set('enableclipdetect', data['enableclipdetect']);
 
   //setTimeout(function() {
   if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
@@ -1670,27 +1673,31 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
 
     }, 1500);//2500
   }
-
-  var responseData = {
-    title: 'Test clipping and set attenuation',
-    message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. Press "test" to do that or exit.',
-    size: 'lg',
-    buttons: [
-      {
-        name: 'Exit',
-        class: 'btn btn-cancel',
-        emit: '',
-        payload: ''
-      },
-      {
-        name: 'Test',
-        class: 'btn btn-info',
-        emit: 'callMethod',
-        payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
+  let enableclipdetect = self.config.get('enableclipdetect');
+  if (enableclipdetect) {
+    setTimeout(function () {
+      var responseData = {
+        title: 'Test clipping and set attenuation',
+        message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. Press "test" to do that or exit.',
+        size: 'lg',
+        buttons: [
+          {
+            name: 'Exit',
+            class: 'btn btn-cancel',
+            emit: '',
+            payload: ''
+          },
+          {
+            name: 'Test',
+            class: 'btn btn-info',
+            emit: 'callMethod',
+            payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
+          }
+        ]
       }
-    ]
-  }
-  self.commandRouter.broadcastMessage("openModal", responseData);
+      self.commandRouter.broadcastMessage("openModal", responseData);
+    }, 3500);
+  };
   return defer.promise;
 };
 

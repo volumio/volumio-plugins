@@ -41,7 +41,8 @@
           "filter_format",
           "filter_size",
           "smpl_rate",
-          "output_format"
+          "output_format",
+          "enableclipdetect"
         ]
       },
       "content": [
@@ -468,6 +469,17 @@
             "label": "sitems"
           },
           "options": [],
+          "visibleIf": {
+            "field": "advsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "enableclipdetect",
+          "element": "switch",
+          "doc": "If enabled, clipping detection is provided when settings are set",
+          "label": "Clipping detection",
+          "value": false,
           "visibleIf": {
             "field": "advsettings",
             "value": true

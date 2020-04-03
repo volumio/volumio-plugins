@@ -1,4 +1,8 @@
 {
+    "enableclipdetect": {
+        "type": "boolean",
+        "value": true
+    },
     "toolsinstalled": {
         "type": "boolean",
         "value": false
