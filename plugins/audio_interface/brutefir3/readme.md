@@ -25,10 +25,15 @@ It provides :
 ## NEW!
 
 Now the plugin allows a fast and smooth swap between 2 set of filters.
+
 you have to create 2 set of left and right filter according to the following naming convention:
+
 for left XXXX_1.YYY and second filter XXXX_2.YYY
+
 for right ZZZZ_1.YYY and second filter ZZZZ_2.YYY
+
 filters must have thec same attenuation, same type.
+
 Then in the plugin,, select filter named with _1. Save, a new button appears to enable swapping!
 
 
