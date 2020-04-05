@@ -486,6 +486,27 @@
           }
         },
         {
+          "id": "displayednameofset",
+          "element": "input",
+          "doc": "filter in use",
+          "label": "filter in use",
+          "value": {
+            "value": "",
+            "label": "Set used is _1"
+          }
+        },
+        {
+          "id": "SwapFilters",
+          "element": "button",
+          "label": "Swap Filters",
+          "description": "Swap Filters",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "SwapFilters"
+          }
+        },
+        {
           "id": "advsettings",
           "element": "switch",
           "doc": "Avanced settings",

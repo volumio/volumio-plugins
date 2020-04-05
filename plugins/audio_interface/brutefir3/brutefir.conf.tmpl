@@ -1,5 +1,5 @@
 #-----------------------
-#brutefir config for volumio - b@lbuze 2019
+#brutefir config for volumio - b@lbuze 2020
 #-----------------------
 #This file is used as a template to generate the configuration file of brutefir in the plugin
 #-----------------------
@@ -35,38 +35,30 @@ delay: ${delay};
 #room correction filters
 #-----------------------
 
-coeff "l_out" {
-filename: "${leftfilter}";
-format: "${filter_format1}";
-${skip_1}
-#format: "text";
-#attenuation: {lattenuation};
-};
 
-filter "l_out" {
-#from_inputs: "l_in";
-from_filters: "lVoBAF";
-to_outputs: "l_out"/${lattenuation};
-#to_filters: "lVoBAF";
-coeff: "l_out";
-process: -1;
-};
+#---------left channel
 
-coeff "r_out" {
-filename: "${rightfilter}";
-format: "${filter_format2}";
-${skip_2}
-#attenuation: {rattenuation};
-};
+#first set of coeff
+coeff "l_out" {filename: "${leftfilter}";format: "${filter_format1}";${skip_1}};
 
-filter "r_out" {
-#from_inputs: "r_in";
-from_filters: "rVoBAF";
-to_outputs: "r_out"/${rattenuation};
-#to_filters: "rVoBAF";
-coeff: "r_out";
-process: -1;
-};
+#second set of coefficient for left
+${enableswap}coeff "2l_out" {filename: "${sndleftfilter}";format: "${filter_format1}";${skip_1}};
+
+#--------------------
+
+filter "l_out" {from_filters: "lVoBAF";to_outputs: "l_out"/${lattenuation};coeff: "l_out";process: -1;};
+
+#---------right channel
+
+#first set of coef
+coeff "r_out" {filename: "${rightfilter}";format: "${filter_format2}";${skip_2}};
+
+#second set of coefficients for right
+${enableswap}coeff "2r_out" {filename: "${sndrightfilter}";format: "${filter_format2}";${skip_2}};
+
+#------------------
+
+filter "r_out" {from_filters: "rVoBAF";to_outputs: "r_out"/${rattenuation};coeff: "r_out";process: -1;};
 
 
 #-------------

@@ -1,4 +1,4 @@
-April 3rd 2020
+April 5th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -23,6 +23,14 @@ It provides :
 - Thanks a lot @krunok for your great help and suggestion to design this plugin. Your knowledge was more than helpful! ;-)
 
 ## NEW!
+
+Now the plugin allows a fast and smooth swap between 2 set of filters.
+you have to create 2 set of left and right filter according to the following naming convention:
+for left XXXX_1.YYY and second filter XXXX_2.YYY
+for right ZZZZ_1.YYY and second filter ZZZZ_2.YYY
+filters must have thec same attenuation, same type.
+Then in the plugin,, select filter named with _1. Save, a new button appears to enable swapping!
+
 
 New automatic clipping detection. Attenuation can be set automatcally. 
 ## warning : need to add volumio as member of the group systemd-journal ```sudo usermod -a -G systemd-journal volumio``` 
@@ -96,6 +104,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 5th 2020
+
+- first version with filter swapping!!!
 
 April 3rd 2020
 

@@ -20,7 +20,6 @@ const path = require('path');
 const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 let nchannels;
-
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
 
@@ -51,7 +50,11 @@ ControllerBrutefir.prototype.onStart = function () {
   let defer = libQ.defer();
   socket.emit('getState', '');
   self.sendvolumelevel();
+  self.config.set('displayednameofset', "Set used is _1");
+  self.config.set('setUsedOfFilters', "1");
   self.autoconfig()
+ 
+  
     .then(function (e) {
       setTimeout(function () {
         self.logger.info("Starting brutefir");
@@ -335,7 +338,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       }
 
       fs.readdir(filterfolder, function (err, item) {
-        allfilter = 'Dirac pulse,' + 'None,' + item;
+        allfilter = 'None,' + item;
         let allfilters = allfilter.replace('filter-sources', '');
         let allfilter2 = allfilters.replace('target-curves', '');
         let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
@@ -449,6 +452,14 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         console.log(sampleformat)
       }
       uiconf.sections[0].content[26].value = self.config.get('enableclipdetect');
+
+      let filterswap = self.config.get('arefilterswap');
+      if (filterswap == false) {
+        uiconf.sections[0].content[27].hidden = true;
+        uiconf.sections[0].content[28].hidden = true;
+
+      }
+      uiconf.sections[0].content[27].value = self.config.get('displayednameofset');
 
 
       filetoconvertl = self.config.get('filetoconvert');
@@ -1131,6 +1142,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       let f_ext;
       let vf_ext;
 
+
       if (self.config.get('vatt'))
         if (self.config.get('filter_format') == "text") {
           f_ext = ".txt";
@@ -1216,6 +1228,21 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       if ((self.config.get('rightfilter') == "Dirac pulse") || (self.config.get('rightfilter') == "None")) {
         composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
       } else rightfilter = filter_path + self.config.get('rightfilter');
+
+      //--------second set of filters
+      let arefilterswap = self.config.get('arefilterswap');
+      let sndleftfilter;
+      let sndrightfilter;
+      let enableswap;
+      if (arefilterswap) {
+        sndleftfilter = filter_path + self.config.get('sndleftfilter');
+        sndrightfilter = filter_path + self.config.get('sndrightfilter');
+        enableswap = "";
+      } else {
+        sndleftfilter = "dirac pulse";
+        sndrightfilter = "dirac pulse";
+        enableswap = "#";
+      }
 
       //--------VoBAF section
       let vobaf = self.config.get('vobaf');
@@ -1390,9 +1417,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
         composerightc4filter = "dirac pulse";
       } else composerightc4filter = filter_path + self.config.get('rightc4filter');
 
-
       //-----Brutefir config file generation----
-
+      //-----not clean!!! need to be rewritten....
       let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
         .replace("${filter_size}", filtersizedivided)
         .replace("${numb_part}", num_part)
@@ -1410,6 +1436,14 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
         .replace("${enablefc5}", enablefc5)
         .replace("${enablefc6}", enablefc6)
         .replace("${enablefc7}", enablefc7)
+        .replace("${sndleftfilter}", sndleftfilter)
+        .replace("${filter_format1}", self.config.get('filter_format'))
+        .replace("${skip_1}", skipfl)
+        .replace("${enableswap}", enableswap)
+        .replace("${enableswap}", enableswap)
+        .replace("${sndrightfilter}", sndrightfilter)
+        .replace("${filter_format2}", self.config.get('filter_format'))
+        .replace("${skip_2}", skipfl)
         .replace("${leftc2filter}", composeleftc2filter)
         .replace("${rightc2filter}", composerightc2filter)
         .replace("${leftc3filter}", composeleftc3filter)
@@ -1658,8 +1692,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
 
   } else {
     setTimeout(function () {
-      self.dfiltertype()
-
+      self.dfiltertype();
+      self.areSwapFilters();
       self.rebuildBRUTEFIRAndRestartDaemon()
 
         .then(function (e) {
@@ -2068,6 +2102,99 @@ ControllerBrutefir.prototype.sendvolumelevel = function () {
       };
       self.sendCommandToBrutefir(brutefircmd);
     };
+  });
+};
+
+//-----------here we define how to swap filters----------------------
+
+ControllerBrutefir.prototype.areSwapFilters = function () {
+  const self = this;
+  let leftFilter1 = self.config.get('leftfilter');
+  let rightFilter1 = self.config.get('rightfilter');
+  let filter_path = "/data/INTERNAL/brutefirfilters/";
+
+  // check if filter naming is ok with _1 in name
+  const isFilterSwappable = (filterName, swapWord) => {
+    let threeLastChar = filterName.slice(-6, -4);
+    if (threeLastChar == swapWord) {
+      return true
+    }
+    else {
+      return false
+    }
+  };
+  let leftResult = isFilterSwappable(leftFilter1, '_1');
+  let rightResult = isFilterSwappable(rightFilter1, '_1');
+
+  console.log(leftResult + ' + ' + rightResult);
+
+  // check if secoond filter with _2 in name
+  const isFileExist = (filterName, swapWord) => {
+    let fileExt = filterName.slice(-4);
+    let filterNameShort = filterName.slice(0, -6);
+    let filterNameForSwap = filterNameShort + swapWord + fileExt;
+    if (fs.exists(filter_path + filterNameForSwap)) {
+      return [true, filterNameForSwap]
+    } else {
+      return false
+    }
+  };
+  let leftResultExist = isFileExist(leftFilter1, '_2');
+  let toSaveLeftResult = leftResultExist[1];
+  let rightResultExist = isFileExist(rightFilter1, '_2');
+  let toSaveRightResult = rightResultExist[1];
+
+  // if both condition are true, swapping possible
+  if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
+    console.log('swap possible !!!!!!!')
+    self.config.set('sndleftfilter', toSaveLeftResult);
+    self.config.set('sndrightfilter', toSaveRightResult);
+    self.config.set('arefilterswap', true);
+  } else {
+    self.config.set('sndleftfilter', 'Dirac pulse');
+    self.config.set('sndrightfilter', 'Dirac pulse');
+    self.config.set('arefilterswap', false);
+  };
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+      return self.commandRouter.reloadUi();
+    }, 500);
+  });
+};
+
+//-------------here we define action if filters swappable when the button is pressed-----
+ControllerBrutefir.prototype.SwapFilters = function () {
+  const self = this;
+  let rsetUsedOfFilters = self.config.get('setUsedOfFilters');
+  //let leftUsedFilter = self.config.get('leftfilter');
+  //let secondLeftUsedFilter = self.config.get('sndleftfilter');
+  //let rightUsedFilter = self.config.get('rightfilter');
+  //let secondRightUsedFilter = self.config.get('sndrightfilter');
+  let brutefircmd;
+
+  if (rsetUsedOfFilters == '1') {
+    self.config.set('setUsedOfFilters', 2);
+    console.log('Swap to set _2 ');
+    brutefircmd = ('cfc "l_out" "' + "2l_out" + '" ;cfc "r_out" "' + "2r_out" + '"');
+
+    self.config.set('displayednameofset', "Set used is _2");
+
+  } else if (rsetUsedOfFilters == '2') {
+    self.config.set('setUsedOfFilters', 1);
+    console.log('Swap to set _1 ');
+    brutefircmd = ('cfc "l_out" "' + "l_out" + '" ;cfc "r_out" "' + "r_out" + '"');
+
+    self.config.set('displayednameofset', "Set used is _1");
+
+  };
+
+  self.sendCommandToBrutefir(brutefircmd);
+
+  var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+  respconfig.then(function (config) {
+    self.commandRouter.broadcastMessage('pushUiConfig', config);
   });
 };
 

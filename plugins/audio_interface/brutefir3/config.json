@@ -1,4 +1,8 @@
 {
+    "arefilterswap": {
+        "type": "boolean",
+        "value": false
+    },
     "enableclipdetect": {
         "type": "boolean",
         "value": true
@@ -6,6 +10,14 @@
     "toolsinstalled": {
         "type": "boolean",
         "value": false
+    },
+    "setUsedOfFilters": {
+        "type": "string",
+        "value": "1"
+    },
+    "displayednameofset": {
+        "type": "string",
+        "value": "set used is _1"
     },
     "nchannels": {
         "type": "string",
@@ -33,13 +45,21 @@
     },
     "leftfilter": {
         "type": "string",
-        "value": "Dirac pulse"
+        "value": "None"
+    },
+    "sndleftfilter": {
+        "type": "string",
+        "value": "None"
     },
     "lc1delay": {
         "type": "string",
         "value": "0"
     },
     "rightfilter": {
+        "type": "string",
+        "value": "Dirac pulse"
+    },
+    "sndrightfilter": {
         "type": "string",
         "value": "Dirac pulse"
     },
