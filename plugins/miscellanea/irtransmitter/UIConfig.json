@@ -6,7 +6,7 @@
 		"id": "section_power",
 		"element": "section",
 		"label": "Switch power",
-		"description": "Send power toggle system to amp.",
+		"description": "Send power toggle signal to amplifier",
 		"icon": "fa-globe",
 		"onSave": {
 			"type": "controller",
@@ -16,17 +16,46 @@
 		"saveButton": {
 			"label": "Power",
 			"data": [
-				"longPressThresholdInMilliseconds"
+			]
+		},
+		"content": [
+
+		]
+	},
+	{
+		"id": "section_remoteSettings",
+		"element": "section",
+		"label": "Remote settings",
+		"description": "Remote settings",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/irtransmitter",
+			"method": ""
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SAVE",
+			"data": [
+				"gpio_pin",
+				"remotename"
 			]
 		},
 		"content": [
 			{
-			  "id":"longPressThresholdInMilliseconds",
-			  "type":"text",
-			  "element": "input",
-			  "label": "Test",
-			  "doc": "Test",
-			  "value": "1000"
+				"id":"gpio_pin",
+				"type":"text",
+				"element": "input",
+				"label": "GPIO_PIN",
+				"doc": "Pin used to control the IR transmitter",
+				"value": "12"
+			},
+			{
+				"id":"remotename",
+				"type":"text",
+				"element": "input",
+				"label": "Remote name",
+				"doc": "Name of the remote as used in the lircd.config file.",
+				"value": "CamAudioOne"
 			}
 		]
 	}
