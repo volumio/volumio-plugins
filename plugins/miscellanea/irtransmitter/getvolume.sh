@@ -1,4 +1,2 @@
-#!/bin/bash
-FNVOL="/data/plugins/miscellanea/irtransmitter/currentvolume"
-VOL=$(<"$FNVOL")
-echo $VOL
+#!/bin/sh
+cat "/data/plugins/miscellanea/irtransmitter/currentvolume"

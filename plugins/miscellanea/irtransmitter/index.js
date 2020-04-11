@@ -32,7 +32,7 @@ irtransmitter.prototype.onVolumioStart = function()
 
 irtransmitter.prototype.onStart = function() {
     var self = this;
-	var defer=libQ.defer();
+	  var defer=libQ.defer();
 
     var device = self.getAdditionalConf("system_controller", "system", "device");
     if (device == "Raspberry PI") {
@@ -40,9 +40,9 @@ irtransmitter.prototype.onStart = function() {
     }
     self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
 
-  self.addVolumeScripts();
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+    self.addVolumeScripts();
+  	// Once the Plugin has successfull started resolve the promise
+  	defer.resolve();
 
     return defer.promise;
 };
@@ -117,10 +117,10 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var self = this;
 
     var enabled = true;
-    var setVolumeScript = __dirname+'/setvolume.sh';
-    var getVolumeScript = '/data/plugins/miscellanea/irtransmitter/getvolume.sh';
-    var setMuteScript = '/data/plugins/miscellanea/irtransmitter/togglemute.sh';
-    var getMuteScript = '';
+    var setVolumeScript = __dirname + '/setvolume.sh';
+    var getVolumeScript = 'cat ' + __dirname + '/currentvolume';
+    var setMuteScript = __dirname + '/setmute.sh';
+    var getMuteScript = 'cat ' + __dirname + '/mute';
     var minVol = 0;
     var maxVol = 20;
     var mapTo100 = self.config.get('map_to_100', false);
@@ -146,21 +146,44 @@ irtransmitter.prototype.removeVolumeScripts = function() {
     self.commandRouter.updateVolumeScripts(data);
 };
 
+// Adapted from ir_receiver plugin
 irtransmitter.prototype.enablePIOverlay = function() {
     var defer = libQ.defer();
     var self = this;
 
-    exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_in_pin=17', {uid:1000,gid:1000},
-        function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('Error enabling lirc-rpi overlay: '+error);
-                defer.reject();
-            } else {
-                self.logger.info('lirc-rpi overlay enabled');
-                defer.resolve();
-            }
-        });
-
+    if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
+        if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
+            self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
+            exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_out_pin=12', { uid: 1000, gid: 1000 },
+                function (error, stdout, stderr) {
+                    if(error != null) {
+                        self.logger.info('Error enabling lirc-rpi overlay: ' + error);
+                        defer.reject();
+                    } else {
+                        self.logger.info('lirc-rpi overlay enabled');
+                        defer.resolve();
+                    }
+                });
+        } else {
+            self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
+        }
+    } else {
+        if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith(' gpio-ir-transmitter'); }) === undefined) {
+            self.logger.info('HAT did not load /proc/device-tree/gpio-ir-transmitter!');
+            exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=12', { uid: 1000, gid: 1000 },
+                function (error, stdout, stderr) {
+                    if (error != null) {
+                        self.logger.info('Error enabling gpio-ir-tx overlay: ' + error);
+                        defer.reject();
+                    } else {
+                        self.logger.info('gpio-ir-tx overlay enabled');
+                        defer.resolve();
+                    }
+                });
+        } else {
+            self.logger.info('HAT already loaded /proc/device-tree/gpio-ir-transmitter!');
+        }
+    }
     return defer.promise;
 };
 
