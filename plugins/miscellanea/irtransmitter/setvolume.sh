@@ -1,20 +1,20 @@
-#!/bin/bash        
+#!/bin/sh        
 if [ -z "$1" ]; then 
     echo usage: $0 volume
     exit
 fi
 FNVOL="/data/plugins/miscellanea/irtransmitter/currentvolume"
-PREV=$(<"$FNVOL")
+PREV=$(cat "$FNVOL")
 # echo $PREV, $1
 if [ $1 -eq $PREV ]; then
-#  echo "No volume change"
+  echo "No volume change"
   exit
 elif [ $1 -gt $PREV ]; then
-#  echo "Volume increased"
+  echo "Volume increased"
   irsend SEND_ONCE CamAudioOne KEY_VOLUMEUP
   PREV=$(($PREV+1))
 else
-#  echo "Volume decreased"
+  echo "Volume decreased"
   irsend SEND_ONCE CamAudioOne KEY_VOLUMEDOWN
   PREV=$(($PREV-1))
 fi
