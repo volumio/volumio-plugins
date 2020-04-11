@@ -1,3 +1,9 @@
 {
- 
+	"gpio_pin": {
+		"type": "int",
+		"value": 12
+	},
+	"remotename": {
+		"type": "string",
+		"value": "CamAudioOne"
 }
