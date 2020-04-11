@@ -38,7 +38,7 @@ irtransmitter.prototype.onStart = function() {
     if (device == "Raspberry PI") {
 //        self.enablePIOverlay();
     }
-    self.logger.info('Adding IR transmitter parameters'+ JSON.stringify(device))
+    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
 
   self.addVolumeScripts();
 	// Once the Plugin has successfull started resolve the promise
@@ -117,7 +117,7 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var self = this;
 
     var enabled = true;
-    var setVolumeScript = '/data/plugins/miscellanea/irtransmitter/setvolume.sh';
+    var setVolumeScript = __dirname+'/setvolume.sh';
     var getVolumeScript = '/data/plugins/miscellanea/irtransmitter/getvolume.sh';
     var setMuteScript = '/data/plugins/miscellanea/irtransmitter/togglemute.sh';
     var getMuteScript = '';
@@ -126,7 +126,7 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var mapTo100 = self.config.get('map_to_100', false);
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.logger.info('Adding IR transmitter parameters'+ JSON.stringify(data))
+    self.logger.info('Adding IR transmitter parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
 };
 
@@ -163,6 +163,25 @@ irtransmitter.prototype.enablePIOverlay = function() {
 
     return defer.promise;
 };
+
+irtransmitter.prototype.powerToggle = function(data) {
+    var defer = libQ.defer();
+    var self = this;
+
+    exec('/usr/bin/irsend SEND_ONCE CamAudioOne KEY_POWER', {uid:1000,gid:1000},
+        function (error, stdout, stderr) {
+            if(error != null) {
+                self.logger.info('Error sending IR power toggle signal: '+error);
+                defer.reject();
+            } else {
+                self.logger.info('Send IR power toggle signal');
+                defer.resolve();
+            }
+        });
+
+    return defer.promise;
+};
+
 
 irtransmitter.prototype.getAdditionalConf = function (type, controller, data) {
     var self = this;

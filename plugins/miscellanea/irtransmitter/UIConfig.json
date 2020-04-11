@@ -2,6 +2,33 @@
   "page": {
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
-  "sections": [
-  ]
+ 	"sections": [{
+		"id": "section_power",
+		"element": "section",
+		"label": "Switch power",
+		"description": "Send power toggle system to amp.",
+		"icon": "fa-globe",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/irtransmitter",
+			"method": "powerToggle"
+		},
+		"saveButton": {
+			"label": "Power",
+			"data": [
+				"longPressThresholdInMilliseconds"
+			]
+		},
+		"content": [
+			{
+			  "id":"longPressThresholdInMilliseconds",
+			  "type":"text",
+			  "element": "input",
+			  "label": "Test",
+			  "doc": "Test",
+			  "value": "1000"
+			}
+		]
+	}
+	]
 }
