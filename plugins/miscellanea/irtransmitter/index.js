@@ -38,7 +38,8 @@ irtransmitter.prototype.onStart = function() {
     if (device == "Raspberry PI") {
 //        self.enablePIOverlay();
     }
-    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
+//    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
+    self.logger.info('IR-Transmitter: Loaded configuration: ' + JSON.stringify(self.config.data));
 
     self.addVolumeScripts();
   	// Once the Plugin has successfull started resolve the promise
@@ -118,9 +119,9 @@ irtransmitter.prototype.addVolumeScripts = function() {
 
     var enabled = true;
     var setVolumeScript = __dirname + '/setvolume.sh';
-    var getVolumeScript = 'cat ' + __dirname + '/currentvolume';
+    var getVolumeScript = __dirname + '/getvolume.sh';
     var setMuteScript = __dirname + '/setmute.sh';
-    var getMuteScript = 'cat ' + __dirname + '/mute';
+    var getMuteScript = __dirname + '/getmute.sh';
     var minVol = 0;
     var maxVol = 20;
     var mapTo100 = self.config.get('map_to_100', false);
@@ -145,6 +146,7 @@ irtransmitter.prototype.removeVolumeScripts = function() {
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.commandRouter.updateVolumeScripts(data);
 };
+
 
 // Adapted from ir_receiver plugin
 irtransmitter.prototype.enablePIOverlay = function() {
