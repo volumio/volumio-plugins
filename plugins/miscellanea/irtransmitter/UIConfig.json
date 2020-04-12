@@ -28,11 +28,11 @@
 		"label": "Remote settings",
 		"description": "Remote settings",
 		"icon": "fa-cog",
-		"onSave": {
-			"type": "controller",
-			"endpoint": "miscellanea/irtransmitter",
-			"method": ""
-		},
+    "onSave": {
+      "type": "controller",
+      "endpoint": "miscellanea/irtransmitter",
+      "method": "updateRemoteSettings"
+    },
 		"saveButton": {
 			"label": "TRANSLATE.SAVE",
 			"data": [
@@ -65,11 +65,11 @@
 		"label": "Volume settings",
 		"description": "Volume settings",
 		"icon": "fa-cog",
-		"onSave": {
-			"type": "controller",
-			"endpoint": "miscellanea/irtransmitter",
-			"method": ""
-		},
+    "onSave": {
+      "type": "controller",
+      "endpoint": "miscellanea/irtransmitter",
+      "method": "updateVolumeSettings"
+    },
 		"saveButton": {
 			"label": "TRANSLATE.SAVE",
 			"data": [

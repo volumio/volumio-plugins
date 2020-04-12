@@ -39,11 +39,11 @@ irtransmitter.prototype.onStart = function() {
 
     var device = self.getAdditionalConf("system_controller", "system", "device");
     if (device == "Raspberry PI") {
-//        self.enablePIOverlay();
+        self.enablePIOverlay();
     }
 //    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
     self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
-
+ 
     self.addVolumeScripts();
   	// Once the Plugin has successfull started resolve the promise
   	defer.resolve();
@@ -86,7 +86,12 @@ irtransmitter.prototype.getUIConfig = function() {
 //            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', self.config.set('gpio_pin', 18));
             uiconf.sections[1].content[0].value = self.config.get('gpio_pin');
             uiconf.sections[1].content[1].value = self.config.get('remotename');
-            self.logger.info('[IR transmitter] ' + self.config.get('gpio_pin'));
+
+            uiconf.sections[2].content[0].value = self.config.get('vol_min');
+            uiconf.sections[2].content[1].value = self.config.get('vol_max');
+            uiconf.sections[2].content[2].value = self.config.get('vol_cur');
+            uiconf.sections[2].content[3].value = self.config.get('map_to_100');
+
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -128,8 +133,8 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var getVolumeScript = __dirname + '/getvolume.sh';
     var setMuteScript = __dirname + '/setmute.sh';
     var getMuteScript = __dirname + '/getmute.sh';
-    var minVol = 0;
-    var maxVol = 20;
+    var minVol = self.config.get('vol_min');
+    var maxVol = self.config.get('vol_max');
     var mapTo100 = self.config.get('map_to_100', false);
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
@@ -152,6 +157,26 @@ irtransmitter.prototype.removeVolumeScripts = function() {
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.commandRouter.updateVolumeScripts(data);
 };
+
+irtransmitter.prototype.updateRemoteSettings = function (data) {
+    var self = this;
+    self.logger.info('[IR transmitter] Updated remote settings: ' + JSON.stringify(data));
+    self.config.set('remotename', data['remotename']);
+    self.config.set('gpio_pin', data['gpio_pin']);
+}
+
+irtransmitter.prototype.updateVolumeSettings = function (data) {
+    var self = this;
+    self.logger.info('[IR transmitter] Updated volume settings: ' + JSON.stringify(data));
+
+    self.config.set('vol_min', data['vol_min']);
+    self.config.set('vol_max', data['vol_max']);
+    self.config.set('vol_cur', data['vol_max']);
+    self.config.set('map_to_100', data['map_to_100']);
+    self.logger.info('[IR transmitter] Updated volume settings: ' + self.config.get('vol_min'));
+    self.addVolumeScripts();
+}
+
 
 
 // Adapted from ir_receiver plugin
@@ -176,7 +201,7 @@ irtransmitter.prototype.enablePIOverlay = function() {
             self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
         }
     } else {
-        if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith(' gpio-ir-transmitter'); }) === undefined) {
+        if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith('gpio-ir-transmitter'); }) === undefined) {
             self.logger.info('HAT did not load /proc/device-tree/gpio-ir-transmitter!');
             exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=12', { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
