@@ -5,6 +5,9 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+const os = require('os');
+const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
+const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
 
 
 module.exports = irtransmitter;
@@ -39,7 +42,7 @@ irtransmitter.prototype.onStart = function() {
 //        self.enablePIOverlay();
     }
 //    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
-    self.logger.info('IR-Transmitter: Loaded configuration: ' + JSON.stringify(self.config.data));
+    self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
 
     self.addVolumeScripts();
   	// Once the Plugin has successfull started resolve the promise
@@ -80,7 +83,7 @@ irtransmitter.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 
-
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', self.config.set('gpio_pin', 18));
             defer.resolve(uiconf);
         })
         .fail(function()

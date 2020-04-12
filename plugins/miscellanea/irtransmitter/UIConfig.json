@@ -6,7 +6,7 @@
 		"id": "section_power",
 		"element": "section",
 		"label": "Switch power",
-		"description": "Send power toggle signal to amplifier",
+		"description": "Send power toggle signal to amplifier. Would be better off somewhere on the main GUI, but for now this was the easiest to implement...",
 		"icon": "fa-globe",
 		"onSave": {
 			"type": "controller",
@@ -56,6 +56,60 @@
 				"label": "Remote name",
 				"doc": "Name of the remote as used in the lircd.config file.",
 				"value": "CamAudioOne"
+			}
+		]
+	},
+	{
+		"id": "section_volumeSettings",
+		"element": "section",
+		"label": "Volume settings",
+		"description": "Volume settings",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/irtransmitter",
+			"method": ""
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SAVE",
+			"data": [
+				"vol_min",
+				"vol_max",
+				"vol_cur",
+				"map_to_100"
+			]
+		},
+		"content": [
+			{
+				"id":"vol_min",
+				"type":"text",
+				"element": "input",
+				"label": "Minimum Volume value",
+				"doc": "Minimum allowed volume value for your system.",
+				"value": "0"
+			},
+			{
+				"id":"vol_max",
+				"type":"text",
+				"element": "input",
+				"label": "Maximum Volume value",
+				"doc": "Maximum allowed volume value for your system.",
+				"value": "20"
+			},
+			{
+				"id":"vol_cur",
+				"type":"text",
+				"element": "input",
+				"label": "Current Volume value",
+				"doc": "Current volume value for your system.",
+				"value": "10"
+			},
+			{
+				"id": "map_to_100",
+				"element": "switch",
+				"label": "Map volume range to percentage",
+				"doc": "Map volume range to percentage",
+				"value": false
 			}
 		]
 	}
