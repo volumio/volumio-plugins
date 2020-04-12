@@ -6,9 +6,7 @@ if [ -z "$1" ]; then
 fi
 FNMUTE="/data/plugins/miscellanea/irtransmitter/mute"
 MUTE=$(cat "$FNMUTE")
-if [ $1 -eq $MUTE ]; then
-#  echo "No mute change"
-else 
+if [ $1 -ne $MUTE ]; then
 #  echo "Toggle mute"
   irsend SEND_ONCE CamAudioOne KEY_MUTE
   echo $1 > "$FNMUTE"
