@@ -83,7 +83,10 @@ irtransmitter.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', self.config.set('gpio_pin', 18));
+//            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', self.config.set('gpio_pin', 18));
+            uiconf.sections[1].content[0].value = self.config.get('gpio_pin');
+            uiconf.sections[1].content[1].value = self.config.get('remotename');
+            self.logger.info('[IR transmitter] ' + self.config.get('gpio_pin'));
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -130,7 +133,7 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var mapTo100 = self.config.get('map_to_100', false);
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.logger.info('Adding IR transmitter parameters'+ JSON.stringify(data));
+    self.logger.info('[IR transmitter] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
 };
 
