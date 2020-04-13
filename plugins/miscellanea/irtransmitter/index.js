@@ -38,10 +38,10 @@ irtransmitter.prototype.onStart = function() {
 	  var defer=libQ.defer();
 
     var device = self.getAdditionalConf("system_controller", "system", "device");
+//    self.logger.info('[IR transmitter] Device: '+ JSON.stringify(device));
     if (device == "Raspberry PI") {
         self.enablePIOverlay();
     }
-//    self.logger.info('IR transmitter device query found: '+ JSON.stringify(device));
     self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
  
     self.addVolumeScripts();
@@ -83,7 +83,6 @@ irtransmitter.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 
-//            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value', self.config.set('gpio_pin', 18));
             uiconf.sections[1].content[0].value = self.config.get('gpio_pin');
             uiconf.sections[1].content[1].value = self.config.get('remotename');
 
@@ -138,7 +137,7 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var mapTo100 = self.config.get('map_to_100', false);
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.logger.info('[IR transmitter] Setting parameters'+ JSON.stringify(data));
+    //self.logger.info('[IR transmitter] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
     //self.commandRouter.volumioupdatevolume(Volume);
 };
@@ -187,37 +186,55 @@ irtransmitter.prototype.enablePIOverlay = function() {
 
     if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
         if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
-            self.logger.info('HAT did not load /proc/device-tree/lirc_rpi!');
+            self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/lirc_rpi!');
             exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_out_pin=12', { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if(error != null) {
-                        self.logger.info('Error enabling lirc-rpi overlay: ' + error);
+                        self.logger.info('[IR Transmitter] Error enabling lirc-rpi overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('lirc-rpi overlay enabled');
+                        self.logger.info('[IR Transmitter] lirc-rpi overlay enabled');
                         defer.resolve();
                     }
                 });
         } else {
-            self.logger.info('HAT already loaded /proc/device-tree/lirc_rpi!');
+            self.logger.info('[IR Transmitter] HAT already loaded /proc/device-tree/lirc_rpi!');
         }
     } else {
         if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith('gpio-ir-transmitter'); }) === undefined) {
-            self.logger.info('HAT did not load /proc/device-tree/gpio-ir-transmitter!');
+            self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/gpio-ir-transmitter!');
             exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=12', { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if (error != null) {
-                        self.logger.info('Error enabling gpio-ir-tx overlay: ' + error);
+                        self.logger.info('[IR Transmitter] Error enabling gpio-ir-tx overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('gpio-ir-tx overlay enabled');
+                        self.logger.info('[IR Transmitter] gpio-ir-tx overlay enabled');
                         defer.resolve();
                     }
                 });
         } else {
-            self.logger.info('HAT already loaded /proc/device-tree/gpio-ir-transmitter!');
+            self.logger.info('[IR Transmitter] HAT already loaded /proc/device-tree/gpio-ir-transmitter!');
         }
     }
+    return defer.promise;
+};
+
+irtransmitter.prototype.getVolume = function (data) {
+    var defer = libQ.defer();
+    var self = this;
+
+    exec('/usr/sh getvolume.sh', { uid: 1000, gid: 1000 },
+        function (error, stdout, stderr) {
+            if (error != null) {
+                self.logger.info('[IR Transmitter] Read volume ' + error);
+                defer.reject();
+            } else {
+                self.logger.info('[IR Transmitter] Read volume');
+                defer.resolve();
+            }
+        });
+
     return defer.promise;
 };
 
@@ -228,10 +245,10 @@ irtransmitter.prototype.powerToggle = function(data) {
     exec('/usr/bin/irsend SEND_ONCE CamAudioOne KEY_POWER', {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
-                self.logger.info('Error sending IR power toggle signal: '+error);
+                self.logger.info('[IR Transmitter] Error sending IR power toggle signal: '+error);
                 defer.reject();
             } else {
-                self.logger.info('Send IR power toggle signal');
+                self.logger.info('[IR Transmitter] Send IR power toggle signal');
                 defer.resolve();
             }
         });
