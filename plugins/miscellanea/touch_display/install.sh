@@ -28,7 +28,7 @@ then
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12 xserver-xorg-legacy
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg libexif12 xserver-xorg-legacy
 
   echo "Installing Chromium"
   sudo apt-get install -y chromium-browser
@@ -59,7 +59,7 @@ else
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg openbox libexif12
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg libexif12
 
   echo "Downloading Chromium"
   cd /home/volumio/
@@ -89,9 +89,12 @@ sudo echo "#!/bin/bash
 while true; do timeout 3 bash -c \"</dev/tcp/127.0.0.1/3000\" >/dev/null 2>&1 && break; done
 sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/' /data/volumiokiosk/Default/Preferences
 sed -i 's/\"exit_type\":\"Crashed\"/\"exit_type\":\"None\"/' /data/volumiokiosk/Default/Preferences
-openbox-session &
+x=$(xrandr | grep \* | cut -d ' ' -f 4 | cut -d 'x' -f 1)
+y=$(xrandr | grep \* | cut -d ' ' -f 4 | cut -d 'x' -f 2)
 while true; do
   /usr/bin/chromium-browser \\
+    --window-position=0,0 \
+    --window-size=${x},${y} \
     --disable-pinch \\
     --kiosk \\
     --no-first-run \\
@@ -102,7 +105,7 @@ while true; do
     --disable-session-crashed-bubble \\
     --disable-translate \\
     --user-data-dir='/data/volumiokiosk' \
-	--no-sandbox \
+	  --no-sandbox \
     http://localhost:3000
 done" > /opt/volumiokiosk.sh
 sudo /bin/chmod +x /opt/volumiokiosk.sh
