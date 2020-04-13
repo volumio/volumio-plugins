@@ -140,6 +140,7 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.logger.info('[IR transmitter] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
+    //self.commandRouter.volumioupdatevolume(Volume);
 };
 
 irtransmitter.prototype.removeVolumeScripts = function() {

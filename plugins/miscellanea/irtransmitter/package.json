@@ -1,6 +1,6 @@
 {
 	"name": "irtransmitter",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Enable control of an IR transmitter connected to GPIO pins to remote control e.g. amplifier straight from volumio UI",
 	"main": "index.js",
 	"scripts": {
@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "IR Transmitter",
-		"icon": "fa-lightbulb-o",
+		"icon": "fa-external-link-alt",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
