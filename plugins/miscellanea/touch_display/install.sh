@@ -28,7 +28,7 @@ then
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg libexif12 xserver-xorg-legacy
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg xserver-xorg-legacy
 
   echo "Installing Chromium"
   sudo apt-get install -y chromium-browser
@@ -59,7 +59,7 @@ else
   sudo apt-get -y install
 
   echo "Installing Graphical environment"
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg libexif12
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xinit xorg
 
   echo "Downloading Chromium"
   cd /home/volumio/
