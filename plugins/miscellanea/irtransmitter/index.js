@@ -9,6 +9,7 @@ const os = require('os');
 const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
 const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
 
+var currentvolume = '';
 
 module.exports = irtransmitter;
 function irtransmitter(context) {
@@ -45,6 +46,8 @@ irtransmitter.prototype.onStart = function() {
     self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
  
     self.addVolumeScripts();
+    self.getVolume();
+
   	// Once the Plugin has successfull started resolve the promise
   	defer.resolve();
 
@@ -88,7 +91,10 @@ irtransmitter.prototype.getUIConfig = function() {
 
             uiconf.sections[2].content[0].value = self.config.get('vol_min');
             uiconf.sections[2].content[1].value = self.config.get('vol_max');
-            uiconf.sections[2].content[2].value = self.config.get('vol_cur');
+
+            self.getVolume();
+            uiconf.sections[2].content[2].value = currentvolume;
+
             uiconf.sections[2].content[3].value = self.config.get('map_to_100');
 
             defer.resolve(uiconf);
@@ -171,9 +177,34 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
 
     self.config.set('vol_min', data['vol_min']);
     self.config.set('vol_max', data['vol_max']);
-    self.config.set('vol_cur', data['vol_max']);
+    self.config.set('vol_cur', data['vol_cur']);
+    if (Number.isInteger(Number(data['vol_cur']))) {
+        currentvolume = data['vol_cur'];
+        self.logger.info('[IR Transmitter] current volume ' + currentvolume);
+        execSync(__dirname + '/initvolume.sh ' + currentvolume, { uid: 1000, gid: 1000 },
+            function (error, stdout, stderr) {
+                if (error != null) {
+                    self.logger.info('[IR Transmitter] Initvolume.sh : ' + error);
+                    defer.reject();
+                } else {
+                    self.logger.info('[IR Transmitter] Volume initialised');
+                    defer.resolve();
+                }
+            });
+        //Volume.vol = currentvolume;
+        //Volume.mute = false;
+        //Volume.disableVolumeControl = false;
+        //return libQ.resolve(Volume)
+        //    .then(function (Volume) {
+        //        defer.resolve(Volume);
+        //        self.commandRouter.volumioupdatevolume(Volume);
+        //    });
+    } else {
+        self.logger.info('[IR Transmitter] Current volume should be an integer value: ' + data['vol_cur']);
+
+    };
     self.config.set('map_to_100', data['map_to_100']);
-    self.logger.info('[IR transmitter] Updated volume settings: ' + self.config.get('vol_min'));
+    self.logger.info('[IR transmitter] Updated volume settings: ' + currentvolume);
     self.addVolumeScripts();
 }
 
@@ -220,18 +251,26 @@ irtransmitter.prototype.enablePIOverlay = function() {
     return defer.promise;
 };
 
-irtransmitter.prototype.getVolume = function (data) {
+irtransmitter.prototype.getVolume = function () {
     var defer = libQ.defer();
     var self = this;
 
-    exec('/usr/sh getvolume.sh', { uid: 1000, gid: 1000 },
+    execSync(__dirname + '/getvolume.sh', { uid: 1000, gid: 1000 },
         function (error, stdout, stderr) {
             if (error != null) {
                 self.logger.info('[IR Transmitter] Read volume ' + error);
                 defer.reject();
             } else {
-                self.logger.info('[IR Transmitter] Read volume');
-                defer.resolve();
+                currentvolume = stdout.replace('\n', '');
+                self.logger.info('[IR Transmitter] Read volume' + currentvolume);
+                //Volume.vol = currentvolume;
+                //Volume.mute = false;
+                //Volume.disableVolumeControl = false;
+                //return libQ.resolve(Volume)
+                //    .then(function (Volume) {
+                //        defer.resolve(Volume);
+                //        self.commandRouter.volumioupdatevolume(Volume);
+                //    });
             }
         });
 

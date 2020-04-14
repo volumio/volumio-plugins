@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "IR Transmitter",
-		"icon": "fa-external-link-alt",
+		"icon": "fa-lightbulb-o",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
