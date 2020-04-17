@@ -1,4 +1,4 @@
-November 9th 2019
+April 17th 2020
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,14 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+April 17th 2020
+
+- vls 0.2.0 ['@ash'](https://github.com/ashthespy) 
+- autoplay selector
+- Use a toml based configuration file 
+- Enabled gapless playback as default 
+- Handle reconnects more gracefully
 
 November 9th 2019
 

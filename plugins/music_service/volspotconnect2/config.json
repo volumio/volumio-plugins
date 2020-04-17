@@ -15,6 +15,14 @@
     "type": "boolean",
     "value": true
   },
+  "gapless": {
+    "type": "boolean",
+    "value": true
+  },
+  "autoplay": {
+    "type": "boolean",
+    "value": true
+  },
   "username": {
     "type": "string",
     "value": ""
@@ -23,7 +31,7 @@
     "type": "string",
     "value": ""
   },
- "volume_ctrl": {
+  "volume_ctrl": {
     "type": "string",
     "value": "fixed"
   },
