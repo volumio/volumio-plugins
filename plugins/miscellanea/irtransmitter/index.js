@@ -5,6 +5,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+var execFile = require('child_process').execFile;
 const os = require('os');
 const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
 const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
@@ -92,8 +93,10 @@ irtransmitter.prototype.getUIConfig = function() {
             uiconf.sections[2].content[0].value = self.config.get('vol_min');
             uiconf.sections[2].content[1].value = self.config.get('vol_max');
 
+
             self.getVolume();
             uiconf.sections[2].content[2].value = currentvolume;
+            self.logger.info('[IR transmitter] Preparing config GUI. Volume: ', currentvolume);
 
             uiconf.sections[2].content[3].value = self.config.get('map_to_100');
 
@@ -179,6 +182,7 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
     self.config.set('vol_max', data['vol_max']);
     self.config.set('vol_cur', data['vol_cur']);
     if (Number.isInteger(Number(data['vol_cur']))) {
+        // This is to make sure data['vol_cur'] is a pure integer number. Hopefully enough to avoid shell script command injection (?)
         currentvolume = data['vol_cur'];
         self.logger.info('[IR Transmitter] current volume ' + currentvolume);
         execSync(__dirname + '/initvolume.sh ' + currentvolume, { uid: 1000, gid: 1000 },
@@ -191,17 +195,8 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
                     defer.resolve();
                 }
             });
-        //Volume.vol = currentvolume;
-        //Volume.mute = false;
-        //Volume.disableVolumeControl = false;
-        //return libQ.resolve(Volume)
-        //    .then(function (Volume) {
-        //        defer.resolve(Volume);
-        //        self.commandRouter.volumioupdatevolume(Volume);
-        //    });
     } else {
         self.logger.info('[IR Transmitter] Current volume should be an integer value: ' + data['vol_cur']);
-
     };
     self.config.set('map_to_100', data['map_to_100']);
     self.logger.info('[IR transmitter] Updated volume settings: ' + currentvolume);
@@ -263,14 +258,7 @@ irtransmitter.prototype.getVolume = function () {
             } else {
                 currentvolume = stdout.replace('\n', '');
                 self.logger.info('[IR Transmitter] Read volume' + currentvolume);
-                //Volume.vol = currentvolume;
-                //Volume.mute = false;
-                //Volume.disableVolumeControl = false;
-                //return libQ.resolve(Volume)
-                //    .then(function (Volume) {
-                //        defer.resolve(Volume);
-                //        self.commandRouter.volumioupdatevolume(Volume);
-                //    });
+                defer.resolve();
             }
         });
 
@@ -281,7 +269,7 @@ irtransmitter.prototype.powerToggle = function(data) {
     var defer = libQ.defer();
     var self = this;
 
-    exec('/usr/bin/irsend SEND_ONCE CamAudioOne KEY_POWER', {uid:1000,gid:1000},
+    execFile('/usr/bin/irsend', ['SEND_ONCE', 'CamAudioOne', 'KEY_POWER'], {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
                 self.logger.info('[IR Transmitter] Error sending IR power toggle signal: '+error);
