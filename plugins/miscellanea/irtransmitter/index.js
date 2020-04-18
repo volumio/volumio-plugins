@@ -86,9 +86,24 @@ irtransmitter.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+            var dirs = fs.readdirSync(__dirname + "/remotes");
+            //console.log('Read ' + dirs.length + ' files:');
+            self.logger.info('[IR transmitter] ' + dirs);
+            // Get names for remotes based on their file name
+            var name;
+            for (var i = 0; i < dirs.length; i++) {
+                if (dirs[i].endsWith(".lircd.conf")) {
+                    name = dirs[i].split(".lircd.conf", 1)[0];
+                    self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
+                        value: name,
+                        label: name
+                    });
+ //                   console.log(dirs[i].split(".lircd.conf", 1)[0]);
+                }
+            }
 
             uiconf.sections[1].content[0].value = self.config.get('gpio_pin');
-            uiconf.sections[1].content[1].value = self.config.get('remotename');
+            //uiconf.sections[1].content[1].value = self.config.get('remotename');
 
             uiconf.sections[2].content[0].value = self.config.get('vol_min');
             uiconf.sections[2].content[1].value = self.config.get('vol_max');
@@ -282,3 +297,33 @@ irtransmitter.prototype.getAdditionalConf = function (type, controller, data) {
     var confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
     return confs;
 };
+
+
+irtransmitter.prototype.restartLirc = function (message) {
+    var self = this;
+
+    exec('usr/bin/sudo /bin/systemctl stop lirc.service', { uid: 1000, gid: 1000 },
+        function (error, stdout, stderr) {
+            if (error != null) {
+                self.logger.info('Cannot kill irexec: ' + error);
+            }
+            setTimeout(function () {
+
+                exec('usr/bin/sudo /bin/systemctl start lirc.service', { uid: 1000, gid: 1000 },
+                    function (error, stdout, stderr) {
+                        if (error != null) {
+                            self.logger.info('Error restarting LIRC: ' + error);
+                            if (message) {
+                                self.commandRouter.pushToastMessage('error', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
+                            }
+                        } else {
+                            self.logger.info('lirc correctly started');
+                            if (message) {
+                                self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                            }
+                        }
+                    });
+            }, 1000)
+        });
+}
+

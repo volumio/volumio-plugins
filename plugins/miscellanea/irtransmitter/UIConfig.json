@@ -52,11 +52,11 @@
         },
         {
           "id": "remotename",
-          "type": "text",
-          "element": "input",
+          "element": "select",
           "label": "Remote name",
           "doc": "Name of the remote as used in the lircd.config file.",
-          "value": "CamAudioOne"
+          "value": {},
+          "options": []
         }
       ]
     },
