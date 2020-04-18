@@ -30,7 +30,7 @@ fi
 declare -A VLS_BIN=(
   [armv6l]="vollibrespot-armv6l.tar.xz"  \
     [armv7l]="vollibrespot-armv7l.tar.xz" \
-    [aarch64]="vollibrespot-aarch64.tar.xz" \
+    [aarch64]="vollibrespot-armv7l.tar.xz" \
     [i686]="vollibrespot-i686.tar.xz" \
   )
 
