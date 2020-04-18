@@ -185,14 +185,14 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
         // This is to make sure data['vol_cur'] is a pure integer number. Hopefully enough to avoid shell script command injection (?)
         currentvolume = data['vol_cur'];
         self.logger.info('[IR Transmitter] current volume ' + currentvolume);
-        execSync(__dirname + '/initvolume.sh ' + currentvolume, { uid: 1000, gid: 1000 },
+        execFile(__dirname + '/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
             function (error, stdout, stderr) {
                 if (error != null) {
                     self.logger.info('[IR Transmitter] Initvolume.sh : ' + error);
-                    defer.reject();
+//                    defer.reject();
                 } else {
                     self.logger.info('[IR Transmitter] Volume initialised');
-                    defer.resolve();
+//                    defer.resolve();
                 }
             });
     } else {
@@ -247,22 +247,15 @@ irtransmitter.prototype.enablePIOverlay = function() {
 };
 
 irtransmitter.prototype.getVolume = function () {
-    var defer = libQ.defer();
     var self = this;
 
-    execSync(__dirname + '/getvolume.sh', { uid: 1000, gid: 1000 },
-        function (error, stdout, stderr) {
-            if (error != null) {
-                self.logger.info('[IR Transmitter] Read volume ' + error);
-                defer.reject();
-            } else {
-                currentvolume = stdout.replace('\n', '');
-                self.logger.info('[IR Transmitter] Read volume' + currentvolume);
-                defer.resolve();
-            }
-        });
-
-    return defer.promise;
+    const volout = execSync(__dirname + '/getvolume.sh', { uid: 1000, gid: 1000, encoding: 'utf8' });
+    if (volout != null) {
+        currentvolume = volout;
+        self.logger.info('[IR Transmitter] Read volume ' + currentvolume);
+    } else {
+        self.logger.info('[IR Transmitter] Error reading volume');
+    }
 };
 
 irtransmitter.prototype.powerToggle = function(data) {
