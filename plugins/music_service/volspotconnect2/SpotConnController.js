@@ -72,7 +72,7 @@ class SpotConnEvents extends EventEmitter {
 
   sendmsg (msg) {
     // Attempting to send a message back via udp
-    logger.debug('FE => ', msg);
+    // logger.debug('FE => ', msg);
     this._udpsource.send(Buffer.from(msg), 5031, 'localhost', (err) =>
       err ? logger.error('Error sending message: ', err) : null
     );
@@ -84,7 +84,7 @@ class SpotConnEvents extends EventEmitter {
 }
 
 // Simple communication protocol
-let msgMap = new Map();
+const msgMap = new Map();
 
 // values:
 msgMap.set('HELLO', [0x1]);
