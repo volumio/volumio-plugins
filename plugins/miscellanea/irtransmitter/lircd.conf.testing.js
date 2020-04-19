@@ -29,17 +29,32 @@ if (!fs.existsSync(__dirname + "/remotes/" + names[fnum] + ".lircd.conf")) {
 //execFileSync("/bin/cp", [__dirname + "/remotes/" + dirs[fnum] , "/etc/lirc/lircd.conf" ] , { uid: 1000, gid: 1000, encoding: 'utf8' });
 
 // Now we have to restart, otherwise lircd does not notice the change in conffig file...
-execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
+//execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
 
-// Work out the name of the remote: use the 'irsend list' command
-const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' });
-// Turns out it sends the outout to stderr; took me ages to figure out...
-rname.stderr.on('data', (data) => {
-    const rn = data.split("irsend: ");
-    console.log(`child stderr:\n${rn[1]}`);
-});
-//const rn = rname.split("irsend:");
-//console.log(rname.length + " " + rname + " and " + rn);
+//// Work out the name of the remote: use the 'irsend list' command
+//const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' });
+//// Turns out it sends the outout to stderr; took me ages to figure out...
+//rname.stderr.on('data', (data) => {
+//    const rn = data.split("irsend: ");
+//    console.log(`child stderr:\n${rn[1]}`);
+//});
+
+// Same but using callback instead:
+const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' },
+    function (error, stdout, stderr) {
+        if (error != null) {
+            console.log('[IR Transmitter] Could not get lirc remote name : ' + error);
+//            defer.reject();
+        } else {
+            const rn = stderr.split("irsend: ");
+            var remote = { 'remote': "" , "name": ""};
+            remote.remote = rn[1];
+            remote.name = rn[1].trim();
+            console.log("[IR transmitter] New lirc remote name: " + JSON.stringify(remote));
+            //                    defer.resolve();
+        }
+    });
+
 var data = { 'remotename': { 'value': "val", 'label': "lab" } };
 console.log(data);
 console.log(data['remotename'], data['remotename']['value']);

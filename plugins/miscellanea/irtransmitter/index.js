@@ -50,8 +50,12 @@ irtransmitter.prototype.onStart = function() {
     remote.name = self.config.get('remotename');
     remote.gpio_pin = self.config.get('gpio_pin');
     // get lirc remote name
-    // ?
-    self.addVolumeScripts();
+    self.getRemoteName().then(
+        function () {
+            self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
+            self.addVolumeScripts();
+        });
+    
     self.getVolume();
 
   	// Once the Plugin has successfull started resolve the promise
@@ -201,26 +205,39 @@ irtransmitter.prototype.updateRemoteSettings = function (data) {
         // remote has changed...
         remote.name = data['remotename']['label'];
         self.config.set('remotename', remote.name);
-        self.logger.info('[IR transmitter] Remote settings changed to ' + data['remotename']['label']);
+        //self.logger.info('[IR transmitter] Remote settings changed to ' + data['remotename']['label']);
         // Copy to default location:
         execFileSync("/bin/cp", [data['remotename']['value'], "/etc/lirc/lircd.conf"], { uid: 1000, gid: 1000, encoding: 'utf8' });
 
         // Now we have to restart, otherwise lircd does not notice the change in config file...
         execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
 
-        // Work out the name of the remote: use the 'irsend list' command
-        const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' });
-        // Turns out it sends the outout to stderr; took me ages to figure out...
-        rname.stderr.on('data', (data) => {
-            const rn = data.split("irsend: ");
-            self.logger.info(`[IR transmitter] New lirc remote name: \n${rn[1]}`);
-            remote.remote = rn[1];
-        });
+        self.getRemoteName().then(function () { self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote)) });
     }
 
     if (Number.isInteger(Number(data['gpio_pin']))) {
         self.config.set('gpio_pin', data['gpio_pin']);
     }
+}
+
+irtransmitter.prototype.getRemoteName = function () {
+    var defer = libQ.defer();
+    var self = this;
+    // Work out the name of the remote: use the 'irsend list' command
+    const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' },
+        function (error, stdout, stderr) {
+            if (error != null) {
+                self.logger.info('[IR Transmitter] Could not get lirc remote name : ' + error);
+                defer.reject();
+            } else {
+                // Turns out it sends the outout to stderr; took me ages to figure out...
+                const rn = stderr.split("irsend: ");
+                self.logger.info(`[IR transmitter] New lirc remote name: ${rn[1]}`);
+                remote.remote = rn[1].trim();
+                defer.resolve();
+            }
+        });
+    return defer.promise;
 }
 
 irtransmitter.prototype.updateVolumeSettings = function (data) {
@@ -300,7 +317,7 @@ irtransmitter.prototype.getVolume = function () {
 
     const volout = execSync(__dirname + '/getvolume.sh', { uid: 1000, gid: 1000, encoding: 'utf8' });
     if (volout != null) {
-        currentvolume = volout;
+        currentvolume = volout.trim();
         self.logger.info('[IR Transmitter] Read volume ' + currentvolume);
     } else {
         self.logger.info('[IR Transmitter] Error reading volume');
