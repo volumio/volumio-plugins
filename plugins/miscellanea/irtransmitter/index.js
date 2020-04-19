@@ -5,12 +5,14 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
-var execFile = require('child_process').execFile;
+var { execFileSync } = require('child_process');
+var { execFile }= require('child_process');
 const os = require('os');
 const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
 const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
 
 var currentvolume = '';
+var remote = { 'gpio_pin': 12, 'remote': '', 'name': '' };
 
 module.exports = irtransmitter;
 function irtransmitter(context) {
@@ -45,7 +47,10 @@ irtransmitter.prototype.onStart = function() {
         self.enablePIOverlay();
     }
     self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
- 
+    remote.name = self.config.get('remotename');
+    remote.gpio_pin = self.config.get('gpio_pin');
+    // get lirc remote name
+    // ?
     self.addVolumeScripts();
     self.getVolume();
 
@@ -86,34 +91,41 @@ irtransmitter.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+
+            // Remote section
+            const SEC_REM = 1;
             var dirs = fs.readdirSync(__dirname + "/remotes");
-            //console.log('Read ' + dirs.length + ' files:');
             self.logger.info('[IR transmitter] ' + dirs);
             // Get names for remotes based on their file name
             var name;
             for (var i = 0; i < dirs.length; i++) {
                 if (dirs[i].endsWith(".lircd.conf")) {
                     name = dirs[i].split(".lircd.conf", 1)[0];
-                    self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
-                        value: name,
+                    self.configManager.pushUIConfigParam(uiconf, `sections[${SEC_REM}].content[1].options`, {
+                        value: __dirname + "/remotes/" + dirs[i],
                         label: name
                     });
- //                   console.log(dirs[i].split(".lircd.conf", 1)[0]);
+                    if (name === remote.name) {
+                        uiconf.sections[SEC_REM].content[1].value.label = name;
+                        uiconf.sections[SEC_REM].content[1].value.value = __dirname + "/remotes/" + dirs[i];
+                    }
                 }
             }
 
-            uiconf.sections[1].content[0].value = self.config.get('gpio_pin');
-            //uiconf.sections[1].content[1].value = self.config.get('remotename');
+            uiconf.sections[SEC_REM].content[0].value = self.config.get('gpio_pin');
+            
 
-            uiconf.sections[2].content[0].value = self.config.get('vol_min');
-            uiconf.sections[2].content[1].value = self.config.get('vol_max');
+            // Volume section
+            const SEC_VOL = 2;
 
-
+            uiconf.sections[SEC_VOL].content[0].value = self.config.get('vol_min');
+            uiconf.sections[SEC_VOL].content[1].value = self.config.get('vol_max');
+            // get current volume:
             self.getVolume();
-            uiconf.sections[2].content[2].value = currentvolume;
-            self.logger.info('[IR transmitter] Preparing config GUI. Volume: ', currentvolume);
+            uiconf.sections[SEC_VOL].content[2].value = currentvolume;
+            //self.logger.info('[IR transmitter] Preparing config GUI. Volume: ', currentvolume);
 
-            uiconf.sections[2].content[3].value = self.config.get('map_to_100');
+            uiconf.sections[SEC_VOL].content[3].value = self.config.get('map_to_100');
 
             defer.resolve(uiconf);
         })
@@ -185,8 +197,30 @@ irtransmitter.prototype.removeVolumeScripts = function() {
 irtransmitter.prototype.updateRemoteSettings = function (data) {
     var self = this;
     self.logger.info('[IR transmitter] Updated remote settings: ' + JSON.stringify(data));
-    self.config.set('remotename', data['remotename']);
-    self.config.set('gpio_pin', data['gpio_pin']);
+    if (data['remotename']['label'] != remote.name) {
+        // remote has changed...
+        remote.name = data['remotename']['label'];
+        self.config.set('remotename', remote.name);
+        self.logger.info('[IR transmitter] Remote settings changed to ' + data['remotename']['label']);
+        // Copy to default location:
+        execFileSync("/bin/cp", [data['remotename']['value'], "/etc/lirc/lircd.conf"], { uid: 1000, gid: 1000, encoding: 'utf8' });
+
+        // Now we have to restart, otherwise lircd does not notice the change in config file...
+        execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
+
+        // Work out the name of the remote: use the 'irsend list' command
+        const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' });
+        // Turns out it sends the outout to stderr; took me ages to figure out...
+        rname.stderr.on('data', (data) => {
+            const rn = data.split("irsend: ");
+            self.logger.info(`[IR transmitter] New lirc remote name: \n${rn[1]}`);
+            remote.remote = rn[1];
+        });
+    }
+
+    if (Number.isInteger(Number(data['gpio_pin']))) {
+        self.config.set('gpio_pin', data['gpio_pin']);
+    }
 }
 
 irtransmitter.prototype.updateVolumeSettings = function (data) {
@@ -277,7 +311,7 @@ irtransmitter.prototype.powerToggle = function(data) {
     var defer = libQ.defer();
     var self = this;
 
-    execFile('/usr/bin/irsend', ['SEND_ONCE', 'CamAudioOne', 'KEY_POWER'], {uid:1000,gid:1000},
+    execFile('/usr/bin/irsend', ['SEND_ONCE', remote.remote, 'KEY_POWER'], {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
                 self.logger.info('[IR Transmitter] Error sending IR power toggle signal: '+error);
@@ -298,7 +332,7 @@ irtransmitter.prototype.getAdditionalConf = function (type, controller, data) {
     return confs;
 };
 
-
+// Adapted from ir_receiver plugin
 irtransmitter.prototype.restartLirc = function (message) {
     var self = this;
 
@@ -314,12 +348,12 @@ irtransmitter.prototype.restartLirc = function (message) {
                         if (error != null) {
                             self.logger.info('Error restarting LIRC: ' + error);
                             if (message) {
-                                self.commandRouter.pushToastMessage('error', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
+                                self.commandRouter.pushToastMessage('error', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
                             }
                         } else {
                             self.logger.info('lirc correctly started');
                             if (message) {
-                                self.commandRouter.pushToastMessage('success', 'IR Controller', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                                self.commandRouter.pushToastMessage('success', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
                             }
                         }
                     });

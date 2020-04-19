@@ -26,7 +26,7 @@ if (!fs.existsSync(__dirname + "/remotes/" + names[fnum] + ".lircd.conf")) {
     console.log("Found: \"" + __dirname + "/remotes/" + dirs[fnum] + "\" for " + names[fnum]);
 }
 // Copy to default location:
-execFileSync("/bin/cp", [__dirname + "/remotes/" + dirs[fnum] , "/etc/lirc/lircd.conf" ] , { uid: 1000, gid: 1000, encoding: 'utf8' });
+//execFileSync("/bin/cp", [__dirname + "/remotes/" + dirs[fnum] , "/etc/lirc/lircd.conf" ] , { uid: 1000, gid: 1000, encoding: 'utf8' });
 
 // Now we have to restart, otherwise lircd does not notice the change in conffig file...
 execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
@@ -40,3 +40,6 @@ rname.stderr.on('data', (data) => {
 });
 //const rn = rname.split("irsend:");
 //console.log(rname.length + " " + rname + " and " + rn);
+var data = { 'remotename': { 'value': "val", 'label': "lab" } };
+console.log(data);
+console.log(data['remotename'], data['remotename']['value']);
