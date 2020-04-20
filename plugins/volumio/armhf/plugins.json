@@ -25,24 +25,6 @@
 					"updated": "6-12-2019"
 				},
 				{
-					"prettyName": "Youtube Playback",
-					"icon": "fa-youtube",
-					"name": "youtube",
-					"version": "1.0.1",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/youtube/youtube.zip",
-					"license": "ISC",
-					"description": "Youtube playback and public sharing for the Volumio",
-					"details": "<h4>Youtube Plugin for Volumio</h4><br>Adds Youtube Playback capabilites to Volumio<br>Features:<br><ul><li>Search for youtube Videos</li><li>Play trending videos</li></ul><br><",
-					"author": "Cristian Pintea, Stefan Laesser",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "25-2-2020"
-				},
-				{
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-spotify",
 					"name": "volspotconnect2",
