@@ -2159,7 +2159,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
-      return self.commandRouter.reloadUi();
+ //     return self.commandRouter.reloadUi();
     }, 500);
   });
 };
@@ -2176,17 +2176,17 @@ ControllerBrutefir.prototype.SwapFilters = function () {
 
   if (rsetUsedOfFilters == '1') {
     self.config.set('setUsedOfFilters', 2);
-    console.log('Swap to set _2 ');
+    console.log('Swap to set 2 ');
     brutefircmd = ('cfc "l_out" "' + "2l_out" + '" ;cfc "r_out" "' + "2r_out" + '"');
 
-    self.config.set('displayednameofset', "Set used is _2");
+    self.config.set('displayednameofset', "Set used is 2");
 
   } else if (rsetUsedOfFilters == '2') {
     self.config.set('setUsedOfFilters', 1);
-    console.log('Swap to set _1 ');
+    console.log('Swap to set 1 ');
     brutefircmd = ('cfc "l_out" "' + "l_out" + '" ;cfc "r_out" "' + "r_out" + '"');
 
-    self.config.set('displayednameofset', "Set used is _1");
+    self.config.set('displayednameofset', "Set used is 1");
 
   };
 
@@ -2478,7 +2478,9 @@ ControllerBrutefir.prototype.installtools = function (data) {
     message: 'Your are going to download about 17Mo. Please WAIT until this page is refreshed (about 25 sec).',
     size: 'lg'
   };
-  self.commandRouter.broadcastMessage("openModal", modalData);
+  self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 20 seconds)');
+
+//  self.commandRouter.broadcastMessage("openModal", modalData);
   return new Promise(function (resolve, reject) {
     try {
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
@@ -2492,7 +2494,11 @@ ControllerBrutefir.prototype.installtools = function (data) {
     resolve();
     self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !', 'Refresh the page to see them');
     self.config.set('toolsinstalled', true);
-    return self.commandRouter.reloadUi();
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+   // return self.commandRouter.reloadUi();
   });
 };
 
@@ -2511,7 +2517,11 @@ ControllerBrutefir.prototype.removetools = function (data) {
     resolve();
     self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
     self.config.set('toolsinstalled', false);
-    return self.commandRouter.reloadUi();
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+   // return self.commandRouter.reloadUi();
   });
 };
 
@@ -2572,7 +2582,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function () {
 };
 
 //here we play right sweep when button is pressed foor REW >= 5.20
-ControllerBrutefir.prototype.playlrightsweepfile520 = function () {
+ControllerBrutefir.prototype.playrightsweepfile520 = function () {
   const self = this;
   let ititle = 'Rew 5.20 - Sweep tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
@@ -2610,7 +2620,7 @@ ControllerBrutefir.prototype.playbothpinkfile = function () {
 };
 
 //here we stop aplay
-ControllerBrutefir.prototype.stopaplay = function (track) {
+ControllerBrutefir.prototype.stopaplay = function () {
   const self = this;
   try {
     exec('/usr/bin/killall aplay');

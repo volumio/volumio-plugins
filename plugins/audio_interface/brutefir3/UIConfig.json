@@ -1013,11 +1013,8 @@
           "element": "switch",
           "doc": "Rew version. Set to ON if you use REW <=5.19. Set to OFF if you use REW >=5.20 ",
           "label": "Measure with Rew <=5.19",
-          "value": false,
-          "visibleIf": {
-            "field": "sweep",
-            "value": true
-          }
+          "value": false
+         
         },
         {
           "id": "playleftsweepfile",
@@ -1088,11 +1085,7 @@
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
             "method": "stopaplay"
-          },
-          "visibleIf": {
-            "field": "sweep",
-            "value": true
-          }
+          }          
         },
         {
           "id": "pink",

@@ -1,4 +1,4 @@
-April 5th 2020
+April 20th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -109,6 +109,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 20th 2020
+
+- correction for tools (missing options)
+- tools 'stop to play button' work properly
+- UI is now not blinking to be refreshed (volumio >2.753)
 
 April 5th 2020
 

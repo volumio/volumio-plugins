@@ -17,7 +17,7 @@
     },
     "displayednameofset": {
         "type": "string",
-        "value": "set used is _1"
+        "value": "set used is 1"
     },
     "nchannels": {
         "type": "string",
@@ -57,11 +57,11 @@
     },
     "rightfilter": {
         "type": "string",
-        "value": "Dirac pulse"
+        "value": "None"
     },
     "sndrightfilter": {
         "type": "string",
-        "value": "Dirac pulse"
+        "value": "None"
     },
     "rc1delay": {
         "type": "string",
