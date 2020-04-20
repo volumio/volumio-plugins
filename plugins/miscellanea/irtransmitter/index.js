@@ -168,9 +168,9 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var self = this;
 
     var enabled = true;
-    var setVolumeScript = __dirname + '/setvolume.sh';
+    var setVolumeScript = __dirname + '/setvolume.sh ' + remote.remote;
     var getVolumeScript = __dirname + '/getvolume.sh';
-    var setMuteScript = __dirname + '/setmute.sh';
+    var setMuteScript = __dirname + '/setmute.sh ' + remote.remote;
     var getMuteScript = __dirname + '/getmute.sh';
     var minVol = self.config.get('vol_min');
     var maxVol = self.config.get('vol_max');
@@ -201,6 +201,13 @@ irtransmitter.prototype.removeVolumeScripts = function() {
 irtransmitter.prototype.updateRemoteSettings = function (data) {
     var self = this;
     self.logger.info('[IR transmitter] Updated remote settings: ' + JSON.stringify(data));
+
+
+    if (Number.isInteger(Number(data['gpio_pin'])) && data['gpio_pin'] != remote.gpio_pin) {
+        self.config.set('gpio_pin', data['gpio_pin']);
+        remote.gpio_pin = data['gpio_pin'];
+    }
+
     if (data['remotename']['label'] != remote.name) {
         // remote has changed...
         remote.name = data['remotename']['label'];
@@ -212,11 +219,12 @@ irtransmitter.prototype.updateRemoteSettings = function (data) {
         // Now we have to restart, otherwise lircd does not notice the change in config file...
         execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
 
-        self.getRemoteName().then(function () { self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote)) });
-    }
-
-    if (Number.isInteger(Number(data['gpio_pin']))) {
-        self.config.set('gpio_pin', data['gpio_pin']);
+        self.getRemoteName().then(function () {
+            self.commandRouter.pushToastMessage('success', 'IR-Transmitter', 'Updated remote to ' + remote.name);              
+            self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
+            // update scripts as remote name has changed...
+            self.addVolumeScripts();
+        });
     }
 }
 
