@@ -61,24 +61,6 @@
 					"updated": "18-2-2018"
 				},
 				{
-					"prettyName": "Youtube Playback",
-					"icon": "fa-lightbulb-o",
-					"name": "youtube",
-					"version": "1.0.1",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/youtube/youtube.zip",
-					"license": "MIT",
-					"description": "Youtube playback and public sharing for the Volumio",
-					"details": "",
-					"author": "Cris Pintea <cris@pintea.net>, Stefan Laesser <sla89@gmx-topmail.de>",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "25-2-2020"
-				},
-				{
 					"prettyName": "Radio Paradise",
 					"icon": "fa-lightbulb-o",
 					"name": "radio_paradise",
