@@ -114,7 +114,7 @@ April 20th 2020
 
 - correction for tools (missing options)
 - tools 'stop to play button' work properly
-- UI is now not blinking to be refreshed (volumio >2.753)
+- UI is now not blinking when refreshed (volumio >2.753)
 
 April 5th 2020
 

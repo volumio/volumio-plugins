@@ -9,17 +9,17 @@ report clipping when it occurs to set attenuation (using journalctl node). imple
 
 const io = require('socket.io-client');
 const fs = require('fs-extra');
-const libFsExtra = require('fs-extra');
+//const libFsExtra = require('fs-extra');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
-const config = new (require('v-conf'))();
+//const config = new (require('v-conf'))();
 const socket = io.connect('http://localhost:3000');
-const path = require('path');
+//const path = require('path');
 const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
-let nchannels;
+//let nchannels;
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
 
@@ -53,8 +53,8 @@ ControllerBrutefir.prototype.onStart = function () {
   self.config.set('displayednameofset', "Set used is _1");
   self.config.set('setUsedOfFilters', "1");
   self.autoconfig()
- 
-  
+
+
     .then(function (e) {
       setTimeout(function () {
         self.logger.info("Starting brutefir");
@@ -116,9 +116,9 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       let valuestoredf;
       let filterfolder = "/data/INTERNAL/brutefirfilters";
       let filtersources = "/data/INTERNAL/brutefirfilters/filter-sources";
-      let items;
+      //let items;
       let allfilter;
-      let oformat;
+      //let oformat;
       let filetoconvertl;
       let bkpath = "/data/INTERNAL/brutefirfilters/target-curves";
       let tc;
@@ -395,9 +395,9 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', value);
 
-      let probesmplerate;
-      let probesmpleratehw = self.config.get('probesmplerate').split(' ');
-      self.logger.info('HW sample rate :' + self.config.get('probesmplerate'));
+      //let probesmplerate;
+      let probesmpleratehw = self.config.get('probesmplerate').slice(1).split(' ');
+      //  self.logger.info('HW sample rate :' + self.config.get('probesmplerate'));
 
       self.logger.info('list of available HW sample rate :' + probesmpleratehw);
       for (let i in probesmpleratehw) {
@@ -419,7 +419,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       try {
         let sampleformat = self.config.get("formats").split(' ');
         let sampleformatf = (', Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ');
-        let sampleformato;
+        // let sampleformato;
         let sitems;
         let js;
         let str2;
@@ -2159,7 +2159,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
- //     return self.commandRouter.reloadUi();
+      //     return self.commandRouter.reloadUi();
     }, 500);
   });
 };
@@ -2480,7 +2480,7 @@ ControllerBrutefir.prototype.installtools = function (data) {
   };
   self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 20 seconds)');
 
-//  self.commandRouter.broadcastMessage("openModal", modalData);
+  //  self.commandRouter.broadcastMessage("openModal", modalData);
   return new Promise(function (resolve, reject) {
     try {
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
@@ -2498,7 +2498,7 @@ ControllerBrutefir.prototype.installtools = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-   // return self.commandRouter.reloadUi();
+    // return self.commandRouter.reloadUi();
   });
 };
 
@@ -2521,7 +2521,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-   // return self.commandRouter.reloadUi();
+    // return self.commandRouter.reloadUi();
   });
 };
 
