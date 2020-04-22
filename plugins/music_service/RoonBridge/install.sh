@@ -24,7 +24,7 @@ case "$MACHINE_ARCH" in
             ARCH="armv7hf"
             ;;
         aarch64*)
-            ARCH="armv8"
+            ARCH="armv7hf"
             ;;
         x86_64*)
             ARCH="x64" 
