@@ -1,0 +1,18 @@
+{
+  "VKBD":{
+    "PLUGIN_NAME":"Virtual keyboard",
+    "PLUGIN_CONFIGURATION":"Virtual keyboard Konfiguration",
+    "VKBD_CONF":"Bildschirmtastatur-Einstellungen",
+    "LAYOUT_SELECTOR":"Tastaturlayout auswählen",
+    "LAYOUT_SELECTOR_DOC":"Wähle das gewünschte Tastaturlayout aus.",
+    "TOUCHDISPLAY_MISSING":"Das Plugin kann nicht gestartet werden, weil das benötigte Touch Display-Plugin fehlt.",
+    "ERR_COPY":"Fehler beim Kopieren von ",
+    "ERR_MOD":"Fehler beim Ändern von ",
+    "ERR_RESTART":"Fehler beim Neustart von ",
+    "RESTART_VOLUMIOKIOSK_MSG":"Die lokale Anzeige wird in 3 Sekunden neu gestartet, damit die Änderung wirksam wird.",
+    "NO_CHANGES":"Keine zu speichernde Änderung.",
+    "YES":"Ja",
+    "NO":"Nein",
+    "SAVE":"Speichern"
+  }
+}
