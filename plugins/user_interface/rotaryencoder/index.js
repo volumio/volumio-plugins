@@ -4,8 +4,10 @@ var libQ = require('kew');
 var fs=require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
 
-const detentActionType = Object.freeze({ "NO_ACTION": 0, "VOLUME": 1, "PREVNEXT": 2, "SEEK": 3 });
+const detentActionType = Object.freeze({ "NO_ACTION": 0, "VOLUME": 1, "PREVNEXT": 2, "SEEK": 3, "SCROLL": 4 });
 const buttonActionType = Object.freeze({ "NO_ACTION": 0, "PLAY": 1, "PAUSE": 2, "PLAYPAUSE": 3, "STOP": 4, "REPEAT": 5, "RANDOM": 6, "CLEARQUEUE": 7, "MUTE": 8, "UNMUTE": 9, "TOGGLEMUTE": 10, "SHUTDOWN": 11, "REBOOT": 12, "RESTARTAPP": 13, "DUMPLOG": 14 });
 
 var rotaryEncoder = require('onoff-rotary');
@@ -38,10 +40,10 @@ rotaryencoder.prototype.onStart = function() {
 	if(self.config.get('enable_debug_logging'))
 		self.logger.info('[Rotary encoder] Loaded configuration: ' + JSON.stringify(self.config.data));
 	
-	if(self.config.get('first_encoder_CLK') !== undefined && self.config.get('first_encoder_SW') !== 0)
+	if(self.config.get('first_encoder_CLK') !== undefined && self.config.get('first_encoder_CLK') !== 0 && self.config.get('first_encoder_DT') !== undefined && self.config.get('first_encoder_DT') !== 0)
 		self.constructFirstEncoder(true);
 	
-	if(self.config.get('second_encoder_CLK') !== undefined && self.config.get('second_encoder_SW') !== 0)
+	if(self.config.get('second_encoder_CLK') !== undefined && self.config.get('second_encoder_CLK') !== 0 && self.config.get('second_encoder_DT') !== undefined && self.config.get('second_encoder_DT') !== 0)
 		self.constructSecondEncoder(true);
 	
 	// Once the Plugin has successfully started resolve the promise
@@ -311,6 +313,8 @@ rotaryencoder.prototype.constructFirstEncoder = function ()
 				self.executeCommand('seek plus');
 			else if(self.config.get('first_encoder_detentActionType') == detentActionType.PREVNEXT)
 				self.executeCommand('next');
+			else if(self.config.get('first_encoder_detentActionType') == detentActionType.SCROLL)
+				self.emitToSocket('scroll', 'down');
 		}
 		else
 		{
@@ -326,6 +330,8 @@ rotaryencoder.prototype.constructFirstEncoder = function ()
 				self.executeCommand('seek minus');
 			else if(self.config.get('first_encoder_detentActionType') == detentActionType.PREVNEXT)
 				self.executeCommand('previous');
+			else if(self.config.get('first_encoder_detentActionType') == detentActionType.SCROLL)
+				self.emitToSocket('scroll', 'up');
 		}
 	});
 	
@@ -413,6 +419,8 @@ rotaryencoder.prototype.constructSecondEncoder = function ()
 				self.executeCommand('seek plus');
 			else if(self.config.get('second_encoder_detentActionType') == detentActionType.PREVNEXT)
 				self.executeCommand('next');
+			else if(self.config.get('second_encoder_detentActionType') == detentActionType.SCROLL)
+				self.emitToSocket('scroll', 'down');
 		}
 		else
 		{
@@ -428,6 +436,8 @@ rotaryencoder.prototype.constructSecondEncoder = function ()
 				self.executeCommand('seek minus');
 			else if(self.config.get('second_encoder_detentActionType') == detentActionType.PREVNEXT)
 				self.executeCommand('previous');
+			else if(self.config.get('second_encoder_detentActionType') == detentActionType.SCROLL)
+				self.emitToSocket('scroll', 'up');
 		}
 	});
 	
@@ -485,7 +495,6 @@ rotaryencoder.prototype.constructSecondEncoder = function ()
 				self.logger.info('[Rotary encoder] Time passed (in milliseconds): ' + (released - self.pressed));
 		});
 	}
-	}
 };
 
 rotaryencoder.prototype.destroyFirstEncoder = function ()
@@ -542,6 +551,20 @@ rotaryencoder.prototype.executeCommand = function (cmd)
 		defer.resolve();
 	});
 	
+	return defer.promise;
+};
+
+rotaryencoder.prototype.emitToSocket = function (message, value)
+{
+	var self = this;
+	var defer = libQ.defer();
+	
+	if(self.config.get('enable_debug_logging'))
+			self.logger.info('[Rotary encoder] Emmiting to socket: ' + message + ' ' + value);
+
+	socket.emit(message, value);
+	defer.resolve();
+
 	return defer.promise;
 };
 
