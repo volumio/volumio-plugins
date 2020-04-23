@@ -102,7 +102,7 @@ while true; do
     --disable-session-crashed-bubble \\
     --disable-translate \\
     --user-data-dir='/data/volumiokiosk' \
-	--no-sandbox \
+	  --no-sandbox \
     http://localhost:3000
 done" > /opt/volumiokiosk.sh
 sudo /bin/chmod +x /opt/volumiokiosk.sh
