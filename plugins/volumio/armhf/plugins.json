@@ -511,6 +511,24 @@
 						}
 					],
 					"updated": "17-1-2020"
+				},
+				{
+					"prettyName": "lastfmscrobble",
+					"icon": "fa-lastfm-square",
+					"name": "lastfmscrobble",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/lastfmscrobble/lastfmscrobble.zip",
+					"license": "ISC",
+					"description": "Scrobbles to last.fm",
+					"details": "Scrobbles songs and compatible webradios to last.fm, there's no other functionality from last.fm included - you have to check on last.fm to get suggestions for new music.",
+					"author": "Øistein Kjos",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "17-2-2020"
 				}
 			]
 		},
