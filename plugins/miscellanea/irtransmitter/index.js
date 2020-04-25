@@ -99,7 +99,7 @@ irtransmitter.prototype.getUIConfig = function() {
             // Remote section
             const SEC_REM = 1;
             var dirs = fs.readdirSync(__dirname + "/remotes");
-            self.logger.info('[IR transmitter] ' + dirs);
+            self.logger.info('[IR transmitter] Found definitions for remotes: ' + dirs);
             // Get names for remotes based on their file name
             var name;
             for (var i = 0; i < dirs.length; i++) {
@@ -217,13 +217,14 @@ irtransmitter.prototype.updateRemoteSettings = function (data) {
         execFileSync("/bin/cp", [data['remotename']['value'], "/etc/lirc/lircd.conf"], { uid: 1000, gid: 1000, encoding: 'utf8' });
 
         // Now we have to restart, otherwise lircd does not notice the change in config file...
-        execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
-
-        self.getRemoteName().then(function () {
-            self.commandRouter.pushToastMessage('success', 'IR-Transmitter', 'Updated remote to ' + remote.name);              
-            self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
-            // update scripts as remote name has changed...
-            self.addVolumeScripts();
+        //execSync("sudo /bin/systemctl restart lirc.service", { uid: 1000, gid: 1000 });
+        self.restartLirc(true).then(function () {
+            self.getRemoteName().then(function () {
+                // update scripts as remote name has changed...
+                self.addVolumeScripts();
+                self.commandRouter.pushToastMessage('success', 'IR-Transmitter', 'Updated remote to ' + remote.name);
+                self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
+            });
         });
     }
 }
@@ -287,13 +288,13 @@ irtransmitter.prototype.enablePIOverlay = function() {
     if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
         if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
             self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/lirc_rpi!');
-            exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_out_pin=12', { uid: 1000, gid: 1000 },
+            exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_out_pin=' + remote.gpio_pin, { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if(error != null) {
                         self.logger.info('[IR Transmitter] Error enabling lirc-rpi overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('[IR Transmitter] lirc-rpi overlay enabled');
+                        self.logger.info('[IR Transmitter] lirc-rpi overlay using gpio pin ' + remote.gpio_pin);
                         defer.resolve();
                     }
                 });
@@ -303,13 +304,13 @@ irtransmitter.prototype.enablePIOverlay = function() {
     } else {
         if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith('gpio-ir-transmitter'); }) === undefined) {
             self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/gpio-ir-transmitter!');
-            exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=12', { uid: 1000, gid: 1000 },
+            exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=' + remote.gpio_pin, { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if (error != null) {
                         self.logger.info('[IR Transmitter] Error enabling gpio-ir-tx overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('[IR Transmitter] gpio-ir-tx overlay enabled');
+                        self.logger.info('[IR Transmitter] gpio-ir-tx overlay enabled using gpio pin ' + remote.gpio_pin);
                         defer.resolve();
                     }
                 });
@@ -331,6 +332,22 @@ irtransmitter.prototype.getVolume = function () {
         self.logger.info('[IR Transmitter] Error reading volume');
     }
 };
+
+irtransmitter.prototype.importRemoteDefinitions = function (data) {
+    var self = this;
+
+    var dirs = fs.readdirSync("/data/INTERNAL");
+    var copied = 0;
+    for (var i = 0; i < dirs.length; i++) {
+        if (dirs[i].endsWith(".lircd.conf")) {
+            fs.copyFileSync("/data/INTERNAL/" + dirs[i], __dirname + "/remotes/" + dirs[i]);
+            copied++;
+        }
+    }
+    self.logger.info('[IR transmitter]Copied ' + copied + ' remote definition(s).');
+    return copied;
+};
+
 
 irtransmitter.prototype.powerToggle = function(data) {
     var defer = libQ.defer();
@@ -360,6 +377,7 @@ irtransmitter.prototype.getAdditionalConf = function (type, controller, data) {
 // Adapted from ir_receiver plugin
 irtransmitter.prototype.restartLirc = function (message) {
     var self = this;
+    var defer = libQ.defer();
 
     exec('usr/bin/sudo /bin/systemctl stop lirc.service', { uid: 1000, gid: 1000 },
         function (error, stdout, stderr) {
@@ -372,11 +390,13 @@ irtransmitter.prototype.restartLirc = function (message) {
                     function (error, stdout, stderr) {
                         if (error != null) {
                             self.logger.info('Error restarting LIRC: ' + error);
+                            defer.reject();
                             if (message) {
                                 self.commandRouter.pushToastMessage('error', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
                             }
                         } else {
                             self.logger.info('lirc correctly started');
+                            defer.resolve();
                             if (message) {
                                 self.commandRouter.pushToastMessage('success', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
                             }
@@ -384,5 +404,6 @@ irtransmitter.prototype.restartLirc = function (message) {
                     });
             }, 1000)
         });
+    return defer.promise;
 }
 

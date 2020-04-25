@@ -113,6 +113,32 @@
           "value": false
         }
       ]
+    },
+	{
+      "id": "section_import",
+      "element": "section",
+      "label": "Remote Import",
+      "description": "If you are lucky you might find the definition for your remote on the web site linked below. Download the corresponding text file and check that the volume up, volume down, mute and power keys have the following names: KEY_VOLUMUP, KEY_VOLUMEDOWN, KEY_MUTE, KEY_POWER. Place the file in the \"/data/INTERNAL\" folder of your Volumio system (on Windows this appears as \"Internal Storage\" under your Volumios name). Make sure the filename follows the pattern \"FriendlyRemoteName.lirc.conf\". Once this is all done press the import key below to add it to the above list of available remotes.",
+      "icon": "fa-cog",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/irtransmitter",
+        "method": "importRemoteDefinitions"
+      },
+      "saveButton": {
+        "label": " Import remote definition",
+        "data": [
+        ]
+      },
+      "content": [
+		{
+		  "id":"remotelink",
+		  "element": "button",
+		  "label": "Go to LIRC database site",
+		  "doc": "Go to http://lirc-remotes.sourceforge.net/remotes-table.html",
+		  "onClick": {"type":"openUrl", "url":"http://lirc-remotes.sourceforge.net/remotes-table.html"}  
+		}				  
+      ]
     }
   ]
 }

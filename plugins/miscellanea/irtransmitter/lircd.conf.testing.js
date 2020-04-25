@@ -55,6 +55,17 @@ const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encodin
         }
     });
 
+var dirs = fs.readdirSync("/data/INTERNAL");
+console.log('[IR transmitter] Found definitions for remotes: ' + dirs);
+var copied = 0;
+for (var i = 0; i < dirs.length; i++) {
+    if (dirs[i].endsWith(".lircd.conf")) {
+        fs.copyFileSync("/data/INTERNAL/" + dirs[i], __dirname + "/remotes/" + dirs[i]);
+        copied++;
+    }
+}
+console.log('[IR transmitter] Copied ' + copied + ' remote definitions');
+
 var data = { 'remotename': { 'value': "val", 'label': "lab" } };
 console.log(data);
 console.log(data['remotename'], data['remotename']['value']);
