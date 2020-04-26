@@ -1,16 +1,16 @@
 #!/bin/bash
 
 echo "Installing LIRC"
-apt-get update
-apt-get -y install lirc --no-install-recommends
+sudo apt-get update
+sudo apt-get -y install lirc --no-install-recommends
 
 echo "Copy hardware config for Raspberry Pi"
-cp ./hardware.conf /etc/lirc/
-cp ./lircd.conf /etc/lirc/
-
+sudo cp ./hardware.conf /etc/lirc/
+sudo touch /etc/lirc/lircd.conf
+sudo chmod 666 /etc/lirc/lircd.conf
 
 echo "Installing rules to make sure the device has a consistent name"
-cp ./71-lirc.rules /etc/udev/rules.d
+sudo cp ./71-lirc.rules /etc/udev/rules.d
 
 # Check why this is here? Is this needed?
 #echo "Applying LIRC starting policy"
