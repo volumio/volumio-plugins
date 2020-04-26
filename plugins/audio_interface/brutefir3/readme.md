@@ -1,4 +1,4 @@
-April 20th 2020
+April 26th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -24,6 +24,7 @@ It provides :
 
 ## NEW!
 
+
 Now the plugin allows a fast and smooth swap between 2 set of filters.
 
 you have to create 2 set of left and right filter according to the following naming convention:
@@ -38,6 +39,7 @@ Then in the plugin,, select filter named with _1. Save, a new button appears to 
 
 
 New automatic clipping detection. Attenuation can be set automatcally. 
+
 ## warning : need to add volumio as member of the group systemd-journal ```sudo usermod -a -G systemd-journal volumio``` 
 
 First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
@@ -72,6 +74,8 @@ __Base scheme - signal path__
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
 ## To install
+
+Should be used with Volumio > __2.753__
 
 Before intalling the dev version, __REMOVE__, if exists, the plugin from your system using the webUI plugins page and __REBOOT BEFORE INSTALLING__ a new version!
 
@@ -109,6 +113,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+April 26th 2020
+
+- fix for dbl files
+- fix for clipping detection if playing
+- support for FLOAT64_LE wav file from Acourate
 
 April 20th 2020
 

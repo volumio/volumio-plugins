@@ -49,8 +49,9 @@ ControllerBrutefir.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   socket.emit('getState', '');
+  socket.emit('pause');
   self.sendvolumelevel();
-  self.config.set('displayednameofset', "Set used is _1");
+  self.config.set('displayednameofset', "Set used is 1");
   self.config.set('setUsedOfFilters', "1");
   self.autoconfig()
 
@@ -1037,7 +1038,9 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
 ControllerBrutefir.prototype.testclipping = function () {
   const self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
+
+  socket.emit('pause');
+
   let messageDisplayed;
   let firstPeak = 0;
   let secondPeak = 0;
@@ -1107,18 +1110,105 @@ ControllerBrutefir.prototype.testclipping = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + messageDisplayed + ' dB');
+    self.commandRouter.pushToastMessage('info', 'Attenuation successfully set to: ' + messageDisplayed + ' dB');
     self.rebuildBRUTEFIRAndRestartDaemon();
     journalctl.stop();
   }, 550);
 };
 
+//here we determine filter type
+ControllerBrutefir.prototype.dfiltertype = function () {
+  const self = this;
+  //let defer = libQ.defer();
+
+  let skipvalue;
+  //let extset;
+  let filtername = self.config.get('leftfilter');
+  let filterpath = '/data/INTERNAL/brutefirfilters/';
+  let auto_filter_format;
+
+  let filext = self.config.get('leftfilter').split('.').pop().toString();
+  if (filext == 'pcm') {
+    auto_filter_format = 'FLOAT_LE';
+    self.config.set('filter_format', auto_filter_format);
+    self.logger.info('------->filter ' + filext + ' FLOAT_LE');
+    skipvalue = '';
+  }
+  else if (filext == 'wav') {
+    try {
+      wavFileInfo.infoByFilename(filterpath + filtername, function (err, info) {
+
+        let wavetype = (info.header.bits_per_sample);
+        self.logger.info(info.header);
+        if (wavetype == '16') {
+          auto_filter_format = 'S16_LE';
+          self.config.set('filter_format', auto_filter_format);
+          self.logger.info('------->filter ' + filext + auto_filter_format + wavetype);
+        }
+        else if (wavetype == '24') {
+          auto_filter_format = 'S24_LE';
+          self.config.set('filter_format', auto_filter_format);
+          self.logger.info('------->filter ' + filext + ' S24_LE ' + wavetype);
+        }
+        else if (wavetype == '32') {
+          auto_filter_format = 'S32_LE';
+          self.config.set('filter_format', auto_filter_format);
+          self.logger.info('------>filter ' + filext + ' S32_LE ' + wavetype);
+        }
+        else if (wavetype == '64') {
+          auto_filter_format = 'FLOAT64_LE';
+          self.config.set('filter_format', auto_filter_format);
+          self.logger.info('------>filter ' + filext + ' FLOAT64_LE ' + wavetype);
+        }
+      })
+    }
+    catch (err) {
+      self.logger.error('Could not read file: ' + err);
+    }
+    skipvalue = "skip:44;"
+
+  }
+  else if (filext == 'txt') {
+    auto_filter_format = 'text';
+    self.config.set('filter_format', auto_filter_format);
+    self.logger.info('-------->filter ' + filext + ' text');
+    skipvalue = '';
+  }
+  else if (filext == 'dbl') {
+    auto_filter_format = 'FLOAT64_LE';
+    self.config.set('filter_format', auto_filter_format);
+    self.logger.info('--------->filter ' + filext + ' FLOAT64_LE');
+    skipvalue = '';
+  }
+  else if ((self.config.get('leftfilter') == 'None') || (self.config.get('leftfilter') == 'Dirac pulse')) {
+    self.logger.info('Filter is ' + self.config.get('leftfilter'));
+    self.config.set('filter_format', 'text');
+    skipvalue = '';
+  }
+  else {
+    let modalData = {
+      title: 'Unsuported filter format',
+      message: "<br>Your file is not supported. Please choose one of the supported format :<br>Supported type:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S32_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+  }
+  return skipvalue;
+
+};
+
 //---------------------------------------------------------------
 
-ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
+ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
   const self = this;
 
   let defer = libQ.defer();
+
+
   try {
     fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function (err, data) {
       if (err) {
@@ -1141,7 +1231,6 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       let rattenuation;
       let f_ext;
       let vf_ext;
-
 
       if (self.config.get('vatt'))
         if (self.config.get('filter_format') == "text") {
@@ -1199,18 +1288,13 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
       let skipfl;
       let skipfr;
       let vatt = self.config.get('vatt');
+
       let noldirac = self.config.get('leftfilter');
+      let skipval = self.dfiltertype(skipvalue);
+      skipfl = skipfr = skipval;
 
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
-        skipfl = "skip:44;"
-      } else skipfl = "";
+    //  console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWwww' + (self.config.get('filter_format')) + '  ' + f_ext + '  ' + skipfl);
 
-      let nordirac = self.config.get('rightfilter');
-
-      if (((self.config.get('filter_format') == "S32_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S16_LE") || ((self.config.get('filter_format') == "FLOAT64_LE") && (f_ext = ".wav"))) && (noldirac != "Dirac pulse")) {
-        skipfr = "skip:44;"
-
-      } else skipfr = "";
       let routput_device = self.config.get('alsa_device');
       if (routput_device == 'softvolume') {
         output_device = 'softvolume';
@@ -1551,79 +1635,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function () {
   return defer.promise;
 };
 
-//here we determine filter type
-ControllerBrutefir.prototype.dfiltertype = function (data) {
-  const self = this;
-  let extset;
-  let filtername = self.config.get('leftfilter');
-  let filterpath = '/data/INTERNAL/brutefirfilters/';
-  let auto_filter_format;
 
-  let filext = self.config.get('leftfilter').split('.').pop().toString();
-  if (filext == 'pcm') {
-    auto_filter_format = 'FLOAT_LE';
-    self.config.set('filter_format', auto_filter_format);
-    self.logger.info('------->filter ' + filext + ' FLOAT_LE');
-  }
-  else if (filext == 'wav') {
-    try {
-      wavFileInfo.infoByFilename(filterpath + filtername, function (err, info) {
-
-        let wavetype = (info.header.bits_per_sample);
-        self.logger.info(info.header);
-        if (wavetype == '16') {
-          auto_filter_format = 'S16_LE';
-          self.config.set('filter_format', auto_filter_format);
-          self.logger.info('------->filter ' + filext + auto_filter_format + wavetype);
-        }
-        else if (wavetype == '24') {
-          auto_filter_format = 'S24_LE';
-          self.config.set('filter_format', auto_filter_format);
-          self.logger.info('------->filter ' + filext + ' S24_LE ' + wavetype);
-        }
-        else if (wavetype == '32') {
-          auto_filter_format = 'S32_LE';
-          self.config.set('filter_format', auto_filter_format);
-          self.logger.info('------>filter ' + filext + ' S32_LE ' + wavetype);
-        }
-        else if (wavetype == '64') {
-          auto_filter_format = 'FLOAT64_LE';
-          self.config.set('filter_format', auto_filter_format);
-          self.logger.info('------>filter ' + filext + ' FLOAT64_LE ' + wavetype);
-        }
-      })
-    }
-    catch (err) {
-      self.logger.error('Could not read file: ' + err);
-    }
-  }
-  else if (filext == 'txt') {
-    auto_filter_format = 'text';
-    self.config.set('filter_format', auto_filter_format);
-    self.logger.info('-------->filter ' + filext + ' text');
-  }
-  else if (filext == 'dbl') {
-    auto_filter_format = 'FLOAT64_LE';
-    self.config.set('filter_format', auto_filter_format);
-    self.logger.info('--------->filter ' + filext + ' FLOAT64_LE');
-  }
-  else if ((self.config.get('leftfilter') == 'None') || (self.config.get('leftfilter') == 'Dirac pulse')) {
-    self.logger.info('Filter is ' + self.config.get('leftfilter'));
-    self.config.set('filter_format', 'text');
-  }
-  else {
-    let modalData = {
-      title: 'Unsuported filter format',
-      message: "<br>Your file is not supported. Please choose one of the supported format :<br>Supported type:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
-    };
-    self.commandRouter.broadcastMessage("openModal", modalData);
-  }
-};
 
 //here we save the brutefir config.json
 ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
@@ -1712,7 +1724,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
     setTimeout(function () {
       var responseData = {
         title: 'Test clipping and set attenuation',
-        message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. Press "test" to do that or exit.',
+        message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. If something is played, it will be stop. Press "test" to do that or exit.',
         size: 'lg',
         buttons: [
           {
@@ -2168,10 +2180,6 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
 ControllerBrutefir.prototype.SwapFilters = function () {
   const self = this;
   let rsetUsedOfFilters = self.config.get('setUsedOfFilters');
-  //let leftUsedFilter = self.config.get('leftfilter');
-  //let secondLeftUsedFilter = self.config.get('sndleftfilter');
-  //let rightUsedFilter = self.config.get('rightfilter');
-  //let secondRightUsedFilter = self.config.get('sndrightfilter');
   let brutefircmd;
 
   if (rsetUsedOfFilters == '1') {
