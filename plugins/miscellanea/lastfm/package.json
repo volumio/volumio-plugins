@@ -53,7 +53,7 @@
 		"parseqs": "^0.0.2",
 		"parseuri": "^0.0.4",
 		"path-is-absolute": "^1.0.1",
-		"jquery": "^3.3.1",
+		"jquery": "^3.5.0",
 		"rimraf": "^2.5.4",
 		"sax": "^1.2.4",
 		"simple-lastfm": "https://github.com/Saiyato/simple-lastfm/tarball/f5f1d1010d9e5abfb354d8db623c7d07c34d70db",
