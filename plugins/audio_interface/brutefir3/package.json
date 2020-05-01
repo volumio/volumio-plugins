@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "description": "DSP for Volumio2",
   "main": "index.js",
   "scripts": {

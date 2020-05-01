@@ -7,9 +7,17 @@
         "type": "boolean",
         "value": true
     },
+    "askForReboot": {
+        "type": "boolean",
+        "value": true
+    },
     "toolsinstalled": {
         "type": "boolean",
         "value": false
+    },
+    "wavetype": {
+        "type": "string",
+        "value": ""
     },
     "setUsedOfFilters": {
         "type": "string",

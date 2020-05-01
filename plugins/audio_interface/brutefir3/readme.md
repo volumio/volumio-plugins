@@ -1,4 +1,4 @@
-April 26th 2020
+May 1st 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -113,6 +113,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 1st 2020
+
+- warning on first use to reboot
+- code
 
 April 26th 2020
 
