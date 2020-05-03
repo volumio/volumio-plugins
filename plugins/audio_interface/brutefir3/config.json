@@ -253,7 +253,7 @@
     },
     "drcconfig": {
         "type": "string",
-        "value": "soft"
+        "value": "normal"
     },
     "alsa_device": {
         "type": "string",

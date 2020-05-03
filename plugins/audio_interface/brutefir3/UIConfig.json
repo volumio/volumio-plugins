@@ -60,7 +60,8 @@
         {
           "id": "attenuationl",
           "element": "select",
-          "label": "left channel attenuation",
+          "label": "TRANSLATE.L_ATTENUATION",
+          "doc": "TRANSLATE.DOC_LATT",
           "description": "dB",
           "value": {
             "value": "0",
@@ -75,8 +76,8 @@
         {
           "id": "lc1delay",
           "element": "input",
-          "label": "Channel 1 delay",
-          "description": "delay in ms",
+          "label": "TRANSLATE.DELAY",
+          "description": "TRANSLATE.DOC_DELAY",
           "value": {
             "value": "0",
             "label": "0"
@@ -100,7 +101,8 @@
         {
           "id": "attenuationr",
           "element": "select",
-          "label": "right channel attenuation",
+          "label": "TRANSLATE.R_ATTENUATION",
+          "doc": "TRANSLATE.DOC_RATT",
           "description": "dB",
           "value": {
             "value": "0",
@@ -115,8 +117,8 @@
         {
           "id": "rc1delay",
           "element": "input",
-          "label": "Channel 2 delay",
-          "description": "delay in ms",
+          "label": "TRANSLATE.DELAY",
+          "description": "TRANSLATE.DOC_DELAY",
           "value": {
             "value": "0",
             "label": "0"
@@ -477,8 +479,8 @@
         {
           "id": "enableclipdetect",
           "element": "switch",
-          "doc": "If enabled, clipping detection is provided when settings are set",
-          "label": "Clipping detection",
+          "doc": "TRANSLATE.DOC_DETECT_CLIPPING",
+          "label": "TRANSLATE.DETECT_CLIPPING",
           "value": false,
           "visibleIf": {
             "field": "advsettings",
@@ -509,8 +511,8 @@
         {
           "id": "advsettings",
           "element": "switch",
-          "doc": "Avanced settings",
-          "label": "Advanced settings",
+          "doc": "TRANSLATE.DOC_ADV_SETTINGS",
+          "label": "TRANSLATE.ADV_SETTINGS",
           "value": false
         }
       ]
@@ -518,7 +520,7 @@
     {
       "id": "vobaf",
       "element": "section",
-      "label": "VoBAF : Volume Based Adaptativ Filtering - EXPERIMENTAL",
+      "label": "TRANSLATE.VOBAF",
       "icon": "fa-volume-up",
       "onSave": {
         "type": "plugin",
@@ -556,8 +558,8 @@
         {
           "id": "vobaf",
           "element": "switch",
-          "doc": "Use VoBAF : Volume based adaptativ filtering",
-          "label": "Use VoBAF",
+          "doc": "TRANSLATE.VOBAF",
+          "label": "TRANSLATE.USE_VOBAF",
           "value": false
         },
         {
@@ -831,8 +833,8 @@
         {
           "id": "messon",
           "element": "switch",
-          "doc": "Enable or disable VoBAF message on volume change",
-          "label": "VoBAF volume messages",
+          "doc": "DOC_VOBAF_MESS",
+          "label": "TRANSLATE.VOBAF_MESS",
           "value": true,
           "visibleIf": {
             "field": "vobaf",
@@ -958,16 +960,16 @@
               "label": "normal"
             },
             {
-              "value": "erb",
-              "label": "erb"
-            },
-            {
               "value": "strong",
               "label": "strong"
             },
             {
               "value": "extreme",
               "label": "extreme"
+            },
+            {
+              "value": "erb",
+              "label": "erb"
             },
             {
               "value": "insane",
@@ -1011,10 +1013,9 @@
         {
           "id": "rewversion",
           "element": "switch",
-          "doc": "Rew version. Set to ON if you use REW <=5.19. Set to OFF if you use REW >=5.20 ",
-          "label": "Measure with Rew <=5.19",
+          "description": "TRANSLATE.DOC_REW_VERSION",
+          "label": "TRANSLATE.REW_VERSION",
           "value": false
-         
         },
         {
           "id": "playleftsweepfile",
@@ -1079,19 +1080,19 @@
         {
           "id": "stopaplay",
           "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
+          "label": "TRANSLATE.TOOLS_STOP_PLAY",
+          "description": "TRANSLATE.DOC_TOOLS_STOP_PLAY",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",
             "method": "stopaplay"
-          }          
+          }
         },
         {
           "id": "pink",
           "element": "switch",
-          "label": "pink noise tools",
-          "description": "To play pink noise",
+          "label": "TRANSLATE.PINK_NOISE_TOOLS",
+          "description": "TRANSLATE.DOC_PINK_NOISE_TOOLS",
           "value": false
         },
         {
@@ -1142,8 +1143,8 @@
         {
           "id": "stopaplay",
           "element": "button",
-          "label": "Stop to play",
-          "description": "Stop to play",
+          "label": "TRANSLATE.STOP_PLAY_TOOLS",
+          "description": "TRANSLATE.DOC_STOP_PLAY_TOOLS",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/brutefir",

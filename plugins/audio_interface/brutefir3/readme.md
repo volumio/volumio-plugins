@@ -1,4 +1,4 @@
-May 1st 2020
+May 3rd 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -33,7 +33,7 @@ for left XXXX_1.YYY and second filter XXXX_2.YYY
 
 for right ZZZZ_1.YYY and second filter ZZZZ_2.YYY
 
-filters must have thec same attenuation, same type.
+filters must have the same attenuation, same type.
 
 Then in the plugin,, select filter named with _1. Save, a new button appears to enable swapping!
 
@@ -113,6 +113,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 3rd 2020
+
+- translation - first pass
+- new location for Filters in /INTERNAL/Dsp
 
 May 1st 2020
 

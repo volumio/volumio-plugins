@@ -21,16 +21,21 @@ sudo apt-get -y install brutefir drc
 		rm /brutefir.service.tar
 
 echo "creating filters folder and copying demo filters"
-mkdir -m 777 /data/INTERNAL/brutefirfilters
-mkdir -m 777 /data/INTERNAL/brutefirfilters/VoBAFfilters
-mkdir -m 777 /data/INTERNAL/brutefirfilters/filter-sources
-mkdir -m 777 /data/INTERNAL/brutefirfilters/target-curves
+mkdir -m 777 /data/INTERNAL/Dsp/filters
+mkdir -m 777 /data/INTERNAL/Dsp/VoBAFfilters
+mkdir -m 777 /data/INTERNAL/Dsp/filter-sources
+mkdir -m 777 /data/INTERNAL/Dsp/target-curves
 echo "copying demo flters"
-sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/brutefirfilters/
-sudo cp /data/plugins/audio_interface/brutefir/VoBAFfilters/* /data/INTERNAL/brutefirfilters/VoBAFfilters
-sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/brutefirfilters/target-curves/
-sudo cp /data/plugins/audio_interface/brutefir/filter-sources/* /data/INTERNAL/brutefirfilters/filter-sources/
+sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/Dsp/filters/
+sudo cp /data/plugins/audio_interface/brutefir/VoBAFfilters/* /data/INTERNAL/Dsp/VoBAFfilters
+sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/Dsp/target-curves/
+sudo cp /data/plugins/audio_interface/brutefir/filter-sources/* /data/INTERNAL/Dsp/filter-sources/
 rm -Rf /data/plugins/audio_interface/brutefir/filters
+rm -Rf /data/plugins/audio_interface/brutefir/VoBAFfilters
+rm -Rf /data/plugins/audio_interface/brutefir/target-curves
+rm -Rf /data/plugins/audio_interface/brutefir/filters-sources
+
+
 echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')

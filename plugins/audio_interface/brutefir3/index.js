@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 1st 2020
+/*DRC-FIR plugin for volumio2. By balbuze May 3rd 2020
 todo :
 restore mixer in UI
 ...
@@ -15,6 +15,15 @@ const net = require('net');
 const socket = io.connect('http://localhost:3000');
 const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
+
+//---global Variables
+const filterfolder = "/data/INTERNAL/Dsp/filters";
+const filtersource = "/data/INTERNAL/Dsp/filter-sources";
+const tccurvepath = "/data/INTERNAL/Dsp/target-curves";
+const toolspath = "/data/INTERNAL/Dsp/tools";
+const vobaf_filterfolder = "/data/INTERNAL/Dsp/VoBAFfilters";
+
+
 // Define the ControllerBrutefir class
 module.exports = ControllerBrutefir;
 
@@ -111,13 +120,13 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       let valuestoredl, valuestoredls;
       let valuestoredr, valuestoredrs;
       let valuestoredf;
-      let filterfolder = "/data/INTERNAL/brutefirfilters";
-      let filtersources = "/data/INTERNAL/brutefirfilters/filter-sources";
+      //let filterfolder = "/data/INTERNAL/brutefirfilters";
+      //let filtersources = "/data/INTERNAL/brutefirfilters/filter-sources";
       //let items;
       let allfilter;
       //let oformat;
       let filetoconvertl;
-      let bkpath = "/data/INTERNAL/brutefirfilters/target-curves";
+      //let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves";
       let tc;
 
       //-----Room settings section
@@ -460,7 +469,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', filetoconvertl);
 
-      fs.readdir(filtersources, function (err, fitem) {
+      fs.readdir(filtersource, function (err, fitem) {
         let fitems;
         let filetoconvert = '' + fitem;
         fitems = filetoconvert.split(',');
@@ -478,7 +487,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.value', tc);
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.label', tc);
 
-      fs.readdir(bkpath, function (err, bitem) {
+      fs.readdir(tccurvepath, function (err, bitem) {
         let bitems;
         let filetoconvert = '' + bitem;
         bitems = filetoconvert.split(',');
@@ -685,9 +694,13 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 //------------Ask for reboot for first time
 ControllerBrutefir.prototype.askForRebootFirstUse = function () {
   const self = this;
+
   if (self.config.get('askForReboot')) {
     var responseData = {
-      title: 'First  time',
+      title: 'First use',
+      //title : 'first use',
+
+
       message: 'It seems you enabling the plugin for the first time. You should reboot to get a correct hardware detection',
       size: 'lg',
       buttons: [
@@ -701,7 +714,7 @@ ControllerBrutefir.prototype.askForRebootFirstUse = function () {
           name: 'Reboot',
           class: 'btn btn-info',
           emit: 'callMethod',
-          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data' :'' }
+          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data': '' }
         }
       ]
     }
@@ -710,12 +723,12 @@ ControllerBrutefir.prototype.askForRebootFirstUse = function () {
 };
 
 ControllerBrutefir.prototype.setFalseReboot = function () {
-const self = this;
-self.config.set('askForReboot', false);
-setTimeout(function () {
-  console.log(self.config.get('askForReboot'));
-socket.emit('reboot');
-}, 500);
+  const self = this;
+  self.config.set('askForReboot', false);
+  setTimeout(function () {
+    console.log(self.config.get('askForReboot'));
+    socket.emit('reboot');
+  }, 500);
 };
 
 // 
@@ -751,38 +764,38 @@ ControllerBrutefir.prototype.hwinfo = function () {
   let formats;
   let hwinfo;
   let samplerates;
-    exec('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
-      uid: 1000,
-      gid: 1000
-    }, function (error, stdout, stderr) {
-      if (error) {
-        self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
-      } else {
-        fs.readFile('/data/configuration/audio_interface/brutefir/hwinfo.json', 'utf8', function (err, hwinfo) {
-          if (err) {
-            self.logger.info('Error reading hwinfo', err);
-          } else {
-            try {
-              const hwinfoJSON = JSON.parse(hwinfo);
-              nchannels = hwinfoJSON.channels.value;
-              formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
-              samplerates = hwinfoJSON.samplerates.value;
-              console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-              console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-              console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-              self.config.set('nchannels', nchannels);
-              self.config.set('formats', formats);
-              self.config.set('probesmplerate', samplerates);
-              let output_format = formats.split(" ").pop();
-              self.logger.info('Auto set output format : ----->', output_format);
-            } catch (e) {
-              self.logger.info('Error reading hwinfo.json, detection failed', e);
-            }
+  exec('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
+    } else {
+      fs.readFile('/data/configuration/audio_interface/brutefir/hwinfo.json', 'utf8', function (err, hwinfo) {
+        if (err) {
+          self.logger.info('Error reading hwinfo', err);
+        } else {
+          try {
+            const hwinfoJSON = JSON.parse(hwinfo);
+            nchannels = hwinfoJSON.channels.value;
+            formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+            samplerates = hwinfoJSON.samplerates.value;
+            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+            self.config.set('nchannels', nchannels);
+            self.config.set('formats', formats);
+            self.config.set('probesmplerate', samplerates);
+            let output_format = formats.split(" ").pop();
+            self.logger.info('Auto set output format : ----->', output_format);
+          } catch (e) {
+            self.logger.info('Error reading hwinfo.json, detection failed', e);
           }
-        });
-      }
-    })
-    return defer.promise;
+        }
+      });
+    }
+  })
+  return defer.promise;
 
 };
 
@@ -1156,7 +1169,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   const self = this;
   let skipvalue = '';
   let filtername = self.config.get('leftfilter');
-  let filterpath = '/data/INTERNAL/brutefirfilters/';
+  // let filterpath = '/data/INTERNAL/brutefirfilters/';
   var auto_filter_format;
   let filext = self.config.get('leftfilter').split('.').pop().toString();
   var wavetype;
@@ -1174,7 +1187,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     auto_filter_format = 'text';
   }
   else if (filext == 'wav') {
-    wavFileInfo.infoByFilename(filterpath + filtername, function (err, info) {
+    wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
       var wavetype = (info.header.bits_per_sample)
       self.config.set('wavetype', wavetype);
     });
@@ -1226,13 +1239,13 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       let devicevalue;
       let sbauer;
       let input_device = 'Loopback,1';
-      let filter_path = "/data/INTERNAL/brutefirfilters/";
-      let vobaf_filter_path = "/data/INTERNAL/brutefirfilters/VoBAFfilters";
+      //  let filterfolder = "/data/INTERNAL/brutefirfilters/";
+      //let vobaf_filterfolder = "' + vobaf_filterfolder + '";
       let leftfilter, leftc2filter;
       let rightfilter, rightc2filter;
-      let composeleftfilter = filter_path + self.config.get('leftfilter');
+      let composeleftfilter = filterfolder + "/" + self.config.get('leftfilter');
       let composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7, composeleftfilter8
-      let composerightfilter = filter_path + self.config.get('rightfilter');
+      let composerightfilter = filterfolder + "/" + self.config.get('rightfilter');
       let composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7, composerightfilter8
       let lattenuation;
       let rattenuation;
@@ -1314,10 +1327,10 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
 
       if ((self.config.get('leftfilter') == "Dirac pulse") || (self.config.get('leftfilter') == "None")) {
         composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = "dirac pulse";
-      } else leftfilter = filter_path + self.config.get('leftfilter');
+      } else leftfilter = filterfolder + self.config.get('leftfilter');
       if ((self.config.get('rightfilter') == "Dirac pulse") || (self.config.get('rightfilter') == "None")) {
         composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
-      } else rightfilter = filter_path + self.config.get('rightfilter');
+      } else rightfilter = filterfolder + self.config.get('rightfilter');
 
       //--------second set of filters
       let arefilterswap = self.config.get('arefilterswap');
@@ -1325,8 +1338,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       let sndrightfilter;
       let enableswap;
       if (arefilterswap) {
-        sndleftfilter = filter_path + self.config.get('sndleftfilter');
-        sndrightfilter = filter_path + self.config.get('sndrightfilter');
+        sndleftfilter = filterfolder + self.config.get('sndleftfilter');
+        sndrightfilter = filterfolder + self.config.get('sndrightfilter');
         enableswap = "";
       } else {
         sndleftfilter = "dirac pulse";
@@ -1347,7 +1360,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       } else {
 
         if (self.config.get('Lowsw') == true) {
-          composeleftfilter2 = composerightfilter2 = vobaf_filter_path + '/Low' + vf_ext;
+          composeleftfilter2 = composerightfilter2 = vobaf_filterfolder + '/Low' + vf_ext;
           skipflv = skipfrv;
         } else {
           composeleftfilter2 = composerightfilter2 = "dirac pulse";
@@ -1355,7 +1368,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
         }
 
         if (self.config.get('LM1sw') == true) {
-          composeleftfilter3 = composerightfilter3 = vobaf_filter_path + '/LM1' + vf_ext;
+          composeleftfilter3 = composerightfilter3 = vobaf_filterfolder + '/LM1' + vf_ext;
           skipflv = skipfrv = skipfl;
         } else {
           composeleftfilter3 = composerightfilter3 = "dirac pulse";
@@ -1363,25 +1376,25 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
         }
 
         if (self.config.get('LM2sw') == true) {
-          composeleftfilter4 = composerightfilter4 = vobaf_filter_path + '/LM2' + vf_ext;
+          composeleftfilter4 = composerightfilter4 = vobaf_filterfolder + '/LM2' + vf_ext;
         } else {
           composeleftfilter4 = composerightfilter4 = "dirac pulse";
           skipflv = skipfrv = ""
         };
 
         if (self.config.get('LM3sw') == true) {
-          composeleftfilter8 = composerightfilter8 = vobaf_filter_path + '/LM3' + vf_ext;
+          composeleftfilter8 = composerightfilter8 = vobaf_filterfolder + '/LM3' + vf_ext;
         } else {
           composeleftfilter8 = composerightfilter8 = "dirac pulse";
           skipflv = skipfrv = ""
         };
 
-        composeleftfilter5 = composerightfilter5 = vobaf_filter_path + '/M' + vf_ext;
+        composeleftfilter5 = composerightfilter5 = vobaf_filterfolder + '/M' + vf_ext;
 
 
         if (self.config.get('HMsw') == true) {
 
-          composeleftfilter6 = composerightfilter6 = vobaf_filter_path + '/HM' + vf_ext;
+          composeleftfilter6 = composerightfilter6 = vobaf_filterfolder + '/HM' + vf_ext;
           skipflv = skipfr;
 
         } else {
@@ -1390,7 +1403,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
         }
 
         if (self.config.get('Highsw') == true) {
-          composeleftfilter7 = composerightfilter7 = vobaf_filter_path + '/High' + vf_ext;
+          composeleftfilter7 = composerightfilter7 = vobaf_filterfolder + '/High' + vf_ext;
 
         } else {
           composeleftfilter7 = composerightfilter7 = "dirac pulse";
@@ -1485,27 +1498,27 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
 
       if ((self.config.get('leftc2filter') == "Dirac pulse") || (self.config.get('leftc2filter') == "None")) {
         composeleftc2filter = "dirac pulse";
-      } else composeleftc2filter = filter_path + self.config.get('leftc2filter');
+      } else composeleftc2filter = filterfolder + self.config.get('leftc2filter');
 
       if ((self.config.get('rightc2filter') == "Dirac pulse") || (self.config.get('rightc2filter') == "None")) {
         composerightc2filter = "dirac pulse";
-      } else composerightc2filter = filter_path + self.config.get('rightc2filter');
+      } else composerightc2filter = filterfolder + self.config.get('rightc2filter');
 
       if ((self.config.get('leftc3filter') == "Dirac pulse") || (self.config.get('leftc3filter') == "None")) {
         composeleftc3filter = "dirac pulse";
-      } else composeleftc3filter = filter_path + self.config.get('leftc3filter');
+      } else composeleftc3filter = filterfolder + self.config.get('leftc3filter');
 
       if ((self.config.get('rightc3filter') == "Dirac pulse") || (self.config.get('rightc3filter') == "None")) {
         composerightc3filter = "dirac pulse";
-      } else composerightc3filter = filter_path + self.config.get('rightc3filter');
+      } else composerightc3filter = filterfolder + self.config.get('rightc3filter');
 
       if ((self.config.get('leftc4filter') == "Dirac pulse") || (self.config.get('leftc4filter') == "None")) {
         composeleftc4filter = "dirac pulse";
-      } else composeleftc4filter = filter_path + self.config.get('leftc4filter');
+      } else composeleftc4filter = filterfolder + self.config.get('leftc4filter');
 
       if ((self.config.get('rightc4filter') == "Dirac pulse") || (self.config.get('rightc4filter') == "None")) {
         composerightc4filter = "dirac pulse";
-      } else composerightc4filter = filter_path + self.config.get('rightc4filter');
+      } else composerightc4filter = filterfolder + self.config.get('rightc4filter');
 
       //-----Brutefir config file generation----
       //-----not clean!!! need to be rewritten....
@@ -2129,7 +2142,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
   const self = this;
   let leftFilter1 = self.config.get('leftfilter');
   let rightFilter1 = self.config.get('rightfilter');
-  let filter_path = "/data/INTERNAL/brutefirfilters/";
+  let filterfolder = "/data/INTERNAL/brutefirfilters/";
 
   // check if filter naming is ok with _1 in name
   const isFilterSwappable = (filterName, swapWord) => {
@@ -2151,7 +2164,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     let fileExt = filterName.slice(-4);
     let filterNameShort = filterName.slice(0, -6);
     let filterNameForSwap = filterNameShort + swapWord + fileExt;
-    if (fs.exists(filter_path + filterNameForSwap)) {
+    if (fs.exists(filterfolder + filterNameForSwap)) {
       return [true, filterNameForSwap]
     } else {
       return false
@@ -2310,10 +2323,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((Lowsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/Low' + vf_ext) == !true)) {
+    } else if ((Lowsw == true) && (fs.existsSync(vobaf_filterfolder + '/Low' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! Low' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use Low filter',
+        message: 'Warning !! Low' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use Low filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2321,10 +2334,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM1sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM1' + vf_ext) == !true)) {
+    } else if ((LM1sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM1' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM1' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM1 filter',
+        message: 'Warning !! LM1' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM1 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2332,10 +2345,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM2sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM2' + vf_ext) == !true)) {
+    } else if ((LM2sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM2' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM2' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM2 filter',
+        message: 'Warning !! LM2' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM2 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2343,10 +2356,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM3sw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/LM3' + vf_ext) == !true)) {
+    } else if ((LM3sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM3' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM3' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use LM3 filter',
+        message: 'Warning !! LM3' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM3 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2354,10 +2367,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/M' + vf_ext) == !true) {
+    } else if (fs.existsSync(vobaf_filterfolder + '/M' + vf_ext) == !true) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! M' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use VoBAF',
+        message: 'Warning !! M' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use VoBAF',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2365,10 +2378,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((HMsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/HM' + vf_ext) == !true)) {
+    } else if ((HMsw == true) && (fs.existsSync(vobaf_filterfolder + '/HM' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! HM' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use HM filter',
+        message: 'Warning !! HM' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use HM filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2376,10 +2389,10 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((Highsw == true) && (fs.existsSync('/data/INTERNAL/brutefirfilters/VoBAFfilters/High' + vf_ext) == !true)) {
+    } else if ((Highsw == true) && (fs.existsSync(vobaf_filterfolder + '/High' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! High' + vf_ext + ' Must exist in /data/INTERNAL/brutefirfilters/VoBAFfilters if you want to use High filter',
+        message: 'Warning !! High' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use High filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
@@ -2498,8 +2511,8 @@ ControllerBrutefir.prototype.installtools = function (data) {
   return new Promise(function (resolve, reject) {
     try {
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
-      let cp4 = execSync('/bin/mkdir /data/plugins/audio_interface/brutefir/tools');
-      let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/plugins/audio_interface/brutefir/tools');
+      let cp4 = execSync('/bin/mkdir ' + toolspath);
+      let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C ' + toolspath);
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
     } catch (err) {
       self.logger.info('An error occurs while downloading or installing tools');
@@ -2523,7 +2536,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
   return new Promise(function (resolve, reject) {
     try {
 
-      let cp6 = execSync('/bin/rm -Rf /data/plugins/audio_interface/brutefir/tools');
+      let cp6 = execSync('/bin/rm -Rf ' + toolspath);
     } catch (err) {
       self.logger.info('An error occurs while removing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
@@ -2573,7 +2586,7 @@ ControllerBrutefir.prototype.playleftsweepfile = function () {
   const self = this;
   let ititle = 'Rew 5.19 - Sweep tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_L_refL.WAV';
+  let track = toolspath + "/" + 'V5.19_MeasSweep_44k_L_refL.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2582,7 +2595,7 @@ ControllerBrutefir.prototype.playleftsweepfile520 = function () {
   const self = this;
   let ititle = 'Rew 5.20 - Sweep tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_L_refL.WAV';
+  let track = toolspath + "/" + 'V5.20_MeasSweep_44k_L_refL.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2591,7 +2604,7 @@ ControllerBrutefir.prototype.playrightsweepfile = function () {
   const self = this;
   let ititle = 'Rew 5.19 - Sweep tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/V5.19_MeasSweep_44k_R_refL.WAV';
+  let track = toolspath + "/" + 'V5.19_MeasSweep_44k_R_refL.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2600,7 +2613,7 @@ ControllerBrutefir.prototype.playrightsweepfile520 = function () {
   const self = this;
   let ititle = 'Rew 5.20 - Sweep tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/V5.20_MeasSweep_44k_R_refL.WAV';
+  let track = toolspath + "/" + 'V5.20_MeasSweep_44k_R_refL.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2611,7 +2624,7 @@ ControllerBrutefir.prototype.playleftpinkfile = function () {
   const self = this;
   let ititle = 'Pink tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_L.WAV';
+  let track = toolspath + "/" + 'PinkNoise_44k_L.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2620,7 +2633,7 @@ ControllerBrutefir.prototype.playrightpinkfile = function () {
   const self = this;
   let ititle = 'Pink tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_R.WAV';
+  let track = toolspath + "/" + 'PinkNoise_44k_R.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2629,7 +2642,7 @@ ControllerBrutefir.prototype.playbothpinkfile = function () {
   const self = this;
   let ititle = 'Pink tools sample rate';
   let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = '/data/plugins/audio_interface/brutefir/tools/PinkNoise_44k_BOTH.WAV';
+  let track = toolspath + "/" + 'PinkNoise_44k_BOTH.WAV';
   self.playFile(track, ititle, imessage);
 };
 
@@ -2661,9 +2674,9 @@ ControllerBrutefir.prototype.fileconvert = function (data) {
 ControllerBrutefir.prototype.convert = function (data) {
   const self = this;
   //let defer = libQ.defer();
-  let inpath = "/data/INTERNAL/brutefirfilters/filter-sources/";
+  //let filtersource = "/data/INTERNAL/brutefirfilters/filter-sources/";
   let drcconfig = self.config.get('drcconfig');
-  let outpath = "/data/INTERNAL/brutefirfilters/";
+  // let filterfolder = "/data/INTERNAL/brutefirfilters/";
   let infile = self.config.get('filetoconvert');
   if (infile != 'choose a file') {
 
@@ -2693,12 +2706,12 @@ ControllerBrutefir.prototype.convert = function (data) {
           curve = '96.0';
         };
 
-        let destfile = (outpath + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
-        let tcpath = "/data/INTERNAL/brutefirfilters/target-curves/"
+        let destfile = (filterfolder + "/" + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
+        //  let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves/"
 
         try {
-          execSync("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
-          self.logger.info("/usr/bin/sox " + inpath + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          execSync("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          self.logger.info("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
         } catch (e) {
           self.logger.info('input file does not exist ' + e);
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
@@ -2711,8 +2724,8 @@ ControllerBrutefir.prototype.convert = function (data) {
           };
           self.commandRouter.broadcastMessage("openModal", modalData);
           //here we compose cmde for drc
-          //  let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-          let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tcpath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+          //  let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+          let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tccurvepath + "/" + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
           //and execute it...
           execSync(composedcmde);
           self.logger.info(composedcmde);
