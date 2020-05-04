@@ -21,6 +21,7 @@ sudo apt-get -y install brutefir drc
 		rm /brutefir.service.tar
 
 echo "creating filters folder and copying demo filters"
+mkdir -m 777 /data/INTERNAL/Dsp
 mkdir -m 777 /data/INTERNAL/Dsp/filters
 mkdir -m 777 /data/INTERNAL/Dsp/VoBAFfilters
 mkdir -m 777 /data/INTERNAL/Dsp/filter-sources
