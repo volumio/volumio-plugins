@@ -117,6 +117,8 @@ nearly everythings
 May 4th 2020
 
 - fix install bug (no filters folder created)
+- readme in /Dsp
+- translation
 
 May 3rd 2020
 

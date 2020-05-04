@@ -27,6 +27,7 @@ mkdir -m 777 /data/INTERNAL/Dsp/VoBAFfilters
 mkdir -m 777 /data/INTERNAL/Dsp/filter-sources
 mkdir -m 777 /data/INTERNAL/Dsp/target-curves
 echo "copying demo flters"
+sudo cp /data/plugins/audio_interface/brutefir/readme.txt /data/INTERNAL/Dsp/
 sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/Dsp/filters/
 sudo cp /data/plugins/audio_interface/brutefir/VoBAFfilters/* /data/INTERNAL/Dsp/VoBAFfilters
 sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/Dsp/target-curves/
