@@ -1,4 +1,4 @@
-May 4th 2020
+May 6th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -113,6 +113,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 5th 2020
+
+- fix for swap filters
 
 May 4th 2020
 

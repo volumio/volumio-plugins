@@ -1338,8 +1338,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       let sndrightfilter;
       let enableswap;
       if (arefilterswap) {
-        sndleftfilter = filterfolder + self.config.get('sndleftfilter');
-        sndrightfilter = filterfolder + self.config.get('sndrightfilter');
+        sndleftfilter = filterfolder + "/" + self.config.get('sndleftfilter');
+        sndrightfilter = filterfolder + "/" + self.config.get('sndrightfilter');
         enableswap = "";
       } else {
         sndleftfilter = "dirac pulse";
