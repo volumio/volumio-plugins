@@ -40,7 +40,7 @@ Supported format
 /tools
 
 Files used for tools (pink noise and sweep). The folder is created if you install "tools".
-Do not alter. In a near futur, you should be allowed to use what you want placed here.
+Do not alter. Place here file you want to play to test.
 
 --------------------------------
 /VoBAF

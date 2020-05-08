@@ -118,6 +118,8 @@ May 8th 2020
 
 - complete rewriting for tools section, with scrolling list selector
 - tools are now played by mpd instead of aplay
+- source filter with space in the name are allowed. Space replaced by _
+- readme.txt update
 
 May 5th 2020
 
