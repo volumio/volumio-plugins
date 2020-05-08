@@ -1009,151 +1009,28 @@
       "element": "section",
       "label": "Tools",
       "icon": "fa-wrench",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/brutefir",
+        "method": "playToolsFile"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.PLAY_SELECTED_FILE",
+        "data": [
+          "toolsfiletoplay"
+        ]
+      },
       "content": [
         {
-          "id": "rewversion",
-          "element": "switch",
-          "description": "TRANSLATE.DOC_REW_VERSION",
-          "label": "TRANSLATE.REW_VERSION",
-          "value": false
-        },
-        {
-          "id": "playleftsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftsweepfile"
+          "id": "toolsfiletoplay",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_TOOLS_FILE_TO_PLAY",
+          "label": "TRANSLATE.TOOLS_FILE_TO_PLAY",
+          "value": {
+            "value": "",
+            "label": "TRANSLATE.CHOOSE_TOOLS_FILE"
           },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": true
-          }
-        },
-        {
-          "id": "playrightsweepfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightsweepfile"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": true
-          }
-        },
-        {
-          "id": "playleftsweepfile520",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_L_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftsweepfile520"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": false
-          }
-        },
-        {
-          "id": "playrightsweepfile520",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_SWEEP",
-          "description": "TRANSLATE.DESC_PLAY_R_SWEEP",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightsweepfile520"
-          },
-          "visibleIf": {
-            "field": "rewversion",
-            "value": false
-          }
-        },
-        {
-          "id": "stopaplay",
-          "element": "button",
-          "label": "TRANSLATE.TOOLS_STOP_PLAY",
-          "description": "TRANSLATE.DOC_TOOLS_STOP_PLAY",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          }
-        },
-        {
-          "id": "pink",
-          "element": "switch",
-          "label": "TRANSLATE.PINK_NOISE_TOOLS",
-          "description": "TRANSLATE.DOC_PINK_NOISE_TOOLS",
-          "value": false
-        },
-        {
-          "id": "playleftpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_L_PINK",
-          "description": "TRANSLATE.DESC_PLAY_L_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playleftpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "playrightpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_R_PINK",
-          "description": "TRANSLATE.DESC_PLAY_R_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playrightpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "playlbothpinkfile",
-          "element": "button",
-          "label": "TRANSLATE.PLAY_BOTH_CHANNEL_PINK",
-          "description": "TRANSLATE.DESC_PLAY_BOTH_CHANNEL_PINK",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "playbothpinkfile"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
-        },
-        {
-          "id": "stopaplay",
-          "element": "button",
-          "label": "TRANSLATE.STOP_PLAY_TOOLS",
-          "description": "TRANSLATE.DOC_STOP_PLAY_TOOLS",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "stopaplay"
-          },
-          "visibleIf": {
-            "field": "pink",
-            "value": true
-          }
+          "options": []
         },
         {
           "id": "removetools",
@@ -1176,7 +1053,15 @@
             "endpoint": "audio_interface/brutefir",
             "method": "installtools"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "element": "section",
+      "label": "Howto Wiki",
+      "icon": "fa-info-circle",
+      "content": [
         {
           "id": "wikilink",
           "element": "button",

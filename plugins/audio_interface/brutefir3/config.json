@@ -255,6 +255,10 @@
         "type": "string",
         "value": "normal"
     },
+    "toolsfiletoplay": {
+        "type": "string",
+        "value": ""
+    },
     "alsa_device": {
         "type": "string",
         "value": "0"

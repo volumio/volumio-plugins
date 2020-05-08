@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 3rd 2020
+/*DRC-FIR plugin for volumio2. By balbuze May 8th 2020
 todo :
 restore mixer in UI
 ...
@@ -509,34 +509,35 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       //--------Tools section------------------------------------------------
 
       let ttools = self.config.get('toolsinstalled');
+
+      let toolsfiletoplay = self.config.get('toolsfiletoplay');
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', toolsfiletoplay);
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', toolsfiletoplay);
+
+      fs.readdir(toolspath, function (err, bitem) {
+        let filetools = '' + bitem;
+
+        let bitems = filetools.split(',');
+
+        //console.log(bitems)
+        for (let i in bitems) {
+          self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[0].options', {
+            value: bitems[i],
+            label: bitems[i]
+          });
+          self.logger.info('tools file to play :' + bitems[i]);
+
+        }
+      });
+
       if (ttools == false) {
-        uiconf.sections[4].content[0].hidden = true;
         uiconf.sections[4].content[1].hidden = true;
-        uiconf.sections[4].content[2].hidden = true;
-        uiconf.sections[4].content[3].hidden = true;
-        uiconf.sections[4].content[4].hidden = true;
-        uiconf.sections[4].content[5].hidden = true;
-        uiconf.sections[4].content[6].hidden = true;
-        uiconf.sections[4].content[7].hidden = true;
-        uiconf.sections[4].content[8].hidden = true;
-        uiconf.sections[4].content[9].hidden = true;
-        uiconf.sections[4].content[10].hidden = true;
-        uiconf.sections[4].content[11].hidden = true;
-        uiconf.sections[4].content[12].hidden = false;
-      } else {
-        uiconf.sections[4].content[0].hidden = false;
-        uiconf.sections[4].content[1].hidden = false;
         uiconf.sections[4].content[2].hidden = false;
-        uiconf.sections[4].content[3].hidden = false;
-        uiconf.sections[4].content[4].hidden = false;
-        uiconf.sections[4].content[5].hidden = false;
-        uiconf.sections[4].content[6].hidden = false;
-        uiconf.sections[4].content[7].hidden = false;
-        uiconf.sections[4].content[8].hidden = false;
-        uiconf.sections[4].content[9].hidden = false;
-        uiconf.sections[4].content[10].hidden = false;
-        uiconf.sections[4].content[11].hidden = false;
-        uiconf.sections[4].content[12].hidden = true;
+
+      } else {
+        uiconf.sections[4].content[1].hidden = false;
+        uiconf.sections[4].content[2].hidden = true;
+
       }
 
       //--------VoBAF section----------------------------------------------------------
@@ -2498,20 +2499,20 @@ ControllerBrutefir.prototype.saveBrutefirconfigroom = function (data) {
 //--------------Tools Section----------------
 
 //here we download and install tools
-ControllerBrutefir.prototype.installtools = function (data) {
+ControllerBrutefir.prototype.installtools = function () {
   const self = this;
   let modalData = {
     title: 'Tools installation',
-    message: 'Your are going to download about 17Mo. Please WAIT until this page is refreshed (about 25 sec).',
+    message: 'Your are going to download about 17Mo. Please WAIT until this page is refreshed (about 40 sec).',
     size: 'lg'
   };
-  self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 20 seconds)');
+  self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 30 seconds)');
 
-  //  self.commandRouter.broadcastMessage("openModal", modalData);
   return new Promise(function (resolve, reject) {
     try {
+     // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
-      let cp4 = execSync('/bin/mkdir ' + toolspath);
+    //  let cp4 = execSync('/bin/mkdir ' + toolspath);
       let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C ' + toolspath);
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
     } catch (err) {
@@ -2525,7 +2526,7 @@ ControllerBrutefir.prototype.installtools = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    // return self.commandRouter.reloadUi();
+  //   return self.commandRouter.reloadUi();
   });
 };
 
@@ -2534,126 +2535,37 @@ ControllerBrutefir.prototype.removetools = function (data) {
   const self = this;
   self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
   return new Promise(function (resolve, reject) {
+    
     try {
 
-      let cp6 = execSync('/bin/rm -Rf ' + toolspath);
+      let cp6 = execSync('/bin/rm ' + toolspath + "/*");
     } catch (err) {
       self.logger.info('An error occurs while removing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
     }
     resolve();
+    /*
     self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
+    */
     self.config.set('toolsinstalled', false);
+    self.config.set('toolsfiletoplay', "Select a file");
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    // return self.commandRouter.reloadUi();
+  //   return self.commandRouter.reloadUi();
   });
 };
 
-//here we define what to do when button is pressed in tools section
-ControllerBrutefir.prototype.playFile = function (track, ititle, imessage) {
+//------ actions tools------------
+
+ControllerBrutefir.prototype.playToolsFile = function (data) {
   const self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerBrutefir::clearAddPlayTrack');
-  let safeUri = track.replace(/"/g, '\\"');
-  let outsample = self.config.get('smpl_rate');
-  if (outsample == '44100') {
-    try {
-      exec('/usr/bin/killall aplay');
-      exec('/usr/bin/aplay --device=plughw:Loopback ' + track);
-    } catch (e) {
-      console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
-    };
-  } else {
-    let modalData = {
-      title: ititle,
-      message: imessage,
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
-    };
-    self.commandRouter.broadcastMessage("openModal", modalData);
-  }
-};
-
-//------ actions for sweep tools------------
-
-//here we play left sweep when button is pressed for REW <= 5.19
-ControllerBrutefir.prototype.playleftsweepfile = function () {
-  const self = this;
-  let ititle = 'Rew 5.19 - Sweep tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'V5.19_MeasSweep_44k_L_refL.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we play left sweep when button is pressed for REW >= 5.20
-ControllerBrutefir.prototype.playleftsweepfile520 = function () {
-  const self = this;
-  let ititle = 'Rew 5.20 - Sweep tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'V5.20_MeasSweep_44k_L_refL.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we play right sweep when button is pressed for REW <= 5.19
-ControllerBrutefir.prototype.playrightsweepfile = function () {
-  const self = this;
-  let ititle = 'Rew 5.19 - Sweep tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'V5.19_MeasSweep_44k_R_refL.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we play right sweep when button is pressed foor REW >= 5.20
-ControllerBrutefir.prototype.playrightsweepfile520 = function () {
-  const self = this;
-  let ititle = 'Rew 5.20 - Sweep tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'V5.20_MeasSweep_44k_R_refL.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//------ actions for pink noise tools-------
-
-//here we play left pink noise channel when button is pressed
-ControllerBrutefir.prototype.playleftpinkfile = function () {
-  const self = this;
-  let ititle = 'Pink tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'PinkNoise_44k_L.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we play right pink noise channel when button is pressed
-ControllerBrutefir.prototype.playrightpinkfile = function () {
-  const self = this;
-  let ititle = 'Pink tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'PinkNoise_44k_R.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we play both pink noise channels when button is pressed
-ControllerBrutefir.prototype.playbothpinkfile = function () {
-  const self = this;
-  let ititle = 'Pink tools sample rate';
-  let imessage = 'Please set sample rate to 44.1kHz and save the configuration in order to use this file';
-  let track = toolspath + "/" + 'PinkNoise_44k_BOTH.WAV';
-  self.playFile(track, ititle, imessage);
-};
-
-//here we stop aplay
-ControllerBrutefir.prototype.stopaplay = function () {
-  const self = this;
-  try {
-    exec('/usr/bin/killall aplay');
-  } catch (e) {
-    self.data.logger('Stopping aplay')
-  };
+  self.config.set('toolsfiletoplay', data['toolsfiletoplay'].value);
+  let toolsfile = self.config.get("toolsfiletoplay");
+  let track = "INTERNAL/Dsp/tools/" + toolsfile;
+  self.commandRouter.replaceAndPlay({ uri: track });
+  self.commandRouter.volumioClearQueue();
 };
 
 //-----------DRC-FIR section----------------

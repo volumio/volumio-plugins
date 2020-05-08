@@ -22,12 +22,12 @@ sudo apt-get -y install brutefir drc
 
 echo "creating filters folder and copying demo filters"
 mkdir -m 777 /data/INTERNAL/Dsp
+mkdir -m 777 /data/INTERNAL/Dsp/tools
 mkdir -m 777 /data/INTERNAL/Dsp/filters
 mkdir -m 777 /data/INTERNAL/Dsp/VoBAFfilters
 mkdir -m 777 /data/INTERNAL/Dsp/filter-sources
 mkdir -m 777 /data/INTERNAL/Dsp/target-curves
 echo "copying demo flters"
-sudo cp /data/plugins/audio_interface/brutefir/readme.txt /data/INTERNAL/Dsp/
 sudo cp /data/plugins/audio_interface/brutefir/filters/* /data/INTERNAL/Dsp/filters/
 sudo cp /data/plugins/audio_interface/brutefir/VoBAFfilters/* /data/INTERNAL/Dsp/VoBAFfilters
 sudo cp /data/plugins/audio_interface/brutefir/target-curves/* /data/INTERNAL/Dsp/target-curves/

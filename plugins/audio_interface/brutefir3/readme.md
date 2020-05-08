@@ -1,4 +1,4 @@
-May 6th 2020
+May 8th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -113,6 +113,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 8th 2020
+
+- complete rewriting for tools section, with scrolling list selector
+- tools are now played by mpd instead of aplay
 
 May 5th 2020
 
