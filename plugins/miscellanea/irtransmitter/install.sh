@@ -4,6 +4,12 @@ echo "Installing LIRC"
 sudo apt-get update
 sudo apt-get -y install lirc --no-install-recommends
 
+echo "Getting current path"
+SCRIPT=`readlink -f "$0"`
+# Absolute path this script is in
+SCRIPTPATH=`dirname "$SCRIPT"`
+echo $SCRIPTPATH
+
 echo "Copy hardware config for Raspberry Pi"
 sudo cp ./hardware.conf /etc/lirc/
 sudo touch /etc/lirc/lircd.conf
@@ -26,6 +32,9 @@ sudo cp ./71-lirc.rules /etc/udev/rules.d
 # Write some init values into files
 #echo 0 > /run/volumio/ir-tx/mute
 #echo 5 > /run/volumio/ir-tx/volume
+
+echo "Make shell scripts executable"
+chmod a+x /data/plugins/miscellanea/irtransmitter/scripts/*.sh
 
 #required to end the plugin install
 echo "plugininstallend"
