@@ -1,4 +1,4 @@
-May 8th 2020
+May 9th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -113,6 +113,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 9th 2020
+
+- replace _ by - in file renaming
 
 May 8th 2020
 

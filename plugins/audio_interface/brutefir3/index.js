@@ -2592,9 +2592,9 @@ ControllerBrutefir.prototype.convert = function (data) {
   let infile = self.config.get('filetoconvert');
   if (infile != 'choose a file') {
 
-    let outfile = self.config.get('outputfilename').replace(/ /g, '_');
+    let outfile = self.config.get('outputfilename').replace(/ /g, '-');
     if ((outfile == '') || (outfile == 'Empty=name of file to convert')) {
-      outfile = infile.replace(/ /g, '_').replace('.wav', '');
+      outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
     let targetcurve = '\ /usr/share/drc/config/'
     let outsample = self.config.get('smpl_rate');
