@@ -168,10 +168,10 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var self = this;
 
     var enabled = true;
-    var setVolumeScript = __dirname + '/setvolume.sh ' + remote.remote;
-    var getVolumeScript = __dirname + '/getvolume.sh';
-    var setMuteScript = __dirname + '/setmute.sh ' + remote.remote;
-    var getMuteScript = __dirname + '/getmute.sh';
+    var setVolumeScript = __dirname + '/scripts/setvolume.sh ' + remote.remote;
+    var getVolumeScript = __dirname + '/scripts/getvolume.sh';
+    var setMuteScript = __dirname + '/scripts/setmute.sh ' + remote.remote;
+    var getMuteScript = __dirname + '/scripts/getmute.sh';
     var minVol = self.config.get('vol_min');
     var maxVol = self.config.get('vol_max');
     var mapTo100 = self.config.get('map_to_100', false);
@@ -260,7 +260,7 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
         // This is to make sure data['vol_cur'] is a pure integer number. Hopefully enough to avoid shell script command injection (?)
         currentvolume = data['vol_cur'];
         self.logger.info('[IR Transmitter] current volume ' + currentvolume);
-        execFile(__dirname + '/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
+        execFile(__dirname + '/scripts/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
             function (error, stdout, stderr) {
                 if (error != null) {
                     self.logger.info('[IR Transmitter] Initvolume.sh : ' + error);
@@ -324,7 +324,7 @@ irtransmitter.prototype.enablePIOverlay = function() {
 irtransmitter.prototype.getVolume = function () {
     var self = this;
 
-    const volout = execSync(__dirname + '/getvolume.sh', { uid: 1000, gid: 1000, encoding: 'utf8' });
+    const volout = execSync(__dirname + '/scripts/getvolume.sh', { uid: 1000, gid: 1000, encoding: 'utf8' });
     if (volout != null) {
         currentvolume = volout.trim();
         self.logger.info('[IR Transmitter] Read volume ' + currentvolume);
@@ -344,7 +344,7 @@ irtransmitter.prototype.importRemoteDefinitions = function (data) {
             copied++;
         }
     }
-    self.logger.info('[IR transmitter]Copied ' + copied + ' remote definition(s).');
+    self.logger.info('[IR transmitter] Copied ' + copied + ' remote definition(s).');
     return copied;
 };
 
