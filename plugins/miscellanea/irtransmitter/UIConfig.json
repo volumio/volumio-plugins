@@ -6,8 +6,8 @@
     {
       "id": "section_power",
       "element": "section",
-      "label": "Switch power",
-      "description": "Send power toggle signal to amplifier. Would be better off somewhere on the main GUI, but for now this was the easiest to implement...",
+      "label": "TRANSLATE.SECTION_POWER_LABEL",
+      "description": "TRANSLATE.SECTION_POWER_DESC",
       "icon": "fa-power-off",
       "onSave": {
         "type": "controller",
@@ -15,7 +15,7 @@
         "method": "powerToggle"
       },
       "saveButton": {
-        "label": "Power",
+        "label": "TRANSLATE.POWER_LABEL",
         "data": [
         ]
       },
@@ -26,8 +26,8 @@
     {
       "id": "section_remoteSettings",
       "element": "section",
-      "label": "Remote settings",
-      "description": "Remote settings",
+      "label": "TRANSLATE.SECTION_REMOTE_LABEL",
+      "description": "TRANSLATE.SECTION_REMOTE_DESC",
       "icon": "fa-cog",
       "onSave": {
         "type": "controller",
@@ -47,14 +47,14 @@
           "type": "text",
           "element": "input",
           "label": "GPIO_PIN",
-          "doc": "Pin used to control the IR transmitter",
+          "doc": "TRANSLATE.GPIO_PIN_DOC",
           "value": "12"
         },
         {
           "id": "remotename",
           "element": "select",
-          "label": "Remote name",
-          "doc": "Name of the remote as used in the lircd.config file.",
+          "label": "TRANSLATE.REMOTENAME_LABEL",
+          "doc": "TRANSLATE.REMOTENAME_DOC",
           "value": {},
           "options": []
         }
@@ -63,8 +63,8 @@
     {
       "id": "section_volumeSettings",
       "element": "section",
-      "label": "Volume settings",
-      "description": "Volume settings",
+      "label": "TRANSLATE.SECTION_VOLUME_LABEL",
+      "description": "TRANSLATE.SECTION_VOLUME_DESC",
       "icon": "fa-volume-up",
       "onSave": {
         "type": "controller",
@@ -85,31 +85,31 @@
           "id": "vol_min",
           "type": "text",
           "element": "input",
-          "label": "Minimum Volume value",
-          "doc": "Minimum allowed volume value for your system.",
+          "label": "TRANSLATE.VOL_MIN_LABEL",
+          "doc": "TRANSLATE.VOL_MIN_DOC",
           "value": "0"
         },
         {
           "id": "vol_max",
           "type": "text",
           "element": "input",
-          "label": "Maximum Volume value",
-          "doc": "Maximum allowed volume value for your system.",
+          "label": "TRANSLATE.VOL_MAX_LABEL",
+          "doc": "TRANSLATE.VOL_MAX_DOC",
           "value": "20"
         },
         {
           "id": "vol_cur",
           "type": "text",
           "element": "input",
-          "label": "Current Volume value",
-          "doc": "Current volume value for your system.",
+          "label": "TRANSLATE.VOL_CUR_LABEL",
+          "doc": "TRANSLATE.VOL_CUR_DOC",
           "value": "10"
         },
         {
           "id": "map_to_100",
           "element": "switch",
-          "label": "Map volume range to percentage",
-          "doc": "Map volume range to percentage",
+          "label": "TRANSLATE.VOL_MAP_LABEL",
+          "doc": "TRANSLATE.VOL_MAP_DOC",
           "value": false
         }
       ]
@@ -117,8 +117,8 @@
 	{
       "id": "section_import",
       "element": "section",
-      "label": "Remote Import",
-      "description": "If you are lucky you might find the definition for your remote on the web site linked below. Download the corresponding text file and check that the volume up, volume down, mute and power keys have the following names: KEY_VOLUMUP, KEY_VOLUMEDOWN, KEY_MUTE, KEY_POWER. Place the file in the \"/data/INTERNAL\" folder of your Volumio system (on Windows this appears as \"Internal Storage\" under your Volumios name). Make sure the filename follows the pattern \"FriendlyRemoteName.lirc.conf\". Once this is all done press the import key below to add it to the above list of available remotes.",
+      "label": "TRANSLATE.SECTION_IMPORT_LABEL",
+      "description": "TRANSLATE.SECTION_IMPORT_DESC",
       "icon": "fa-cog",
       "onSave": {
         "type": "controller",
@@ -126,7 +126,7 @@
         "method": "importRemoteDefinitions"
       },
       "saveButton": {
-        "label": " Import remote definition",
+        "label": "TRANSLATE.IMPORT_LABEL",
         "data": [
         ]
       },
@@ -134,8 +134,8 @@
 		{
 		  "id":"remotelink",
 		  "element": "button",
-		  "label": "Go to LIRC database site",
-		  "doc": "Go to http://lirc-remotes.sourceforge.net/remotes-table.html",
+		  "label": "TRANSLATE.LIRC_LABEL",
+		  "doc": "TRANSLATE.LIRC_DOC",
 		  "onClick": {"type":"openUrl", "url":"http://lirc-remotes.sourceforge.net/remotes-table.html"}  
 		}				  
       ]
