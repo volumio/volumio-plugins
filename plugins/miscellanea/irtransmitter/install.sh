@@ -11,12 +11,13 @@ SCRIPTPATH=`dirname "$SCRIPT"`
 echo $SCRIPTPATH
 
 echo "Copy hardware config for Raspberry Pi"
-sudo cp ./hardware.conf /etc/lirc/
+sudo cp $SCRIPTPATH/misc/hardware.conf /etc/lirc/
+echo "Make sure lircd.conf can be updated without sudo"
 sudo touch /etc/lirc/lircd.conf
 sudo chmod 666 /etc/lirc/lircd.conf
 
 echo "Installing rules to make sure the device has a consistent name"
-sudo cp ./71-lirc.rules /etc/udev/rules.d
+sudo cp $SCRIPTPATH/misc/71-lirc.rules /etc/udev/rules.d
 
 # Check why this is here? Is this needed?
 #echo "Applying LIRC starting policy"
