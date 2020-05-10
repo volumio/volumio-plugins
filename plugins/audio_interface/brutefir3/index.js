@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 8th 2020
+/*DRC-FIR plugin for volumio2. By balbuze May 10th 2020
 todo :
 restore mixer in UI
 ...
@@ -15,6 +15,7 @@ const net = require('net');
 const socket = io.connect('http://localhost:3000');
 const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
+const path = require('path');
 
 //---global Variables
 const filterfolder = "/data/INTERNAL/Dsp/filters";
@@ -101,6 +102,18 @@ ControllerBrutefir.prototype.onInstall = function () {
 ControllerBrutefir.prototype.onUninstall = function () {
   const self = this;
 };
+
+ControllerBrutefir.prototype.getI18nFile = function (langCode) {
+  const i18nFiles = fs.readdirSync(path.join(__dirname, 'i18n'));
+  const langFile = 'strings_' + langCode + '.json';
+
+  // check for i18n file fitting the system language
+  if (i18nFiles.some(function (i18nFile) { return i18nFile === langFile; })) {
+    return path.join(__dirname, 'i18n', langFile);
+  }
+  // return default i18n file
+  return path.join(__dirname, 'i18n', 'strings_en.json');
+}
 
 // Configuration methods------------------------------------------------------------------------
 
@@ -698,15 +711,15 @@ ControllerBrutefir.prototype.askForRebootFirstUse = function () {
 
   if (self.config.get('askForReboot')) {
     var responseData = {
-      title: 'First use',
+      title: self.commandRouter.getI18nString('FIRST_USE'),
       //title : 'first use',
 
 
-      message: 'It seems you enabling the plugin for the first time. You should reboot to get a correct hardware detection',
+      message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
       size: 'lg',
       buttons: [
         {
-          name: 'Continue',
+          name: self.commandRouter.getI18nString('CONTINUE'),
           class: 'btn btn-cancel',
           emit: '',
           payload: ''
@@ -941,9 +954,9 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
         gid: 1000
       }, function (error, stdout, stderr) {
         if (error) {
-          self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
         } else {
-          self.commandRouter.pushToastMessage('success', 'Attempt to start Brutefir...');
+          self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
           setTimeout(function () {
             socket.emit('mute', '')
             setTimeout(function () {
@@ -963,7 +976,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
         self.logger.info("Connecting to daemon");
       }, 2000)
         .fail(function (e) {
-          self.commandRouter.pushToastMessage('error', "Brutefir failed to start. Check your config !");
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
           self.logger.info("Brutefir failed to start. Check your config !");
         });
     });
@@ -1075,7 +1088,7 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
   client.on('error', function (e) {
     if (e.code == 'ECONNREFUSED') {
       console.log('Huumm, is brutefir running ?');
-      self.commandRouter.pushToastMessage('error', "Huumm, Brutefir running? Check your config !");
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IS_BRUTEFIR_RUNNING'));
     }
   });
   client.on('data', function (data) {
@@ -1159,7 +1172,7 @@ ControllerBrutefir.prototype.testclipping = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    self.commandRouter.pushToastMessage('info', 'Attenuation successfully set to: ' + messageDisplayed + ' dB');
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
     self.rebuildBRUTEFIRAndRestartDaemon();
     journalctl.stop();
   }, 550);
@@ -1209,8 +1222,8 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   }
   else {
     let modalData = {
-      title: 'Unsuported filter format',
-      message: "<br>Your file is not supported. Please choose one of the supported format :<br>Supported type:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S32_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
+      title: self.commandRouter.getI18nString('FILTER_FORMAT_TITLE'),
+      message: self.commandRouter.getI18nString('FILTER_FORMAT_MESS'),
       size: 'lg',
       buttons: [{
         name: 'Close',
@@ -1708,8 +1721,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
   //setTimeout(function() {
   if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
     let modalData = {
-      title: 'Different filter type',
-      message: 'All filters must be of the same type',
+      title: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_TITLE'),
+      message: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'),
       size: 'lg',
       buttons: [{
         name: 'Close',
@@ -1734,7 +1747,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
         })
         .fail(function (e) {
           defer.reject(new Error('Brutefir failed to start. Check your config !'));
-          self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
         })
 
     }, 1500);//2500
@@ -1743,18 +1756,18 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
   if (enableclipdetect) {
     setTimeout(function () {
       var responseData = {
-        title: 'Test clipping and set attenuation',
-        message: 'Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. If something is played, it will be stop. Press "test" to do that or exit.',
+        title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
+        message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
         size: 'lg',
         buttons: [
           {
-            name: 'Exit',
+            name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
             class: 'btn btn-cancel',
             emit: '',
             payload: ''
           },
           {
-            name: 'Test',
+            name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
             class: 'btn btn-info',
             emit: 'callMethod',
             payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
@@ -2620,7 +2633,7 @@ ControllerBrutefir.prototype.convert = function (data) {
 
         let destfile = (filterfolder + "/" + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
         //  let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves/"
-
+        self.commandRouter.loadI18nStrings();
         try {
           execSync("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
           self.logger.info("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
@@ -2629,9 +2642,12 @@ ControllerBrutefir.prototype.convert = function (data) {
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
         };
         try {
+          let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile ;
+          let mess =  self.commandRouter.getI18nString('FILTER_GENE_MESS');
+      //    console.log(title);
           let modalData = {
-            title: (destfile + ' filter generation in progress!'),
-            message: ' Please WAIT until this page is refreshed (about 1 minute).',
+            title: title,
+            message:  mess,
             size: 'lg'
           };
           self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2657,6 +2673,7 @@ ControllerBrutefir.prototype.convert = function (data) {
     self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a file to convert!');
   };
 }
+
 
 
 
