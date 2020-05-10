@@ -14,8 +14,8 @@ const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release
 var currentvolume = '';
 var remote = { 'gpio_pin': 12, 'remote': '', 'name': '' };
 
-module.exports = irtransmitter;
-function irtransmitter(context) {
+module.exports = ir_blaster;
+function ir_blaster(context) {
 	var self = this;
 
 	this.context = context;
@@ -27,7 +27,7 @@ function irtransmitter(context) {
 
 
 
-irtransmitter.prototype.onVolumioStart = function()
+ir_blaster.prototype.onVolumioStart = function()
 {
 	var self = this;
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
@@ -37,22 +37,22 @@ irtransmitter.prototype.onVolumioStart = function()
     return libQ.resolve();
 }
 
-irtransmitter.prototype.onStart = function() {
+ir_blaster.prototype.onStart = function() {
     var self = this;
 	  var defer=libQ.defer();
 
     var device = self.getAdditionalConf("system_controller", "system", "device");
-//    self.logger.info('[IR transmitter] Device: '+ JSON.stringify(device));
+//    self.logger.info('[IR Blaster] Device: '+ JSON.stringify(device));
     if (device == "Raspberry PI") {
         self.enablePIOverlay();
     }
-    self.logger.info('[IR-Transmitter] Loaded configuration: ' + JSON.stringify(self.config.data));
+    self.logger.info('[IR Blaster] Loaded configuration: ' + JSON.stringify(self.config.data));
     remote.name = self.config.get('remotename');
     remote.gpio_pin = self.config.get('gpio_pin');
     // get lirc remote name
     self.getRemoteName().then(
         function () {
-            self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
+            self.logger.info('[IR Blaster] Remote details: ' + JSON.stringify(remote));
             self.addVolumeScripts();
         });
     
@@ -64,7 +64,7 @@ irtransmitter.prototype.onStart = function() {
     return defer.promise;
 };
 
-irtransmitter.prototype.onStop = function() {
+ir_blaster.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
@@ -76,7 +76,7 @@ irtransmitter.prototype.onStop = function() {
     return libQ.resolve();
 };
 
-irtransmitter.prototype.onRestart = function() {
+ir_blaster.prototype.onRestart = function() {
     var self = this;
     // Optional, use if you need it
 };
@@ -84,7 +84,7 @@ irtransmitter.prototype.onRestart = function() {
 
 // Configuration Methods -----------------------------------------------------------------------------
 
-irtransmitter.prototype.getUIConfig = function() {
+ir_blaster.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
 
@@ -99,7 +99,7 @@ irtransmitter.prototype.getUIConfig = function() {
             // Remote section
             const SEC_REM = 1;
             var dirs = fs.readdirSync(__dirname + "/remotes");
-            self.logger.info('[IR transmitter] Found definitions for remotes: ' + dirs);
+            self.logger.info('[IR Blaster] Found definitions for remotes: ' + dirs);
             // Get names for remotes based on their file name
             var name;
             for (var i = 0; i < dirs.length; i++) {
@@ -127,7 +127,7 @@ irtransmitter.prototype.getUIConfig = function() {
             // get current volume:
             self.getVolume();
             uiconf.sections[SEC_VOL].content[2].value = currentvolume;
-            //self.logger.info('[IR transmitter] Preparing config GUI. Volume: ', currentvolume);
+            //self.logger.info('[IR Blaster] Preparing config GUI. Volume: ', currentvolume);
 
             uiconf.sections[SEC_VOL].content[3].value = self.config.get('map_to_100');
 
@@ -141,21 +141,21 @@ irtransmitter.prototype.getUIConfig = function() {
     return defer.promise;
 };
 
-irtransmitter.prototype.getConfigurationFiles = function() {
+ir_blaster.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
 }
 
-irtransmitter.prototype.setUIConfig = function(data) {
+ir_blaster.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your installation tasks here
 };
 
-irtransmitter.prototype.getConf = function(varName) {
+ir_blaster.prototype.getConf = function(varName) {
 	var self = this;
 	//Perform your installation tasks here
 };
 
-irtransmitter.prototype.setConf = function(varName, varValue) {
+ir_blaster.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
 };
@@ -164,7 +164,7 @@ irtransmitter.prototype.setConf = function(varName, varValue) {
 
 // Adapted from Allo Relay attenuator plugin  (alloSteppedVolumeAttenuator)
 
-irtransmitter.prototype.addVolumeScripts = function() {
+ir_blaster.prototype.addVolumeScripts = function() {
     var self = this;
 
     var enabled = true;
@@ -177,12 +177,12 @@ irtransmitter.prototype.addVolumeScripts = function() {
     var mapTo100 = self.config.get('map_to_100', false);
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    //self.logger.info('[IR transmitter] Setting parameters'+ JSON.stringify(data));
+    //self.logger.info('[IR Blaster] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
     //self.commandRouter.volumioupdatevolume(Volume);
 };
 
-irtransmitter.prototype.removeVolumeScripts = function() {
+ir_blaster.prototype.removeVolumeScripts = function() {
     var self = this;
 
     var enabled = false;
@@ -198,9 +198,9 @@ irtransmitter.prototype.removeVolumeScripts = function() {
     self.commandRouter.updateVolumeScripts(data);
 };
 
-irtransmitter.prototype.updateRemoteSettings = function (data) {
+ir_blaster.prototype.updateRemoteSettings = function (data) {
     var self = this;
-    self.logger.info('[IR transmitter] Updated remote settings: ' + JSON.stringify(data));
+    self.logger.info('[IR Blaster] Updated remote settings: ' + JSON.stringify(data));
 
 
     if (Number.isInteger(Number(data['gpio_pin'])) && data['gpio_pin'] != remote.gpio_pin) {
@@ -212,7 +212,7 @@ irtransmitter.prototype.updateRemoteSettings = function (data) {
         // remote has changed...
         remote.name = data['remotename']['label'];
         self.config.set('remotename', remote.name);
-        //self.logger.info('[IR transmitter] Remote settings changed to ' + data['remotename']['label']);
+        //self.logger.info('[IR Blaster] Remote settings changed to ' + data['remotename']['label']);
         // Copy to default location:
         execFileSync("/bin/cp", [data['remotename']['value'], "/etc/lirc/lircd.conf"], { uid: 1000, gid: 1000, encoding: 'utf8' });
 
@@ -222,26 +222,26 @@ irtransmitter.prototype.updateRemoteSettings = function (data) {
             self.getRemoteName().then(function () {
                 // update scripts as remote name has changed...
                 self.addVolumeScripts();
-                self.commandRouter.pushToastMessage('success', 'IR-Transmitter', 'Updated remote to ' + remote.name);
-                self.logger.info('[IR-Transmitter] Remote details: ' + JSON.stringify(remote));
+                self.commandRouter.pushToastMessage('success', 'IR-Blaster', 'Updated remote to ' + remote.name);
+                self.logger.info('[IR-Blaster] Remote details: ' + JSON.stringify(remote));
             });
         });
     }
 }
 
-irtransmitter.prototype.getRemoteName = function () {
+ir_blaster.prototype.getRemoteName = function () {
     var defer = libQ.defer();
     var self = this;
     // Work out the name of the remote: use the 'irsend list' command
     const rname = exec('/usr/bin/irsend list "" ""', { uid: 1000, gid: 1000, encoding: 'utf8' },
         function (error, stdout, stderr) {
             if (error != null) {
-                self.logger.info('[IR Transmitter] Could not get lirc remote name : ' + error);
+                self.logger.info('[IR Blaster] Could not get lirc remote name : ' + error);
                 defer.reject();
             } else {
                 // Turns out it sends the outout to stderr; took me ages to figure out...
                 const rn = stderr.split("irsend: ");
-                self.logger.info(`[IR transmitter] New lirc remote name: ${rn[1]}`);
+                self.logger.info(`[IR Blaster] New lirc remote name: ${rn[1]}`);
                 remote.remote = rn[1].trim();
                 defer.resolve();
             }
@@ -249,9 +249,9 @@ irtransmitter.prototype.getRemoteName = function () {
     return defer.promise;
 }
 
-irtransmitter.prototype.updateVolumeSettings = function (data) {
+ir_blaster.prototype.updateVolumeSettings = function (data) {
     var self = this;
-    self.logger.info('[IR transmitter] Updated volume settings: ' + JSON.stringify(data));
+    self.logger.info('[IR Blaster] Updated volume settings: ' + JSON.stringify(data));
 
     self.config.set('vol_min', data['vol_min']);
     self.config.set('vol_max', data['vol_max']);
@@ -259,81 +259,81 @@ irtransmitter.prototype.updateVolumeSettings = function (data) {
     if (Number.isInteger(Number(data['vol_cur']))) {
         // This is to make sure data['vol_cur'] is a pure integer number. Hopefully enough to avoid shell script command injection (?)
         currentvolume = data['vol_cur'];
-        self.logger.info('[IR Transmitter] current volume ' + currentvolume);
+        self.logger.info('[IR Blaster] current volume ' + currentvolume);
         execFile(__dirname + '/scripts/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
             function (error, stdout, stderr) {
                 if (error != null) {
-                    self.logger.info('[IR Transmitter] Initvolume.sh : ' + error);
+                    self.logger.info('[IR Blaster] Initvolume.sh : ' + error);
 //                    defer.reject();
                 } else {
-                    self.logger.info('[IR Transmitter] Volume initialised');
+                    self.logger.info('[IR Blaster] Volume initialised');
 //                    defer.resolve();
                 }
             });
     } else {
-        self.logger.info('[IR Transmitter] Current volume should be an integer value: ' + data['vol_cur']);
+        self.logger.info('[IR Blaster] Current volume should be an integer value: ' + data['vol_cur']);
     };
     self.config.set('map_to_100', data['map_to_100']);
-    self.logger.info('[IR transmitter] Updated volume settings: ' + currentvolume);
+    self.logger.info('[IR Blaster] Updated volume settings: ' + currentvolume);
     self.addVolumeScripts();
 }
 
 
 
 // Adapted from ir_receiver plugin
-irtransmitter.prototype.enablePIOverlay = function() {
+ir_blaster.prototype.enablePIOverlay = function() {
     var defer = libQ.defer();
     var self = this;
 
     if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
         if (!fs.existsSync('/proc/device-tree/lirc_rpi')) {
-            self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/lirc_rpi!');
+            self.logger.info('[IR Blaster] HAT did not load /proc/device-tree/lirc_rpi!');
             exec('/usr/bin/sudo /usr/bin/dtoverlay lirc-rpi gpio_out_pin=' + remote.gpio_pin, { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if(error != null) {
-                        self.logger.info('[IR Transmitter] Error enabling lirc-rpi overlay: ' + error);
+                        self.logger.info('[IR Blaster] Error enabling lirc-rpi overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('[IR Transmitter] lirc-rpi overlay using gpio pin ' + remote.gpio_pin);
+                        self.logger.info('[IR Blaster] lirc-rpi overlay using gpio pin ' + remote.gpio_pin);
                         defer.resolve();
                     }
                 });
         } else {
-            self.logger.info('[IR Transmitter] HAT already loaded /proc/device-tree/lirc_rpi!');
+            self.logger.info('[IR Blaster] HAT already loaded /proc/device-tree/lirc_rpi!');
         }
     } else {
         if (fs.readdirSync('/proc/device-tree').find(function (fn) { return fn.startsWith('gpio-ir-transmitter'); }) === undefined) {
-            self.logger.info('[IR Transmitter] HAT did not load /proc/device-tree/gpio-ir-transmitter!');
+            self.logger.info('[IR Blaster] HAT did not load /proc/device-tree/gpio-ir-transmitter!');
             exec('/usr/bin/sudo /usr/bin/dtoverlay gpio-ir-tx gpio_pin=' + remote.gpio_pin, { uid: 1000, gid: 1000 },
                 function (error, stdout, stderr) {
                     if (error != null) {
-                        self.logger.info('[IR Transmitter] Error enabling gpio-ir-tx overlay: ' + error);
+                        self.logger.info('[IR Blaster] Error enabling gpio-ir-tx overlay: ' + error);
                         defer.reject();
                     } else {
-                        self.logger.info('[IR Transmitter] gpio-ir-tx overlay enabled using gpio pin ' + remote.gpio_pin);
+                        self.logger.info('[IR Blaster] gpio-ir-tx overlay enabled using gpio pin ' + remote.gpio_pin);
                         defer.resolve();
                     }
                 });
         } else {
-            self.logger.info('[IR Transmitter] HAT already loaded /proc/device-tree/gpio-ir-transmitter!');
+            self.logger.info('[IR Blaster] HAT already loaded /proc/device-tree/gpio-ir-transmitter!');
         }
     }
     return defer.promise;
 };
 
-irtransmitter.prototype.getVolume = function () {
+ir_blaster.prototype.getVolume = function () {
     var self = this;
 
     const volout = execSync(__dirname + '/scripts/getvolume.sh', { uid: 1000, gid: 1000, encoding: 'utf8' });
     if (volout != null) {
         currentvolume = volout.trim();
-        self.logger.info('[IR Transmitter] Read volume ' + currentvolume);
+        self.logger.info('[IR Blaster] Read volume ' + currentvolume);
     } else {
-        self.logger.info('[IR Transmitter] Error reading volume');
+        self.logger.info('[IR Blaster] Error reading volume');
     }
 };
 
-irtransmitter.prototype.importRemoteDefinitions = function (data) {
+ir_blaster.prototype.importRemoteDefinitions = function (data) {
     var self = this;
 
     var dirs = fs.readdirSync("/data/INTERNAL");
@@ -344,22 +344,22 @@ irtransmitter.prototype.importRemoteDefinitions = function (data) {
             copied++;
         }
     }
-    self.logger.info('[IR transmitter] Copied ' + copied + ' remote definition(s).');
+    self.logger.info('[IR Blaster] Copied ' + copied + ' remote definition(s).');
     return copied;
 };
 
 
-irtransmitter.prototype.powerToggle = function(data) {
+ir_blaster.prototype.powerToggle = function(data) {
     var defer = libQ.defer();
     var self = this;
 
     execFile('/usr/bin/irsend', ['SEND_ONCE', remote.remote, 'KEY_POWER'], {uid:1000,gid:1000},
         function (error, stdout, stderr) {
             if(error != null) {
-                self.logger.info('[IR Transmitter] Error sending IR power toggle signal: '+error);
+                self.logger.info('[IR Blaster] Error sending IR power toggle signal: '+error);
                 defer.reject();
             } else {
-                self.logger.info('[IR Transmitter] Send IR power toggle signal');
+                self.logger.info('[IR Blaster] Send IR power toggle signal');
                 defer.resolve();
             }
         });
@@ -368,14 +368,14 @@ irtransmitter.prototype.powerToggle = function(data) {
 };
 
 
-irtransmitter.prototype.getAdditionalConf = function (type, controller, data) {
+ir_blaster.prototype.getAdditionalConf = function (type, controller, data) {
     var self = this;
     var confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
     return confs;
 };
 
 // Adapted from ir_receiver plugin
-irtransmitter.prototype.restartLirc = function (message) {
+ir_blaster.prototype.restartLirc = function (message) {
     var self = this;
     var defer = libQ.defer();
 
@@ -392,13 +392,13 @@ irtransmitter.prototype.restartLirc = function (message) {
                             self.logger.info('Error restarting LIRC: ' + error);
                             defer.reject();
                             if (message) {
-                                self.commandRouter.pushToastMessage('error', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
+                                self.commandRouter.pushToastMessage('error', 'IR-Blaster', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
                             }
                         } else {
                             self.logger.info('lirc correctly started');
                             defer.resolve();
                             if (message) {
-                                self.commandRouter.pushToastMessage('success', 'IR-Transmitter', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+                                self.commandRouter.pushToastMessage('success', 'IR-Blaster', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
                             }
                         }
                     });

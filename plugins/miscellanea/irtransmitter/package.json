@@ -1,6 +1,6 @@
 {
-	"name": "irtransmitter",
-	"version": "0.2.0",
+	"name": "ir_blaster",
+	"version": "0.3.0",
 	"description": "Enable control of an IR transmitter connected to GPIO pins to remote control e.g. amplifier straight from volumio UI",
 	"main": "index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 	"author": "Volumio Team",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "IR Transmitter",
+		"prettyName": "IR Blaster",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "miscellanea"
 	},

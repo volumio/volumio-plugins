@@ -1,2 +1,2 @@
 #!/bin/sh
-cat "/data/plugins/miscellanea/irtransmitter/mute"
+cat "/data/plugins/miscellanea/ir_blaster/mute"

@@ -4,7 +4,7 @@ if [ -z "$1" -o -z "$2" ]; then
     echo "usage: $0 par_remotename par_mute  (1 to mute / 0 to unmute)"
     exit
 fi
-FNMUTE="/data/plugins/miscellanea/irtransmitter/mute"
+FNMUTE="/data/plugins/miscellanea/ir_blaster/mute"
 MUTE=$(cat "$FNMUTE")
 if [ $2 -ne $MUTE ]; then
 #  echo "Toggle mute"
@@ -14,5 +14,5 @@ fi
 if [ $2 -eq "1" ]; then
   echo 0
 else
-  echo `cat /data/plugins/miscellanea/irtransmitter/currentvolume`
+  echo `cat /data/plugins/miscellanea/ir_blaster/currentvolume`
 fi

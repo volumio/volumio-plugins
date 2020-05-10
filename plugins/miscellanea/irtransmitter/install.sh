@@ -35,7 +35,7 @@ sudo cp $SCRIPTPATH/misc/71-lirc.rules /etc/udev/rules.d
 #echo 5 > /run/volumio/ir-tx/volume
 
 echo "Make shell scripts executable"
-chmod a+x /data/plugins/miscellanea/irtransmitter/scripts/*.sh
+chmod a+x /data/plugins/miscellanea/ir_blaster/scripts/*.sh
 
 #required to end the plugin install
 echo "plugininstallend"

@@ -4,7 +4,7 @@ if [ -z "$1" -o -z "$2" ]; then
     exit
 fi
 # Name of the file storing current volume:
-FNVOL="/data/plugins/miscellanea/irtransmitter/currentvolume"
+FNVOL="/data/plugins/miscellanea/ir_blaster/currentvolume"
 # Read value:
 PREV=$(cat "$FNVOL")
 # echo $PREV, $1

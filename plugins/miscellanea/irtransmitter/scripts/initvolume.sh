@@ -4,4 +4,4 @@ if [ -z "$1" ]; then
     exit
 fi
 #echo $1 > "/run/volumio/ir-tx/volume"
-echo $1 > "/data/plugins/miscellanea/irtransmitter/currentvolume"
+echo $1 > "/data/plugins/miscellanea/ir_blaster/currentvolume"
