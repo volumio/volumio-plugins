@@ -20,7 +20,7 @@
   "DOC_LFILTER": "<h4>Filtre gauche</h4><br>Selectionnez le filtre gauche. Le fichier doit être placé dans /INTERNAL/Dsp/filters<br>Types supportés:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
   "RIGHT_FILTER": "Filtre droit",
   "DOC_RFILTER": "<h4>F iltre droit</h4><br>Selectionnez le filtre droit. Le fichier doit être placé dans /INTERNAL/Dsp/filters<br>Types supportés:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
-  "DIFF_FILTER_TYPE_TITLE": "Type de filtre different",
+  "DIFF_FILTER_TYPE_TITLE": "Types de filtre differents",
   "DIFF_FILTER_TYPE_MESS":"Tous les filtres doivent être du même type",
   "DELAY": "Delai",
   "DOC_DELAY": "delai en ms",

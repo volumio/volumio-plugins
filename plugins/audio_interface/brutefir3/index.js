@@ -358,12 +358,14 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       }
       try {
         fs.readdir(filterfolder, function (err, item) {
-          allfilter = 'None,' + item;
-          let allfilters = allfilter.replace('filter-sources', '');
-          let allfilter2 = allfilters.replace('target-curves', '');
-          let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
-          let items = allfilter3.split(',');
-          items.pop();
+          //  allfilter = 'None,' + item;
+          //  let allfilters = allfilter.replace('filter-sources', '');
+          //  let allfilter2 = allfilters.replace('target-curves', '');
+          //  let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
+          //  let items = allfilter3.split(',');
+          let allfilter = 'None,' + item;
+          let items = allfilter.split(',');
+          // items.pop();
           for (let i in items) {
             self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
               value: items[i],
