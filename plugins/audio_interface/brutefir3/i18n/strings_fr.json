@@ -1,7 +1,7 @@
 {
   "VOLUMIO_DSP": "Centre DSP de Volumio",
   "FIRST_USE": "Première utilisation",
-  "FIRST_USE_MESS": "Vous avez activé le plugin pour la première fois. Vous devez redémmarer pour une meilleure détection du matériel.",
+  "FIRST_USE_MESS": "Vous avez activé le plugin pour la première fois. Vous devez redémarrer pour une meilleure détection du matériel.",
   "CONTINUE": "Continuer",
   "SETTINGS": "Réglages de Brutefir",
   "IS_BRUTEFIR_RUNNING": "hummm, Est ce que Brutefir fonctionne? Merci de vérifier votre configuration",

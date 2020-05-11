@@ -53,6 +53,7 @@ ControllerBrutefir.prototype.onVolumioStart = function () {
 ControllerBrutefir.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
+  self.commandRouter.loadI18nStrings();
   socket.emit('getState', '');
   socket.emit('pause');
   self.sendvolumelevel();
@@ -355,51 +356,54 @@ ControllerBrutefir.prototype.getUIConfig = function () {
           label: (n)
         });
       }
+      try {
+        fs.readdir(filterfolder, function (err, item) {
+          allfilter = 'None,' + item;
+          let allfilters = allfilter.replace('filter-sources', '');
+          let allfilter2 = allfilters.replace('target-curves', '');
+          let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
+          let items = allfilter3.split(',');
+          items.pop();
+          for (let i in items) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[7].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[9].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[14].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[17].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[19].options', {
+              value: items[i],
+              label: items[i]
+            });
+            self.logger.info('available filters :' + items[i]);
+          }
 
-      fs.readdir(filterfolder, function (err, item) {
-        allfilter = 'None,' + item;
-        let allfilters = allfilter.replace('filter-sources', '');
-        let allfilter2 = allfilters.replace('target-curves', '');
-        let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
-        let items = allfilter3.split(',');
-        items.pop();
-        for (let i in items) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[3].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[7].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[9].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[14].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[17].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[19].options', {
-            value: items[i],
-            label: items[i]
-          });
-          self.logger.info('available filters :' + items[i]);
-        }
-
-      });
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
 
       uiconf.sections[0].content[22].hidden = true;
       value = self.config.get('filter_format');
@@ -477,43 +481,49 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       }
       uiconf.sections[0].content[27].value = self.config.get('displayednameofset');
 
+      try {
+        filetoconvertl = self.config.get('filetoconvert');
+        self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
+        self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', filetoconvertl);
 
-      filetoconvertl = self.config.get('filetoconvert');
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', filetoconvertl);
-
-      fs.readdir(filtersource, function (err, fitem) {
-        let fitems;
-        let filetoconvert = '' + fitem;
-        fitems = filetoconvert.split(',');
-        // console.log(fitems)
-        for (let i in fitems) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
-            value: fitems[i],
-            label: fitems[i]
-          });
-          self.logger.info('available impulses to convert :' + fitems[i]);
-        }
-      });
+        fs.readdir(filtersource, function (err, fitem) {
+          let fitems;
+          let filetoconvert = '' + fitem;
+          fitems = filetoconvert.split(',');
+          // console.log(fitems)
+          for (let i in fitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+              value: fitems[i],
+              label: fitems[i]
+            });
+            self.logger.info('available impulses to convert :' + fitems[i]);
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
 
       tc = self.config.get('tc');
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.value', tc);
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.label', tc);
+      try {
+        fs.readdir(tccurvepath, function (err, bitem) {
+          let bitems;
+          let filetoconvert = '' + bitem;
+          bitems = filetoconvert.split(',');
+          //console.log(bitems)
+          for (let i in bitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[1].options', {
+              value: bitems[i],
+              label: bitems[i]
+            });
+            self.logger.info('available target curve :' + bitems[i]);
 
-      fs.readdir(tccurvepath, function (err, bitem) {
-        let bitems;
-        let filetoconvert = '' + bitem;
-        bitems = filetoconvert.split(',');
-        //console.log(bitems)
-        for (let i in bitems) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[1].options', {
-            value: bitems[i],
-            label: bitems[i]
-          });
-          self.logger.info('available target curve :' + bitems[i]);
-
-        }
-      });
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
 
       value = self.config.get('drcconfig');
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.value', value);
@@ -527,21 +537,26 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', toolsfiletoplay);
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', toolsfiletoplay);
 
-      fs.readdir(toolspath, function (err, bitem) {
-        let filetools = '' + bitem;
+      try {
+        fs.readdir(toolspath, function (err, bitem) {
+          let filetools = '' + bitem;
 
-        let bitems = filetools.split(',');
+          let bitems = filetools.split(',');
 
-        //console.log(bitems)
-        for (let i in bitems) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[0].options', {
-            value: bitems[i],
-            label: bitems[i]
-          });
-          self.logger.info('tools file to play :' + bitems[i]);
+          //console.log(bitems)
+          for (let i in bitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[0].options', {
+              value: bitems[i],
+              label: bitems[i]
+            });
+            self.logger.info('tools file to play :' + bitems[i]);
 
-        }
-      });
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
+
 
       if (ttools == false) {
         uiconf.sections[4].content[1].hidden = true;
@@ -705,16 +720,13 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 };
 // Plugin methods -----------------------------------------------------------------------------
 
-//------------Ask for reboot for first time
+//------------Ask for reboot for first time 
 ControllerBrutefir.prototype.askForRebootFirstUse = function () {
   const self = this;
 
   if (self.config.get('askForReboot')) {
     var responseData = {
       title: self.commandRouter.getI18nString('FIRST_USE'),
-      //title : 'first use',
-
-
       message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
       size: 'lg',
       buttons: [
@@ -1751,31 +1763,32 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
         })
 
     }, 1500);//2500
-  }
-  let enableclipdetect = self.config.get('enableclipdetect');
-  if (enableclipdetect) {
-    setTimeout(function () {
-      var responseData = {
-        title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
-        message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
-        size: 'lg',
-        buttons: [
-          {
-            name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
-            class: 'btn btn-cancel',
-            emit: '',
-            payload: ''
-          },
-          {
-            name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
-            class: 'btn btn-info',
-            emit: 'callMethod',
-            payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
-          }
-        ]
-      }
-      self.commandRouter.broadcastMessage("openModal", responseData);
-    }, 3500);
+    //  }
+    let enableclipdetect = self.config.get('enableclipdetect');
+    if (enableclipdetect) {
+      setTimeout(function () {
+        var responseData = {
+          title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
+          message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
+          size: 'lg',
+          buttons: [
+            {
+              name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
+              class: 'btn btn-cancel',
+              emit: '',
+              payload: ''
+            },
+            {
+              name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
+              class: 'btn btn-info',
+              emit: 'callMethod',
+              payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
+            }
+          ]
+        }
+        self.commandRouter.broadcastMessage("openModal", responseData);
+      }, 3500);
+    };
   };
   return defer.promise;
 };
@@ -2523,9 +2536,9 @@ ControllerBrutefir.prototype.installtools = function () {
 
   return new Promise(function (resolve, reject) {
     try {
-     // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
+      // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
-    //  let cp4 = execSync('/bin/mkdir ' + toolspath);
+      //  let cp4 = execSync('/bin/mkdir ' + toolspath);
       let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C ' + toolspath);
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
     } catch (err) {
@@ -2539,7 +2552,7 @@ ControllerBrutefir.prototype.installtools = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  //   return self.commandRouter.reloadUi();
+    //   return self.commandRouter.reloadUi();
   });
 };
 
@@ -2548,7 +2561,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
   const self = this;
   self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
   return new Promise(function (resolve, reject) {
-    
+
     try {
 
       let cp6 = execSync('/bin/rm ' + toolspath + "/*");
@@ -2566,7 +2579,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  //   return self.commandRouter.reloadUi();
+    //   return self.commandRouter.reloadUi();
   });
 };
 
@@ -2606,7 +2619,7 @@ ControllerBrutefir.prototype.convert = function (data) {
   if (infile != 'choose a file') {
 
     let outfile = self.config.get('outputfilename').replace(/ /g, '-');
-    if ((outfile == '') || (outfile == 'Empty=name of file to convert')) {
+    if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
       outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
     let targetcurve = '\ /usr/share/drc/config/'
@@ -2642,12 +2655,12 @@ ControllerBrutefir.prototype.convert = function (data) {
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
         };
         try {
-          let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile ;
-          let mess =  self.commandRouter.getI18nString('FILTER_GENE_MESS');
-      //    console.log(title);
+          let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile;
+          let mess = self.commandRouter.getI18nString('FILTER_GENE_MESS');
+          //    console.log(title);
           let modalData = {
             title: title,
-            message:  mess,
+            message: mess,
             size: 'lg'
           };
           self.commandRouter.broadcastMessage("openModal", modalData);

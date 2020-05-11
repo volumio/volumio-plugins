@@ -1,4 +1,4 @@
-May 10th 2020
+May 11th 2020
 
 #	DRC- Digital Room Correction for Volumio (previously Brutefir3)
 
@@ -113,6 +113,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 11th 2020
+
+- fix for empty message box
+- better resilience if a file is not found
+- miscellanea fixes
 
 May 10th 2020
 
