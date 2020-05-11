@@ -120,6 +120,7 @@ May 11th 2020
 - fix for empty message box
 - better resilience if a file is not found
 - miscellanea fixes
+- internal naming for path
 
 May 10th 2020
 

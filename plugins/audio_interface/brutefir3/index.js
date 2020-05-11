@@ -18,11 +18,11 @@ const Journalctl = require('journalctl');
 const path = require('path');
 
 //---global Variables
-const filterfolder = "/data/INTERNAL/Dsp/filters";
-const filtersource = "/data/INTERNAL/Dsp/filter-sources";
-const tccurvepath = "/data/INTERNAL/Dsp/target-curves";
-const toolspath = "/data/INTERNAL/Dsp/tools";
-const vobaf_filterfolder = "/data/INTERNAL/Dsp/VoBAFfilters";
+const filterfolder = "/data/INTERNAL/Dsp/filters/";
+const filtersource = "/data/INTERNAL/Dsp/filter-sources/";
+const tccurvepath = "/data/INTERNAL/Dsp/target-curves/";
+const toolspath = "/data/INTERNAL/Dsp/tools/";
+const vobaf_filterfolder = "/data/INTERNAL/Dsp/VoBAFfilters/";
 
 
 // Define the ControllerBrutefir class
@@ -912,20 +912,8 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   let stri = {
     "output_device": {
       "value": "Loopback",
-      "label": (outputp + " through brutefir")
-    }/*,
-    "mixer_type": {
-      "value": self.config.get('alsa_mixer_type'),
-      "label": self.config.get('alsa_mixer_type')
-    },
-    "mixer": {
-      "value": self.config.get('alsa_mixer'),
-      "label": self.config.get('alsa_mixer')
-    },
-    "softvolumenumber": {
-      "value": self.config.get('alsa_softvolumenumber'),
-      "label": self.config.get('alsa_softvolumenubmer')
-    }*/
+      "label": ('Dsp -> ' + outputp)
+    }
   }
 
   setTimeout(function () {
@@ -1167,7 +1155,7 @@ ControllerBrutefir.prototype.testclipping = function () {
       firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
       let leftAttSet = 0;
       let rightAttSet = 0;
-      let corr = 0.5;
+      let corr = 0.49;
       let leftSuggested = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
       let rightSuggested = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
       if (leftSuggested > rightSuggested) {
@@ -1215,7 +1203,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     auto_filter_format = 'text';
   }
   else if (filext == 'wav') {
-    wavFileInfo.infoByFilename(filterfolder + '/' + filtername, function (err, info) {
+    wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
       var wavetype = (info.header.bits_per_sample)
       self.config.set('wavetype', wavetype);
     });
@@ -1271,9 +1259,9 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       //let vobaf_filterfolder = "' + vobaf_filterfolder + '";
       let leftfilter, leftc2filter;
       let rightfilter, rightc2filter;
-      let composeleftfilter = filterfolder + "/" + self.config.get('leftfilter');
+      let composeleftfilter = filterfolder + self.config.get('leftfilter');
       let composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7, composeleftfilter8
-      let composerightfilter = filterfolder + "/" + self.config.get('rightfilter');
+      let composerightfilter = filterfolder + self.config.get('rightfilter');
       let composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7, composerightfilter8
       let lattenuation;
       let rattenuation;
@@ -1366,8 +1354,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       let sndrightfilter;
       let enableswap;
       if (arefilterswap) {
-        sndleftfilter = filterfolder + "/" + self.config.get('sndleftfilter');
-        sndrightfilter = filterfolder + "/" + self.config.get('sndrightfilter');
+        sndleftfilter = filterfolder + self.config.get('sndleftfilter');
+        sndrightfilter = filterfolder + self.config.get('sndrightfilter');
         enableswap = "";
       } else {
         sndleftfilter = "dirac pulse";
@@ -2646,12 +2634,12 @@ ControllerBrutefir.prototype.convert = function (data) {
           curve = '96.0';
         };
 
-        let destfile = (filterfolder + "/" + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
+        let destfile = (filterfolder + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
         //  let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves/"
         self.commandRouter.loadI18nStrings();
         try {
-          execSync("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
-          self.logger.info("/usr/bin/sox " + filtersource + "/" + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          execSync("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          self.logger.info("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
         } catch (e) {
           self.logger.info('input file does not exist ' + e);
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
@@ -2668,7 +2656,7 @@ ControllerBrutefir.prototype.convert = function (data) {
           self.commandRouter.broadcastMessage("openModal", modalData);
           //here we compose cmde for drc
           //  let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
-          let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tccurvepath + "/" + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+          let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
           //and execute it...
           execSync(composedcmde);
           self.logger.info(composedcmde);
