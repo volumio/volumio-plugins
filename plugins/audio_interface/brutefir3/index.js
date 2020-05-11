@@ -1189,7 +1189,7 @@ ControllerBrutefir.prototype.testclipping = function () {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
     self.rebuildBRUTEFIRAndRestartDaemon();
     journalctl.stop();
-  }, 550);
+  }, 1050);
 };
 
 //here we determine filter type and apply skip value if needed
@@ -1215,7 +1215,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     auto_filter_format = 'text';
   }
   else if (filext == 'wav') {
-    wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
+    wavFileInfo.infoByFilename(filterfolder + '/' + filtername, function (err, info) {
       var wavetype = (info.header.bits_per_sample)
       self.config.set('wavetype', wavetype);
     });

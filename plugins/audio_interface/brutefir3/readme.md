@@ -116,6 +116,7 @@ nearly everythings
 
 May 11th 2020
 
+- fix for hang with wav file
 - fix for empty message box
 - better resilience if a file is not found
 - miscellanea fixes
