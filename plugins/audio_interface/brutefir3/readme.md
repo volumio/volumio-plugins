@@ -116,6 +116,8 @@ nearly everythings
 
 May 11th 2020
 
+- work on translation
+- new name for output device
 - fix for hang with wav file
 - fix for empty message box
 - better resilience if a file is not found

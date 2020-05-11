@@ -1203,24 +1203,28 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     auto_filter_format = 'text';
   }
   else if (filext == 'wav') {
-    wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
-      var wavetype = (info.header.bits_per_sample)
-      self.config.set('wavetype', wavetype);
-    });
-    var wavetype = self.config.get('wavetype');
-    if (wavetype == '16') {
-      var auto_filter_format = 'S16_LE';
+    try {
+      wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
+        var wavetype = (info.header.bits_per_sample)
+        self.config.set('wavetype', wavetype);
+      });
+      var wavetype = self.config.get('wavetype');
+      if (wavetype == '16') {
+        var auto_filter_format = 'S16_LE';
+      }
+      else if (wavetype == '24') {
+        var auto_filter_format = 'S24_LE';
+      }
+      else if (wavetype == '32') {
+        var auto_filter_format = 'S32_LE';
+      }
+      else if (wavetype == '64') {
+        var auto_filter_format = 'FLOAT64_LE';
+      };
+      skipvalue = "skip:44;"
+    } catch (e) {
+      self.logger.error('Could not read wav file: ' + e)
     }
-    else if (wavetype == '24') {
-      var auto_filter_format = 'S24_LE';
-    }
-    else if (wavetype == '32') {
-      var auto_filter_format = 'S32_LE';
-    }
-    else if (wavetype == '64') {
-      var auto_filter_format = 'FLOAT64_LE';
-    };
-    skipvalue = "skip:44;"
   }
   else {
     let modalData = {
@@ -2664,16 +2668,16 @@ ControllerBrutefir.prototype.convert = function (data) {
           return self.commandRouter.reloadUi();
         } catch (e) {
           self.logger.info('drc fails to create filter ' + e);
-          self.commandRouter.pushToastMessage('error', 'Fails to generate filter, retry with other parameters' + e);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL') + e);
         };
       } else {
-        self.commandRouter.pushToastMessage('error', 'fail  !', 'Sample rate must be set to 96Khz maximum', 'for automatic filter generation');
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_RATE'));
       };
     } else {
-      self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a target curve!');
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_TC'));
     };
   } else {
-    self.commandRouter.pushToastMessage('error', 'fail  !', 'You must choose a file to convert!');
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_FILE'));
   };
 }
 
