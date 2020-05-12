@@ -2521,39 +2521,41 @@ ControllerBrutefir.prototype.saveBrutefirconfigroom = function (data) {
 //here we download and install tools
 ControllerBrutefir.prototype.installtools = function () {
   const self = this;
-  let modalData = {
-    title: 'Tools installation',
-    message: 'Your are going to download about 17Mo. Please WAIT until this page is refreshed (about 40 sec).',
-    size: 'lg'
-  };
-  self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 30 seconds)');
 
   return new Promise(function (resolve, reject) {
     try {
+      let modalData = {
+        title: self.commandRouter.getI18nString('TOOLS_INSTALL_TITLE'),
+        message: self.commandRouter.getI18nString('TOOLS_INSTALL_WAIT'),
+        size: 'lg'
+      };
+      //self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 30 seconds)');
+      self.commandRouter.broadcastMessage("openModal", modalData);
+
       // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
       let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
       //  let cp4 = execSync('/bin/mkdir ' + toolspath);
       let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C ' + toolspath);
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
+      self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
+      self.config.set('toolsinstalled', true);
+      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+      respconfig.then(function (config) {
+        self.commandRouter.broadcastMessage('pushUiConfig', config);
+      });
     } catch (err) {
       self.logger.info('An error occurs while downloading or installing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
     }
+
     resolve();
-    self.commandRouter.pushToastMessage('success', 'Files succesfully Installed !', 'Refresh the page to see them');
-    self.config.set('toolsinstalled', true);
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-    //   return self.commandRouter.reloadUi();
   });
 };
 
 //here we remove tools
 ControllerBrutefir.prototype.removetools = function (data) {
   const self = this;
-  self.commandRouter.pushToastMessage('info', 'Remove progress, please wait!');
+  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
   return new Promise(function (resolve, reject) {
 
     try {
@@ -2568,7 +2570,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
     self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
     */
     self.config.set('toolsinstalled', false);
-    self.config.set('toolsfiletoplay', "Select a file");
+    self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
@@ -2665,7 +2667,11 @@ ControllerBrutefir.prototype.convert = function (data) {
           execSync(composedcmde);
           self.logger.info(composedcmde);
           self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
-          return self.commandRouter.reloadUi();
+          var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+          respconfig.then(function (config) {
+            self.commandRouter.broadcastMessage('pushUiConfig', config);
+          });
+          // return self.commandRouter.reloadUi();
         } catch (e) {
           self.logger.info('drc fails to create filter ' + e);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL') + e);

@@ -1,29 +1,37 @@
-May 11th 2020
+May 12th 2020
 
-#	DRC- Digital Room Correction for Volumio (previously Brutefir3)
+#	DSP for Volumio (previously Brutefir3)
 
-This plugin is designed to use [brutefir](https://www.ludd.ltu.se/~torger/brutefir.html) with volumio2
+This plugin is designed to apply FIR filter to your system. It uses [brutefir](https://www.ludd.ltu.se/~torger/brutefir.html) as convolution engine.
 
 It provides :
 
-- A automated installation
 
 - A automatic configuration - Just install and enable the plugin. It's ready for use !
 
-- Hardware capabilities detection for output format and number of channels
+- Hardware capabilities detection for output format and number of channels.
 
-- The use of custom filters - for DRC digital room correction created with RePhase
+- The use of custom filters - for DRC digital room correction.
 
-- Filters (left and right) can be selected in webUI.
+Supported :
+
+    text- 32/64 bits floats line (.txt) in rephase
+    S16_LE- 16 bits LPCM mono (.wav) in rePhase
+    S24_LE- 24 bits LPCM mono (.wav) in rePhase
+    S24_LE- 32 bits LPCM mono (.wav) in rePhase
+    FLOAT_LE- 32 bits floating point (.pcm)
+    FLOAT64_LE- 64 bits mono (.wav) from Acourate
+    FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
 
 - Specific attenuation for each pair of channels, with detection for the 2 first channels.
+
+- The creation of filter from an impulse
 
 # Special thanks
 
 - Thanks a lot @krunok for your great help and suggestion to design this plugin. Your knowledge was more than helpful! ;-)
 
 ## NEW!
-
 
 Now the plugin allows a fast and smooth swap between 2 set of filters.
 
@@ -37,13 +45,11 @@ filters must have the same attenuation, same type.
 
 Then in the plugin,, select filter named with _1. Save, a new button appears to enable swapping!
 
-
 New automatic clipping detection. Attenuation can be set automatcally. 
 
 ## warning : need to add volumio as member of the group systemd-journal ```sudo usermod -a -G systemd-journal volumio``` 
 
 First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
-
 
 The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. With that, it can apply filters such as adaptativ loudness.
 
@@ -72,6 +78,8 @@ __Base scheme - signal path__
 ## INSTALLATION WARNING
 
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
+
+# __ !!!! Does not with software volume mixer or RPI jack output !!!!__
 
 ## To install
 
@@ -113,6 +121,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 12th 2020
+
+- more translation
+- UI behaviour
+- readme.md 
 
 May 11th 2020
 
