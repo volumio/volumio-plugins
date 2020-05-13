@@ -5,3 +5,6 @@ volumio-plugins.iml
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+plugins/music_service/.DS_Store
+.DS_Store
+plugins/miscellanea/kodi/UIConfig.json
