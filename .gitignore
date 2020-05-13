@@ -7,4 +7,3 @@ volumio-plugins.iml
 .idea/workspace.xml
 plugins/music_service/.DS_Store
 .DS_Store
-plugins/miscellanea/kodi/UIConfig.json
