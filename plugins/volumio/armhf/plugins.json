@@ -208,7 +208,7 @@
 					"prettyName": "Volusonic",
 					"icon": "fa-lightbulb-o",
 					"name": "volusonic",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
 					"license": "ISC",
 					"description": "Subsonic plugin for Volumio",
@@ -220,7 +220,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "15-3-2019"
+					"updated": "14-5-2020"
 				},
 				{
 					"prettyName": "Roon Bridge",
