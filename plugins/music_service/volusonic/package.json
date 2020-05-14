@@ -1,10 +1,6 @@
 {
 	"name": "volusonic",
-<<<<<<< HEAD
-	"version": "1.0.0",
-=======
 	"version": "1.0.1",
->>>>>>> 9f0fc6ace7f71b717b9ece605594e8624c5db870
 	"description": "Subsonic plugin for Volumio",
 	"main": "index.js",
 	"scripts": {
@@ -18,12 +14,9 @@
 		"plugin_type": "music_service"
 	},
 	"dependencies": {
-		"cache-manager": "",
-		"kew": "",
-		"unirest": "",
-		"v-conf": "",
-		"net": "",
-		"child-process": "",
-		"fs": ""
+		"cache-manager": "^2.4.0",
+		"kew": "^0.7.0",
+		"unirest": "^0.6.0",
+		"v-conf": "^1.4.2"
 	}
 }
