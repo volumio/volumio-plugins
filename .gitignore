@@ -5,10 +5,9 @@ volumio-plugins.iml
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
-
 # Ignore all node_modules in all sub dirs
 node_modules/
-
 # Ignore all .DS_Store
 .DS_Store
 **/.DS_Store
+plugins/music_service/.DS_Store

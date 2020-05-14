@@ -1,6 +1,10 @@
 {
 	"name": "volusonic",
+<<<<<<< HEAD
 	"version": "1.0.0",
+=======
+	"version": "1.0.1",
+>>>>>>> 9f0fc6ace7f71b717b9ece605594e8624c5db870
 	"description": "Subsonic plugin for Volumio",
 	"main": "index.js",
 	"scripts": {
