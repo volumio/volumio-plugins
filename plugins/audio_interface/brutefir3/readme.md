@@ -1,6 +1,11 @@
-May 12th 2020
+May 16th 2020
+
+
+## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
+
 
 #	DSP for Volumio (previously Brutefir3)
+
 
 This plugin is designed to apply FIR filter to your system. It uses [brutefir](https://www.ludd.ltu.se/~torger/brutefir.html) as convolution engine.
 
@@ -121,6 +126,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 16th 2020
+
+- new handling for mixer - requires Volumo => 2.776
+- small fixes
+- translation
 
 May 12th 2020
 

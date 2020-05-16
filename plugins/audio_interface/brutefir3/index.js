@@ -1,6 +1,6 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 10th 2020
+/*DRC-FIR plugin for volumio2. By balbuze May 16th 2020
 todo :
-restore mixer in UI
+i2s dac settings
 ...
 */
 
@@ -42,7 +42,7 @@ function ControllerBrutefir(context) {
 ControllerBrutefir.prototype.onVolumioStart = function () {
   const self = this;
   let configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
+  //this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new (require('v-conf'))();
   this.config.loadFile(configFile);
   // self.autoconfig
@@ -65,7 +65,9 @@ ControllerBrutefir.prototype.onStart = function () {
     .then(function (e) {
       setTimeout(function () {
         self.logger.info("Starting brutefir");
-        self.startBrutefirDaemon(defer);
+        // self.startBrutefirDaemon(defer);
+        self.rebuildBRUTEFIRAndRestartDaemon(defer);
+
       }, 1000);
       defer.resolve();
     })
@@ -879,15 +881,15 @@ ControllerBrutefir.prototype.autoconfig = function () {
   const self = this;
   let defer = libQ.defer();
   self.saveVolumioconfig()
-    .then(self.hwinfo())
-    .then(self.modprobeLoopBackDevice())
-    .then(self.saveHardwareAudioParameters())
-    .then(self.setLoopbackoutput())
-    .then(self.rebuildBRUTEFIRAndRestartDaemon()) //no sure to keep it..
+  self.hwinfo()
+  self.modprobeLoopBackDevice()
+  self.saveHardwareAudioParameters()
+  self.setLoopbackoutput()
+  self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
 
-    .catch(function (err) {
-      console.log(err);
-    });
+  // .catch(function (err) {
+  //  console.log(err);
+  //});
   defer.resolve()
   return defer.promise;
 };
@@ -917,30 +919,31 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   }
 
   setTimeout(function () {
-    self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+    // self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
     self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 6500);
-
-  let volumeval = self.config.get('alsa_volumestart')
-  if (volumeval != 'disabled') {
-    setTimeout(function () {
-      exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {
-        uid: 1000,
-        gid: 1000,
-        encoding: 'utf8'
-      }, function (error, stdout, stderr) {
-        if (error) {
-          self.logger.error('Cannot set startup volume: ' + error);
-        } else {
-          self.logger.info("Setting volume on startup at " + volumeval);
-        }
-      });
-      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
-      respconfig.then(function (config) {
-        self.commandRouter.broadcastMessage('pushUiConfig', config);
-      });
-    }, 12500);//13500
-  }
+  /*
+    let volumeval = self.config.get('alsa_volumestart')
+    if (volumeval != 'disabled') {
+      setTimeout(function () {
+        exec('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh volume ' + volumeval, {
+          uid: 1000,
+          gid: 1000,
+          encoding: 'utf8'
+        }, function (error, stdout, stderr) {
+          if (error) {
+            self.logger.error('Cannot set startup volume: ' + error);
+          } else {
+            self.logger.info("Setting volume on startup at " + volumeval);
+          }
+        });
+        var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
+        respconfig.then(function (config) {
+          self.commandRouter.broadcastMessage('pushUiConfig', config);
+        });
+      }, 12500);//13500
+    }
+    */
   return defer.promise;
 };
 
@@ -1053,7 +1056,7 @@ ControllerBrutefir.prototype.saveHardwareAudioParameters = function () {
   conf = self.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
   self.config.set('alsa_softvolumenumber', conf);
   return defer.promise;
-}
+};
 
 //------------here we restore config of volumio when the plugin is disabled-------------
 ControllerBrutefir.prototype.restoresettingwhendisabling = function () {
@@ -1066,15 +1069,24 @@ ControllerBrutefir.prototype.restoresettingwhendisabling = function () {
     "output_device": {
       "value": output_restored,
       "label": output_label
-    },
-    "mixer": {
-      "value": mixert,
-      "value": mixerty
     }
   }
-  self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
-  return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
-}
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+
+  // self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
+  /*
+  let conf = self.config.get('alsa_mixer_type');
+  console.log('rrrrrrrrrrrrrrrrrrrrr' + conf);
+  //self.setAdditionalConf('audio_interface', 'alsa_controller', conf);
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'setConfigParam', conf);
+  
+   // return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+    */
+};
 
 //------------Here we define a function to send a command to brutefir through its CLI---------------------
 ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
@@ -1137,7 +1149,7 @@ ControllerBrutefir.prototype.testclipping = function () {
         class: 'btn btn-warning'
       },]
     };
-    self.commandRouter.broadcastMessage("openModal", modalData);
+    // self.commandRouter.broadcastMessage("openModal", modalData);
   }
 
   let opts = {
@@ -2641,11 +2653,11 @@ ControllerBrutefir.prototype.convert = function (data) {
         };
 
         let destfile = (filterfolder + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
-        //  let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves/"
         self.commandRouter.loadI18nStrings();
         try {
-          execSync("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
-          self.logger.info("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          let cmdsox = ("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          execSync(cmdsox);
+          self.logger.info(cmdsox);
         } catch (e) {
           self.logger.info('input file does not exist ' + e);
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
@@ -2653,18 +2665,21 @@ ControllerBrutefir.prototype.convert = function (data) {
         try {
           let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile;
           let mess = self.commandRouter.getI18nString('FILTER_GENE_MESS');
-          //    console.log(title);
           let modalData = {
             title: title,
             message: mess,
             size: 'lg'
           };
           self.commandRouter.broadcastMessage("openModal", modalData);
+
           //here we compose cmde for drc
           //  let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
           let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
           //and execute it...
-          execSync(composedcmde);
+          execSync(composedcmde, {
+            uid: 1000,
+            gid: 1000
+          });
           self.logger.info(composedcmde);
           self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
           var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
