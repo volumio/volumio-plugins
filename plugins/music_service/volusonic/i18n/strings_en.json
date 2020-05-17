@@ -44,5 +44,6 @@
   "SAVED":"Saved",
   "POP_ERROR":"Error",
   "ID3":"Use or not ID3 tags to get metadatas from your music libraries",
-  "METAS":"Show biographies and albums infos from subsonic"
+  "METAS":"Show biographies and albums infos from subsonic",
+  "INDEXS":"Index"
 }

@@ -11,7 +11,7 @@ function volusonicApi(log,config) {
 	var self = this;
     	var logger = log;
 	var cache = cachemanager.caching({ store: 'memory', max: 50000, ttl: config.get('timeOut')});
-	
+
 	var cacheGet = function (key) {
 		var self = this;
 		return cache.get(key);
@@ -34,7 +34,7 @@ function volusonicApi(log,config) {
 		var self = this;
                 var defer = libQ.defer();
 
-                var cached = cacheGet( command + id )  
+                var cached = cacheGet( command + id )
                 .then(function(cached){
                         if ( cached == undefined){
                                 cached = submitQuery(command + '?' + params)
@@ -44,7 +44,7 @@ function volusonicApi(log,config) {
                                         }
                                         defer.resolve(cached);
                                 });
-                        } 
+                        }
                         else {
                                 defer.resolve(cached);
                         }
@@ -100,4 +100,3 @@ function volusonicApi(log,config) {
 	};
 
 };
-
