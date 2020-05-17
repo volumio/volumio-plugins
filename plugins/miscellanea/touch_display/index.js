@@ -97,11 +97,18 @@ TouchDisplay.prototype.onStart = function () {
                     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/max_brightness: ' + err);
                   } else {
                     maxBrightness = parseInt(data, 10);
-                    if (!self.config.get('autoMode')) {
-                      self.setBrightness(self.config.get('manualBr'));
-                    } else {
-                      self.autoBrightness();
-                    }
+                    exec('/usr/bin/sudo /bin/chmod a+w ' + blInterface + '/brightness', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                      if (error !== null) {
+                        self.logger.error(id + 'Error setting file permissions for backlight brightness control: ' + error);
+                      } else {
+                        self.logger.info(id + 'File permissions for backlight brightness control set.');
+                        if (!self.config.get('autoMode')) {
+                          self.setBrightness(self.config.get('manualBr'));
+                        } else {
+                          self.autoBrightness();
+                        }
+                      }
+                    });
                   }
                 });
               }
