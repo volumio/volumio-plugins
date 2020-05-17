@@ -886,7 +886,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   self.saveHardwareAudioParameters()
   self.setLoopbackoutput()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
-
+  self.restoreVolumioconfig()
   // .catch(function (err) {
   //  console.log(err);
   //});
@@ -1771,7 +1771,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
     }, 1500);//2500
     //  }
     let enableclipdetect = self.config.get('enableclipdetect');
-    if (enableclipdetect) {
+    let leftfilter = self.config.get('leftfilter');
+        let rightfilter = self.config.get('rightfilter');
+    if ((enableclipdetect) && (rightfilter != 'None') || (leftfilter != 'None')) {
       setTimeout(function () {
         var responseData = {
           title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),

@@ -1,4 +1,4 @@
-May 16th 2020
+May 17th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 17th 2020
+
+- possible fix with some i2s DAC
+- misconfigured DAC after boot in some case
+- no clipping test if filter set to 'None'
 
 May 16th 2020
 
