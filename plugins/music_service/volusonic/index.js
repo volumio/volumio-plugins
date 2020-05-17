@@ -1072,7 +1072,7 @@ ControllerVolusonic.prototype.listArtists = function(uriParts, curUri) {
   var container = "indexes";
   if (self.config.get('ID3')) container = "artists";
 
-  var result = self.api.get(getArtists, 'All', '')
+  var result = self.api.get(getArtists, 'Artists', '')
     .then(function(result) {
       var list = [];
       var item;
@@ -1142,7 +1142,7 @@ ControllerVolusonic.prototype.listIndexes = function(uriParts, curUri) {
 
   var container = "indexes";
 
-  var result = self.api.get('getIndexes', id, params)
+  var result = self.api.get('getIndexes', 'Indexes'+id, params)
     .then(function(result) {
       var list = [];
       var item;
