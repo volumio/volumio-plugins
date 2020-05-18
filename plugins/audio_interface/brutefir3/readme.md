@@ -1,4 +1,4 @@
-May 17th 2020
+May 18th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -122,10 +122,14 @@ nearly everythings
 ## What is not working :
 
 - ?
-- mixer is not properly displayed in Volumio's playback option
+- Conf for the output is corrupted if something is saved in mixer settings...
 
 
 ### 4. Last changes
+
+May 18th 020
+
+- restored output at boot
 
 May 17th 2020
 

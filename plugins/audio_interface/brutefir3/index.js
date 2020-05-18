@@ -729,6 +729,7 @@ ControllerBrutefir.prototype.askForRebootFirstUse = function () {
   const self = this;
 
   if (self.config.get('askForReboot')) {
+    self.saveHardwareAudioParameters();
     var responseData = {
       title: self.commandRouter.getI18nString('FIRST_USE'),
       message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
@@ -883,7 +884,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   self.saveVolumioconfig()
   self.hwinfo()
   self.modprobeLoopBackDevice()
-  self.saveHardwareAudioParameters()
+ // self.saveHardwareAudioParameters()
   self.setLoopbackoutput()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
   self.restoreVolumioconfig()
