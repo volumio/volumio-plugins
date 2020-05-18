@@ -558,6 +558,7 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
         const vconfigJSON = JSON.parse(vconfig);
         idxcard = vconfigJSON.outputdevice.value;
         mixname = vconfigJSON.mixer.value;
+        hwdev = `plughw:${outdev}`;
       } else { // We have an actual Hardware mixer
         hwdev = `plughw:${outdev}`;
         // outputdevice = card,device..

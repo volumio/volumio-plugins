@@ -63,6 +63,8 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 May 18th 2020
 
+- fix when output is set to Loopback
+
 -  Add in some device/card mixer/index parsing logic
 -  Tweak stopping volatile service
 -  Add (initial) support for shuffle and repeat
