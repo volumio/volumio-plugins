@@ -6,6 +6,7 @@ var exec = require('child_process').exec;
 var config = new(require('v-conf'))();
 var volusonicApi = require('./volusonicAPI');
 var fs = require('fs');
+var myUri = "";
 
 module.exports = ControllerVolusonic;
 
@@ -16,6 +17,7 @@ function ControllerVolusonic(context) {
   this.commandRouter = this.context.coreCommand;
   this.logger = this.context.logger;
   this.configManager = this.context.configManager;
+
 }
 
 ControllerVolusonic.prototype.onVolumioStart = function() {
@@ -243,6 +245,14 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
   var response;
   var uriParts = curUri.split('/');
   var defer = libQ.defer();
+
+  //saved path
+  if ((curUri == 'volusonic') && (myUri != "") && (myUri.split('/').length > 2)) {
+    curUri = myUri;
+  } else {
+    myUri = curUri;
+  }
+  var uriParts = curUri.split('/');
 
   var ping = self.api.submitQuery('ping?')
     .then(function(ping) {
@@ -1142,7 +1152,7 @@ ControllerVolusonic.prototype.listIndexes = function(uriParts, curUri) {
 
   var container = "indexes";
 
-  var result = self.api.get('getIndexes', 'Indexes'+id, params)
+  var result = self.api.get('getIndexes', 'Indexes' + id, params)
     .then(function(result) {
       var list = [];
       var item;
