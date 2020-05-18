@@ -45,5 +45,8 @@
   "SAVED":"Sauvegardées",
   "POP_ERROR":"Erreure",
   "ID3":"Se baser ou non sur les balises ID3 pour accéder à la base de données musicale",
-  "METAS":"Affiche les biographies et les infos sur les albums et morceaux en provenance de subsonic"
+  "METAS":"Affiche les biographies et les infos sur les albums et morceaux en provenance de subsonic",
+  "INDEXS":"Index",
+  "PATH_DOC":"Memorise le chemin Volusonic pour la navigation suivante",
+  "PATH":"Chemin rémanent"
 }
