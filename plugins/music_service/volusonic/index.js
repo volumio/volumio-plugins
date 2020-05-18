@@ -119,6 +119,7 @@ ControllerVolusonic.prototype.getUIConfig = function() {
       uiconf.sections[1].content[3].value = findOption(self.config.get('timeOut'), uiconf.sections[1].content[3].options);
       uiconf.sections[1].content[4].value = self.config.get('ID3');
       uiconf.sections[1].content[5].value = self.config.get('metas');
+      uiconf.sections[1].content[6].value = self.config.get('path');
       /*
       	tracks in searchx
       	show similar artists not present in subso
@@ -215,6 +216,7 @@ ControllerVolusonic.prototype.savePluginOptions = function(data) {
   self.config.set('timeOut', data['timeOut'].value);
   self.config.set('ID3', data['ID3']);
   self.config.set('metas', data['metas']);
+  self.config.set('path', data['path']);
 
   self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('VOLUSONIC_OPTIONS'), self.commandRouter.getI18nString('SAVED') + " !");
 
@@ -246,12 +248,14 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
   var uriParts = curUri.split('/');
   var defer = libQ.defer();
 
-  //saved path
-  if ((curUri == 'volusonic') && (myUri != "") && (myUri.split('/').length > 2)) {
-    curUri = myUri;
-  } else {
-    myUri = curUri;
+  if (self.config.get('path')){
+    if ((curUri == 'volusonic') && (myUri != "") && (myUri.split('/').length > 2)) {
+      curUri = myUri;
+    } else {
+      myUri = curUri;
+    }
   }
+
   var uriParts = curUri.split('/');
 
   var ping = self.api.submitQuery('ping?')

@@ -64,7 +64,8 @@
 					"artSize",
 					"timeOut",
 					"ID3",
-					"metas"
+					"metas",
+					"path"
 				]
 			},
 			"content": [{
@@ -202,6 +203,13 @@
 					"id": "metas",
 					"doc": "TRANSLATE.METAS",
 					"label": "Metadatas",
+					"element": "switch",
+					"value": true
+				},
+				{
+					"id": "path",
+					"doc": "TRANSLATE.PATH_DOC",
+					"label": "TRANSLATE.PATH",
 					"element": "switch",
 					"value": true
 				}
