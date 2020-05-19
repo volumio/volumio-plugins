@@ -1,4 +1,4 @@
-May 18th 2020
+May 19th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -127,7 +127,11 @@ nearly everythings
 
 ### 4. Last changes
 
-May 18th 020
+May 19th 2020
+
+- possible fix for no library when plugin is enable...
+
+May 18th 2020
 
 - restored output at boot
 

@@ -920,6 +920,8 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   }
 
   setTimeout(function () {
+  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-restart mpd by Dsp--');
+ self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
     // self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
     self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 6500);
