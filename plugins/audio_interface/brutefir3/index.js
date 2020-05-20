@@ -360,11 +360,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       }
       try {
         fs.readdir(filterfolder, function (err, item) {
-          //  allfilter = 'None,' + item;
-          //  let allfilters = allfilter.replace('filter-sources', '');
-          //  let allfilter2 = allfilters.replace('target-curves', '');
-          //  let allfilter3 = allfilter2.replace('VoBAFfilters', '').replace(/,,/g, ',');
-          //  let items = allfilter3.split(',');
+
           let allfilter = 'None,' + item;
           let items = allfilter.split(',');
           // items.pop();
@@ -573,7 +569,10 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       }
 
       //--------VoBAF section----------------------------------------------------------
+      if (self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type') == 'None') {
+        uiconf.sections[1].hidden = true;
 
+      }
       uiconf.sections[1].content[0].value = self.config.get('vobaf');
 
       uiconf.sections[1].content[2].value = self.config.get('Lowsw');
@@ -710,18 +709,11 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
-ControllerBrutefir.prototype.setAdditionalConf = function (type, controller, data) {
-  const self = this;
-  conf = self.setAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
-  conf = 'hardware';
-  //mixer
-  return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
-};
-
 ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
   const self = this;
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 };
+
 // Plugin methods -----------------------------------------------------------------------------
 
 //------------Ask for reboot for first time 
@@ -884,7 +876,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   self.saveVolumioconfig()
   self.hwinfo()
   self.modprobeLoopBackDevice()
- // self.saveHardwareAudioParameters()
+  // self.saveHardwareAudioParameters()
   self.setLoopbackoutput()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
   self.restoreVolumioconfig()
@@ -920,8 +912,8 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   }
 
   setTimeout(function () {
-  console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-restart mpd by Dsp--');
- self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
+    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-restart mpd by Dsp--');
+    self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
     // self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
     self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 6500);
@@ -1180,6 +1172,7 @@ ControllerBrutefir.prototype.testclipping = function () {
       };
     } else {
       messageDisplayed = 0;
+
     }
     self.config.set('attenuationl', messageDisplayed);
     self.config.set('attenuationr', messageDisplayed);
@@ -1200,7 +1193,6 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   const self = this;
   let skipvalue = '';
   let filtername = self.config.get('leftfilter');
-  // let filterpath = '/data/INTERNAL/brutefirfilters/';
   var auto_filter_format;
   let filext = self.config.get('leftfilter').split('.').pop().toString();
   var wavetype;
@@ -1362,9 +1354,11 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
 
       if ((self.config.get('leftfilter') == "Dirac pulse") || (self.config.get('leftfilter') == "None")) {
         composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = "dirac pulse";
+        self.config.set('attenuationl', '0');
       } else leftfilter = filterfolder + self.config.get('leftfilter');
       if ((self.config.get('rightfilter') == "Dirac pulse") || (self.config.get('rightfilter') == "None")) {
         composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
+        self.config.set('attenuationr', '0');
       } else rightfilter = filterfolder + self.config.get('rightfilter');
 
       //--------second set of filters
@@ -1775,7 +1769,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
     //  }
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
-        let rightfilter = self.config.get('rightfilter');
+    let rightfilter = self.config.get('rightfilter');
     if ((enableclipdetect) && (rightfilter != 'None') || (leftfilter != 'None')) {
       setTimeout(function () {
         var responseData = {

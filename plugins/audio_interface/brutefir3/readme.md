@@ -1,4 +1,4 @@
-May 19th 2020
+May 20th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 20th 2020
+
+- attenuation is set to 0 if filter is 'None'
+- VoBAF is hidden if mixer type is 'None'
 
 May 19th 2020
 
