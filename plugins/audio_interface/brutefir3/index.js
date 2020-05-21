@@ -439,7 +439,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       try {
         let sampleformat = self.config.get("formats").split(' ');
         let sampleformatf = (', Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ');
-        // let sampleformato;
+        let sampleformato;
         let sitems;
         let js;
         let str2;

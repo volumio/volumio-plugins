@@ -1,4 +1,4 @@
-May 20th 2020
+May 21th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -84,11 +84,11 @@ __Base scheme - signal path__
 
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
-# __ !!!! Does not with software volume mixer or RPI jack output !!!!__
+# __ !!!! Does not with RPI jack output !!!!__
 
 ## To install
 
-Should be used with Volumio > __2.753__
+Should be used with Volumio > __2.776__
 
 Before intalling the dev version, __REMOVE__, if exists, the plugin from your system using the webUI plugins page and __REBOOT BEFORE INSTALLING__ a new version!
 
@@ -126,6 +126,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 21th 2020
+
+- fix for UI not loading in some case
 
 May 20th 2020
 
