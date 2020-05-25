@@ -355,7 +355,7 @@
 					"prettyName": "RemotePi",
 					"icon": "fa-power-off",
 					"name": "remotepi",
-					"version": "1.1.5",
+					"version": "1.1.6",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/remotepi/remotepi.zip",
 					"license": "",
 					"description": "The plugin enables support for the RemotePi board.",
@@ -367,7 +367,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "19-12-2019"
+					"updated": "25-5-2020"
 				},
 				{
 					"prettyName": "AutoStart",
