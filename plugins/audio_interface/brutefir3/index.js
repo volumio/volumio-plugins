@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 16th 2020
+/*DRC-FIR plugin for volumio2. By balbuze May 24th 2020
 todo :
 i2s dac settings
 ...
@@ -13,9 +13,12 @@ const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
 const socket = io.connect('http://localhost:3000');
-const wavFileInfo = require('wav-file-info');
+//const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 const path = require('path');
+//const { readSync: readSyncBwf } = require('node-bwf-wav-file-reader');
+//const { read: readBwf } = require('node-bwf-wav-file-reader');
+
 
 //---global Variables
 const filterfolder = "/data/INTERNAL/Dsp/filters/";
@@ -410,6 +413,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[22].options'), value));
 
+      uiconf.sections[0].content[23].hidden = true;
       value = self.config.get('filter_size');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
@@ -1196,39 +1200,80 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   var auto_filter_format;
   let filext = self.config.get('leftfilter').split('.').pop().toString();
   var wavetype;
+  let filelength;
 
   if (filext == 'pcm') {
+    try {
+      filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 4);
+    } catch (err) {
+      self.logger.info('An error occurs while reading file');
+    }
+    self.config.set('filter_size', filelength);
     auto_filter_format = 'FLOAT_LE';
   }
   else if (filext == 'txt') {
+    let filelength;
+    try {
+      filelength = execSync('/bin/cat ' + filterfolder + filtername + ' |wc -l').slice(0, -1);
+    } catch (err) {
+      self.logger.info('An error occurs while reading file');
+    }
+    self.config.set('filter_size', filelength);
     auto_filter_format = 'text';
+    self.logger.info('Filter length' + filelength);
+
   }
   else if (filext == 'dbl') {
+    try {
+      filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 8);
+    } catch (err) {
+      self.logger.info('An error occurs while reading file');
+    }
+    self.config.set('filter_size', filelength);
     auto_filter_format = 'FLOAT64_LE';
   }
   else if (filext == 'None') {
+
     auto_filter_format = 'text';
   }
   else if (filext == 'wav') {
+    let SampleFormat;
     try {
-      wavFileInfo.infoByFilename(filterfolder + filtername, function (err, info) {
-        var wavetype = (info.header.bits_per_sample)
-        self.config.set('wavetype', wavetype);
-      });
-      var wavetype = self.config.get('wavetype');
-      if (wavetype == '16') {
-        var auto_filter_format = 'S16_LE';
-      }
-      else if (wavetype == '24') {
-        var auto_filter_format = 'S24_LE';
-      }
-      else if (wavetype == '32') {
-        var auto_filter_format = 'S32_LE';
-      }
-      else if (wavetype == '64') {
-        var auto_filter_format = 'FLOAT64_LE';
-      };
-      skipvalue = "skip:44;"
+      execSync('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
+   //   console.log('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername)
+      setTimeout(function () {
+
+        fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
+          if (err) {
+            self.logger.info('Error reading test.result', err);
+          } else {
+            var resultJSON = JSON.parse(result);
+            var DataLength = resultJSON.DataLength;
+            var DataStart = resultJSON.DataStart;
+            var BytesPerFrame = resultJSON.BytesPerFrame;
+            SampleFormat = resultJSON.SampleFormat;
+            /*
+                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + DataLength);
+                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + DataStart);
+                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + BytesPerFrame);
+                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + SampleFormat);
+                  //      console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + result);
+              */
+            filelength = DataLength / BytesPerFrame;
+            skipvalue = ("skip:" + (8 + (+DataStart)) + ";");
+
+            self.config.set('filter_size', filelength);
+            self.config.set('skipvalue', skipvalue);
+            self.config.set('wavetype', SampleFormat);
+
+          }
+        });
+      }, 50);
+
+      auto_filter_format = self.config.get('wavetype');
+      filelength = self.config.get('filter_size');
+      skipvalue = self.config.get('skipvalue');
+
     } catch (e) {
       self.logger.error('Could not read wav file: ' + e)
     }
@@ -1245,14 +1290,51 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     };
     self.commandRouter.broadcastMessage("openModal", modalData);
   }
+
+  filelength = self.config.get('filter_size');
+
   self.config.set('filter_format', auto_filter_format);
-  self.logger.info('--------->filter ' + filext + ' ' + auto_filter_format);
-  return skipvalue;
+  self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
+  self.logger.info('--------->filter size ' + filelength);
+  self.logger.info('--------->Skip value for wav :' + skipvalue);
+
+
+  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
+  var check = Number(filelength);
+  var valfound = false;
+  if (arr.indexOf(check) > -1) {
+    valfound = true;
+  }
+  if (valfound) {
+    self.logger.info('File size found in array!');
+  }
+  if (valfound === false) {
+    let modalData = {
+      title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
+      message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData)
+    self.logger.error('File size not found in array!');
+
+  };
+  var obj = {
+    skipvalue: skipvalue,
+    valfound: valfound
+  };
+
+  return obj;
+
+  // return (skipvalue,valfound);
 };
 
 //---------------------------------------------------------------
 
-ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
+ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
   const self = this;
   let defer = libQ.defer();
 
@@ -1338,7 +1420,8 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
       let vatt = self.config.get('vatt');
 
       let noldirac = self.config.get('leftfilter');
-      let skipval = self.dfiltertype(skipvalue);
+      let val = self.dfiltertype(obj);
+      let skipval = val.skipvalue
       skipfl = skipfr = skipval;
 
       let routput_device = self.config.get('alsa_device');
@@ -1686,7 +1769,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (skipvalue) {
 
 
 //here we save the brutefir config.json
-ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
+ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
   const self = this;
   let output_device
   let input_device = "Loopback,1";
@@ -1770,7 +1853,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data) {
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
-    if ((enableclipdetect) && (rightfilter != 'None') || (leftfilter != 'None')) {
+    let val = self.dfiltertype(obj);
+    let valfound = val.valfound
+    if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
       setTimeout(function () {
         var responseData = {
           title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),

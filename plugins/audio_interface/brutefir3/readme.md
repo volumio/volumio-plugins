@@ -1,4 +1,4 @@
-May 21th 2020
+May 24th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 24th 2020
+
+- Filter size is now auto set, using file size and type, and vaiable header size for wav file
 
 May 21th 2020
 

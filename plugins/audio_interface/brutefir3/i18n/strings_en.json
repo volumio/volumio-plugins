@@ -22,6 +22,8 @@
   "DOC_RFILTER": "<h4>Right filter</h4><br>Select Right filter file. File must be located in /INTERNAL/Dsp/filters<br>Supported type:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
   "DIFF_FILTER_TYPE_TITLE": "Different filter type",
   "DIFF_FILTER_TYPE_MESS": "All filters must be of the same type",
+  "FILTER_LENGTH_TITLE": "Error with filter size",
+  "FILTER_LENGTH_MESS" : "Filter is not usable! Filter size must be power of 2! ",
   "DELAY": "Delay",
   "DOC_DELAY": "delay in ms",
   "LEFT_FILTER_C2": "DAC left channel 3",

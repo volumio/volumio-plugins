@@ -19,9 +19,17 @@
         "type": "string",
         "value": ""
     },
+    "skipvalue": {
+        "type": "string",
+        "value": ""
+    },
     "setUsedOfFilters": {
         "type": "string",
         "value": "1"
+    },
+    "subChunkListSize": {
+        "type": "number",
+        "value": ""
     },
     "displayednameofset": {
         "type": "string",
