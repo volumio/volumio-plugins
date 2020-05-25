@@ -33,12 +33,6 @@ then
   echo "Installing Chromium"
   sudo apt-get install -y chromium-browser
 
-  if [ -f /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness ]; then
-    echo "Creating UDEV rule adjusting backlight brightness permissions"
-    sudo echo "SUBSYSTEM==\"backlight\", RUN+=\"/bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness\"" > /etc/udev/rules.d/99-backlight.rules
-    sudo /bin/chmod 0666 /sys/devices/platform/rpi_backlight/backlight/rpi_backlight/brightness
-  fi
-
   echo "Creating /etc/X11/xorg.conf.d dir"
   sudo mkdir /etc/X11/xorg.conf.d
 
@@ -102,7 +96,7 @@ while true; do
     --disable-session-crashed-bubble \\
     --disable-translate \\
     --user-data-dir='/data/volumiokiosk' \
-	--no-sandbox \
+	  --no-sandbox \
     http://localhost:3000
 done" > /opt/volumiokiosk.sh
 sudo /bin/chmod +x /opt/volumiokiosk.sh
