@@ -28,7 +28,7 @@
 					"prettyName": "Volumio Spotify Connect2",
 					"icon": "fa-spotify",
 					"name": "volspotconnect2",
-					"version": "1.0.1",
+					"version": "1.0.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volspotconnect2/volspotconnect2.zip",
 					"license": "GPL 3.0",
 					"description": "Plugin for Spotify connect in Volumio2. Requires a Premium/Family account",
@@ -40,7 +40,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "23-4-2020"
+					"updated": "25-5-2020"
 				},
 				{
 					"prettyName": "Squeezelite player",
