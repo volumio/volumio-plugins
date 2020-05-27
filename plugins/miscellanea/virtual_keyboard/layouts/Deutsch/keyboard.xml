@@ -12,9 +12,6 @@ DE T1 standard keyboard layout
     <row>
       <space width="500" extended="true" />
       <key>
-        <default display="Esc" action="escape" />
-      </key>
-      <key>
         <default display="^" />
         <shifted display="&#176;" />
       </key>
@@ -74,14 +71,18 @@ DE T1 standard keyboard layout
         <default display="&#180;" />
         <shifted display="`" />
       </key>
-      <key fill="true">
+      <key width="3000">
         <default display="&#9003;" action="backspace" />
+        <mod3    display="Entf" action="delete" />
       </key>
       <space width="500" extended="true" />
-      <key width="4000" extended="true">
+      <key extended="true">
+        <default display="Esc" action="escape" />
+      </key>
+      <key extended="true">
         <default display="Pos1" action="home" />
       </key>
-      <key width="4000" extended="true">
+      <key extended="true">
         <default display="Bild &#8593;" action="pageup" />
       </key>
       <space width="500" extended="true" />
@@ -89,8 +90,9 @@ DE T1 standard keyboard layout
 
     <row>
       <space width="500" extended="true" />
-      <key width="2100">
-        <default display="&#8633;" action="tab" />
+      <key width="2000">
+        <default display="" action="" />
+        <mod3    display="Esc" action="escape" />
       </key>
       <key obey-caps="true">
         <default display="q" />
@@ -143,14 +145,18 @@ DE T1 standard keyboard layout
         <shifted display="*" />
         <mod1    display="~" />
       </key>
-      <key fill="true">
-        <default display="Entf" action="delete" />
+      <key width="2000">
+        <default display="" action="" />
+        <mod3    display="Pos1" action="home" />
       </key>
       <space width="500" extended="true" />
-      <key width="4000" extended="true">
+      <key extended="true">
+        <default display="Entf" action="delete" />
+      </key>
+      <key extended="true">
         <default display="Ende" action="end" />
       </key>
-      <key width="4000" extended="true">
+      <key extended="true">
         <default display="Bild &#8595;" action="pagedown" />
       </key>
       <space width="500" extended="true" />
@@ -210,12 +216,14 @@ DE T1 standard keyboard layout
         <default display="#" />
         <shifted display="'" />
       </key>
-      <key fill="true">
-        <default display="&#8629;" action="return" />
+      <key width="1500">
+        <default display="" action="" />
+        <mod3    display="Ende" action="end" />
       </key>
       <space width="500" extended="true" />
-      <space width="4000" extended="true" />
-      <space width="4000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
       <space width="500" extended="true" />
     </row>
 
@@ -270,50 +278,58 @@ DE T1 standard keyboard layout
         <default display="-" />
         <shifted display="_" />
       </key>
-      <key fill="true">
+      <key width="4600">
         <default display="Shift" action="modifier:shift" />
+        <mod3    display="&#8593;" action="up" />
       </key>
       <space width="500" extended="true" />
-      <space width="4000" extended="true" />
-      <space width="4000" extended="true" />
+      <space width="1000" extended="true" />
+      <key extended="true">
+        <default display="&#8593;" action="up" />
+      </key>
+      <space width="1000" extended="true" />
       <space width="500" extended="true" />
     </row>
 
     <row>
       <space width="500" extended="true" />
-      <key fill="true">
+      <key width="2000">
         <default display="Strg" action="modifier:ctrl" />
       </key>
       <key>
-        <default display="" action="modifier:mod2" /> <!-- unused modifier key -->
+        <default display="&#9776;" action="modifier:mod3" />
       </key>
-      <key>
+      <key width="2000">
         <default display="Alt" action="modifier:alt" />
       </key>
-      <key width="12000">
+      <key width="11300">
         <default display=" " action="space" />
       </key>
-      <key>
+      <key width="2000">
         <default display="AltGr" action="modifier:mod1" />
       </key>
-      <key fill="true">
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8592;" action="left" />
+      </key>
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8595;" action="down" />
+      </key>
+      <key width="2000">
         <default display="Strg" action="modifier:ctrl" />
-      </key>
-      <key>
-        <default display="&#8592;" action="left" />
-      </key>
-      <key>
-        <default display="&#8593;" action="up" />
-      </key>
-      <key>
-        <default display="&#8595;" action="down" />
-      </key>
-      <key>
-        <default display="&#8594;" action="right" />
+        <mod3    display="&#8594;" action="right" />
       </key>
       <space width="500" extended="true" />
-      <space width="4000" extended="true" />
-      <space width="4000" extended="true" />
+      <key extended="true">
+        <default display="&#8592;" action="left" />
+      </key>
+      <key extended="true">
+        <default display="&#8595;" action="down" />
+      </key>
+      <key extended="true">
+        <default display="&#8594;" action="right" />
+      </key>
       <space width="500" extended="true" />
     </row>
   </layout>
