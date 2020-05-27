@@ -1,4 +1,4 @@
-May 24th 2020
+May 27th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+May 27th 2020
+
+- remove useless node_modules...
 
 May 24th 2020
 
