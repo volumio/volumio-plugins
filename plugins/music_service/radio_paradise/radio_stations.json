@@ -18,22 +18,22 @@
       {
         "title": "Radio Paradise Main Mix (FLAC)",
         "uri": "webrp/0",
-        "url": "https://stream.radioparadise.com/fb/flac"
+        "url": "https://stream.radioparadise.com/flac"
       },
       {
         "title": "Radio Paradise Mellow Mix (FLAC)",
         "uri": "webrp/1",
-        "url": "https://stream.radioparadise.com/fb/mellow-flac"
+        "url": "https://stream.radioparadise.com/mellow-flac"
       },
       {
         "title": "Radio Paradise Rock Mix (FLAC)",
         "uri": "webrp/2",
-        "url": "https://stream.radioparadise.com/fb/rock-flac"
+        "url": "https://stream.radioparadise.com/rock-flac"
       },
       {
         "title": "Radio Paradise World/Etc Mix (FLAC)",
         "uri": "webrp/3",
-        "url": "https://stream.radioparadise.com/fb/world-etc-flac"
+        "url": "https://stream.radioparadise.com/world-etc-flac"
       },
       {
         "title": "Radio Paradise (AAC 320k)",
