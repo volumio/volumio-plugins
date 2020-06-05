@@ -256,7 +256,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "25-5-2020"
+					"updated": "25-5-2020",
+					"stable": false
 				}
 			]
 		},
@@ -456,7 +457,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "10-4-2020"
+					"updated": "10-4-2020",
+					"stable": false
 				},
 				{
 					"prettyName": "SnapCast",
@@ -474,7 +476,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "10-10-2019"
+					"updated": "10-10-2019",
+					"stable": false
 				},
 				{
 					"prettyName": "tradfri",
@@ -668,7 +671,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-6-2020"
+					"updated": "5-6-2020",
+					"stable": false
 				},
 				{
 					"prettyName": "Volumio parametric equalizer 0.1.8",
@@ -686,7 +690,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "2-5-2019"
+					"updated": "2-5-2019",
+					"stable": false
 				}
 			]
 		},
@@ -712,7 +717,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "26-3-2019"
+					"updated": "26-3-2019",
+					"stable": false
 				}
 			]
 		}
