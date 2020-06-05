@@ -50,6 +50,7 @@
   "CLIPPING_DETECT_MESS": "Du clipping peut apparaître selon le filtre utilisé. Le plugin peut le detecter et appliquer l'atténuation requise. La lecture va être stoppée si besoin. Appuyer sur 'tester' ou 'Quitter",
   "CLIPPING_DETECT_EXIT": "Quitter",
   "CLIPPING_DETECT_TEST": "Tester",
+  "FILTER_LENGTH":"La longueur du filtre est :",
   "SAVE": "Sauver",
   "OPEN_WIKI": "Ouvrir Wiki",
   "DOC_OPENW": "Aller à Volumio and brutefir Wiki",

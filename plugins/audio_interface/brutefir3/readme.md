@@ -1,4 +1,4 @@
-May 27th 2020
+June 5th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+June 5th 2020
+
+- .mpdignore in Dsp folder to avoid scanning filters
+- filter length message when detected
 
 May 27th 2020
 

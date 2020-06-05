@@ -869,6 +869,8 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function () {
       self.logger.info('brutefir failed to start. Check your configuration ' + error);
     } else {
       self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
+      self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+
       defer.resolve();
     }
   });
@@ -960,7 +962,7 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
         if (error) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
         } else {
-          self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+          // self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
           setTimeout(function () {
             socket.emit('mute', '')
             setTimeout(function () {
@@ -1115,6 +1117,7 @@ ControllerBrutefir.prototype.testclipping = function () {
   const self = this;
 
   socket.emit('pause');
+  let filelength = self.config.get('filter_size');
 
   let messageDisplayed;
   let firstPeak = 0;
@@ -1186,7 +1189,7 @@ ControllerBrutefir.prototype.testclipping = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('FILTER_LENGTH') + filelength, self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
     self.rebuildBRUTEFIRAndRestartDaemon();
     journalctl.stop();
   }, 1050);
@@ -1240,7 +1243,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     let SampleFormat;
     try {
       execSync('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
-   //   console.log('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername)
+      //   console.log('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername)
       setTimeout(function () {
 
         fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
