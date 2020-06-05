@@ -1,6 +1,6 @@
 {
 	"name": "volsimpleequal",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"description": "Volsimpleequal plugin for Volumio2. Provide an 10 bands equalizer",
 	"main": "index.js",
 	"scripts": {
