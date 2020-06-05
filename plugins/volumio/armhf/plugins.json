@@ -22,7 +22,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "6-12-2019"
+					"updated": "6-12-2019",
+					"stable": true
 				},
 				{
 					"prettyName": "Volumio Spotify Connect2",
@@ -40,7 +41,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "25-5-2020"
+					"updated": "25-5-2020",
+					"stable": true
 				},
 				{
 					"prettyName": "Squeezelite player",
@@ -58,7 +60,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-11-2018"
+					"updated": "20-11-2018",
+					"stable": true
 				},
 				{
 					"prettyName": "Logitech Media Server",
@@ -76,7 +79,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "1-5-2019"
+					"updated": "1-5-2019",
+					"stable": true
 				},
 				{
 					"prettyName": "Personal Radio",
@@ -94,7 +98,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "30-3-2019"
+					"updated": "30-3-2019",
+					"stable": true
 				},
 				{
 					"prettyName": "Radio Paradise",
