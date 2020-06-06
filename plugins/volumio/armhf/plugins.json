@@ -173,7 +173,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "4-8-2018"
+					"updated": "4-8-2018",
+					"stable": true
 				},
 				{
 					"prettyName": "Onedrive Music Library",
