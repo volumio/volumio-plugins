@@ -117,7 +117,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-1-2020"
+					"updated": "20-1-2020",
+					"stable": true
 				},
 				{
 					"prettyName": "Podcast",
