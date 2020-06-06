@@ -155,7 +155,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "7-8-2019"
+					"updated": "7-8-2019",
+					"stable": true
 				},
 				{
 					"prettyName": "Phish.in",
