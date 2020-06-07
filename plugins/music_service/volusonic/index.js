@@ -20,6 +20,17 @@ function ControllerVolusonic(context) {
 
 }
 
+function toIntID(data) {
+  if (data === parseInt(data, 10))
+    return data;
+  else
+    return -1;
+}
+
+function getCoverArtURL (server, id, artSize, auth) {
+  return server + '/rest/getCoverArt?id=' + toIntID(id) + '&size=' + artSize + '&' + auth;
+}
+
 ControllerVolusonic.prototype.onVolumioStart = function() {
   var self = this;
   var configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
@@ -579,7 +590,7 @@ ControllerVolusonic.prototype.showArtist = function(uriParts, curUri) {
         if (infos.mediumImageUrl !== undefined) {
           info.albumart = infos.mediumImageUrl;
         } else {
-          info.albumart = self.config.get('server') + '/rest/getCoverArt?id=' + artist.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth');
+          info.albumart = getCoverArtURL(self.config.get('server'), artist.coverArt, self.getSetting('artSize'), self.config.get('auth'));
         }
         //bio section
         var meta = "";
@@ -804,7 +815,7 @@ ControllerVolusonic.prototype._formatPlay = function(album, artist, coverart, ye
         service: 'volusonic',
         artist: artist,
         album: album,
-        albumart: self.config.get('server') + '/rest/getCoverArt?id=' + coverart + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+        albumart: getCoverArtURL(self.config.get('server'), coverart, self.getSetting('artSize'), self.config.get('auth')),
         year: year,
         type: 'album',
         duration: parseInt(duration / 60) + 'mns'
@@ -942,7 +953,7 @@ ControllerVolusonic.prototype._formatPodcastEpisode = function(episode, curUri) 
     title: episode.title,
     artist: new Date(episode.publishDate).toLocaleDateString(),
     album: episode.description,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + episode.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), episode.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     uri: 'volusonic/track/' + episode.streamId + "C" + episode.channelId //we had the channelId so it can be passed to the queue (goto call)
   }
   return item;
@@ -955,7 +966,7 @@ ControllerVolusonic.prototype._formatSong = function(song, curUri) {
     type: 'song',
     title: song.title,
     artist: song.artist,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), song.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     uri: 'volusonic/track/' + song.id,
   }
   return item;
@@ -969,7 +980,7 @@ ControllerVolusonic.prototype._formatPodcast = function(podcast, curUri) {
     title: podcast.title,
     artist: podcast.description,
     album: "",
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + podcast.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), podcast.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     icon: "",
     uri: curUri + '/' + podcast.id
   }
@@ -986,7 +997,7 @@ ControllerVolusonic.prototype._formatAlbum = function(album, curUri) {
     title: tit + ' (' + new Date(album.created).getFullYear() + ')',
     artist: album.artist,
     album: "",
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + album.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), album.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     icon: "",
     uri: curUri + '/' + album.id
   }
@@ -999,7 +1010,7 @@ ControllerVolusonic.prototype._formatPlaylist = function(playlist, curUri) {
     service: 'volusonic',
     type: 'folder',
     title: playlist.name + ' (' + new Date(playlist.created).getFullYear() + ')',
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + playlist.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), playlist.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     icon: "",
     uri: curUri + '/' + playlist.id
   }
@@ -1442,7 +1453,7 @@ ControllerVolusonic.prototype._getPlayable = function(song) {
     albumId: song.albumId,
     genre: song.genre,
     type: song.type,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: getCoverArtURL(self.config.get('server'), song.coverArt, self.getSetting('artSize'), self.config.get('auth')),
     uri: self.config.get('server') + '/rest/stream?id=' + song.id + '&' + format + '&' + self.config.get('auth'),
     samplerate: bRate + " kbps",
     trackType: type,
