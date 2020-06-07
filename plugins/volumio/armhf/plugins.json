@@ -690,7 +690,7 @@
 					"prettyName": "Volumio parametric equalizer 0.1.8",
 					"icon": "fa-lightbulb-o",
 					"name": "volparametriceq",
-					"version": "0.1.8",
+					"version": "0.1.9",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volparametriceq/volparametriceq.zip",
 					"license": "GPL 3.0",
 					"description": "Parametric equalizer plugin for Volumio2",
@@ -702,7 +702,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "2-5-2019"
+					"updated": "7-6-2020"
 				}
 			]
 		},
