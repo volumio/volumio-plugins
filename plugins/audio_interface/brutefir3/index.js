@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze May 24th 2020
+/*DRC-FIR plugin for volumio2. By balbuze June 09th 2020
 todo :
 i2s dac settings
 ...
@@ -483,6 +483,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         uiconf.sections[0].content[28].hidden = true;
 
       }
+      uiconf.sections[0].content[27].hidden = true;
+
       uiconf.sections[0].content[27].value = self.config.get('displayednameofset');
 
       try {
@@ -765,20 +767,16 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
   const self = this;
   let defer = libQ.defer();
   //self.hwinfo();
-  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('failed to load snd_aloop' + error);
-    } else {
-      self.commandRouter.pushConsoleMessage('snd_aloop loaded');
-      defer.resolve();
-    }
-  });
-  setTimeout(function () {
-    return defer.promise;
-  }, 500)
+  try {
+    execSync("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('snd_aloop loaded');
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to load snd_aloop' + err);
+  }
 };
 
 //here we detect hw info
@@ -791,51 +789,47 @@ ControllerBrutefir.prototype.hwinfo = function () {
   let formats;
   let hwinfo;
   let samplerates;
-  exec('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('failedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ' + error);
-    } else {
-      fs.readFile('/data/configuration/audio_interface/brutefir/hwinfo.json', 'utf8', function (err, hwinfo) {
-        if (err) {
-          self.logger.info('Error reading hwinfo', err);
-        } else {
-          try {
-            const hwinfoJSON = JSON.parse(hwinfo);
-            nchannels = hwinfoJSON.channels.value;
-            formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
-            samplerates = hwinfoJSON.samplerates.value;
-            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-            console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-            self.config.set('nchannels', nchannels);
-            self.config.set('formats', formats);
-            self.config.set('probesmplerate', samplerates);
-            let output_format = formats.split(" ").pop();
-            self.logger.info('Auto set output format : ----->', output_format);
-          } catch (e) {
-            self.logger.info('Error reading hwinfo.json, detection failed', e);
-          }
-        }
-      });
+  try {
+    execSync('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
+      uid: 1000,
+      gid: 1000
+    });
+    hwinfo = fs.readFileSync('/data/configuration/audio_interface/brutefir/hwinfo.json');
+    try {
+      const hwinfoJSON = JSON.parse(hwinfo);
+      nchannels = hwinfoJSON.channels.value;
+      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+      samplerates = hwinfoJSON.samplerates.value;
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.config.set('nchannels', nchannels);
+      self.config.set('formats', formats);
+      self.config.set('probesmplerate', samplerates);
+      let output_format = formats.split(" ").pop();
+      self.logger.info('Auto set output format : ----->', output_format);
+    } catch (err) {
+      self.logger.info('Error reading hwinfo.json, detection failed :', err);
     }
-  })
-  return defer.promise;
 
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('----Hw detection failed :' + err);
+    defer.reject(err);
+  }
 };
 
 //here we save the volumio config for the next plugin start
 ControllerBrutefir.prototype.saveVolumioconfig = function () {
   const self = this;
   return new Promise(function (resolve, reject) {
-    let cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
-    let cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
     try {
+      let cp = execSync('/bin/cp /data/configuration/audio_interface/alsa_controller/config.json /tmp/vconfig.json');
+      let cp2 = execSync('/bin/cp /data/configuration/system_controller/i2s_dacs/config.json /tmp/i2sconfig.json');
+
       let cp3 = execSync('/bin/cp /boot/config.txt /tmp/config.txt');
     } catch (err) {
-      self.logger.info('config.txt does not exist');
+      self.logger.info('config.txt does not exist ' + err);
     }
     resolve();
   });
@@ -846,10 +840,10 @@ ControllerBrutefir.prototype.restoreVolumioconfig = function () {
   const self = this;
   return new Promise(function (resolve, reject) {
     setTimeout(function () {
-      let cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
-      let cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
       try {
-        let cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
+        let cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
+        let cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
+
       } catch (err) {
         self.logger.info('config.txt does not exist');
       }
@@ -2315,24 +2309,42 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
   });
 };
 
-//-------------here we define action if filters swappable when the button is pressed-----
+//-------------here we define action if filters swappable when the button' is pressed-----
 ControllerBrutefir.prototype.SwapFilters = function () {
   const self = this;
   let rsetUsedOfFilters = self.config.get('setUsedOfFilters');
   let brutefircmd;
-
+  var leftfilter, rightfilter, sndleftfilter, sndrightfilter;
   if (rsetUsedOfFilters == '1') {
     self.config.set('setUsedOfFilters', 2);
     console.log('Swap to set 2 ');
     brutefircmd = ('cfc "l_out" "' + "2l_out" + '" ;cfc "r_out" "' + "2r_out" + '"');
-
+    self.config.set('leftftosave', self.config.get('leftfilter'));
+    self.config.set('rightftosave', self.config.get('rightfilter'));
+    self.config.set('leftfilter', self.config.get('sndleftfilter'));
+    self.config.set('rightfilter', self.config.get('sndrightfilter'));
+    self.config.set('sndleftfilter', self.config.get('leftftosave'));
+    self.config.set('sndrightfilter', self.config.get('rightftosave'));
     self.config.set('displayednameofset', "Set used is 2");
 
   } else if (rsetUsedOfFilters == '2') {
     self.config.set('setUsedOfFilters', 1);
     console.log('Swap to set 1 ');
     brutefircmd = ('cfc "l_out" "' + "l_out" + '" ;cfc "r_out" "' + "r_out" + '"');
-
+    /* self.config.set('leftftosave', self.config.get('sndleftfilter'));
+     self.config.set('rightftosave', self.config.get('sndrightfilter'));
+     self.config.set('leftfilter', self.config.get('leftftosave'));
+     self.config.set('rightfilter', self.config.get('rightftosave'));
+     self.config.set('sndleftfilter', self.config.get('leftftosave'));
+     self.config.set('sndrightfilter', self.config.get('rightftosave'));
+     self.config.set('displayednameofset', "Set used is 1");
+   */
+    self.config.set('leftftosave', self.config.get('leftfilter'));
+    self.config.set('rightftosave', self.config.get('rightfilter'));
+    self.config.set('leftfilter', self.config.get('sndleftfilter'));
+    self.config.set('rightfilter', self.config.get('sndrightfilter'));
+    self.config.set('sndleftfilter', self.config.get('leftftosave'));
+    self.config.set('sndrightfilter', self.config.get('rightftosave'));
     self.config.set('displayednameofset', "Set used is 1");
 
   };

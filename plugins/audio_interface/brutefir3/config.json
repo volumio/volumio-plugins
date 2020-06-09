@@ -67,6 +67,10 @@
         "type": "string",
         "value": "None"
     },
+    "leftftosave": {
+        "type": "string",
+        "value": "None"
+    },
     "lc1delay": {
         "type": "string",
         "value": "0"
@@ -76,6 +80,10 @@
         "value": "None"
     },
     "sndrightfilter": {
+        "type": "string",
+        "value": "None"
+    },
+    "rightftosave": {
         "type": "string",
         "value": "None"
     },

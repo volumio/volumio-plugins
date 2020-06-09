@@ -1,4 +1,4 @@
-June 5th 2020
+June 9th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+June 9th 2020
+
+- work on resilience
+- work on swap filters
 
 June 5th 2020
 
