@@ -259,13 +259,6 @@
 			]
 		},
 		{
-			"prettyName": "Accessories",
-			"name": "accessory",
-			"id": "cat3",
-			"description": "Plugins for Volumio Accessories",
-			"plugins": []
-		},
-		{
 			"prettyName": "miscellanea",
 			"name": "miscellanea",
 			"id": "cat5",
