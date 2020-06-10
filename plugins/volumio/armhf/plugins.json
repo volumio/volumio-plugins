@@ -669,14 +669,14 @@
 			"description": "",
 			"plugins": [
 				{
-					"prettyName": "Volumio simple equalizer 0.4.1",
+					"prettyName": "Volumio simple equalizer",
 					"icon": "fa-sliders fa-rotate-90",
 					"name": "volsimpleequal",
 					"version": "0.4.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volsimpleequal/volsimpleequal.zip",
 					"license": "GPL-3.0",
-					"description": "Volsimpleequal plugin for Volumio2. Provide an 10 bands equalizer",
-					"details": "Volsimpleequal plugin for Volumio2. Provide an 10 bands equalizer",
+					"description": "Volsimpleequal plugin for Volumio2. Provides a 10 bands equalizer",
+					"details": "Volsimpleequal plugin for Volumio2. Provides a 10 bands equalizer",
 					"author": "Balbuze",
 					"screenshots": [
 						{
@@ -687,7 +687,7 @@
 					"updated": "5-6-2020"
 				},
 				{
-					"prettyName": "Volumio parametric equalizer 0.1.8",
+					"prettyName": "Volumio parametric equalizer",
 					"icon": "fa-lightbulb-o",
 					"name": "volparametriceq",
 					"version": "0.1.9",
