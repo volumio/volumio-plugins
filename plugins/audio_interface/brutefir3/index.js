@@ -843,9 +843,9 @@ ControllerBrutefir.prototype.restoreVolumioconfig = function () {
       try {
         let cp = execSync('/bin/cp /tmp/vconfig.json /data/configuration/audio_interface/alsa_controller/config.json');
         let cp2 = execSync('/bin/cp /tmp/i2sconfig.json /data/configuration/system_controller/i2s_dacs/config.json');
-
+        let cp3 = execSync('/bin/cp /tmp/config.txt /boot/config.txt');
       } catch (err) {
-        self.logger.info('config.txt does not exist');
+        self.logger.info('Error whie restoring config files  ' + err);
       }
     }, 8000)
     resolve();
