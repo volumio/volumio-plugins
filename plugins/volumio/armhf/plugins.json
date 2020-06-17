@@ -278,7 +278,7 @@
 			"description": "Things that cannot go in other categories",
 			"plugins": [
 				{
-					"prettyName": "Touch Display Plugin",
+					"prettyName": "Touch Display",
 					"icon": "fa-hand-pointer-o",
 					"name": "touch_display",
 					"version": "1.1.8",
