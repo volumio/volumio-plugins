@@ -136,6 +136,9 @@ VirtualKeyboard.prototype.saveConf = function (data) {
     });
   } else {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.NO_CHANGES'));
+    if (mbkbd === undefined) {
+      self.reconfigure('onSave');
+    }
   }
 };
 
@@ -158,16 +161,17 @@ VirtualKeyboard.prototype.getDefaultLayout = function () {
     case 'ru':
       defaultLayout = 'Русский';
       break;
-    case 'cs':
     case 'ca':
+    case 'cs':
+    case 'da':
     case 'es':
     case 'fr':
     case 'gr':
     case 'hr':
+    case 'hu':
     case 'it':
     case 'ja':
     case 'ko':
-    case 'hu':
     case 'nl':
     case 'no':
     case 'pl':
@@ -224,7 +228,7 @@ VirtualKeyboard.prototype.reconfigure = function (action) {
     });
   } else if (action === 'onSave' && self.hasTouchDisplay(true)) {
     cp.exec('/usr/bin/killall matchbox-keyboard', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-      if (error !== null) {
+      if (error !== null && stderr.search('matchbox-keyboard: no process found') === -1) {
         self.logger.error(id + 'Error stopping Matchbox keyboard: ' + error);
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard: ' + error);
         defer.reject(error);
@@ -243,15 +247,22 @@ VirtualKeyboard.prototype.reconfigure = function (action) {
             stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
             const displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
             try {
-              mbkbd = cp.spawn('matchbox-keyboard', ['-d'], { env: { ...process.env, DISPLAY: ':' + displayNumber, MB_KBD_CONFIG: '/data/configuration/miscellanea/virtual_keyboard/keyboard.xml' }, uid: 1000, gid: 1000 }).on('error', function (error) {
-                self.logger.error(id + 'Error executing Matchbox keyboard: ' + error);
-                self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard');
-              });
+              mbkbd = cp.spawn('matchbox-keyboard', ['-d'], { env: { ...process.env, DISPLAY: ':' + displayNumber, MB_KBD_CONFIG: '/data/configuration/miscellanea/virtual_keyboard/keyboard.xml' }, uid: 1000, gid: 1000 })
+                .on('error', function (error) {
+                  mbkbd = undefined;
+                  self.logger.error(id + 'Error starting Matchbox keyboard: ' + error);
+                  self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard: ' + error);
+                })
+                .stderr.on('data', function (data) {
+                  mbkbd = undefined;
+                  self.logger.error(id + 'Error starting Matchbox keyboard: ' + data);
+                  self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard: ' + data);
+                });
               self.logger.info(id + 'Restarting Matchbox keyboard.');
               defer.resolve();
             } catch (error) {
               self.logger.error(id + 'Error starting Matchbox keyboard: ' + error);
-              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard');
+              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'Matchbox keyboard: ' + error);
               defer.reject(error);
             }
           }
