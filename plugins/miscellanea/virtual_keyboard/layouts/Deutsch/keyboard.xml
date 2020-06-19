@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keyboard>
+
+<!--
+DE T1 standard keyboard layout
+-->
+
+  <options>
+  </options>
+
+  <layout id="default keyboard">
+    <row>
+      <space width="500" extended="true" />
+      <key>
+        <default display="^" />
+        <shifted display="&#176;" />
+      </key>
+      <key>
+        <default display="1" />
+        <shifted display="!" />
+      </key>
+      <key>
+        <default display="2" />
+        <shifted display='"' />
+        <mod1    display="&#178;" />
+      </key>
+      <key>
+        <default display="3" />
+        <shifted display="&#167;" />
+        <mod1    display="&#179;" />
+      </key>
+      <key>
+        <default display="4" />
+        <shifted display="$" />
+      </key>
+      <key>
+        <default display="5" />
+        <shifted display="%" />
+        <mod1    display="&#8240;" />
+      </key>
+      <key>
+        <default display="6" />
+        <shifted display="&#38;" />
+      </key>
+      <key>
+        <default display="7" />
+        <shifted display="/" />
+        <mod1    display="{" />
+      </key>
+      <key>
+        <default display="8" />
+        <shifted display="(" />
+        <mod1    display="[" />
+      </key>
+      <key>
+        <default display="9" />
+        <shifted display=")" />
+        <mod1    display="]" />
+      </key>
+      <key>
+        <default display="0" />
+        <shifted display="=" />
+        <mod1    display="}" />
+      </key>
+      <key>
+        <default display="&#223;" />
+        <shifted display="?" />
+        <mod1    display="\" />
+      </key>
+      <key>
+        <default display="&#180;" />
+        <shifted display="`" />
+      </key>
+      <key width="3000">
+        <default display="&#9003;" action="backspace" />
+        <mod3    display="Entf" action="delete" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="Esc" action="escape" />
+      </key>
+      <key extended="true">
+        <default display="Pos1" action="home" />
+      </key>
+      <key extended="true">
+        <default display="Bild &#8593;" action="pageup" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2000">
+        <default display="" action="" />
+        <mod3    display="Esc" action="escape" />
+      </key>
+      <key obey-caps="true">
+        <default display="q" />
+        <shifted display="Q" />
+        <mod1    display="@" />
+      </key>
+      <key obey-caps="true">
+        <default display="w" />
+        <shifted display="W" />
+      </key>
+      <key obey-caps="true">
+        <default display="e" />
+        <shifted display="E" />
+        <mod1    display="&#8364;" />
+      </key>
+      <key obey-caps="true">
+        <default display="r" />
+        <shifted display="R" />
+      </key>
+      <key obey-caps="true">
+        <default display="t" />
+        <shifted display="T" />
+      </key>
+      <key obey-caps="true">
+        <default display="z" />
+        <shifted display="Z" />
+      </key>
+      <key obey-caps="true">
+        <default display="u" />
+        <shifted display="U" />
+      </key>
+      <key obey-caps="true">
+        <default display="i" />
+        <shifted display="I" />
+      </key>
+      <key obey-caps="true">
+        <default display="o" />
+        <shifted display="O" />
+      </key>
+      <key obey-caps="true">
+        <default display="p" />
+        <shifted display="P" />
+      </key>
+      <key obey-caps="true">
+        <default display="&#252;" />
+        <shifted display="&#220;" />
+      </key>
+      <key>
+        <default display="+" />
+        <shifted display="*" />
+        <mod1    display="~" />
+      </key>
+      <key width="2000">
+        <default display="" action="" />
+        <mod3    display="Pos1" action="home" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="Entf" action="delete" />
+      </key>
+      <key extended="true">
+        <default display="Ende" action="end" />
+      </key>
+      <key extended="true">
+        <default display="Bild &#8595;" action="pagedown" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2600">
+        <default display="Caps" action="modifier:caps" />
+      </key>
+      <key obey-caps="true">
+        <default display="a" />
+        <shifted display="A" />
+      </key>
+      <key obey-caps="true">
+        <default display="s" />
+        <shifted display="S" />
+      </key>
+      <key obey-caps="true">
+        <default display="d" />
+        <shifted display="D" />
+      </key>
+      <key obey-caps="true">
+        <default display="f" />
+        <shifted display="F" />
+      </key>
+      <key obey-caps="true">
+        <default display="g" />
+        <shifted display="G" />
+      </key>
+      <key obey-caps="true">
+        <default display="h" />
+        <shifted display="H" />
+      </key>
+      <key obey-caps="true">
+        <default display="j" />
+        <shifted display="J" />
+      </key>
+      <key obey-caps="true">
+        <default display="k" />
+        <shifted display="K" />
+      </key>
+      <key obey-caps="true">
+        <default display="l" />
+        <shifted display="L" />
+        <mod1    display="&#163;" />
+      </key>
+      <key obey-caps="true">
+        <default display="&#246;" />
+        <shifted display="&#214;" />
+      </key>
+      <key obey-caps="true">
+        <default display="&#228;" />
+        <shifted display="&#196;" />
+      </key>
+      <key>
+        <default display="#" />
+        <shifted display="'" />
+      </key>
+      <key width="1500">
+        <default display="" action="" />
+        <mod3    display="Ende" action="end" />
+      </key>
+      <space width="500" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="1500">
+        <default display="Shift" action="modifier:shift" />
+      </key>
+      <key>
+        <default display="&#60;" />
+        <shifted display="&#63;" />
+        <mod1    display="|" />
+      </key>
+      <key obey-caps="true">
+        <default display="y" />
+        <shifted display="Y" />
+      </key>
+      <key obey-caps="true">
+        <default display="x" />
+        <shifted display="X" />
+      </key>
+      <key obey-caps="true">
+        <default display="c" />
+        <shifted display="C" />
+      </key>
+      <key obey-caps="true">
+        <default display="v" />
+        <shifted display="V" />
+      </key>
+      <key obey-caps="true">
+        <default display="b" />
+        <shifted display="B" />
+      </key>
+      <key obey-caps="true">
+        <default display="n" />
+        <shifted display="N" />
+      </key>
+      <key obey-caps="true">
+        <default display="m" />
+        <shifted display="M" />
+        <mod1    display="&#181;" />
+      </key>
+      <key>
+        <default display="," />
+        <shifted display=";" />
+      </key>
+      <key>
+        <default display="." />
+        <shifted display=":" />
+      </key>
+      <key>
+        <default display="-" />
+        <shifted display="_" />
+      </key>
+      <key width="4600">
+        <default display="Shift" action="modifier:shift" />
+        <mod3    display="&#8593;" action="up" />
+      </key>
+      <space width="500" extended="true" />
+      <space width="1000" extended="true" />
+      <key extended="true">
+        <default display="&#8593;" action="up" />
+      </key>
+      <space width="1000" extended="true" />
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2000">
+        <default display="Strg" action="modifier:ctrl" />
+      </key>
+      <key>
+        <default display="&#9776;" action="modifier:mod3" />
+      </key>
+      <key width="2000">
+        <default display="Alt" action="modifier:alt" />
+      </key>
+      <key width="11300">
+        <default display=" " action="space" />
+      </key>
+      <key width="2000">
+        <default display="AltGr" action="modifier:mod1" />
+      </key>
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8592;" action="left" />
+      </key>
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8595;" action="down" />
+      </key>
+      <key width="2000">
+        <default display="Strg" action="modifier:ctrl" />
+        <mod3    display="&#8594;" action="right" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="&#8592;" action="left" />
+      </key>
+      <key extended="true">
+        <default display="&#8595;" action="down" />
+      </key>
+      <key extended="true">
+        <default display="&#8594;" action="right" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+  </layout>
+</keyboard>
