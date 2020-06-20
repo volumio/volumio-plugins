@@ -157,7 +157,6 @@ VirtualKeyboard.prototype.saveConf = function (data) {
 VirtualKeyboard.prototype.getDefaultLayout = function () {
   const self = this;
   let defaultLayout;
-
   switch (self.commandRouter.sharedVars.get('language_code')) {
     case 'de':
       defaultLayout = 'Deutsch';
@@ -171,11 +170,13 @@ VirtualKeyboard.prototype.getDefaultLayout = function () {
     case 'ru':
       defaultLayout = 'Русский';
       break;
+    case 'fr':
+      defaultLayout = 'Français';
+      break;
     case 'ca':
     case 'cs':
     case 'da':
     case 'es':
-    case 'fr':
     case 'gr':
     case 'hr':
     case 'hu':
