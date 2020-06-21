@@ -30,12 +30,16 @@ VirtualKeyboard.prototype.onVolumioStart = function () {
 };
 
 VirtualKeyboard.prototype.onVolumioShutdown = function () {
-  mbkbd.removeAllListeners();
+  if (mbkbd !== undefined) {
+    mbkbd.removeAllListeners();
+  }
   return libQ.resolve();
 };
 
 VirtualKeyboard.prototype.onVolumioReboot = function () {
-  mbkbd.removeAllListeners();
+  if (mbkbd !== undefined) {
+    mbkbd.removeAllListeners();
+  };
   return libQ.resolve();
 };
 
