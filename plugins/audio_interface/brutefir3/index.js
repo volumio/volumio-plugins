@@ -45,7 +45,7 @@ function ControllerBrutefir(context) {
 ControllerBrutefir.prototype.onVolumioStart = function () {
   const self = this;
   let configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-  //this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
+  this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new (require('v-conf'))();
   this.config.loadFile(configFile);
   // self.autoconfig
@@ -879,7 +879,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   // self.saveHardwareAudioParameters()
   self.setLoopbackoutput()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
-  self.restoreVolumioconfig()
+  //self.restoreVolumioconfig()
   // .catch(function (err) {
   //  console.log(err);
   //});
@@ -912,9 +912,9 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   }
 
   setTimeout(function () {
-    console.log('-restart mpd by Dsp--');
+    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-restart mpd by Dsp--');
     self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
-    self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+     self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
     self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 6500);
   /*

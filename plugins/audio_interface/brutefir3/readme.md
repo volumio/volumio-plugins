@@ -1,4 +1,4 @@
-June 22th 2020
+June 23th 2020
 
 
 ## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
@@ -126,6 +126,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+June 23th 2020
+
+- I2s dac at boot
 
 June 22th 2020
 
