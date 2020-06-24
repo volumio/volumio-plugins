@@ -228,18 +228,17 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         // Advanced stream via API
         flacUri = track.uri;
 
+        channelMix = "Main";
+        metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=0";
         if (track.uri.includes("mellow")) {
             channelMix = "Mellow";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=1";
         } else if (track.uri.includes("rock")) {
             channelMix = "Rock";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=2";
-        } else if (track.uri.includes("eclectic")) {
-            channelMix = "Eclectic";
+        } else if (track.uri.includes("world")) {
+            channelMix = "World/Etc";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=3";
-        } else {
-            channelMix = "Main";
-            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=0"
         }
         
         var songs;
