@@ -11,6 +11,10 @@
         "type": "boolean",
         "value": true
     },
+    "firstOutputFormat": {
+        "type": "boolean",
+        "value": true
+    },
     "toolsinstalled": {
         "type": "boolean",
         "value": false

@@ -139,13 +139,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       let valuestoredl, valuestoredls;
       let valuestoredr, valuestoredrs;
       let valuestoredf;
-      //let filterfolder = "/data/INTERNAL/brutefirfilters";
-      //let filtersources = "/data/INTERNAL/brutefirfilters/filter-sources";
-      //let items;
       let allfilter;
-      //let oformat;
       let filetoconvertl;
-      //let tccurvepath = "/data/INTERNAL/brutefirfilters/target-curves";
       let tc;
 
       //-----Room settings section
@@ -807,7 +802,21 @@ ControllerBrutefir.prototype.hwinfo = function () {
       self.config.set('formats', formats);
       self.config.set('probesmplerate', samplerates);
       let output_format = formats.split(" ").pop();
-      self.logger.info('Auto set output format : ----->', output_format);
+
+      var arr = ['S16_LE', 'S24_LE', 'S24_3LE', 'S32_LE'];
+      var check = output_format;
+      if (arr.indexOf(check) > -1) {
+        let askForReboot = self.config.get('askForReboot');
+        let firstOutputFormat = self.config.get('firstOutputFormat');
+        console.log(askForReboot + " and " + firstOutputFormat)
+        if ((askForReboot == false) && firstOutputFormat) {
+          self.config.set('output_format', output_format);
+          self.config.set('firstOutputFormat', false);
+          self.logger.info('Auto set output format : ----->' + output_format);
+        }
+      } else {
+        self.logger.info('Can\'t determine a compatible value for output format');
+      }
     } catch (err) {
       self.logger.info('Error reading hwinfo.json, detection failed :', err);
     }
@@ -914,7 +923,7 @@ ControllerBrutefir.prototype.setLoopbackoutput = function () {
   setTimeout(function () {
     console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-restart mpd by Dsp--');
     self.commandRouter.executeOnPlugin('music_service', 'mpd', 'restartMpd', '');
-     self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
+    self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'disableI2SDAC', '');
     self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', stri);
   }, 6500);
   /*
