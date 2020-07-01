@@ -1,7 +1,7 @@
 July 1st 2020
 
 
-## Do not use with current available version of volumio. Need at least Volumio 2.776 or May not work!
+##  Need at least Volumio 2.776 or May not work!
 
 
 #	DSP for Volumio (previously Brutefir3)
@@ -52,8 +52,6 @@ Then in the plugin,, select filter named with _1. Save, a new button appears to 
 
 New automatic clipping detection. Attenuation can be set automatcally. 
 
-## warning : need to add volumio as member of the group systemd-journal ```sudo usermod -a -G systemd-journal volumio``` 
-
 First experimental multi channel up to 2x4 !!! with hw detection capabilities of the DAC!
 
 The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adaptativ Filtering ! Different filters may be applied depending on volume level. With that, it can apply filters such as adaptativ loudness.
@@ -88,7 +86,6 @@ First, you must have a working configuration with volumio, the dac you want to u
 
 ## To install
 
-Should be used with Volumio > __2.776__
 
 Before intalling the dev version, __REMOVE__, if exists, the plugin from your system using the webUI plugins page and __REBOOT BEFORE INSTALLING__ a new version!
 
@@ -113,6 +110,7 @@ rm -Rf brutefir*
 ### 3. Using the plugin
 
 In webUI, enable the plugin and wait about 20seconds.
+A reboot is required for HW detection.
 
 ## What is working :
 
@@ -130,6 +128,7 @@ nearly everythings
 July 1st 2020
 
 - work on auto conf for output format
+- new target curves HK9, HK10
 
 June 23th 2020
 
