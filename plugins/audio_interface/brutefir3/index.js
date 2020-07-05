@@ -2659,10 +2659,16 @@ ControllerBrutefir.prototype.installtools = function () {
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
       self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
       self.config.set('toolsinstalled', true);
+
       var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
       respconfig.then(function (config) {
         self.commandRouter.broadcastMessage('pushUiConfig', config);
+
       });
+
+      socket.emit('updateDb');
+
+
     } catch (err) {
       self.logger.info('An error occurs while downloading or installing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
@@ -2695,6 +2701,8 @@ ControllerBrutefir.prototype.removetools = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
+    socket.emit('updateDb');
+
     //   return self.commandRouter.reloadUi();
   });
 };

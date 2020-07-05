@@ -1,4 +1,4 @@
-July 1st 2020
+July 5th 2020
 
 
 ##  Need at least Volumio 2.776 or May not work!
@@ -124,6 +124,12 @@ nearly everythings
 
 
 ### 4. Last changes
+
+July 5th 2020
+
+- Auto update Db when tools are installed or removed
+- New swap demo filters files
+- New sweep file for REW beta >55 (may work with prior version)
 
 July 1st 2020
 
