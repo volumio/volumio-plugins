@@ -185,6 +185,24 @@
 						}
 					],
 					"updated": "25-5-2020"
+				},
+				{
+					"prettyName": "Radio Nowy Swiat",
+					"icon": "fa-lightbulb-o",
+					"name": "nowyswiat",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/nowyswiat/nowyswiat.zip",
+					"license": "ISC",
+					"description": "Radio Nowy Swiat",
+					"details": "Radio Nowy Swiat",
+					"author": "DJack",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "13-7-2020"
 				}
 			]
 		},
