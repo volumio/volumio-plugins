@@ -7,20 +7,20 @@
       "id": "section_account",
       "element": "section",
       "label": "TRANSLATE.CONFIGURATION.PANDORA_ACCOUNT_LABEL",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setConf"},
+      "icon": "fa-key",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setAccountConf"},
       "saveButton": {
         "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
         "data": [
           "email",
           "password",
-          "useCurl302WorkAround"
+          "isPandoraOne"
         ]
       },
       "content": [
         {
           "id": "email",
-          "type": "text",
+          "type": "string",
           "element": "input",
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_LABEL",
@@ -35,12 +35,35 @@
           "value": ""
         },
         {
+          "id": "isPandoraOne",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_ONE_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_ONE_LABEL",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "section_options",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.PANDORA_OPTIONS_LABEL",
+      "icon": "fa-cogs",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setOptionsConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
+        "data": [
+          "useCurl302WorkAround"
+        ]
+      },
+      "content": [
+        {
           "id": "useCurl302WorkAround",
           "type": "boolean",
           "element": "switch",
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_DOC",
-          "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND",
-          "value": "false"
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_LABEL",
+          "value": false
         }
       ]
     }
