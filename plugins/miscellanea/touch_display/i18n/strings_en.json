@@ -64,7 +64,7 @@
     "CONTROLGPUMEM":"Control GPU memory",
     "CONTROLGPUMEM_DOC":"With this switch enabled the amount of memory dedicated to the GPU will be managed by the plugin.",
     "GPUMEM":"GPU memory size",
-    "GPUMEM_DOC":"The size of the GPU memory can be adjusted in a range from 32 to 128MB.",
+    "GPUMEM_DOC":"The size of the GPU memory can be adjusted in steps of 1MB in a range from 32 to 128MB.",
     "POINTER_CONF":"Mouse pointer settings",
     "POINTER_DESC":"",
     "SHOWPOINTER":"Show mouse pointer",

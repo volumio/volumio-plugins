@@ -63,7 +63,7 @@
     "CONTROLGPUMEM":"Controle de la mémoire du GPU",
     "CONTROLGPUMEM_DOC":"With this switch enabled the amount of memory dedicated to the GPU will be managed by the plugin.",
     "GPUMEM":"Taille de la mémoire du GPU",
-    "GPUMEM_DOC":"The size of the GPU memory can be adjusted in a range from 32 to 128MB.",
+    "GPUMEM_DOC":"The size of the GPU memory can be adjusted in steps of 1MB in a range from 32 to 128MB.",
     "POINTER_CONF":"Réglage du curseur de la souris",
     "POINTER_DESC":"",
     "SHOWPOINTER":"Montrer le curseur de la souris",

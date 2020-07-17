@@ -148,9 +148,9 @@ TouchDisplay.prototype.onStart = function () {
       });
       unixDomSocket.on('close', function () {
         if (attempts < 100) {
-          unixDomSocket.setTimeout(100, function () {
+          setTimeout(function () {
             unixDomSocket.connect('/tmp/.X11-unix/X' + self.getDisplaynumber());
-          });
+          }, 100);
           attempts++;
         } else {
           self.logger.error(id + 'Connecting to the Xserver failed.');
@@ -701,7 +701,7 @@ TouchDisplay.prototype.setBrightness = function (brightness) {
   const self = this;
   const defer = libQ.defer();
 
-  fs.writeFile(blInterface + '/brightness', brightness, 'utf8', function (err) {
+  fs.writeFile(blInterface + '/brightness', brightness.toString(), 'utf8', function (err) {
     if (err !== null) {
       self.logger.error(id + 'Error setting display brightness: ' + err);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_BRIGHTNESS') + err);
@@ -1020,7 +1020,7 @@ TouchDisplay.prototype.setOrientation = function (angle) {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
     } else {
       self.logger.info(id + 'Touchscreen transformation matrix removed.');
-      if (!(rpiScreen && angle === '180')) {
+      if (angle !== '0' && !(rpiScreen && angle === '180')) {
         exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Identifier \"Touch rotation\"/a\\        Option \"TransformationMatrix\" \"" + transformationMatrix + "\"' /etc/X11/xorg.conf.d/95-touch_display-plugin.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
             self.logger.error(id + 'Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
@@ -1131,7 +1131,7 @@ TouchDisplay.prototype.getDisplaynumber = function () {
     } else {
       stdout = stdout.slice(stdout.indexOf(' xinit '));
       stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
-      displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
+      displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /)).toString();
       self.logger.info(id + 'Using Xserver unix domain socket /tmp/.X11-unix/X' + displayNumber);
     }
   });
