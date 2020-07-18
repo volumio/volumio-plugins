@@ -14,5 +14,9 @@
   "password": {
     "type": "string",
     "value": ""
+  },
+  "bandFilter": {
+    "type": "string",
+    "value": ""
   }
 }
