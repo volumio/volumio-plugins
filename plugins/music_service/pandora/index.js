@@ -7,7 +7,6 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
-// var url = require('url');
 var dnsSync = require('dns-sync');
 var anesidora = require('anesidora');
 
@@ -44,45 +43,28 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    // loaded values may be type boolean or type string
-    function validateBoolean (boolVar) {
-        if (typeof boolVar === 'boolean') {
-            return boolVar;
-        }
-        if (typeof boolVar === 'string') {
-            return (boolVar == 'true');
+    function validateBandFilter (filter) {
+        try {
+            return filter.split('%');
+        } catch (err) {
+            self.commandRouter.pushToastMessage('error', 'Pandora', 'Invalid band filter -- no bands will be filtered');
+            return [];
         }
     }
 
-    let loginData = {
+    let options = {
         email: self.config.get('email'),
         password: self.config.get('password'),
-        isPandoraOne: validateBoolean(self.config.get('isPandoraOne')),
-        loggedIn: false
+        isPandoraOne: self.config.get('isPandoraOne'),
+        bandFilter: validateBandFilter(self.config.get('bandFilter'))
     };
 
-    self.useCurl302WorkAround = validateBoolean(self.config.get('useCurl302WorkAround'));
+    self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
 
-    self.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
+    self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
-    return self.checkConfValidity(loginData)
-        .fail(err => {
-            self.logError('Invalid Pandora Configuration', err);
-            self.commandRouter.pushToastMessage('error',
-                                        'Pandora Configuration',
-                                        'Pandora failed to start.  Invalid configuration.');
-
-            return self.generalReject('checkConfValidity', err);
-        })
-        .then(() => self.initialSetup(loginData))
-        .fail(err => {
-            self.logError('initialSetup error: ' + err);
-            self.commandRouter.pushToastMessage('error',
-                                    'Pandora',
-                                    'Initial Pandora Setup failed.  Check configuration.');
-
-            return self.generalReject('Failure to get stations.  Check configuration: ' + err);
-        })
+    return self.checkConfValidity(options)
+        .then(() => self.initialSetup(options))
         .then(() => self.addToBrowseSources());
 };
 
@@ -120,18 +102,22 @@ ControllerPandora.prototype.flushPandora = function () {
     return libQ.resolve();
 };
 
-ControllerPandora.prototype.initialSetup = function (loginData) {
+ControllerPandora.prototype.initialSetup = function (options) {
     var self = this;
 
     self.announceFn('initialSetup');
 
     if (self.pandoraHandler === undefined) {
-        self.pandoraHandler = new PandoraHandler(self, loginData);
+        self.pandoraHandler = new PandoraHandler(self, options);
     }
 
     return self.pandoraHandler.pandoraLoginAndGetStations()
         .then(() => self.pandoraHandler.fillStationData())
-        .then(() => self.flushPandora());
+        .then(() => self.flushPandora())
+        .fail(err => {
+            self.logError('initialSetup error: ', err);
+            return self.generalReject('initialSetup', err);
+        });
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -149,7 +135,8 @@ ControllerPandora.prototype.getUIConfig = function () {
             uiconf.sections[0].content[0].value = self.config.get('email', '');
             uiconf.sections[0].content[1].value = self.config.get('password', '');
             uiconf.sections[0].content[2].value = self.config.get('isPandoraOne', '');
-            uiconf.sections[1].content[0].value = self.config.get('useCurl302WorkAround', '');
+            uiconf.sections[0].content[3].value = self.config.get('useCurl302WorkAround', '');
+            uiconf.sections[0].content[4].value = self.config.get('bandFilter', '');
             self.config.get();
 
             defer.resolve(uiconf);
@@ -175,42 +162,30 @@ ControllerPandora.prototype.getConf = function (varName) {
 	//Perform your installation tasks here
 };
 
-ControllerPandora.prototype.setAccountConf = function (options) {
+ControllerPandora.prototype.setOptionsConf = function (options) {
 	var self = this;
 
     self.config.set('email', options.email);
     self.config.set('password', options.password);
     self.config.set('isPandoraOne', options.isPandoraOne);
-    let loginInfo = ({
-        email: options.email,
-        password: options.password,
-        isPandoraOne: options.isPandoraOne
-    });
-    
-    return self.checkConfValidity(loginInfo)
+
+    self.config.set('useCurl302WorkAround', options.useCurl302WorkAround);
+    self.useCurl302WorkAround = options.useCurl302WorkAround;
+    self.config.set('bandFilter', options.bandFilter);
+
+    return self.checkConfValidity(options)
         .then(() => self.commandRouter.pushToastMessage('success', 'Pandora',
             'Login info saved.  If already logged in, restart plugin.'))
         .fail(err => self.generalReject('setAccountConf', err));
 };
 
-ControllerPandora.prototype.setOptionsConf = function (options) {
-	var self = this;
-
-    self.config.set('useCurl302WorkAround', options.useCurl302WorkAround);
-    self.useCurl302WorkAround = options.useCurl302WorkAround;
-
-    return self.checkConfValidity()
-        .then(() => self.commandRouter.pushToastMessage('success', 'Pandora', 'Plugin options saved.'))
-        .fail(err => self.generalReject('setOptionsConf',  err));
-};
-
 // checks Pandora plugin configuration validity
-ControllerPandora.prototype.checkConfValidity = function (loginData) {
+ControllerPandora.prototype.checkConfValidity = function (options) {
     var self = this;
 
     self.announceFn('checkConfValidity');
 
-    if (!loginData.email || !loginData.password) { // not configured
+    if (!options.email || !options.password) { // not configured
         self.logError('Missing email or password');
         self.commandRouter.pushToastMessage('error',
                             'Pandora',
@@ -219,7 +194,7 @@ ControllerPandora.prototype.checkConfValidity = function (loginData) {
         return libQ.reject(new Error('[Pandora] Need both email and password.'));
     }
 
-    return self.initialSetup(loginData);
+    return libQ.resolve();
 };
 
 // Playback Controls ---------------------------------------------------------------------------------------
@@ -285,26 +260,16 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
             .then(() => self.pandoraHandler.fetchTracks())
             .then(() => {
                 self.lastUri = null;
-                let newTracks = self.pandoraHandler.getNewTracks();
 
-                response.navigation.lists[0].items = newTracks.map(item => ({
-                    service: self.serviceName,
-                    type: 'song',
-                    artist: item.artist,
-                    title: item.title,
-                    name: item.name,
-                    album: item.album,
-                    albumart: item.albumart,
-                    icon: 'fa fa-music',
-                    uri: item.uri
-                }));
-
+                response.navigation.lists[0].items = self.pandoraHandler.getNewTracks();
                 response.navigation.prev.uri = curUri;
 
-                if (newTracks.length > 0) {
+                if (response.navigation.lists[0].items.length > 0) {
                     return libQ.resolve(response);
                 }
                 else {
+                    self.commandRouter.pushToastMessage('error', 'Pandora',
+                    'Failed to load tracks from ' + self.currStation.name);
                     return self.generalReject('handleBrowseUri',
                                         'failed to load tracks from ' +
                                         self.currStation.name);
@@ -338,31 +303,35 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     var self = this;
     var defer = libQ.defer();
 
-    self.announceFn('appendTracksToMpd');
+    let fnName = 'appendTracksToMpd';
+    self.announceFn(fnName);
 
     // resolve address to numeric IP by DNS lookup
-    function resolveUri(uri) {
-        let fnName = 'appendTracksToMpd::resolveUri';
+    function resolveTrackUri (uri) {
+        let result = null;
+        let fnName = 'resolveTrackUris';
 
         try {
             let start = uri.indexOf('//') + 2;
             let host = uri.substr(start, uri.indexOf('/', start) - start);
-            let result = uri.replace(host, dnsSync.resolve(host));
+            result = uri.replace(host, dnsSync.resolve(host));
 
             self.logInfo(fnName + ': ' + uri + ' => ' + result);
-
-            return libQ.resolve(result);
         } catch (err) {
-            self.logError(fnName + ' error: ', err);
-            self.commandRouter.pushToastMessage('error', 'Pandora', fnName + ' error');
-
-            return self.generalReject(fnName, err);
+            self.logError(fnName + ': error resolving ' + uri, err);
+            self.commandRouter.pushToastMessage('error', 'Pandora',
+                fnName + ' error');
+            result = uri;
         }
+        
+        return libQ.resolve(result);
     }
-
+  
     function setTrackTags(input) {
-        (() => self.useCurl302WorkAround ? resolveUri(input.realUri) : libQ.resolve(input.realUri))()
-            .then(endUri => self.mpdPlugin.sendMpdCommand('addid', [endUri]))
+        (() => self.useCurl302WorkAround ?
+            resolveTrackUri(input.realUri) :
+            libQ.resolve(input.realUri))()
+            .then(realUri => self.mpdPlugin.sendMpdCommand('addid', [realUri]))
             .then(result => {
                 let tagUpdateCmds = [
                     { command: 'addtagid', parameters: [result.Id, 'artist', input.artist] },
@@ -383,8 +352,8 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     libQ.all(promises)
         .then(() => defer.resolve())
         .fail(err => {
-            self.logError('Error in appendTracksToMpd', err);
-            defer.reject(self.pandoraPrefix() + 'appendTracksToMpd error: ' + err);
+            self.logError('Error in ' + fnName, err);
+            defer.reject(self.pandoraPrefix() + fnName + ' error: ' + err);
         });
 
     return defer.promise;
@@ -424,7 +393,6 @@ ControllerPandora.prototype.pandoraListener = function () {
     self.mpdPlugin.getState()
         .then(state => {
                 let nextTrack = self.getQueueTrack();
-                self.lastUri = nextTrack.uri;
 
                 if (self.commandRouter.stateMachine.getNextIndex() != 0) { // not last track in queue
                     if (nextTrack.service && nextTrack.service === self.serviceName) {
@@ -452,7 +420,13 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.sendMpdCommand('clear', [])
         .then(() => self.appendTracksToMpd([track]))
-        .then(() => self.removeTrack(self.lastUri))
+        .then(() => {
+            if (self.lastUri !== track.uri) {
+                self.removeTrack(self.lastUri);
+            }
+            self.lastUri = track.uri;
+            return libQ.resolve();
+        })
         .then(() => {
             self.mpdPlugin.clientMpd.removeAllListeners('system-player');
             self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
@@ -468,27 +442,12 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
                     let count = newTracks.length;
                     if (count > 0) {
                         self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' + count + ' track(s)');
-
+                        
                         return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks);
                     }
                 });
         })
         .fail(err => self.generalReject('clearAddPlayTrack', err));
-};
-
-ControllerPandora.prototype.revisitPlayLoop = function (newPos) {
-    var self = this;
-
-    self.lastUri = self.getQueueTrack().uri;
-    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-
-    return self.mpdPlugin.stop()
-        .then(() => {
-            self.commandRouter.stateMachine.currentPosition = newPos;
-
-            return libQ.resolve(self.getQueueTrack());
-        })
-        .then(track => self.clearAddPlayTrack(track));
 };
 
 // ControllerPandora.prototype.seek = function (position) {
@@ -505,7 +464,6 @@ ControllerPandora.prototype.stop = function () {
 
     self.announceFn('stop');
 
-    self.lastUri = null;
     self.mpdPlugin.clientMpd.removeListener('system-player', self.pandoraListener);
 
     return self.mpdPlugin.stop()
@@ -532,6 +490,21 @@ ControllerPandora.prototype.resume = function () {
     return self.mpdPlugin.resume()
         .then(() => self.mpdPlugin.getState())
         .then(state => self.pushState(state));
+};
+
+ControllerPandora.prototype.revisitPlayLoop = function (newPos) {
+    var self = this;
+
+    self.lastUri = self.getQueueTrack().uri;
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+
+    return self.mpdPlugin.stop()
+        .then(() => {
+            self.commandRouter.stateMachine.currentPosition = newPos;
+
+            return libQ.resolve(self.getQueueTrack());
+        })
+        .then(track => self.clearAddPlayTrack(track));
 };
 
 ControllerPandora.prototype.previous = function () {
@@ -586,9 +559,10 @@ ControllerPandora.prototype.explodeUri = function (uri) {
         return libQ.resolve(response);
     }
 
-    self.commandRouter.pushToastMessage('error', 'Pandora', 'Please clear old Pandora tracks from last session.');
+    let errMsg = 'explodeUri could not resolve uri: ' + uri;
+    self.commandRouter.pushToastMessage('error', 'Pandora', errMsg);
 
-    return self.generalReject('explodeUri could not resolve uri: ' + uri);
+    return self.generalReject(errMsg);
 };
 
 ControllerPandora.prototype.search = function (query) {
@@ -657,14 +631,15 @@ ControllerPandora.prototype.announceFn = function(fnName) {
     return self.commandRouter.pushConsoleMessage(self.datePrefix() + 'ControllerPandora::' + fnName);
 };
 
-function PandoraHandler(self, loginData) {
+function PandoraHandler(self, options) {
     var pandora = {};
+    var bandFilter = [];
     var loggedIn = false;
     var stationList = {}; // raw stationList object
     var stationData = []; // array of basic station info
     var newTracks = [];
 
-    PandoraHandler.prototype.init = function (loginData) {
+    PandoraHandler.prototype.init = function (options) {
         let partnerInfo = null;
         const pandoraOnePartnerInfo = {
             'username': 'pandora one',
@@ -676,12 +651,14 @@ function PandoraHandler(self, loginData) {
 
         self.announceFn('PandoraHandler::init');
 
-        if (loginData.isPandoraOne) {
+        if (options.isPandoraOne) {
             partnerInfo = pandoraOnePartnerInfo;
         }
 
-        pandora = new anesidora(loginData.email,
-                                loginData.password,
+        bandFilter = options.bandFilter;
+
+        pandora = new anesidora(options.email,
+                                options.password,
                                 partnerInfo);
 
         return libQ.resolve();
@@ -725,14 +702,14 @@ function PandoraHandler(self, loginData) {
                     self.commandRouter.pushToastMessage('error',
                                                 'Pandora Login Error',
                                                 'Invalid Username');
-                       return self.generalReject('Invalid Username: ' + loginData.email);
+                       return self.generalReject('Invalid Username: ' + options.email);
                 }
                 else if (err === 1012) {
                     self.logError('Invalid Password');
                     self.commandRouter.pushToastMessage('error',
                                                 'Pandora Login Error',
                                                 'Invalid Password');
-                    return self.generalReject('Invalid Password: ' + loginData.password);
+                    return self.generalReject('Invalid Password: ' + options.password);
                 }
                 else {
                     let infoMsg = ' See https://6xq.net/pandora-apidoc/json/errorcodes/';
@@ -813,24 +790,26 @@ function PandoraHandler(self, loginData) {
                 }, defer.makeNodeResolver());
 
             return defer.promise;
-        }
+        } 
 
         // Retrieve an array of tracks from a raw Pandora playlist object
         function fillNewTracks(playlist) {
-            const maxFetch = 4; // number of songs to fetch from servers
             let baseNameMatch = new RegExp(/\/access\/(\d+)/);
 
             self.announceFn(fnName + '::fillNewTracks');
 
             newTracks = [];
 
-            for (let i = 0; i < maxFetch; i++) {
+            for (let i in playlist.items) {
+                if (!playlist.items[i].songName) { break; } // no more tracks
+
                 let track = playlist.items[i];
                 let baseName = track.additionalAudioUrl.match(baseNameMatch)[1];
                 let uri = '/pandora/station_id=' + self.currStation.id +
-                          '/track_id=' + baseName;
+                        '/track_id=' + baseName;
 
-                if (!Q.map(item => item.uri).includes(uri)) {
+                if (!Q.map(item => item.uri).includes(uri) &&
+                    !bandFilter.includes(track.artistName)) {
                     newTracks.push({
                         service: self.serviceName,
                         type: 'song',
@@ -881,5 +860,5 @@ function PandoraHandler(self, loginData) {
             });
     };
 
-    this.init(loginData);
+    this.init(options);
 }
