@@ -28,6 +28,7 @@ function ControllerPandora(context) {
     self.serviceName = 'pandora';
     self.currStation = {};
     self.lastUri = null;
+    self.lastStop = Date.now();
 }
 
 
@@ -96,7 +97,7 @@ ControllerPandora.prototype.flushPandora = function () {
     if (newQ.length > 0) {
         self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
     }
-    else {  
+    else {
         self.commandRouter.stateMachine.playQueue.clearPlayQueue();
     }
     return libQ.resolve();
@@ -323,10 +324,10 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
                 fnName + ' error');
             result = uri;
         }
-        
+
         return libQ.resolve(result);
     }
-  
+
     function setTrackTags(input) {
         (() => self.useCurl302WorkAround ?
             resolveTrackUri(input.realUri) :
@@ -377,9 +378,14 @@ ControllerPandora.prototype.removeTrack = function (uri) {
     return libQ.resolve();
 };
 
+ControllerPandora.prototype.getQueuePos = function () {
+    var self = this;
+    return self.commandRouter.stateMachine.currentPosition;
+};
+
 ControllerPandora.prototype.getQueueTrack = function () {
     var self = this;
-    return self.commandRouter.stateMachine.getTrack(self.commandRouter.stateMachine.currentPosition);
+    return self.commandRouter.stateMachine.getTrack(self.getQueuePos());
 };
 
 // this callback runs after mpd player starts playing
@@ -397,7 +403,7 @@ ControllerPandora.prototype.pandoraListener = function () {
                 if (self.commandRouter.stateMachine.getNextIndex() != 0) { // not last track in queue
                     if (nextTrack.service && nextTrack.service === self.serviceName) {
                         self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
-                        
+
                         return self.pushState(state);
                     }
                     else {
@@ -442,7 +448,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
                     let count = newTracks.length;
                     if (count > 0) {
                         self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' + count + ' track(s)');
-                        
+
                         return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks);
                     }
                 });
@@ -452,9 +458,9 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
 // ControllerPandora.prototype.seek = function (position) {
 //     var self = this;
-    
+
 //     // self.announceFn('seek to ' + position);
-    
+
 //     // return self.mpdPlugin.seek(position);
 // };
 
@@ -462,9 +468,9 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 ControllerPandora.prototype.stop = function () {
 	var self = this;
 
-    self.announceFn('stop');
+    self.lastUri = null;
 
-    self.mpdPlugin.clientMpd.removeListener('system-player', self.pandoraListener);
+    self.announceFn('stop');
 
     return self.mpdPlugin.stop()
         .then(() => self.mpdPlugin.getState())
@@ -479,7 +485,7 @@ ControllerPandora.prototype.pause = function () {
 
     return self.mpdPlugin.pause()
         .then(() => self.mpdPlugin.getState())
-        .then(state => self.mpdPlugin.pushState);
+        .then(state => self.pushState(state));
 };
 
 ControllerPandora.prototype.resume = function () {
@@ -492,41 +498,69 @@ ControllerPandora.prototype.resume = function () {
         .then(state => self.pushState(state));
 };
 
-ControllerPandora.prototype.revisitPlayLoop = function (newPos) {
+// enforce slight delay with media controls to avoid traffic jam
+ControllerPandora.prototype.holdYourHorses = function (fnName) {
     var self = this;
 
-    self.lastUri = self.getQueueTrack().uri;
+    const timeNow = Date.now();
+    const pauseTimeMs = 2000;
+    const timeDiffMs = timeNow - self.lastStop;
+    let flag = false;
+
+    if (timeDiffMs < pauseTimeMs) {
+        self.logError('User called ' + fnName + ' too rapidly');
+        self.commandRouter.pushToastMessage('info', 'Pandora', 'Where\'s the fire? Slow down!');
+        flag = true;
+    }
+    else {
+        self.lastStop = timeNow;
+    }
+
+    return libQ.resolve(flag);
+};
+
+ControllerPandora.prototype.goPreviousNext = function (fnName) {
+    var self = this;
+    let qLen = self.commandRouter.stateMachine.playQueue.arrayQueue.length;
+    let newPos = { // clock math
+        'previous': (self.getQueuePos() + qLen - 1) % qLen,
+        'next': (self.getQueuePos() + 1) % qLen
+    };
+
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+    self.lastUri = self.getQueueTrack().uri;
 
-    return self.mpdPlugin.stop()
-        .then(() => {
-            self.commandRouter.stateMachine.currentPosition = newPos;
+    return self.holdYourHorses(fnName)
+        .then(result => {
+            if (!result) {
+                return self.mpdPlugin.stop()
+                    .then(() => {
+                        self.commandRouter.stateMachine.currentPosition = newPos[fnName];
 
-            return libQ.resolve(self.getQueueTrack());
-        })
-        .then(track => self.clearAddPlayTrack(track));
+                        return libQ.resolve(self.getQueueTrack());
+                    })
+                    .then(track => self.clearAddPlayTrack(track));
+            }
+            return libQ.resolve();
+        });
 };
 
 ControllerPandora.prototype.previous = function () {
     var self = this;
+    let fnName = 'previous';
 
-    self.announceFn('previous');
+    self.announceFn(fnName);
 
-    let pos = self.commandRouter.stateMachine.currentPosition;
-    let newPos = pos > 0 ? pos - 1 : self.commandRouter.stateMachine.playQueue.arrayQueue.length - 1;
-
-    return this.revisitPlayLoop(newPos);
+    return self.goPreviousNext(fnName);
 };
 
 ControllerPandora.prototype.next = function () {
     var self = this;
+    let fnName = 'next';
 
-    self.announceFn('next');
+    self.announceFn(fnName);
 
-    let pos = self.commandRouter.stateMachine.currentPosition;
-    let newPos = pos == self.commandRouter.stateMachine.playQueue.arrayQueue.length - 1 ? 0 : pos + 1;
-
-    return self.revisitPlayLoop(newPos);
+    return this.goPreviousNext(fnName);
 };
 
 ControllerPandora.prototype.pushState = function (state) {
@@ -539,7 +573,7 @@ ControllerPandora.prototype.pushState = function (state) {
     pState.bitdepth = '16 bit';
 
     self.commandRouter.servicePushState(pState, self.serviceName);
-    
+
     return self.commandRouter.stateMachine.setConsumeUpdateService('pandora');
 };
 
@@ -790,7 +824,7 @@ function PandoraHandler(self, options) {
                 }, defer.makeNodeResolver());
 
             return defer.promise;
-        } 
+        }
 
         // Retrieve an array of tracks from a raw Pandora playlist object
         function fillNewTracks(playlist) {
