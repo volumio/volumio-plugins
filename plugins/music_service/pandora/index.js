@@ -44,9 +44,9 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    function validateBandFilter (filter) {
+    function validateBandFilter(bf) {
         try {
-            return filter.split('%');
+            return bf.split('%');
         } catch (err) {
             self.commandRouter.pushToastMessage('error', 'Pandora', 'Invalid band filter -- no bands will be filtered');
             return [];
@@ -105,12 +105,15 @@ ControllerPandora.prototype.flushPandora = function () {
 
 ControllerPandora.prototype.initialSetup = function (options) {
     var self = this;
+    const expInterval = 5 * 60 * 1000;
 
     self.announceFn('initialSetup');
 
     if (self.pandoraHandler === undefined) {
         self.pandoraHandler = new PandoraHandler(self, options);
     }
+
+    self.expireHandler = new ExpireOldTracks(self, expInterval);
 
     return self.pandoraHandler.pandoraLoginAndGetStations()
         .then(() => self.pandoraHandler.fillStationData())
@@ -287,7 +290,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
 // // Keeps queue items from other services.
 // ControllerPandora.prototype.pruneOtherStations = function () {
 //     var self = this;
-//     let oldQ = self.commandRouter.stateMachine.playQueue.getQueue();
+//     let oldQ = self.getQueue();
 //     let newQ = oldQ.filter(item => item.station === self.currStation.name)
 //                .concat(oldQ.filter(item => item.service !== self.serviceName));
 
@@ -304,24 +307,24 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     var self = this;
     var defer = libQ.defer();
 
-    let fnName = 'appendTracksToMpd';
+    const fnName = 'appendTracksToMpd';
     self.announceFn(fnName);
 
     // resolve address to numeric IP by DNS lookup
     function resolveTrackUri (uri) {
         let result = null;
-        let fnName = 'resolveTrackUris';
+        let subFnName = fnName + '::resolveTrackUri';
 
         try {
             let start = uri.indexOf('//') + 2;
             let host = uri.substr(start, uri.indexOf('/', start) - start);
             result = uri.replace(host, dnsSync.resolve(host));
 
-            self.logInfo(fnName + ': ' + uri + ' => ' + result);
+            self.logInfo(subFnName + ': ' + uri + ' => ' + result);
         } catch (err) {
-            self.logError(fnName + ': error resolving ' + uri, err);
+            self.logError(subFnName + ': error resolving ' + uri, err);
             self.commandRouter.pushToastMessage('error', 'Pandora',
-                fnName + ' error');
+                subFnName + ' error');
             result = uri;
         }
 
@@ -362,7 +365,7 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
 
 ControllerPandora.prototype.findQueueIndex = function (uri) {
     var self = this;
-    let Q = self.commandRouter.stateMachine.playQueue.getQueue();
+    let Q = self.getQueue();
 
     return Q.findIndex(item => item.uri === uri);
 };
@@ -378,6 +381,11 @@ ControllerPandora.prototype.removeTrack = function (uri) {
     return libQ.resolve();
 };
 
+ControllerPandora.prototype.getQueue = function () {
+    var self = this;
+    return self.commandRouter.stateMachine.playQueue.getQueue();
+};
+
 ControllerPandora.prototype.getQueuePos = function () {
     var self = this;
     return self.commandRouter.stateMachine.currentPosition;
@@ -388,11 +396,11 @@ ControllerPandora.prototype.getQueueTrack = function () {
     return self.commandRouter.stateMachine.getTrack(self.getQueuePos());
 };
 
-// this callback runs after mpd player starts playing
+// this callback runs after mpd player 'player' event
 ControllerPandora.prototype.pandoraListener = function () {
     var self = this;
 
-    let fnName = 'pandoraListener';
+    const fnName = 'pandoraListener';
 
     self.announceFn(fnName);
 
@@ -419,7 +427,7 @@ ControllerPandora.prototype.pandoraListener = function () {
 // Define a method to clear, add, and play an array of tracks
 ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     var self = this;
-    let fnName = 'clearAddPlayTrack';
+    const fnName = 'clearAddPlayTrack';
 
     self.announceFn(fnName);
 
@@ -440,18 +448,25 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
             return self.mpdPlugin.sendMpdCommand('play', []);
         })
         .then(() => self.mpdPlugin.getState())
-        .then(state => self.pushState(state))
-        .then(() => {
-            return self.pandoraHandler.fetchTracks()
-                .then(() => {
+        .then(state => {
+            let skipFetch = (!state.artist && !state.title);
+            return self.pushState(state)
+                .then(() => libQ.resolve(skipFetch));
+        })
+        .then(skipFetch => {
+            if (!skipFetch) { // track has not expired
+                // fetch tracks in background
+                let deferFetchTracks = self.pandoraHandler.fetchTracks();
+                deferFetchTracks.then(() => {
                     let newTracks = self.pandoraHandler.getNewTracks();
-                    let count = newTracks.length;
-                    if (count > 0) {
-                        self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' + count + ' track(s)');
+                    if (newTracks) {
+                        self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' +
+                                    newTracks.length + ' track(s)');
 
                         return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks);
                     }
                 });
+            }
         })
         .fail(err => self.generalReject('clearAddPlayTrack', err));
 };
@@ -528,7 +543,8 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
     };
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-    self.lastUri = self.getQueueTrack().uri;
+    // self.lastUri = self.getQueueTrack().uri;
+    self.lastUri = null;
 
     return self.holdYourHorses(fnName)
         .then(result => {
@@ -547,7 +563,7 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
 
 ControllerPandora.prototype.previous = function () {
     var self = this;
-    let fnName = 'previous';
+    const fnName = 'previous';
 
     self.announceFn(fnName);
 
@@ -556,7 +572,7 @@ ControllerPandora.prototype.previous = function () {
 
 ControllerPandora.prototype.next = function () {
     var self = this;
-    let fnName = 'next';
+    const fnName = 'next';
 
     self.announceFn(fnName);
 
@@ -586,7 +602,7 @@ ControllerPandora.prototype.explodeUri = function (uri) {
 
     if (uriMatch !== null) {
         // return a one elememnt track object array
-        let Q = self.commandRouter.stateMachine.playQueue.getQueue();
+        let Q = self.getQueue();
         let tracks = Q.concat(self.pandoraHandler.getNewTracks());
         let response = tracks.filter(item => item.uri === uri).slice(0, 1);
 
@@ -665,6 +681,53 @@ ControllerPandora.prototype.announceFn = function(fnName) {
     return self.commandRouter.pushConsoleMessage(self.datePrefix() + 'ControllerPandora::' + fnName);
 };
 
+function ExpireOldTracks (self, interval) {
+    ExpireOldTracks.prototype.init = function () {
+        setInterval(() => {
+            this.reaper(self);
+        }, interval);
+    };
+
+    ExpireOldTracks.prototype.reaper = function () {
+        const mins_45 = 45 * 60 * 1000;
+        const fnName = 'ExpireOldTracks::reaper';
+        let timeNow = Date.now();
+
+        self.announceFn(fnName);
+
+        function hangman() {
+            setTimeout(() => {
+                let Q = self.getQueue();
+                let curTrack = self.getQueueTrack();
+                let curUri = null;
+                let found = false;
+
+                if (curTrack) { curUri = curTrack.uri; }
+
+                if (Q) {
+                    for (let i in Q) {
+                        let item = Q[i];
+                        if (item.service === self.serviceName &&
+                            (timeNow - item.fetchTime) > mins_45 &&
+                            item.uri !== curUri) { // string him up!
+                            self.removeTrack(item.uri);
+                            self.logInfo(fnName + ' expired ' +
+                                item.title + ' by ' + item.artist);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found === true) { hangman(); }
+                }
+            }, 10000);
+        }
+
+        hangman();
+    };
+
+    this.init(self, interval);
+}
+
 function PandoraHandler(self, options) {
     var pandora = {};
     var bandFilter = [];
@@ -673,7 +736,7 @@ function PandoraHandler(self, options) {
     var stationData = []; // array of basic station info
     var newTracks = [];
 
-    PandoraHandler.prototype.init = function (options) {
+    PandoraHandler.prototype.init = function () {
         let partnerInfo = null;
         const pandoraOnePartnerInfo = {
             'username': 'pandora one',
@@ -781,7 +844,7 @@ function PandoraHandler(self, options) {
     };
 
     PandoraHandler.prototype.fillStationData = function () {
-        let fnName = 'PandoraHandler::fillStationData';
+        const fnName = 'PandoraHandler::fillStationData';
 
         self.announceFn(fnName);
 
@@ -805,8 +868,8 @@ function PandoraHandler(self, options) {
     };
 
     PandoraHandler.prototype.fetchTracks = function () {
-        let fnName = 'PandoraHandler::fetchTracks';
-        let Q = self.commandRouter.stateMachine.playQueue.getQueue();
+        const fnName = 'PandoraHandler::fetchTracks';
+        let Q = self.getQueue();
         const maxQ = 20;  // stop requesting tracks after we have this many
 
         // Retrieve a raw Pandora playlist from a Pandora station index
@@ -841,11 +904,13 @@ function PandoraHandler(self, options) {
                 let baseName = track.additionalAudioUrl.match(baseNameMatch)[1];
                 let uri = '/pandora/station_id=' + self.currStation.id +
                         '/track_id=' + baseName;
+                let fetchTime = Date.now();
 
                 if (!Q.map(item => item.uri).includes(uri) &&
                     !bandFilter.includes(track.artistName)) {
                     newTracks.push({
                         service: self.serviceName,
+                        fetchTime: fetchTime,
                         type: 'song',
                         trackType: 'mp3',
                         station: self.currStation.name,

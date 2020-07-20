@@ -50,10 +50,11 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 
 Much was changed for version 2.0.x.
 
+* Much cleaner codebase.  I now have a better sense of how Promises really work.  I was sort of winging it before for version 1.0.0.
 * Tracks actually load up in the Volumio queue now and you can hop around and pick the ones you want.  The queue management was actually a bit tricky for me to iron out, but it should be working just fine now.
 * Undesired bands/artists can be filtered by entering a percent (%) delimited string in the configuration, i.e. Megadeath%Abba%Korn
-* Much cleaner codebase.  I now have a better sense of how Promises really work.  I was sort of winging it before for version 1.0.0.
-* No more volatile state.  My plugin was updating the state every second.  It really was difficult to see what was going on with all that log garbage.
+* No more volatile state.  The 1.0.0 plugin was updating the state every second.  It really was difficult to see what was going on with the constant barrage of state update log messages.
+* Tracks downloaded from Pandora only work for about an hour.  Their lifetime is now checked in the background and they are deleted in a sane fashion in case the user does not listen to them in time.
 
 ## Issues
 
