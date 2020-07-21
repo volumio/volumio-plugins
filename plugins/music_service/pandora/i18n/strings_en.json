@@ -10,7 +10,9 @@
         "PANDORA_ONE_DOC": "Enable this if you have a Pandora One account.",
         "PANDORA_ONE_LABEL": "Pandora One account toggle",
         "PANDORA_OPTIONS_LABEL": "Pandora Plugin Options",
-        "PANDORA_USE_CURL_302_WORKAROUND_DOC": "Rewrite stream URLs to resolve Pandora server IP addresses",
-        "PANDORA_USE_CURL_302_WORKAROUND_LABEL": "Use Mpd Curl 302 workaround"
+        "PANDORA_USE_CURL_302_WORKAROUND_DOC":"Rewrite stream URLs to use Pandora server's IP address rather than host name",
+        "PANDORA_USE_CURL_302_WORKAROUND_LABEL": "Use Mpd Curl 302 workaround",
+        "PANDORA_BAND_FILTER_DOC": "Enter a %-delimited string of bands you do not want to hear.  For example: Spice Girls%One Direction",
+        "PANDORA_BAND_FILTER_LABEL": "Filter out bands you don't want to hear separated by %, like Madonna%Metallica"
     }
 }
