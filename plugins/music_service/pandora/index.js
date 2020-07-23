@@ -14,6 +14,7 @@ const { defer, setNextTickFunction } = require('kew');
 const { REFUSED, SERVFAIL } = require('dns');
 const { get } = require('https');
 const { setFlagsFromString } = require('v8');
+const { readSync } = require('fs-extra');
 
 
 module.exports = ControllerPandora;
@@ -28,7 +29,7 @@ function ControllerPandora(context) {
     self.serviceName = 'pandora';
     self.currStation = {};
     self.lastUri = null;
-    self.lastStop = Date.now();
+    self.lastPress = Date.now();
 }
 
 
@@ -48,7 +49,8 @@ ControllerPandora.prototype.onStart = function () {
         try {
             return bf.split('%');
         } catch (err) {
-            self.commandRouter.pushToastMessage('error', 'Pandora', 'Invalid band filter -- no bands will be filtered');
+            self.commandRouter.pushToastMessage('error', 'Pandora',
+                'Invalid Band Filter: Should look like: Kanye%Vanilla Ice');
             return [];
         }
     }
@@ -140,7 +142,8 @@ ControllerPandora.prototype.getUIConfig = function () {
             uiconf.sections[0].content[1].value = self.config.get('password', '');
             uiconf.sections[0].content[2].value = self.config.get('isPandoraOne', '');
             uiconf.sections[0].content[3].value = self.config.get('useCurl302WorkAround', '');
-            uiconf.sections[0].content[4].value = self.config.get('bandFilter', '');
+            uiconf.sections[0].content[4].value = self.config.get('superPrev', '');
+            uiconf.sections[0].content[5].value = self.config.get('bandFilter', '');
             self.config.get();
 
             defer.resolve(uiconf);
@@ -175,8 +178,10 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
 
     self.config.set('useCurl302WorkAround', options.useCurl302WorkAround);
     self.useCurl302WorkAround = options.useCurl302WorkAround;
+    self.config.set('superPrev', options.superPrev);
+    self.superPrevious = options.superPrevious;
     self.config.set('bandFilter', options.bandFilter);
-
+    
     return self.checkConfValidity(options)
         .then(() => self.commandRouter.pushToastMessage('success', 'Pandora',
             'Login info saved.  If already logged in, restart plugin.'))
@@ -238,7 +243,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     self.announceFn('handleBrowseUri');
 
     if (curUri === '/pandora') {
-        for (let i in stationData) {
+        for (let i = 0; i < stationData.length; i++) {
             response.navigation.lists[0].items.push({
                 service: self.serviceName,
                 type: 'station',
@@ -406,21 +411,16 @@ ControllerPandora.prototype.pandoraListener = function () {
 
     self.mpdPlugin.getState()
         .then(state => {
-                let nextTrack = self.getQueueTrack();
+            let nextTrack = self.getQueueTrack();
 
-                if (self.commandRouter.stateMachine.getNextIndex() != 0) { // not last track in queue
-                    if (nextTrack.service && nextTrack.service === self.serviceName) {
-                        self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
+            if (nextTrack.service && nextTrack.service === self.serviceName) {
+                self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
+                return self.pushState(state);
+            }
+            else {
+                self.logInfo(fnName + ': Removing pandoraListener');
+            }
 
-                        return self.pushState(state);
-                    }
-                    else {
-                        self.logInfo(fnName + ' Not a Pandora track, removing listener');
-                    }
-                }
-                else {
-                    self.logInfo(fnName + ' Last track in queue, removing listener');
-                }
         });
 };
 
@@ -432,14 +432,14 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     self.announceFn(fnName);
 
     // Here we go! (¡Juana's Adicción!)
-    return self.mpdPlugin.sendMpdCommand('clear', [])
-        .then(() => self.appendTracksToMpd([track]))
+    return self.mpdPlugin.clear()
         .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
             }
             self.lastUri = track.uri;
-            return libQ.resolve();
+
+            return self.appendTracksToMpd([track]);
         })
         .then(() => {
             self.mpdPlugin.clientMpd.removeAllListeners('system-player');
@@ -514,48 +514,60 @@ ControllerPandora.prototype.resume = function () {
 };
 
 // enforce slight delay with media controls to avoid traffic jam
-ControllerPandora.prototype.holdYourHorses = function (fnName) {
+ControllerPandora.prototype.handleMediaButton = function (mediaFn) {
     var self = this;
-
+    const fnName = 'handleMediaButton';
     const timeNow = Date.now();
-    const pauseTimeMs = 2000;
-    const timeDiffMs = timeNow - self.lastStop;
-    let flag = false;
+    const spazPressMs = 250;
+    const prevPressMs = 1500;
+    const timeDiffMs = timeNow - self.lastPress;
+    let result = mediaFn;
 
-    if (timeDiffMs < pauseTimeMs) {
-        self.logError('User called ' + fnName + ' too rapidly');
-        self.commandRouter.pushToastMessage('info', 'Pandora', 'Where\'s the fire? Slow down!');
-        flag = true;
+    if (timeDiffMs < spazPressMs) { // jumpy user
+        self.logInfo(fnName + ': User called ' + mediaFn + ' too rapidly');
+        self.commandRouter.pushToastMessage('info', 'Pandora',
+            'Where\'s the fire? Slow down!');
+        result = 'spaz';
     }
-    else {
-        self.lastStop = timeNow;
+    else if (timeDiffMs > prevPressMs &&
+             mediaFn === 'previous' &&
+             self.superPrevious) { // replay track
+        result = 'replay';
     }
 
-    return libQ.resolve(flag);
+    self.logInfo(fnName + ': User chose "' + result + '" function');
+    self.lastPress = timeNow;
+
+    return libQ.resolve(result);
 };
 
 ControllerPandora.prototype.goPreviousNext = function (fnName) {
     var self = this;
-    let qLen = self.commandRouter.stateMachine.playQueue.arrayQueue.length;
-    let newPos = { // clock math
-        'previous': (self.getQueuePos() + qLen - 1) % qLen,
-        'next': (self.getQueuePos() + 1) % qLen
-    };
+    const qLen = self.getQueue().length;
+    let qPos = self.getQueuePos();
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-    // self.lastUri = self.getQueueTrack().uri;
     self.lastUri = null;
 
-    return self.holdYourHorses(fnName)
+    return self.handleMediaButton(fnName)
         .then(result => {
-            if (!result) {
-                return self.mpdPlugin.stop()
-                    .then(() => {
-                        self.commandRouter.stateMachine.currentPosition = newPos[fnName];
-
-                        return libQ.resolve(self.getQueueTrack());
-                    })
-                    .then(track => self.clearAddPlayTrack(track));
+            if (result !== 'spaz') {
+                if (fnName === 'previous') {
+                    if (result === 'replay') {
+                        self.commandRouter.stateMachine.currentSeek = 0; // reset Volumio timer
+                    }
+                    else if (self.commandRouter.stateMachine.currentRandom !== true) { // normal previous
+                        qPos = (qPos + qLen - 1) % qLen;
+                    }
+                    else { // random previous
+                        return self.stop();
+                    }
+                    self.commandRouter.stateMachine.currentPosition = qPos;
+                    return self.clearAddPlayTrack(self.getQueue()[qPos]);
+                }
+                else { // next
+                    return self.stop();
+                }
             }
             return libQ.resolve();
         });
@@ -705,7 +717,7 @@ function ExpireOldTracks (self, interval) {
                 if (curTrack) { curUri = curTrack.uri; }
 
                 if (Q) {
-                    for (let i in Q) {
+                    for (let i = 0; i < Q.length; i++) {
                         let item = Q[i];
                         if (item.service === self.serviceName &&
                             (timeNow - item.fetchTime) > mins_45 &&
@@ -897,7 +909,7 @@ function PandoraHandler(self, options) {
 
             newTracks = [];
 
-            for (let i in playlist.items) {
+            for (let i = 0; i < playlist.items.length; i++) {
                 if (!playlist.items[i].songName) { break; } // no more tracks
 
                 let track = playlist.items[i];

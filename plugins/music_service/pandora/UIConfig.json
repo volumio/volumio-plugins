@@ -16,6 +16,7 @@
           "password",
           "isPandoraOne",
           "useCurl302WorkAround",
+          "superPrevious",
           "bandFilter"
         ]
       },
@@ -50,6 +51,14 @@
           "element": "switch",
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_LABEL",
+          "value": false
+        },
+        {
+          "id": "superPrevious",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_LABEL",
           "value": false
         },
         {

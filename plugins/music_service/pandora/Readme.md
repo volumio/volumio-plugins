@@ -55,6 +55,7 @@ Much was changed for version 2.0.x.
 * Undesired bands/artists can be filtered by entering a percent (%) delimited string in the configuration, i.e. Megadeath%Abba%Korn
 * No more volatile state.  The 1.0.0 plugin was updating the state every second.  It really was difficult to see what was going on with the constant barrage of state update log messages.
 * Tracks downloaded from Pandora only work for about an hour.  Their lifetime is now checked in the background and they are deleted in a sane fashion in case the user does not listen to them in time.
+* Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
 
 ## Issues
 
@@ -65,6 +66,8 @@ After that, the functions defined for previous and next in the plugin worked fin
 * There may be a few bugs left.  I have been working on this for a while but you never know.  I can say that it will play and play if you leave it alone.
 * If you run Volumio on a PC in a browser tab, or maybe a window, at least in Firefox, and you decide to pay some bills or write an angry letter to your neighborhood association about kids being on your lawn, the timer for the current track will lag behind.  This corrects itself on the next state update at the end of the track.  I'm not sure if there is an easy fix here, or if the state should be pushed every ten seconds (seems like a hack).  Playback is not affected, everything sounds fine, songs are not cut off.
 * It may be possible to add a station with the Volumio search function.  I am looking into it.  The functionaliy is there.
+* Volumio has a consume mode.  As far as I can tell, it only removes the last track in the queue when any track in the queue has been played (i.e. it can remove the wrong track).<br/>
+I made my own consume function that removes the last track played no matter where it is in the queue.  I'm not sure if I have reinvented the wheel; Volumio might already be able to do this.  For now, my consume function does the job.
 
 All testers are welcome, even if they ride motorcycles.  You know who you are.
 

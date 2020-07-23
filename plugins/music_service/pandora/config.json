@@ -7,15 +7,15 @@
     "type": "boolean",
     "value": false
   },
+  "superPrevious": {
+    "type": "boolean",
+    "value": false
+  },
   "email": {
     "type": "string",
     "value": ""
   },
   "password": {
-    "type": "string",
-    "value": ""
-  },
-  "bandFilter": {
     "type": "string",
     "value": ""
   }
