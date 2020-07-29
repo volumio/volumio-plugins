@@ -46,6 +46,8 @@ ControllerPandora.prototype.onStart = function () {
     var self = this;
 
     function validateBandFilter(bf) {
+        if (bf === '') { return []; }
+
         try {
             return bf.split('%');
         } catch (err) {
