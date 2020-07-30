@@ -915,7 +915,10 @@ function PandoraHandler(self, options) {
                 if (!playlist.items[i].songName) { break; } // no more tracks
 
                 let track = playlist.items[i];
-                let baseName = track.additionalAudioUrl.match(baseNameMatch)[1];
+                let realUri = options.isPandoraOne ?
+                              track.audioUrlMap.highQuality.audioUrl :
+                              track.additionalAudioUrl;
+                let baseName = realUri.match(baseNameMatch)[1];
                 let uri = '/pandora/station_id=' + self.currStation.id +
                         '/track_id=' + baseName;
                 let fetchTime = Date.now();
@@ -934,7 +937,7 @@ function PandoraHandler(self, options) {
                         album: track.albumName,
                         albumart: track.albumArtUrl,
                         uri: uri,
-                        realUri: track.additionalAudioUrl,
+                        realUri: realUri,
                         isStreaming: true,
                         duration: track.trackLength,
                         samplerate: '44.1 KHz',

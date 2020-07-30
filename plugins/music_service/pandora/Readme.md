@@ -48,14 +48,15 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 
 ## Changes
 
-Much was changed for version 2.0.x.
+Much was changed for version 2.x:
 
 * Much cleaner codebase.  I now have a better sense of how Promises really work.  I was sort of winging it before for version 1.0.0.
 * Tracks actually load up in the Volumio queue now and you can hop around and pick the ones you want.  The queue management was actually a bit tricky for me to iron out, but it should be working just fine now.
 * Undesired bands/artists can be filtered by entering a percent (%) delimited string in the configuration, i.e. Megadeath%Abba%Korn
 * No more volatile state.  The 1.0.0 plugin was updating the state every second.  It really was difficult to see what was going on with the constant barrage of state update log messages.
-* Tracks downloaded from Pandora only work for about an hour.  Their lifetime is now checked in the background and they are deleted in a sane fashion in case the user does not listen to them in time.
+* Track data downloaded from Pandora only works for about an hour.  Track lifetime is now checked in the background and entries are deleted in a sane fashion in case the user does not listen to them in time.
 * Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
+* Version 2.1.0: Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
 
 ## Issues
 
