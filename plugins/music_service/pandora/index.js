@@ -77,10 +77,12 @@ ControllerPandora.prototype.onStop = function () {
     // Once the Plugin has successfull stopped resolve the promise
     var self = this;
 
+    self.expireHandler.stop();
+
     return self.flushPandora()
         .then(() => self.mpdPlugin.sendMpdCommand('stop', []))
         .then(() => self.mpdPlugin.sendMpdCommand('clear', []))
-        .then(() => self.commandRouter.volumioRemoveToBrowseSources(self.serviceName));
+        .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
 ControllerPandora.prototype.onRestart = function () {
@@ -462,9 +464,11 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
                 deferFetchTracks.then(() => {
                     let newTracks = self.pandoraHandler.getNewTracks();
                     if (newTracks) {
+                        // don't add tracks twice (WILL REVISIT)
+                        // let Q = self.getQueue();
+                        // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
                         self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' +
-                                    newTracks.length + ' track(s)');
-
+                                        newTracks.length + ' track(s)');
                         return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks);
                     }
                 });
@@ -485,6 +489,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 ControllerPandora.prototype.stop = function () {
 	var self = this;
 
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.lastUri = null;
 
     self.announceFn('stop');
@@ -696,10 +701,16 @@ ControllerPandora.prototype.announceFn = function(fnName) {
 };
 
 function ExpireOldTracks (self, interval) {
+    var reaperID;
+
     ExpireOldTracks.prototype.init = function () {
-        setInterval(() => {
+        reaperID = setInterval(() => {
             this.reaper(self);
         }, interval);
+    };
+
+    ExpireOldTracks.prototype.stop = function () {
+        clearInterval(reaperID);
     };
 
     ExpireOldTracks.prototype.reaper = function () {
