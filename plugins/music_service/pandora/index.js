@@ -705,7 +705,7 @@ function ExpireOldTracks (self, interval) {
 
     ExpireOldTracks.prototype.init = function () {
         reaperID = setInterval(() => {
-            this.reaper(self);
+            this.reaper();
         }, interval);
     };
 
@@ -750,7 +750,7 @@ function ExpireOldTracks (self, interval) {
         hangman();
     };
 
-    this.init(self, interval);
+    this.init();
 }
 
 function PandoraHandler(self, options) {
