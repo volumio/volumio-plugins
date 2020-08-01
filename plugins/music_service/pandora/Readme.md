@@ -2,27 +2,22 @@
 
 ## Getting Started
 
-### Pre-Installation Steps
-
-Before installing any of these plugins manually, you should uninstall any other version from the Volumio Plugin menu or by deleting the installation directories yourself.<br/>
-
-To delete the directories manually (be careful to only delete the pandora directories!):
-
-`rm -rf /data/plugins/music_service/pandora`<br/>
-`rm -rf /data/configuration/music_service/pandora`
-
 ### Downloading the Source Code from GitHub
 
-First, you'll need to clone this repository as this plugin is not yet approved by the Volumio team.<br/>
+First you'll need to SSH to your Volumio machine.<br/>
+To enable SSH access, browse to http://volumio.local/dev and turn it on.<br/>
 <br/>
-On the machine running Volumio:<br/>
+Connect to your Volumio machine.<br/>
+Use PuTTY on Windows or some equivalent.<br/>
+Mac users can use a terminal window, ask a search engine for help, or visit an Apple store.<br/>
+Linux users, you're fine.<br/>
 <br/>
-`git clone https://github.com/truckershitch/volumio-plugins.git`<br/>
+<b>Username:</b> `volumio`<br/>
+<b>Password:</b> `volumio`<br/>
+<br/>
+Then, clone the repository:
 
-For SSH access, you can just go to http://volumio.local/dev and enable it easily.<br/>
-<br/>
-Username: <b>volumio</b><br/>
-Password: <b>volumio</b><br/>
+`git clone https://github.com/truckershitch/volumio-plugins.git`<br/>
 
 ### <b>Optional:</b> There are two older versions archived on GitHub:
 
@@ -49,20 +44,35 @@ Or you can just delete the `volumio-plugins` directory.
 
 ## Continuing with Installation
 
-Then, the proper dependencies must be installed and built by npm.
+### Upgrade From Older Version
+
+~~Before installing any of these plugins manually, you should uninstall any other version from the Volumio Plugin menu or by deleting the installation directories yourself.~~<br/>
+
+~~To delete the directories manually (be careful to only delete the pandora directories!):~~
+
+~~`rm -rf /data/plugins/music_service/pandora`~~<br/>
+~~`rm -rf /data/configuration/music_service/pandora`~~
+
+~~Then execute `volumio vrestart`~~
+
+My apologies on the command-line instructions.  I was just dumping the files into `/data/plugins/music_service/pandora`.  I took another look at this.<br/>
+
+<b>To upgrade from an older plugin version:</b>
+
+`cd /path-to/volumio-plugsin/plugins/music_service/pandora`<br/>
+`volumio plugin update`
+
+<b>For a fresh installation:</b>
 
 `cd /path-to/volumio-plugins/plugins/music_service/pandora`<br/>
-`npm install`
-
-This will take a few minutes, especially on a slow machine like a Pi 1.  And as one user reported, if you checked out the pianode branch, it will take over 15 minutes.<br/>
-<br/>
-When that's done, still in the `/path-to/volumio-plugins/plugins/music_service/pandora` directory:
-
 `volumio plugin install`
+
+Both of these two commands stop for me after 100%.  I'm not sure why; if you look at `install.sh`, it's pretty empty.  Weird.  The operations succeed.<br/>
+No worries.  Just hit `Control-C`.<br/>
 
 Go to the Plugins sidebar in Volumio and enable the Pandora plugin.  On the first run, you will have to enter your credentials with the settings button.  You may need to restart the plugin or restart Volumio after this step.<br/>
 <br/>
-The stations will populate after login.  You can browse to the Pandora Icon and then load a station.<br/>
+The stations will populate after login.  You can browse to the Pandora icon and then load a station.<br/>
 <br/>
 ~~You should be up and running at this point.  To stop, disable the plugin in Plugins (for now).~~<br/>
 
