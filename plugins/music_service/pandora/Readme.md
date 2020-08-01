@@ -2,35 +2,59 @@
 
 ## Getting Started
 
+### Pre-Installation Steps
+
+Before installing any of these plugins manually, you should uninstall any other version from the Volumio Plugin menu or by deleting the installation directories yourself.<br/>
+
+To delete the directories manually (be careful to only delete the pandora directories!):
+
+`rm -rf /data/plugins/music_service/pandora`<br/>
+`rm -rf /data/configuration/music_service/pandora`
+
+### Downloading the Source Code from GitHub
+
 First, you'll need to clone this repository as this plugin is not yet approved by the Volumio team.<br/>
 <br/>
 On the machine running Volumio:<br/>
 <br/>
 `git clone https://github.com/truckershitch/volumio-plugins.git`<br/>
 
-### There are two older versions archived here:
-
 For SSH access, you can just go to http://volumio.local/dev and enable it easily.<br/>
-Username: volumio Password: volumio<br/>
 <br/>
-<b>Optional:</b><br/>
+Username: <b>volumio</b><br/>
+Password: <b>volumio</b><br/>
+
+### <b>Optional:</b> There are two older versions archived on GitHub:
+
+If you want to try out another branch (at this point I would not bother -- Volumio has the 1.0.0 version already) change to the volumio-plugins directory:
+
+`cd volumio-plugins`
+
+The pianode branch is the oldest and works the least.  I have not tested it on the newer Volumio releases.<br/>
+<b>It may break your system.  It probably won't work.</b><br/>
 <br/>
 To try your luck with the version based on pianode, do this:
 
 `git checkout pianode`
 
-To try out the 1.0.0 version that uses the volatile state (works but not perfectly), do this:
+To try out version 1.0.0 that uses the volatile state (works but not perfectly), do this:
 
 `git checkout v1.0.0`
 
-### Continuing with Installation
+Otherwise, just continue below (don't bother with checking out anything).  To switch back to the main master branch if you checked out another one, do this:
+
+`git checkout master`
+
+Or you can just delete the `volumio-plugins` directory.
+
+## Continuing with Installation
 
 Then, the proper dependencies must be installed and built by npm.
 
 `cd /path-to/volumio-plugins/plugins/music_service/pandora`<br/>
 `npm install`
 
-This will take a few minutes, especially on a slow machine like a Pi 1.<br/>
+This will take a few minutes, especially on a slow machine like a Pi 1.  And as one user reported, if you checked out the pianode branch, it will take over 15 minutes.<br/>
 <br/>
 When that's done, still in the `/path-to/volumio-plugins/plugins/music_service/pandora` directory:
 
@@ -42,7 +66,7 @@ The stations will populate after login.  You can browse to the Pandora Icon and 
 <br/>
 ~~You should be up and running at this point.  To stop, disable the plugin in Plugins (for now).~~<br/>
 
-### Prerequisites
+## Prerequisites
 
 I can't think of any prerequistes other than SSH access to Volumio and a Pandora account.<br/>
 
@@ -57,6 +81,7 @@ Much was changed for version 2.x:
 * Track data downloaded from Pandora only works for about an hour.  Track lifetime is now checked in the background and entries are deleted in a sane fashion in case the user does not listen to them in time.
 * Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
 * Version 2.1.0: Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
+* Version 2.1.2: Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
 
 ## Issues
 
