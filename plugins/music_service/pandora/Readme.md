@@ -73,8 +73,9 @@ No worries.  Just hit `Control-C`.<br/>
 Go to the Plugins sidebar in Volumio and enable the Pandora plugin.  On the first run, you will have to enter your credentials with the settings button.  You may need to restart the plugin or restart Volumio after this step.<br/>
 <br/>
 The stations will populate after login.  You can browse to the Pandora icon and then load a station.<br/>
+The station list is (currently -- is this needed?) not refreshed until you reload the plugin, so if a new station is added, the index will be wrong.<br/>
 <br/>
-~~You should be up and running at this point.  To stop, disable the plugin in Plugins (for now).~~<br/>
+You should be up and running at this point.<br/>
 
 ## Prerequisites
 
@@ -92,6 +93,7 @@ Much was changed for version 2.x:
 * Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
 * Version 2.1.0: Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
 * Version 2.1.2: Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
+* Version 2.3.0: Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
 
 ## Issues
 

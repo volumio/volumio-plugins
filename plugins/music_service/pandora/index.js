@@ -65,6 +65,7 @@ ControllerPandora.prototype.onStart = function () {
     };
 
     self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
+    self.nextIsThumbsDown = self.config.get('nextIsThumbsDown');
 
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
@@ -77,7 +78,7 @@ ControllerPandora.prototype.onStop = function () {
     // Once the Plugin has successfull stopped resolve the promise
     var self = this;
 
-    self.expireHandler.stop();
+    if (self.expireHandler) { self.expireHandler.stop(); }
 
     return self.flushPandora()
         .then(() => self.mpdPlugin.sendMpdCommand('stop', []))
@@ -146,8 +147,9 @@ ControllerPandora.prototype.getUIConfig = function () {
             uiconf.sections[0].content[1].value = self.config.get('password', '');
             uiconf.sections[0].content[2].value = self.config.get('isPandoraOne', '');
             uiconf.sections[0].content[3].value = self.config.get('useCurl302WorkAround', '');
-            uiconf.sections[0].content[4].value = self.config.get('superPrev', '');
-            uiconf.sections[0].content[5].value = self.config.get('bandFilter', '');
+            uiconf.sections[0].content[4].value = self.config.get('nextIsThumbsDown', '');
+            uiconf.sections[0].content[5].value = self.config.get('superPrev', '');
+            uiconf.sections[0].content[6].value = self.config.get('bandFilter', '');
             self.config.get();
 
             defer.resolve(uiconf);
@@ -182,6 +184,8 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
 
     self.config.set('useCurl302WorkAround', options.useCurl302WorkAround);
     self.useCurl302WorkAround = options.useCurl302WorkAround;
+    self.config.set('nextIsThumbsDown', options.nextIsThumbsDown);
+    self.nextIsThumbsDown = options.nextIsThumbsDown;
     self.config.set('superPrev', options.superPrev);
     self.superPrevious = options.superPrevious;
     self.config.set('bandFilter', options.bandFilter);
@@ -372,13 +376,6 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     return defer.promise;
 };
 
-ControllerPandora.prototype.findQueueIndex = function (uri) {
-    var self = this;
-    let Q = self.getQueue();
-
-    return Q.findIndex(item => item.uri === uri);
-};
-
 ControllerPandora.prototype.removeTrack = function (uri) {
     var self = this;
 
@@ -388,6 +385,13 @@ ControllerPandora.prototype.removeTrack = function (uri) {
        self.commandRouter.stateMachine.removeQueueItem({value: self.findQueueIndex(uri)});
     }
     return libQ.resolve();
+};
+
+ControllerPandora.prototype.findQueueIndex = function (uri) {
+    var self = this;
+    let Q = self.getQueue();
+
+    return Q.findIndex(item => item.uri === uri);
 };
 
 ControllerPandora.prototype.getQueue = function () {
@@ -400,9 +404,9 @@ ControllerPandora.prototype.getQueuePos = function () {
     return self.commandRouter.stateMachine.currentPosition;
 };
 
-ControllerPandora.prototype.getQueueTrack = function () {
+ControllerPandora.prototype.getQueueTrack = function (pos=this.getQueuePos()) {
     var self = this;
-    return self.commandRouter.stateMachine.getTrack(self.getQueuePos());
+    return self.commandRouter.stateMachine.getTrack(pos);
 };
 
 // this callback runs after mpd player 'player' event
@@ -573,6 +577,10 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
                 else { // next
+                    if (self.nextIsThumbsDown) {
+                        return self.stop()
+                            .then(() => self.commandRouter.stateMachine.removeQueueItem({value: qPos}));
+                    }
                     return self.stop();
                 }
             }
@@ -595,7 +603,11 @@ ControllerPandora.prototype.next = function () {
 
     self.announceFn(fnName);
 
-    return this.goPreviousNext(fnName);
+    if (self.nextIsThumbsDown) {
+        self.pandoraHandler.thumbsDownTrack(self.getQueueTrack());
+    }
+
+    return self.goPreviousNext(fnName);
 };
 
 ControllerPandora.prototype.pushState = function (state) {
@@ -857,14 +869,6 @@ function PandoraHandler(self, options) {
 
                         return libQ.resolve();
                     });
-
-                // fetch list in background
-                // let getStationListDefer = getStationList();
-                // getStationListDefer.then(result => {
-                //     stationList = result;
-                // });
-
-                // return libQ.resolve();
             });
     };
 
@@ -917,6 +921,7 @@ function PandoraHandler(self, options) {
         // Retrieve an array of tracks from a raw Pandora playlist object
         function fillNewTracks(playlist) {
             let baseNameMatch = new RegExp(/\/access\/(\d+)/);
+            let stationToken = stationList.stations[self.currStation.id].stationToken;
 
             self.announceFn(fnName + '::fillNewTracks');
 
@@ -942,6 +947,8 @@ function PandoraHandler(self, options) {
                         type: 'song',
                         trackType: 'mp3',
                         station: self.currStation.name,
+                        stationToken: stationToken,
+                        trackToken: track.trackToken,
                         title: track.songName,
                         name: track.songName,
                         artist: track.artistName,
@@ -985,6 +992,32 @@ function PandoraHandler(self, options) {
                 self.logError('Error in ' + fnName + '::fillNewTracks', err);
                 return self.generalReject(fnName + '::fillNewTracks', err);
             });
+    };
+
+    PandoraHandler.prototype.thumbsDownTrack = function (track) {
+        const fnName = 'PandoraHandler::thumbsDownTrack';
+        var defer = libQ.defer();
+
+        self.announceFn(fnName);
+        
+        if (track.service === self.serviceName) {
+            pandora.request('station.addFeedback', {
+                'stationToken': track.stationToken,
+                'trackToken': track.trackToken,
+                'isPositive': false
+                }, defer.makeNodeResolver());
+
+            self.logInfo(fnName + ': Thumbs down delivered.  Station: ' +
+                self.currStation.name + ' Track: ' + track.name);
+
+            setTimeout(() => {
+                self.commandRouter.pushToastMessage('success', 'Pandora', 'Thumbs Down delivered.' +
+                    ' ¡Adiós, ' + track.name + '!');
+            }, 6000);
+            
+            return defer.promise;
+        }
+        return self.logInfo(fnName + ': Not a Pandora track.  Ignored.');
     };
 
     this.init(options);
