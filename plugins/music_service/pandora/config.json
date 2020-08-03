@@ -7,7 +7,7 @@
     "type": "boolean",
     "value": false
   },
-  "dequeueIsThumbsDown": {
+  "nextIsThumbsDown": {
     "type": "boolean",
     "value": false
   },
