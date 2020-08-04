@@ -1071,6 +1071,17 @@
             "type": "openUrl",
             "url": "https://volumio.github.io/docs/Plugins_User_Manuals/brutefir/Drc_with_Volumio.html"
           }
+        },
+        {
+          "id": "resetplugin",
+          "element": "button",
+          "label": "TRANSLATE.RESET_PLUGIN",
+          "description": "TRANSLATE.DESC_RESET_PLUGIN",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/brutefir",
+            "method": "resetplugin"
+          }
         }
       ]
     }

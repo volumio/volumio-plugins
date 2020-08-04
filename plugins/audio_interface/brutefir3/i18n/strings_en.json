@@ -108,5 +108,8 @@
   "VOBAF": "VoBAF : Volume Based Adaptativ Filtering",
   "USE_VOBAF": "Use VoBAF",
   "VOBAF_MESS": "VoBAF volume messages",
-  "DOC_VOBAF_MESS": "Enable or disable VoBAF message on volume change"
+  "DOC_VOBAF_MESS": "Enable or disable VoBAF message on volume change",
+  "RESET_PLUGIN": "Reset plugin",
+  "DESC_RESET_PLUGIN": "Reset plugin with initial values. Useful if you changed the audio output",
+  "REBOOT_AFTER_RESET": "Now disable the plugin and reboot your device"
 }

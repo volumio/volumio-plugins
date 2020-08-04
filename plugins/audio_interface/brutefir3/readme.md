@@ -1,4 +1,4 @@
-July 5th 2020
+August 4th 2020
 
 
 ##  Need at least Volumio 2.776 or May not work!
@@ -63,7 +63,7 @@ The plugin provide an exclusive feature we called __VoBAF__ : Volume Based Adapt
 - Now, when volume is changed, the plugin switches from a filter to an other smmothly!
 
 
-The plugin is also able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC](http://drc-fir.sourceforge.net/). It gives very good results in few click!!!
+The plugin is also able to auto generate filter in few clicks, just using a impluse from REW. To do that, it uses [DRC-FIR](http://drc-fir.sourceforge.net/). It gives very good results in few click!!!
 
  It will be documented soon!
 
@@ -82,7 +82,7 @@ __Base scheme - signal path__
 
 First, you must have a working configuration with volumio, the dac you want to use and the mixer properly set.
 
-# __ !!!! Does not with RPI jack output !!!!__
+# __ !!!! Does not work with RPI jack output !!!!__
 
 ## To install
 
@@ -124,6 +124,11 @@ nearly everythings
 
 
 ### 4. Last changes
+
+August 4th 2020
+
+- reset button - useful if output has changed
+- tools cleaning
 
 July 5th 2020
 

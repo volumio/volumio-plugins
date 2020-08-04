@@ -108,5 +108,8 @@
   "VOBAF": "VoBAF : Volume Based Adaptativ Filtering",
   "USE_VOBAF": "Utiliser VoBAF",
   "VOBAF_MESS": "VoBAF Activer messages",
-  "DOC_VOBAF_MESS": "Active les messages de VoBAF quand le volume change"
+  "DOC_VOBAF_MESS": "Active les messages de VoBAF quand le volume change",
+  "RESET_PLUGIN": "Ré-initialise le plugin",
+  "DESC_RESET_PLUGIN": "Ré-initialise le plugin a ses valeurs par défaut. Utile si vous avez changé la sortie audio",
+  "REBOOT_AFTER_RESET": "Maintenant, désactivez le plugin et rebootez le système"
 }

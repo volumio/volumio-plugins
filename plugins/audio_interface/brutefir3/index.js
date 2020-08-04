@@ -560,6 +560,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
 
 
       if (ttools == false) {
+        uiconf.sections[4].content[0].hidden = true;
+
         uiconf.sections[4].content[1].hidden = true;
         uiconf.sections[4].content[2].hidden = false;
 
@@ -1077,19 +1079,6 @@ ControllerBrutefir.prototype.restoresettingwhendisabling = function () {
   }
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
 
-  // self.commandRouter.executeOnPlugin('system_controller', 'i2s_dacs', 'enableI2SDAC', '');
-  /*
-  let conf = self.config.get('alsa_mixer_type');
-  console.log('rrrrrrrrrrrrrrrrrrrrr' + conf);
-  //self.setAdditionalConf('audio_interface', 'alsa_controller', conf);
-  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'setConfigParam', conf);
-  
-   // return self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'saveAlsaOptions', str);
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'alsa_controller', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-    */
 };
 
 //------------Here we define a function to send a command to brutefir through its CLI---------------------
@@ -1246,7 +1235,6 @@ ControllerBrutefir.prototype.dfiltertype = function () {
     let SampleFormat;
     try {
       execSync('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
-      //   console.log('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername)
       setTimeout(function () {
 
         fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
@@ -1258,13 +1246,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
             var DataStart = resultJSON.DataStart;
             var BytesPerFrame = resultJSON.BytesPerFrame;
             SampleFormat = resultJSON.SampleFormat;
-            /*
-                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + DataLength);
-                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + DataStart);
-                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + BytesPerFrame);
-                        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + SampleFormat);
-                  //      console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNn ' + result);
-              */
+
             filelength = DataLength / BytesPerFrame;
             skipvalue = ("skip:" + (8 + (+DataStart)) + ";");
 
@@ -2816,6 +2798,31 @@ ControllerBrutefir.prototype.convert = function (data) {
   } else {
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_FILE'));
   };
+};
+//------ Reset plugin ------------
+
+ControllerBrutefir.prototype.resetplugin = function () {
+  const self = this;
+  try {
+    execSync("/bin/rm /data/configuration/audio_interface/brutefir/config.json", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('----- Dsp config reset-----');
+    let modalData = {
+      title: 'INFO!!!',
+      message: self.commandRouter.getI18nString('REBOOT_AFTER_RESET'),
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to reset config' + err);
+  }
 }
 
 
