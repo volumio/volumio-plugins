@@ -23,8 +23,7 @@ sudo -H pip install --upgrade python-mpd2 socketIO-client
 #extra for DAC2
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
 sudo -H pip install --upgrade setuptools
-sudo -H pip install --upgrade luma.core==1.13.0
-sudo -H pip install --upgrade luma.oled==3.4.0
+sudo -H pip install --upgrade luma.core==1.13.0 luma.oled==3.4.0
 
 #Install OLED service
 cd /tmp
