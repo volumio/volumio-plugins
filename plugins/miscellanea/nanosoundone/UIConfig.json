@@ -1,0 +1,72 @@
+{
+  "page": {
+    "label": "NanoSound One"
+  },
+  "sections": [
+    {
+      "id": "section_display",
+      "element": "section",
+      "label": "Settings",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/nanosound", "method":"saveConfig"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "oledDisplay","model"
+        ]
+      },
+      "content": [
+        {
+          "id": "model",
+          "element": "select",
+          "label": "Model",
+          "value": {"value": "NANOSOUNDONE",
+                    "label": "NanoSound One"
+          },
+
+          "options": [
+            {
+              "value": "NANOSOUNDONE",
+              "label": "NanoSound One"
+            }
+          ]
+        }
+	]
+	},
+  {
+   "id": "section_resources",
+   "element": "section",
+   "label": "TRANSLATE.RESOURCES",
+   "icon": "fa-book",
+   "content": [
+     {
+       "id": "shopnanosound",
+       "element": "button",
+       "label": "TRANSLATE.GET_NANOSOUND",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://volumio.org/product/nanosound-dac/"
+       }
+     },
+     {
+      "id": "nanosoundrange",
+      "element": "button",
+      "label": "NanoSound Product Info",
+      "onClick": {
+        "type": "openUrl",
+        "url": "https://nanomesher.com/nanosound"
+      }
+    },
+     {
+       "id": "support",
+       "element": "button",
+       "label": "TRANSLATE.SUPPORT_INFO",
+       "onClick": {
+         "type": "openUrl",
+         "url": "https://nanomesher.com/support"
+       }
+     }
+   ]
+   }
+  ]
+}
