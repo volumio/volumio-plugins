@@ -64,7 +64,7 @@
     "CONTROLGPUMEM":"GPU-Speichergröße verwalten",
     "CONTROLGPUMEM_DOC":"Wenn dieser Schalter aktiviert wird, wird die Menge des der GPU zur Verfügung gestellten Speichers durch das Plugin verwaltet.",
     "GPUMEM":"Größe des GPU-Speichers",
-    "GPUMEM_DOC":"Die Größe des GPU-Speichers kann 1-Megabyte-Schritten in einem Bereich von 32 bis 128MB eingestellt werden.",
+    "GPUMEM_DOC":"Die Größe des GPU-Speichers kann 1MB-Schritten in einem Bereich von 32 bis 128MB eingestellt werden.",
     "POINTER_CONF":"Mauszeigereinstellungen",
     "POINTER_DESC":"",
     "SHOWPOINTER":"Zeige den Mauszeiger an",
