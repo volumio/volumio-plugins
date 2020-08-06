@@ -326,7 +326,7 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     // resolve address to numeric IP by DNS lookup
     function resolveTrackUri (uri) {
         let result = null;
-        let subFnName = fnName + '::resolveTrackUri';
+        const subFnName = fnName + '::resolveTrackUri';
 
         try {
             let start = uri.indexOf('//') + 2;
@@ -428,7 +428,6 @@ ControllerPandora.prototype.pandoraListener = function () {
             else {
                 self.logInfo(fnName + ': Removing pandoraListener');
             }
-
         });
 };
 
@@ -478,7 +477,10 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
                 });
             }
         })
-        .fail(err => self.generalReject('clearAddPlayTrack', err));
+        .fail(err => {
+            self.logError(fnName + ' error: ' + err);
+            return self.goPreviousNext('skip');
+        });
 };
 
 // ControllerPandora.prototype.seek = function (position) {
@@ -576,12 +578,17 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     self.commandRouter.stateMachine.currentPosition = qPos;
                     return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
-                else { // next
+                else if (fnName === 'next') {
                     if (self.nextIsThumbsDown) {
                         return self.stop()
                             .then(() => self.commandRouter.stateMachine.removeQueueItem({value: qPos}));
                     }
                     return self.stop();
+                }
+                else { // 'skip' (bad uri lookup -- play next track or track 0)
+                    qPos = (qPos + 1) % qLen;
+                    self.commandRouter.stateMachine.currentPosition = qPos;
+                    return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
             }
             return libQ.resolve();
