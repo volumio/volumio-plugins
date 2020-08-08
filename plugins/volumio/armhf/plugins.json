@@ -685,7 +685,7 @@
 		{
 			"prettyName": "Accessories",
 			"name": "accessory",
-			"id": "cat3",
+			"id": "cat4",
 			"description": "Plugins for Volumio Accessories",
 			"plugins": [
 				{
