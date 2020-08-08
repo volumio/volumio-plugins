@@ -581,6 +581,24 @@
 						}
 					],
 					"updated": "21-6-2020"
+				},
+				{
+					"prettyName": "NanoSound One",
+					"icon": "fa-lightbulb-o",
+					"name": "nanosoundone",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosoundone/nanosoundone.zip",
+					"license": "ISC",
+					"description": "Companion plugin for NanoSound One",
+					"details": "",
+					"author": "Nanomesher",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "8-8-2020"
 				}
 			]
 		},
