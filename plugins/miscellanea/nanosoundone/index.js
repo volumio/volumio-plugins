@@ -123,7 +123,8 @@ nanosoundone.prototype.onStart = function() {
 		                                                                    function (error, stdout, stderr) {
                 		                                                        if(error != null) {
                                 		                                                self.logger.info('Error starting NanoSound Infrared' + error);
-                                                		                                self.commandRouter.pushToastMessage('error', 'NanoSound One', 'Problem with starting NanoSound Infrared:' + error);
+																						self.commandRouter.pushToastMessage('error', 'NanoSound One', 'Problem with starting NanoSound Infrared:' + error);
+																						defer.reject();
                                                                 		        } else {
                                                                                 		self.logger.info('NanoSound Infrared started');
                                                                                			self.commandRouter.pushToastMessage('success', 'NanoSound One', 'NanoSound Infrared daemon started');
@@ -273,28 +274,18 @@ nanosoundone.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 	
-	self.clearTriggers()
-		.then (function (result) {
-			self.logger.info("Button triggers stopped");
+
 					exec('/usr/bin/sudo /bin/systemctl stop nanosound_lirc.service', {uid:1000,gid:1000},
 						function (error, stdout, stderr) {
 							if(error != null) {
 								self.logger.info('Cannot stop NanoSound Infrared service: '+error);
+								defer.reject();
 							} else {
 								self.logger.info('NanoSound Infrared stopped');
-
+								defer.resolve();
 							}
 							
 						});
-
-
-					  
-					});
-
-
-
-
-    
 
     return defer.promise;
 };
