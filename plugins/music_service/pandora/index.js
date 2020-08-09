@@ -45,23 +45,11 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    function validateBandFilter(bf) {
-        if (bf === '') { return []; }
-
-        try {
-            return bf.split('%');
-        } catch (err) {
-            self.commandRouter.pushToastMessage('error', 'Pandora',
-                'Invalid Band Filter: Should look like: Kanye%Vanilla Ice');
-            return [];
-        }
-    }
-
     let options = {
         email: self.config.get('email'),
         password: self.config.get('password'),
         isPandoraOne: self.config.get('isPandoraOne'),
-        bandFilter: validateBandFilter(self.config.get('bandFilter'))
+        bandFilter: self.validateBandFilter(self.config.get('bandFilter'))
     };
 
     self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
@@ -188,12 +176,28 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
     self.nextIsThumbsDown = options.nextIsThumbsDown;
     self.config.set('superPrev', options.superPrev);
     self.superPrevious = options.superPrevious;
-    self.config.set('bandFilter', options.bandFilter);
+    self.config.set('bandFilter', (!options.bandFilter) ? '' : options.bandFilter);
+    self.bandFilter = self.validateBandFilter(options.bandFilter);
     
     return self.checkConfValidity(options)
-        .then(() => self.commandRouter.pushToastMessage('success', 'Pandora',
-            'Login info saved.  If already logged in, restart plugin.'))
+        .then(() => {
+            setTimeout(() => self.commandRouter.pushToastMessage('success', 'Pandora',
+              'Login info saved.  If already logged in, restart plugin.'), 5000);
+        })
         .fail(err => self.generalReject('setAccountConf', err));
+};
+
+ControllerPandora.prototype.validateBandFilter = function (bf) {
+    var self = this;
+
+    if (!bf) return [];
+    try {
+        return bf.split('%');
+    } catch (err) {
+        self.commandRouter.pushToastMessage('error', 'Pandora',
+            'Invalid Band Filter: Should look like: Kanye%Vanilla Ice  Leaving blank for now.');
+        return [];
+    }
 };
 
 // checks Pandora plugin configuration validity
