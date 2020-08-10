@@ -45,23 +45,11 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    function validateBandFilter(bf) {
-        if (bf === '') { return []; }
-
-        try {
-            return bf.split('%');
-        } catch (err) {
-            self.commandRouter.pushToastMessage('error', 'Pandora',
-                'Invalid Band Filter: Should look like: Kanye%Vanilla Ice');
-            return [];
-        }
-    }
-
     let options = {
         email: self.config.get('email'),
         password: self.config.get('password'),
         isPandoraOne: self.config.get('isPandoraOne'),
-        bandFilter: validateBandFilter(self.config.get('bandFilter'))
+        bandFilter: self.validateBandFilter(self.config.get('bandFilter'))
     };
 
     self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
@@ -188,12 +176,28 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
     self.nextIsThumbsDown = options.nextIsThumbsDown;
     self.config.set('superPrev', options.superPrev);
     self.superPrevious = options.superPrevious;
-    self.config.set('bandFilter', options.bandFilter);
+    self.config.set('bandFilter', (!options.bandFilter) ? '' : options.bandFilter);
+    self.bandFilter = self.validateBandFilter(options.bandFilter);
     
     return self.checkConfValidity(options)
-        .then(() => self.commandRouter.pushToastMessage('success', 'Pandora',
-            'Login info saved.  If already logged in, restart plugin.'))
+        .then(() => {
+            setTimeout(() => self.commandRouter.pushToastMessage('success', 'Pandora',
+              'Login info saved.  If already logged in, restart plugin.'), 5000);
+        })
         .fail(err => self.generalReject('setAccountConf', err));
+};
+
+ControllerPandora.prototype.validateBandFilter = function (bf) {
+    var self = this;
+
+    if (!bf) return [];
+    try {
+        return bf.split('%');
+    } catch (err) {
+        self.commandRouter.pushToastMessage('error', 'Pandora',
+            'Invalid Band Filter: Should look like: Kanye%Vanilla Ice  Leaving blank for now.');
+        return [];
+    }
 };
 
 // checks Pandora plugin configuration validity
@@ -326,7 +330,7 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     // resolve address to numeric IP by DNS lookup
     function resolveTrackUri (uri) {
         let result = null;
-        let subFnName = fnName + '::resolveTrackUri';
+        const subFnName = fnName + '::resolveTrackUri';
 
         try {
             let start = uri.indexOf('//') + 2;
@@ -428,7 +432,6 @@ ControllerPandora.prototype.pandoraListener = function () {
             else {
                 self.logInfo(fnName + ': Removing pandoraListener');
             }
-
         });
 };
 
@@ -478,7 +481,10 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
                 });
             }
         })
-        .fail(err => self.generalReject('clearAddPlayTrack', err));
+        .fail(err => {
+            self.logError(fnName + ' error: ' + err);
+            return self.goPreviousNext('skip');
+        });
 };
 
 // ControllerPandora.prototype.seek = function (position) {
@@ -576,12 +582,17 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     self.commandRouter.stateMachine.currentPosition = qPos;
                     return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
-                else { // next
+                else if (fnName === 'next') {
                     if (self.nextIsThumbsDown) {
                         return self.stop()
                             .then(() => self.commandRouter.stateMachine.removeQueueItem({value: qPos}));
                     }
                     return self.stop();
+                }
+                else { // 'skip' (bad uri lookup -- play next track or track 0)
+                    qPos = (qPos + 1) % qLen;
+                    self.commandRouter.stateMachine.currentPosition = qPos;
+                    return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
             }
             return libQ.resolve();
