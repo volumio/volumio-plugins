@@ -199,7 +199,7 @@
 					"prettyName": "pandora",
 					"icon": "fa-lightbulb-o",
 					"name": "pandora",
-					"version": "2.3.0",
+					"version": "2.3.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/pandora/pandora.zip",
 					"license": "ISC",
 					"description": "A plugin to access Pandora Web Radio",
@@ -211,7 +211,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "6-8-2020"
+					"updated": "10-8-2020"
 				},
 				{
 					"prettyName": "Volusonic",
@@ -299,14 +299,14 @@
 					"prettyName": "Touch Display",
 					"icon": "fa-hand-pointer-o",
 					"name": "touch_display",
-					"version": "1.1.8",
+					"version": "1.1.9",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/touch_display/touch_display.zip",
 					"license": "Free for non commercial USE",
 					"description": "The plugin enables the touch display controller for the original Raspberry 7\" touchscreen.",
 					"details": "<strong>Using this plugin is not recommended with Raspberry PI B+! Suggested, Raspberry PI 3, Odroid C1 or C2</strong>",
 					"author": "Volumio Team",
 					"screenshots": [],
-					"updated": "25-5-2020"
+					"updated": "6-8-2020"
 				},
 				{
 					"prettyName": "Allo Relay Volume Attenuator",
@@ -475,7 +475,7 @@
 					"prettyName": "NanoSound by Nanomesher",
 					"icon": "fa-lightbulb-o",
 					"name": "nanosound",
-					"version": "1.8.4",
+					"version": "1.8.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
 					"license": "ISC",
 					"description": "Companion plugin for NanoSound DAC",
@@ -487,7 +487,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "10-4-2020"
+					"updated": "6-8-2020"
 				},
 				{
 					"prettyName": "SnapCast",
@@ -530,7 +530,7 @@
 					"prettyName": "miniDLNA",
 					"icon": "fa-lightbulb-o",
 					"name": "minidlna",
-					"version": "1.1.4",
+					"version": "1.1.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/minidlna/minidlna.zip",
 					"license": "ISC",
 					"description": "The plugin installs and configures a miniDLNA server.",
@@ -542,7 +542,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "19-12-2019",
+					"updated": "6-8-2020",
 					"stable": true
 				},
 				{
@@ -581,6 +581,24 @@
 						}
 					],
 					"updated": "21-6-2020"
+				},
+				{
+					"prettyName": "NanoSound One",
+					"icon": "fa-lightbulb-o",
+					"name": "nanosoundone",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosoundone/nanosoundone.zip",
+					"license": "ISC",
+					"description": "Companion plugin for NanoSound One",
+					"details": "",
+					"author": "Nanomesher",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "8-8-2020"
 				}
 			]
 		},
@@ -674,14 +692,14 @@
 					"prettyName": "IR Remote Controller",
 					"icon": "fa-magic",
 					"name": "ir_controller",
-					"version": "1.2.3",
+					"version": "1.2.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/accessory/ir_controller/ir_controller.zip",
 					"license": "GPLv3",
 					"description": "Volumio IR Remote plugin",
 					"details": "<h4>IR Remote Controller Plugin </h4><br>This Plugin has been sponsored by <a href=\"https://www.justboom.co/?utm_source=JustBoom+Player&utm_medium=Software&utm_campaign=JustBoom+Player+Software&utm_content=IR+Remote+Plugin+Main+Site+Link\" target=\"blank\">JustBoom</a> and it works out of the box with <a href=\"https://www.justboom.co/product/justboom-ir-remote/?utm_source=JustBoom+Player&utm_medium=Software&utm_campaign=JustBoom+Player+Software&utm_content=IR+Remote+Plugin+Link\" target=\"blank\">JustBoom IR Remote</a><br><br>FEATURES: <br><br><ul><li>3 profiles available (JustBoom IR Remote, Odroid Remote, Apple remote)</li><li>Controls: Play, pause, mute, volume, next, previous, seek, repeat and random</li></ul>",
 					"author": "Volumio Team",
 					"screenshots": [],
-					"updated": "20-2-2020"
+					"updated": "6-8-2020"
 				},
 				{
 					"prettyName": "PI2 Design 503HTA Tube DAC Plugin",
