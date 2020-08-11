@@ -2,11 +2,15 @@
 
 ## Getting Started
 
-### Downloading the Source Code from GitHub
-
 First you'll need to SSH to your Volumio machine.<br/>
 To enable SSH access, browse to http://volumio.local/dev and turn it on.<br/>
 <br/>
+Make sure your system clock is set properly.  This command set you up for regular clock updates:<br/>
+
+`sudo timedatectl set-ntp true`
+
+### Downloading the Source Code from GitHub
+
 Connect to your Volumio machine.<br/>
 Use PuTTY on Windows or some equivalent.<br/>
 Mac users can use a terminal window, ask a search engine for help, or visit an Apple store.<br/>
@@ -19,13 +23,13 @@ Then, clone the repository:
 
 `git clone https://github.com/truckershitch/volumio-plugins.git`<br/>
 
-### <b>Optional:</b> There are two older versions archived on GitHub:
+### <b>Optional (not recommended):</b> There are two older versions archived on GitHub
 
-If you want to try out another branch (at this point I would not bother -- Volumio has the 1.0.0 version already) change to the volumio-plugins directory:
+If you want to try out another branch, change to the `volumio-plugins` directory:
 
 `cd volumio-plugins`
 
-The pianode branch is the oldest and works the least.  I have not tested it on the newer Volumio releases.<br/>
+The pianode branch is the oldest <b>and works the least</b>.  I have not tested it on the newer Volumio releases.<br/>
 <b>It may break your system.  It probably won't work.</b><br/>
 <br/>
 To try your luck with the version based on pianode, do this:
@@ -43,19 +47,6 @@ Otherwise, just continue below (don't bother with checking out anything).  To sw
 Or you can just delete the `volumio-plugins` directory.
 
 ## Continuing with Installation
-
-### Upgrade From Older Version
-
-~~Before installing any of these plugins manually, you should uninstall any other version from the Volumio Plugin menu or by deleting the installation directories yourself.~~<br/>
-
-~~To delete the directories manually (be careful to only delete the pandora directories!):~~
-
-~~`rm -rf /data/plugins/music_service/pandora`~~<br/>
-~~`rm -rf /data/configuration/music_service/pandora`~~
-
-~~Then execute `volumio vrestart`~~
-
-My apologies on the command-line instructions.  I was just dumping the files into `/data/plugins/music_service/pandora`.  I took another look at this.<br/>
 
 <b>To upgrade from an older plugin version:</b>
 
@@ -94,6 +85,7 @@ Much was changed for version 2.x:
 * Version 2.1.0: Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
 * Version 2.1.2: Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
 * Version 2.3.0: Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
+* Version 2.3.4: Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
 
 ## Issues
 
@@ -106,15 +98,17 @@ After that, the functions defined for previous and next in the plugin worked fin
 * It may be possible to add a station with the Volumio search function.  I am looking into it.  The functionaliy is there.
 * Volumio has a consume mode.  As far as I can tell, it only removes the last track in the queue when any track in the queue has been played (i.e. it can remove the wrong track).<br/>
 I made my own consume function that removes the last track played no matter where it is in the queue.  I'm not sure if I have reinvented the wheel; Volumio might already be able to do this.  For now, my consume function does the job.
+* The wrapper to the JSON Pandora API I am using is not set up to use the regular Pandora One server.  The other credentials can be passed in but the module hardcodes the server URL.  This might not matter, but I haven't been able to test it.<br/>
+My alpha fork of the module is rewritten to use Promises instead of callbacks, and the server is fixed.  However, it's not ready yet.
 
-All testers are welcome, even if they ride motorcycles.  You know who you are.
+## All testers are welcome, even if they ride motorcycles.  You know who you are.
 
 ## Built with
 
 * VS Code for debugging and coding.  I can't get over how good this editor is.
 * vim for basic editing.  There is a lot of power in this humble editor.  You just have to believe....
 
-## Acknowledgments
+## Acknowledgements
 
 * Michelangelo and the other Volumio developers.
 * lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.  He was the first person to look at my code and give me help.  I also borrowed his mpd player listener callback function which really helped a lot.  Much obliged!
