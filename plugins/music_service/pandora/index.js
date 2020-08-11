@@ -744,11 +744,11 @@ ControllerPandora.prototype.logError = function (msg, err) {
 
 ControllerPandora.prototype.generalReject = function (msg, err) {
     var self = this;
-
-    let rejection = self.pandoraPrefix() + msg;
+    
     if (err !== undefined) {
         msg += ' error: ' + err;
     }
+    let rejection = self.pandoraPrefix() + msg;
     return libQ.reject(new Error(rejection));
 };
 
