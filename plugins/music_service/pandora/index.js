@@ -524,6 +524,8 @@ ControllerPandora.prototype.pause = function () {
 
     self.announceFn('pause');
 
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+
     return self.mpdPlugin.pause()
         .then(() => {
             let vState = self.commandRouter.stateMachine.getState();
@@ -538,11 +540,12 @@ ControllerPandora.prototype.resume = function () {
 
     self.announceFn('resume');
 
-    return self.mpdPlugin.resume()
-        .then(() => {
-            self.state.status = 'play';
-            return self.pushState(self.state);
-    });
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+    self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
+
+    return self.mpdPlugin.sendMpdCommand('play', []);
+        // .then(() => self.mpdPlugin.getState())
+        // .then(state => self.pushState(state));
 };
 
 // enforce slight delay with media controls to avoid traffic jam
