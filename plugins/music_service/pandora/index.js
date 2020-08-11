@@ -9,7 +9,6 @@ var execSync = require('child_process').execSync;
 
 var dnsSync = require('dns-sync');
 var anesidora = require('anesidora');
-var wget = require('node-wget-promise');
 
 const { defer, setNextTickFunction } = require('kew');
 const { REFUSED, SERVFAIL } = require('dns');
