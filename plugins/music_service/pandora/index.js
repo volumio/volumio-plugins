@@ -15,6 +15,7 @@ const { REFUSED, SERVFAIL } = require('dns');
 const { get } = require('https');
 const { setFlagsFromString } = require('v8');
 const { readSync } = require('fs-extra');
+const { pseudoRandomBytes } = require('crypto');
 
 
 module.exports = ControllerPandora;
@@ -30,6 +31,7 @@ function ControllerPandora(context) {
     self.currStation = {};
     self.lastUri = null;
     self.lastPress = Date.now();
+    self.state = {};
 }
 
 
@@ -66,11 +68,11 @@ ControllerPandora.prototype.onStop = function () {
     // Once the Plugin has successfull stopped resolve the promise
     var self = this;
 
-    if (self.expireHandler) { self.expireHandler.stop(); }
+    if (self.expireHandler) self.expireHandler.stop();
 
     return self.flushPandora()
-        .then(() => self.mpdPlugin.sendMpdCommand('stop', []))
-        .then(() => self.mpdPlugin.sendMpdCommand('clear', []))
+        .then(() => self.stop())
+        .then(() => self.mpdPlugin.clear())
         .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
@@ -458,10 +460,15 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
             return self.mpdPlugin.sendMpdCommand('play', []);
         })
-        .then(() => self.mpdPlugin.getState())
+        .then(() => self.parseState(track))
         .then(state => {
-            let skipFetch = (!state.artist && !state.title);
-            return self.pushState(state)
+            self.state = state;
+            self.state.seek = 0;
+            self.state.status = 'play';
+
+            let skipFetch = (!self.state.artist && !self.state.title);
+
+            return self.pushState(self.state)
                 .then(() => libQ.resolve(skipFetch));
         })
         .then(skipFetch => {
@@ -505,8 +512,10 @@ ControllerPandora.prototype.stop = function () {
     self.announceFn('stop');
 
     return self.mpdPlugin.stop()
-        .then(() => self.mpdPlugin.getState())
-        .then(state => self.pushState(state));
+        .then(() => {
+            self.state.status = 'stop';
+            return self.pushState(self.state);
+        });
 };
 
 // Spop pause
@@ -515,9 +524,15 @@ ControllerPandora.prototype.pause = function () {
 
     self.announceFn('pause');
 
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+
     return self.mpdPlugin.pause()
-        .then(() => self.mpdPlugin.getState())
-        .then(state => self.pushState(state));
+        .then(() => {
+            let vState = self.commandRouter.stateMachine.getState();
+            self.state.status = 'pause';
+            self.state.seek = vState.seek;
+            return self.pushState(self.state);
+        });
 };
 
 ControllerPandora.prototype.resume = function () {
@@ -525,9 +540,12 @@ ControllerPandora.prototype.resume = function () {
 
     self.announceFn('resume');
 
-    return self.mpdPlugin.resume()
-        .then(() => self.mpdPlugin.getState())
-        .then(state => self.pushState(state));
+    self.mpdPlugin.clientMpd.removeAllListeners('system-player');
+    self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
+
+    return self.mpdPlugin.sendMpdCommand('play', []);
+        // .then(() => self.mpdPlugin.getState())
+        // .then(state => self.pushState(state));
 };
 
 // enforce slight delay with media controls to avoid traffic jam
@@ -621,16 +639,32 @@ ControllerPandora.prototype.next = function () {
     return self.goPreviousNext(fnName);
 };
 
+ControllerPandora.prototype.parseState = function (state) {
+    // var self = this;
+
+    const strip = ({ // remove extra keys
+        fetchTime,
+        station,
+        stationToken,
+        trackToken,
+        uri,
+        ...rest
+    }) => rest;
+    let pState = strip(state);
+    pState.uri = state.realUri;
+
+    return libQ.resolve(pState);
+};
+
 ControllerPandora.prototype.pushState = function (state) {
     var self = this;
 
     self.announceFn('pushState');
 
-    let pState = state;
-    pState.trackType = 'mp3';
-    pState.bitdepth = '16 bit';
-
-    self.commandRouter.servicePushState(pState, self.serviceName);
+    state.trackType = 'mp3';
+    state.bitdepth = '16 bit';
+    state.samplerate = '44.1 KHz';
+    self.commandRouter.servicePushState(state, self.serviceName);
 
     return self.commandRouter.stateMachine.setConsumeUpdateService('pandora');
 };
@@ -710,11 +744,11 @@ ControllerPandora.prototype.logError = function (msg, err) {
 
 ControllerPandora.prototype.generalReject = function (msg, err) {
     var self = this;
-
-    let rejection = self.pandoraPrefix() + msg;
+    
     if (err !== undefined) {
         msg += ' error: ' + err;
     }
+    let rejection = self.pandoraPrefix() + msg;
     return libQ.reject(new Error(rejection));
 };
 
