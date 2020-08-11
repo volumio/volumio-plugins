@@ -9,7 +9,6 @@ var execSync = require('child_process').execSync;
 
 var dnsSync = require('dns-sync');
 var anesidora = require('anesidora');
-var wget = require('node-wget-promise');
 
 const { defer, setNextTickFunction } = require('kew');
 const { REFUSED, SERVFAIL } = require('dns');
@@ -70,7 +69,6 @@ ControllerPandora.prototype.onStop = function () {
     var self = this;
 
     if (self.expireHandler) self.expireHandler.stop();
-    if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
     return self.flushPandora()
         .then(() => self.stop())
@@ -449,12 +447,6 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
         .then(() => {
-            if (self.streamLifeChecker) {
-                return self.streamLifeChecker.stop();
-            }
-            return libQ.resolve();
-        })
-        .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
             }
@@ -533,7 +525,6 @@ ControllerPandora.prototype.pause = function () {
     self.announceFn('pause');
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-    if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
     return self.mpdPlugin.pause()
         .then(() => {
@@ -551,9 +542,8 @@ ControllerPandora.prototype.resume = function () {
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
-    self.streamLifeChecker = new StreamLifeChecker(self);
 
-    return self.mpdPlugin.resume();
+    return self.mpdPlugin.sendMpdCommand('play', []);
         // .then(() => self.mpdPlugin.getState())
         // .then(state => self.pushState(state));
 };
@@ -617,15 +607,10 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     }
                     return self.stop();
                 }
-                else { // 'skip' (bad uri lookup)
-                    if (self.commandRouter.stateMachine.currentRandom !== true) {
-                        qPos = (qPos + 1) % qLen; // play next track or track 0
-                        self.commandRouter.stateMachine.currentPosition = qPos;
-                        return self.clearAddPlayTrack(self.getQueue()[qPos]);
-                    }
-                    else { // next random track
-                        return self.stop();
-                    }
+                else { // 'skip' (bad uri lookup -- play next track or track 0)
+                    qPos = (qPos + 1) % qLen;
+                    self.commandRouter.stateMachine.currentPosition = qPos;
+                    return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
             }
             return libQ.resolve();
@@ -783,7 +768,6 @@ function ExpireOldTracks (self, interval) {
 
     ExpireOldTracks.prototype.stop = function () {
         clearInterval(reaperID);
-        return libQ.resolve();
     };
 
     ExpireOldTracks.prototype.reaper = function () {
@@ -821,55 +805,6 @@ function ExpireOldTracks (self, interval) {
         }
 
         hangman();
-    };
-
-    this.init();
-}
-
-function StreamLifeChecker(self) {
-    var checkerID;
-    var lastSeek;
-    var interval = 5000;
-    var fnName = 'StreamLifeChecker';
-
-    StreamLifeChecker.prototype.init = function () {
-        var that = this;
-        lastSeek = self.commandRouter.stateMachine.currentSeek;
-
-        self.announceFn(fnName);
-
-        checkerID = setInterval(() => {
-            that.heartMonitor();
-        }, interval);
-    };
-
-    StreamLifeChecker.prototype.stop = function () {
-        self.logInfo(fnName + ' stopping');
-        
-        clearInterval(checkerID);
-        return libQ.resolve();
-    };
-
-    StreamLifeChecker.prototype.heartMonitor = function () {
-        var that = this;
-        let subFnName = fnName + '::heartMonitor';
-
-        self.mpdPlugin.getState()
-            .then(state => {
-                if (state.status !== 'pause') {
-                    if (state.seek == lastSeek) {
-                        let track = self.getQueueTrack();
-                        let msg = track.name + ' by ' + track.artist +
-                            ' timed out.  Advancing track';
-                        self.commandRouter.pushToastMessage('info', 'Pandora', msg);
-                        self.logInfo(subFnName + ': ' + msg);
-                        return self.goPreviousNext('skip')
-                            .then(() => self.removeTrack(track.uri))
-                            .then(() => that.stop());
-                    }
-                }
-                lastSeek = state.seek;
-            });
     };
 
     this.init();
