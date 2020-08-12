@@ -9,7 +9,6 @@ var execSync = require('child_process').execSync;
 
 var dnsSync = require('dns-sync');
 var anesidora = require('anesidora');
-var wget = require('node-wget-promise');
 
 const { defer, setNextTickFunction } = require('kew');
 const { REFUSED, SERVFAIL } = require('dns');
@@ -74,7 +73,7 @@ ControllerPandora.prototype.onStop = function () {
 
     return self.flushPandora()
         .then(() => self.stop())
-        .then(() => self.mpdPlugin.clear())
+	.then(() => self.mpdPlugin.clear())
         .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
@@ -113,6 +112,7 @@ ControllerPandora.prototype.initialSetup = function (options) {
     }
 
     self.expireHandler = new ExpireOldTracks(self, expInterval);
+    self.streamLifeChecker = new StreamLifeChecker(self);
 
     return self.pandoraHandler.pandoraLoginAndGetStations()
         .then(() => self.pandoraHandler.fillStationData())
@@ -448,12 +448,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
-        .then(() => {
-            if (self.streamLifeChecker) {
-                return self.streamLifeChecker.stop();
-            }
-            return libQ.resolve();
-        })
+        .then(() => self.streamLifeChecker.stop())
         .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
@@ -533,9 +528,9 @@ ControllerPandora.prototype.pause = function () {
     self.announceFn('pause');
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-    if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
-    return self.mpdPlugin.pause()
+    return self.streamLifeChecker.stop()
+        .then(() => self.mpdPlugin.pause())
         .then(() => {
             let vState = self.commandRouter.stateMachine.getState();
             self.state.status = 'pause';
@@ -551,9 +546,10 @@ ControllerPandora.prototype.resume = function () {
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
-    self.streamLifeChecker = new StreamLifeChecker(self);
+    
 
-    return self.mpdPlugin.resume();
+    return self.mpdPlugin.resume()
+        .then(() => self.streamLifeChecker.init());
         // .then(() => self.mpdPlugin.getState())
         // .then(state => self.pushState(state));
 };
@@ -589,6 +585,7 @@ ControllerPandora.prototype.handleMediaButton = function (mediaFn) {
 ControllerPandora.prototype.goPreviousNext = function (fnName) {
     var self = this;
     const qLen = self.getQueue().length;
+    const isNotRandom = (self.commandRouter.stateMachine.currentRandom !== true);
     let qPos = self.getQueuePos();
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
@@ -601,7 +598,7 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     if (result === 'replay') {
                         self.commandRouter.stateMachine.currentSeek = 0; // reset Volumio timer
                     }
-                    else if (self.commandRouter.stateMachine.currentRandom !== true) { // normal previous
+                    else if (isNotRandom) { // normal previous
                         qPos = (qPos + qLen - 1) % qLen;
                     }
                     else { // random previous
@@ -611,21 +608,15 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
                 else if (fnName === 'next') {
-                    if (self.nextIsThumbsDown) {
-                        return self.stop()
-                            .then(() => self.commandRouter.stateMachine.removeQueueItem({value: qPos}));
-                    }
-                    return self.stop();
+                    return self.stop()
+                        .then(() => {
+                            if (self.nextIsThumbsDown) {
+                                return self.commandRouter.stateMachine.removeQueueItem({value: qPos});
+                            }
+                        });
                 }
-                else { // 'skip' (bad uri lookup)
-                    if (self.commandRouter.stateMachine.currentRandom !== true) {
-                        qPos = (qPos + 1) % qLen; // play next track or track 0
-                        self.commandRouter.stateMachine.currentPosition = qPos;
-                        return self.clearAddPlayTrack(self.getQueue()[qPos]);
-                    }
-                    else { // next random track
-                        return self.stop();
-                    }
+                else { // 'skip' (bad uri lookup / stream ended)
+                    return self.stop(); // play next consecutive/random track
                 }
             }
             return libQ.resolve();
@@ -830,7 +821,7 @@ function StreamLifeChecker(self) {
     var checkerID;
     var lastSeek;
     var interval = 5000;
-    var fnName = 'StreamLifeChecker';
+    const fnName = 'StreamLifeChecker';
 
     StreamLifeChecker.prototype.init = function () {
         var that = this;
@@ -841,6 +832,8 @@ function StreamLifeChecker(self) {
         checkerID = setInterval(() => {
             that.heartMonitor();
         }, interval);
+
+        return libQ.resolve();
     };
 
     StreamLifeChecker.prototype.stop = function () {
@@ -871,8 +864,6 @@ function StreamLifeChecker(self) {
                 lastSeek = state.seek;
             });
     };
-
-    this.init();
 }
 
 function PandoraHandler(self, options) {
