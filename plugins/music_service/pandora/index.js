@@ -71,9 +71,9 @@ ControllerPandora.prototype.onStop = function () {
     if (self.expireHandler) self.expireHandler.stop();
     if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
-    return self.flushPandora()
-        .then(() => self.stop())
-        .then(() => self.mpdPlugin.clear())
+    return self.stop()
+        // .then(() => self.mpdPlugin.clear())
+        .then(() => self.flushPandora())
         .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
@@ -112,6 +112,7 @@ ControllerPandora.prototype.initialSetup = function (options) {
     }
 
     self.expireHandler = new ExpireOldTracks(self, expInterval);
+    self.streamLifeChecker = new StreamLifeChecker(self);
 
     return self.pandoraHandler.pandoraLoginAndGetStations()
         .then(() => self.pandoraHandler.fillStationData())
@@ -447,12 +448,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
-        .then(() => {
-            if (self.streamLifeChecker) {
-                return self.streamLifeChecker.stop();
-            }
-            return libQ.resolve();
-        })
+        .then(() => self.streamLifeChecker.stop())
         .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
@@ -532,9 +528,9 @@ ControllerPandora.prototype.pause = function () {
     self.announceFn('pause');
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
-    if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
-    return self.mpdPlugin.pause()
+    return self.streamLifeChecker.stop()
+        .then(() => self.mpdPlugin.pause())
         .then(() => {
             let vState = self.commandRouter.stateMachine.getState();
             self.state.status = 'pause';
@@ -550,9 +546,10 @@ ControllerPandora.prototype.resume = function () {
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
-    self.streamLifeChecker = new StreamLifeChecker(self);
+    
 
-    return self.mpdPlugin.resume();
+    return self.mpdPlugin.resume()
+        .then(() => self.streamLifeChecker.init());
         // .then(() => self.mpdPlugin.getState())
         // .then(state => self.pushState(state));
 };
@@ -829,7 +826,7 @@ function StreamLifeChecker(self) {
     var checkerID;
     var lastSeek;
     var interval = 5000;
-    var fnName = 'StreamLifeChecker';
+    const fnName = 'StreamLifeChecker';
 
     StreamLifeChecker.prototype.init = function () {
         var that = this;
@@ -840,6 +837,8 @@ function StreamLifeChecker(self) {
         checkerID = setInterval(() => {
             that.heartMonitor();
         }, interval);
+
+        return libQ.resolve();
     };
 
     StreamLifeChecker.prototype.stop = function () {
@@ -870,8 +869,6 @@ function StreamLifeChecker(self) {
                 lastSeek = state.seek;
             });
     };
-
-    this.init();
 }
 
 function PandoraHandler(self, options) {
