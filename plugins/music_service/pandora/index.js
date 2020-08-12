@@ -73,6 +73,7 @@ ControllerPandora.prototype.onStop = function () {
 
     return self.flushPandora()
         .then(() => self.stop())
+	.then(() => self.mpdPlugin.clear())
         .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
