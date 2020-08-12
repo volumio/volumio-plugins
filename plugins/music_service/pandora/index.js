@@ -71,8 +71,8 @@ ControllerPandora.prototype.onStop = function () {
     if (self.expireHandler) self.expireHandler.stop();
     if (self.streamLifeChecker) self.streamLifeChecker.stop();
 
-    return self.stop()
-        .then(() => self.flushPandora())
+    return self.flushPandora()
+        .then(() => self.stop())
         .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
 };
 
