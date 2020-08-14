@@ -536,7 +536,7 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       // No mixer - default to (linear) Spotify volume
       mixer = 'softvol';
       mixeropts = this.config.get('volume_ctrl');
-      hwdev = `plughw:${outdev}`;
+      hwdev = `${outdev}`;
       initvolstr = this.config.get('initvol');
     } else {
       // Some mixer is defined, set inital volume to startup volume or current volume
@@ -559,9 +559,9 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
         idxcard = vconfigJSON.outputdevice.value;
         mixname = vconfigJSON.mixer.value.split(',')[0];
         mixidx = vconfigJSON.mixer.value.split(',')[1] || 0;
-        hwdev = `plughw:${outdev}`;
+        hwdev = `${outdev}`;
       } else { // We have an actual Hardware mixer
-        hwdev = `plughw:${outdev}`;
+        hwdev = `${outdev}`;
         // outputdevice = card,device..
         // ¯\_(ツ)_/¯
         idxcard = outdev.split(',')[0];
@@ -570,7 +570,7 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
         mixidx = mixidx || 0;
       }
 
-      mixdev = `hw:${idxcard}`;
+      mixdev = 'hw:' + this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
       mixeropts = 'linear';
     }
     if (this.config.get('debug')) {
