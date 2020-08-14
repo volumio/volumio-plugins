@@ -86,6 +86,9 @@ Much was changed for version 2.x:
 * Version 2.1.2: Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
 * Version 2.3.0: Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
 * Version 2.3.4: Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
+* Version 2.4.0: Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.<br>
+Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.<br/>
+Optional queue flush after station change, configured in plugin options.
 
 ## Issues
 

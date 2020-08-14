@@ -16,6 +16,8 @@
         "PANDORA_NEXT_IS_THUMBS_DOWN_LABEL": "Pressing Next Button = \"Thumbs Down\"",
         "PANDORA_DUAL_PREVIOUS_FUNCTION_DOC": "When enabled, clicking the Previous button replays the track.  When shuffle/random mode is off, another quick click plays the previous track.",
         "PANDORA_DUAL_PREVIOUS_FUNCTION_LABEL": "Dual Function Previous Button",
+        "PANDORA_FLUSH_ON_STATION_CHANGE_DOC": "When enabled, Pandora tracks are flushed on a station change.",
+        "PANDORA_FLUSH_ON_STATION_CHANGE_LABEL": "Flush Pandora tracks on station change",
         "PANDORA_BAND_FILTER_DOC": "Enter a %-delimited string of bands you do not want to hear.  For example: Spice Girls%One Direction",
         "PANDORA_BAND_FILTER_LABEL": "Band Filter"
     }
