@@ -263,10 +263,11 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     };
 
     function checkForStationChange(newStationId) {
+        let stationChanged = (self.currStation.id !== newStationId);
+
         self.currStation.id = newStationId;
         self.currStation.name = stationData[newStationId].name;
-
-        if (newStationId === curUri.match(staRe)[1] && self.flushThem) {
+        if (stationChanged && self.flushThem) {
             return self.flushPandora();
         }
         return libQ.resolve();
