@@ -56,6 +56,7 @@ ControllerPandora.prototype.onStart = function () {
 
     self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
     self.nextIsThumbsDown = self.config.get('nextIsThumbsDown');
+    self.flushThem = self.config.get('flushThem');
 
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
