@@ -18,6 +18,7 @@
           "useCurl302WorkAround",
           "nextIsThumbsDown",
           "superPrevious",
+          "flushThem",
           "bandFilter"
         ]
       },
@@ -68,6 +69,14 @@
           "element": "switch",
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_LABEL",
+          "value": false
+        },
+        {
+          "id": "flushThem",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_FLUSH_ON_STATION_CHANGE_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_FLUSH_ON_STATION_CHANGE_LABEL",
           "value": false
         },
         {
