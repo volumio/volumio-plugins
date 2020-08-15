@@ -252,10 +252,10 @@
 					"prettyName": "AutoStart",
 					"icon": "fa-lightbulb-o",
 					"name": "autostart",
-					"version": "1.1.2",
+					"version": "1.2.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/autostart/autostart.zip",
 					"license": "ISC",
-					"description": "This plugin starts the first entry in the queue or from the last played position after rebooting volumio.",
+					"description": "Ths plugin controls the automatic playing of music after volumio starts.",
 					"details": "",
 					"author": "Thomas Doerr",
 					"screenshots": [
@@ -264,7 +264,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "8-11-2018"
+					"updated": "23-2-2019"
 				}
 			]
 		},
