@@ -1,0 +1,39 @@
+{
+  "page": {
+    "label": "TRANSLATE.GMUSIC_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_serverinfo",
+      "element": "section",
+      "label": "TRANSLATE.SERVER_INFO",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/gmusic_proxy", "method":"saveGMusicConfig"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "address",
+          "port"
+        ]
+      },
+      "content": [
+        {
+          "id": "address",
+          "type":"text",
+          "element": "input",
+          "doc": "This is the address of your GMusic Proxy server",
+          "label": "TRANSLATE.GMUSIC_ADDRESS",
+          "value": ""
+        },
+        {
+          "id": "port",
+          "type":"text",
+          "element": "input",
+          "doc": "This is the port of your GMusic Proxy server",
+          "label": "TRANSLATE.GMUSIC_PORT",
+          "value": "9999"
+        }
+      ]
+   }
+  ]
+}

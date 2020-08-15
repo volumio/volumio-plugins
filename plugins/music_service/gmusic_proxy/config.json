@@ -1,0 +1,14 @@
+{
+    "enabled": {
+        "type": "boolean",
+        "value": false
+      },
+      "address": {
+          "type": "string",
+          "value": ""
+      },
+      "port": {
+        "type": "string",
+        "value": "9999"
+    }
+}
