@@ -82,7 +82,7 @@
 					"prettyName": "Podcast",
 					"icon": "fa-lightbulb-o",
 					"name": "podcast",
-					"version": "0.0.9",
+					"version": "0.2.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/podcast/podcast.zip",
 					"license": "ISC",
 					"description": "Podcast for Volumio2",
@@ -94,7 +94,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "25-6-2018"
+					"updated": "15-8-2020"
 				},
 				{
 					"prettyName": "Phish.in",
