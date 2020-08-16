@@ -32,5 +32,7 @@
 	"SHOWVERSION":"Mostra versione",
 	"UPGRADE":"Aggiornamento versione",
 	"SHOWALBUMART":"Mostra copertina dell'album",
-	"EJECT":"Espelli CD"
+	"EJECT":"Espelli CD",
+	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
+	"SAVE_FOLDER_FORMAT":"Folder format"
 }

@@ -32,5 +32,7 @@
 	"SHOWVERSION":"バージョンを表示",
 	"UPGRADE":"ソフトウェアをアップグレードする",
 	"SHOWALBUMART":"アルバムカバーを表示",
-	"EJECT":"CDを取り出す"
+	"EJECT":"CDを取り出す",
+	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
+	"SAVE_FOLDER_FORMAT":"Folder format"
 }

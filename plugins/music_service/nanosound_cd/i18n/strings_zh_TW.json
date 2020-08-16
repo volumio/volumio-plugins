@@ -32,5 +32,7 @@
 	"SHOWVERSION":"顯示版本",
 	"UPGRADE":"升級軟件",
 	"SHOWALBUMART":"顯示專輯封面",
-	"EJECT":"彈出CD"
+	"EJECT":"彈出CD",
+	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
+	"SAVE_FOLDER_FORMAT":"Folder format"
 }

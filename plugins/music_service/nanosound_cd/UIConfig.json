@@ -12,7 +12,7 @@
         "saveButton": {
           "label": "TRANSLATE.SAVE",
           "data": [
-            "upsampling","extractformat","prestart","savepath","loadalbumart"
+            "upsampling","extractformat","prestart","savepath","loadalbumart","savefolderformat"
           ]
         },
         "content": [
@@ -75,6 +75,14 @@
             "doc": "TRANSLATE.EXTRACT_TO_PATH_DOC",
             "label": "TRANSLATE.EXTRACT_TO_PATH",
             "value": "INTERNAL"
+          },
+          {
+            "id": "savefolderformat",
+            "type":"string",
+            "element": "input",
+            "doc": "TRANSLATE.SAVE_FOLDER_FORMAT_DOC",
+            "label": "TRANSLATE.SAVE_FOLDER_FORMAT",
+            "value": "%artist%-%album%"
           },
           {
             "id": "loadalbumart",

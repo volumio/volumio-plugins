@@ -32,5 +32,7 @@
 	"SHOWVERSION":"Afficher la version",
 	"UPGRADE":"Version de mise à jour",
 	"SHOWALBUMART":"Montrer la couverture de l'album",
-	"EJECT":"Éjecter le CD"
+	"EJECT":"Éjecter le CD",
+	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
+	"SAVE_FOLDER_FORMAT":"Folder format"
 }

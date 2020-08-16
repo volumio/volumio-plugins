@@ -32,5 +32,7 @@
 	"SHOWVERSION":"버전 표시",
 	"UPGRADE":"소프트웨어 업그레이드",
 	"SHOWALBUMART":"앨범 표지보기",
-	"EJECT":"CD 꺼내기"
+	"EJECT":"CD 꺼내기",
+	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
+	"SAVE_FOLDER_FORMAT":"Folder format"
 }
