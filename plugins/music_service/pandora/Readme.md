@@ -89,7 +89,7 @@ Much was changed for version 2.x:
 * Version 2.4.0: Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.<br>
 Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.<br/>
 Optional queue flush after station change, configured in plugin options.
-* Version 2.5.0: Removed maxQ constant that limited the number of tracks fetched.
+* Version 2.5.0: Removed maxQ constant that limited the number of total tracks fetched.  There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
 
 ## Issues
 
