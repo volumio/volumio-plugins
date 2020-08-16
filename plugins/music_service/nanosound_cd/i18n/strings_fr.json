@@ -33,6 +33,6 @@
 	"UPGRADE":"Version de mise à jour",
 	"SHOWALBUMART":"Montrer la couverture de l'album",
 	"EJECT":"Éjecter le CD",
-	"SAVE_FOLDER_FORMAT_DOC":"The format of the extract folder. If leaving blank, it will be yyyy-MM-dd_hhmm. You can use %artist% and %album%",
-	"SAVE_FOLDER_FORMAT":"Folder format"
+	"SAVE_FOLDER_FORMAT_DOC":"Le format du dossier de sauvegarde. Si vous laissez ce champ vide, ce sera par défaut aaaa-MM-jj_hhmm. Vous pouvez utiliser %artist% pour le nom du chanteur et %album% pour le nom de l'album",
+	"SAVE_FOLDER_FORMAT":"Enregistrer le format du dossier"
 }
