@@ -270,7 +270,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         if (stationChanged && self.flushThem) {
             return self.flushPandora();
         }
-        return libQ.resolve();
+        return libQ.resolve(stationChanged);
     }
 
     self.announceFn(fnName);
@@ -294,7 +294,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     }
     else if (curUri.match(staRe) !== null) {
         return checkForStationChange(curUri.match(staRe)[1])
-            .then(() => self.pandoraHandler.fetchTracks())
+            .then(stationChanged => self.pandoraHandler.fetchTracks(stationChanged))
             .then(() => {
                 self.lastUri = null;
 
@@ -309,8 +309,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                         });
                 }
                 self.commandRouter.pushToastMessage('error', 'Pandora',
-                    'Failed to load tracks from ' + self.currStation.name +
-                    '\nTry clearing the Volumio queue.');
+                    'Failed to load tracks from ' + self.currStation.name);
 
                 return self.generalReject(fnName, 'failed to load tracks from ' +
                     self.currStation.name);
@@ -1041,7 +1040,7 @@ function PandoraHandler(self, options) {
         }
     };
 
-    PandoraHandler.prototype.fetchTracks = function () {
+    PandoraHandler.prototype.fetchTracks = function (newStation) {
         const fnName = 'PandoraHandler::fetchTracks';
         let Q = self.getQueue();
         const maxQ = 20;  // stop requesting tracks after we have this many
@@ -1122,7 +1121,7 @@ function PandoraHandler(self, options) {
                 return self.generalReject(fnName + '::fetchStationPlaylist', err);
             })
             .then(playlist => {
-                if (Q.length <= maxQ) {
+                if (Q.length <= maxQ || newStation) {
                     return fillNewTracks(playlist)
                         .then(() => {
                             if (newTracks.length == 0) {
