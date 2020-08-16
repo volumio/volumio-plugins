@@ -1,4 +1,4 @@
-/* jshint node: true, esversion: 6, unused: false */
+/* jshint node: true, esversion: 9, unused: false */
 'use strict';
 
 var libQ = require('kew');
@@ -1069,8 +1069,6 @@ function PandoraHandler(self, options) {
 
             self.announceFn(fnName + '::fillNewTracks');
 
-            newTracks = [];
-
             for (let i = 0; i < playlist.items.length; i++) {
                 if (!playlist.items[i].songName) { break; } // no more tracks
 
@@ -1111,6 +1109,8 @@ function PandoraHandler(self, options) {
 
             return libQ.resolve();
         }
+
+        newTracks = [];
 
         return fetchStationPlaylist()
             .fail(err => {
