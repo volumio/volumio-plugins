@@ -270,7 +270,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         if (stationChanged && self.flushThem) {
             return self.flushPandora();
         }
-        return libQ.resolve(stationChanged);
+        return libQ.resolve();
     }
 
     self.announceFn(fnName);
@@ -294,7 +294,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     }
     else if (curUri.match(staRe) !== null) {
         return checkForStationChange(curUri.match(staRe)[1])
-            .then(stationChanged => self.pandoraHandler.fetchTracks(stationChanged))
+            .then(() => self.pandoraHandler.fetchTracks())
             .then(() => {
                 self.lastUri = null;
 
@@ -1040,10 +1040,10 @@ function PandoraHandler(self, options) {
         }
     };
 
-    PandoraHandler.prototype.fetchTracks = function (newStation) {
+    PandoraHandler.prototype.fetchTracks = function () {
         const fnName = 'PandoraHandler::fetchTracks';
         let Q = self.getQueue();
-        const maxQ = 20;  // stop requesting tracks after we have this many
+        // const maxQ = 20;  // stop requesting tracks after we have this many
 
         // Retrieve a raw Pandora playlist from a Pandora station index
         function fetchStationPlaylist() {
@@ -1121,17 +1121,12 @@ function PandoraHandler(self, options) {
                 return self.generalReject(fnName + '::fetchStationPlaylist', err);
             })
             .then(playlist => {
-                if (Q.length <= maxQ || newStation) {
-                    return fillNewTracks(playlist)
-                        .then(() => {
-                            if (newTracks.length == 0) {
-                                self.logError(fnName + '::fillNewTracks returned zero tracks!');
-                            }
-                        });
-                }
-                else {
-                    return libQ.resolve();
-                }
+                return fillNewTracks(playlist)
+                    .then(() => {
+                        if (newTracks.length == 0) {
+                            self.logError(fnName + '::fillNewTracks returned zero tracks!');
+                        }
+                    });
             })
             .fail(err => {
                 self.logError('Error in ' + fnName + '::fillNewTracks', err);
