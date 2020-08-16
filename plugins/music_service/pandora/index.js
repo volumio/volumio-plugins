@@ -1043,7 +1043,7 @@ function PandoraHandler(self, options) {
     PandoraHandler.prototype.fetchTracks = function () {
         const fnName = 'PandoraHandler::fetchTracks';
         let Q = self.getQueue();
-        // const maxQ = 20;  // stop requesting tracks after we have this many
+        const maxStaTracks = 20;  // stop requesting tracks after we have this many
 
         // Retrieve a raw Pandora playlist from a Pandora station index
         function fetchStationPlaylist() {
@@ -1121,12 +1121,18 @@ function PandoraHandler(self, options) {
                 return self.generalReject(fnName + '::fetchStationPlaylist', err);
             })
             .then(playlist => {
-                return fillNewTracks(playlist)
-                    .then(() => {
-                        if (newTracks.length == 0) {
-                            self.logError(fnName + '::fillNewTracks returned zero tracks!');
-                        }
-                    });
+                let staTracksCnt = Q.filter(item => item.station === self.currStation.name).length;
+                if (staTracksCnt <= maxStaTracks) {
+                    return fillNewTracks(playlist)
+                        .then(() => {
+                            if (newTracks.length == 0) {
+                                self.logError(fnName + '::fillNewTracks returned zero tracks!');
+                            }
+                        });
+                }
+                else {
+                    return libQ.resolve();
+                }
             })
             .fail(err => {
                 self.logError('Error in ' + fnName + '::fillNewTracks', err);
