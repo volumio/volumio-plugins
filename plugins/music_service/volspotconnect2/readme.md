@@ -1,4 +1,4 @@
-November 9th 2019
+August 2nd 2020
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,40 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+August 2nd 2020
+
+- better handling volume mixer with index diff from zero with loopback device
+
+May 18th 2020
+
+- fix when output is set to Loopback
+
+-  Add in some device/card mixer/index parsing logic
+-  Tweak stopping volatile service
+-  Add (initial) support for shuffle and repeat
+-  Don't await deactivation, clean up last selfs
+-  Refactor self to this
+-  Refactor event notification
+-  Add bitrate info to sate
+-  Allow WebUI to resume playback if device is available
+
+
+April 23th 2020
+
+- fix saved option
+
+April 20th 2020
+
+- fix for aarch64
+
+April 17th 2020
+
+- vls 0.2.0 ['@ash'](https://github.com/ashthespy) 
+- autoplay selector
+- Use a toml based configuration file 
+- Enabled gapless playback as default 
+- Handle reconnects more gracefully
 
 November 9th 2019
 

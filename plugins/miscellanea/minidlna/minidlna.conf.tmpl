@@ -10,7 +10,6 @@
 # On Debian system command line option (from /etc/default/minidlna) overrides this.
 user=volumio
 
-
 # Path to the directory you want scanned for media files.
 #
 # This option can be specified more than once if you want multiple directories
@@ -28,10 +27,10 @@ media_dir=A,${media_dir_a}
 media_dir=P,${media_dir_p}
 media_dir=V,${media_dir_v}
 
-# Set this to merge all media_dir base contents into the root container  [not supported by version 1.1.2]
+# Set this to merge all media_dir base contents into the root container
 # (The default is no.)
 #merge_media_dirs=no
-#merge_media_dirs=${merge_media_dirs}
+merge_media_dirs=${merge_media_dirs}
 
 # Path to the directory that should hold the database and album art cache.
 #db_dir=/var/cache/minidlna
@@ -129,9 +128,9 @@ strict_dlna=${strict_dlna}
 enable_tivo=${enable_tivo}
 
 # Which method to use for registering in TiVo: 'bonjour' (default) or
-# legacy 'beacon'  [not supported by version 1.1.2]
+# legacy 'beacon'
 #tivo_discovery=bonjour
-#tivo_discovery=${tivo_discovery}
+tivo_discovery=${tivo_discovery}
 
 # SSDP notify interval, in seconds.
 #notify_interval=895
@@ -152,6 +151,6 @@ force_sort_criteria=${force_sort_criteria}
 #max_connections=50
 max_connections=${max_connections}
 
-# set this to yes to allow symlinks that point outside user-defined media_dirs. [not supported by version 1.1.2]
+# set this to yes to allow symlinks that point outside user-defined media_dirs.
 #wide_links=no
-#wide_links=${wide_links}
+wide_links=${wide_links}

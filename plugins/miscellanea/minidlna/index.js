@@ -4,12 +4,15 @@ const libQ = require('kew');
 const fs = require('fs-extra');
 const exec = require('child_process').exec;
 const path = require('path');
-const configItems = ['show_more', 'media_dir_a', 'media_dir_p', 'media_dir_v', 'db_dir', 'log_dir',
-  'root_container', 'network_interface', 'port', 'presentation_url', 'friendly_name',
-  'serial', 'model_name', 'model_number', 'inotify', 'album_art_names', 'strict_dlna',
-  'enable_tivo', 'notify_interval', 'minissdpdsocket', 'force_sort_criteria', 'max_connections',
-  'loglevel_general', 'loglevel_artwork', 'loglevel_database', 'loglevel_inotify',
-  'loglevel_scanner', 'loglevel_metadata', 'loglevel_http', 'loglevel_ssdp', 'loglevel_tivo'];
+const id = 'minidlna: ';
+const configItems = ['show_more', 'media_dir_a', 'media_dir_p', 'media_dir_v', 'merge_media_dirs',
+  'db_dir', 'log_dir', 'root_container', 'network_interface', 'port', 'presentation_url',
+  'friendly_name', 'serial', 'model_name', 'model_number', 'inotify', 'album_art_names', 'strict_dlna',
+  'enable_tivo', 'tivo_discovery', 'notify_interval', 'minissdpdsocket', 'force_sort_criteria',
+  'max_connections', 'loglevel_general', 'loglevel_artwork', 'loglevel_database', 'loglevel_inotify',
+  'loglevel_scanner', 'loglevel_metadata', 'loglevel_http', 'loglevel_ssdp', 'loglevel_tivo', 'wide_links'];
+var minidlnad = '/usr/sbin/minidlnad';
+var minidlnaVersion;
 
 module.exports = minidlna;
 
@@ -34,19 +37,41 @@ minidlna.prototype.onVolumioStart = function () {
 minidlna.prototype.onStart = function () {
   const self = this;
   const defer = libQ.defer();
+  const defaultConfig = fs.readJsonSync(path.join(__dirname, 'config.json'));
 
   self.commandRouter.loadI18nStrings();
-  self.initialConf()
-    .then(function (e) {
-      self.logger.info('Starting minidlna.service');
-      self.systemctl('start minidlna.service')
-        .then(function (e) {
-          defer.resolve();
-        });
-    })
-    .fail(function (e) {
-      defer.reject(new Error('on starting miniDLNA plugin'));
-    });
+  for (const configItem in defaultConfig) {
+    if (!self.config.has(configItem)) {
+      self.config.set(configItem, defaultConfig[configItem].value);
+    }
+  }
+  try {
+    if (!fs.statSync('/usr/sbin/minidlnad').isFile()) {
+      throw new Error();
+    }
+  } catch (e) {
+    minidlnad = '/usr/bin/minidlnad';
+  }
+  exec(minidlnad + ' -V', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+    if (error !== null) {
+      self.logger.error(id + 'Failed to query miniDLNA version: ' + error);
+      minidlnaVersion = '0';
+    } else {
+      minidlnaVersion = stdout.slice(8);
+      self.logger.info(id + 'Found miniDLNA version ' + minidlnaVersion);
+    }
+    self.initialConf()
+      .then(function (e) {
+        self.logger.info(id + 'Starting minidlna.service');
+        self.systemctl('start minidlna.service')
+          .then(function (e) {
+            defer.resolve();
+          });
+      })
+      .fail(function (e) {
+        defer.reject(new Error('on starting miniDLNA plugin'));
+      });
+  });
   return defer.promise;
 };
 
@@ -54,7 +79,7 @@ minidlna.prototype.onStop = function () {
   const self = this;
   const defer = libQ.defer();
 
-  self.logger.info('Stopping minidlna.service');
+  self.logger.info(id + 'Stopping minidlna.service');
   self.systemctl('stop minidlna.service')
     .then(function (e) {
       defer.resolve();
@@ -89,6 +114,7 @@ minidlna.prototype.getUIConfig = function () {
         const value = self.config.get(configItem);
         switch (configItem) {
           case 'root_container':
+          case 'tivo_discovery':
           case 'loglevel_general':
           case 'loglevel_artwork':
           case 'loglevel_database':
@@ -103,6 +129,14 @@ minidlna.prototype.getUIConfig = function () {
             break;
           default:
             uiconf.sections[0].content[i].value = value;
+        }
+        switch (configItem) {
+          case 'merge_media_dirs':
+          case 'tivo_discovery':
+          case 'wide_links':
+            if (minidlnaVersion.localeCompare('1.2.1', 'en') < 0) {
+              uiconf.sections[0].content[i].hidden = true;
+            }
         }
       });
       defer.resolve(uiconf);
@@ -148,6 +182,7 @@ minidlna.prototype.saveConf = function (data) {
   configItems.forEach(function (configItem) {
     switch (configItem) {
       case 'root_container':
+      case 'tivo_discovery':
       case 'loglevel_general':
       case 'loglevel_artwork':
       case 'loglevel_database':
@@ -171,7 +206,11 @@ minidlna.prototype.saveConf = function (data) {
       case 'media_dir_a':
       case 'media_dir_p':
       case 'media_dir_v':
-        if (!fs.existsSync(data[configItem])) {
+        try {
+          if (!fs.statSync(data[configItem]).isDirectory()) {
+            throw new Error();
+          }
+        } catch (e) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), data[configItem] + self.commandRouter.getI18nString('MINIDLNA.MISSING'));
         }
         // fall through to default
@@ -181,7 +220,7 @@ minidlna.prototype.saveConf = function (data) {
   });
   self.createMinidlnaConf()
     .then(function (e) {
-      self.logger.info('Restarting minidlna.service');
+      self.logger.info(id + 'Restarting minidlna.service');
       self.systemctl('restart minidlna.service')
         .then(function (e) {
           self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.CONF_UPDATED'));
@@ -217,7 +256,13 @@ minidlna.prototype.initialConf = function () {
   const self = this;
   const defer = libQ.defer();
 
-  if (!fs.existsSync('/data/minidlna.conf')) {
+  try {
+    if (!fs.statSync('/data/minidlna.conf').isFile()) {
+      throw new Error();
+    } else {
+      return libQ.resolve();
+    }
+  } catch (e) {
     self.createMinidlnaConf()
       .then(function (e) {
         defer.resolve();
@@ -226,8 +271,6 @@ minidlna.prototype.initialConf = function () {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_CREATE') + '/data/minidlna.conf.');
         defer.reject(new Error('on creating /data/minidlna.conf.'));
       });
-  } else {
-    return libQ.resolve();
   }
   return defer.promise;
 };
@@ -255,7 +298,18 @@ minidlna.prototype.createMinidlnaConf = function () {
           default:
             value = self.config.get(configItem);
         }
-        data = data.replace('${' + configItem + '}', value);
+        switch (configItem) {
+          case 'merge_media_dirs':
+          case 'tivo_discovery':
+          case 'wide_links':
+            if (minidlnaVersion.localeCompare('1.2.1', 'en') < 0) {
+              data = data.replace(new RegExp('^' + configItem + '\\=\\${', 'gm'), '#' + configItem + '=${');
+              break;
+            }
+            // fall through to default
+          default:
+            data = data.replace('${' + configItem + '}', value);
+        }
       });
       fs.writeFile('/data/minidlna.conf', data, 'utf8', function (err) {
         if (err) {
@@ -263,7 +317,7 @@ minidlna.prototype.createMinidlnaConf = function () {
           defer.reject();
           return console.log('error: Error writing /data/minidlna.conf: ' + err);
         } else {
-          self.logger.info('/data/minidlna.conf written');
+          self.logger.info(id + '/data/minidlna.conf written');
           defer.resolve();
         }
       });
@@ -278,11 +332,11 @@ minidlna.prototype.systemctl = function (systemctlCmd) {
 
   exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Failed to ' + systemctlCmd + ': ' + error);
+      self.logger.error(id + 'Failed to ' + systemctlCmd + ': ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.GENERIC_FAILED') + systemctlCmd + ' ' + ': ' + error);
       defer.reject();
     } else {
-      self.logger.info('systemctl ' + systemctlCmd + ' succeeded.');
+      self.logger.info(id + 'systemctl ' + systemctlCmd + ' succeeded.');
       defer.resolve();
     }
   });
@@ -293,13 +347,13 @@ minidlna.prototype.forceRescan = function () {
   const self = this;
   const defer = libQ.defer();
 
-  exec('/usr/bin/minidlnad -R', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+  exec(minidlnad + ' -R', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Failed to rescan the media directories: ' + error);
+      self.logger.error(id + 'Failed to rescan the media directories: ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.RESCAN_FAILED') + error);
       defer.reject();
     } else {
-      self.logger.info('Rescanning the media directories.');
+      self.logger.info(id + 'Rescanning the media directories.');
       self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.RESCANNING'));
       defer.resolve();
     }

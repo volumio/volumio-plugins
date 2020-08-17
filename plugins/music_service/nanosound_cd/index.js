@@ -1294,7 +1294,7 @@ nanosoundCd.prototype.search = function (query) {
 	var defer=libQ.defer();
 
 	// Mandatory, search. You can divide the search in sections using following functions
-
+	defer.resolve();
 	return defer.promise;
 };
 

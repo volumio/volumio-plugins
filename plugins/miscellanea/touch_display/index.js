@@ -5,12 +5,15 @@ const fs = require('fs-extra');
 const exec = require('child_process').exec;
 const path = require('path');
 const os = require('os');
+const net = require('net');
 const io = require('socket.io-client');
+const unixDomSocket = new net.Socket();
 const socket = io.connect('http://localhost:3000');
 const blInterface = '/sys/devices/platform/rpi_backlight/backlight/rpi_backlight';
 const als = '/etc/als'; // The plugin awaits the current value of an optional ambient light sensor (ALS) as a single number in /etc/als.
 const configTxtGpuMemBanner = '#### Touch Display gpu_mem setting below: do not alter ####' + os.EOL;
 const configTxtRotationBanner = '#### Touch Display rotation setting below: do not alter ####' + os.EOL;
+const id = 'touch_display: ';
 var rpiScreen = false;
 var rpiBacklight = false;
 var maxBrightness = 255;
@@ -18,7 +21,7 @@ var alsProgression = [];
 var timeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, displayNumber, autoBrTimer, setScrToTimer1, setScrToTimer2, setScrToTimer3;
+var device, displayNumber, autoBrTimer;
 
 module.exports = TouchDisplay;
 
@@ -64,42 +67,48 @@ TouchDisplay.prototype.onStart = function () {
   const self = this;
   const defer = libQ.defer();
   let lastStateIsPlaying = false;
-  let t = 0;
+  let attempts = 0;
 
   self.commandRouter.loadI18nStrings();
-  clearTimeout(setScrToTimer1);
   self.systemctl('daemon-reload')
     .then(self.systemctl.bind(self, 'start volumio-kiosk.service'))
     .then(function () {
-      self.logger.info('Volumio Kiosk started');
+      self.logger.info(id + 'Volumio Kiosk started');
       device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
       if (device === 'Raspberry PI') {
         // detect Raspberry Pi Foundation original touch screen
         exec('/bin/grep "^rpi_ft5406\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
-            self.logger.info('No Raspberry Pi Foundation touch screen detected.');
+            self.logger.info(id + 'No Raspberry Pi Foundation touch screen detected.');
           } else {
             rpiScreen = true;
-            self.logger.info('Raspberry Pi Foundation touch screen detected.');
+            self.logger.info(id + 'Raspberry Pi Foundation touch screen detected.');
             // check for backlight module of Raspberry Pi Foundation original touch screen
             exec('/bin/grep "^rpi_backlight\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
               if (error !== null) {
-                self.logger.info('No backlight module of a Raspberry Pi Foundation touch screen detected.');
+                self.logger.info(id + 'No backlight module of a Raspberry Pi Foundation touch screen detected.');
               } else {
                 rpiBacklight = true;
-                self.logger.info('Backlight module of a Raspberry Pi Foundation touch screen detected.');
+                self.logger.info(id + 'Backlight module of a Raspberry Pi Foundation touch screen detected.');
                 // screen brightness
                 fs.readFile(blInterface + '/max_brightness', 'utf8', function (err, data) {
                   if (err) {
-                    self.logger.error('Error reading ' + blInterface + '/max_brightness: ' + err);
+                    self.logger.error(id + 'Error reading ' + blInterface + '/max_brightness: ' + err);
                     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/max_brightness: ' + err);
                   } else {
                     maxBrightness = parseInt(data, 10);
-                    if (!self.config.get('autoMode')) {
-                      self.setBrightness(self.config.get('manualBr'));
-                    } else {
-                      self.autoBrightness();
-                    }
+                    exec('/usr/bin/sudo /bin/chmod a+w ' + blInterface + '/brightness', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                      if (error !== null) {
+                        self.logger.error(id + 'Error setting file permissions for backlight brightness control: ' + error);
+                      } else {
+                        self.logger.info(id + 'File permissions for backlight brightness control set.');
+                        if (!self.config.get('autoMode')) {
+                          self.setBrightness(self.config.get('manualBr'));
+                        } else {
+                          self.autoBrightness();
+                        }
+                      }
+                    });
                   }
                 });
               }
@@ -112,7 +121,7 @@ TouchDisplay.prototype.onStart = function () {
             self.modBootConfig(configTxtGpuMemBanner + 'gpu_mem=.*', configTxtGpuMemBanner + 'gpu_mem=' + self.config.get('gpuMem'))
               .then(self.modBootConfig.bind(self, '^gpu_mem', '#GPU_MEM'))
               .fail(function () {
-                self.logger.info('Writing the touch display plugin\'s gpu_mem setting failed. Previous gpu_mem settings in /boot/config.txt have not been commented.');
+                self.logger.info(id + 'Writing the touch display plugin\'s gpu_mem setting failed. Previous gpu_mem settings in /boot/config.txt have not been commented.');
               });
           }
         });
@@ -121,47 +130,49 @@ TouchDisplay.prototype.onStart = function () {
       if (self.commandRouter.volumioGetState().status === 'play') {
         lastStateIsPlaying = true;
       }
-      exec('/bin/systemctl status volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error !== null) {
-          displayNumber = '';
-          self.logger.error('Xorg socket cannot be determined.');
+      unixDomSocket.connect('/tmp/.X11-unix/X' + self.getDisplaynumber());
+      unixDomSocket.on('connect', function () {
+        if ((self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') || self.config.get('timeout') === 0) {
+          exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+            if (error !== null) {
+              self.logger.error(id + 'Error waking up the screen: ' + error);
+            }
+          });
+          self.setScreenTimeout(0, false);
         } else {
-          stdout = stdout.slice(stdout.indexOf(' xinit '));
-          stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
-          displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
-          self.logger.info('Using Xorg socket /tmp/.X11-unix/X' + displayNumber);
-          // check presence of unix domain socket for Xorg to test if the xserver has finished starting up
-          fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-            if (err !== null || !stats.isSocket()) {
-              t = 2000;
-              self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
-            }
-            setScrToTimer1 = setTimeout(function () {
-              if (lastStateIsPlaying && self.config.get('afterPlay')) {
-                self.setScreenTimeout(0);
-              } else {
-                self.setScreenTimeout(self.config.get('timeout'));
+          self.setScreenTimeout(self.config.get('timeout'), false);
+        }
+        attempts = 0;
+      });
+      unixDomSocket.on('error', function (data) {
+      });
+      unixDomSocket.on('close', function () {
+        if (attempts < 100) {
+          setTimeout(function () {
+            unixDomSocket.connect('/tmp/.X11-unix/X' + self.getDisplaynumber());
+          }, 100);
+          attempts++;
+        } else {
+          self.logger.error(id + 'Connecting to the Xserver failed.');
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_CON_XSERVER'));
+        }
+      });
+      // catch state related events and react to changes of the playing status
+      socket.emit('getState', '');
+      socket.on('pushState', function (state) {
+        if (state.status === 'play' && !lastStateIsPlaying) {
+          if (self.config.get('afterPlay')) {
+            exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+              if (error !== null) {
+                self.logger.error(id + 'Error waking up the screen: ' + error);
               }
-            }, t);
-          });
-          // catch state related events and react to changes of the playing status
-          socket.emit('getState', '');
-          socket.on('pushState', function (state) {
-            if (state.status === 'play' && !lastStateIsPlaying) {
-              if (self.config.get('afterPlay')) {
-                exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-                  if (error !== null) {
-                    self.logger.error('Error waking up the screen: ' + error);
-                  }
-                });
-                self.setScreenTimeout(0);
-              }
-              lastStateIsPlaying = true;
-            } else if (state.status !== 'play' && lastStateIsPlaying) {
-              self.setScreenTimeout(self.config.get('timeout'));
-              lastStateIsPlaying = false;
-            }
-          });
+            });
+            self.setScreenTimeout(0, true);
+          }
+          lastStateIsPlaying = true;
+        } else if (state.status !== 'play' && lastStateIsPlaying) {
+          self.setScreenTimeout(self.config.get('timeout'), true);
+          lastStateIsPlaying = false;
         }
       });
       defer.resolve();
@@ -176,17 +187,16 @@ TouchDisplay.prototype.onStop = function () {
   const self = this;
   const defer = libQ.defer();
 
+  unixDomSocket.removeAllListeners();
+  unixDomSocket.destroy();
   socket.off('pushState');
-  clearTimeout(setScrToTimer1);
-  clearTimeout(setScrToTimer2);
-  clearTimeout(setScrToTimer3);
   if (device === 'Raspberry PI') {
     self.setOrientation('0');
     if (self.config.get('controlGpuMem')) {
       self.modBootConfig('^#GPU_MEM', 'gpu_mem')
         .then(self.modBootConfig.bind(self, configTxtGpuMemBanner + 'gpu_mem=.*', ''))
         .fail(function () {
-          self.logger.info('Restoring gpu_mem settings in /boot/config.txt failed. The touch display plugin\'s gpu_mem settings have been preserved.');
+          self.logger.info(id + 'Restoring gpu_mem settings in /boot/config.txt failed. The touch display plugin\'s gpu_mem settings have been preserved.');
         });
     }
     clearTimeout(autoBrTimer);
@@ -196,7 +206,7 @@ TouchDisplay.prototype.onStop = function () {
   }
   self.systemctl('stop volumio-kiosk.service')
     .then(function () {
-      self.logger.info('Volumio Kiosk stopped');
+      self.logger.info(id + 'Volumio Kiosk stopped');
       defer.resolve();
     })
     .fail(function () {
@@ -216,19 +226,17 @@ TouchDisplay.prototype.getUIConfig = function () {
     path.join(__dirname, 'i18n', 'strings_en.json'),
     path.join(__dirname, 'UIConfig.json'))
     .then(function (uiconf) {
-      if (displayNumber !== '') {
-        uiconf.sections[0].hidden = false;
-        uiconf.sections[0].content[0].value = self.config.get('timeout');
-        uiconf.sections[0].content[0].attributes = [
-          {
-            placeholder: 120,
-            maxlength: Number.MAX_SAFE_INTEGER.toString().length,
-            min: 0,
-            max: Number.MAX_SAFE_INTEGER
-          }
-        ];
-        uiconf.sections[0].content[1].value = self.config.get('afterPlay');
-      }
+      uiconf.sections[0].hidden = false;
+      uiconf.sections[0].content[0].value = self.config.get('timeout');
+      uiconf.sections[0].content[0].attributes = [
+        {
+          placeholder: 120,
+          maxlength: Number.MAX_SAFE_INTEGER.toString().length,
+          min: 0,
+          max: Number.MAX_SAFE_INTEGER
+        }
+      ];
+      uiconf.sections[0].content[1].value = self.config.get('afterPlay');
       if (rpiBacklight) {
         uiconf.sections[1].hidden = false;
         if (fs.existsSync(als)) {
@@ -289,10 +297,8 @@ TouchDisplay.prototype.getUIConfig = function () {
           }
         ];
       }
-      if (displayNumber !== '') {
-        uiconf.sections[4].hidden = false;
-        uiconf.sections[4].content[0].value = self.config.get('showPointer');
-      }
+      uiconf.sections[4].hidden = false;
+      uiconf.sections[4].content[0].value = self.config.get('showPointer');
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -333,48 +339,28 @@ TouchDisplay.prototype.getI18nFile = function (langCode) {
 TouchDisplay.prototype.saveScreensaverConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
-  let t = 0;
   let noChanges = true;
 
   if (Number.isNaN(parseInt(confData.timeout, 10)) || !isFinite(confData.timeout)) {
     uiNeedsUpdate = true;
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.TIMEOUT') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
   } else {
     confData.timeout = self.checkLimits('timeout', confData.timeout, 0, Number.MAX_SAFE_INTEGER);
-    if (self.config.get('timeout') !== confData.timeout) {
+    if (self.config.get('timeout') !== confData.timeout || self.config.get('afterPlay') !== confData.afterPlay) {
       self.config.set('timeout', confData.timeout);
-      fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-        if (err !== null || !stats.isSocket()) {
-          t = 2000;
-          self.logger.info('xserver is not ready: Delay applying screensaver config by 2 seconds.');
-        }
-        clearTimeout(setScrToTimer2);
-        setScrToTimer2 = setTimeout(function () {
-          fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-            if (err !== null || !stats.isSocket()) {
-              self.logger.error('xserver is not ready: Screensaver config cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new screensaver config
-              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCREENSAVER'));
-            } else {
-              if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
-                exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-                  if (error !== null) {
-                    self.logger.error('Error waking up the screen: ' + error);
-                  }
-                });
-                self.setScreenTimeout(0);
-              } else {
-                self.setScreenTimeout(confData.timeout);
-              }
-            }
-          });
-        }, t);
-      });
+      self.config.set('afterPlay', confData.afterPlay);
+      if ((confData.afterPlay && self.commandRouter.volumioGetState().status === 'play') || confData.timeout === 0) {
+        exec('/usr/bin/xset -display :' + displayNumber + ' s reset dpms force on', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+          if (error !== null) {
+            self.logger.error(id + 'Error waking up the screen: ' + error);
+          }
+        });
+        self.setScreenTimeout(0, true);
+      } else {
+        self.setScreenTimeout(confData.timeout, true);
+      }
       noChanges = false;
     }
-  }
-  if (self.config.get('afterPlay') !== confData.afterPlay) {
-    self.config.set('afterPlay', confData.afterPlay);
-    noChanges = false;
   }
   if (uiNeedsUpdate) {
     self.updateUIConfig();
@@ -589,7 +575,7 @@ TouchDisplay.prototype.saveGpuMemConf = function (confData) {
         })
         .fail(function () {
           uiNeedsUpdate = true;
-          self.logger.error('Changing gpu_mem settings failed.');
+          self.logger.error(id + 'Changing gpu_mem settings failed.');
         })
         .done(function () {
           if (uiNeedsUpdate) {
@@ -612,7 +598,7 @@ TouchDisplay.prototype.saveGpuMemConf = function (confData) {
       })
       .fail(function () {
         self.updateUIConfig();
-        self.logger.error('Uncommenting gpu_mem settings in /boot/config.txt failed.');
+        self.logger.error(id + 'Uncommenting gpu_mem settings in /boot/config.txt failed.');
       });
   } else {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
@@ -624,52 +610,28 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
   const defer = libQ.defer();
   const execStartLine = 'ExecStart=\\/usr\\/bin\\/startx \\/etc\\/X11\\/Xsession \\/opt\\/volumiokiosk.sh';
   const pointerOpt = (confData.showPointer) ? "'" : " -- -nocursor'";
-  let t = 0;
 
   if (self.config.get('showPointer') !== confData.showPointer) {
     fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
       if (err !== null || !stats.isSocket()) {
         self.updateUIConfig();
-        self.logger.error('xserver is not ready: Pointer setting cannot be applied.'); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the xserver has completed its start) tries to apply a new pointer config
-        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_POINTER'));
+        self.logger.error(id + 'Pointer config cannot be applied: ' + err); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the Xserver has completed its start) tries to apply a new pointer config
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_POINTER') + err);
         defer.reject(err);
       } else {
         self.config.set('showPointer', confData.showPointer);
         exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/" + execStartLine + '/c\\' + execStartLine + pointerOpt + ' /lib/systemd/system/volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
-            self.logger.error('Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
+            self.logger.error(id + 'Error modifying /lib/systemd/system/volumio-kiosk.service: ' + error);
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/lib/systemd/system/volumio-kiosk.service: ' + error);
             defer.reject(error);
           } else {
-            clearTimeout(setScrToTimer3);
             self.systemctl('daemon-reload')
               .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
               .then(function () {
-                self.logger.info('Restarting volumio-kiosk.service succeeded.');
-                exec('/bin/systemctl status volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-                  if (error !== null) {
-                    displayNumber = '';
-                    self.logger.error('Xorg socket cannot be determined.');
-                  } else {
-                    stdout = stdout.slice(stdout.indexOf(' xinit '));
-                    stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
-                    displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
-                    fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
-                      if (err !== null || !stats.isSocket()) {
-                        t = 2000;
-                        self.logger.info('xserver is not ready: Delay setting screensaver timeout by 2 seconds.');
-                      }
-                      setScrToTimer3 = setTimeout(function () {
-                        if (self.config.get('afterPlay') && self.commandRouter.volumioGetState().status === 'play') {
-                          self.setScreenTimeout(0);
-                        } else {
-                          self.setScreenTimeout(self.config.get('timeout'));
-                        }
-                      }, t);
-                    });
-                  }
-                  defer.resolve();
-                });
+                self.logger.info(id + 'Restarting volumio-kiosk.service succeeded.');
+                self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+                defer.resolve();
               })
               .fail(function () {
                 defer.reject(new Error());
@@ -706,21 +668,27 @@ TouchDisplay.prototype.checkLimits = function (item, value, min, max) {
   return parseInt(value, 10);
 };
 
-TouchDisplay.prototype.setScreenTimeout = function (timeout) {
+TouchDisplay.prototype.setScreenTimeout = function (timeout, showErr) {
   const self = this;
   const defer = libQ.defer();
 
   fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
     if (err !== null || !stats.isSocket()) {
-      self.logger.error('xserver is not ready: Screensaver timeout cannot be set.');
+      self.logger.error(id + 'Error setting screensaver timeout: ' + err);
+      if (showErr) {
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + err);
+      }
+      defer.reject(err);
     } else {
-      exec('/bin/bash -c "/usr/bin/xset -display :' + displayNumber + ' s off +dpms dpms 0 0 ' + timeout + '"', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+      exec('/usr/bin/xset -display :' + displayNumber + ' s off +dpms dpms 0 0 ' + timeout, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
         if (error !== null) {
-          self.logger.error('Error setting screensaver timeout: ' + error);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + error);
+          self.logger.error(id + 'Error setting screensaver timeout: ' + error);
+          if (showErr) {
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_TIMEOUT') + error);
+          }
           defer.reject(error);
         } else {
-          self.logger.info('Setting screensaver timeout to ' + timeout + ' seconds.');
+          self.logger.info(id + 'Setting screensaver timeout to ' + timeout + ' seconds.');
           defer.resolve();
         }
       });
@@ -733,9 +701,9 @@ TouchDisplay.prototype.setBrightness = function (brightness) {
   const self = this;
   const defer = libQ.defer();
 
-  fs.writeFile(blInterface + '/brightness', brightness, 'utf8', function (err) {
+  fs.writeFile(blInterface + '/brightness', brightness.toString(), 'utf8', function (err) {
     if (err !== null) {
-      self.logger.error('Error setting display brightness: ' + err);
+      self.logger.error(id + 'Error setting display brightness: ' + err);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_BRIGHTNESS') + err);
       defer.reject(err);
     } else {
@@ -771,7 +739,7 @@ TouchDisplay.prototype.testBrightness = function (confData) {
   self.commandRouter.broadcastMessage('closeAllModals', '');
   fs.readFile(blInterface + '/brightness', 'utf8', function (err, data) {
     if (err !== null) {
-      self.logger.error('Error reading ' + blInterface + '/brightness: ' + err);
+      self.logger.error(id + 'Error reading ' + blInterface + '/brightness: ' + err);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/brightness: ' + err);
     } else {
       if (confData.autoMode) {
@@ -794,7 +762,7 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
 
   fs.readFile(als, 'utf8', function (err, data) {
     if (err) {
-      self.logger.error('Error reading ' + als + ': ' + err);
+      self.logger.error(id + 'Error reading ' + als + ': ' + err);
     } else {
       if (lastAls === undefined) {
         timeoutCleared = false;
@@ -827,7 +795,7 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
             lastAls = newAls;
             fs.readFile(blInterface + '/brightness', 'utf8', function (err, data) {
               if (err) {
-                self.logger.error('Error reading ' + blInterface + '/brightness: ' + err);
+                self.logger.error(id + 'Error reading ' + blInterface + '/brightness: ' + err);
                 self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/brightness: ' + err);
               } else {
                 let currentBrightness = parseInt(data, 10);
@@ -907,7 +875,7 @@ TouchDisplay.prototype.assignCurrentAls = function (data) {
   self.commandRouter.broadcastMessage('closeAllModals', '');
   fs.readFile(als, 'utf8', function (err, currentAls) {
     if (err) {
-      self.logger.error('Error reading ' + als + ': ' + err);
+      self.logger.error(id + 'Error reading ' + als + ': ' + err);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + als + ': ' + err);
     } else {
       clearTimeout(autoBrTimer);
@@ -1048,17 +1016,17 @@ TouchDisplay.prototype.setOrientation = function (angle) {
   }
   exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Option \"TransformationMatrix\"/d' /etc/X11/xorg.conf.d/95-touch_display-plugin.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
+      self.logger.error(id + 'Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
     } else {
-      self.logger.info('Touchscreen transformation matrix removed.');
-      if (!(rpiScreen && angle === '180')) {
+      self.logger.info(id + 'Touchscreen transformation matrix removed.');
+      if (angle !== '0' && !(rpiScreen && angle === '180')) {
         exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e '/Identifier \"Touch rotation\"/a\\        Option \"TransformationMatrix\" \"" + transformationMatrix + "\"' /etc/X11/xorg.conf.d/95-touch_display-plugin.conf", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
           if (error !== null) {
-            self.logger.error('Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
+            self.logger.error(id + 'Error modifying /etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/etc/X11/xorg.conf.d/95-touch_display-plugin.conf: ' + error);
           } else {
-            self.logger.info('Touchscreen transformation matrix written.');
+            self.logger.info(id + 'Touchscreen transformation matrix written.');
           }
         });
       }
@@ -1081,7 +1049,7 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
 
   try {
     if (/^#?gpu_mem/i.test(newEntry)) {
-      self.logger.info('Un-/commenting gpu_mem settings in /boot/config.txt.');
+      self.logger.info(id + 'Un-/commenting gpu_mem settings in /boot/config.txt.');
       throw new Error();
     }
     if (fs.statSync(configFile).isFile() && new RegExp('^' + configTxtRotationBanner).test(searchexp)) {
@@ -1093,16 +1061,16 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
           try {
             fs.writeFileSync('/boot/config.txt', newConfigTxt, 'utf8');
           } catch (e) {
-            self.logger.error('Error writing /boot/config.txt: ' + e);
+            self.logger.error(id + 'Error writing /boot/config.txt: ' + e);
             self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + '/boot/config.txt: ' + e);
           }
         }
       } catch (e) {
-        self.logger.error('Error reading /boot/config.txt: ' + e);
+        self.logger.error(id + 'Error reading /boot/config.txt: ' + e);
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + ' /boot/config.txt: ' + e);
       }
     } else {
-      self.logger.info('Using /boot/config.txt instead of /boot/userconfig.txt.');
+      self.logger.info(id + 'Using /boot/config.txt instead of /boot/userconfig.txt.');
       throw new Error();
     }
   } catch (e) {
@@ -1137,7 +1105,7 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
           fs.writeFileSync(configFile, newConfigTxt, 'utf8');
           defer.resolve();
         } catch (e) {
-          self.logger.error('Error writing ' + configFile + ': ' + e);
+          self.logger.error(id + 'Error writing ' + configFile + ': ' + e);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_WRITE') + configFile + ': ' + e);
           defer.reject(new Error());
         }
@@ -1145,12 +1113,29 @@ TouchDisplay.prototype.modBootConfig = function (searchexp, newEntry) {
         defer.resolve();
       }
     } catch (e) {
-      self.logger.error('Error reading ' + configFile + ': ' + e);
+      self.logger.error(id + 'Error reading ' + configFile + ': ' + e);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + configFile + ': ' + e);
       defer.reject(new Error());
     }
   }
   return defer.promise;
+};
+
+TouchDisplay.prototype.getDisplaynumber = function () {
+  const self = this;
+
+  exec('/bin/systemctl status volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+    if (error !== null) {
+      displayNumber = '';
+      self.logger.error(id + 'Xserver unix domain socket cannot be determined.');
+    } else {
+      stdout = stdout.slice(stdout.indexOf(' xinit '));
+      stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
+      displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /)).toString();
+      self.logger.info(id + 'Using Xserver unix domain socket /tmp/.X11-unix/X' + displayNumber);
+    }
+  });
+  return displayNumber;
 };
 
 TouchDisplay.prototype.systemctl = function (systemctlCmd) {
@@ -1159,11 +1144,11 @@ TouchDisplay.prototype.systemctl = function (systemctlCmd) {
 
   exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error('Failed to ' + systemctlCmd + ': ' + error);
+      self.logger.error(id + 'Failed to ' + systemctlCmd + ': ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.GENERIC_FAILED') + systemctlCmd + ': ' + error);
       defer.reject(error);
     } else {
-      self.logger.info('systemctl ' + systemctlCmd + ' succeeded.');
+      self.logger.info(id + 'systemctl ' + systemctlCmd + ' succeeded.');
       defer.resolve();
     }
   });

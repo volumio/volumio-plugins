@@ -350,45 +350,26 @@ x = k + z;
  //here we save the asound.conf file config
  ControllerVolsimpleequal.prototype.createASOUNDFile = function() {
   var self = this;
-
   var defer = libQ.defer();
 
   try {
-
-   fs.readFile(__dirname + "/asound.tmpl", 'utf8', function(err, data) {
-    if (err) {
-     defer.reject(new Error(err));
-     return console.log(err);
-    }
-    var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
-
-
-    fs.writeFile("/home/volumio/asoundrc", conf1, 'utf8', function(err) {
-     if (err) {
-      defer.reject(new Error(err));
-      //self.logger.info('Cannot write /etc/asound.conf: '+err)
-     } else {
-      self.logger.info('asound.conf file written');
-
-      var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
-       uid: 1000,
-       gid: 1000,
-       encoding: 'utf8'
+   var data = fs.readFileSync(__dirname + "/asound.tmpl", 'utf8');
+   var conf1 = data.replace("${hwout}", self.config.get('alsa_device'));
+   fs.writeFileSync("/home/volumio/asoundrc", conf1, 'utf8');
+      execSync('/usr/bin/sudo /bin/mv /home/volumio/asoundrc /etc/asound.conf', {
+          uid: 1000,
+          gid: 1000,
+          encoding: 'utf8'
       });
-      var apply = execSync('/usr/sbin/alsactl -L -R nrestore', {
-       uid: 1000,
-       gid: 1000,
-       encoding: 'utf8'
+      execSync('/usr/sbin/alsactl -L -R nrestore', {
+          uid: 1000,
+          gid: 1000,
+          encoding: 'utf8'
       });
       defer.resolve();
-     }
-    });
-
-   });
-  } catch (err) {}
-setTimeout(function() {
-  return defer.promise;
-  }, 2000);
+  } catch (err) {
+   defer.reject(err);
+  }
  };
 
  //here we save the equalizer settings

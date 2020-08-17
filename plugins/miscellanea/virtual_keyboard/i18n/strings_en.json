@@ -1,0 +1,18 @@
+{
+  "VKBD":{
+    "PLUGIN_NAME":"Virtual keyboard",
+    "PLUGIN_CONFIGURATION":"Virtual keyboard configuration",
+    "VKBD_CONF":"Virtual keyboard settings",
+    "LAYOUT_SELECTOR":"Select keyboard layout",
+    "LAYOUT_SELECTOR_DOC":"Select the appropriate keyboard layout.",
+    "TOUCHDISPLAY_MISSING":"Activating the plugin failed because the required Touch Display plugin is missing.",
+    "ERR_COPY":"Error copying ",
+    "ERR_MOD":"Error modifying ",
+    "ERR_RESTART":"Error restarting ",
+    "RESTART_VOLUMIOKIOSK_MSG":"The local display will be restartet in 3 seconds for the change to take effect.",
+    "NO_CHANGES":"No changes to save.",
+    "YES":"Yes",
+    "NO":"No",
+    "SAVE":"Save"
+  }
+}

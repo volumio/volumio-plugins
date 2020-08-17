@@ -16,6 +16,10 @@
     "VOLUMECTRL_LINEAR": "Linéaire",
     "VOLUMECTRL_LOG": "Logarithmique",
     "VOLUMECTRL_FIXED": "Fixe",
-    "DESCPVOLUMECTRL": "Methode de contrôle du volume"
+    "DESCPVOLUMECTRL": "Methode de contrôle du volume",
+    "GAPLESS": "Lecture sans blanc",
+    "DESCGAPLESS": "Active/désactive la lecture sans blanc entre les morceaux",
+    "AUTOPLAY": "Lecture automatique",
+    "DESCAUTOPLAY": "Lancer la lecture automatique de titres similaires lorsque votre musique se termine."
   }
 }

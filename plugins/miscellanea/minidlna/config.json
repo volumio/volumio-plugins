@@ -5,15 +5,19 @@
   },
   "media_dir_a": {
     "type": "string",
-    "value": "/mnt/"
+    "value": "/mnt"
   },
   "media_dir_p": {
     "type": "string",
-    "value": "/mnt/"
+    "value": "/mnt"
   },
   "media_dir_v": {
     "type": "string",
-    "value": "/mnt/"
+    "value": "/mnt"
+  },
+  "merge_media_dirs": {
+    "type": "boolean",
+    "value": false
   },
   "db_dir": {
     "type": "string",
@@ -71,6 +75,10 @@
     "type": "boolean",
     "value": false
   },
+  "tivo_discovery": {
+    "type": "string",
+    "value": "bonjour"
+  },
   "notify_interval": {
     "type": "number",
     "value": 5
@@ -122,5 +130,9 @@
   "loglevel_tivo": {
     "type": "string",
     "value": "warn"
+  },
+  "wide_links": {
+    "type": "boolean",
+    "value": false
   }
 }
