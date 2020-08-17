@@ -32,5 +32,7 @@
 	"SHOWVERSION":"顯示版本",
 	"UPGRADE":"升級軟件",
 	"SHOWALBUMART":"顯示專輯封面",
-	"EJECT":"彈出CD"
+	"EJECT":"彈出CD",
+	"SAVE_FOLDER_FORMAT_DOC":"保存文件夾的格式。 如果留空，則默認為yyyy-MM-dd_hhmm。 您可以將％artist％用於歌手名稱，將％album％用於專輯名稱",
+	"SAVE_FOLDER_FORMAT":"保存文件夾格式"
 }

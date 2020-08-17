@@ -26,6 +26,10 @@
     "loadalbumart": {
       "type": "string",
       "value": "1"
+    },
+    "savefolderformat": {
+      "type": "string",
+      "value": "%artist%-%album%"
     }
 }
    

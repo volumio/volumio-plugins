@@ -91,6 +91,7 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	}
 	self.config.set('extractformat', data['extractformat'].value);
 	self.config.set('prestart', data['prestart']);
+	self.config.set('savefolderformat', data['savefolderformat']);
 	self.config.set('loadalbumart', data['loadalbumart'].value);
 
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
@@ -331,6 +332,8 @@ nanosoundCd.prototype.getUIConfig = function() {
 				self.config.set('loadalbumart',"1");
 				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', "No");
 			}
+
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value', self.config.get('savefolderformat'));
 			
             defer.resolve(uiconf);
         })
