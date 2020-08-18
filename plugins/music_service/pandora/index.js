@@ -398,13 +398,25 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     return defer.promise;
 };
 
-ControllerPandora.prototype.removeTrack = function (uri) {
+ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
     var self = this;
+    const fnName = 'removeTrack';
+    let qPos = self.getCurrQueuePos();
+    let index = self.getQueueIndex(trackUri);
 
-    self.announceFn('removeTrack');
+    let test = (index != -1 && index != qPos && trackUri);
+    if (justOldTracks) {
+        test = (test && index < qPos);
+    }
 
-    if (uri !== null) {
-       self.commandRouter.stateMachine.removeQueueItem({value: self.getQueueIndex(uri)});
+    self.announceFn(fnName + ': ' + trackUri);
+
+    if (test) {
+        self.commandRouter.stateMachine.removeQueueItem({value: index});
+    }
+    else {
+        self.logInfo(fnName + ': '+ 'Not removing ' +
+            trackUri + ' at queue index: ' + index);
     }
     return libQ.resolve();
 };
@@ -441,9 +453,10 @@ ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, pandoraQ) {
 
     for (let i = 0; i < limit; i++) {
         setTimeout(() => {
-            self.removeTrack(pandoraQ[i].uri);
-        }, 10000 * i);
+            self.removeTrack(pandoraQ[i].uri, true);
+        }, 10000 * (i + 1));
     }
+
     return libQ.resolve();
 };
 
