@@ -398,18 +398,25 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     return defer.promise;
 };
 
-ControllerPandora.prototype.removeTrack = function (trackUri) {
+ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
     var self = this;
     const fnName = 'removeTrack';
-    let curUri = self.getQueueTrack().uri;
+    let qPos = self.getCurrQueuePos();
+    let index = self.getQueueIndex(trackUri);
+
+    let test = (index != -1 && index != qPos && trackUri);
+    if (justOldTracks) {
+        test = (test && index < qPos);
+    }
 
     self.announceFn(fnName + ': ' + trackUri);
 
-    if (trackUri !== null && trackUri !== curUri) {
-        self.commandRouter.stateMachine.removeQueueItem({value: self.getQueueIndex(trackUri)});
+    if (test) {
+        self.commandRouter.stateMachine.removeQueueItem({value: index});
     }
     else {
-        self.logInfo(fnName + ': '+ 'Not removing ' + trackUri);
+        self.logInfo(fnName + ': '+ 'Not removing ' +
+            trackUri + ' at queue index: ' + index);
     }
     return libQ.resolve();
 };
@@ -444,14 +451,10 @@ ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, pandoraQ) {
 
     self.announceFn('removeOldTrackBlock');
 
-    // for (let i = 0; i < limit; i++) {
-    //     setTimeout(() => {
-    //         self.removeTrack(pandoraQ[i].uri);
-    //     }, 10000 * (i + 1));
-    // }
-    
     for (let i = 0; i < limit; i++) {
-        self.removeTrack(pandoraQ[i].uri);
+        setTimeout(() => {
+            self.removeTrack(pandoraQ[i].uri, true);
+        }, 10000 * (i + 1));
     }
 
     return libQ.resolve();
