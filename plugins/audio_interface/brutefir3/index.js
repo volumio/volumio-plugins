@@ -76,7 +76,7 @@ ControllerBrutefir.prototype.onStart = function () {
   // self.sendvolumelevel();
   self.config.set('displayednameofset', "Set used is 1");
   self.config.set('setUsedOfFilters', "1");
-  self.askForRebootFirstUse()
+  //self.askForRebootFirstUse()
   self.autoconfig()
 
     .then(function (e) {
@@ -107,6 +107,9 @@ ControllerBrutefir.prototype.onStop = function () {
     //self.restoresettingwhendisabling()
     socket.off();
   });
+  //self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
+  
+
   defer.resolve();
   return libQ.resolve();
 };
@@ -734,46 +737,7 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 };
 
 // Plugin methods -----------------------------------------------------------------------------
-
-//------------Ask for reboot for first time 
-ControllerBrutefir.prototype.askForRebootFirstUse = function () {
-  const self = this;
-
-  if (self.config.get('askForReboot')) {
-    self.saveHardwareAudioParameters();
-    var responseData = {
-      title: self.commandRouter.getI18nString('FIRST_USE'),
-      message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
-      size: 'lg',
-      buttons: [
-        {
-          name: self.commandRouter.getI18nString('CONTINUE'),
-          class: 'btn btn-cancel',
-          emit: '',
-          payload: ''
-        },
-        {
-          name: 'Reboot',
-          class: 'btn btn-info',
-          emit: 'callMethod',
-          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data': '' }
-        }
-      ]
-    }
-    self.commandRouter.broadcastMessage("openModal", responseData);
-  }
-};
-
-ControllerBrutefir.prototype.setFalseReboot = function () {
-  const self = this;
-  self.config.set('askForReboot', false);
-  setTimeout(function () {
-    console.log(self.config.get('askForReboot'));
-    socket.emit('reboot');
-  }, 500);
-};
-
-// 
+ 
 
 //here we load snd_aloop module to provide a Loopback device
 ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {

@@ -1,7 +1,7 @@
-August 4th 2020
+August 21th 2020
 
 
-##  Need at least Volumio 2.776 or May not work!
+##  Experimental version for modular_alsa - Do not use!!!
 
 
 #	DSP for Volumio (previously Brutefir3)
