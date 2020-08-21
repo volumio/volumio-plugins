@@ -761,7 +761,7 @@ ControllerBrutefir.prototype.hwinfo = function () {
   const self = this;
   let defer = libQ.defer();
 
-  let output_device = self.config.get('alsa_device');
+  let output_device = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
   let nchannels;
   let formats;
   let hwinfo;
@@ -832,7 +832,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   const self = this;
   let defer = libQ.defer();
   // self.saveVolumioconfig()
-//  self.hwinfo()
+  self.hwinfo()
   self.modprobeLoopBackDevice()
   // self.saveHardwareAudioParameters()
   // self.setLoopbackoutput()
