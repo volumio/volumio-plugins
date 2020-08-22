@@ -1,5 +1,6 @@
- 06th January 18
+August 22th 2020
 
+## beta version for modular_alsa. Do not use!
 
 # Volstereo2mono Downmixes stereo to mono
 

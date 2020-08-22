@@ -1,6 +1,6 @@
 {
   "name": "volstereo2mono",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "Volstereo2mono plugin for Volumio2. Downmix stereo signal to mono",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "prettyName": "Volumio stereo 2 mono 0.0.5",
     "plugin_type": "audio_interface",
     "icon":"fa-volume-off",
-    "boot_priority":10
+    "boot_priority":10,
+    "has_alsa_contribution":true
   },
   "dependencies": {
     "fs-extra": "^0.28.0",
