@@ -1,6 +1,6 @@
 {
   "name": "volbinauralfilter",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Volbinauralfilter plugin for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "prettyName": "Volumio binaural filtering",
     "plugin_type": "audio_interface",
     "icon":"fa-sliders fa-rotate-90",
-    "boot_priority":10
+    "boot_priority":10,
+    "has_alsa_contribution":true
   },
   "dependencies": {
     "fs-extra": "^0.28.0",

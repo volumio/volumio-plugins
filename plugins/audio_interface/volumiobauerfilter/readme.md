@@ -1,4 +1,6 @@
-December 22th 2018
+August 22th 2020
+## beta version for modular_alsa ! do not use!
+
 #	VOLUMIO BAUER FILTER PLUGIN
 
 
