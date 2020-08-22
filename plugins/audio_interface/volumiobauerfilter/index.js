@@ -173,11 +173,20 @@ ControllerVolbinauralfilter.prototype.createASOUNDFile = function () {
       if (fs.existsSync(alsaFile)) {
         self.logger.info('Success by writing asound.conf !!')
         fs.unlinkSync(alsaFile);
+     //   var aplayDefer = libQ.defer();
+
+        // Play a short sample of silence to initialise the config file
+        exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioBauer", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+          if (error) {
+            self.logger.warn("An error occurred when trying to initialize Bauer", error);
+          }
+        //  aplayDefer.resolve();
+        });
       }
     }
     defer.resolve();
   } catch (err) {
-    self.logger.info('Error while writing asound.conf !!'+ err)
+    self.logger.info('Error while writing asound.conf !!' + err)
 
     defer.reject(err);
 

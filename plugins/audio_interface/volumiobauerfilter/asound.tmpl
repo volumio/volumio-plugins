@@ -8,7 +8,6 @@ pcm.volumioBauer {
 
 pcm.volumioBauer2 {
   type ladspa
- # slave.pcm "VolumioBauerConvert"
    slave.pcm "postBauer"
 
   path "/usr/lib/ladspa"
@@ -20,10 +19,4 @@ pcm.volumioBauer2 {
       }
     }
   ]
-}
-
-pcm.VolumioBauerConvert {
-  type plug
-  slave.pcm "postBauer"
-  #slave.format "S24_LE"
 }
