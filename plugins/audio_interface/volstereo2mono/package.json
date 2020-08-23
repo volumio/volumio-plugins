@@ -9,7 +9,7 @@
   "author": "Balbuze",
   "license": "GPL 3.0",
   "volumio_info": {
-    "prettyName": "Volumio stereo 2 mono 0.0.5",
+    "prettyName": "Volumio stereo 2 mono",
     "plugin_type": "audio_interface",
     "icon":"fa-volume-off",
     "boot_priority":10,

@@ -34,19 +34,18 @@ ControllerVolstereo2mono.prototype.getConfigurationFiles = function () {
 };
 
 // Plugin methods -----------------------------------------------------------------------------
-//here we load snd_aloop module to provide a Loopback device 
 
 ControllerVolstereo2mono.prototype.onStop = function () {
   var self = this;
   var defer = libQ.defer();
+  defer.resolve();
   return libQ.resolve();
 };
 
 ControllerVolstereo2mono.prototype.onStart = function () {
   var self = this;
-
   var defer = libQ.defer();
-  
+  defer.resolve();
   return defer.promise;
 };
 
@@ -65,21 +64,25 @@ ControllerVolstereo2mono.prototype.onUninstall = function () {
 };
 
 ControllerVolstereo2mono.prototype.getUIConfig = function () {
-  var self = this;
   var defer = libQ.defer();
+  var self = this;
+
   var lang_code = this.commandRouter.sharedVars.get('language_code');
-  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
-    __dirname + '/i18n/strings_en.json',
-    __dirname + '/UIConfig.json')
-   /* .then(function (uiconf) {
-      uiconf.sections[0].content[0].value = self.config.get('enablefilter');
-      var value;
-      defer.resolve(uiconf);
-    })
-    .fail(function () {
-      defer.reject(new Error());
-    });
-    */
+
+  self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+      __dirname+'/i18n/strings_en.json',
+      __dirname + '/UIConfig.json')
+      .then(function(uiconf)
+      {
+
+
+          defer.resolve(uiconf);
+      })
+      .fail(function()
+      {
+          defer.reject(new Error());
+      });
+
   return defer.promise;
 };
 
@@ -122,16 +125,3 @@ ControllerVolstereo2mono.prototype.createASOUNDFile = function () {
   return defer.promise;
 
 };
-
-
-
-ControllerVolstereo2mono.prototype.setAdditionalConf = function (type, controller, data) {
-  var self = this;
-  return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
-};
-
-
-ControllerVolstereo2mono.prototype.getAdditionalConf = function (type, controller, data) {
-  var self = this;
-  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-}
