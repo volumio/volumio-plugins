@@ -1,5 +1,5 @@
-03rd december 2017
-
+August 23th 2020
+### Beta for alsa_modular. Do not use!
 
 # DO NOT USE ! MAY NOT WORK
 

@@ -1,19 +1,15 @@
-July 07 th 2019
+August 25th 2020
+
+### beta for alsa_modular! do not use! (yet ;-))
 
 
 	Volsimpleequal volumio simple equalizer
 
-# A simple 10 bands graphic Equalizer plugin for Volumio2.
+# A simple 15 bands graphic Equalizer plugin for Volumio2.
 
-#WARNING !!! I reverted to alsaequal, waiting for a fix for the frying sound with mbeq
-
-
-Based on alsaequal https://github.com/raedwulf/alsaequal
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
 
-
-Can't work with softvol !!!!
 
 ## Requirement
 
@@ -21,54 +17,19 @@ Can't work with softvol !!!!
 
 ## How to install ?
 
-### 1. Enable SSH and connect to Volumio
+ Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
+ Enable it and... enjoy
 
-To do that, have a look here :
+note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
 
-https://volumio.github.io/docs/User_Manual/SSH.html
-
-### 2. Download and install the plugin
-
-Type the following commands to download and install plugin:
-
-```
-wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/volsimpleequal/volsimpleequal.zip
-mkdir ./volsimpleequal
-miniunzip volsimpleequal.zip -d ./volsimpleequal
-cd ./volsimpleequal
-volumio plugin install
-```
-If the installation fails, remove all file (if any) related to the plugin before retry.
-
-### 3. Enable the plugin
-
-In volumio webUI, go in plugin section and enable it!
 ## What is working ?
 
  Install, equalizer settings, presets settings
 
 ## What is not working
 
- May not work with some source / output.
-
- Equalizer appears on several lines
- 
- It still a beta version, need feedback !
 
 ## Last changes
-
-7thh July 19
-
-- sliders step is now 0.5
-
-1st August 18
-
-- cleaning code
-- readme update
-
-31th July 18
-
-- startup volume properly restored
 
 13th January
 
@@ -117,7 +78,7 @@ In volumio webUI, go in plugin section and enable it!
 
 29th October
 
--
+- 
 - add 3 custom preset in webUI !
 
 10th October
@@ -187,5 +148,5 @@ timer to make it work with last volumio dev 2.279
 2nd July
 - working version ! But Presets non working...
 
-01st July
+01st July 
 - nearly working - but output mdp doesn't work
