@@ -117,6 +117,43 @@ ControllerVolsimpleequal.prototype.sendequal = function () {
 };
 
 ControllerVolsimpleequal.prototype.onStop = function () {
+  var self = this;
+
+  var scoef = self.config.get('flat')
+
+  var i
+  var j
+  var x
+  var k
+  //equalizer offset
+  var z = 60;
+  var coefarray = scoef.split(',');
+
+  // for every value that we put in array, we set the according bar value
+  var pending = [];
+  for (var i in coefarray) {
+    let forDefer = libQ.defer();
+    pending.push(forDefer.promise);
+
+    j = i
+    i = ++i
+    k = parseInt(coefarray[j], 10);
+    x = k + z;
+
+
+    console.log("/bin/echo /usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x)
+    exec("/usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x, {
+      uid: 1000,
+      gid: 1000
+    }, function (error, stdout, stderr) {
+      if (!error) {
+        forDefer.resolve();
+      } else {
+        forDefer.reject(error);
+      }
+    });
+  }
+
   return libQ.resolve();
 };
 
@@ -162,6 +199,7 @@ ControllerVolsimpleequal.prototype.onStart = function () {
     .fail(function (e) {
       defer.reject(new Error());
     });
+    self.sendequal();
   return defer.promise;
 };
 
