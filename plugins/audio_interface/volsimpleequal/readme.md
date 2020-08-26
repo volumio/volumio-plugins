@@ -1,4 +1,4 @@
-August 25th 2020
+August 26th 2020
 
 ### beta for alsa_modular! do not use! (yet ;-))
 

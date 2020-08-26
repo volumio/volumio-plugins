@@ -20,8 +20,7 @@
  "LABELPS3":"Mon réglage 3",
  "SAVE":"Sauver",
  "TOASTSUCCESSAPPLY":"Nouvel égaliseur appliqué",
- "TOASTSUCCESSPRESSET":"Préréglages enregistrés"
-
- 
-
+ "TOASTSUCCESSPRESSET":"Préréglages enregistrés",
+  "SAVECURRENTEQ": "Enregistrer les réglages dans :",
+ "DOCSAVECURRENTEQ": "Enregistre les réglages courants pour créer vos propres pré-réglages"
 }

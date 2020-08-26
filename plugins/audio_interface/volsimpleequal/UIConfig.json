@@ -25,19 +25,31 @@
 				{
 					"id": "enablemyeq",
 					"element": "switch",
-					"label": "custom equalizer=on or preset=off",
+					"label": "TRANSLATE.EQORPRESET",
 					"value": true
 				},
 				{
 					"id": "eqprofile",
 					"element": "select",
-					"doc": "choose between setting you like",
-					"label": "Equalization profile",
+					"doc": "TRANSLATE.DOCEQPROFILE",
+					"label": "TRANSLATE.EQPROFILE",
 					"value": {
 						"value": "flat",
 						"label": "flat"
 					},
 					"options": [
+						{
+							"value": "mypreset1",
+							"label": "TRANSLATE.LABELPS1"
+						},
+						{
+							"value": "mypreset2",
+							"label": "TRANSLATE.LABELPS2"
+						},
+						{
+							"value": "mypreset3",
+							"label": "TRANSLATE.LABELPS3"
+						},
 						{
 							"value": "flat",
 							"label": "flat"
@@ -65,33 +77,19 @@
 						{
 							"value": "soundtrack",
 							"label": "soundtrack"
-						},
-						{
-							"value": "mypreset1",
-							"label": "my preset 1"
-						},
-						{
-							"value": "mypreset2",
-							"label": "my preset 2"
-						},
-						{
-							"value": "mypreset3",
-							"label": "my preset 3"
 						}
 					],
 					"visibleIf": {
 						"field": "enablemyeq",
 						"value": false
 					}
-					
 				},
 				{
 					"id": "coef",
 					"element": "equalizer",
 					"label": "TRANSLATE.GAIN_EQUALIZER",
 					"description": "",
-					"doc": "Create your own equalizer",
-				
+					"doc": "TRANSLATE.DOCEQ",
 					"config": {
 						"orientation": "vertical",
 						"bars": [
@@ -114,7 +112,8 @@
 									"--100Hz"
 								],
 								"tooltip": "show"
-							},{
+							},
+							{
 								"min": -12,
 								"max": 12,
 								"step": "0.5",
@@ -123,7 +122,8 @@
 									"--156Hz"
 								],
 								"tooltip": "show"
-							},{
+							},
+							{
 								"min": -12,
 								"max": 12,
 								"step": "0.5",
@@ -132,7 +132,8 @@
 									"--220Hz"
 								],
 								"tooltip": "show"
-							},{
+							},
+							{
 								"min": -12,
 								"max": 12,
 								"step": "0.5",
@@ -141,7 +142,8 @@
 									"--311Hz"
 								],
 								"tooltip": "show"
-							},{
+							},
+							{
 								"min": -12,
 								"max": 12,
 								"step": "0.5",
@@ -249,7 +251,7 @@
 		{
 			"id": "advanced",
 			"element": "section",
-			"label": "advanced equalizer preset",
+			"label": "TRANSLATE.ADVEQSET",
 			"icon": "fa-cogs",
 			"onSave": {
 				"type": "plugin",
@@ -259,503 +261,33 @@
 			"saveButton": {
 				"label": "save",
 				"data": [
-					"mypreset1",
-					"mypreset2",
-					"mypreset3"
+					"TRANSLATE.SAVE"
 				]
 			},
 			"content": [
 				{
-					"id": "enabled",
-					"element": "switch",
-					"label": "preset settings",
-					"value": false
-				},
-				{
-					"id": "mypreset1",
-					"element": "equalizer",
-					"label": "mypreset1",
-					"description": "",
-					"doc": "choose values for mypreset1",
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
+					"id": "eqpresetsaved",
+					"element": "select",
+					"doc": "TRANSLATE.DOCSAVECURRENTEQ",
+					"label": "TRANSLATE.SAVECURRENTEQ",
+					"value": {
+						"value": "",
+						"label": ""
 					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--50Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--100Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--156Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--220Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--311Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--440Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--2KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--3,5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
-								],
-								"tooltip": "show"
-							}
-						]
-					}
-				},
-				{
-					"id": "mypreset2",
-					"element": "equalizer",
-					"label": "mypreset2",
-					"description": "",
-					"doc": "choose values for mypreset2",
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--50Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--100Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--156Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--220Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--311Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--440Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--2KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--3,5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
-								],
-								"tooltip": "show"
-							}
-						]
-					}
-				},
-				{
-					"id": "mypreset3",
-					"element": "equalizer",
-					"label": "mypreset3",
-					"description": "",
-					"doc": "choose values for mypreset3",
-					"visibleIf": {
-						"field": "enabled",
-						"value": true
-					},
-					"config": {
-						"orientation": "vertical",
-						"bars": [
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--50Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--100Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--156Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--220Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--311Hz"
-								],
-								"tooltip": "show"
-							},{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--440Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--622Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--880Hz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,25KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--1,75KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--2KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--3,5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--5KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--10KHz"
-								],
-								"tooltip": "show"
-							},
-							{
-								"min": -12,
-								"max": 12,
-								"step": "0.5",
-								"value": 0,
-								"ticksLabels": [
-									"--20KHz"
-								],
-								"tooltip": "show"
-							}
-						]
-					}
+					"options": [
+						{
+							"value": "mypreset1",
+							"label": "TRANSLATE.LABELPS1"
+						},
+						{
+							"value": "mypreset2",
+							"label": "TRANSLATE.LABELPS2"
+						},
+						{
+							"value": "mypreset3",
+							"label": "TRANSLATE.LABELPS3"
+						}
+					]
 				}
 			]
 		}

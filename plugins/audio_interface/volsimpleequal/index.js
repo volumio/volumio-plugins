@@ -105,7 +105,7 @@ ControllerVolsimpleequal.prototype.sendequal = function () {
         forDefer.reject(error);
       }
     });
-  } 
+  }
   self.config.set('coef', scoef);
 
   var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'volsimpleequal', {});
@@ -113,198 +113,208 @@ ControllerVolsimpleequal.prototype.sendequal = function () {
     self.commandRouter.broadcastMessage('pushUiConfig', config);
   });
   return libQ.all(pending);
-  
-  };
 
-  ControllerVolsimpleequal.prototype.onStop = function () {
-    return libQ.resolve();
-  };
+};
+
+ControllerVolsimpleequal.prototype.onStop = function () {
+  return libQ.resolve();
+};
 
 
-  ControllerVolsimpleequal.prototype.onStart = function () {
-    var self = this;
+ControllerVolsimpleequal.prototype.onStart = function () {
+  var self = this;
 
-    var defer = libQ.defer();
-    self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-      .then(function (e) {
-        var aplayDefer = libQ.defer();
-        // Play a short sample of silence to initialise the config file
-        exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioSimpleEqual", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-          if (error) {
-            self.logger.warn("An error occurred when trying to initialize Volsimpleequal", error);
-          }
-          aplayDefer.resolve();
-        });
-        return aplayDefer.promise;
-      })
-      .then(function (e) {
-
-        var configFile = "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
-        var configDefer = libQ.defer();
-
-        if (fs.existsSync(configFile)) {
-          exec("/bin/chown volumio:audio " + configFile + "; /bin/chmod 664 " + configFile,
-            { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-              if (error) {
-                self.logger.warn("An error occurred when trying to initialize Volsimpleequal", error);
-              }
-              configDefer.resolve();
-            });
-        } else {
-          self.logger.warn("No equaliser config file exists - unable to initialize Volsimpleequal");
-          configDefer.reject("No equaliser config file exists")
+  var defer = libQ.defer();
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
+    .then(function (e) {
+      var aplayDefer = libQ.defer();
+      // Play a short sample of silence to initialise the config file
+      exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioSimpleEqual", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        if (error) {
+          self.logger.warn("An error occurred when trying to initialize Volsimpleequal", error);
         }
-      })
-      .then(function (e) {
-        self.logger.info('Volsimpleequal Started');
-        defer.resolve();
-      })
-      .fail(function (e) {
-        defer.reject(new Error());
+        aplayDefer.resolve();
       });
-    return defer.promise;
-  };
+      return aplayDefer.promise;
+    })
+    .then(function (e) {
 
-  ControllerVolsimpleequal.prototype.onRestart = function () {
-    var self = this;
-  };
+      var configFile = "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
+      var configDefer = libQ.defer();
 
-  ControllerVolsimpleequal.prototype.onInstall = function () {
-    var self = this;
-    //Perform your installation tasks here
-  };
+      if (fs.existsSync(configFile)) {
+        exec("/bin/chown volumio:audio " + configFile + "; /bin/chmod 664 " + configFile,
+          { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+            if (error) {
+              self.logger.warn("An error occurred when trying to initialize Volsimpleequal", error);
+            }
+            configDefer.resolve();
+          });
+      } else {
+        self.logger.warn("No equaliser config file exists - unable to initialize Volsimpleequal");
+        configDefer.reject("No equaliser config file exists")
+      }
+    })
+    .then(function (e) {
+      self.logger.info('Volsimpleequal Started');
+      defer.resolve();
+    })
+    .fail(function (e) {
+      defer.reject(new Error());
+    });
+  return defer.promise;
+};
 
-  ControllerVolsimpleequal.prototype.onUninstall = function () {
-    var self = this;
-    //Perform your installation tasks here
-  };
+ControllerVolsimpleequal.prototype.onRestart = function () {
+  var self = this;
+};
 
-  ControllerVolsimpleequal.prototype.getUIConfig = function () {
-    var self = this;
-    var defer = libQ.defer();
-    var lang_code = this.commandRouter.sharedVars.get('language_code');
-    self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
-      __dirname + '/i18n/strings_en.json',
-      __dirname + '/UIConfig.json')
-      .then(function (uiconf) {
-        //equalizer section
-        uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
-        //  uiconf.sections[0].content[1].value = self.config.get('eqprofile');
-        var value;
-        value = self.config.get('eqprofile');
-        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
-        self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+ControllerVolsimpleequal.prototype.onInstall = function () {
+  var self = this;
+  //Perform your installation tasks here
+};
 
-        //for coef in equalizer
-        // we retrieve the coefficient configuration
-        var coefconf = self.config.get('coef');
-        // it is a string, so to get single values we split them by , and create an array from that
-        var coefarray = coefconf.split(',');
-        //console.log(coefarray)
-        // for every value that we put in array, we set the according bar value
-        for (var i in coefarray) {
-          uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
-        }
+ControllerVolsimpleequal.prototype.onUninstall = function () {
+  var self = this;
+  //Perform your installation tasks here
+};
 
-        //for equalizer custom mypreset1
-        // we retrieve the coefficient configuration
-        var cmypreset1 = self.config.get('mypreset1');
-        // it is a string, so to get single values we split them by , and create an array from that
-        var coefarrayp1 = cmypreset1.split(',');
-        //console.log(coefarrayp1)
-        // for every value that we put in array, we set the according bar value
-        for (var i in coefarrayp1) {
-          uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
-        }
-        //for equalizer custom mypreset2
-        // we retrieve the coefficient configuration
-        var cmypreset2 = self.config.get('mypreset2');
-        // it is a string, so to get single values we split them by , and create an array from that
-        var coefarrayp2 = cmypreset2.split(',');
-        //console.log(coefarrayp2)
-        // for every value that we put in array, we set the according bar value
-        for (var i in coefarrayp2) {
-          uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
-        }
-        //for equalizer custom mypreset3
-        // we retrieve the coefficient configuration
-        var cmypreset3 = self.config.get('mypreset3');
-        // it is a string, so to get single values we split them by , and create an array from that
-        var coefarrayp3 = cmypreset3.split(',');
-        //console.log(coefarrayp3)
-        // for every value that we put in array, we set the according bar value
-        for (var i in coefarrayp3) {
-          uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
-        }
+ControllerVolsimpleequal.prototype.getUIConfig = function () {
+  var self = this;
+  var defer = libQ.defer();
+  var lang_code = this.commandRouter.sharedVars.get('language_code');
+  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
+    __dirname + '/i18n/strings_en.json',
+    __dirname + '/UIConfig.json')
+    .then(function (uiconf) {
+      //equalizer section
+      uiconf.sections[0].content[0].value = self.config.get('enablemyeq');
+      //  uiconf.sections[0].content[1].value = self.config.get('eqprofile');
+      var value;
+      value = self.config.get('eqprofile');
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
 
-        defer.resolve(uiconf);
-      })
-      .fail(function () {
-        defer.reject(new Error());
-      })
-    return defer.promise
-
-
-  };
-
-
-  ControllerVolsimpleequal.prototype.getLabelForSelect = function (options, key) {
-    var n = options.length;
-    for (var i = 0; i < n; i++) {
-      if (options[i].value == key)
-        return options[i].label;
-    }
-    return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
-  };
-
-  ControllerVolsimpleequal.prototype.setUIConfig = function (data) {
-    var self = this;
-
-  };
-
-  ControllerVolsimpleequal.prototype.getConf = function (varName) {
-    var self = this;
-    //Perform your installation tasks here
-  };
+      //for coef in equalizer
+      // we retrieve the coefficient configuration
+      var coefconf = self.config.get('coef');
+      // it is a string, so to get single values we split them by , and create an array from that
+      var coefarray = coefconf.split(',');
+      //console.log(coefarray)
+      // for every value that we put in array, we set the according bar value
+      for (var i in coefarray) {
+        uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
+      }
+      /*
+              //for equalizer custom mypreset1
+              // we retrieve the coefficient configuration
+              var cmypreset1 = self.config.get('mypreset1');
+              // it is a string, so to get single values we split them by , and create an array from that
+              var coefarrayp1 = cmypreset1.split(',');
+              //console.log(coefarrayp1)
+              // for every value that we put in array, we set the according bar value
+              for (var i in coefarrayp1) {
+                uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
+              }
+              //for equalizer custom mypreset2
+              // we retrieve the coefficient configuration
+              var cmypreset2 = self.config.get('mypreset2');
+              // it is a string, so to get single values we split them by , and create an array from that
+              var coefarrayp2 = cmypreset2.split(',');
+              //console.log(coefarrayp2)
+              // for every value that we put in array, we set the according bar value
+              for (var i in coefarrayp2) {
+                uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
+              }
+              //for equalizer custom mypreset3
+              // we retrieve the coefficient configuration
+              var cmypreset3 = self.config.get('mypreset3');
+              // it is a string, so to get single values we split them by , and create an array from that
+              var coefarrayp3 = cmypreset3.split(',');
+              //console.log(coefarrayp3)
+              // for every value that we put in array, we set the according bar value
+              for (var i in coefarrayp3) {
+                uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
+              }
+              */
+      value = self.config.get('eqpresetsaved');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
 
 
-  ControllerVolsimpleequal.prototype.setConf = function (varName, varValue) {
-    var self = this;
-    //Perform your installation tasks here
-  };
 
-  //here we save the equalizer settings
-  ControllerVolsimpleequal.prototype.savealsaequal = function (data) {
-    var self = this;
-    self.config.set('enablemyeq', data['enablemyeq']);
-    self.config.set('eqprofile', data['eqprofile'].value);
-    self.config.set('coef', data['coef']);
-    self.logger.info('Equalizer Configurations have been set');
-    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE"));
-    return self.sendequal();
-  };
+      defer.resolve(uiconf);
+    })
+    .fail(function () {
+      defer.reject(new Error());
+    })
+  return defer.promise
 
-  //here we save the equalizer preset
-  ControllerVolsimpleequal.prototype.saveequalizerpreset = function (data) {
-    var self = this;
-    var defer = libQ.defer();
 
-    self.config.set('mypreset1', data['mypreset1']);
-    self.config.set('mypreset2', data['mypreset2']);
-    self.config.set('mypreset3', data['mypreset3']);
+};
 
-    self.logger.info('Equalizer preset saved');
-    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
 
-    return defer.promise;
-  };
-
-  ControllerVolsimpleequal.prototype.setAdditionalConf = function (type, controller, data) {
-    var self = this;
-    return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
-  };
-
-  ControllerVolsimpleequal.prototype.getAdditionalConf = function (type, controller, data) {
-    var self = this;
-    return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+ControllerVolsimpleequal.prototype.getLabelForSelect = function (options, key) {
+  var n = options.length;
+  for (var i = 0; i < n; i++) {
+    if (options[i].value == key)
+      return options[i].label;
   }
+  return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
+};
+
+ControllerVolsimpleequal.prototype.setUIConfig = function (data) {
+  var self = this;
+
+};
+
+ControllerVolsimpleequal.prototype.getConf = function (varName) {
+  var self = this;
+  //Perform your installation tasks here
+};
+
+
+ControllerVolsimpleequal.prototype.setConf = function (varName, varValue) {
+  var self = this;
+  //Perform your installation tasks here
+};
+
+//here we save the equalizer settings
+ControllerVolsimpleequal.prototype.savealsaequal = function (data) {
+  var self = this;
+  self.config.set('enablemyeq', data['enablemyeq']);
+  self.config.set('eqprofile', data['eqprofile'].value);
+  self.config.set('coef', data['coef']);
+  self.logger.info('Equalizer Configurations have been set');
+  self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE"));
+  return self.sendequal();
+};
+
+//here we save the equalizer preset
+ControllerVolsimpleequal.prototype.saveequalizerpreset = function (data) {
+  var self = this;
+  var defer = libQ.defer();
+  var savedeq = self.config.get('coef')
+
+  self.config.set('eqpresetsaved', data['eqpresetsaved'].value);
+
+
+  var eqprofile = self.config.get('eqpresetsaved')
+
+  self.config.set(eqprofile, savedeq);
+
+  self.logger.info('Equalizer preset saved');
+  self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+
+  return defer.promise;
+};
+
+ControllerVolsimpleequal.prototype.setAdditionalConf = function (type, controller, data) {
+  var self = this;
+  return self.commandRouter.executeOnPlugin(type, controller, 'setConfigParam', data);
+};
+
+ControllerVolsimpleequal.prototype.getAdditionalConf = function (type, controller, data) {
+  var self = this;
+  return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
+}
