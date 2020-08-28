@@ -1,16 +1,9 @@
 'use strict';
 
-//var io = require('socket.io-client');
 var fs = require('fs-extra');
-var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
 var libQ = require('kew');
 var config = new (require('v-conf'))();
-// var libNet = require('net');
-// var net = require('net');
-
-
 
 // Define the ControllerVolsimpleequal class
 module.exports = ControllerVolsimpleequal;
@@ -41,7 +34,7 @@ ControllerVolsimpleequal.prototype.getConfigurationFiles = function () {
 // Plugin methods -----------------------------------------------------------------------------
 
 //here we send equalizer settings
-ControllerVolsimpleequal.prototype.sendequal = function () {
+ControllerVolsimpleequal.prototype.composeequal = function () {
   var self = this;
   var defer = libQ.defer();
 
@@ -73,6 +66,13 @@ ControllerVolsimpleequal.prototype.sendequal = function () {
       scoef = self.config.get('mypreset3')
   } else scoef = self.config.get('coef')
 
+  self.sendequal(scoef);
+};
+
+//here we send equalizer settings
+ControllerVolsimpleequal.prototype.sendequal = function (scoef) {
+  var self = this;
+  var defer = libQ.defer();
 
   var i
   var j
@@ -92,7 +92,6 @@ ControllerVolsimpleequal.prototype.sendequal = function () {
     i = ++i
     k = parseInt(coefarray[j], 10);
     x = k + z;
-
 
     console.log("/bin/echo /usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x)
     exec("/usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x, {
@@ -120,39 +119,7 @@ ControllerVolsimpleequal.prototype.onStop = function () {
   var self = this;
 
   var scoef = self.config.get('flat')
-
-  var i
-  var j
-  var x
-  var k
-  //equalizer offset
-  var z = 60;
-  var coefarray = scoef.split(',');
-
-  // for every value that we put in array, we set the according bar value
-  var pending = [];
-  for (var i in coefarray) {
-    let forDefer = libQ.defer();
-    pending.push(forDefer.promise);
-
-    j = i
-    i = ++i
-    k = parseInt(coefarray[j], 10);
-    x = k + z;
-
-
-    console.log("/bin/echo /usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x)
-    exec("/usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x, {
-      uid: 1000,
-      gid: 1000
-    }, function (error, stdout, stderr) {
-      if (!error) {
-        forDefer.resolve();
-      } else {
-        forDefer.reject(error);
-      }
-    });
-  }
+  self.sendequal(scoef);
 
   return libQ.resolve();
 };
@@ -199,7 +166,7 @@ ControllerVolsimpleequal.prototype.onStart = function () {
     .fail(function (e) {
       defer.reject(new Error());
     });
-    self.sendequal();
+  self.composeequal();
   return defer.promise;
 };
 
@@ -243,38 +210,8 @@ ControllerVolsimpleequal.prototype.getUIConfig = function () {
       for (var i in coefarray) {
         uiconf.sections[0].content[2].config.bars[i].value = coefarray[i]
       }
-      /*
-              //for equalizer custom mypreset1
-              // we retrieve the coefficient configuration
-              var cmypreset1 = self.config.get('mypreset1');
-              // it is a string, so to get single values we split them by , and create an array from that
-              var coefarrayp1 = cmypreset1.split(',');
-              //console.log(coefarrayp1)
-              // for every value that we put in array, we set the according bar value
-              for (var i in coefarrayp1) {
-                uiconf.sections[1].content[1].config.bars[i].value = coefarrayp1[i]
-              }
-              //for equalizer custom mypreset2
-              // we retrieve the coefficient configuration
-              var cmypreset2 = self.config.get('mypreset2');
-              // it is a string, so to get single values we split them by , and create an array from that
-              var coefarrayp2 = cmypreset2.split(',');
-              //console.log(coefarrayp2)
-              // for every value that we put in array, we set the according bar value
-              for (var i in coefarrayp2) {
-                uiconf.sections[1].content[2].config.bars[i].value = coefarrayp2[i]
-              }
-              //for equalizer custom mypreset3
-              // we retrieve the coefficient configuration
-              var cmypreset3 = self.config.get('mypreset3');
-              // it is a string, so to get single values we split them by , and create an array from that
-              var coefarrayp3 = cmypreset3.split(',');
-              //console.log(coefarrayp3)
-              // for every value that we put in array, we set the according bar value
-              for (var i in coefarrayp3) {
-                uiconf.sections[1].content[3].config.bars[i].value = coefarrayp3[i]
-              }
-              */
+
+      //preset
       value = self.config.get('eqpresetsaved');
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
@@ -325,7 +262,7 @@ ControllerVolsimpleequal.prototype.savealsaequal = function (data) {
   self.config.set('coef', data['coef']);
   self.logger.info('Equalizer Configurations have been set');
   self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE"));
-  return self.sendequal();
+  self.composeequal();
 };
 
 //here we save the equalizer preset
