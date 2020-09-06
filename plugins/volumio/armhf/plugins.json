@@ -349,7 +349,7 @@
 					"prettyName": "Amplifier Switch",
 					"icon": "fa-power-off",
 					"name": "ampswitch",
-					"version": "0.1.1",
+					"version": "0.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/ampswitch/ampswitch.zip",
 					"license": "ISC",
 					"description": "Status based power management of external amplifier",
@@ -361,7 +361,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "20-6-2018"
+					"updated": "6-9-2020"
 				},
 				{
 					"prettyName": "LastFM Scrobbler",
