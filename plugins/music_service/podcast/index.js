@@ -318,13 +318,19 @@ ControllerPodcast.prototype.handleBrowseUri = function (curUri) {
         response = self.getPodcastBBC(uriParts[2]);
       else if (uriParts.length === 4)
         response = self.getPodcastBBCEpisodes(uriParts[2], uriParts[3]);
+      else
+        response = libQ.reject();
     }
     else {
       response = self.getPodcastContent(curUri);
     }
   }
 
-  return response;
+  return response
+    .fail(function (e) {
+      self.logger.info('[' + Date.now() + '] ' + '[podcast] handleBrowseUri failed');
+      libQ.reject(new Error());
+    });
 };
 
 ControllerPodcast.prototype.getRootContent = function() {
@@ -628,6 +634,11 @@ ControllerPodcast.prototype.explodeUri = function (uri) {
   switch (uris[1]) {
     case 'bbc':
       // podcast/bbc/station/channel/index
+      if (uris.length < 5) {
+        response = libQ.reject();
+        return response;
+      }
+
       episode = self.currentEpisodes[uris[4]];
       response = {
         service: self.serviceName,
@@ -642,6 +653,11 @@ ControllerPodcast.prototype.explodeUri = function (uri) {
 
     default:
       // podcast/channel/index
+      if (uris.length < 3) {
+        response = libQ.reject();
+        return response;
+      }
+
       episode = self.currentEpisodes[uris[2]];
       response = {
         service: self.serviceName,
