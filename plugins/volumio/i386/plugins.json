@@ -256,7 +256,7 @@
 			"id": "cat5",
 			"description": "",
 			"plugins": [
-                {
+				{
 					"prettyName": "AutoStart",
 					"icon": "fa-lightbulb-o",
 					"name": "autostart",
@@ -327,6 +327,24 @@
 						}
 					],
 					"updated": "17-1-2020"
+				},
+				{
+					"prettyName": "tradfri",
+					"icon": "fa-lightbulb-o",
+					"name": "tradfri",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/tradfri/tradfri.zip",
+					"license": "ISC",
+					"description": "Switch Tradfri devices on/off based on the Volumio player state.",
+					"details": "",
+					"author": "Rene Schuenemann",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "11-9-2020"
 				}
 			]
 		}
