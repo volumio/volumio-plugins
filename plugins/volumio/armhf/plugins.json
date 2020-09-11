@@ -124,7 +124,7 @@
 					"prettyName": "Podcast",
 					"icon": "fa-lightbulb-o",
 					"name": "podcast",
-					"version": "0.2.0",
+					"version": "0.3.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/podcast/podcast.zip",
 					"license": "ISC",
 					"description": "Podcast for Volumio2",
@@ -136,7 +136,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "15-8-2020",
+					"updated": "11-9-2020",
 					"stable": true
 				},
 				{
