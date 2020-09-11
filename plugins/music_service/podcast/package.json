@@ -1,6 +1,6 @@
 {
 	"name": "podcast",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Podcast for Volumio2",
 	"main": "index.js",
 	"scripts": {
@@ -18,8 +18,8 @@
 		"v-conf": "^1.4.2",
 		"fs-extra": "^8.1.0",
 		"kew": "^0.7.0",
-		"rss-parser": "^3.7.2",
-		"lodash": "^4.17.15",
+		"rss-parser": "^3.9.0",
+		"lodash": "^4.17.20",
 		"unirest": "^0.6.0",
 		"cheerio": "^1.0.0-rc.3"
 	},
