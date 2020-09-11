@@ -251,8 +251,8 @@ TradfriController.prototype.saveTradfriSettings = function(data) {
 TradfriController.prototype.onTradfriConnectError = function(error) {
     var self = this;
 
-    if (e instanceof tradfriLib.TradfriError) {
-        switch (e.code) {
+    if (error instanceof tradfriLib.TradfriError) {
+        switch (error.code) {
             case tradfriLib.TradfriErrorCodes.ConnectionTimedOut: {
                 self.logger.error('tradfri gateway connection timeout');
             }
