@@ -1,13 +1,26 @@
+pcm.equal {
+    type lfloat
+    slave.pcm "equal1"
+    slave.format "FLOAT"
+}
 
-ctl.equal { 
- type equal
 
-} 
+ctl.equal1 {
+type equal
+   library "/usr/lib/ladspa/mbeq_1197.so"
+   module "mbeq"
+	controls "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
+}
+
 pcm.plugequal1 { 
  type equal
- slave.pcm "plughw:${hwout},0"; 
+ slave.pcm "plughw:${hwout},0"
 }
-pcm.equal {
- type plug;
- slave.pcm plugequal1;
- }
+
+pcm.equal1 {
+    type equal
+        controls "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
+   	slave.pcm "plugequal1";
+      library "/usr/lib/ladspa/mbeq_1197.so"
+     module "mbeq"
+}

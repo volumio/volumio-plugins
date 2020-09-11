@@ -20,9 +20,7 @@
  "LABELPS2":"my preset 2",
  "LABELPS3":"my preset 3",
  "SAVE":"Save",
- "TOASTSUCCESSAPPLY":"New equalizer successfully applied"
-
-
- 
-
+ "TOASTSUCCESSAPPLY":"New equalizer successfully applied",
+ "SAVECURRENTEQ": "Save current Equalizer in :",
+ "DOCSAVECURRENTEQ": "Save current Equalizer to create your own custom preset"
 }

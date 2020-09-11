@@ -1,7 +1,7 @@
 {
 	"name": "volsimpleequal",
-	"version": "0.4.2",
-	"description": "Volsimpleequal plugin for Volumio2. Provides a 10 bands equalizer",
+	"version": "0.0.5",
+	"description": "Provides a 15 bands equalizer",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
