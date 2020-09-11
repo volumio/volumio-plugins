@@ -511,7 +511,7 @@
 					"prettyName": "tradfri",
 					"icon": "fa-lightbulb-o",
 					"name": "tradfri",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/tradfri/tradfri.zip",
 					"license": "ISC",
 					"description": "Switch Tradfri devices on/off based on the Volumio player state.",
@@ -523,7 +523,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-10-2019",
+					"updated": "11-9-2020",
 					"stable": true
 				},
 				{
