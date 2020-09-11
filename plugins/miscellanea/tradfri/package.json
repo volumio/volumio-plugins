@@ -1,0 +1,22 @@
+{
+	"name": "tradfri",
+	"version": "1.0.0",
+	"description": "Switch Tradfri devices on/off based on the Volumio player state.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Rene Schuenemann",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "tradfri",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"node-tradfri-client": "^1.5.0",
+		"socket.io-client": "^2.3.0"
+	}
+}

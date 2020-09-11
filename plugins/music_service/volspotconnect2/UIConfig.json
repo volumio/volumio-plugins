@@ -1,0 +1,160 @@
+{
+  "page": {
+    "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTCONF"
+  },
+  "sections": [{
+    "id": "section_account",
+    "element": "section",
+    "label": "TRANSLATE.VOLSPOTCONNECT.VOLSPOTCONNECTACCOUNT",
+    "icon": "fa-plug",
+    "onSave": {
+      "type": "controller",
+      "endpoint": "music_service/volspotconnect2",
+      "method": "saveVolspotconnectAccount"
+    },
+    "saveButton": {
+      "label": "TRANSLATE.VOLSPOTCONNECT.SAVE",
+      "data": [
+        "initvol",
+        "normalvolume",
+        "bitrate",
+        "shareddevice",
+        "username",
+        "password",
+        "volume_ctrl",
+        "gapless",
+        "autoplay",
+        "debug"
+      ]
+    },
+    "content": [{
+
+        "id": "initvol",
+        "element": "equalizer",
+        "label": "TRANSLATE.VOLSPOTCONNECT.INITVOL",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCINITVOL",
+
+        "config": {
+          "orientation": "horizontal",
+          "bars": [{
+            "min": "0",
+            "max": "100",
+            "step": "5",
+            "value": "30",
+            "tooltip": "always"
+          }]
+        }
+      },
+      {
+        "id": "normalvolume",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCVOLNORM",
+        "label": "TRANSLATE.VOLSPOTCONNECT.VOLNORM",
+        "value": false
+      },
+      {
+        "id": "bitrate",
+        "element": "select",
+        "doc": "Bitrate",
+        "label": "Bitrate",
+        "value": {
+          "value": 320,
+          "label": "320"
+        },
+        "options": [{
+            "value": 320,
+            "label": "320"
+          },
+          {
+            "value": 160,
+            "label": "160"
+          },
+          {
+            "value": 96,
+            "label": "96"
+          }
+        ]
+      },
+      {
+        "id": "shareddevice",
+        "element": "switch",
+        "doc": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+        "label": "TRANSLATE.VOLSPOTCONNECT.SHAREDDEVICE",
+        "value": true
+      },
+      {
+        "id": "username",
+        "type": "text",
+        "element": "input",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTACCOUNT",
+        "label": "TRANSLATE.VOLSPOTCONNECT.USERNAME",
+        "value": "",
+        "options": [],
+        "visibleIf": {
+          "field": "shareddevice",
+          "value": false
+        }
+      },
+
+      {
+        "id": "password",
+        "type": "password",
+        "element": "input",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.TIPSPOTPASSWD",
+        "label": "TRANSLATE.VOLSPOTCONNECT.PASSWORD",
+        "value": "",
+        "options": [],
+        "visibleIf": {
+          "field": "shareddevice",
+          "value": false
+        }
+      },
+      {
+        "id": "volume_ctrl",
+        "type": "text",
+        "element": "select",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCPVOLUMECTRL",
+        "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL",
+        "value": {
+          "value": "fixed",
+          "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
+        },
+
+        "options": [{
+            "value": "linear",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_LINEAR"
+          },
+          {
+            "value": "log",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_LOG"
+          },
+          {
+            "value": "fixed",
+            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
+          }
+        ]
+      },
+      {
+        "id": "gapless",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCGAPLESS",
+        "label": "TRANSLATE.VOLSPOTCONNECT.GAPLESS",
+        "value": true
+      },
+      {
+        "id": "autoplay",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCAUTOPLAY",
+        "label": "TRANSLATE.VOLSPOTCONNECT.AUTOPLAY",
+        "value": true
+      },
+      {
+        "id": "debug",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCDEBUG",
+        "label": "TRANSLATE.VOLSPOTCONNECT.DEBUG",
+        "value": false
+      }
+    ]
+  }]
+}

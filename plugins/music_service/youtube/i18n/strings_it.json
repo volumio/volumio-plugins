@@ -1,0 +1,18 @@
+{
+	"YOUTUBE_CONFIGURATION": "Configurazione Youtube",
+	"YOUTUBE_SETTINGS": "Impostazioni",
+	"YOUTUBE_RESULTS_LIMIT": "Risultati per pagina",
+	"YOUTUBE_RESULTS_LIMIT_DOC": "Quanti risultati devono essere visualizzati in una pagina? (Le playlist saranno sempre visualizzate per intero). Valore predefinito: 50",
+	"YOUTUBE_SAVE": "Salva",
+	"YOUTUBE_ACCOUNT": "Impostazioni account",
+	"YOUTUBE_LOGIN": "Login",
+	"YOUTUBE_LOGOUT": "Logout",
+	"YOUTUBE_USERNAME": "Username",
+	"YOUTUBE_USERNAME_DOC": "Your YouTube account",
+	"YOUTUBE_GRANT_ACCESS": "Accedi con Google per poter utilizzare il plugin.",
+	"YOUTUBE_ACCESS_CODE": "Code:",
+	"YOUTUBE_ACCESS_CODE_DOC": "Enter this code on https://www.google.com/device.",
+	"LOGIN": "Accedi",
+	"LOGIN_WITH_GOOGLE": "Accedi con Google",
+	"LOGIN_SUCCESS": "Accesso effettuato!"
+}

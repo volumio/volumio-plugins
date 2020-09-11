@@ -1,0 +1,16 @@
+{
+	"YOUTUBE_CONFIGURATION": "Youtube Configuration",
+	"YOUTUBE_SETTINGS": " Settings",
+	"YOUTUBE_RESULTS_LIMIT": "Results limit",
+	"YOUTUBE_RESULTS_LIMIT_DOC": "Configure how many videos shall be showed when searching for something on YouTube. Playlists will always be completely loaded! Default: 50",
+	"YOUTUBE_SAVE": "Save",
+	"YOUTUBE_ACCOUNT": "Account settings",
+	"YOUTUBE_LOGIN": "Log in",
+	"YOUTUBE_LOGOUT": "Log out",
+	"YOUTUBE_USERNAME_DOC": "Your YouTube account",
+	"YOUTUBE_GRANT_ACCESS": "Log in with Google to enable the plugin.",
+	"LOGIN": "Log in",
+	"LOGIN_WITH_GOOGLE": "Log in with Google",
+	"LOGIN_SUCCESS": "Log in was successful!",
+	"LOGOUT": "Log out"
+}

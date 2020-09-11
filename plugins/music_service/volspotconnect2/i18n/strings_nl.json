@@ -1,0 +1,26 @@
+{
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Volumio Spotify Connect Configuratie",
+    "VOLSPOTCONNECTACCOUNT": "Spotify account",
+    "USERNAME": "Gebruikersnaam",
+    "PASSWORD": "Wachtwoord",
+    "HIGHBITRATE": "Stream bitsnelheid",
+    "SHAREDDEVICE": "Apparaat voor meerdere gebruikers",
+    "SAVE": "Opslaan",
+    "INITVOL": "Beginvolume",
+    "DESCINITVOL": "Spotify volume bij het opstarten",
+    "VOLNORM": "Volume normaliseren",
+    "DESCVOLNORM": "Stel hetzelfde volume in voor alle nummers",
+    "DEBUG": "Debugmodus",
+    "DESCDEBUG": "debuggen logs activeren",
+    "VOLUMECTRL": "Volumeregeling methode",
+    "VOLUMECTRL_LINEAR": "Lineaire",
+    "VOLUMECTRL_LOG": "Logaritmisch",
+    "VOLUMECTRL_FIXED": "Vast",
+    "DESCPVOLUMECTRL": "Methode voor de (software) volumeregeling",
+    "GAPLESS": "Naadloos afspelen",
+    "DESCGAPLESS": "Afspelen zonder pauze tussen de bestanden",
+    "AUTOPLAY": "Automatisch afspelen",
+    "DESCAUTOPLAY": "Vergelijkbare nummers automatisch afspelen wanneer jouw muziek is afgelopen"
+  }
+}

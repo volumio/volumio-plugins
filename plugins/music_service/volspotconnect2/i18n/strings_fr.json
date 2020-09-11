@@ -1,0 +1,25 @@
+{
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Configuration Volumio Spotify Connect",
+    "VOLSPOTCONNECTACCOUNT": "Compte Spotify",
+    "USERNAME": "Nom utilisateur",
+    "PASSWORD": "Mot de passe",
+    "HIGHBITRATE": "Haute qualité",
+    "SHAREDDEVICE": "Périphérique partagé entre plusieurs utilisateurs",
+    "SAVE": "Sauver",
+    "INITVOL": "Volume initial",
+    "DESCINITVOL": "Volume par défaut pour Spotify",
+    "VOLNORM": "Normalisation du volume",
+    "DESCVOLNORM": "Règle le même volume pour tous les morceaux",
+    "DESCDEBUG": "Activation des logs de deboggage",
+    "VOLUMECTRL": "Contrôle du Volume interne",
+    "VOLUMECTRL_LINEAR": "Linéaire",
+    "VOLUMECTRL_LOG": "Logarithmique",
+    "VOLUMECTRL_FIXED": "Fixe",
+    "DESCPVOLUMECTRL": "Methode de contrôle du volume",
+    "GAPLESS": "Lecture sans blanc",
+    "DESCGAPLESS": "Active/désactive la lecture sans blanc entre les morceaux",
+    "AUTOPLAY": "Lecture automatique",
+    "DESCAUTOPLAY": "Lancer la lecture automatique de titres similaires lorsque votre musique se termine."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "example_plugin",
+  "version": "1.0.0",
+  "description": "Example Plugin for Volumio2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "volumio_info": {
+    "prettyName": "Example Plugin",
+    "icon": "fa-lightbulb-o",
+    "plugin_type": "music_service"
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^1.4.0"
+  }
+}

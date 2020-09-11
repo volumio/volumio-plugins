@@ -1,0 +1,68 @@
+{
+  "page": {
+    "label": "Allo Relay Volume Attenuator Options"
+  },
+  "sections": [
+    {
+      "id": "section_wired_network",
+      "element": "section",
+      "label": "Settings",
+      "icon": "fa-plug",
+      "onSave": {
+        "type": "miscellanea",
+        "endpoint": "miscellanea/allo_relay_volume_attenuator",
+        "method": "saveRelayAttOptions"
+      },
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "map_to_100"
+        ]
+      },
+      "content": [
+        {
+          "id": "map_to_100",
+          "element": "switch",
+          "doc": "If enabled, the Volume will range from 0 to 100. If disabled it will reflect the Allo Relay Attenuator range of 0 to 63",
+          "label": "Map Volume to 100",
+          "value": false
+        }
+      ]
+        },
+        {
+          "id":"section_documentation",
+          "type": "section",
+          "label": "Resources",
+          "icon": "fa-book",
+          "content": [
+            {
+              "id": "shop",
+              "element": "button",
+              "label": "Get yours on Volumio Shop",
+              "onClick": {
+                "type": "openUrl",
+                "url": "https://volumio.org/product/allo-relay-attenuator/"
+              }
+            },
+        {
+          "id": "user_manual",
+          "element": "button",
+          "label": "User Manual",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.org/wp-content/uploads/2017/08/Relay-Attenuator-User-Manual.pdf"
+          }
+        },
+        {
+          "id": "tech_manual",
+          "element": "button",
+          "label": "Tech Manual",
+          "onClick": {
+            "type": "openUrl",
+            "url": "https://volumio.org/wp-content/uploads/2017/08/Relay-Attenuator-Tech-Manual.pdf"
+          }
+        }
+      ]
+    }
+  ]
+}

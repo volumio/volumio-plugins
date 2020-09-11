@@ -1,0 +1,15 @@
+{
+  "YOUTUBE_CONFIGURATION":"Konfiguracja YouTube",
+  "YOUTUBE_SETTINGS":" Ustawienia",
+  "YOUTUBE_RESULTS_LIMIT": "Limit wyników",
+  "YOUTUBE_RESULTS_LIMIT_DOC": "Skonfiguruj liczbę filmów, które mają być wyświetlane podczas wyszukiwania w serwisie YouTube. Lista odtwarzania będe zawsze całkowicie załadowana! Domyślnie: 50",
+  "YOUTUBE_SAVE": "Zapisz",
+	"YOUTUBE_ACCOUNT": "Account settings",
+	"YOUTUBE_LOGIN": "Zaloguj",
+	"YOUTUBE_LOGOUT": "Wyloguj",
+	"YOUTUBE_USERNAME": "Nazwa użytkownika",
+	"YOUTUBE_USERNAME_DOC": "Twoje konto YouTube",
+	"YOUTUBE_GRANT_ACCESS": "Przyznaj Volumio dostęp tylko do odczytu do swojego konta YouTube. Wprowadź poniższy kod {0}:",
+	"YOUTUBE_ACCESS_CODE":"KOD:",
+	"YOUTUBE_ACCESS_CODE_DOC":"Wprowadź ten kod na https://www.google.com/device."
+}

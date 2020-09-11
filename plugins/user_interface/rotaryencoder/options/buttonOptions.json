@@ -1,0 +1,17 @@
+{"buttonActionTypes":[
+  {"label":"No action","type": 0},
+  {"label":"Play","type": 1},
+  {"label":"Pause","type": 2},
+  {"label":"Toggle play/pause","type": 3},
+  {"label":"Stop","type": 4},
+  {"label":"Repeat","type": 5},
+  {"label":"Random","type": 6},
+  {"label":"Clear queue","type": 7},
+  {"label":"Mute","type": 8},
+  {"label":"Unmute","type": 9},
+  {"label":"Toggle mute/unmute","type": 10},
+  {"label":"Shutdown machine","type": 11},
+  {"label":"Reboot machine","type": 12},
+  {"label":"Restart Volumio application","type": 13},
+  {"label":"Dump log files","type": 14}
+]}

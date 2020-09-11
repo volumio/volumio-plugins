@@ -1,0 +1,30 @@
+begin
+prog = irexec
+button = KEY_PLAY
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_RIGHT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_LEFT
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_UP
+config = /usr/local/bin/volumio seek plus
+end
+begin
+prog = irexec
+button = KEY_DOWN
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_MENU
+config = /usr/local/bin/volumio random
+end

@@ -1,0 +1,40 @@
+{
+  "page": {
+    "label": "TRANSLATE.CONFIG.TITLE"
+  },
+  "sections": [
+    {
+      "id": "quality",
+      "element": "section",
+      "label": "TRANSLATE.CONFIG.RADIO_PROTOCOL",
+      "icon": "fa-cogs",
+      "description": "TRANSLATE.CONFIG.PROTOCOL_SETUP_GUIDE",
+      "onSave": {
+        "type": "controller",
+        "endpoint":"music_service/personal_radio",
+        "method":"updateConfig"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.CONFIG.SAVE",
+        "data": [
+          "sbsProtocol",
+          "mbcProtocol"
+        ]
+      },
+      "content": [
+        {
+          "id": "sbsProtocol",
+          "element": "switch",
+          "label": "TRANSLATE.CONFIG.SBS_ENABLE_HTTP",
+          "value": true
+        },
+        {
+          "id": "mbcProtocol",
+          "element": "switch",
+          "label": "TRANSLATE.CONFIG.MBC_ENABLE_HTTP",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

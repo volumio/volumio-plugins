@@ -1,0 +1,26 @@
+{
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Volumio Spotify Connect Configuration",
+    "VOLSPOTCONNECTACCOUNT": "Spotify account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "HIGHBITRATE": "Stream bitrate",
+    "SHAREDDEVICE": "Multi-user device",
+    "SAVE": "Save",
+    "INITVOL": "Initial volume",
+    "DESCINITVOL": "Spotify volume when starts",
+    "VOLNORM": "Normalisation volume",
+    "DESCVOLNORM": "Set the same volume level for all songs",
+    "DEBUG": "Debug mode",
+    "DESCDEBUG": "Enable verbose logs",
+    "VOLUMECTRL": "Internal Volume Control",
+    "VOLUMECTRL_LINEAR": "Linear",
+    "VOLUMECTRL_LOG": "Logarithmic",
+    "VOLUMECTRL_FIXED": "Fixed",
+    "DESCPVOLUMECTRL": "Volume control (software) method",
+    "GAPLESS": "Gapless playback",
+    "DESCGAPLESS": "Enable/Disable gapless playback between tracks",
+    "AUTOPLAY": "Autoplay",
+    "DESCAUTOPLAY": "Autoplay similar songs when your music ends "
+  }
+}

@@ -1,0 +1,631 @@
+{
+	"page": {
+		"label": "TRANSLATE.SNAPCAST.SNAPCASTCONF"
+	},
+	"sections": [{
+		"id": "section_sampleconf",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.SERVER",
+		"description": "TRANSLATE.SNAPCAST.D_SERVER",
+		"icon": "fa-server",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateSnapServer"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.SAVE",
+			"data": ["server_enabled",
+			"mpd_pipe_name",
+			"sample_rate",
+			"bit_depth",
+			"channels",
+			"codec",
+			"server_cli"]
+		},
+		"content": [{
+			"id": "server_enabled",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_SERVER_ENABLED",
+			"label": "TRANSLATE.SNAPCAST.SERVER_ENABLED",
+			"value": true
+		},
+		{
+			"id": "mpd_pipe_name",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_MAIN_PIPE_NAME",
+			"label": "TRANSLATE.SNAPCAST.MAIN_PIPE_NAME",
+			"value": "VOLUMIO-MPD",
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "sample_rate",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_SAMPLE_RATE",
+			"label": "TRANSLATE.SNAPCAST.SAMPLE_RATE",
+			"description": "Service default = 48000Hz",
+			"value": {
+				"value": 44100,
+				"label": "44100Hz"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "bit_depth",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_BIT_DEPTH",
+			"label": "TRANSLATE.SNAPCAST.BIT_DEPTH",
+			"description": "Default = 16 bits",
+			"value": {
+				"value": 16,
+				"label": "16 bits"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "channels",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_CHANNELS",
+			"label": "TRANSLATE.SNAPCAST.CHANNELS",
+			"description": "Default = stereo = 2 channels",
+			"value": "2",
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "codec",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_CODEC",
+			"label": "TRANSLATE.SNAPCAST.CODEC",
+			"description": "Default = FLAC",
+			"value": {
+				"value": "flac",
+				"label": "Flac (lossless compressed [default])"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "server_cli",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_CLI",
+			"label": "TRANSLATE.SNAPCAST.CLI",
+			"description": "TRANSLATE.SNAPCAST.DD_CLI",
+			"value": "",
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		}]
+	},
+	{
+		"id": "section_clientconf",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.CLIENT",
+		"description": "TRANSLATE.SNAPCAST.D_CLIENT",
+		"icon": "fa-music",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateSnapClient"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.SAVE",
+			"data": ["client_enabled",
+			"volumio_host",
+			"custom_host",
+			"host",
+			"soundcard",			
+			"custom_host_id",
+			"host_id",
+			"client_cli"
+			]
+		},
+		"content": [{
+			"id": "client_enabled",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_CLIENT_ENABLED",
+			"label": "TRANSLATE.SNAPCAST.CLIENT_ENABLED",
+			"value": true
+		},
+		{
+			"id": "volumio_host",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_VOLUMIOHOST",
+			"label": "TRANSLATE.SNAPCAST.VOLUMIOHOST",
+			"value": {
+				"value": "127.0.0.1",
+				"label": "Localhost [default]"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "client_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "custom_host",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_CUSTOMHOST",
+			"label": "TRANSLATE.SNAPCAST.CUSTOMHOST",
+			"value": false
+		},
+		{
+			"id": "host",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_HOSTNAME",
+			"label": "TRANSLATE.SNAPCAST.HOSTNAME",
+			"value": "127.0.0.1",
+			"visibleIf": {
+				"field": "custom_host",
+				"value": true
+			}
+		},
+		{
+			"id": "soundcard",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_SOUNDCARD",
+			"label": "TRANSLATE.SNAPCAST.SOUNDCARD",
+			"value": {
+				"value": "ALSA",
+				"label": "Audio Jack"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "client_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "custom_host_id",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_CUSTOMHOSTID",
+			"label": "TRANSLATE.SNAPCAST.CUSTOMHOSTID",
+			"value": false
+		},
+		{
+			"id": "host_id",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_HOSTID",
+			"label": "TRANSLATE.SNAPCAST.HOSTID",
+			"value": "",
+			"visibleIf": {
+				"field": "custom_host_id",
+				"value": true
+			}
+		},
+		{
+			"id": "client_cli",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_CLI",
+			"label": "TRANSLATE.SNAPCAST.CLI",
+			"description": "TRANSLATE.SNAPCAST.DD_CLI",
+			"value": "",
+			"visibleIf": {
+				"field": "client_enabled",
+				"value": true
+			}
+		}]
+	},
+	{
+		"id": "section_mpdconf",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.MPD",
+		"description": "TRANSLATE.SNAPCAST.D_MPD",
+		"icon": "fa-play",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateMPDConfig"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.PATCHMPD",
+			"data": ["patch_mpd_conf",
+			"mpd_sample_rate",
+			"mpd_bit_depth",
+			"mpd_channels",
+			"enable_alsa_mpd",
+			"enable_fifo_mpd"]
+		},
+		"content": [{
+			"id": "patch_mpd_conf",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_PATCH_MPD_CONF",
+			"label": "TRANSLATE.SNAPCAST.PATCH_MPD_CONF",
+			"value": true
+		},
+		{
+			"id": "mpd_sample_rate",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_MPD_SAMPLE_RATE",
+			"label": "TRANSLATE.SNAPCAST.MPD_SAMPLE_RATE",
+			"value": {
+				"value": 44100,
+				"label": "44100Hz"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "patch_mpd",
+				"value": true
+			}
+		},
+		{
+			"id": "mpd_bit_depth",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_MPD_BIT_DEPTH",
+			"label": "TRANSLATE.SNAPCAST.MPD_BIT_DEPTH",
+			"value": {
+				"value": 16,
+				"label": "16 bits"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "patch_mpd",
+				"value": true
+			}
+		},
+		{
+			"id": "mpd_channels",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_MPD_CHANNELS",
+			"label": "TRANSLATE.SNAPCAST.MPD_CHANNELS",
+			"value": "2",
+			"visibleIf": {
+				"field": "patch_mpd",
+				"value": true
+			}
+		},
+		{
+			"id": "enable_alsa_mpd",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_ENABLE_ALSA_MPD",
+			"label": "TRANSLATE.SNAPCAST.ENABLE_ALSA_MPD",
+			"value": false,
+			"visibleIf": {
+				"field": "patch_mpd",
+				"value": true
+			}
+		},
+		{
+			"id": "enable_fifo_mpd",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_ENABLE_FIFO_MPD",
+			"label": "TRANSLATE.SNAPCAST.ENABLE_FIFO_MPD",
+			"value": true,
+			"visibleIf": {
+				"field": "patch_mpd",
+				"value": true
+			}
+		}]
+	},
+	{
+		"id": "section_patchAsound",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.PATCHASOUND",
+		"description": "TRANSLATE.SNAPCAST.D_PATCHASOUND",
+		"icon": "fa-wrench",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "patchAsoundConfig"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.PATCH",
+			"data": []
+		},
+		"content": [{
+			"id": "alsa_configuration",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_ASOUND_CONF",
+			"label": "TRANSLATE.SNAPCAST.ASOUND_CONF",
+			"value": ""
+		}]
+	},
+	{
+		"id": "section_spotifyconf",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.SPOTIFY",
+		"description": "TRANSLATE.SNAPCAST.D_SPOTIFY",
+		"icon": "fa-spotify",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateSnapServerSpotify"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.SAVE",
+			"data": ["spotify_dedicated_stream",
+			"spotify_pipe_name",
+			"spotify_implementation",
+			"spotify_sample_rate",
+			"spotify_bit_depth",
+			"spotify_channels",
+			"expose_additional_spotify_settings",
+			"librespot_location",
+			"spotify_username",
+			"spotify_password",
+			"spotify_devicename",
+			"spotify_bitrate"]
+		},
+		"content": [{
+			"id": "spotify_dedicated_stream",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_DEDICATED_STREAM",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_DEDICATED_STREAM",
+			"value": false
+		},
+		{
+			"id": "spotify_pipe_name",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_PIPE_NAME",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_PIPE_NAME",
+			"value": "VOLUMIO-SPOTIFY",
+			"visibleIf": {
+				"field": "spotify_dedicated_stream",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_implementation",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_IMPLEMENTATION",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_IMPLEMENTATION",
+			"value": {
+				"value": "volspotconnect1",
+				"label": "Volspotconnect (spotify-web-connect)"
+			},
+			"options": []
+		},
+		{
+			"id": "spotify_sample_rate",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_SAMPLE_RATE",
+			"label": "TRANSLATE.SNAPCAST.SAMPLE_RATE",
+			"value": {
+				"value": 44100,
+				"label": "44100Hz"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_bit_depth",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_BIT_DEPTH",
+			"label": "TRANSLATE.SNAPCAST.BIT_DEPTH",
+			"value": {
+				"value": 16,
+				"label": "16 bits"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_channels",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_CHANNELS",
+			"label": "TRANSLATE.SNAPCAST.CHANNELS",
+			"value": "2",
+			"visibleIf": {
+				"field": "server_enabled",
+				"value": true
+			}
+		},
+		{
+			"id": "expose_additional_spotify_settings",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_EXPOSE_ADDITIONAL_SPOTIFY_SETTINGS",
+			"label": "TRANSLATE.SNAPCAST.EXPOSE_ADDITIONAL_SPOTIFY_SETTINGS",
+			"value": false
+		},
+		{
+			"id": "librespot_location",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_LIBRESPOT_LOCATION",
+			"label": "TRANSLATE.SNAPCAST.LIBRESPOT_LOCATION",
+			"value": "",
+			"visibleIf": {
+				"field": "expose_additional_spotify_settings",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_username",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_USERNAME",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_USERNAME",
+			"value": "",
+			"visibleIf": {
+				"field": "expose_additional_spotify_settings",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_password",
+			"type": "password",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_PASSWORD",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_PASSWORD",
+			"value": "2",
+			"visibleIf": {
+				"field": "expose_additional_spotify_settings",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_devicename",
+			"type": "input",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_DEVICENAME",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_DEVICENAME",
+			"value": "SNAPCAST",
+			"visibleIf": {
+				"field": "expose_additional_spotify_settings",
+				"value": true
+			}
+		},
+		{
+			"id": "spotify_bitrate",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_SPOTIFY_BITRATE",
+			"label": "TRANSLATE.SNAPCAST.SPOTIFY_BITRATE",
+			"value": {
+				"value": 160,
+				"label": "160 kbps (normal quality)"
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "expose_additional_spotify_settings",
+				"value": true
+			}
+		}]
+	},
+	{
+		"id": "section_patchSpotifyTemplates",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.PATCHTEMPLATES",
+		"description": "TRANSLATE.SNAPCAST.D_PATCHTEMPLATES",
+		"icon": "fa-wrench",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateSpotifyImplementation"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.PATCH",
+			"data": []
+		},
+		"content": [{
+			"id": "spotify_implementation",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_SELECTED_IMPLEMENTATION",
+			"label": "TRANSLATE.SNAPCAST.SELECTED_IMPLEMENTATION",
+			"value": "2"
+		}]
+	},
+	{
+		"id": "section_snapEnvironment",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.SNAPENVIRONMENT",
+		"description": "TRANSLATE.SNAPCAST.D_SNAPENVIRONMENT",
+		"icon": "fa-volume-up",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/snapcast",
+			"method": "updateSnapEnvironment"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPCAST.SAVE",
+			"data": ["client_id",
+			"switch_stream",
+			"link_client_id",
+			"stream_id"]
+		},
+		"content": [{
+			"id": "client_id",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_CLIENT_ID",
+			"label": "TRANSLATE.SNAPCAST.CLIENT_ID",
+			"value": {
+				"value": "",
+				"label": ""
+			},
+			"options": []
+		},
+		{
+			"id": "switch_stream",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPCAST.D_SWITCH_STREAM",
+			"label": "TRANSLATE.SNAPCAST.SWITCH_STREAM",
+			"value": false
+		},
+		{
+			"id": "link_client_id",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_LINKED_CLIENT_ID",
+			"label": "TRANSLATE.SNAPCAST.LINKED_CLIENT_ID",
+			"value": {
+				"value": "",
+				"label": ""
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "switch_stream",
+				"value": true
+			}
+		},
+		{
+			"id": "stream_id",
+			"element": "select",
+			"doc": "TRANSLATE.SNAPCAST.D_STREAM_ID",
+			"label": "TRANSLATE.SNAPCAST.STREAM_ID",
+			"value": {
+				"value": "",
+				"label": ""
+			},
+			"options": [],
+			"visibleIf": {
+				"field": "switch_stream",
+				"value": true
+			}
+		}]
+	},
+	{
+		"id": "section_loadedconf",
+		"element": "section",
+		"label": "TRANSLATE.SNAPCAST.LOADED",
+		"description": "TRANSLATE.SNAPCAST.D_LOADED",
+		"icon": "fa-cogs",
+		"content": [{
+			"id": "alsa_output_device",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_OUTPUT_DEVICE",
+			"label": "TRANSLATE.SNAPCAST.OUTPUT_DEVICE",
+			"value": "2"
+		},
+		{
+			"id": "alsa_mixer",
+			"type": "text",
+			"element": "input",
+			"doc": "TRANSLATE.SNAPCAST.D_MIXER",
+			"label": "TRANSLATE.SNAPCAST.MIXER",
+			"value": "1"
+		}]
+	}]
+}

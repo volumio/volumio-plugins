@@ -1,0 +1,35 @@
+{
+  "page": {
+    "label": "TRANSLATE.IR_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "ir_conf",
+      "element": "section",
+      "label": "TRANSLATE.IR_CONFIGURATION",
+      "icon": "fa-magic",
+      "onSave": {"type":"controller", "endpoint":"accessory/ir_controller", "method":"saveIROptions"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "ir_profile"
+        ]
+      },
+      "value":  {
+      },
+      "content": [
+        {
+          "id": "ir_profile",
+          "element": "select",
+          "doc": "TRANSLATE.PROFILE_SELECTOR_DOC",
+          "label": "TRANSLATE.PROFILE_SELECTOR",
+          "value":  {
+          },
+          "options": [
+          ]
+
+        }
+      ]
+    }
+  ]
+}

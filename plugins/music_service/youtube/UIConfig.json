@@ -1,0 +1,70 @@
+{
+  "page": {
+    "label": "TRANSLATE.YOUTUBE_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.YOUTUBE_ACCOUNT",
+      "description": "TRANSLATE.YOUTUBE_GRANT_ACCESS",
+      "icon": "fa-user",
+      "content": [
+        {
+          "id": "oauth",
+          "element": "button",
+          "label": "TRANSLATE.LOGIN",
+          "description": "TRANSLATE.LOGIN_WITH_GOOGLE",
+          "hidden": true,
+          "onClick": {
+            "type": "oauth",
+            "performerUrl": "http://oauth-performer.dfs.volumio.org/youtube",
+            "plugin": "music_service/youtube",
+            "scopes": [
+              "https://www.googleapis.com/auth/youtube.readonly"
+            ]
+          }
+        },
+        {
+          "id": "oauth",
+          "element": "button",
+          "label": "TRANSLATE.LOGOUT",
+          "description": "TRANSLATE.LOGOUT",
+          "hidden": true,
+          "onClick": {
+            "type": "controller",
+            "endpoint": "music_service/youtube",
+            "method": "logout"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.YOUTUBE_SETTINGS",
+      "icon": "fa-wrench",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/youtube",
+        "method": "updateSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.YOUTUBE_SAVE",
+        "data": [
+          "results_limit"
+        ]
+      },
+      "content": [
+        {
+          "id": "results_limit",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.YOUTUBE_RESULTS_LIMIT_DOC",
+          "label": "TRANSLATE.YOUTUBE_RESULTS_LIMIT",
+          "value": 50
+        }
+      ]
+    }
+  ]
+}

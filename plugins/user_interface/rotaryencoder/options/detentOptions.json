@@ -1,0 +1,6 @@
+{"detentActionTypes":[
+  {"label":"No action","type": 0},
+  {"label":"Control volume","type": 1},
+  {"label":"Media control (prev/next)","type": 2},
+  {"label":"Scroll list","type": 4}
+]}

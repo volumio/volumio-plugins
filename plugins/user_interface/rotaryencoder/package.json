@@ -1,0 +1,62 @@
+{
+	"name": "rotaryencoder",
+	"version": "1.2.4",
+	"description": "Provides a rotary encoder interface for use in Volumio 2.x",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Saiyato",
+	"license": "MIT",
+	"volumio_info": {
+		"prettyName": "Rotary Encoder",
+		"icon": "fa-circle-o-notch",
+		"plugin_type": "user_interface"
+	},
+	"dependencies": {
+		"balanced-match": "^1.0.0",
+		"bindings": "^1.3.0",
+		"brace-expansion": "^1.1.11",
+		"concat-map": "^0.0.1",
+		"epoll": "^1.0.2",
+		"fs-extra": "^0.28.0",
+		"fs.realpath": "^1.0.0",
+		"glob": "^7.1.2",
+		"graceful-fs": "^4.1.11",
+		"imurmurhash": "^0.1.4",
+		"inflight": "^1.0.6",
+		"inherits": "^2.0.3",
+		"jsonfile": "^2.4.0",
+		"kew": "^0.7.0",
+		"klaw": "^1.3.1",
+		"minimatch": "^3.0.4",
+		"multimap": "^1.0.2",
+		"nan": "^2.8.0",
+		"net": "^1.0.2",
+		"once": "^1.4.0",
+		"onoff": "^1.2.0",
+		"onoff-rotary": "https://github.com/Saiyato/onoff-rotary/tarball/2336ea47d95ab57ab1091e429db9dd4930abbfaf",
+		"path-is-absolute": "^1.0.1",
+		"rimraf": "^2.6.2",
+		"slide": "^1.1.6",
+		"v-conf": "^1.4.2",
+		"wrappy": "^1.0.2",
+		"write-file-atomic": "^1.3.4",
+		"socket.io-client": "^1.4.5"
+	},
+	"devDependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Saiyato/volumio-rotary-encoder-plugin.git"
+	},
+	"keywords": [
+		"rotary",
+		"encoder",
+		"rotaryencoder",
+		"volumio"
+	],
+	"bugs": {
+		"url": "https://github.com/Saiyato/volumio-rotary-encoder-plugin/issues"
+	},
+	"homepage": "https://github.com/Saiyato/volumio-rotary-encoder-plugin#readme"
+}

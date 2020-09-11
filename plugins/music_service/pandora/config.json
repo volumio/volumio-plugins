@@ -1,0 +1,30 @@
+{
+  "isPandoraOne": {
+    "type": "boolean",
+    "value": false
+  },
+  "useCurl302WorkAround": {
+    "type": "boolean",
+    "value": false
+  },
+  "nextIsThumbsDown": {
+    "type": "boolean",
+    "value": false
+  },
+  "superPrevious": {
+    "type": "boolean",
+    "value": false
+  },
+  "flushThem" :{
+    "type": "boolean",
+    "value": false
+  },
+  "email": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  }
+}

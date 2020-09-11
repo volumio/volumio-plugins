@@ -1,0 +1,29 @@
+{
+	"name": "tunein_radio",
+	"version": "1.1.0",
+	"description": "Support radio streaming from the TuneIn Radio service",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Piffio",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "TuneIn Radio",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"node-tunein-radio": "^0.3.1",
+		"v-conf": "^1.4.0"
+	},
+	"devDependencies": {
+		"eslint-config-standard": "^11.0.0-beta.0",
+		"eslint-plugin-import": "^2.8.0",
+		"eslint-plugin-node": "^6.0.0",
+		"eslint-plugin-promise": "^3.6.0",
+		"eslint-plugin-standard": "^3.0.1"
+	}
+}

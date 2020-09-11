@@ -1,0 +1,104 @@
+{
+	"page": {
+		"label": "TRANSLATE.SQUEEZELITE.SQUEEZELITECONF"
+	},
+	"sections": [
+		{
+			"id": "section_serviceconf",
+			"element": "section",
+			"label": "TRANSLATE.SQUEEZELITE.SERVICE",
+			"description": "TRANSLATE.SQUEEZELITE.D_SERVICE",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/squeezelite",
+				"method": "updateSqueezeliteServiceConfig"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SQUEEZELITE.SAVE",
+				"data": [
+					"enabled",
+					"name"
+				]
+			},
+			"content": [
+				{
+					"id": "enabled",
+					"element": "switch",
+					"doc": "TRANSLATE.SQUEEZELITE.D_PLAYER_ENABLED",
+					"label": "TRANSLATE.SQUEEZELITE.PLAYER_ENABLED",
+					"value": true
+				},
+				{
+					"id": "name",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.INSTANCE_NAME",
+					"doc": "TRANSLATE.SQUEEZELITE.D_INSTANCE_NAME",
+					"value": "Volumio"
+				}
+			]
+		},
+		{
+			"id": "section_audioconf",
+			"element": "section",
+			"label": "TRANSLATE.SQUEEZELITE.AUDIO",
+			"description": "TRANSLATE.SQUEEZELITE.D_AUDIO",
+			"icon": "fa-volume-up",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/squeezelite",
+				"method": "updateSqueezeliteAudioConfig"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SQUEEZELITE.SAVE",
+				"data": [
+					"output_device",
+					"soundcard_timeout",
+					"alsa_params",
+					"extra_params"
+				]
+			},
+			"content": [
+				{
+					"id": "output_device",
+					"element": "select",
+					"label": "TRANSLATE.SQUEEZELITE.OUTPUT_DEVICE",
+					"doc": "TRANSLATE.SQUEEZELITE.D_OUTPUT_DEVICE",					
+					"value": {
+						"value": "default",
+						"label": "default"
+					},
+					"options": []
+				},
+				{
+					"id": "soundcard_timeout",
+					"element": "select",
+					"label": "TRANSLATE.SQUEEZELITE.SOUNDCARD_TIMEOUT",
+					"doc": "TRANSLATE.SQUEEZELITE.D_SOUNDCARD_TIMEOUT",					
+					"value": {
+						"value": "2",
+						"label": "2"
+					},
+					"options": []
+				},
+				{
+					"id": "alsa_params",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.ALSAPARAMS",
+					"doc": "TRANSLATE.SQUEEZELITE.D_ALSAPARAMS",
+					"value": "80:4::"
+				},
+				{
+					"id": "extra_params",
+					"type":"text",
+					"element": "input",
+					"label": "TRANSLATE.SQUEEZELITE.EXTRAPARAMS",
+					"doc": "TRANSLATE.SQUEEZELITE.D_EXTRAPARAMS",
+					"value": ""
+				}
+			]
+		}
+	]
+}

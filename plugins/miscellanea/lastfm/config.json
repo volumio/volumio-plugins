@@ -1,0 +1,50 @@
+{
+  "API_KEY": {
+    "type": "string",
+    "value": ""
+  },
+  "API_SECRET": {
+    "type": "string",
+    "value": ""
+  },
+  "username": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "authToken": {
+    "type": "string",
+    "value": ""
+  },
+  "supportedSongServices": {
+    "type": "string",
+    "value": "mpd,airplay,volspotconnect,volspotconnect2,spop"
+  },  
+  "scrobbleThreshold": {
+    "type": "int",
+    "value": "75"
+  },
+  "pushToastOnScrobble": {
+    "type": "boolean",
+    "value": true
+  },
+  "scrobbleFromStream": {
+    "type": "boolean",
+    "value": true
+  },
+  "supportedStreamingServices": {
+    "type": "string",
+    "value": "webradio,radio_paradise,80s80s"
+  },
+  "streamScrobbleThreshold": {
+    "type": "string",
+    "value": "120"
+  },
+  "enable_debug_logging": {
+    "type": "boolean",
+    "value": false
+  }
+}

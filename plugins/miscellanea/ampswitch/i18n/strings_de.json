@@ -1,0 +1,17 @@
+{
+  "AMPSWITCH_TITLE":"Amplifier Switch",
+  "OUTPUT":"Ausgabe",
+  "PORT": "Ausgang",
+  "PORT_DOC": "Ausgang auf deinem Gerät",
+  "INVERTED": "Invertiert",
+  "INVERTED_DOC": "Wenn der Ausgang invertiert ist, entspricht AN 0V und AUS 5V",
+  "DELAY": "Verzögerung",
+  "DELAY_DOC": "Verzögerung in Millisekunden nach Stoppen der Musik, bevor Ausgang geschaltet wird.",
+  "LATCHED": "Bistabiles Relais",
+  "LATCHED_DOC": "Für bistabiles Relais, bspw. AN/AUS Knopf am Verstärker",
+  "ON_PULSE_WIDTH": "Anschaltimpulsdauer",
+  "ON_PULSE_WIDTH_DOC": "Dauer des Stromimpulses in ms",
+  "OFF_PULSE_WIDTH": "Ausschaltimpulsdauer",
+  "OFF_PULSE_WIDTH_DOC": "Dauer des Stromimpulses in ms",
+  "SAVE":"Speichern"
+}
