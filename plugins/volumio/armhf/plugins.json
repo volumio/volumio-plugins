@@ -65,7 +65,7 @@
 				},
 				{
 					"prettyName": "Logitech Media Server",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa fa-music",
 					"name": "lms",
 					"version": "1.0.15",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/lms/lms.zip",
@@ -103,7 +103,7 @@
 				},
 				{
 					"prettyName": "Radio Paradise",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "radio_paradise",
 					"version": "1.1.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/radio_paradise/radio_paradise.zip",
@@ -122,7 +122,7 @@
 				},
 				{
 					"prettyName": "Podcast",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-podcast",
 					"name": "podcast",
 					"version": "0.1.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/podcast/podcast.zip",
@@ -141,7 +141,7 @@
 				},
 				{
 					"prettyName": "80s80s Radio",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "80s80s",
 					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/80s80s/80s80s.zip",
@@ -160,7 +160,7 @@
 				},
 				{
 					"prettyName": "Phish.in",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-music",
 					"name": "volumio-phishin",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volumio-phishin/volumio-phishin.zip",
@@ -179,7 +179,7 @@
 				},
 				{
 					"prettyName": "Onedrive Music Library",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-cloud",
 					"name": "onedrive_music_library",
 					"version": "1.0.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/onedrive_music_library/onedrive_music_library.zip",
@@ -215,7 +215,7 @@
 				},
 				{
 					"prettyName": "Volusonic",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-ship",
 					"name": "volusonic",
 					"version": "1.1.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
@@ -234,7 +234,7 @@
 				},
 				{
 					"prettyName": "Roon Bridge",
-					"icon": "fa-lightbulb-o",
+					"icon": "fas fa-volume-up",
 					"name": "RoonBridge",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/RoonBridge/RoonBridge.zip",
@@ -253,7 +253,7 @@
 				},
 				{
 					"prettyName": "Nanosound CD",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-music",
 					"name": "nanosound_cd",
 					"version": "1.1.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/nanosound_cd/nanosound_cd.zip",
@@ -310,7 +310,7 @@
 				},
 				{
 					"prettyName": "Allo Relay Volume Attenuator",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-volume-up",
 					"name": "allo_relay_volume_attenuator",
 					"version": "1.3.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/allo_relay_volume_attenuator/allo_relay_volume_attenuator.zip",
@@ -420,7 +420,7 @@
 				},
 				{
 					"prettyName": "AutoStart",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-play-circle-o",
 					"name": "autostart",
 					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/autostart/autostart.zip",
@@ -438,7 +438,7 @@
 				},
 				{
 					"prettyName": "Volumio Onkyo Control",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-volume-up",
 					"name": "onkyo_control",
 					"version": "1.0.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/onkyo_control/onkyo_control.zip",
@@ -456,7 +456,7 @@
 				},
 				{
 					"prettyName": "Autoplay",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-play-circle-o",
 					"name": "auto_play",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/auto_play/auto_play.zip",
@@ -473,7 +473,7 @@
 				},
 				{
 					"prettyName": "NanoSound by Nanomesher",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-play-circle-o",
 					"name": "nanosound",
 					"version": "1.8.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosound/nanosound.zip",
@@ -491,7 +491,7 @@
 				},
 				{
 					"prettyName": "SnapCast",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa fa-podcast",
 					"name": "snapcast",
 					"version": "2.4.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/snapcast/snapcast.zip",
@@ -528,7 +528,7 @@
 				},
 				{
 					"prettyName": "miniDLNA",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-share-alt",
 					"name": "minidlna",
 					"version": "1.1.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/minidlna/minidlna.zip",
@@ -566,7 +566,7 @@
 				},
 				{
 					"prettyName": "Virtual Keyboard",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-keyboard-o",
 					"name": "virtual_keyboard",
 					"version": "1.0.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/virtual_keyboard/virtual_keyboard.zip",
@@ -584,7 +584,7 @@
 				},
 				{
 					"prettyName": "NanoSound One",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-play-circle-o",
 					"name": "nanosoundone",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosoundone/nanosoundone.zip",
@@ -646,7 +646,7 @@
 				},
 				{
 					"prettyName": "Audiophonics ON/OFF",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa fa-cogs",
 					"name": "audiophonicsonoff",
 					"version": "1.0.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/audiophonicsonoff/audiophonicsonoff.zip",
@@ -664,7 +664,7 @@
 				},
 				{
 					"prettyName": "GPIO Control",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-microchip",
 					"name": "gpio_control",
 					"version": "0.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/gpio_control/gpio_control.zip",
@@ -742,7 +742,7 @@
 				},
 				{
 					"prettyName": "Volumio parametric equalizer",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-sliders fa-rotate-90",
 					"name": "volparametriceq",
 					"version": "0.1.9",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volparametriceq/volparametriceq.zip",
