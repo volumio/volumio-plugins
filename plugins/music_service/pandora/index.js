@@ -71,6 +71,7 @@ ControllerPandora.prototype.onStop = function () {
 
     if (self.expireHandler) self.expireHandler.stop();
     if (self.streamLifeChecker) self.streamLifeChecker.stop();
+    if (self.preventAuthTimeout) self.preventAuthTimeout.stop();
 
     return self.flushPandora()
         .then(() => self.stop())
@@ -104,7 +105,8 @@ ControllerPandora.prototype.flushPandora = function () {
 
 ControllerPandora.prototype.initialSetup = function (options) {
     var self = this;
-    const expInterval = 5 * 60 * 1000;
+    const expInterval = 5 * 60 * 1000; // 5 minutes
+    const authCheckInterval = 3 * 60 * 60 * 1000; // 3 hours
 
     self.announceFn('initialSetup');
 
@@ -114,14 +116,16 @@ ControllerPandora.prototype.initialSetup = function (options) {
 
     self.expireHandler = new ExpireOldTracks(self, expInterval);
     self.streamLifeChecker = new StreamLifeChecker(self);
+    self.preventAuthTimeout = new PreventAuthTimeout(self, authCheckInterval);
 
-    return self.pandoraHandler.pandoraLoginAndGetStations()
-        .then(() => self.pandoraHandler.fillStationData())
-        .then(() => self.flushPandora())
-        .fail(err => {
-            self.logError('initialSetup error: ', err);
-            return self.generalReject('initialSetup', err);
-        });
+    // return self.pandoraHandler.pandoraLoginAndGetStations()
+    //     .then(() => self.pandoraHandler.fillStationData())
+    //     .then(() => self.flushPandora())
+    //     .fail(err => {
+    //         self.logError('initialSetup error: ', err);
+    //         return self.generalReject('initialSetup', err);
+    //     });
+    return self.flushPandora();
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -398,18 +402,25 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     return defer.promise;
 };
 
-ControllerPandora.prototype.removeTrack = function (trackUri) {
+ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
     var self = this;
     const fnName = 'removeTrack';
-    let curUri = self.getQueueTrack().uri;
+    let qPos = self.getCurrQueuePos();
+    let index = self.getQueueIndex(trackUri);
+
+    let test = (index != -1 && index != qPos && trackUri);
+    if (justOldTracks) {
+        test = (test && index < qPos);
+    }
 
     self.announceFn(fnName + ': ' + trackUri);
 
-    if (trackUri !== null && trackUri !== curUri) {
-        self.commandRouter.stateMachine.removeQueueItem({value: self.getQueueIndex(trackUri)});
+    if (test) {
+        self.commandRouter.stateMachine.removeQueueItem({value: index});
     }
     else {
-        self.logInfo(fnName + ': '+ 'Not removing ' + trackUri);
+        self.logInfo(fnName + ': '+ 'Not removing ' +
+            trackUri + ' at queue index: ' + index);
     }
     return libQ.resolve();
 };
@@ -444,14 +455,10 @@ ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, pandoraQ) {
 
     self.announceFn('removeOldTrackBlock');
 
-    // for (let i = 0; i < limit; i++) {
-    //     setTimeout(() => {
-    //         self.removeTrack(pandoraQ[i].uri);
-    //     }, 10000 * (i + 1));
-    // }
-    
     for (let i = 0; i < limit; i++) {
-        self.removeTrack(pandoraQ[i].uri);
+        setTimeout(() => {
+            self.removeTrack(pandoraQ[i].uri, true);
+        }, 10000 * (i + 1));
     }
 
     return libQ.resolve();
@@ -514,7 +521,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
         .then(() => self.streamLifeChecker.stop())
-        .then(() => self.pandoraHandler.preventAuthTimeout())
+        // .then(() => self.pandoraHandler.preventAuthTimeout())
         .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
@@ -895,6 +902,7 @@ function StreamLifeChecker(self) {
 
         checkerID = setInterval(() => {
             that.heartMonitor();
+            self.logInfo(fnName + '::init heartMonitor interval set to ' + interval + ' ms');
         }, interval);
 
         return libQ.resolve();
@@ -930,12 +938,44 @@ function StreamLifeChecker(self) {
     };
 }
 
+function PreventAuthTimeout(self, interval) {
+    const fnName = 'PreventAuthTimeout';
+    var authCheckID;
+
+    PreventAuthTimeout.prototype.init = function () {
+        var that = this;
+
+        that.authMonitor();
+        authCheckID = setInterval(() => {
+            that.authMonitor();
+            self.logInfo(fnName + '::init authMonitor interval set to ' + interval + ' ms');
+        }, interval);
+
+        return libQ.resolve();
+    };
+
+    PreventAuthTimeout.prototype.stop = function () {
+        self.logError(fnName + ' stopping');
+
+        clearInterval(authCheckID);
+        return libQ.resolve();
+    };
+
+    PreventAuthTimeout.prototype.authMonitor = function () {
+        self.announceFn(fnName);
+
+        return self.pandoraHandler.pandoraLoginAndGetStations()
+            .then(() => self.pandoraHandler.fillStationData())
+            .then(() => self.logInfo(fnName + ': Refreshed Pandora authorization'));
+    };
+
+    this.init();
+}
+
 function PandoraHandler(self, options) {
     var pandora = {};
     var bandFilter = [];
     var loggedIn = false;
-    var loginTime;
-    const loginTimeout = 3 * 60 * 60 * 1000; // 3 hours
     const errCodeRegEx = new RegExp(/\[(\d+)\]/);
     var stationList = {}; // raw stationList object
     var stationData = []; // array of basic station info
@@ -1050,7 +1090,6 @@ function PandoraHandler(self, options) {
                     msg = 'Refreshed Pandora Login';
                 }
 
-                loginTime = Date.now();
                 self.logInfo('Logged in');
                 self.commandRouter.pushToastMessage('success',
                                                     'Pandora Login',
@@ -1063,18 +1102,6 @@ function PandoraHandler(self, options) {
                         return libQ.resolve();
                     });
             });
-    };
-
-    PandoraHandler.prototype.preventAuthTimeout = function () {
-        const fnName = 'PandoraHandler::preventAuthTimeout';
-
-        self.announceFn(fnName);
-
-        if (Date.now() - loginTime >= loginTimeout) {
-            return this.pandoraLoginAndGetStations()
-                .then(() => this.fillStationData());
-        }
-        return libQ.resolve();
     };
 
     PandoraHandler.prototype.fillStationData = function () {
