@@ -11,8 +11,8 @@ A [AudiophileAudition](http://stream.psychomed.gr/index.html) plugin for Volumio
 - Connect to Volumio with ```ssh volumio@volumio.local``` (Password: volumio)
 
 2. Download and Install Plugin
-- ```wget https://github.com/pattdepanick/volumio-plugins/blob/master/plugins/music_service/audiophile_audition/audiophile_audition.zip```
+- ```wget https://github.com/pattdepanick/volumio-plugins/raw/master/plugins/music_service/audiophile_audition/audiophile_audition.zip```
 - ```mkdir ./audiophile_audition```
-- ```miniunzip audiophile_audition.zip -d ./audiophile_audition``
+- ```miniunzip audiophile_audition.zip -d ./audiophile_audition```
 - ```cd ./audiophile_audition```
 - ```volumio plugin install```
