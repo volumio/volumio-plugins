@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Installing radio paradise Dependencies"
+echo "Installing audiophile audition Dependencies"
 
 #requred to end the plugin install
 echo "plugininstallend"
