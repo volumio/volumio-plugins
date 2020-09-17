@@ -137,6 +137,7 @@ ControllerAudiophileAudition.prototype.updateConfig = function (data) {
     return defer.promise;
 };
 
+
 // Playback Controls ---------------------------------------------------------------------------------------
 ControllerAudiophileAudition.prototype.addToBrowseSources = function () {
     // Use this function to add your music service plugin to music sources
