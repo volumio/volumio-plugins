@@ -148,7 +148,7 @@ ControllerAudiophileAudition.prototype.addToBrowseSources = function () {
         uri: 'audiophile_audition',
         plugin_type: 'music_service',
         plugin_name: "audiophile_audition",
-        albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa.png'
+        albumart: '/albumart?sourceicon=music_service/audiophile_audition/aa.svg'
     });
 };
 
