@@ -62,7 +62,7 @@
 				},
 				{
 					"prettyName": "Radio Paradise",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "radio_paradise",
 					"version": "1.1.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/radio_paradise/radio_paradise.zip",
@@ -80,7 +80,7 @@
 				},
 				{
 					"prettyName": "Podcast",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-podcast",
 					"name": "podcast",
 					"version": "0.3.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/podcast/podcast.zip",
@@ -98,7 +98,7 @@
 				},
 				{
 					"prettyName": "Phish.in",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-music",
 					"name": "volumio-phishin",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volumio-phishin/volumio-phishin.zip",
@@ -116,7 +116,7 @@
 				},
 				{
 					"prettyName": "Volusonic",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-ship",
 					"name": "volusonic",
 					"version": "1.1.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
@@ -134,7 +134,7 @@
 				},
 				{
 					"prettyName": "80s80s Radio",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-headphones",
 					"name": "80s80s",
 					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/80s80s/80s80s.zip",
@@ -152,7 +152,7 @@
 				},
 				{
 					"prettyName": "Roon Bridge",
-					"icon": "fa-lightbulb-o",
+					"icon": "fas fa-volume-up",
 					"name": "RoonBridge",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/RoonBridge/RoonBridge.zip",
@@ -170,7 +170,7 @@
 				},
 				{
 					"prettyName": "Nanosound CD",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-music",
 					"name": "nanosound_cd",
 					"version": "1.2.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/nanosound_cd/nanosound_cd.zip",
@@ -258,7 +258,7 @@
 			"plugins": [
 				{
 					"prettyName": "AutoStart",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-play-circle-o",
 					"name": "autostart",
 					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/autostart/autostart.zip",
@@ -276,7 +276,7 @@
 				},
 				{
 					"prettyName": "miniDLNA",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-share-alt",
 					"name": "minidlna",
 					"version": "1.1.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/minidlna/minidlna.zip",
@@ -294,7 +294,7 @@
 				},
 				{
 					"prettyName": "LastFM Scrobbler",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-lastfm",
 					"name": "lastfm",
 					"version": "1.3.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/lastfm/lastfm.zip",
