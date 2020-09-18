@@ -199,7 +199,7 @@
 					"prettyName": "pandora",
 					"icon": "fa-lightbulb-o",
 					"name": "pandora",
-					"version": "2.5.1",
+					"version": "2.5.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/pandora/pandora.zip",
 					"license": "ISC",
 					"description": "A plugin to access Pandora Web Radio",
@@ -211,7 +211,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "18-8-2020"
+					"updated": "18-9-2020"
 				},
 				{
 					"prettyName": "Volusonic",
