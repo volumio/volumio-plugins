@@ -1,6 +1,6 @@
 {
 	"name": "pandora",
-	"version": "2.5.1",
+	"version": "2.5.2",
 	"description": "A plugin to access Pandora Web Radio",
 	"main": "index.js",
 	"scripts": {
