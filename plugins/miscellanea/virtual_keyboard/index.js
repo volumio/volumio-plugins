@@ -39,7 +39,7 @@ VirtualKeyboard.prototype.onVolumioShutdown = function () {
 VirtualKeyboard.prototype.onVolumioReboot = function () {
   if (mbkbd !== undefined) {
     mbkbd.removeAllListeners();
-  };
+  }
   return libQ.resolve();
 };
 
@@ -228,14 +228,10 @@ VirtualKeyboard.prototype.reconfigure = function (action) {
         if (self.hasTouchDisplay(true)) {
           self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.RESTART_VOLUMIOKIOSK_MSG'));
           setTimeout(function () {
-            cp.exec('/usr/bin/sudo /bin/systemctl restart volumio-kiosk.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-              if (error !== null) {
-                self.logger.error(id + 'Failed to restart volumio-kiosk.service: ' + error);
-                self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('VKBD.PLUGIN_NAME'), self.commandRouter.getI18nString('VKBD.ERR_RESTART') + 'volumio-kiosk.service: ' + error);
-              } else {
-                self.logger.info(id + 'systemctl restart volumio-kiosk.service succeeded.');
-              }
-            });
+            self.commandRouter.executeOnPlugin('miscellanea', 'touch_display', 'onStop', '')
+              .then(function () {
+                self.commandRouter.executeOnPlugin('miscellanea', 'touch_display', 'onStart', '');
+              });
           }, 3000);
         }
         defer.resolve();
@@ -260,7 +256,7 @@ VirtualKeyboard.prototype.reconfigure = function (action) {
           } else {
             stdout = stdout.slice(stdout.indexOf(' xinit '));
             stdout = stdout.slice(stdout.search(/:[0-9]+ |:[0-9]+\.[0-9]+ /) + 1, stdout.search(os.EOL));
-            const displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /));
+            const displayNumber = stdout.slice(0, stdout.search(/ |\.[0-9]+ /)).toString();
             try {
               mbkbd = cp.spawn('matchbox-keyboard', ['-d'], { env: { ...process.env, DISPLAY: ':' + displayNumber, MB_KBD_CONFIG: '/data/configuration/miscellanea/virtual_keyboard/keyboard.xml' }, uid: 1000, gid: 1000 })
                 .on('error', function (error) {

@@ -7,7 +7,7 @@
                 "id": "vkbd_conf",
                 "element": "section",
                 "label": "TRANSLATE.VKBD.VKBD_CONF",
-                "icon": "fa-plug",
+                "icon": "fa-language",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/virtual_keyboard", "method":"saveConf"},
                 "saveButton": {
                               "label": "TRANSLATE.VKBD.SAVE",
