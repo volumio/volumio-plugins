@@ -568,7 +568,7 @@
 					"prettyName": "Virtual Keyboard",
 					"icon": "fa-lightbulb-o",
 					"name": "virtual_keyboard",
-					"version": "1.0.2",
+					"version": "1.0.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/virtual_keyboard/virtual_keyboard.zip",
 					"license": "ISC",
 					"description": "The plugin installs a virtual keyboard. It requires the Touch Display plugin to be installed.",
@@ -580,7 +580,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "21-6-2020"
+					"updated": "21-9-2020"
 				},
 				{
 					"prettyName": "NanoSound One",
