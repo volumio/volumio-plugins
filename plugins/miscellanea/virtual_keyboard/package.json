@@ -1,6 +1,6 @@
 {
 	"name": "virtual_keyboard",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "The plugin installs a virtual keyboard. It requires the Touch Display plugin to be installed.",
 	"main": "index.js",
 	"scripts": {

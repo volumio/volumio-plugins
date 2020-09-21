@@ -67,7 +67,7 @@ UK standard keyboard layout
       </key>
       <key width="3000">
         <default display="&#9003;" action="backspace" />
-        <mod3    display="Entf" action="delete" />
+        <mod3    display="Del" action="delete" />
       </key>
       <space width="500" extended="true" />
       <key extended="true">
