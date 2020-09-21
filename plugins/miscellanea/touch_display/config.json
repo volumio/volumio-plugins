@@ -31,6 +31,18 @@
     "type": "number",
     "value": 255
   },
+  "br1StartTime": {
+    "type": "string",
+    "value": "00:00"
+  },
+  "manualBr2": {
+    "type": "number",
+    "value": 255
+  },
+  "br2StartTime": {
+    "type": "string",
+    "value": "00:00"
+  },
   "minAls": {
     "type": "number",
     "value": 0

@@ -18,10 +18,10 @@ var rpiScreen = false;
 var rpiBacklight = false;
 var maxBrightness = 255;
 var alsProgression = [];
-var timeoutCleared = false;
+var autoBrTimeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
-var device, displayNumber, autoBrTimer;
+var device, displayNumber, autoBrTimer, toggleBrTimer;
 
 module.exports = TouchDisplay;
 
@@ -103,7 +103,11 @@ TouchDisplay.prototype.onStart = function () {
                       } else {
                         self.logger.info(id + 'File permissions for backlight brightness control set.');
                         if (!self.config.get('autoMode')) {
-                          self.setBrightness(self.config.get('manualBr'));
+                          if (self.config.get('br2StartTime') !== self.config.get('br1StartTime')) {
+                            self.toggleBrightness();
+                          } else {
+                            self.setBrightness(self.config.get('manualBr'));
+                          }
                         } else {
                           self.autoBrightness();
                         }
@@ -200,6 +204,7 @@ TouchDisplay.prototype.onStop = function () {
         });
     }
     clearTimeout(autoBrTimer);
+    clearTimeout(toggleBrTimer);
     if (rpiBacklight) {
       self.setBrightness(maxBrightness);
     }
@@ -212,7 +217,7 @@ TouchDisplay.prototype.onStop = function () {
     .fail(function () {
       defer.reject(new Error());
     });
-  return libQ.resolve();
+  return defer.promise;
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -280,6 +285,29 @@ TouchDisplay.prototype.getUIConfig = function () {
             max: maxBrightness
           }
         ];
+        uiconf.sections[1].content[8].value = self.config.get('br1StartTime');
+        uiconf.sections[1].content[8].attributes = [
+          {
+            placeholder: 'hh:mm',
+            maxlength: 5
+          }
+        ];
+        uiconf.sections[1].content[9].value = self.config.get('manualBr2');
+        uiconf.sections[1].content[9].attributes = [
+          {
+            placeholder: maxBrightness,
+            maxlength: maxBrightness.toString().length,
+            min: 0,
+            max: maxBrightness
+          }
+        ];
+        uiconf.sections[1].content[10].value = self.config.get('br2StartTime');
+        uiconf.sections[1].content[10].attributes = [
+          {
+            placeholder: 'hh:mm',
+            maxlength: 5
+          }
+        ];
       }
       if (device === 'Raspberry PI') {
         uiconf.sections[2].hidden = false;
@@ -338,7 +366,6 @@ TouchDisplay.prototype.getI18nFile = function (langCode) {
 
 TouchDisplay.prototype.saveScreensaverConf = function (confData) {
   const self = this;
-  const defer = libQ.defer();
   let noChanges = true;
 
   if (Number.isNaN(parseInt(confData.timeout, 10)) || !isFinite(confData.timeout)) {
@@ -369,7 +396,6 @@ TouchDisplay.prototype.saveScreensaverConf = function (confData) {
   } else {
     self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
   }
-  defer.resolve();
 };
 
 TouchDisplay.prototype.saveBrightnessConf = function (confData) {
@@ -383,22 +409,23 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.TESTBRIGHTNESS'),
         class: 'btn btn-default',
         emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'testBrightness', data: confData }
+        payload: { endpoint: 'miscellanea/touch_display', method: 'testBrightness', data: Object.assign({}, confData) }
       },
       {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: confData.minBr, maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: confData.manualBr, modalResult: true } }
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: (function () { const data = Object.assign({}, confData); data.modalResult = true; return data; })() }
       },
       {
         name: self.commandRouter.getI18nString('COMMON.CANCEL'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: self.config.get('minBr'), maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: self.config.get('manualBr'), modalResult: false } }
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: (function () { const data = Object.assign({}, confData); data.modalResult = false; return data; })() }
       }
     ]
   };
+  const timeValidator = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/;
   let noChanges = true;
 
   self.commandRouter.broadcastMessage('closeAllModals', '');
@@ -413,7 +440,10 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
     }
     confData.minBr = self.checkLimits('minBr', confData.minBr, 0, maxBrightness);
     if (confData.modalResult === undefined && confData.minBr < 15 && confData.minBr < self.config.get('minBr')) {
+      responseData.message = responseData.message.replace('${}', confData.minBr);
+      responseData.buttons[2].payload.data.minBr = self.config.get('minBr');
       self.commandRouter.broadcastMessage('openModal', responseData);
+      return;
     } else {
       if (confData.modalResult === false) {
         uiNeedsUpdate = true;
@@ -460,33 +490,86 @@ TouchDisplay.prototype.saveBrightnessConf = function (confData) {
           noChanges = false;
         }
         self.config.set('autoMode', confData.autoMode);
+        clearTimeout(toggleBrTimer);
         clearTimeout(autoBrTimer);
-        timeoutCleared = true;
+        autoBrTimeoutCleared = true;
         self.autoBrightness();
       }
     }
   } else {
+    self.config.set('autoMode', confData.autoMode);
+    clearTimeout(autoBrTimer);
+    autoBrTimeoutCleared = true;
     if (Number.isNaN(parseInt(confData.manualBr, 10)) || !isFinite(confData.manualBr)) {
       confData.manualBr = self.config.get('manualBr');
       uiNeedsUpdate = true;
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.MANUALBR') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
     }
     confData.manualBr = self.checkLimits('manualBr', confData.manualBr, 0, maxBrightness);
-    if (confData.modalResult === undefined && confData.manualBr < 15 && confData.manualBr < self.config.get('manualBr')) {
+    if (Number.isNaN(parseInt(confData.manualBr2, 10)) || !isFinite(confData.manualBr2)) {
+      confData.manualBr2 = self.config.get('manualBr2');
+      uiNeedsUpdate = true;
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.MANUALBR2') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
+    }
+    confData.manualBr2 = self.checkLimits('manualBr2', confData.manualBr2, 0, maxBrightness);
+    if (confData.modalResult === undefined && ((confData.manualBr < 15 && confData.manualBr < self.config.get('manualBr') && confData.manualBr < self.config.get('manualBr2')) || (confData.manualBr2 < 15 && confData.manualBr2 < self.config.get('manualBr2') && confData.manualBr2 < self.config.get('manualBr')))) {
+      if (confData.manualBr <= confData.manualBr2) {
+        responseData.message = responseData.message.replace('${}', confData.manualBr);
+        responseData.buttons[2].payload.data.manualBr = self.config.get('manualBr');
+        if (confData.manualBr === confData.manualBr2) {
+          responseData.buttons[2].payload.data.manualBr2 = self.config.get('manualBr2');
+        }
+      } else {
+        responseData.message = responseData.message.replace('${}', confData.manualBr2);
+        responseData.buttons[2].payload.data.manualBr2 = self.config.get('manualBr2');
+      }
       self.commandRouter.broadcastMessage('openModal', responseData);
+      return;
     } else {
       if (confData.modalResult === false) {
         uiNeedsUpdate = true;
-      } else {
-        if (self.config.get('manualBr') !== confData.manualBr) {
+        if (confData.manualBr !== confData.manualBr2) {
+          if (confData.manualBr < 15 && confData.manualBr < self.config.get('manualBr')) {
+            responseData.message = responseData.message.replace('${}', confData.manualBr);
+            responseData.buttons[2].payload.data.manualBr = self.config.get('manualBr');
+            self.commandRouter.broadcastMessage('openModal', responseData);
+            return;
+          } else if (confData.manualBr2 < 15 && confData.manualBr2 < self.config.get('manualBr2')) {
+            responseData.message = responseData.message.replace('${}', confData.manualBr2);
+            responseData.buttons[2].payload.data.manualBr2 = self.config.get('manualBr2');
+            self.commandRouter.broadcastMessage('openModal', responseData);
+            return;
+          }
+        } else {
           self.config.set('manualBr', confData.manualBr);
+          self.config.set('manualBr2', confData.manualBr2);
           noChanges = false;
         }
+      } else {
+        self.config.set('manualBr', confData.manualBr);
+        self.config.set('manualBr2', confData.manualBr2);
+        noChanges = false;
       }
-      self.config.set('autoMode', confData.autoMode);
-      clearTimeout(autoBrTimer);
-      timeoutCleared = true;
-      self.setBrightness(confData.manualBr);
+      if (confData.br1StartTime.match(timeValidator) === null) {
+        uiNeedsUpdate = true;
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.BR1STARTTIME') + self.commandRouter.getI18nString('TOUCH_DISPLAY.INVALID'));
+      } else if (self.config.get('br1StartTime') !== confData.br1StartTime) {
+        self.config.set('br1StartTime', confData.br1StartTime);
+        noChanges = false;
+      }
+      if (confData.br2StartTime.match(timeValidator) === null) {
+        uiNeedsUpdate = true;
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.BR2STARTTIME') + self.commandRouter.getI18nString('TOUCH_DISPLAY.INVALID'));
+      } else if (self.config.get('br2StartTime') !== confData.br2StartTime) {
+        self.config.set('br2StartTime', confData.br2StartTime);
+        noChanges = false;
+      }
+      if (self.config.get('br2StartTime') !== self.config.get('br1StartTime') && self.config.get('manualBr') !== self.config.get('manualBr2')) {
+        self.toggleBrightness();
+      } else {
+        self.setBrightness(confData.manualBr);
+        clearTimeout(toggleBrTimer);
+      }
     }
   }
   if (uiNeedsUpdate) {
@@ -609,13 +692,13 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
   const self = this;
   const defer = libQ.defer();
   const execStartLine = 'ExecStart=\\/usr\\/bin\\/startx \\/etc\\/X11\\/Xsession \\/opt\\/volumiokiosk.sh';
-  const pointerOpt = (confData.showPointer) ? "'" : " -- -nocursor'";
+  const pointerOpt = confData.showPointer ? "'" : " -- -nocursor'";
 
   if (self.config.get('showPointer') !== confData.showPointer) {
     fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
       if (err !== null || !stats.isSocket()) {
         self.updateUIConfig();
-        self.logger.error(id + 'Pointer config cannot be applied: ' + err); // this can happen if the user applies a pointer setting which invokes a restart of the volumio-kiosk.service and then fastly (before the Xserver has completed its start) tries to apply a new pointer config
+        self.logger.error(id + 'Pointer config cannot be applied: ' + err); // this can happen if the user applies a pointer setting which leads to a restart of the Xserver and then fastly (before the Xserver has completed its start) tries to apply a new pointer config
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_POINTER') + err);
         defer.reject(err);
       } else {
@@ -627,9 +710,9 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
             defer.reject(error);
           } else {
             self.systemctl('daemon-reload')
-              .then(self.systemctl.bind(self, 'restart volumio-kiosk.service'))
+              .then(self.onStop.bind(self))
+              .then(self.onStart.bind(self))
               .then(function () {
-                self.logger.info(id + 'Restarting volumio-kiosk.service succeeded.');
                 self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
                 defer.resolve();
               })
@@ -725,13 +808,13 @@ TouchDisplay.prototype.testBrightness = function (confData) {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.YES'),
         class: 'btn btn-info',
         emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: confData.minBr, maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: confData.manualBr, modalResult: true } }
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: (function () { const data = Object.assign({}, confData); data.modalResult = true; return data; })() }
       },
       {
         name: self.commandRouter.getI18nString('TOUCH_DISPLAY.NO'),
         class: 'btn btn-default',
         emit: 'callMethod',
-        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: { autoMode: confData.autoMode, minBr: self.config.get('minBr'), maxBr: confData.maxBr, brightnessCurve: confData.brightnessCurve, midBr: confData.midBr, manualBr: self.config.get('manualBr'), modalResult: false } }
+        payload: { endpoint: 'miscellanea/touch_display', method: 'saveBrightnessConf', data: (function () { const data = Object.assign({}, confData); data.modalResult = false; return data; })() }
       }
     ]
   };
@@ -743,9 +826,16 @@ TouchDisplay.prototype.testBrightness = function (confData) {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/brightness: ' + err);
     } else {
       if (confData.autoMode) {
+        responseData.buttons[1].payload.data.minBr = self.config.get('minBr');
         self.setBrightness(confData.minBr);
       } else {
-        self.setBrightness(confData.manualBr);
+        if (confData.manualBr < confData.manualBr2) {
+          responseData.buttons[1].payload.data.manualBr = self.config.get('manualBr');
+          self.setBrightness(confData.manualBr);
+        } else {
+          responseData.buttons[1].payload.data.manualBr2 = self.config.get('manualBr2');
+          self.setBrightness(confData.manualBr2);
+        }
       }
       setTimeout(function () {
         self.setBrightness(parseInt(data, 10));
@@ -765,7 +855,7 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
       self.logger.error(id + 'Error reading ' + als + ': ' + err);
     } else {
       if (lastAls === undefined) {
-        timeoutCleared = false;
+        autoBrTimeoutCleared = false;
         // look ahead to immediately adjust screen brightness according to the ambient brightness if automatic brightness has just been activated
         lastAls = parseFloat(data);
         alsProgression.push(lastAls);
@@ -798,7 +888,6 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
                 self.logger.error(id + 'Error reading ' + blInterface + '/brightness: ' + err);
                 self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/brightness: ' + err);
               } else {
-                let currentBrightness = parseInt(data, 10);
                 if (!self.config.get('brightnessCurve')) {
                   targetBrightness = self.checkLimits('', Math.round((newAls - self.config.get('minAls')) / (self.config.get('maxAls') - self.config.get('minAls')) * ((self.config.get('maxBr') - self.config.get('minBr'))), 10) + self.config.get('minBr'), 0, maxBrightness);
                 } else {
@@ -830,29 +919,7 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
                   t = Math.sqrt((-Math.pow(minAls, 2) * maxAls + Math.pow(minAls, 2) * newAls + minAls * Math.pow(cPointAls, 2) + 2 * minAls * cPointAls * maxAls - 4 * minAls * cPointAls * newAls - minAls * Math.pow(maxAls, 2) + 2 * minAls * maxAls * newAls - 2 * Math.pow(cPointAls, 3) + Math.pow(cPointAls, 2) * maxAls + 4 * Math.pow(cPointAls, 2) * newAls - 4 * cPointAls * maxAls * newAls + Math.pow(maxAls, 2) * newAls) / (Math.pow(minAls, 3) - 6 * Math.pow(minAls, 2) * cPointAls + 3 * Math.pow(minAls, 2) * maxAls + 12 * minAls * Math.pow(cPointAls, 2) - 12 * minAls * cPointAls * maxAls + 3 * minAls * Math.pow(maxAls, 2) - 8 * Math.pow(cPointAls, 3) + 12 * Math.pow(cPointAls, 2) * maxAls - 6 * cPointAls * Math.pow(maxAls, 2) + Math.pow(maxAls, 3))) + (minAls - cPointAls) / (minAls - 2 * cPointAls + maxAls);
                   targetBrightness = self.checkLimits('', Math.round((1 - t) * ((1 - t) * minBr + t * cPointBr) + t * ((1 - t) * cPointBr + t * maxBr), 10), minBr, maxBr);
                 }
-                const startBrightness = currentBrightness;
-                let newBrightness = startBrightness;
-                (function loop () {
-                  if (newBrightness !== targetBrightness && !timeoutCleared) {
-                    currentlyAdjusting = true;
-                    if (targetBrightness > startBrightness) {
-                      newBrightness++;
-                    } else {
-                      newBrightness--;
-                    }
-                    new Promise(function (resolve, reject) {
-                      setTimeout(function () {
-                        if (!Number.isNaN(parseInt(newBrightness, 10)) && isFinite(newBrightness) && newBrightness !== currentBrightness) {
-                          self.setBrightness(newBrightness);
-                          currentBrightness = newBrightness;
-                        }
-                        resolve();
-                      }, 25);
-                    }).then(loop.bind(null));
-                  } else {
-                    currentlyAdjusting = false;
-                  }
-                })(0);
+                self.brightnessTransition(parseInt(data, 10), targetBrightness);
               }
             });
           }
@@ -869,6 +936,71 @@ TouchDisplay.prototype.autoBrightness = function (lastAls) {
   }, 1000);
 };
 
+TouchDisplay.prototype.toggleBrightness = function (br2Active) {
+  const self = this;
+  const d = new Date();
+  let br1StartDelta = new Date(d.getFullYear(), d.getMonth(), d.getDate(), self.config.get('br1StartTime').split(':')[0], self.config.get('br1StartTime').split(':')[1]) - d.getTime();
+  let br2StartDelta = new Date(d.getFullYear(), d.getMonth(), d.getDate(), self.config.get('br2StartTime').split(':')[0], self.config.get('br2StartTime').split(':')[1]) - d.getTime();
+  let toggleBrTimeout;
+
+  if (br1StartDelta < 0) {
+    br1StartDelta += 86400000;
+  }
+  if (br2StartDelta < 0) {
+    br2StartDelta += 86400000;
+  }
+  if (br2Active === undefined) {
+    br2Active = br1StartDelta > br2StartDelta;
+  }
+  fs.readFile(blInterface + '/brightness', 'utf8', function (err, data) {
+    if (err) {
+      self.logger.error(id + 'Error reading ' + blInterface + '/brightness: ' + err);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + blInterface + '/brightness: ' + err);
+    } else {
+      if (br2Active) {
+        self.brightnessTransition(parseInt(data, 10), self.config.get('manualBr'));
+        br2Active = false;
+        toggleBrTimeout = br2StartDelta;
+      } else {
+        self.brightnessTransition(parseInt(data, 10), self.config.get('manualBr2'));
+        br2Active = true;
+        toggleBrTimeout = br1StartDelta;
+      }
+      toggleBrTimer = setTimeout(function () {
+        self.toggleBrightness(br2Active);
+      }, toggleBrTimeout);
+    }
+  });
+};
+
+TouchDisplay.prototype.brightnessTransition = function (currentBrightness, targetBrightness) {
+  const self = this;
+  const startBrightness = currentBrightness;
+  let newBrightness = startBrightness;
+
+  (function loop () {
+    if (newBrightness !== targetBrightness && (!autoBrTimeoutCleared || !self.config.get('autoMode'))) {
+      currentlyAdjusting = true;
+      if (targetBrightness > startBrightness) {
+        newBrightness++;
+      } else {
+        newBrightness--;
+      }
+      new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          if (!Number.isNaN(parseInt(newBrightness, 10)) && isFinite(newBrightness) && newBrightness !== currentBrightness) {
+            self.setBrightness(newBrightness);
+            currentBrightness = newBrightness;
+          }
+          resolve();
+        }, 25);
+      }).then(loop.bind(null));
+    } else {
+      currentlyAdjusting = false;
+    }
+  })(0);
+};
+
 TouchDisplay.prototype.assignCurrentAls = function (data) {
   const self = this;
 
@@ -879,7 +1011,7 @@ TouchDisplay.prototype.assignCurrentAls = function (data) {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + als + ': ' + err);
     } else {
       clearTimeout(autoBrTimer);
-      timeoutCleared = true;
+      autoBrTimeoutCleared = true;
       if (data.action.substr(0, 3) === 'min') {
         self.config.set('minAls', parseFloat(currentAls));
         data.action = data.action.slice(3);
