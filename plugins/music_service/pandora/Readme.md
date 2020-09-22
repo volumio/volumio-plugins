@@ -90,6 +90,7 @@ Much was changed for version 2.x:
 Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.<br/>
 Optional queue flush after station change, configured in plugin options.
 * Version 2.5.0: Removed maxQ constant that limited the number of total tracks fetched.  There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
+* Version 2.5.3: Fixes include refreshing login credentials when idle and working reporting for login errors.  Anesidora was forked to enable premium Pandora account logins.  Thanks to @Jim_Edwards on the forum.
 
 ## Issues
 
