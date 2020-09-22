@@ -65,7 +65,7 @@ US standard keyboard layout
       </key>
       <key width="4000">
         <default display="&#9003;" action="backspace" />
-        <mod3    display="Entf" action="delete" />
+        <mod3    display="Del" action="delete" />
       </key>
       <space width="500" extended="true" />
       <key extended="true">
@@ -201,7 +201,7 @@ US standard keyboard layout
         <default display="'" />
         <shifted display='"' />
       </key>
-      <key width="4800"> <!-- width ok???? -->
+      <key width="4800">
         <default display="" action="" />
         <mod3    display="End" action="end" />
       </key>
@@ -214,7 +214,7 @@ US standard keyboard layout
 
     <row>
       <space width="500" extended="true" />
-      <key width="3800"> <!-- width ok???? -->
+      <key width="3800">
         <default display="Shift" action="modifier:shift" />
       </key>
       <key obey-caps="true">
