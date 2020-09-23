@@ -1052,34 +1052,38 @@ function PandoraHandler(self, options) {
         return pandoraLogin()
             .fail(err => {
                 let errMatch = err.message.match(errCodeRegEx);
-                let code = (errMatch !== null) ? errMatch[1] : null;
+                let code = (errMatch !== null) ? errMatch[1] : 'unknown';
 
                 const infoMsg = ' See https://6xq.net/pandora-apidoc/json/errorcodes/';
-                const errData = {
-                    '1002': {
-                        toastMsg: 'Invalid Partner Login [1002]\nCheck Email/Password',
-                        logMsg: 'Invalid Partner Login [1002]'
-                    },
-                    '1011': {
-                        toastMsg: 'Invalid User [1011]',
-                        logMsg: 'Invalid User [1011]'
-                    },
-                    '1012': {
-                        toastMsg: 'Invalid Password [1012]',
-                        logMsg: 'Invalid Password [1012]'
-                    },
-                    'other': {
-                        toastMsg: 'Other Login Error [' + code + ']',
-                        logMsg: 'Other Login Error [' + code + ']' + infoMsg
-                    }
+                const usualErrs = ['1002', '1011', '1012'];
+
+                let errPrefix = {
+                    '1002': 'Invalid Partner Login [1002]',
+                    '1011': 'Invalid User [1011]',
+                    '1012': 'Invalid Password [1012]',
+                    other: 'Other Login Error [' + code + ']',
+                    unknown: 'Unknown Error: ' + err.message
                 };
                 
-                const usualErrs = ['1002', '1011', '1012'];
-                let index = (!Object.keys(usualErrs).includes(code)) ? code : 'other';
+                let errMsg = {};
+                let errPrefixKeys = Object.keys(errPrefix);
+                for (let i = 0; i < errPrefixKeys.length; i++) {
+                    let key = errPrefixKeys[i];
+                    let msg = errPrefix[key];
+                    errMsg[key] = {
+                        toastMsg: msg,
+                        logMsg: msg
+                    };
 
-                self.logError(errData[index].logMsg);
-                self.commandRouter.pushToastMessage('error', 'Pandora Login Error', errData[index].toastMsg);
-                return self.generalReject(errData[index].logMsg);
+                    if (key === '1002') errMsg[key].toastMsg += '\nCheck Email/Password';
+                    if (key === 'other') errMsg[key].logMsg += infoMsg;
+                }
+                
+                let index = (usualErrs.includes(code) || code === 'unknown') ? code : 'other';
+
+                self.logError(errMsg[index].logMsg);
+                self.commandRouter.pushToastMessage('error', 'Pandora Login Error', errMsg[index].toastMsg);
+                return self.generalReject(errMsg[index].logMsg);
             })
             .then(() => {
                 let msg = 'Successful Pandora Login';
