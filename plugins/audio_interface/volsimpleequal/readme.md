@@ -1,4 +1,4 @@
-10th September 2020
+24th September 2020
 
 
 	Volsimpleequal volumio simple equalizer
@@ -36,6 +36,7 @@ mkdir ./volsimpleequal
 miniunzip volsimpleequal.zip -d ./volsimpleequal
 cd ./volsimpleequal
 volumio plugin install
+rm -Rf volsimpleequal*
 ```
 If the installation fails, remove all file (if any) related to the plugin before retry.
 
@@ -52,6 +53,16 @@ In volumio webUI, go in plugin section and enable it!
 
 
 ## Last changes
+
+September 24th 2020
+
+- possible fixes for no sound or frying sound
+
+September 13th 2020
+
+- fix Allo Boss
+- Preset adjustement
+- correct version number
 
 September 11th 2020
 

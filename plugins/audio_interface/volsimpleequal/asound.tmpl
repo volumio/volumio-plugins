@@ -12,15 +12,22 @@ type equal
 	controls "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
 }
 
+pcm.convert {
+    type lfloat
+    slave.format "S24_LE"
+    slave.pcm "plugequal1"
+}
+
 pcm.plugequal1 { 
- type equal
- slave.pcm "plughw:${hwout},0"
+ type plug
+     slave.pcm "plughw:${hwout},0"
+
 }
 
 pcm.equal1 {
     type equal
         controls "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
-   	slave.pcm "plugequal1";
+   	slave.pcm "convert";
       library "/usr/lib/ladspa/mbeq_1197.so"
      module "mbeq"
 }

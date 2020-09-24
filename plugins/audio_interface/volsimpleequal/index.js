@@ -1,12 +1,15 @@
 'use strict';
 
-//var io = require('socket.io-client');
+var io = require('socket.io-client');
 var fs = require('fs-extra');
 var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var libQ = require('kew');
 var config = new (require('v-conf'))();
+const socket = io.connect('http://localhost:3000');
+const path = require('path');
+
 // var libNet = require('net');
 // var net = require('net');
 
@@ -36,10 +39,68 @@ ControllerVolsimpleequal.prototype.onVolumioStart = function () {
   return libQ.resolve();
 };
 
+ControllerVolsimpleequal.prototype.onStart = function () {
+  var self = this;
+
+  var defer = libQ.defer();
+  self.commandRouter.loadI18nStrings();
+  self.autoconfig()
+    //  self.createASOUNDFile()
+    .then(function (e) {
+      self.logger.info('Volsimpleequal Started');
+      defer.resolve();
+    })
+    .fail(function (e) {
+      defer.reject(new Error());
+    });
+    var responseData = {
+      title:self.commandRouter.getI18nString('REBOOT_TITLE'),
+      message: self.commandRouter.getI18nString('REBOOT'),
+      size: 'lg',
+      buttons: [
+        {
+          name: 'Continue',
+          class: 'btn btn-cancel',
+          emit: '',
+          payload: ''
+        }
+      ]
+    }
+    self.commandRouter.broadcastMessage("openModal", responseData);
+
+    self.logger.info('----- A reboot is needed ------');
+  return defer.promise;
+};
+
+ControllerVolsimpleequal.prototype.onRestart = function () {
+  var self = this;
+};
+
+ControllerVolsimpleequal.prototype.onInstall = function () {
+  var self = this;
+  //	//Perform your installation tasks here
+};
+
+ControllerVolsimpleequal.prototype.onUninstall = function () {
+  var self = this;
+  //Perform your installation tasks here
+};
+
 ControllerVolsimpleequal.prototype.getConfigurationFiles = function () {
   return ['config.json'];
 };
 
+ControllerVolsimpleequal.prototype.getI18nFile = function (langCode) {
+  const i18nFiles = fs.readdirSync(path.join(__dirname, 'i18n'));
+  const langFile = 'strings_' + langCode + '.json';
+
+  // check for i18n file fitting the system language
+  if (i18nFiles.some(function (i18nFile) { return i18nFile === langFile; })) {
+    return path.join(__dirname, 'i18n', langFile);
+  }
+  // return default i18n file
+  return path.join(__dirname, 'i18n', 'strings_en.json');
+};
 // Plugin methods -----------------------------------------------------------------------------
 //here we load snd_aloop module to provide a Loopback device 
 ControllerVolsimpleequal.prototype.modprobeLoopBackDevice = function () {
@@ -84,7 +145,7 @@ ControllerVolsimpleequal.prototype.bridgeLoopBackequal = function () {
   }, 6500)
 };
 
-//here we save the volumio config for the next plugin start
+//here we save thevolumio config for the next plugin start
 ControllerVolsimpleequal.prototype.saveVolumioconfig = function () {
   var self = this;
 
@@ -166,7 +227,7 @@ ControllerVolsimpleequal.prototype.sendequal = function (scoef) {
   var self = this;
   var defer = libQ.defer();
 
- 
+
   var i
   var j
   var x
@@ -187,7 +248,7 @@ ControllerVolsimpleequal.prototype.sendequal = function (scoef) {
     x = k + z;
 
     console.log("/bin/echo /usr/bin/amixer -D equal1 cset numid=" + [i] + " " + x)
-    exec("/usr/bin/amixer -D equal cset numid=" + [i] + " " + x, {
+    exec("/usr/bin/amixer -D equal1 cset numid=" + [i] + " " + x, {
       uid: 1000,
       gid: 1000
     }, function (error, stdout, stderr) {
@@ -226,36 +287,12 @@ ControllerVolsimpleequal.prototype.autoconfig = function () {
   return defer.promise;
 };
 
-
-ControllerVolsimpleequal.prototype.onStart = function () {
-  var self = this;
-
-  var defer = libQ.defer();
-  self.autoconfig()
-    //  self.createASOUNDFile()
-    .then(function (e) {
-      self.logger.info('Volsimpleequal Started');
-      defer.resolve();
-    })
-    .fail(function (e) {
-      defer.reject(new Error());
-    });
-  return defer.promise;
+ControllerVolsimpleequal.prototype.setreboot = function () {
+  const self = this;
+  
+    socket.emit('reboot');
 };
 
-ControllerVolsimpleequal.prototype.onRestart = function () {
-  var self = this;
-};
-
-ControllerVolsimpleequal.prototype.onInstall = function () {
-  var self = this;
-  //	//Perform your installation tasks here
-};
-
-ControllerVolsimpleequal.prototype.onUninstall = function () {
-  var self = this;
-  //Perform your installation tasks here
-};
 ControllerVolsimpleequal.prototype.getUIConfig = function () {
   var self = this;
   var defer = libQ.defer();
@@ -358,6 +395,7 @@ ControllerVolsimpleequal.prototype.createASOUNDFile = function () {
             gid: 1000,
             encoding: 'utf8'
           });
+
           defer.resolve();
         }
       });
@@ -496,7 +534,7 @@ ControllerVolsimpleequal.prototype.setalsaequaloutput = function () {
     var stri = {
       "output_device": {
         "value": "Loopback",
-        "label": ('Eq -> ' + outputp )
+        "label": ('Eq -> ' + outputp)
         //  "label": (outputp)
       }
     }
@@ -517,7 +555,17 @@ ControllerVolsimpleequal.prototype.setalsaequaloutput = function () {
           self.logger.info("Setting volume on startup at " + volumeval);
         }
       });
+      
+      var aplayDefer = libQ.defer();
+      // Play a short sample of silence to initialise the config file
+      exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f S32_LE -r 44100 -c2 -D hw:Loopback,0", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        if (error) {
+          self.logger.warn("An error occurred when trying to initialize Volsimpleequal", error);
+        }
+        aplayDefer.resolve();
+      });
     }, 22000);
+
   }
   // return defer.promise;
 };

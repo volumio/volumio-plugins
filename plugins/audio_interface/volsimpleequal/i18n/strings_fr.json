@@ -22,5 +22,7 @@
  "TOASTSUCCESSAPPLY":"Nouvel égaliseur appliqué",
  "TOASTSUCCESSPRESSET":"Préréglages enregistrés",
   "SAVECURRENTEQ": "Enregistrer les réglages dans :",
- "DOCSAVECURRENTEQ": "Enregistre les réglages courants pour créer vos propres pré-réglages"
+ "DOCSAVECURRENTEQ": "Enregistre les réglages courants pour créer vos propres pré-réglages",
+ "REBOOT_TITLE" : "Reboot nécéssaire",
+ "REBOOT" : "Vous devez rebooter ou vous risquez de ne pas avoir de son ou un son anormal"
 }

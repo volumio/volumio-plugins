@@ -1,6 +1,6 @@
 {
 	"name": "volsimpleequal",
-	"version": "0.0.5",
+	"version": "0.5.7",
 	"description": "Provides a 15 bands equalizer",
 	"main": "index.js",
 	"scripts": {
@@ -18,6 +18,8 @@
 		"fs-extra": "^0.28.0",
 		"child_process": "",
 		"kew": "^0.7.0",
-		"v-conf": "^0.10.0"
+		"v-conf": "^0.10.0",
+		"socket.io": "",
+		"socket.io-client": ""
 	}
 }
