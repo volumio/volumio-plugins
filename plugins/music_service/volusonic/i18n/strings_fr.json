@@ -48,5 +48,7 @@
   "METAS":"Affiche les biographies et les infos sur les albums et morceaux en provenance de subsonic",
   "INDEXS":"Index",
   "PATH_DOC":"Memorise le chemin Volusonic pour la navigation suivante",
-  "PATH":"Chemin rémanent"
+  "PATH":"Chemin rémanent",
+  "SALT":"Salt + md5 encodage du mot de passe",
+  "SALT_DOC":"Recommendé. Certaines implementations de l'API (ie:owncloud/nextcloud) ne le supportent pas"
 }
