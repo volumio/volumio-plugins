@@ -8,7 +8,8 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 var dnsSync = require('dns-sync');
-var anesidora = require('anesidora');
+var timers = require('./timers');
+var handler = require('./handler');
 
 const { defer, setNextTickFunction } = require('kew');
 const { REFUSED, SERVFAIL } = require('dns');
@@ -16,6 +17,7 @@ const { get } = require('https');
 const { setFlagsFromString } = require('v8');
 const { readSync } = require('fs-extra');
 const { pseudoRandomBytes } = require('crypto');
+const { stat } = require('fs');
 
 
 module.exports = ControllerPandora;
@@ -51,6 +53,7 @@ ControllerPandora.prototype.onStart = function () {
         email: self.config.get('email'),
         password: self.config.get('password'),
         isPandoraOne: self.config.get('isPandoraOne'),
+        maxStationQ: self.validateMaxStationQ(self.config.get('maxStationQ')),
         bandFilter: self.validateBandFilter(self.config.get('bandFilter'))
     };
 
@@ -69,9 +72,9 @@ ControllerPandora.prototype.onStop = function () {
     // Once the Plugin has successfull stopped resolve the promise
     var self = this;
 
-    if (self.expireHandler) self.expireHandler.stop();
-    if (self.streamLifeChecker) self.streamLifeChecker.stop();
-    if (self.preventAuthTimeout) self.preventAuthTimeout.stop();
+    if (typeof(self.expireHandler) !== 'undefined') self.expireHandler.stop();
+    if (typeof(self.streamLifeChecker) !== 'undefined') self.streamLifeChecker.stop();
+    if (typeof(self.preventAuthTimeout)  !== 'undefined') self.preventAuthTimeout.stop();
 
     return self.flushPandora()
         .then(() => self.stop())
@@ -105,26 +108,17 @@ ControllerPandora.prototype.flushPandora = function () {
 
 ControllerPandora.prototype.initialSetup = function (options) {
     var self = this;
-    const expInterval = 5 * 60 * 1000; // 5 minutes
-    const authCheckInterval = 3 * 60 * 60 * 1000; // 3 hours
 
     self.announceFn('initialSetup');
 
     if (self.pandoraHandler === undefined) {
-        self.pandoraHandler = new PandoraHandler(self, options);
+        self.pandoraHandler = new handler(self, options);
     }
 
-    self.expireHandler = new ExpireOldTracks(self, expInterval);
-    self.streamLifeChecker = new StreamLifeChecker(self);
-    self.preventAuthTimeout = new PreventAuthTimeout(self, authCheckInterval);
+    self.expireHandler = new timers.ExpireOldTracks(self);
+    self.streamLifeChecker = new timers.StreamLifeChecker(self);
+    self.preventAuthTimeout = new timers.PreventAuthTimeout(self);
 
-    // return self.pandoraHandler.pandoraLoginAndGetStations()
-    //     .then(() => self.pandoraHandler.fillStationData())
-    //     .then(() => self.flushPandora())
-    //     .fail(err => {
-    //         self.logError('initialSetup error: ', err);
-    //         return self.generalReject('initialSetup', err);
-    //     });
     return self.flushPandora();
 };
 
@@ -145,9 +139,10 @@ ControllerPandora.prototype.getUIConfig = function () {
             uiconf.sections[0].content[2].value = self.config.get('isPandoraOne', '');
             uiconf.sections[0].content[3].value = self.config.get('useCurl302WorkAround', '');
             uiconf.sections[0].content[4].value = self.config.get('nextIsThumbsDown', '');
-            uiconf.sections[0].content[5].value = self.config.get('superPrev', '');
-            uiconf.sections[0].content[6].value = self.config.get('flushThem', '');
-            uiconf.sections[0].content[7].value = self.config.get('bandFilter', '');
+            uiconf.sections[0].content[5].value = self.config.get('superPrevious', '');
+            uiconf.sections[0].content[6].value = self.config.get('maxStationQ', '');
+            uiconf.sections[0].content[7].value = self.config.get('flushThem', '');
+            uiconf.sections[0].content[8].value = self.config.get('bandFilter', '');
             self.config.get();
 
             defer.resolve(uiconf);
@@ -184,18 +179,42 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
     self.useCurl302WorkAround = options.useCurl302WorkAround;
     self.config.set('nextIsThumbsDown', options.nextIsThumbsDown);
     self.nextIsThumbsDown = options.nextIsThumbsDown;
-    self.config.set('superPrev', options.superPrev);
+    self.config.set('superPrevious', options.superPrevious);
     self.superPrevious = options.superPrevious;
     self.config.set('flushThem', options.flushThem);
     self.flushThem = options.flushThem;
-    // self.config.set('bandFilter', (!options.bandFilter) ? '' : options.bandFilter);
-    self.config.set('bandFilter', options.bandFilter || '');
-    self.bandFilter = self.validateBandFilter(options.bandFilter);
+    self.config.set('bandFilter', options.bandFilter);
+    let validMaxStaQ = self.validateMaxStationQ(options.maxStationQ);
+    self.config.set('maxStationQ', validMaxStaQ);
+    self.logInfo('typeof(self.pandoraHandler): ' + typeof(self.pandoraHandler));
+    self.pandoraHandler.setBandFilter(self.validateBandFilter(options.bandFilter));
+    self.pandoraHandler.setMaxStationTracks(validMaxStaQ);
 
     return self.checkConfValidity(options)
         .then(() => self.commandRouter.pushToastMessage('success', 'Pandora Options',
             'Login info saved.\nIf already logged in, restart plugin.'))
         .fail(err => self.generalReject('setAccountConf', err));
+};
+
+ControllerPandora.prototype.validateMaxStationQ = function (mq) {
+    var self = this;
+    const maxStationQDefault = 16;
+    const maxStationQMin = 8;
+
+    const head = 'Invalid Song Maximum!\n';
+    const middle = 'Should be more than ' + maxStationQMin + '\n';
+    const tail = 'Setting to default (' + maxStationQDefault + ').';
+    
+    let mqParsed = parseInt(mq);
+    let msg = isNaN(mqParsed) ? head + tail : head + middle + tail;
+
+    if (mqParsed >= maxStationQMin) {
+        return mqParsed;
+    }
+    else {
+        self.commandRouter.pushToastMessage('info', 'Pandora Options', msg);
+        return maxStationQDefault;
+    }
 };
 
 ControllerPandora.prototype.validateBandFilter = function (bf) {
@@ -274,6 +293,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         if (stationChanged && self.flushThem) {
             return self.flushPandora();
         }
+        
         return libQ.resolve();
     }
 
@@ -297,6 +317,9 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         return libQ.resolve(response);
     }
     else if (curUri.match(staRe) !== null) {
+        self.oldQ = self.getQueue();
+        self.oldQLen = self.oldQ.length;
+
         return checkForStationChange(curUri.match(staRe)[1])
             .then(() => self.pandoraHandler.fetchTracks())
             .then(() => {
@@ -308,7 +331,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                     return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
                         .then(() => self.getQueueIndex(newTracks[0].uri))
                         .then(index => {
-                            self.commandRouter.stateMachine.currentPosition = index;
+                            self.setCurrQueuePos(index);
                             return self.commandRouter.stateMachine.play(index);
                         });
                 }
@@ -409,20 +432,22 @@ ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=fals
     let index = self.getQueueIndex(trackUri);
 
     let test = (index != -1 && index != qPos && trackUri);
+    let beforeQPos = (index < qPos);
     if (justOldTracks) {
-        test = (test && index < qPos);
+        test = (test && beforeQPos);
     }
 
     self.announceFn(fnName + ': ' + trackUri);
 
     if (test) {
         self.commandRouter.stateMachine.removeQueueItem({value: index});
+        return self.mpdPlugin.getState()
+            .then(state => self.pushState(state));
     }
     else {
-        self.logInfo(fnName + ': '+ 'Not removing ' +
+        return self.logInfo(fnName + ': '+ 'Not removing ' +
             trackUri + ' at queue index: ' + index);
     }
-    return libQ.resolve();
 };
 
 ControllerPandora.prototype.getQueueIndex = function (uri) {
@@ -442,47 +467,142 @@ ControllerPandora.prototype.getCurrQueuePos = function () {
     return self.commandRouter.stateMachine.currentPosition;
 };
 
+ControllerPandora.prototype.setCurrQueuePos = function (newQPos) {
+    var self = this;
+    self.commandRouter.stateMachine.currentPosition = newQPos;
+};
+
 ControllerPandora.prototype.getQueueTrack = function (pos=this.getCurrQueuePos()) {
     var self = this;
     return self.commandRouter.stateMachine.getTrack(pos);
 };
 
-// Remove oldest Pandora tracks from queue to make room for new ones
-ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, pandoraQ) {
+ControllerPandora.prototype.getCurrStationTracks = function () {
     var self = this;
-    const maxRemoved = 4;
-    const limit = Math.min(pQPos, maxRemoved);
 
-    self.announceFn('removeOldTrackBlock');
+    self.announceFn('getCurrStationTracks');
 
-    for (let i = 0; i < limit; i++) {
-        setTimeout(() => {
-            self.removeTrack(pandoraQ[i].uri, true);
-        }, 10000 * (i + 1));
-    }
-
-    return libQ.resolve();
+    return libQ.resolve(self.getQueue().filter(item =>
+        item.service === self.serviceName &&
+        item.stationId == self.currStation.id));
 };
 
-ControllerPandora.prototype.fetchAndAddTracks = function () {
+// Remove oldest Pandora tracks from queue to make room for new ones
+ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, diff) {
+    var self = this;
+    const fnName = 'removeOldTrackBlock';
+    const limit = Math.min(pQPos, diff);
+
+    self.announceFn(fnName);
+
+    return self.getCurrStationTracks()
+        .then(pandoraQ => {
+            for (let i = 0; i < limit; i++) {
+                setTimeout(self.removeTrack.bind(self), 10000 * (i + 1), pandoraQ[i].uri, true);
+            }
+            return self.logInfo(fnName + ': Removing ' + limit + ' tracks');
+        });
+};
+
+ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
     var self = this;
     const fnName = 'fetchAndAddTracks';
+
+    function addNewTracks(newTracks, sQIsLast) {
+        function moveOtherStationTracks(from, to, count) {
+            for (let j = 0; j < count; j++) {
+                let qPos = self.getCurrQueuePos();
+                
+                if (from < qPos && to > qPos) {
+                    self.setCurrQueuePos(qPos - 1);
+                }
+                else if (from > qPos && to <= qPos) {
+                    self.setCurrQueuePos(qPos + 1);
+                }
+                else if (from == qPos) {
+                    self.setCurrQueuePos(to);
+                }
+                self.commandRouter.stateMachine.moveQueueItem(from, to); // no promise returned
+            }
+            return libQ.resolve();
+        }
+
+        return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
+            .then(() => {
+                if (!self.flushThem) { // multiple stations in queue
+                    let Q = self.getQueue();
+                    let qLen = Q.length;
+                    let i = 0;
+
+                    while (Q[i].stationId != self.currStation.id) {
+                        i++;
+                    }
+                    let stPos = i; // start pos of currStationId tracks
+                    let otherTracks = Q.filter(item => item.stationId != self.currStation.id);
+
+                    if (!sQIsLast && stPos != self.oldQLen && otherTracks.length > 0) { // there are old station tracks in queue
+                        while (i < qLen && Q[i].stationId == self.currStation.id) {
+                            i++;
+                        }
+                        // now move older station tracks behind new tracks
+                        let count = i - stPos;
+                        return moveOtherStationTracks(stPos, self.oldQLen - 1, count)
+                            .then(() => self.logInfo('addNewTracks: Successfully moved ' + count + ' tracks'));
+                    }
+                }
+                return libQ.resolve();
+            });
+    }
+
+    function getSQInfo() {  // SQ = current station queued tracks -- return  and (last position == Q.length) in 
+        return self.getCurrStationTracks()
+            .then(stationQ => {
+                const Q = self.getQueue();
+                const qLen = Q.length;
+                const sQLen = stationQ.length;
+
+                const sQPos = stationQ.findIndex(item => item.uri === curUri);
+                const sQisLast = (stationQ[sQLen - 1].uri === Q[qLen - 1].uri) &&
+                    (stationQ[0].uri === Q[qLen - sQLen].uri);
+
+                return libQ.resolve({ sQPos: sQPos, sQisLast: sQisLast });
+            }); 
+    }
 
     self.announceFn(fnName);
 
     if (self.state.artist && self.state.title) {
-        let deferFetchTracks = self.pandoraHandler.fetchTracks();
-        deferFetchTracks.then(() => {
-            let newTracks = self.pandoraHandler.getNewTracks();
-            if (newTracks) {
-                // don't add tracks twice (WILL REVISIT)
-                // let Q = self.getQueue();
-                // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
-                self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' +
-                    newTracks.length + ' track(s)');
-                return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks);
-            }
-        });
+        return self.pandoraHandler.getSongMaxDiff()
+            .then(diff1 => {
+                return getSQInfo()
+                    .then(sQInfo1 => {
+                        self.logInfo(fnName + '=> diff1: ' + diff1 + ' sQPos1: ' + sQInfo1.sQPos);
+                        if (sQInfo1.sQPos != 0 || diff1 < 0) {
+                            let deferFetchTracks = self.pandoraHandler.fetchTracks();
+                            deferFetchTracks.then(() => {
+                                let newTracks = self.pandoraHandler.getNewTracks();
+                                if (newTracks) {
+                                    // don't add tracks twice (WILL REVISIT)
+                                    // let Q = self.getQueue();
+                                    // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
+                                    self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' +
+                                        newTracks.length + ' track(s)');
+                                    return addNewTracks(newTracks, sQInfo1.sQisLast)
+                                        .then(() => self.pandoraHandler.getSongMaxDiff())
+                                        .then(diff2 => {
+                                            if (diff2 > 0) {
+                                                return getSQInfo()
+                                                    .then(sQInfo2 => {
+                                                        self.logInfo(fnName + '=> diff2 > 0: ' + diff2 + ' sQPos2: ' + sQInfo2.sQPos);
+                                                        return self.removeOldTrackBlock(sQInfo2.sQPos, diff2);
+                                                    });
+                                            }
+                                        });
+                                }
+                            });    
+                        }
+                    });
+            });
     }
     return libQ.resolve();
 };
@@ -521,7 +641,6 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
         .then(() => self.streamLifeChecker.stop())
-        // .then(() => self.pandoraHandler.preventAuthTimeout())
         .then(() => {
             if (self.lastUri !== track.uri) {
                 self.removeTrack(self.lastUri);
@@ -544,24 +663,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
             return self.pushState(self.state);
         })
-        .then(() => {
-            return self.pandoraHandler.atStationTrackMax()
-                .then(atMax => {
-                    let pandoraQ = self.getQueue().filter(item =>
-                        item.service === self.serviceName &&
-                        item.stationId == self.currStation.id);
-                    let pQPos = pandoraQ.findIndex(item => item.uri === track.uri);
-
-                    if (pQPos != 0 || !atMax) {
-                        return self.fetchAndAddTracks()
-                            .then(() => {
-                                if (atMax) {
-                                    return self.removeOldTrackBlock(pQPos, pandoraQ);
-                                }
-                            });
-                    }
-                });
-        })
+        .then(() => self.fetchAndAddTracks(track.uri))
         .fail(err => {
             self.logError(fnName + ' error: ' + err);
             return self.goPreviousNext('skip');
@@ -675,7 +777,7 @@ ControllerPandora.prototype.goPreviousNext = function (fnName) {
                     else { // random previous
                         return self.stop();
                     }
-                    self.commandRouter.stateMachine.currentPosition = qPos;
+                    self.setCurrQueuePos(qPos);
                     return self.clearAddPlayTrack(self.getQueue()[qPos]);
                 }
                 else if (fnName === 'next') {
@@ -833,423 +935,3 @@ ControllerPandora.prototype.announceFn = function(fnName) {
     var self = this;
     return self.commandRouter.pushConsoleMessage(self.datePrefix() + 'ControllerPandora::' + fnName);
 };
-
-function ExpireOldTracks (self, interval) {
-    var reaperID;
-
-    ExpireOldTracks.prototype.init = function () {
-        reaperID = setInterval(() => {
-            this.reaper();
-        }, interval);
-    };
-
-    ExpireOldTracks.prototype.stop = function () {
-        clearInterval(reaperID);
-        return libQ.resolve();
-    };
-
-    ExpireOldTracks.prototype.reaper = function () {
-        const mins_45 = 45 * 60 * 1000;
-        const fnName = 'ExpireOldTracks::reaper';
-        let timeNow = Date.now();
-
-        self.announceFn(fnName);
-
-        function hangman() {
-            setTimeout(() => {
-                let Q = self.getQueue();
-                let curTrack = self.getQueueTrack();
-                let curUri = null;
-                let found = false;
-
-                if (curTrack) { curUri = curTrack.uri; }
-
-                if (Q) {
-                    for (let i = 0; i < Q.length; i++) {
-                        let item = Q[i];
-                        if (item.service === self.serviceName &&
-                            (timeNow - item.fetchTime) > mins_45 &&
-                            item.uri !== curUri) { // string him up!
-                            self.removeTrack(item.uri);
-                            self.logInfo(fnName + ' expired ' +
-                                item.title + ' by ' + item.artist);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found === true) { hangman(); }
-                }
-            }, 10000);
-        }
-
-        hangman();
-    };
-
-    this.init();
-}
-
-function StreamLifeChecker(self) {
-    var checkerID;
-    var lastSeek;
-    var interval = 5000;
-    const fnName = 'StreamLifeChecker';
-
-    StreamLifeChecker.prototype.init = function () {
-        var that = this;
-        lastSeek = self.commandRouter.stateMachine.currentSeek;
-
-        self.announceFn(fnName);
-
-        checkerID = setInterval(() => {
-            that.heartMonitor();
-            self.logInfo(fnName + '::init heartMonitor interval set to ' + interval + ' ms');
-        }, interval);
-
-        return libQ.resolve();
-    };
-
-    StreamLifeChecker.prototype.stop = function () {
-        self.logInfo(fnName + ' stopping');
-
-        clearInterval(checkerID);
-        return libQ.resolve();
-    };
-
-    StreamLifeChecker.prototype.heartMonitor = function () {
-        var that = this;
-        let subFnName = fnName + '::heartMonitor';
-
-        self.mpdPlugin.getState()
-            .then(state => {
-                if (state.status !== 'pause') {
-                    if (state.seek == lastSeek) {
-                        let track = self.getQueueTrack();
-                        let msg = track.name + ' by ' + track.artist +
-                            ' timed out.  Advancing track';
-                        self.commandRouter.pushToastMessage('info', 'Pandora', msg);
-                        self.logInfo(subFnName + ': ' + msg);
-                        return self.goPreviousNext('skip')
-                            .then(() => self.removeTrack(track.uri))
-                            .then(() => that.stop());
-                    }
-                }
-                lastSeek = state.seek;
-            });
-    };
-}
-
-function PreventAuthTimeout(self, interval) {
-    const fnName = 'PreventAuthTimeout';
-    var authCheckID;
-
-    PreventAuthTimeout.prototype.init = function () {
-        var that = this;
-
-        that.authMonitor();
-        authCheckID = setInterval(() => {
-            that.authMonitor();
-            self.logInfo(fnName + '::init authMonitor interval set to ' + interval + ' ms');
-        }, interval);
-
-        return libQ.resolve();
-    };
-
-    PreventAuthTimeout.prototype.stop = function () {
-        self.logError(fnName + ' stopping');
-
-        clearInterval(authCheckID);
-        return libQ.resolve();
-    };
-
-    PreventAuthTimeout.prototype.authMonitor = function () {
-        self.announceFn(fnName);
-
-        return self.pandoraHandler.pandoraLoginAndGetStations()
-            .then(() => self.pandoraHandler.fillStationData())
-            .then(() => self.logInfo(fnName + ': Refreshed Pandora authorization'));
-    };
-
-    this.init();
-}
-
-function PandoraHandler(self, options) {
-    var pandora = {};
-    var bandFilter = [];
-    var loggedIn = false;
-    const errCodeRegEx = new RegExp(/\[(\d+)\]/);
-    var stationList = {}; // raw stationList object
-    var stationData = []; // array of basic station info
-    var newTracks = [];
-
-    PandoraHandler.prototype.init = function () {
-        let partnerInfo = null;
-        const pandoraOnePartnerInfo = {
-            username: 'pandora one',
-            password: 'TVCKIBGS9AO9TSYLNNFUML0743LH82D',
-            deviceModel: 'D01',
-            decryptPassword: 'U#IO$RZPAB%VX2',
-            encryptPassword: '2%3WCL*JU$MP]4'
-        };
-
-        self.announceFn('PandoraHandler::init');
-
-        if (options.isPandoraOne) {
-            partnerInfo = pandoraOnePartnerInfo;
-        }
-
-        bandFilter = options.bandFilter;
-
-        pandora = new anesidora(options.email,
-                                options.password,
-                                partnerInfo);
-
-        return libQ.resolve();
-    };
-
-    PandoraHandler.prototype.getNewTracks = function () {
-        return newTracks;
-    };
-
-    PandoraHandler.prototype.getStationData = function () {
-        return stationData;
-    };
-
-    PandoraHandler.prototype.atStationTrackMax = function () {
-        const maxStationTracks = 20;
-        const Q = self.getQueue();
-
-        self.announceFn('PandoraHandler::atStationTrackMax');
-
-        if (Q.filter(item => item.stationId == self.currStation.id).length >= maxStationTracks) {
-            return libQ.resolve(true);
-        }
-        return libQ.resolve(false);
-    };
-        
-    PandoraHandler.prototype.pandoraLoginAndGetStations = function () {
-        self.announceFn('PandoraHandler::pandoraLoginAndGetStations');
-
-        // Login with pandora anesidora object
-        function pandoraLogin() {
-            let defer = libQ.defer();
-
-            pandora.login(defer.makeNodeResolver());
-
-            return defer.promise;
-        }
-
-        // Retrieve a raw Pandora station list object
-        function getStationList() {
-            let defer = libQ.defer();
-
-            pandora.request('user.getStationList', {
-                    includeStationArtUrl: true
-                }, defer.makeNodeResolver());
-
-            return defer.promise;
-        }
-
-        return pandoraLogin()
-            .fail(err => {
-                let errMatch = err.message.match(errCodeRegEx);
-                let code = (errMatch !== null) ? errMatch[1] : 'unknown';
-
-                const infoMsg = ' See https://6xq.net/pandora-apidoc/json/errorcodes/';
-                const usualErrs = ['1002', '1011', '1012'];
-
-                let errPrefix = {
-                    '1002': 'Invalid Partner Login [1002]',
-                    '1011': 'Invalid User [1011]',
-                    '1012': 'Invalid Password [1012]',
-                    other: 'Other Login Error [' + code + ']',
-                    unknown: 'Unknown Error: ' + err.message
-                };
-                
-                let errMsg = {};
-                let errPrefixKeys = Object.keys(errPrefix);
-                for (let i = 0; i < errPrefixKeys.length; i++) {
-                    let key = errPrefixKeys[i];
-                    let msg = errPrefix[key];
-                    errMsg[key] = {
-                        toastMsg: msg,
-                        logMsg: msg
-                    };
-
-                    if (key === '1002') errMsg[key].toastMsg += '\nCheck Email/Password';
-                    if (key === 'other') errMsg[key].logMsg += infoMsg;
-                }
-                
-                let index = (usualErrs.includes(code) || code === 'unknown') ? code : 'other';
-
-                self.logError(errMsg[index].logMsg);
-                self.commandRouter.pushToastMessage('error', 'Pandora Login Error', errMsg[index].toastMsg);
-                return self.generalReject(errMsg[index].logMsg);
-            })
-            .then(() => {
-                let msg = 'Successful Pandora Login';
-                if (!loggedIn) {
-                    loggedIn = true;
-                }
-                else {
-                    msg = 'Refreshed Pandora Login';
-                }
-
-                self.logInfo('Logged in');
-                self.commandRouter.pushToastMessage('success',
-                                                    'Pandora Login',
-                                                    msg);
-
-                return getStationList()
-                    .then(result => {
-                        stationList = result;
-
-                        return libQ.resolve();
-                    });
-            });
-    };
-
-    PandoraHandler.prototype.fillStationData = function () {
-        const fnName = 'PandoraHandler::fillStationData';
-
-        self.announceFn(fnName);
-
-        if (stationList.stations.length > 0) {
-            stationData = stationList.stations.map(item => ({
-                name: item.stationName,
-                albumart: item.artUrl
-            }));
-
-            return libQ.resolve();
-        }
-        else {
-            self.logError('Error in ' + fnName,
-                          'stationList is empty');
-            self.commandRouter.pushToastMessage('error',
-                                                'Pandora',
-                                                'Error in fillStationData');
-
-            return self.generalReject(fnName, 'stationList is empty');
-        }
-    };
-
-    PandoraHandler.prototype.fetchTracks = function () {
-        const fnName = 'PandoraHandler::fetchTracks';
-        let Q = self.getQueue();
-
-        // Retrieve a raw Pandora playlist from a Pandora station index
-        function fetchStationPlaylist() {
-            var station = stationList.stations[self.currStation.id];
-            var defer = libQ.defer();
-
-            self.announceFn(fnName + '::fetchStationPlaylist');
-
-            pandora.request('station.getPlaylist', {
-                'stationToken': station.stationToken,
-                'additionalAudioUrl': 'HTTP_128_MP3',
-                'includeTrackLength': true
-                }, defer.makeNodeResolver());
-
-            return defer.promise;
-        }
-
-        // Retrieve an array of tracks from a raw Pandora playlist object
-        function fillNewTracks(playlist) {
-            let baseNameMatch = new RegExp(/\/access\/(\d+)/);
-            let stationToken = stationList.stations[self.currStation.id].stationToken;
-
-            self.announceFn(fnName + '::fillNewTracks');
-
-            for (let i = 0; i < playlist.items.length; i++) {
-                if (!playlist.items[i].songName) { break; } // no more tracks
-
-                let track = playlist.items[i];
-                let realUri = options.isPandoraOne ?
-                              track.audioUrlMap.highQuality.audioUrl :
-                              track.additionalAudioUrl;
-                let baseName = realUri.match(baseNameMatch)[1];
-                let uri = '/pandora/station_id=' + self.currStation.id +
-                        '/track_id=' + baseName;
-                let fetchTime = Date.now();
-
-                if (!Q.map(item => item.uri).includes(uri) &&
-                    !bandFilter.includes(track.artistName)) {
-                    newTracks.push({
-                        service: self.serviceName,
-                        fetchTime: fetchTime,
-                        type: 'song',
-                        trackType: 'mp3',
-                        stationId: self.currStation.id,
-                        stationToken: stationToken,
-                        trackToken: track.trackToken,
-                        title: track.songName,
-                        name: track.songName,
-                        artist: track.artistName,
-                        album: track.albumName,
-                        albumart: track.albumArtUrl,
-                        uri: uri,
-                        realUri: realUri,
-                        isStreaming: true,
-                        duration: track.trackLength,
-                        samplerate: '44.1 KHz',
-                        bitdepth: '16 bit',
-                        channels: 2
-                    });
-                }
-            }
-
-            return libQ.resolve();
-        }
-
-        newTracks = [];
-
-        return fetchStationPlaylist()
-            .fail(err => {
-                let errMatch = err.message.match(errCodeRegEx);
-                let code = (errMatch !== null) ? errMatch[1] : null;
-
-                self.logError('Error in ' + fnName + '::fetchStationPlaylist', err);
-                self.commandRouter.pushToastMessage('error', 'Pandora', 'Pandora Error - Code [' + code + ']');
-                return self.generalReject(fnName + '::fetchStationPlaylist', err);
-            })
-            .then(playlist => {
-                return fillNewTracks(playlist)
-                    .then(() => {
-                        if (newTracks.length == 0) {
-                            self.logError(fnName + '::fillNewTracks returned zero tracks!');
-                        }
-                    });
-            })
-            .fail(err => {
-                self.logError('Error in ' + fnName + '::fillNewTracks', err);
-                return self.generalReject(fnName + '::fillNewTracks', err);
-            });
-    };
-
-    PandoraHandler.prototype.thumbsDownTrack = function (track) {
-        const fnName = 'PandoraHandler::thumbsDownTrack';
-        var defer = libQ.defer();
-
-        self.announceFn(fnName);
-
-        if (track.service === self.serviceName) {
-            pandora.request('station.addFeedback', {
-                'stationToken': track.stationToken,
-                'trackToken': track.trackToken,
-                'isPositive': false
-                }, defer.makeNodeResolver());
-
-            self.logInfo(fnName + ': Thumbs down delivered.  Station: ' +
-                self.currStation.name + ' Track: ' + track.name);
-
-            setTimeout(() => {
-                self.commandRouter.pushToastMessage('success', 'Pandora', 'Thumbs Down delivered.' +
-                    '\n¡Adiós, ' + track.name + '!');
-            }, 5000);
-
-            return defer.promise;
-        }
-        return self.logInfo(fnName + ': Not a Pandora track.  Ignored.');
-    };
-
-    this.init(options);
-}

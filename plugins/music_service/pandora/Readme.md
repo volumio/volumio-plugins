@@ -82,15 +82,30 @@ Much was changed for version 2.x:
 * No more volatile state.  The 1.0.0 plugin was updating the state every second.  It really was difficult to see what was going on with the constant barrage of state update log messages.
 * Track data downloaded from Pandora only works for about an hour.  Track lifetime is now checked in the background and entries are deleted in a sane fashion in case the user does not listen to them in time.
 * Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
-* Version 2.1.0: Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
-* Version 2.1.2: Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
-* Version 2.3.0: Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
-* Version 2.3.4: Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
-* Version 2.4.0: Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.<br>
+* <b>Version 2.1.0:</b><br/>
+Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
+* <b>Version 2.1.2:</b><br/>
+Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
+* <b>Version 2.3.0:</b><br/>
+Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
+* <b>Version 2.3.4:</b><br/>
+Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
+* <b>Version 2.4.0:</b><br/>
+Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.<br>
 Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.<br/>
 Optional queue flush after station change, configured in plugin options.
-* Version 2.5.0: Removed maxQ constant that limited the number of total tracks fetched.  There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
-* Version 2.5.3: Fixes include refreshing login credentials when idle and working reporting for login errors.  Anesidora was forked to enable premium Pandora account logins.  Thanks to @Jim_Edwards on the forum.
+* <b>Version 2.5.0:</b><br/>
+Removed maxQ constant that limited the number of total tracks fetched.<br/>
+There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
+* <b>Version 2.5.3:</b><br/>
+Anesidora was forked to enable premium Pandora account logins.  Thanks to @Jim_Edwards on the forum.<br/>
+Fixes:<br/>
+Refresh login credentials when idle and working reporting for login errors.
+* <b>Version 2.6.0:</b><br/>
+Separated PandoraHandler function and Timer classes into modules.  Song per-station "limit" value now in options.<br/>
+<b>Serious queue voodoo:</b> When station is changed and old stations are retained, newly added tracks are sorted instead of appending to the end of the queue.<br/>
+Fixes:<br/>
+Green play arrow in queue no longer points incorrectly after a track expires.
 
 ## Issues
 
@@ -103,8 +118,8 @@ After that, the functions defined for previous and next in the plugin worked fin
 * It may be possible to add a station with the Volumio search function.  I am looking into it.  The functionaliy is there.
 * Volumio has a consume mode.  As far as I can tell, it only removes the last track in the queue when any track in the queue has been played (i.e. it can remove the wrong track).<br/>
 I made my own consume function that removes the last track played no matter where it is in the queue.  I'm not sure if I have reinvented the wheel; Volumio might already be able to do this.  For now, my consume function does the job.
-* The wrapper to the JSON Pandora API I am using is not set up to use the regular Pandora One server.  The other credentials can be passed in but the module hardcodes the server URL.  This might not matter, but I haven't been able to test it.<br/>
-My alpha fork of the module is rewritten to use Promises instead of callbacks, and the server is fixed.  However, it's not ready yet.
+* ~~The wrapper to the JSON Pandora API I am using is not set up to use the regular Pandora One server.  The other credentials can be passed in but the module hardcodes the server URL.  This might not matter, but I haven't been able to test it.~~<br/>
+My alpha fork of the module was rewritten to use Promises instead of callbacks, and the server is fixed.  However, it's not ready yet (there might not be a need for it).
 
 ## All testers are welcome, even if they ride motorcycles.  You know who you are.
 
@@ -119,3 +134,4 @@ My alpha fork of the module is rewritten to use Promises instead of callbacks, a
 * lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.  He was the first person to look at my code and give me help.  I also borrowed his mpd player listener callback function which really helped a lot.  Much obliged!
 * marco79cgn, in particular, laid the groundwork for my plugin.  I shamelessly borrowed from his code in several areas.
 * The creators of the other Volumio plugins.  I tried to learn from your code.
+* @downtownHippie and @Jim_Edwards in the forum for their helpful feedback.
