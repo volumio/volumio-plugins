@@ -756,18 +756,7 @@ nanosoundCd.prototype.listCD=function()
 								"availableListViews": [
 									"list"
 								],
-								"items": [
-	
-									{
-										service: 'nanosound_cd',
-										type: 'song',
-										title: '[Whole CD]',
-										artist: cdmeta[0]['artist_name'],
-										album: cdmeta[0]['album_name'],
-										icon: 'fa fa-music',
-										uri: 'nanosound_cd/playall'
-									}
-								]
+								"items": []
 							}
 						]
 					}
