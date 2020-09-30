@@ -26,7 +26,6 @@ function PandoraHandler(self, options) {
             encryptPassword: '2%3WCL*JU$MP]4'
         };
 
-        // self.announceFn(phName + 'init');
         that.phAnnounceFn('init');
 
         if (options.isPandoraOne) {
@@ -83,7 +82,6 @@ function PandoraHandler(self, options) {
         
     PandoraHandler.prototype.pandoraLoginAndGetStations = function () {
         const fnName = 'pandoraLoginAndGetStations';
-        // self.announceFn(phName + '::' + fnName);
         that.phAnnounceFn(fnName);
 
         // Login with pandora anesidora object
@@ -151,7 +149,6 @@ function PandoraHandler(self, options) {
                     msg = 'Refreshed Pandora Login';
                 }
 
-                // self.logInfo('Logged in');
                 that.phLogInfo(fnName + '::pandoraLogin', 'Logged in');
                 self.commandRouter.pushToastMessage('success',
                                                     'Pandora Login',
@@ -169,7 +166,6 @@ function PandoraHandler(self, options) {
     PandoraHandler.prototype.fillStationData = function () {
         const fnName = 'fillStationData';
 
-        // self.announceFn(fnName);
         that.phAnnounceFn(fnName);
 
         if (stationList.stations.length > 0) {
@@ -181,14 +177,11 @@ function PandoraHandler(self, options) {
             return libQ.resolve();
         }
         else {
-            // self.logError('Error in ' + fnName,
-            //               'stationList is empty');
             that.phLogError(fnName, 'Stationlist is empty');
             self.commandRouter.pushToastMessage('error',
                                                 'Pandora',
                                                 'Error in fillStationData');
 
-            // return self.generalReject(fnName, 'stationList is empty');
             return that.phGeneralReject(fnName, 'stationList is empty');
         }
     };
@@ -202,7 +195,6 @@ function PandoraHandler(self, options) {
             var station = stationList.stations[self.currStation.id];
             var defer = libQ.defer();
 
-            // self.announceFn(fnName + '::fetchStationPlaylist');
             that.phAnnounceFn(fnName + '::fetchStationPlaylist');
 
             pandora.request('station.getPlaylist', {
@@ -219,7 +211,6 @@ function PandoraHandler(self, options) {
             let baseNameMatch = new RegExp(/\/access\/(\d+)/);
             let stationToken = stationList.stations[self.currStation.id].stationToken;
 
-            // self.announceFn(fnName + '::fillNewTracks');
             that.phAnnounceFn(fnName + '::fillNewTracks');
 
             for (let i = 0; i < playlist.items.length; i++) {
@@ -270,25 +261,20 @@ function PandoraHandler(self, options) {
                 let errMatch = err.message.match(errCodeRegEx);
                 let code = (errMatch !== null) ? errMatch[1] : null;
 
-                // self.logError('Error in ' + fnName + '::fetchStationPlaylist', err);
                 that.phLogError(fnName + '::fetchStationPlaylist', 'Error', err);
                 self.commandRouter.pushToastMessage('error', 'Pandora', 'Pandora Error - Code [' + code + ']');
-                // return self.generalReject(fnName + '::fetchStationPlaylist', err);
                 return that.phGeneralReject(fnName + '::fetchStationPlaylist', err);
             })
             .then(playlist => {
                 return fillNewTracks(playlist)
                     .then(() => {
                         if (newTracks.length == 0) {
-                            // self.logError(fnName + '::fillNewTracks returned zero tracks!');
                             that.phLogError(fnName + '::fillNewTracks', 'returned zero tracks!');
                         }
                     });
             })
             .fail(err => {
-                // self.logError(fnName + '::fillNewTracks error: ', err);
                 that.phLogError(fnName + '::fillNewTracks', 'Error', err);
-                // return self.generalReject(fnName + '::fillNewTracks', err);
                 return that.phGeneralReject(fnName + '::fillNewTracks', err);
             });
     };
@@ -297,7 +283,6 @@ function PandoraHandler(self, options) {
         const fnName = 'thumbsDownTrack';
         var defer = libQ.defer();
 
-        // self.announceFn(fnName);
         that.phAnnounceFn(fnName);
 
         if (track.service === self.serviceName) {
@@ -307,8 +292,6 @@ function PandoraHandler(self, options) {
                 'isPositive': false
                 }, defer.makeNodeResolver());
 
-            // self.logInfo(fnName + ': Thumbs down delivered.  Station: ' +
-            //     self.currStation.name + ' Track: ' + track.name);
             that.phLogInfo(fnName, 'Thumbs down delivered.  Station: ' +
                 self.currStation.name + ' Track: ' + track.name);
 
@@ -319,7 +302,6 @@ function PandoraHandler(self, options) {
 
             return defer.promise;
         }
-        // return self.logInfo(fnName + ': Not a Pandora track.  Ignored.');
         return that.phLogInfo(fnName, 'Not a Pandora track.  Ignored.');
     };
 
