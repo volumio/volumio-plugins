@@ -17,7 +17,8 @@
 				"data": [
 					"server",
 					"username",
-					"auth"
+					"auth",
+					"salt"
 				]
 			},
 			"content": [{
@@ -43,6 +44,13 @@
 					"doc": "TRANSLATE.PASSWORD_DOC",
 					"label": "TRANSLATE.PASSWORD",
 					"value": ""
+				},
+				{
+					"id": "salt",
+					"doc": "TRANSLATE.SALT_DOC",
+					"label": "TRANSLATE.SALT",
+					"element": "switch",
+					"value": true
 				}
 			]
 		},

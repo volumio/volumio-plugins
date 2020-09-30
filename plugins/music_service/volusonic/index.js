@@ -112,6 +112,7 @@ ControllerVolusonic.prototype.getUIConfig = function() {
       uiconf.sections[0].content[0].value = self.config.get('server');
       uiconf.sections[0].content[1].value = self.config.get('username');
       uiconf.sections[0].content[2].value = self.config.get('auth');
+		uiconf.sections[0].content[3].value = self.config.get('salt');
 
       uiconf.sections[1].content[0].value = findOption(self.config.get('transcode'), uiconf.sections[1].content[0].options);
       uiconf.sections[1].content[1].value = findOption(self.config.get('listsSize'), uiconf.sections[1].content[1].options);
@@ -160,7 +161,8 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
 
   self.config.set('server', data['server']);
   self.config.set('username', data['username']);
-  self.config.set('auth', self.api.getAuth(data['username'], data['auth']));
+  self.config.set('salt', data['salt']);
+  self.config.set('auth', self.api.getAuth(data['username'], data['auth'], data['salt']));
 
   var result = self.api.submitQuery('ping?')
     .then(function(result) {
