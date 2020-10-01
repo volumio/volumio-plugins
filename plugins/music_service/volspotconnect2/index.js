@@ -25,7 +25,7 @@ var seekTimer;
 // Define the ControllerVolspotconnect class
 module.exports = ControllerVolspotconnect;
 
-function ControllerVolspotconnect (context) {
+function ControllerVolspotconnect(context) {
   // Save a reference to the parent commandRouter
   this.context = context;
   this.commandRouter = this.context.coreCommand;
@@ -73,7 +73,7 @@ ControllerVolspotconnect.prototype.VolspotconnectServiceCmds = async function (c
   const { stdout, stderr } = await exec(`/usr/bin/sudo /bin/systemctl ${cmd} volspotconnect2.service`, { uid: 1000, gid: 1000 });
   if (stderr) {
     logger.error(`Unable to ${cmd} Daemon: `, stderr);
-  } else if (stdout) {}
+  } else if (stdout) { }
   logger.info(`Vollibrespot Daemon service ${cmd}ed!`);
 };
 
@@ -123,7 +123,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function (defer
   });
 
   this.SpotConn.on(this.Events.DeviceActive, (data) => {
-  // A Spotify Connect session has been initiated
+    // A Spotify Connect session has been initiated
     logger.evnt('<DeviceActive> A connect session has begun');
     this.commandRouter.pushToastMessage('info', 'Spotify Connect', 'Session is active!');
     // Do not stop Volumio playback, just notify
@@ -135,9 +135,9 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function (defer
   });
 
   this.SpotConn.on(this.Events.PlaybackActive, (data) => {
-  // SpotConn is active playback device
-  // This is different from SinkActive, it will be triggered at the beginning
-  // of a playback session (e.g. Playlist) while the track loads
+    // SpotConn is active playback device
+    // This is different from SinkActive, it will be triggered at the beginning
+    // of a playback session (e.g. Playlist) while the track loads
     logger.evnt('<PlaybackActive> Device palyback is active!');
     this.commandRouter.pushToastMessage('info', 'Spotify Connect', 'Connect is active');
     this.volumioStop().then(() => {
@@ -173,7 +173,7 @@ ControllerVolspotconnect.prototype.volspotconnectDaemonConnect = function (defer
   });
 
   this.SpotConn.on(this.Events.SinkInactive, (data) => {
-  // Alsa sink has been closed
+    // Alsa sink has been closed
     logger.evnt('<SinkInactive> Sink released');
     this.SinkActive = false;
     clearInterval(seekTimer);
@@ -517,9 +517,12 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       // }
     }
     const devicename = this.commandRouter.sharedVars.get('system.name');
-    const outdev = this.commandRouter.sharedVars.get('alsa.outputdevice');
+    //  const outdev = this.commandRouter.sharedVars.get('alsa.outputdevice');
+    const outdev = 'volumio';
     const volcuve = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
     let mixname = this.commandRouter.sharedVars.get('alsa.outputdevicemixer');
+    var mixt = this.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+
     /* eslint-disable one-var */
     // Default values will be parsed as neccesary by the backend for these
     let idxcard = '',
@@ -531,7 +534,7 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       mixidx = 0;
     /* eslint-enable one-var */
     let mixlin = false;
-    if ((mixname === '') || (mixname === 'None')) {
+    if ((mixt === '') || (mixt === 'None')) {
       logger.debug('<> or <None> Mixer found, using softvol');
       // No mixer - default to (linear) Spotify volume
       mixer = 'softvol';
@@ -544,34 +547,33 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       initvolstr = initvol;
       if (volcuve !== 'logarithmic') {
         mixlin = true;
+        var outdevv = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+        mixdev = 'hw:' + outdevv;
       }
-      if (outdev === 'softvolume') {
-        hwdev = outdev;
+      // to be fixed with soft volume set in volumio
+      if (mixt === 'Software') {
+        hwdev = 'volumio';
+        mixdev = '2';
         mixlin = true;
-        idxcard = this.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
-      } else if (outdev === 'Loopback') {
-        const vconfig = fs.readFileSync('/tmp/vconfig.json', 'utf8', function (err, data) {
-          if (err) {
-            logger.error('Error reading Loopback config', err);
-          }
-        });
-        const vconfigJSON = JSON.parse(vconfig);
-        idxcard = vconfigJSON.outputdevice.value;
-        mixname = vconfigJSON.mixer.value.split(',')[0];
-        mixidx = vconfigJSON.mixer.value.split(',')[1] || 0;
-        hwdev = `${outdev}`;
-      } else { // We have an actual Hardware mixer
+        mixidx = 0// this.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
+        mixeropts = 'linear';
+
+      } else {
+
+        // We have an actual Hardware mixer
+        var mixv = this.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer');
         hwdev = `${outdev}`;
         // outputdevice = card,device..
         // ¯\_(ツ)_/¯
         idxcard = outdev.split(',')[0];
         // Similar storey with mixer,index
-        [mixname, mixidx] = mixname.split(',');
-        mixidx = mixidx || 0;
-      }
+        mixname = mixv.split(',')[0];
+        mixidx = mixv.split(',')[1] || 0;
+        var outdevv = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+        mixdev = 'hw:' + outdevv;
+        mixeropts = 'linear';
 
-      mixdev = 'hw:' + this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
-      mixeropts = 'linear';
+      }
     }
     if (this.config.get('debug')) {
       // TODO:
@@ -595,7 +597,7 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       .replace('${autoplay}', this.config.get('autoplay'))
       .replace('${gapless}', this.config.get('gapless'))
       .replace('${bitrate}', this.config.get('bitrate'));
-      /* eslint-enable no-template-curly-in-string */
+    /* eslint-enable no-template-curly-in-string */
 
     // Sanity check
     if (conf.indexOf('undefined') > 1) {
