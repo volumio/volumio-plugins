@@ -87,7 +87,6 @@ function volusonicApi(log, config) {
 		var defer = libQ.defer();
 
 		var uri = config.get('server') + '/rest/' + query + '&' + config.get('auth');
-		console.log(uri);
 		unirest
 			.get(uri)
 			.strictSSL(false)

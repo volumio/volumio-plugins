@@ -113,7 +113,6 @@ ControllerVolusonic.prototype.getUIConfig = function() {
 			uiconf.sections[0].content[0].value = self.config.get('server');
 			uiconf.sections[0].content[1].value = self.config.get('username');
 			uiconf.sections[0].content[2].value = self.config.get('auth');
-			console.log("salt: " + self.config.get('salt'));
 			uiconf.sections[0].content[3].value = self.config.get('salt');
 
 			uiconf.sections[1].content[0].value = findOption(self.config.get('transcode'), uiconf.sections[1].content[0].options);
@@ -122,7 +121,6 @@ ControllerVolusonic.prototype.getUIConfig = function() {
 			uiconf.sections[1].content[3].value = findOption(self.config.get('timeOut'), uiconf.sections[1].content[3].options);
 			uiconf.sections[1].content[4].value = self.config.get('ID3');
 			uiconf.sections[1].content[5].value = self.config.get('metas');
-			console.log("meta: " + self.config.get('metas'))
 			uiconf.sections[1].content[6].value = self.config.get('path');
 			/*
 				tracks in searchx
@@ -337,7 +335,6 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
 								}]
 							}
 						});
-						console.log(ApiVersion);
 						if (semver.satisfies(ApiVersion, '>=1.11.0')) {
 							nav.navigation['lists'][0]['items'].push({
 								service: 'volusonic',
@@ -1277,8 +1274,6 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 	var song;
 
 	if (uri.startsWith('volusonic/track')) {
-		console.log(uri);
-		console.log("explode track");
 		command = 'getSong';
 		//get the podcast ChannelId if needed
 		if (id.includes("C")) {
