@@ -79,7 +79,7 @@ function PandoraHandler(self, options) {
     PandoraHandler.prototype.phGeneralReject = function (fn, errMsg) {
         return self.generalReject(phName + fn, errMsg);
     };
-        
+
     PandoraHandler.prototype.pandoraLoginAndGetStations = function () {
         const fnName = 'pandoraLoginAndGetStations';
         that.phAnnounceFn(fnName);
@@ -119,7 +119,7 @@ function PandoraHandler(self, options) {
                     other: 'Other Login Error [' + code + ']',
                     unknown: 'Unknown Error: ' + err.message
                 };
-                
+
                 let errMsg = {};
                 let errPrefixKeys = Object.keys(errPrefix);
                 for (let i = 0; i < errPrefixKeys.length; i++) {
@@ -133,7 +133,7 @@ function PandoraHandler(self, options) {
                     if (key === '1002') errMsg[key].toastMsg += '\nCheck Email/Password';
                     if (key === 'other') errMsg[key].logMsg += infoMsg;
                 }
-                
+
                 let index = (usualErrs.includes(code) || code === 'unknown') ? code : 'other';
 
                 self.logError(errMsg[index].logMsg);
@@ -141,15 +141,18 @@ function PandoraHandler(self, options) {
                 return self.generalReject(errMsg[index].logMsg);
             })
             .then(() => {
+                let bookendMsg = '[<=- * -=>]';
                 let msg = 'Successful Pandora Login';
+                let logMsg = 'Logged in to Pandora Servers';
                 if (!loggedIn) {
                     loggedIn = true;
                 }
                 else {
                     msg = 'Refreshed Pandora Login';
+                    logMsg = msg;
                 }
 
-                that.phLogInfo(fnName + '::pandoraLogin', 'Logged in');
+                that.phLogInfo(fnName + '::pandoraLogin', bookendMsg.replace('*', logMsg));
                 self.commandRouter.pushToastMessage('success',
                                                     'Pandora Login',
                                                     msg);
@@ -255,6 +258,7 @@ function PandoraHandler(self, options) {
         }
 
         newTracks = [];
+        const fnFNTName = fnName + '::fillNewTracks';
 
         return fetchStationPlaylist()
             .fail(err => {
@@ -262,20 +266,26 @@ function PandoraHandler(self, options) {
                 let code = (errMatch !== null) ? errMatch[1] : null;
 
                 that.phLogError(fnName + '::fetchStationPlaylist', 'Error', err);
-                self.commandRouter.pushToastMessage('error', 'Pandora', 'Pandora Error - Code [' + code + ']');
+                self.commandRouter.pushToastMessage('error', 'Pandora',
+                    'Pandora Error - Code [' + code + ']');
                 return that.phGeneralReject(fnName + '::fetchStationPlaylist', err);
             })
             .then(playlist => {
+                that.phLogInfo(fnName + '::fetchStationPlaylist', 'Retrieved ' +
+                    self.currStation.name + ' playlist');
                 return fillNewTracks(playlist)
                     .then(() => {
-                        if (newTracks.length == 0) {
-                            that.phLogError(fnName + '::fillNewTracks', 'returned zero tracks!');
-                        }
+                        let msg = (newTracks.length == 0) ?
+                            'Returned zero tracks!' :
+                            'Fetched ' + newTracks.length + ' track(s)';
+
+                        that.phLogInfo(fnFNTName, msg);
+                        return libQ.resolve();
                     });
             })
             .fail(err => {
-                that.phLogError(fnName + '::fillNewTracks', 'Error', err);
-                return that.phGeneralReject(fnName + '::fillNewTracks', err);
+                that.phLogError(fnFNTName, 'Error', err);
+                return that.phGeneralReject(fnFNTName, err);
             });
     };
 

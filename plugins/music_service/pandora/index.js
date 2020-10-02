@@ -18,6 +18,7 @@ const { setFlagsFromString } = require('v8');
 const { readSync } = require('fs-extra');
 const { pseudoRandomBytes } = require('crypto');
 const { stat } = require('fs');
+const { allowedNodeEnvironmentFlags } = require('process');
 
 
 module.exports = ControllerPandora;
@@ -33,6 +34,7 @@ function ControllerPandora(context) {
     self.currStation = {};
     self.lastUri = null;
     self.lastPress = Date.now();
+    self.cameFromMenu = false;
     self.state = {};
 }
 
@@ -49,7 +51,7 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    let options = {
+    const options = {
         email: self.config.get('email'),
         password: self.config.get('password'),
         isPandoraOne: self.config.get('isPandoraOne'),
@@ -94,8 +96,7 @@ ControllerPandora.prototype.flushPandora = function () {
 
     self.announceFn('flushPandora');
 
-    let oldQ = self.commandRouter.stateMachine.getQueue();
-    let newQ = oldQ.filter(item => item.service !== self.serviceName);
+    const newQ = self.getQueue().filter(item => item.service !== self.serviceName);
 
     if (newQ.length > 0) {
         self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
@@ -204,7 +205,7 @@ ControllerPandora.prototype.validateMaxStationQ = function (mq) {
     const head = 'Invalid Song Maximum!\n';
     const middle = 'Should be more than ' + maxStationQMin + '\n';
     const tail = 'Setting to default (' + maxStationQDefault + ').';
-    
+
     let mqParsed = parseInt(mq);
     let msg = isNaN(mqParsed) ? head + tail : head + middle + tail;
 
@@ -224,7 +225,7 @@ ControllerPandora.prototype.validateBandFilter = function (bf) {
     try {
         return bf.split('%');
     } catch (err) {
-        setTimeout(() => { 
+        setTimeout(() => {
             self.commandRouter.pushToastMessage('info', 'Pandora Options',
                 'Invalid Band Filter!\nShould look like: Kanye%Vanilla Ice\nLeaving blank for now.');
             return [];
@@ -269,8 +270,8 @@ ControllerPandora.prototype.addToBrowseSources = function () {
 
 ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     var self = this;
-    var staRe = new RegExp(/\/pandora\/station_id=(\d+)$/);
-    var stationData = self.pandoraHandler.getStationData();
+    const staRe = new RegExp(/\/pandora\/station_id=(\d+)$/);
+    const stationData = self.pandoraHandler.getStationData();
     const fnName = 'handleBrowseUri';
 
     var response = {
@@ -293,7 +294,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         if (stationChanged && self.flushThem) {
             return self.flushPandora();
         }
-        
+
         return libQ.resolve();
     }
 
@@ -317,16 +318,14 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         return libQ.resolve(response);
     }
     else if (curUri.match(staRe) !== null) {
-        self.oldQ = self.getQueue();
-        self.oldQLen = self.oldQ.length;
-
         return checkForStationChange(curUri.match(staRe)[1])
             .then(() => self.pandoraHandler.fetchTracks())
             .then(() => {
                 self.lastUri = null;
+                self.cameFromMenu = true;
 
                 let newTracks = self.pandoraHandler.getNewTracks();
-                
+
                 if (newTracks.length > 0) {
                     return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
                         .then(() => self.getQueueIndex(newTracks[0].uri))
@@ -352,16 +351,11 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
 // // Keeps queue items from other services.
 // ControllerPandora.prototype.pruneOtherStations = function () {
 //     var self = this;
-//     let oldQ = self.getQueue();
-//     let newQ = oldQ.filter(item => item.station === self.currStation.name)
-//                .concat(oldQ.filter(item => item.service !== self.serviceName));
+//     let newQ = self.getCurrStationTracks()
+//                 .concat(self.getQueue().filter(item=> item.service !== self.serviceName));
 
-//     if (newQ.length > 0) {
-//         return self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
-//     }
-//     else {
-//         return self.commandRouter.stateMachine.playQueue.clearQueue();
-//     }
+//     if (newQ.length > 0) return self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
+//     return self.commandRouter.stateMachine.playQueue.clearQueue();
 // };
 
 // add tags to newTracks and add to mpd queue
@@ -425,36 +419,9 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     return defer.promise;
 };
 
-ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
-    var self = this;
-    const fnName = 'removeTrack';
-    let qPos = self.getCurrQueuePos();
-    let index = self.getQueueIndex(trackUri);
-
-    let test = (index != -1 && index != qPos && trackUri);
-    let beforeQPos = (index < qPos);
-    if (justOldTracks) {
-        test = (test && beforeQPos);
-    }
-
-    self.announceFn(fnName + ': ' + trackUri);
-
-    if (test) {
-        self.commandRouter.stateMachine.removeQueueItem({value: index});
-        return self.mpdPlugin.getState()
-            .then(state => self.pushState(state));
-    }
-    else {
-        return self.logInfo(fnName + ': '+ 'Not removing ' +
-            trackUri + ' at queue index: ' + index);
-    }
-};
-
 ControllerPandora.prototype.getQueueIndex = function (uri) {
     var self = this;
-    let Q = self.getQueue();
-
-    return Q.findIndex(item => item.uri === uri);
+    return self.getQueue().findIndex(item => item.uri === uri);
 };
 
 ControllerPandora.prototype.getQueue = function () {
@@ -487,6 +454,31 @@ ControllerPandora.prototype.getCurrStationTracks = function () {
         item.stationId == self.currStation.id));
 };
 
+ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
+    var self = this;
+    const fnName = 'removeTrack';
+    const qPos = self.getCurrQueuePos();
+    const index = self.getQueueIndex(trackUri);
+
+    let test = (index != -1 && index != qPos && trackUri);
+    const beforeQPos = (index < qPos);
+    if (justOldTracks) {
+        test = (test && beforeQPos);
+    }
+
+    self.announceFn(fnName + ': ' + trackUri);
+
+    if (test) {
+        self.commandRouter.stateMachine.removeQueueItem({value: index});
+        return self.mpdPlugin.getState()
+            .then(state => self.pushState(state));
+    }
+    else {
+        return self.logInfo(fnName + ': '+ 'Not removing ' +
+            trackUri + ' at queue index: ' + index);
+    }
+};
+
 // Remove oldest Pandora tracks from queue to make room for new ones
 ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, diff) {
     var self = this;
@@ -508,65 +500,92 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
     var self = this;
     const fnName = 'fetchAndAddTracks';
 
-    function addNewTracks(newTracks, sQIsLast) {
-        function moveOtherStationTracks(from, to, count) {
-            for (let j = 0; j < count; j++) {
-                let qPos = self.getCurrQueuePos();
-                
-                if (from < qPos && to > qPos) {
-                    self.setCurrQueuePos(qPos - 1);
-                }
-                else if (from > qPos && to <= qPos) {
-                    self.setCurrQueuePos(qPos + 1);
-                }
-                else if (from == qPos) {
-                    self.setCurrQueuePos(to);
-                }
-                self.commandRouter.stateMachine.moveQueueItem(from, to); // no promise returned
+    function getSQInfo() {
+        self.announceFn(fnName + '::getSqInfo');
+
+        return self.getCurrStationTracks()
+            .then(stationQ => { // stationQ: current station tracks
+                const Q = self.getQueue();
+                const qLen = Q.length;
+                const sQLen = stationQ.length;
+                // sQPos: song pos in SQ
+                const sQPos = stationQ.findIndex(item => item.uri === curUri);
+                // isSQLast: SQ @ end of playQueue
+                const isSQLast = (stationQ[sQLen - 1].uri === Q[qLen - 1].uri) &&
+                    (stationQ[0].uri === Q[qLen - sQLen].uri);
+
+                return libQ.resolve({ sQPos: sQPos, isSQLast: isSQLast });
+            });
+    }
+
+    function moveStationTracks(from, to, count, cameFromMenu) {
+        const subFnName = fnName + '::addNewTracks::moveStationTracks';
+        let msg = subFnName + ': Moved tracks [';
+        let finalPos;
+
+        self.cameFromMenu = false;
+
+        function moveTrackLoop() {
+            for (let num = 0; num < count; num++) {
+                self.commandRouter.stateMachine.moveQueueItem(from, to);
+                msg += (num < count - 1) ? num + ', ' :
+                    num + '] from ' + from + ' to ' + to;
             }
-            return libQ.resolve();
+            self.logInfo(msg);
+            return libQ.resolve(); // just 'return logInfo()' halts chain
         }
 
-        return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
+        return moveTrackLoop() // must call return here
             .then(() => {
-                if (!self.flushThem) { // multiple stations in queue
-                    let Q = self.getQueue();
-                    let qLen = Q.length;
-                    let i = 0;
-
-                    while (Q[i].stationId != self.currStation.id) {
-                        i++;
-                    }
-                    let stPos = i; // start pos of currStationId tracks
-                    let otherTracks = Q.filter(item => item.stationId != self.currStation.id);
-
-                    if (!sQIsLast && stPos != self.oldQLen && otherTracks.length > 0) { // there are old station tracks in queue
-                        while (i < qLen && Q[i].stationId == self.currStation.id) {
-                            i++;
-                        }
-                        // now move older station tracks behind new tracks
-                        let count = i - stPos;
-                        return moveOtherStationTracks(stPos, self.oldQLen - 1, count)
-                            .then(() => self.logInfo('addNewTracks: Successfully moved ' + count + ' tracks'));
-                    }
+                self.logInfo('cameFromMenu: ' + cameFromMenu);  // DEBUG
+                if (!cameFromMenu) {  // set proper queue position
+                    getSQInfo()
+                        .then(sqInfo => libQ.resolve(sqInfo.sQPos))
+                        .then(sQPos => {
+                            finalPos = to - count + sQPos + 1;
+                            self.setCurrQueuePos(finalPos);
+                            self.mpdPlugin.getState()
+                                .then(state => {
+                                    self.logInfo(subFnName +
+                                        ': Set new Queue Position to ' +
+                                        finalPos);
+                                    return self.pushState(state);
+                                });
+                        });
                 }
                 return libQ.resolve();
             });
     }
 
-    function getSQInfo() {  // SQ = current station queued tracks -- return  and (last position == Q.length) in 
-        return self.getCurrStationTracks()
-            .then(stationQ => {
-                const Q = self.getQueue();
-                const qLen = Q.length;
-                const sQLen = stationQ.length;
+    function checkIfMovingTracks(isSQLast) {
+        if (!self.flushThem) { // multiple stations in queue
+            const Q = self.getQueue();
+            const qLen = Q.length;
+            let i = 0;
 
-                const sQPos = stationQ.findIndex(item => item.uri === curUri);
-                const sQisLast = (stationQ[sQLen - 1].uri === Q[qLen - 1].uri) &&
-                    (stationQ[0].uri === Q[qLen - sQLen].uri);
+            while (Q[i].stationId != self.currStation.id) {
+                i++;
+            }
+            const stPos = i; // start pos of currStationId tracks
 
-                return libQ.resolve({ sQPos: sQPos, sQisLast: sQisLast });
-            }); 
+            if (!isSQLast) {
+                while (i < qLen && Q[i].stationId == self.currStation.id) {
+                    i++;
+                }
+
+                const count = i - stPos; // if changing the station from menu
+                let from = stPos;
+                let to = self.oldQLen - 1;
+                if (!self.cameFromMenu) {
+                    self.oldQLen = qLen;
+                    to = qLen - 1;
+                }
+
+                return moveStationTracks(from, to, count, self.cameFromMenu);
+            }
+            self.cameFromMenu = false;
+        }
+        return libQ.resolve();
     }
 
     self.announceFn(fnName);
@@ -585,9 +604,8 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
                                     // don't add tracks twice (WILL REVISIT)
                                     // let Q = self.getQueue();
                                     // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
-                                    self.logInfo(fnName + ': PandoraHandler::fetchTracks fetched ' +
-                                        newTracks.length + ' track(s)');
-                                    return addNewTracks(newTracks, sQInfo1.sQisLast)
+                                    return checkIfMovingTracks(sQInfo1.isSQLast)
+                                        .then(() => self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks))
                                         .then(() => self.pandoraHandler.getSongMaxDiff())
                                         .then(diff2 => {
                                             if (diff2 > 0) {
@@ -599,7 +617,7 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
                                             }
                                         });
                                 }
-                            });    
+                            });
                         }
                     });
             });
@@ -851,15 +869,23 @@ ControllerPandora.prototype.pushState = function (state) {
 ControllerPandora.prototype.explodeUri = function (uri) {
     // Mandatory: retrieve all info for a given URI
     var self = this;
-    let uriMatch = uri.match(/\/pandora\/station_id=(\d+)\/track_id=\d+/);
+    const fnName = 'explodeUri';
+    const uriMatch = uri.match(/\/pandora\/station_id=(\d+)\/track_id=\d+/);
 
-    self.announceFn('explodeUri');
+    self.announceFn(fnName);
 
     if (uriMatch !== null) {
+        const newStationId = uriMatch[1];
+
+        if (self.currStation.id != newStationId) { // for checkIfMovingTracks()
+            self.oldQ = self.getQueue();
+            self.oldQLen = self.oldQ.length;
+        }
+
         // return a one elememnt track object array
-        let Q = self.getQueue();
-        let tracks = Q.concat(self.pandoraHandler.getNewTracks());
-        let response = tracks.filter(item => item.uri === uri).slice(0, 1);
+        const Q = self.getQueue();
+        const tracks = Q.concat(self.pandoraHandler.getNewTracks());
+        const response = tracks.filter(item => item.uri === uri).slice(0, 1);
 
         return libQ.resolve(response);
     }
