@@ -44,7 +44,7 @@ function volusonicApi(log, config) {
 		var cached = cacheGet(command + id)
 			.then(function(cached) {
 				if (cached == undefined) {
-					cached = submitQuery(command + '?' + params)
+					cached = submitQuery(command + '.view?' + params)
 						.then(function(cached) {
 							if (cached['subsonic-response'].status != 'failed') {
 								cacheSet(command + id, cached);
@@ -87,6 +87,7 @@ function volusonicApi(log, config) {
 		var defer = libQ.defer();
 
 		var uri = config.get('server') + '/rest/' + query + '&' + config.get('auth');
+		console.log(uri);
 		unirest
 			.get(uri)
 			.strictSSL(false)
