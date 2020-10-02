@@ -6,7 +6,7 @@ var libQ = require('kew');
 
 function PandoraHandler(self, options) {
     const that = this;
-    var pandora = {};
+    var pandora = null;
     var bandFilter = options.bandFilter;
     var maxStationTracks = options.maxStationQ;
     var loggedIn = false;
@@ -32,9 +32,25 @@ function PandoraHandler(self, options) {
             partnerInfo = pandoraOnePartnerInfo;
         }
 
-        pandora = new anesidora(options.email,
-                                options.password,
-                                partnerInfo);
+        if (pandora === null) {
+            pandora = new anesidora(
+                options.email,
+                options.password,
+                partnerInfo
+            );
+        }
+
+        return libQ.resolve();
+    };
+
+    PandoraHandler.prototype.setCredentials = function (options) {
+        const fnName = 'setCredentials';
+
+        that.phAnnounceFn(fnName);
+
+        pandora.username = options.email;
+        pandora.password = options.password;
+        loggedIn = false;
 
         return libQ.resolve();
     };

@@ -6,6 +6,7 @@ var libQ = require('kew');
 class Timer {
     constructor(self) {
         this.self = self;
+        this.announcement = null;
         this.logger = msg => {
             self.logInfo(this.className + msg);
         };
@@ -15,7 +16,7 @@ class Timer {
         const that = this;
 
         this.timerID = setInterval(() => {
-            that.fn(that.self, that.className);
+            that.fn();
             if (that.announcement) that.self.announceFn(that.announcement);
         }, that.interval);
         this.logger('::init interval set to ' + this.interval + ' ms');
@@ -23,7 +24,7 @@ class Timer {
     }
 
     stop() {
-        this.logger(' stopping.');
+        this.logger(': Stopping.');
         clearInterval(this.timerID);
         return libQ.resolve();
     }
@@ -40,7 +41,7 @@ class ExpireOldTracks extends Timer {
     }
         
 
-    fn(self) {
+    fn() {
         const that = this;
         const mins_45 = 45 * 60 * 1000;
         const fnName = '::reaper';
@@ -48,8 +49,8 @@ class ExpireOldTracks extends Timer {
 
         function hangman() {
             setTimeout(() => {
-                let Q = self.getQueue();
-                let curTrack = self.getQueueTrack();
+                let Q = that.self.getQueue();
+                let curTrack = that.self.getQueueTrack();
                 let curUri = null;
                 let found = false;
 
@@ -58,10 +59,10 @@ class ExpireOldTracks extends Timer {
                 if (Q) {
                     for (let i = 0; i < Q.length; i++) {
                         let item = Q[i];
-                        if (item.service === self.serviceName &&
+                        if (item.service === that.self.serviceName &&
                             (timeNow - item.fetchTime) > mins_45 &&
                             item.uri !== curUri) { // string him up!
-                            self.removeTrack(item.uri);
+                            that.self.removeTrack(item.uri);
                             that.logger(fnName + ' expired ' +
                                 item.title + ' by ' + item.artist);
                             found = true;
@@ -86,21 +87,21 @@ class StreamLifeChecker extends Timer {
         this.className = 'StreamLifeChecker';
     }
 
-    fn(self) {
+    fn() {
         const that = this;
         const fnName = '::heartMonitor';
 
-        self.mpdPlugin.getState()
+        that.self.mpdPlugin.getState()
             .then(state => {
                 if (state.status !== 'pause') {
                     if (state.seek == this.lastSeek) {
-                        let track = self.getQueueTrack();
+                        let track = that.self.getQueueTrack();
                         let msg = track.name + ' by ' + track.artist +
                             ' timed out.  Advancing track';
-                        self.commandRouter.pushToastMessage('info', 'Pandora', msg);
+                        that.self.commandRouter.pushToastMessage('info', 'Pandora', msg);
                         that.logger(fnName + ': ' + msg);
-                        return self.goPreviousNext('skip')
-                            .then(() => self.removeTrack(track.uri))
+                        return that.self.goPreviousNext('skip')
+                            .then(() => that.self.removeTrack(track.uri))
                             .then(() => that.stop());
                     }
                 }
@@ -115,16 +116,28 @@ class PreventAuthTimeout extends Timer {
 
         this.interval = 3 * 60 * 60 * 1000; // 3 hours
         this.className = 'PreventAuthTimeout';
-        this.fn(self);
+        this.fn();
         this.init();
     }
 
-    fn(self) {
+    restart() {
+        const that = this;
+
+        that.logger(': Restarting interval timer');
+        return that.stop()
+            .then(() => {
+                that.logger(': Attempting to call fn() with interval: ' + that.interval);
+                that.fn();
+                that.init();
+            });
+    }
+
+    fn() {
         const that = this;
         
-        return self.pandoraHandler.pandoraLoginAndGetStations()
-            .then(() => self.pandoraHandler.fillStationData())
-            .then(() => that.logger(': Refreshed Pandora authorization'));
+        return that.self.pandoraHandler.pandoraLoginAndGetStations()
+            .then(() => that.self.pandoraHandler.fillStationData());
+            // .then(() => that.self.logger(': Refreshed Pandora authorization'));
     }
 }
 

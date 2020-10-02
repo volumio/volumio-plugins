@@ -19,6 +19,7 @@ const { readSync } = require('fs-extra');
 const { pseudoRandomBytes } = require('crypto');
 const { stat } = require('fs');
 const { allowedNodeEnvironmentFlags } = require('process');
+const { type } = require('os');
 
 
 module.exports = ControllerPandora;
@@ -67,7 +68,10 @@ ControllerPandora.prototype.onStart = function () {
 
     return self.checkConfValidity(options)
         .then(() => self.initialSetup(options))
-        .then(() => self.addToBrowseSources());
+        .then(() => {
+            self.addToBrowseSources();
+            return self.flushPandora();
+        });
 };
 
 ControllerPandora.prototype.onStop = function () {
@@ -112,15 +116,24 @@ ControllerPandora.prototype.initialSetup = function (options) {
 
     self.announceFn('initialSetup');
 
-    if (self.pandoraHandler === undefined) {
-        self.pandoraHandler = new handler(self, options);
+    function isNotSelfProp(prop) { // property is undefined
+        return !(prop in self);
     }
 
-    self.expireHandler = new timers.ExpireOldTracks(self);
-    self.streamLifeChecker = new timers.StreamLifeChecker(self);
-    self.preventAuthTimeout = new timers.PreventAuthTimeout(self);
+    if (isNotSelfProp('pandoraHandler')) {
+        self.pandoraHandler = new handler(self, options);
+    }
+    if (isNotSelfProp('expireHandler')) {
+        self.expireHandler = new timers.ExpireOldTracks(self);
+    }
+    if (isNotSelfProp('streamLifeChecker')) {
+        self.streamLifeChecker = new timers.StreamLifeChecker(self);
+    }
+    if (isNotSelfProp('preventAuthTimeout')) {
+        self.preventAuthTimeout = new timers.PreventAuthTimeout(self);
+    }
 
-    return self.flushPandora();
+    return libQ.resolve();
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -187,14 +200,16 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
     self.config.set('bandFilter', options.bandFilter);
     let validMaxStaQ = self.validateMaxStationQ(options.maxStationQ);
     self.config.set('maxStationQ', validMaxStaQ);
-    self.logInfo('typeof(self.pandoraHandler): ' + typeof(self.pandoraHandler));
     self.pandoraHandler.setBandFilter(self.validateBandFilter(options.bandFilter));
     self.pandoraHandler.setMaxStationTracks(validMaxStaQ);
 
     return self.checkConfValidity(options)
-        .then(() => self.commandRouter.pushToastMessage('success', 'Pandora Options',
-            'Login info saved.\nIf already logged in, restart plugin.'))
-        .fail(err => self.generalReject('setAccountConf', err));
+        .then(() => self.commandRouter.pushToastMessage(
+            'success',
+            'Pandora Options',
+            'Plugin options saved.'
+        ))
+        .fail(err => self.generalReject('checkConfValidity', err));
 };
 
 ControllerPandora.prototype.validateMaxStationQ = function (mq) {
@@ -226,10 +241,14 @@ ControllerPandora.prototype.validateBandFilter = function (bf) {
         return bf.split('%');
     } catch (err) {
         setTimeout(() => {
-            self.commandRouter.pushToastMessage('info', 'Pandora Options',
-                'Invalid Band Filter!\nShould look like: Kanye%Vanilla Ice\nLeaving blank for now.');
-            return [];
+            self.commandRouter.pushToastMessage(
+                'info', 'Pandora Options',
+                'Invalid Band Filter!\n' +
+                'Should look like: Kanye%Vanilla Ice\n' +
+                'Leaving blank for now.'
+            );
         }, 5000);
+        return [];
     }
 };
 
@@ -239,13 +258,22 @@ ControllerPandora.prototype.checkConfValidity = function (options) {
 
     self.announceFn('checkConfValidity');
 
-    if (!options.email || !options.password) { // not configured
+    if ((typeof(options.email) === 'undefined' || typeof(options.password) === 'undefined') ||
+        (!options.email || !options.password)) {
         self.logError('Missing email or password');
-        self.commandRouter.pushToastMessage('error',
-                            'Pandora',
-                            'Need email address and password. See plugin settings.');
+        setTimeout(() => {
+            self.commandRouter.pushToastMessage(
+                'error',
+                'Pandora',
+                'Need email address and password.\n' +
+                'See plugin settings.'
+            );
+        }, 5000);
+    }
 
-        return libQ.reject(new Error('[Pandora] Need both email and password.'));
+    else if (typeof(self.pandoraHandler) !== 'undefined') { // set new credentials, restart auth timer
+        return self.pandoraHandler.setCredentials(options)
+            .then(() => self.preventAuthTimeout.restart(self));
     }
 
     return libQ.resolve();

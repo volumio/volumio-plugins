@@ -23,7 +23,7 @@ Then, clone the repository:
 
 `git clone https://github.com/truckershitch/volumio-plugins.git`
 
-### <b>Optional (not recommended):
+### Optional (not recommended):
 There are two older versions archived on GitHub.  If you want to try out another branch, change to the `volumio-plugins` directory:
 
 `cd volumio-plugins`
@@ -83,40 +83,59 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 * Track data downloaded from Pandora only works for about an hour.  Track lifetime is now checked in the background and entries are deleted in a sane fashion in case the user does not listen to them in time.
 * Dual-function Previous button option.  If enabled, a single press replays the current track, and a quick double-press goes to the previous track (when not in shuffle/random, otherwise a random track is played).
 
-### Version 2.1.0
-* Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
+### Version 2.1.0:
+  #### Changes
+  * Actual support for Pandora One high-quality streams!  I took another look at this and I'm pretty sure that Pandora One users will get 192 Kbit/s streams now.  I do not have a premium subscription so if this does not work, please tell me.  It should, though, as the Unofficial Pandora API has a JSON of a sample playlist object on their site.  Free users like me are stuck with 128 Kbit/s.
 
-### Version 2.1.2
-* Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
+### Version 2.1.2:
+  #### Changes
+  * Changed version number that npm didn't like (2.1.1.1).  This Readme was amended, mainly to clarify the experimental, mostly non-working, historical status of the pianode branch.  The installation steps were clarified.  A few things were fixed when the plugin closes (removing it from the Volumio Sources, stopping the track expiration loop).
 
-### Version 2.3.0
-* Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
+### Version 2.3.0:
+  #### Changes
+  * Optional Thumbs-Down sent to Pandora for a track skipped by the Next media button.  The track is also removed from the queue like the sad thing it is.  Flip the switch in the plugin settings and kick the lame tracks to the curb!
 
-### Version 2.3.4
-* Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
+### Version 2.3.4:
+  #### Changes
+  * Pausing a stream for too long will cause a timeout.  The plugin will detect this now and skip to the next track.  Curiously, this took a bit of work to implement.
 
-### Version 2.4.0
-* Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.
-* Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.
-* Optional queue flush after station change, configured in plugin options.
+### Version 2.4.0:
+  #### Changes
+  * Pandora logins expire after a few hours.  The plugin now logs in every so often to keep the authorization current.
+  * Browse menu is now one level deep.  Choosing a station starts playback.  Tracks can be changed in the queue as before.
+  * Optional queue flush after station change, configured in plugin options.
 
-### Version 2.5.0
-* Removed maxQ constant that limited the number of total tracks fetched.
-* There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
+### Version 2.5.0:
+  #### Changes
+  * Removed maxQ constant that limited the number of total tracks fetched.
+  * There is a per-station limit (otherwise it gets insane).  If that track limit is reached, a few of the oldest tracks are removed to make room for new tracks.
 
-### Version 2.5.3
-* `Anesidora` was forked to enable premium Pandora account logins.  Thanks to @Jim_Edwards on the forum for the heads-up on premium login errors.
+### Version 2.5.3:
+  #### Changes
+  * `Anesidora` was forked to enable premium Pandora account logins.  Thanks to @Jim_Edwards on the forum for the heads-up on premium login errors.
   
-  ### Fixes
+  #### Fixes
   * Refresh login credentials when idle and working reporting for login errors.
 
 ### Version 2.6.0:
-* Separated PandoraHandler function and Timer classes into modules.  Song per-station "limit" value now in options.
-* <b>Serious queue voodoo:</b> When station is changed and old stations are retained, all tracks from the current station are moved and aggregated.
-* Some variables names were renamed for clarity.  Some variable types were changed as well (mainly `var`, `let` and `const`).  Log formatting was further standardized.
+  #### Changes
+  * Separated PandoraHandler function and Timer classes into modules.  Song per-station "limit" value now in options.
+  * <b>Serious queue voodoo:</b> When station is changed and old stations are retained, all tracks from the current station are moved and aggregated.
+  * Some variables names were renamed for clarity.  Some variable types were changed as well (mainly `var`, `let` and `const`).  Log formatting was further standardized.
 
-  ### Fixes
+  #### Fixes
   * Green play arrow in queue no longer points incorrectly after a track expires.
+
+### Version 2.6.1:
+  #### Changes
+  * Red login error toast => blue info toast
+  * `Readme.md` formatting
+  
+  #### Fixes
+  * onStart() fix: checkConfValidity() was rejecting the promise when there was an invalid or blank plugin configuration.<br/>
+  The plugin loads after initial installation (with blank credentials).  After the credentials are entered in the options, the plugin attempts a login and starts if it succeeds.<br/>
+  Changing the login credentials triggers a new authorization attempt.  Restarting the plugin is no longer required.<br/>
+  Thanks to <b>@balbuze</b> for determining the failed promise in onStart().
 
 ## Issues
 
@@ -142,7 +161,7 @@ My alpha fork of the module was rewritten to use Promises instead of callbacks, 
 ## Acknowledgements
 
 * Michelangelo and the other Volumio developers.
-* lostmyshape gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.  He was the first person to look at my code and give me help.  I also borrowed his mpd player listener callback function which really helped a lot.  Much obliged!
-* marco79cgn, in particular, laid the groundwork for my plugin.  I shamelessly borrowed from his code in several areas.
+* <b>@lostmyshape</b> gave me the heads-up about the Unofficial Pandora API and gave me some constructive ideas.  He was the first person to look at my code and give me help.  I also borrowed his mpd player listener callback function which really helped a lot.  Much obliged!
+* <b>@marco79cgn</b> in particular laid the groundwork for my plugin.  I shamelessly borrowed from his code in several areas.
 * The creators of the other Volumio plugins.  I tried to learn from your code.
-* @downtownHippie and @Jim_Edwards in the forum for their helpful and extensive feedback.
+* <b>@downtownHippie</b> and <b>@Jim_Edwards</b> in the forum for their helpful and extensive feedback.
