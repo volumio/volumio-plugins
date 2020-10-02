@@ -18,6 +18,7 @@
           "useCurl302WorkAround",
           "nextIsThumbsDown",
           "superPrevious",
+          "maxStationQ",
           "flushThem",
           "bandFilter"
         ]
@@ -70,6 +71,14 @@
           "doc": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_DOC",
           "label": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_LABEL",
           "value": false
+        },
+        {
+          "id": "maxStationQ",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_Q_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_Q_LABEL",
+          "value": 16
         },
         {
           "id": "flushThem",

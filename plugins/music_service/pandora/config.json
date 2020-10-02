@@ -15,7 +15,11 @@
     "type": "boolean",
     "value": false
   },
-  "flushThem" :{
+  "maxStationQ": {
+    "type": "number",
+    "value": 16
+  },
+  "flushThem": {
     "type": "boolean",
     "value": false
   },
