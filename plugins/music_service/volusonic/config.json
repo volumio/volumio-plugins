@@ -38,5 +38,9 @@
 	"path": {
 		"type": "boolean",
 		"value": true
+	},
+	"salt": {
+		"type": "boolean",
+		"value": true
 	}
 }
