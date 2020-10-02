@@ -118,7 +118,7 @@
 					"prettyName": "Volusonic",
 					"icon": "fa-ship",
 					"name": "volusonic",
-					"version": "1.1.1",
+					"version": "1.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/volusonic/volusonic.zip",
 					"license": "ISC",
 					"description": "Subsonic plugin for Volumio",
