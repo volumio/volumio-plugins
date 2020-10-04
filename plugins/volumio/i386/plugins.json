@@ -345,6 +345,24 @@
 						}
 					],
 					"updated": "11-9-2020"
+				},
+				{
+					"prettyName": "Cisco DUO",
+					"icon": "fa-lightbulb-o",
+					"name": "duo",
+					"version": "1.2.3",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/duo/duo.zip",
+					"license": "GNUv2",
+					"description": "Duo Unix with Pluggable Authentication Modules (PAM) support provides a secure and customizable method for protecting Unix and Linux logins. This plugin used a pre-compiled package for 32-bit ARM and x86 machines.",
+					"details": "",
+					"author": "Saiyato",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "4-10-2020"
 				}
 			]
 		}
