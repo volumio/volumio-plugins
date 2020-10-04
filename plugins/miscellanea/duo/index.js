@@ -151,7 +151,7 @@ duo.prototype.toggleDuo = function()
 	self.logger.info('[DUO] Updating system configuration...');
 	self.createDuoConfig(replacementDictionary)
 	.then(function (copySshdConfig) {
-		exec("/usr/bin/rsync --ignore-missing-args /etc/pam.d/sshd "+ __dirname +"/templates/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
+		execSync("/usr/bin/rsync --ignore-missing-args /etc/pam.d/sshd "+ __dirname +"/templates/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
 			if(error)
 			{
 				self.logger.error('Could not copy config file to temp location with error: ' + error);
