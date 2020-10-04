@@ -1,6 +1,6 @@
 {
 	"name": "duo",
-	"version": "1.1.5",
+	"version": "1.2.2",
 	"description": "Duo Unix with Pluggable Authentication Modules (PAM) support provides a secure and customizable method for protecting Unix and Linux logins. This plugin used a pre-compiled package for 32-bit ARM machines.",
 	"main": "index.js",
 	"scripts": {

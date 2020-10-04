@@ -6,22 +6,39 @@ if [ ! -f $INSTALLING ]; then
 
 	touch $INSTALLING
 	# Echo version number, for bug tracking purposes
-	echo "## Installing DUO plugin v1.0 ##"
+	echo "## Installing DUO plugin v1.2.2 ##"
 	
 	echo "Detecting CPU architecture and Debian version"
-	ARCH=$(lscpu | awk 'FNR == 1 {print $2}')
+	ARCH=$(dpkg --print-architecture)
 	DEBIAN_VERSION=$(cat /etc/os-release | grep '^VERSION=' | cut -d '(' -f2 | tr -d ')"')
 	echo "CPU architecture: " $ARCH
 	echo "Debian version: " $DEBIAN_VERSION
 
 	# Download latest compiled DUO package from GitHub
 	mkdir /home/volumio/duo
-	wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
+	
+	# jessie && armhf
+	if [ $DEBIAN_VERSION = "jessie" ] && [ $ARCH = "armhf" ]; then
+		echo "Continuing installation, fetching armhf package..."
+		wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
+
+	# jessie && ix86
+	elif [ $DEBIAN_VERSION = "jessie" ] && ([ $ARCH = "i386" ] || [ $ARCH = "i486" ] || [ $ARCH = "i586" ] || [ $ARCH = "i686" ] || [ $ARCH = "i786" ]); then
+		echo "Continuing installation, fetching i386 package..."
+		wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_i386.deb -P /home/volumio/duo
+
+	# unsupported device/distro combo (afaik)
+	else
+		echo "Sorry, your device/distribution combination is not (yet) supported."
+		echo "Exiting now..."
+		rm $INSTALLING
+		echo "plugininstallend"
+		exit
+	fi
 
 	# Install packages (server and client) and dependencies
 	for f in /home/volumio/duo/duo-unix*.deb; do dpkg -i "$f"; done
 	apt-get update && apt-get -f -y install
-	chown -R volumio:volumio /etc/duo
 		
 	# Configure SSH
 	echo "Patching SSH daemon configuration..."
