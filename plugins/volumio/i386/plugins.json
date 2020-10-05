@@ -348,7 +348,7 @@
 				},
 				{
 					"prettyName": "Cisco DUO",
-					"icon": "fa-lightbulb-o",
+					"icon": "fa-shield",
 					"name": "duo",
 					"version": "1.2.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/duo/duo.zip",
