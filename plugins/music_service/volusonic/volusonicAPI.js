@@ -98,8 +98,24 @@ function volusonicApi(log, config) {
 				}
 			});
 		return defer.promise;
-
 	};
+			var getArtistArt = function (artist) {
+				var self = this;
+				var defer = libQ.defer();
+
+				var uri = "https://us-central1-metavolumio.cloudfunctions.net/metas?artist=" + artist + "&mode=artistArt";
+				unirest
+					.get(uri)
+					.strictSSL(false)
+					.end(function(response) {
+						if (response.ok) {
+							defer.resolve(response.body);
+						} else {
+							defer.reject(new Error('getArtistArt'));
+						}
+					});
+				return defer.promise;
+			};
 	return {
 		cacheGet: cacheGet,
 		cacheSet: cacheSet,
@@ -107,7 +123,8 @@ function volusonicApi(log, config) {
 		cacheReset: cacheReset,
 		get: get,
 		getAuth: getAuth,
-		submitQuery: submitQuery
+		submitQuery: submitQuery,
+		getArtistArt: getArtistArt
 	};
 
 };
