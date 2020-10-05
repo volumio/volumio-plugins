@@ -604,10 +604,10 @@
 					"prettyName": "Cisco DUO",
 					"icon": "fa-shield",
 					"name": "duo",
-					"version": "1.2.3",
+					"version": "1.2.5",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/duo/duo.zip",
 					"license": "GNUv2",
-					"description": "Duo Unix with Pluggable Authentication Modules (PAM) support provides a secure and customizable method for protecting Unix and Linux logins. Pre-compiled package for 32-bit ARM and x86 machines.",
+					"description": "Duo Unix with Pluggable Authentication Modules (PAM) support, provides a secure and customizable method for protecting Unix and Linux logins. Pre-compiled package for 32-bit ARM and x86 machines.",
 					"details": "DUO authenticating SSH sessions",
 					"author": "Saiyato",
 					"screenshots": [
@@ -616,7 +616,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "4-10-2020"
+					"updated": "5-10-2020"
 				}
 			]
 		},
