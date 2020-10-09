@@ -735,50 +735,6 @@
 			]
 		},
 		{
-			"prettyName": "Audio interface",
-			"name": "audio_interface",
-			"id": "cat5",
-			"description": "",
-			"plugins": [
-				{
-					"prettyName": "Volumio simple equalizer",
-					"icon": "fa-sliders fa-rotate-90",
-					"name": "volsimpleequal",
-					"version": "0.5.7",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volsimpleequal/volsimpleequal.zip",
-					"license": "GPL-3.0",
-					"description": "Provides a 15 bands equalizer",
-					"details": "Vosimpleequal - Provides a 15 bands Equalizer",
-					"author": "Balbuze",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "24-9-2020"
-				},
-				{
-					"prettyName": "Volumio parametric equalizer",
-					"icon": "fa-sliders fa-rotate-90",
-					"name": "volparametriceq",
-					"version": "0.1.9",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/audio_interface/volparametriceq/volparametriceq.zip",
-					"license": "GPL 3.0",
-					"description": "Parametric equalizer plugin for Volumio2",
-					"details": "4 bands parametric equalizer. Not compatible with Softvolume!",
-					"author": "Balbuze",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "7-6-2020"
-				}
-			]
-		},
-		{
 			"prettyName": "user interface",
 			"name": "user_interface",
 			"id": "cat6",
