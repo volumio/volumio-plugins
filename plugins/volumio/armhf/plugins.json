@@ -196,7 +196,7 @@
 					"updated": "20-11-2018"
 				},
 				{
-					"prettyName": "pandora",
+					"prettyName": "Pandora",
 					"icon": "fa-lightbulb-o",
 					"name": "pandora",
 					"version": "2.7.0",
@@ -286,7 +286,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "13-7-2020"
+					"updated": "13-7-2020",
+					"stable": true
 				}
 			]
 		},
