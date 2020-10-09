@@ -18,7 +18,7 @@
           "useCurl302WorkAround",
           "nextIsThumbsDown",
           "superPrevious",
-          "maxStationQ",
+          "maxStationTracks",
           "flushThem",
           "bandFilter"
         ]
@@ -73,11 +73,11 @@
           "value": false
         },
         {
-          "id": "maxStationQ",
+          "id": "maxStationTracks",
           "type": "number",
           "element": "input",
-          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_Q_DOC",
-          "label": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_Q_LABEL",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_TRACKS_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_TRACKS_LABEL",
           "value": 16
         },
         {
