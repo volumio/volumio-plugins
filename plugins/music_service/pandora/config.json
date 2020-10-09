@@ -15,7 +15,7 @@
     "type": "boolean",
     "value": false
   },
-  "maxStationQ": {
+  "maxStationTracks": {
     "type": "number",
     "value": 16
   },

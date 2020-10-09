@@ -126,16 +126,19 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
   #### Fixes
   * Green play arrow in queue no longer points incorrectly after a track expires.
 
-### Version 2.6.1:
+### Version 2.7.0:
   #### Changes
-  * Red login error toast => blue info toast
-  * `Readme.md` formatting
-  
+  * Removed instruction to restart plugin after changing options.
+  * Pandora API error codes are loaded.  They are logged and an error toast is pushed with the translated code.
+  * Wrapped `setTimeout()` in the `siesta()` function to return a Promise.  Nested this function for setting intervals in `timers.js`.
+  * Changing the plugin options triggers a new authorization attempt.  Restarting the plugin is no longer required.
+  * Further cleaned up `Readme.md` (this document).
+
   #### Fixes
-  * onStart() fix: checkConfValidity() was rejecting the promise when there was an invalid or blank plugin configuration.<br/>
-  The plugin loads after initial installation (with blank credentials).  After the credentials are entered in the options, the plugin attempts a login and starts if it succeeds.<br/>
-  Changing the login credentials triggers a new authorization attempt.  Restarting the plugin is no longer required.<br/>
-  Thanks to <b>@balbuze</b> for determining the failed promise in onStart().
+  * `onStart()` fix: `checkConfValidity()` was rejecting the Promise when there was an invalid or blank plugin configuration.  There was also a failed Promise in `onStop()`.<br/>
+  Thanks to <b>@balbuze</b> for determining that the Promise failed in `onStart()` and `onStop()`.
+  * The plugin loads after initial installation (with blank credentials).  After the credentials are entered in the options, the plugin attempts a login and starts if it succeeds.  Changes to the options take effect after they are saved (better now than in v2.6.0).
+  * Small format changes to console output for `logInfo()`, `logError()`, and `generalReject()`.
 
 ## Issues
 
