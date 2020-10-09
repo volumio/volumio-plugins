@@ -211,7 +211,8 @@
 							"thumb": ""
 						}
 					],
-					"updated": "9-10-2020"
+					"updated": "9-10-2020",
+					"stable": true
 				},
 				{
 					"prettyName": "Volusonic",
