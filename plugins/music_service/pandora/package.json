@@ -1,5 +1,5 @@
 {
-	"name": "pandora",
+	"name": "Pandora",
 	"version": "2.7.1",
 	"description": "A plugin to access Pandora Web Radio",
 	"main": "index.js",
