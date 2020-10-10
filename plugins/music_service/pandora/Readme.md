@@ -140,6 +140,11 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
   * The plugin loads after initial installation (with blank credentials).  After the credentials are entered in the options, the plugin attempts a login and starts if it succeeds.  Changes to the options take effect after they are saved (better now than in v2.6.0).
   * Small format changes to console output for `logInfo()`, `logError()`, and `generalReject()`.
 
+### Version 2.7.1
+  #### Fixes
+  * `PandoraHandler::setCredentials` fix: Refreshing logins fails in v2.7.0.  In the `pandora` object, the `authdata` property is now set to null.   The `version` property has been added to the `partnerInfo` property for the `pandora` object.<br/>
+  This was actually fixed before but was lost in the change from v2.6.0 to v2.7.0.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>

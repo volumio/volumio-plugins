@@ -73,9 +73,13 @@ function PandoraHandler(context, options) {
             );
         }
         else {
+            that.phLogInfo(fnName, 'pandora object: ' + JSON.stringify(pandora));
+
             pandora.username = options.email;
             pandora.password = options.password;
             pandora.partnerInfo = partnerInfo;
+            pandora.partnerInfo.version = '5';
+            pandora.authData = null;
         }
 
         return libQ.resolve();

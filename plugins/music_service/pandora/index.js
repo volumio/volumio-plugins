@@ -340,7 +340,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     }
     else if (curUri.match(staRe) !== null) {
         return checkForStationChange(curUri.match(staRe)[1])
-            .then(() =>self.pandoraHandler.fetchTracks())
+            .then(() => self.pandoraHandler.fetchTracks())
             .then(() => {
                 self.lastUri = null;
                 self.cameFromMenu = true;
