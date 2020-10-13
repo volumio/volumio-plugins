@@ -77,10 +77,10 @@ function volusonicApi(log, config) {
 
 			var salt = makesalt();
 			var token = crypto.createHash('md5').update(pass + salt).digest("hex");
-			var auth = "u=" + user + "&t=" + token + "&s=" + salt + "&v=1.13.0&f=json&c=volusonic";
+			var auth = "u=" + user + "&t=" + token + "&s=" + salt + "&v=1.10.2&f=json&c=volusonic";
 		} else {
 			var hex = Buffer.from(pass, 'utf8');
-			auth = "u=" + user + "&p=enc:" + hex.toString('hex') + "&v=1.13.0&f=json&c=volusonic";
+			auth = "u=" + user + "&p=enc:" + hex.toString('hex') + "&v=1.10.2&f=json&c=volusonic";
 		}
 		return auth;
 	};

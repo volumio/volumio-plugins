@@ -702,7 +702,11 @@ ControllerVolusonic.prototype._topSongs = function(artist, count) {
 
 	var result = self.api.get('getTopSongs', artist + count, "artist=" + artist + "&count=" + count)
 		.then(function(result) {
-			defer.resolve(result['subsonic-response']['topSongs']);
+			if (result['subsonic-response']['topSongs'] !== undefined) { //lms hack
+				defer.resolve(result['subsonic-response']['topSongs']);
+			} else {
+				defer.resolve(result);
+			}
 		})
 		.fail(function(result) {
 			defer.reject(new Error('_topSongs'));
@@ -788,7 +792,7 @@ ControllerVolusonic.prototype.listTracks = function(uriParts, curUri) {
 					}
 					defer.resolve(play);
 				})
-				.fail(function(){
+				.fail(function() {
 					defer.resolve(play);
 				});
 		})
