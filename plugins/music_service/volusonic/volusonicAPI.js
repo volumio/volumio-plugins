@@ -50,6 +50,9 @@ function volusonicApi(log, config) {
 								cacheSet(command + id, cached);
 							}
 							defer.resolve(cached);
+						})
+						.fail(function() {
+							defer.reject(new Error("get"));
 						});
 				} else {
 					defer.resolve(cached);
@@ -74,10 +77,10 @@ function volusonicApi(log, config) {
 
 			var salt = makesalt();
 			var token = crypto.createHash('md5').update(pass + salt).digest("hex");
-			var auth = "u=" + user + "&t=" + token + "&s=" + salt + "&v=1.13.0&f=json&c=volusonic";
+			var auth = "u=" + user + "&t=" + token + "&s=" + salt + "&v=1.10.2&f=json&c=volusonic";
 		} else {
 			var hex = Buffer.from(pass, 'utf8');
-			auth = "u=" + user + "&p=enc:" + hex.toString('hex') + "&v=1.13.0&f=json&c=volusonic";
+			auth = "u=" + user + "&p=enc:" + hex.toString('hex') + "&v=1.10.2&f=json&c=volusonic";
 		}
 		return auth;
 	};
@@ -99,23 +102,23 @@ function volusonicApi(log, config) {
 			});
 		return defer.promise;
 	};
-			var getArtistArt = function (artist) {
-				var self = this;
-				var defer = libQ.defer();
+	var getArtistArt = function(artist) {
+		var self = this;
+		var defer = libQ.defer();
 
-				var uri = "https://us-central1-metavolumio.cloudfunctions.net/metas?artist=" + artist + "&mode=artistArt";
-				unirest
-					.get(uri)
-					.strictSSL(false)
-					.end(function(response) {
-						if (response.ok) {
-							defer.resolve(response.body);
-						} else {
-							defer.reject(new Error('getArtistArt'));
-						}
-					});
-				return defer.promise;
-			};
+		var uri = "https://us-central1-metavolumio.cloudfunctions.net/metas?artist=" + artist + "&mode=artistArt";
+		unirest
+			.get(uri)
+			.strictSSL(false)
+			.end(function(response) {
+				if (response.ok) {
+					defer.resolve(response.body);
+				} else {
+					defer.reject(new Error('getArtistArt'));
+				}
+			});
+		return defer.promise;
+	};
 	return {
 		cacheGet: cacheGet,
 		cacheSet: cacheSet,
