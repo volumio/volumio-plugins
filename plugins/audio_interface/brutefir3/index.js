@@ -1,4 +1,4 @@
-/*DRC-FIR plugin for volumio2. By balbuze August 12th 2020
+/*DRC-FIR plugin for volumio2. By balbuze October 10th 2020
 for next alsa_modular volumio
 ...
 */
@@ -12,11 +12,8 @@ const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
 const socket = io.connect('http://localhost:3000');
-//const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 const path = require('path');
-//const { readSync: readSyncBwf } = require('node-bwf-wav-file-reader');
-//const { read: readBwf } = require('node-bwf-wav-file-reader');
 
 
 //---global Variables
@@ -44,7 +41,6 @@ function ControllerBrutefir(context) {
 ControllerBrutefir.prototype.onVolumioStart = function () {
   const self = this;
   let configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-  // this.commandRouter.sharedVars.registerCallback('alsa.outputdevice', this.outputDeviceCallback.bind(this));
   this.config = new (require('v-conf'))();
   this.config.loadFile(configFile);
   self.autoconfig
@@ -69,13 +65,11 @@ ControllerBrutefir.prototype.onStart = function () {
       return aplayDefer.promise;
     })
 
-
-
   socket.emit('getState', '');
   socket.emit('pause');
   self.config.set('displayednameofset', "Set used is 1");
   self.config.set('setUsedOfFilters', "1");
-  self.askForRebootFirstUse()
+  //self.askForRebootFirstUse()
   self.autoconfig()
 
     .then(function (e) {
@@ -106,9 +100,6 @@ ControllerBrutefir.prototype.onStop = function () {
     //self.restoresettingwhendisabling()
     socket.off();
   });
-  //self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-
-
   defer.resolve();
   return libQ.resolve();
 };
@@ -737,47 +728,6 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 
 // Plugin methods -----------------------------------------------------------------------------
 
-//------------Ask for reboot for first time 
-ControllerBrutefir.prototype.askForRebootFirstUse = function () {
-  const self = this;
-
-  if (self.config.get('askForReboot')) {
-   // self.saveHardwareAudioParameters();
-    var responseData = {
-      title: self.commandRouter.getI18nString('FIRST_USE'),
-      message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
-      size: 'lg',
-      buttons: [
-        {
-          name: self.commandRouter.getI18nString('CONTINUE'),
-          class: 'btn btn-cancel',
-          emit: '',
-          payload: ''
-        },
-        {
-          name: 'Reboot',
-          class: 'btn btn-info',
-          emit: 'callMethod',
-          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data': '' }
-        }
-      ]
-    }
-    self.commandRouter.broadcastMessage("openModal", responseData);
-  }
-};
-
-ControllerBrutefir.prototype.setFalseReboot = function () {
-  const self = this;
-  self.config.set('askForReboot', false);
-  setTimeout(function () {
-    console.log(self.config.get('askForReboot'));
-    socket.emit('reboot');
-  }, 500);
-};
-
-// 
-
-
 //here we load snd_aloop module to provide a Loopback device
 ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
   const self = this;
@@ -792,60 +742,6 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
     defer.resolve();
   } catch (err) {
     self.logger.info('failed to load snd_aloop' + err);
-  }
-};
-
-//here we detect hw info
-ControllerBrutefir.prototype.hwinfo = function () {
-  const self = this;
-  let defer = libQ.defer();
-
-  let output_device = self.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
-  let nchannels;
-  let formats;
-  let hwinfo;
-  let samplerates;
-  try {
-    execSync('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
-      uid: 1000,
-      gid: 1000
-    });
-    hwinfo = fs.readFileSync('/data/configuration/audio_interface/brutefir/hwinfo.json');
-    try {
-      const hwinfoJSON = JSON.parse(hwinfo);
-      nchannels = hwinfoJSON.channels.value;
-      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
-      samplerates = hwinfoJSON.samplerates.value;
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-      self.config.set('nchannels', nchannels);
-      self.config.set('formats', formats);
-      self.config.set('probesmplerate', samplerates);
-      let output_format = formats.split(" ").pop();
-
-      var arr = ['S16_LE', 'S24_LE', 'S24_3LE', 'S32_LE'];
-      var check = output_format;
-      if (arr.indexOf(check) > -1) {
-        let askForReboot = self.config.get('askForReboot');
-        let firstOutputFormat = self.config.get('firstOutputFormat');
-        console.log(askForReboot + " and " + firstOutputFormat)
-        if ((askForReboot == false) && firstOutputFormat) {
-          self.config.set('output_format', output_format);
-          self.config.set('firstOutputFormat', false);
-          self.logger.info('Auto set output format : ----->' + output_format);
-        }
-      } else {
-        self.logger.info('Can\'t determine a compatible value for output format');
-      }
-    } catch (err) {
-      self.logger.info('Error reading hwinfo.json, detection failed :', err);
-    }
-
-    defer.resolve();
-  } catch (err) {
-    self.logger.info('----Hw detection failed :' + err);
-    defer.reject(err);
   }
 };
 
@@ -870,32 +766,11 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function () {
 ControllerBrutefir.prototype.autoconfig = function () {
   const self = this;
   let defer = libQ.defer();
-  // self.saveVolumioconfig()
-  self.hwinfo()
-  self.modprobeLoopBackDevice()
-  // self.saveHardwareAudioParameters()
-  // self.setLoopbackoutput()
+    self.modprobeLoopBackDevice()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
-  //self.restoreVolumioconfig()
-  // .catch(function (err) {
-  //  console.log(err);
-  //});
+  
   defer.resolve()
   return defer.promise;
-};
-
-//------------here we set the Loopback output and restore mixer and volume level
-ControllerBrutefir.prototype.setLoopbackoutput = function () {
-  const self = this;
-  let defer = libQ.defer();
-  let outputp
-  outputp = self.config.get('alsa_outputdevicename')
-  let stri = {
-    "output_device": {
-      "value": "Loopback",
-      "label": ('Dsp -> ' + outputp)
-    }
-  }
 };
 
 //----------------we restart the daemon-------------------
@@ -965,7 +840,7 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
 ControllerBrutefir.prototype.testclipping = function () {
   const self = this;
-
+  self.commandRouter.closeModals()
   socket.emit('pause');
   let filelength = self.config.get('filter_size');
 
@@ -1020,8 +895,10 @@ ControllerBrutefir.prototype.testclipping = function () {
       let leftAttSet = 0;
       let rightAttSet = 0;
       let corr = 0.49;
-      let leftSuggested = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
-      let rightSuggested = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
+      let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
+      let leftSuggested = leftSuggestedb + 1;
+      let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
+      let rightSuggested = rightSuggestedb + 1;
       if (leftSuggested > rightSuggested) {
         messageDisplayed = leftSuggested
       } else {
@@ -1711,7 +1588,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
               class: 'btn btn-cancel',
-              emit: '',
+              emit: 'closeModals',
               payload: ''
             },
             {
