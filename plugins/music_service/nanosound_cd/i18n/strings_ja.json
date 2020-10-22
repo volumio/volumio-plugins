@@ -33,6 +33,7 @@
 	"UPGRADE":"ソフトウェアをアップグレードする",
 	"SHOWALBUMART":"アルバムカバーを表示",
 	"EJECT":"CDを取り出す",
+	"AUTO_EJECT":"抽出後にCDを取り出す",
 	"SAVE_FOLDER_FORMAT_DOC":"保存フォルダの形式。 空白のままにすると、デフォルトでは yyyy-MM-dd_hhmm。 歌手名には％artist％、アルバム名には％album％を使用できます",
-	"SAVE_FOLDER_FORMAT":"保存フォルダ形式"
+	"SAVE_FOLDER_FORMAT":"保存フォルダ形式"	
 }
