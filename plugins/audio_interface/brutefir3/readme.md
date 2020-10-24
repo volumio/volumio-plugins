@@ -127,6 +127,7 @@ nearly everythings
 
 October 24th 2020
 
+- Warning when space in filter name
 - Alsa modular layout
 - fix for swap filters
 - attenutation +1dB if > 0

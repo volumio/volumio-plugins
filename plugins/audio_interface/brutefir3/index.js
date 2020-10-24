@@ -873,7 +873,9 @@ ControllerBrutefir.prototype.testclipping = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning'
+        class: 'btn btn-warning',
+        emit: 'closeModals',
+        payload: ''
       },]
     };
     // self.commandRouter.broadcastMessage("openModal", modalData);
@@ -1008,7 +1010,9 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning'
+        class: 'btn btn-warning',
+        emit: 'closeModals',
+        payload: ''
       },]
     };
     self.commandRouter.broadcastMessage("openModal", modalData);
@@ -1038,7 +1042,9 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning'
+        class: 'btn btn-warning',
+        emit: 'closeModals',
+        payload: ''
       },]
     };
     self.commandRouter.broadcastMessage("openModal", modalData)
@@ -1499,6 +1505,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
 
   let numb_part = 8;
   output_device = self.config.get('alsa_device');
+
   let defer = libQ.defer();
   try {
     let cp3 = execSync('/bin/cp /data/configuration/audio_interface/brutefir/config.json /data/configuration/audio_interface/brutefir/config.json-save');
@@ -1547,7 +1554,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning'
+        class: 'btn btn-warning',
+        emit: 'closeModals',
+        payload: ''
       },]
     }
     self.commandRouter.broadcastMessage("openModal", modalData);
@@ -1555,6 +1564,15 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
     let cp2 = execSync('/bin/rm /data/configuration/audio_interface/brutefir/config.json')
     let cp3 = exec('/bin/cp /data/configuration/audio_interface/brutefir/config.json-save /data/configuration/audio_interface/brutefir/config.json');
     self.logger.info('/data/configuration/audio_interface/brutefir/config.json restored!');
+    return;
+  }
+
+  let leftfilterchk = self.config.get('leftfilter')
+  let rightfilterchk = self.config.get('rightfilter')
+  if ((leftfilterchk.includes(' ')) || (rightfilterchk.includes(' '))) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
+    self.logger.error('SPACE NOT ALLOWED in file name')
+    return;
 
   } else {
     setTimeout(function () {
@@ -2004,36 +2022,36 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     let fileExt = filterName.slice(-4);
     let filterNameShort = filterName.slice(0, -6);
     let filterNameForSwap = filterNameShort + swapWord + fileExt;
-/*
-    fs.open((filterfolder + filterNameForSwap), 'r', (err) => {
-      if (!err) {
-        console.log('myfile exists ' + filterNameForSwap);
-          return true
-       // return true
-      } else {
-        console.log('myfile does not exist ' + (filterfolder + filterNameForSwap));
-        return false
-      }
-
-    });
-*/
-            if (fs.existsSync(filterfolder + filterNameForSwap)) {
-          return [true, filterNameForSwap]
-        } else {
-          return false
-        }
-      
-  };
- 
-    let leftResultExist = isFileExist(leftFilter1, '_2');
-    let toSaveLeftResult = leftResultExist[1];
+    /*
+        fs.open((filterfolder + filterNameForSwap), 'r', (err) => {
+          if (!err) {
+            console.log('myfile exists ' + filterNameForSwap);
+              return true
+           // return true
+          } else {
+            console.log('myfile does not exist ' + (filterfolder + filterNameForSwap));
+            return false
+          }
     
-    let rightResultExist = isFileExist(rightFilter1, '_2');
-    let toSaveRightResult = rightResultExist[1];
-  
+        });
+    */
+    if (fs.existsSync(filterfolder + filterNameForSwap)) {
+      return [true, filterNameForSwap]
+    } else {
+      return false
+    }
+
+  };
+
+  let leftResultExist = isFileExist(leftFilter1, '_2');
+  let toSaveLeftResult = leftResultExist[1];
+
+  let rightResultExist = isFileExist(rightFilter1, '_2');
+  let toSaveRightResult = rightResultExist[1];
+
   // if both condition are true, swapping possible
   // if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-    console.log('result ' + leftResult +' '+ rightResult +' '+ leftResultExist[0] +' '+ rightResultExist[0])
+  console.log('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
 
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
 
@@ -2161,7 +2179,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2173,7 +2193,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2185,7 +2207,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2197,7 +2221,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2208,7 +2234,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2219,7 +2247,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2230,7 +2260,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2241,7 +2273,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2252,7 +2286,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2263,7 +2299,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2274,7 +2312,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2286,7 +2326,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2298,7 +2340,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2310,7 +2354,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2322,7 +2368,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2334,7 +2382,9 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2459,6 +2509,14 @@ ControllerBrutefir.prototype.convert = function (data) {
   let drcconfig = self.config.get('drcconfig');
   // let filterfolder = "/data/INTERNAL/brutefirfilters/";
   let infile = self.config.get('filetoconvert');
+
+  if (infile.includes(' ')) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
+    self.logger.error('SPACE NOT ALLOWED in file name')
+    return;
+  };
+
+
   if (infile != 'choose a file') {
 
     let outfile = self.config.get('outputfilename').replace(/ /g, '-');
