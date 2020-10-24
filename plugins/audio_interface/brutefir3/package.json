@@ -1,6 +1,6 @@
 {
   "name": "brutefir",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "DSP for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,6 @@
     "prettyName": "DSP for Volumio",
     "plugin_type": "audio_interface",
     "icon": "fa-sliders fa-rotate-90",
-    "boot_priority": 10,
     "has_alsa_contribution": true
   },
   "dependencies": {

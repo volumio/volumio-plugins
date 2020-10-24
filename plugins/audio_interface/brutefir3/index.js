@@ -766,9 +766,9 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function () {
 ControllerBrutefir.prototype.autoconfig = function () {
   const self = this;
   let defer = libQ.defer();
-    self.modprobeLoopBackDevice()
+  self.modprobeLoopBackDevice()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
-  
+
   defer.resolve()
   return defer.promise;
 };
@@ -1982,7 +1982,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
   const self = this;
   let leftFilter1 = self.config.get('leftfilter');
   let rightFilter1 = self.config.get('rightfilter');
-  let filterfolder = "/data/INTERNAL/brutefirfilters/";
+  //let filterfolder = "/data/INTERNAL/brutefirfilters/";
 
   // check if filter naming is ok with _1 in name
   const isFilterSwappable = (filterName, swapWord) => {
@@ -2004,19 +2004,39 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     let fileExt = filterName.slice(-4);
     let filterNameShort = filterName.slice(0, -6);
     let filterNameForSwap = filterNameShort + swapWord + fileExt;
-    if (fs.exists(filterfolder + filterNameForSwap)) {
-      return [true, filterNameForSwap]
-    } else {
-      return false
-    }
-  };
-  let leftResultExist = isFileExist(leftFilter1, '_2');
-  let toSaveLeftResult = leftResultExist[1];
-  let rightResultExist = isFileExist(rightFilter1, '_2');
-  let toSaveRightResult = rightResultExist[1];
+/*
+    fs.open((filterfolder + filterNameForSwap), 'r', (err) => {
+      if (!err) {
+        console.log('myfile exists ' + filterNameForSwap);
+          return true
+       // return true
+      } else {
+        console.log('myfile does not exist ' + (filterfolder + filterNameForSwap));
+        return false
+      }
 
+    });
+*/
+            if (fs.existsSync(filterfolder + filterNameForSwap)) {
+          return [true, filterNameForSwap]
+        } else {
+          return false
+        }
+      
+  };
+ 
+    let leftResultExist = isFileExist(leftFilter1, '_2');
+    let toSaveLeftResult = leftResultExist[1];
+    
+    let rightResultExist = isFileExist(rightFilter1, '_2');
+    let toSaveRightResult = rightResultExist[1];
+  
   // if both condition are true, swapping possible
+  // if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
+    console.log('result ' + leftResult +' '+ rightResult +' '+ leftResultExist[0] +' '+ rightResultExist[0])
+
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
+
     console.log('swap possible !!!!!!!')
     self.config.set('sndleftfilter', toSaveLeftResult);
     self.config.set('sndrightfilter', toSaveRightResult);

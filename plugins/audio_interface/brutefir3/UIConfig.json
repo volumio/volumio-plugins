@@ -449,17 +449,13 @@
         {
           "id": "smpl_rate",
           "element": "select",
-          "doc": "sample rate",
+          "doc": "TRANSLATE.DOC_SAMPLE_RATE",
           "label": "TRANSLATE.SAMPLE_RATE",
           "value": {
             "value": "probesmplerate",
             "label": "probesmplerate"
           },
-          "options": [],
-          "visibleIf": {
-            "field": "advsettings",
-            "value": true
-          }
+          "options": []
         },
         {
           "id": "output_format",

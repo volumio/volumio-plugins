@@ -43,6 +43,7 @@
   "FILTER_FORMAT": "Format du filtre",
   "NUMBER_PARTITION": "Nombre de partitions",
   "SAMPLE_RATE": "Taux d'échantillonage",
+  "DOC_SAMPLE_RATE":" Doit correspondre à la fréquence des filtres utilisés",
   "OUTPUT_FORMAT": "Format de sortie",
   "DETECT_CLIPPING": "Détection du clipping",
   "DOC_DETECT_CLIPPING": "Si activé, la detection du clipping est proposée quand les paramètres sont sauvés.",

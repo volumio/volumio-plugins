@@ -43,6 +43,7 @@
   "FILTER_FORMAT": "Filters format",
   "NUMBER_PARTITION": "Number of partitions",
   "SAMPLE_RATE": "Sample rate",
+  "DOC_SAMPLE_RATE":"Mst match with the sample rate of the used filters",
   "OUTPUT_FORMAT": "Output format",
   "DETECT_CLIPPING": "Clipping detection",
   "DOC_DETECT_CLIPPING": "If enabled, clipping detection is provided when settings are set",

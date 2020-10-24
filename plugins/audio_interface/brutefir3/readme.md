@@ -1,4 +1,4 @@
-August 21th 2020
+October 24th 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,14 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 24th 2020
+
+- Alsa modular layout
+- fix for swap filters
+- attenutation +1dB if > 0
+- sample rate always shown
+- close modals on all screen
 
 August 4th 2020
 
