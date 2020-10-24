@@ -886,6 +886,7 @@ ControllerBrutefir.prototype.testclipping = function () {
   }
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
+    self.commandRouter.pushToastMessage('info', 'Detection clipping...');
 
     let pevent = event.MESSAGE.indexOf("peak");
     if (pevent != -1) {
