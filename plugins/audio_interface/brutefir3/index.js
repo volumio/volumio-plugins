@@ -1547,24 +1547,11 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
   self.config.set('output_format', data['output_format'].value);
   self.config.set('enableclipdetect', data['enableclipdetect']);
 
-  //setTimeout(function() {
   if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
-    let modalData = {
-      title: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_TITLE'),
-      message: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'),
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning',
-        emit: 'closeModals',
-        payload: ''
-      },]
-    }
-    self.commandRouter.broadcastMessage("openModal", modalData);
-    //		try {
-    let cp2 = execSync('/bin/rm /data/configuration/audio_interface/brutefir/config.json')
-    let cp3 = exec('/bin/cp /data/configuration/audio_interface/brutefir/config.json-save /data/configuration/audio_interface/brutefir/config.json');
-    self.logger.info('/data/configuration/audio_interface/brutefir/config.json restored!');
+
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'));
+    self.logger.error('All filter must be of the same type')
+
     return;
   }
 
@@ -1590,8 +1577,8 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
         })
 
-    }, 500);//2500
-    //  }
+    }, 500);
+    
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
@@ -2506,7 +2493,6 @@ ControllerBrutefir.prototype.fileconvert = function (data) {
 ControllerBrutefir.prototype.convert = function (data) {
   const self = this;
   //let defer = libQ.defer();
-  //let filtersource = "/data/INTERNAL/brutefirfilters/filter-sources/";
   let drcconfig = self.config.get('drcconfig');
   // let filterfolder = "/data/INTERNAL/brutefirfilters/";
   let infile = self.config.get('filetoconvert');
@@ -2520,13 +2506,26 @@ ControllerBrutefir.prototype.convert = function (data) {
 
   if (infile != 'choose a file') {
 
-    let outfile = self.config.get('outputfilename').replace(/ /g, '-');
+    let outfile = self.config.get('outputfilename')//.replace(/ /g, '-');
+
+    if (outfile.includes(' ')) {
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
+      self.logger.error('SPACE NOT ALLOWED in file name')
+      return;
+    };
+    /*
     if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
       outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
+    */
     let targetcurve = '\ /usr/share/drc/config/'
     let outsample = self.config.get('smpl_rate');
     let tc = self.config.get('tc');
+    if (tc.includes(' ')) {
+      self.commandRouter.pushToastMessage('error', ' target curve :' + self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
+      self.logger.error('SPACE NOT ALLOWED in file name for target curve')
+      return;
+    };
     if (tc != 'choose a file') {
       let tcsimplified = tc.replace('.txt', '');
       let ftargetcurve
