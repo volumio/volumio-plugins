@@ -1,4 +1,4 @@
-October 24th 2020
+October 26th 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+October 26th 2020
+
+- re HW detection (sample rate/ nbre of channels)
 
 October 24th 2020
 

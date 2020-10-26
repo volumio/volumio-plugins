@@ -728,6 +728,48 @@ ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, dat
 
 // Plugin methods -----------------------------------------------------------------------------
 
+//------------Ask for reboot for first time 
+ControllerBrutefir.prototype.askForRebootFirstUse = function () {
+  const self = this;
+
+  if (self.config.get('askForReboot')) {
+    var responseData = {
+      title: self.commandRouter.getI18nString('FIRST_USE'),
+      message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
+      size: 'lg',
+      buttons: [
+        {
+          name: self.commandRouter.getI18nString('CONTINUE'),
+          class: 'btn btn-cancel',
+          emit: 'closeModals',
+          payload: ''
+        },
+        {
+          name: 'Reboot',
+          class: 'btn btn-info',
+          emit: 'callMethod',
+          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data': '' }
+        }
+      ]
+    }
+    self.commandRouter.closeModals()
+    self.commandRouter.broadcastMessage("openModal", responseData);
+
+  }
+};
+
+ControllerBrutefir.prototype.setFalseReboot = function () {
+  const self = this;
+  self.config.set('askForReboot', false);
+  setTimeout(function () {
+    console.log(self.config.get('askForReboot'));
+    socket.emit('reboot');
+  }, 500);
+};
+
+// 
+
+
 //here we load snd_aloop module to provide a Loopback device
 ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
   const self = this;
@@ -742,6 +784,60 @@ ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
     defer.resolve();
   } catch (err) {
     self.logger.info('failed to load snd_aloop' + err);
+  }
+};
+
+//here we detect hw info
+ControllerBrutefir.prototype.hwinfo = function () {
+  const self = this;
+  let defer = libQ.defer();
+
+  let output_device = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+  let nchannels;
+  let formats;
+  let hwinfo;
+  let samplerates;
+  try {
+    execSync('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
+      uid: 1000,
+      gid: 1000
+    });
+    hwinfo = fs.readFileSync('/data/configuration/audio_interface/brutefir/hwinfo.json');
+    try {
+      const hwinfoJSON = JSON.parse(hwinfo);
+      nchannels = hwinfoJSON.channels.value;
+      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+      samplerates = hwinfoJSON.samplerates.value;
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.config.set('nchannels', nchannels);
+      self.config.set('formats', formats);
+      self.config.set('probesmplerate', samplerates);
+      let output_format = formats.split(" ").pop();
+
+      var arr = ['S16_LE', 'S24_LE', 'S24_3LE', 'S32_LE'];
+      var check = output_format;
+      if (arr.indexOf(check) > -1) {
+        let askForReboot = self.config.get('askForReboot');
+        let firstOutputFormat = self.config.get('firstOutputFormat');
+        console.log(askForReboot + " and " + firstOutputFormat)
+        if ((askForReboot == false) && firstOutputFormat) {
+          self.config.set('output_format', output_format);
+          self.config.set('firstOutputFormat', false);
+          self.logger.info('Auto set output format : ----->' + output_format);
+        }
+      } else {
+        self.logger.info('Can\'t determine a compatible value for output format');
+      }
+    } catch (err) {
+      self.logger.info('Error reading hwinfo.json, detection failed :', err);
+    }
+
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('----Hw detection failed :' + err);
+    defer.reject(err);
   }
 };
 
@@ -768,7 +864,7 @@ ControllerBrutefir.prototype.autoconfig = function () {
   let defer = libQ.defer();
   self.modprobeLoopBackDevice()
   self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
-
+  self.hwinfo()
   defer.resolve()
   return defer.promise;
 };
@@ -2594,6 +2690,32 @@ ControllerBrutefir.prototype.convert = function (data) {
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_FILE'));
   };
 };
+//------ Reset plugin remove all settings as if a new install is done------------
 
+ControllerBrutefir.prototype.resetplugin = function () {
+  const self = this;
+  try {
+    execSync("/bin/rm /data/configuration/audio_interface/brutefir/config.json", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('----- Dsp config reset-----');
+    let modalData = {
+      title: 'INFO!!!',
+      message: self.commandRouter.getI18nString('REBOOT_AFTER_RESET'),
+      size: 'lg',
+      buttons: [{
+        name: 'Reboot',
+        class: 'btn btn-warning',
+        emit: 'closeModals',
+        payload: ''
+      },]
+    };
+    self.commandRouter.broadcastMessage("openModal", modalData);
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to reset config' + err);
+  }
+}
 
 

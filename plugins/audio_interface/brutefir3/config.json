@@ -9,7 +9,7 @@
     },
     "askForReboot": {
         "type": "boolean",
-        "value": true
+        "value": false
     },
     "firstOutputFormat": {
         "type": "boolean",
