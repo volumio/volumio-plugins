@@ -477,7 +477,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         }
       } catch (e) {
         self.logger.error('Could not read file: ' + e)
-        console.log(sampleformat)
+        self.logger.info(sampleformat)
       }
       uiconf.sections[0].content[26].value = self.config.get('enableclipdetect');
 
@@ -808,9 +808,9 @@ ControllerBrutefir.prototype.hwinfo = function () {
       nchannels = hwinfoJSON.channels.value;
       formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
       samplerates = hwinfoJSON.samplerates.value;
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
       self.config.set('nchannels', nchannels);
       self.config.set('formats', formats);
       self.config.set('probesmplerate', samplerates);
@@ -917,18 +917,18 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
 
   client.connect(3002, '127.0.0.1', function (err) {
     client.write(brutefircmd);
-    console.log('cmd sent to brutefir = ' + brutefircmd);
+    self.logger.info('cmd sent to brutefir = ' + brutefircmd);
   });
 
   //error handling section
   client.on('error', function (e) {
     if (e.code == 'ECONNREFUSED') {
-      console.log('Huumm, is brutefir running ?');
+      self.logger.error('Huumm, is brutefir running ?');
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IS_BRUTEFIR_RUNNING'));
     }
   });
   client.on('data', function (data) {
-    console.log('Received: ' + data);
+    self.logger.info('Received: ' + data);
     client.destroy(); // kill client after server's response
   });
 };
@@ -945,7 +945,7 @@ ControllerBrutefir.prototype.testclipping = function () {
   let secondPeak = 0;
   let brutefircmd = ('cfoa "l_out" "l_out" 0 ;cfoa "r_out" "r_out"  0');
   self.sendCommandToBrutefir(brutefircmd);
-  console.log('Cmd sent to brutefir' + brutefircmd);
+  self.logger.info('Cmd sent to brutefir' + brutefircmd);
   let ititle = 'Detecting clipping';
   let imessage = 'Please wait (10sec)';
   let track = '/data/plugins/audio_interface/brutefir/testclipping/testclipping.wav';
@@ -960,7 +960,7 @@ ControllerBrutefir.prototype.testclipping = function () {
       }, 500);//2000
       socket.emit('unmute', '')
     } catch (e) {
-      console.log('/usr/bin/aplay --device=plughw:Loopback ' + track);
+      self.logger.info('/usr/bin/aplay --device=plughw:Loopback ' + track);
     };
   } else {
     let modalData = {
@@ -1168,7 +1168,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
     fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
-        return console.log(err);
+        return  self.logger.error(err);
       }
       let value;
       let devicevalue;
@@ -1256,7 +1256,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
       } else {
         output_device = 'hw:' + self.config.get('alsa_device');
       };
-      console.log(self.config.get('output_format'));
+      self.logger.info(self.config.get('output_format'));
 
       let output_formatx;
       output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
@@ -2099,7 +2099,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
   let leftResult = isFilterSwappable(leftFilter1, '_1');
   let rightResult = isFilterSwappable(rightFilter1, '_1');
 
-  console.log(leftResult + ' + ' + rightResult);
+  self.logger.info(leftResult + ' + ' + rightResult);
 
   // check if secoond filter with _2 in name
   const isFileExist = (filterName, swapWord) => {
@@ -2135,11 +2135,11 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
 
   // if both condition are true, swapping possible
   // if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-  console.log('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
+    self.logger.info('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
 
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
 
-    console.log('swap possible !!!!!!!')
+    self.logger.info('swap possible !!!!!!!')
     self.config.set('sndleftfilter', toSaveLeftResult);
     self.config.set('sndrightfilter', toSaveRightResult);
     self.config.set('arefilterswap', true);
@@ -2165,7 +2165,7 @@ ControllerBrutefir.prototype.SwapFilters = function () {
   var leftfilter, rightfilter, sndleftfilter, sndrightfilter;
   if (rsetUsedOfFilters == '1') {
     self.config.set('setUsedOfFilters', 2);
-    console.log('Swap to set 2 ');
+    self.logger.info('Swap to set 2 ');
     brutefircmd = ('cfc "l_out" "' + "2l_out" + '" ;cfc "r_out" "' + "2r_out" + '"');
     self.config.set('leftftosave', self.config.get('leftfilter'));
     self.config.set('rightftosave', self.config.get('rightfilter'));
@@ -2177,7 +2177,7 @@ ControllerBrutefir.prototype.SwapFilters = function () {
 
   } else if (rsetUsedOfFilters == '2') {
     self.config.set('setUsedOfFilters', 1);
-    console.log('Swap to set 1 ');
+    self.logger.info('Swap to set 1 ');
     brutefircmd = ('cfc "l_out" "' + "l_out" + '" ;cfc "r_out" "' + "r_out" + '"');
     /* self.config.set('leftftosave', self.config.get('sndleftfilter'));
      self.config.set('rightftosave', self.config.get('sndrightfilter'));
@@ -2256,7 +2256,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
     let M = (self.config.get('M'))
 
     if ((Lowsw == true) && (LM1sw == false)) {
-      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
+      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM1, LM2 and LM3 Must be enabled if you want to use Low filter',
@@ -2270,7 +2270,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((LM1sw == true) && (LM2sw == false)) {
-      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM2 and LM3 Must be enabled if you want to use LM1 filter',
@@ -2284,7 +2284,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((LM2sw == true) && (LM3sw == false)) {
-      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM3 Must be enabled if you want to use LM2 filter',
@@ -2298,7 +2298,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((Highsw == true) && (HMsw == false)) {
-      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
+      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! HM Must be enabled if you want to use High filter',
