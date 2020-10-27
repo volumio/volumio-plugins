@@ -22,6 +22,11 @@ if [ ! -f $INSTALLING ]; then
 		echo "Continuing installation, fetching armhf package..."
 		wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
 
+	# buster && armhf
+	if [ $DEBIAN_VERSION = "buster" ] && [ $ARCH = "armhf" ]; then
+		echo "Continuing installation, fetching armhf package for Buster..."
+		wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/buster/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
+
 	# jessie && ix86
 	elif [ $DEBIAN_VERSION = "jessie" ] && ([ $ARCH = "i386" ] || [ $ARCH = "i486" ] || [ $ARCH = "i586" ] || [ $ARCH = "i686" ] || [ $ARCH = "i786" ]); then
 		echo "Continuing installation, fetching i386 package..."
