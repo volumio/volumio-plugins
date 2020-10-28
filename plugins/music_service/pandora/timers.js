@@ -83,27 +83,27 @@ class ExpireOldTracks extends Timer {
         const Q = that.self.getQueue();
         const curTrack = that.self.getQueueTrack();
         const curUri = (curTrack) ? curTrack.uri : null;
-        const victims = Q.filter(
+        let victims = Q.filter(
             item => item.service === that.self.serviceName &&
             timeNow - item.fetchTime > lifetime &&
             item.uri !== curUri
         );
         const victimsLen = victims.length;
-        const vhShoutOut = that.fnName + '::voorhees';
+        const vhFnName = that.fnName + '::voorhees';
 
         that.self.announceFn(that.fnName);
+        that.logger(that.fnName, 'timeNow: ' + timeNow);
 
         let voorhees = () => {
             // https://en.wikipedia.org/wiki/Jason_Voorhees
-            that.self.removeTrack(victims[0].uri)
-                .then(() => {
-                    that.logger(
-                        vhShoutOut,
-                        'Expired ' + victims.title +
-                        ' by ' + victims.artist
-                    );
-                    return libQ.resolve();
-                });
+            let victim = victims.shift();
+            that.self.removeTrack(victim.uri);
+            that.logger(
+                vhFnName,
+                'Expired ' + victim.title +
+                ' by ' + victim.artist
+            );
+            return libQ.resolve();
         };
 
         if (victims.length > 0) {
@@ -111,7 +111,7 @@ class ExpireOldTracks extends Timer {
                 ' tracks every ' + interval / 1000 + ' seconds');
             for (let i = 0; i < victimsLen; i++) {
                 that.self.siesta(
-                    voorhees, vhShoutOut,
+                    voorhees, vhFnName,
                     [], interval * (i + 1)
                 );
             }

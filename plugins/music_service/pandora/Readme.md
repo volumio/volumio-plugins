@@ -145,6 +145,10 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
   * `PandoraHandler::setCredentials` fix: Refreshing logins fails in v2.7.0.  In the `pandora` object, the `authdata` property is now set to null.   The `version` property has been added to the `partnerInfo` property for the `pandora` object.<br/>
   This was actually fixed before but was lost in the change from v2.6.0 to v2.7.0.
 
+### Version 2.7.2
+  #### Fixes
+  * `ExpireOldTracks::fn` fix: Crash in vorhees() was causing a Volumio restart at the track expire interval.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>
