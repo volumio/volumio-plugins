@@ -483,8 +483,9 @@ ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=fals
             .then(state => self.pushState(state));
     }
     else {
-        return self.logInfo(fnName + ': '+ 'Not removing ' +
+        self.logInfo(fnName + ': '+ 'Not removing ' +
             trackUri + ' at queue index: ' + index);
+        return libQ.resolve();
     }
 };
 
@@ -548,7 +549,8 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
                 msg += (num < count - 1) ? num + ', ' :
                     num + '] from ' + from + ' to ' + to;
             }
-            return self.logInfo(msg);
+            self.logInfo(msg);
+            return libQ.resolve();
         }
 
         return moveTrackLoop() // must call return here
