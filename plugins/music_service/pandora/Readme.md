@@ -148,6 +148,7 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 ### Version 2.7.2
   #### Fixes
   * `ExpireOldTracks::fn` fix: Crash in vorhees() was causing a Volumio restart at the track expire interval.
+  * `fetchAndAddTracks::moveStationTracks::moveTrackLoop` and `removeTrack` now return Promises.
 
 ## Issues
 
