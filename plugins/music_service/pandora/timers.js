@@ -68,7 +68,6 @@ class ExpireOldTracks extends Timer {
 
         this.interval = 5 * 60 * 1000; // 5 minutes
         this.className = 'ExpireOldTracks';
-        this.fnName = this.className + '::reaper';
         this.delayStart = true;
         this.init();
     }
@@ -89,10 +88,10 @@ class ExpireOldTracks extends Timer {
             item.uri !== curUri
         );
         const victimsLen = victims.length;
-        const vhFnName = that.fnName + '::voorhees';
+        const fnName = 'reaper';
+        const vhFnName = fnName + '::voorhees';
 
-        that.self.announceFn(that.fnName);
-        that.logger(that.fnName, 'timeNow: ' + timeNow);
+        that.self.announceFn(fnName);
 
         let voorhees = () => {
             // https://en.wikipedia.org/wiki/Jason_Voorhees
@@ -107,7 +106,7 @@ class ExpireOldTracks extends Timer {
         };
 
         if (victims.length > 0) {
-            that.logger(that.fnName, 'Expiring ' + victimsLen +
+            that.logger(fnName, 'Expiring ' + victimsLen +
                 ' tracks every ' + interval / 1000 + ' seconds');
             for (let i = 0; i < victimsLen; i++) {
                 that.self.siesta(
@@ -117,7 +116,7 @@ class ExpireOldTracks extends Timer {
             }
         }
         else {
-            that.logger(that.fnName,
+            that.logger(fnName,
                 'No victims found: ' +
                 'Expiring zero tracks.  ' + 
                 'Don\'t worry -- Jason will return.');
