@@ -148,7 +148,10 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 ### Version 2.7.2
   #### Fixes
   * `ExpireOldTracks::fn` fix: Crash in vorhees() was causing a Volumio restart at the track expire interval.
-  * `fetchAndAddTracks::moveStationTracks::moveTrackLoop` and `removeTrack` now return Promises.
+  * `removeTrack` now returns a Promise if track is found unfit from removal (related to above bug).
+  * If a different station track is selected from the Queue page, that track is not removed from the queue before starting playback -- it is played as expected.
+  * `fetchAndAddTracks` was refactored.  The logic is much simpler now -- less queue math.  There may have been a bug there.  
+  * If a track from a different station was selected from the Queue page, its track length was at maxStationTracks, and the first of those tracks was selected, the tracks are now moved to the proper position (previously, the tracks were not moved until the next track played).
 
 ## Issues
 
