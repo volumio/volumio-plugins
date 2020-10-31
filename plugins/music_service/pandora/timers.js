@@ -68,7 +68,6 @@ class ExpireOldTracks extends Timer {
 
         this.interval = 5 * 60 * 1000; // 5 minutes
         this.className = 'ExpireOldTracks';
-        this.fnName = this.className + '::reaper';
         this.delayStart = true;
         this.init();
     }
@@ -83,41 +82,41 @@ class ExpireOldTracks extends Timer {
         const Q = that.self.getQueue();
         const curTrack = that.self.getQueueTrack();
         const curUri = (curTrack) ? curTrack.uri : null;
-        const victims = Q.filter(
+        let victims = Q.filter(
             item => item.service === that.self.serviceName &&
             timeNow - item.fetchTime > lifetime &&
             item.uri !== curUri
         );
         const victimsLen = victims.length;
-        const vhShoutOut = that.fnName + '::voorhees';
+        const fnName = 'reaper';
+        const vhFnName = fnName + '::voorhees';
 
-        that.self.announceFn(that.fnName);
+        that.self.announceFn(fnName);
 
         let voorhees = () => {
             // https://en.wikipedia.org/wiki/Jason_Voorhees
-            that.self.removeTrack(victims[0].uri)
-                .then(() => {
-                    that.logger(
-                        vhShoutOut,
-                        'Expired ' + victims.title +
-                        ' by ' + victims.artist
-                    );
-                    return libQ.resolve();
-                });
+            let victim = victims.shift();
+            that.self.removeTrack(victim.uri);
+            that.logger(
+                vhFnName,
+                'Expired ' + victim.title +
+                ' by ' + victim.artist
+            );
+            return libQ.resolve();
         };
 
         if (victims.length > 0) {
-            that.logger(that.fnName, 'Expiring ' + victimsLen +
+            that.logger(fnName, 'Expiring ' + victimsLen +
                 ' tracks every ' + interval / 1000 + ' seconds');
             for (let i = 0; i < victimsLen; i++) {
                 that.self.siesta(
-                    voorhees, vhShoutOut,
+                    voorhees, vhFnName,
                     [], interval * (i + 1)
                 );
             }
         }
         else {
-            that.logger(that.fnName,
+            that.logger(fnName,
                 'No victims found: ' +
                 'Expiring zero tracks.  ' + 
                 'Don\'t worry -- Jason will return.');

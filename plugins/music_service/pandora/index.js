@@ -67,7 +67,7 @@ ControllerPandora.prototype.onStart = function () {
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
     self.addToBrowseSources();
-    
+
     return self.validateLoginCredentials(options);
 };
 
@@ -195,7 +195,7 @@ ControllerPandora.prototype.setOptionsConf = function (options) {
     self.superPrevious = options.superPrevious;
     self.config.set('flushThem', options.flushThem);
     self.flushThem = options.flushThem;
-    
+
     // These options are validated
     options.maxStationTracks = self.validateMaxStationTracks(options.maxStationTracks);
     self.config.set('maxStationTracks', options.maxStationTracks);
@@ -251,7 +251,7 @@ ControllerPandora.prototype.validateLoginCredentials = function (options) {
 
     if ((typeof(options.email) === 'undefined' || typeof(options.password) === 'undefined') ||
         (!options.email || !options.password)) {
-        
+
         const msg = 'Need email address and password.  See plugin settings.';
 
         self.timeOutToast(fnName, 'error', 'Pandora Options', msg, 6000);
@@ -267,7 +267,7 @@ ControllerPandora.prototype.validateLoginCredentials = function (options) {
     else { // set new credentials, restart auth timer
         self.pandoraHandler.setCredentials(options);
         self.preventAuthTimeout.fn();
-        
+
         return libQ.resolve();
     }
 };
@@ -483,8 +483,9 @@ ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=fals
             .then(state => self.pushState(state));
     }
     else {
-        return self.logInfo(fnName + ': '+ 'Not removing ' +
+        self.logInfo(fnName + ': '+ 'Not removing ' +
             trackUri + ' at queue index: ' + index);
+        return libQ.resolve();
     }
 };
 
@@ -535,72 +536,57 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
             });
     }
 
-    function moveStationTracks(from, to, count, cameFromMenu) {
-        const subFnName = fnName + '::addNewTracks::moveStationTracks';
+    function moveStationTracks(tracks) {
+        const subFnName = fnName + '::moveStationTracks';
+        const trackLen = tracks.length;
+        const qLen = self.getQueue().length;
         let msg = subFnName + ': Moved tracks [';
         let finalPos;
 
-        self.cameFromMenu = false;
+        self.announceFn(subFnName);
 
-        function moveTrackLoop() {
-            for (let num = 0; num < count; num++) {
-                self.commandRouter.stateMachine.moveQueueItem(from, to);
-                msg += (num < count - 1) ? num + ', ' :
-                    num + '] from ' + from + ' to ' + to;
-            }
-            return self.logInfo(msg);
+        let to = self.oldQLen - 1;
+        if (!self.cameFromMenu) {
+            self.oldQLen = qLen;
+            to = qLen - 1;
         }
 
-        return moveTrackLoop() // must call return here
-            .then(() => {
-                self.logInfo('cameFromMenu: ' + cameFromMenu);  // DEBUG
-                if (!cameFromMenu) {  // set proper queue position
-                    getSQInfo()
-                        .then(sqInfo => libQ.resolve(sqInfo.sQPos))
-                        .then(sQPos => {
-                            finalPos = to - count + sQPos + 1;
-                            self.setCurrQueuePos(finalPos);
-                            self.mpdPlugin.getState()
-                                .then(state => {
-                                    self.logInfo(subFnName +
-                                        ': Set new Queue Position to ' +
-                                        finalPos);
-                                    return self.pushState(state);
-                                });
-                        });
-                }
-                return libQ.resolve();
-            });
+        for (let i = 0; i < trackLen; i++) {
+            let trackToMove = tracks.shift();
+            let from = self.getQueueIndex(trackToMove.uri);
+            self.commandRouter.stateMachine.moveQueueItem(from, to);
+            msg += (i < tracks.length - 1) ? i + ', ' :
+                i + '] from ' + from + ' to ' + to;
+        }
+        self.logInfo(msg);
+
+        if (!self.cameFromMenu) { // set new Qpos
+            getSQInfo()
+                .then(sqInfo => libQ.resolve(sqInfo.sQPos))
+                .then(sQPos => {
+                    finalPos = to - trackLen + sQPos + 1;
+                    self.setCurrQueuePos(finalPos);
+                    self.logInfo(subFnName +
+                        ': Set new Queue Position to ' +
+                        finalPos);
+                    self.mpdPlugin.getState()
+                        .then(state => self.pushState(state));
+                });
+        }
+        return libQ.resolve();
     }
 
     function checkIfMovingTracks(isSQLast) {
         if (!self.flushThem) { // multiple stations in queue
-            const Q = self.getQueue();
-            const qLen = Q.length;
-            let i = 0;
-
-            while (Q[i].stationId != self.currStation.id) {
-                i++;
-            }
-            const stPos = i; // start pos of currStationId tracks
-
             if (!isSQLast) {
-                while (i < qLen && Q[i].stationId == self.currStation.id) {
-                    i++;
-                }
-
-                const count = i - stPos; // if changing the station from menu
-                let from = stPos;
-                let to = self.oldQLen - 1;
-                if (!self.cameFromMenu) {
-                    self.oldQLen = qLen;
-                    to = qLen - 1;
-                }
-
-                return moveStationTracks(from, to, count, self.cameFromMenu);
+                const SQ = self.getQueue().filter(
+                    item => item.stationId == self.currStation.id);
+                return moveStationTracks(SQ);
             }
+
             self.cameFromMenu = false;
         }
+
         return libQ.resolve();
     }
 
@@ -611,8 +597,10 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
             .then(diff1 => {
                 return getSQInfo()
                     .then(sQInfo1 => {
-                        self.logInfo(fnName + '=> diff1: ' + diff1 + ' sQPos1: ' + sQInfo1.sQPos);
-                        if (sQInfo1.sQPos != 0 || diff1 < 0) {
+                        self.logInfo(fnName + '=> diff1: ' + diff1 +
+                            ' sQPos1: ' + sQInfo1.sQPos);
+                        if (sQInfo1.sQPos != 0 || diff1 < 0) { // will fetch tracks
+                            self.logInfo(fnName + ': Fetching tracks');
                             let deferFetchTracks = self.pandoraHandler.fetchTracks();
                             deferFetchTracks.then(() => {
                                 let newTracks = self.pandoraHandler.getNewTracks();
@@ -627,13 +615,18 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
                                             if (diff2 > 0) {
                                                 return getSQInfo()
                                                     .then(sQInfo2 => {
-                                                        self.logInfo(fnName + '=> diff2 > 0: ' + diff2 + ' sQPos2: ' + sQInfo2.sQPos);
+                                                        self.logInfo(fnName + '=> diff2 > 0: ' + diff2 +
+                                                            ' sQPos2: ' + sQInfo2.sQPos);
                                                         return self.removeOldTrackBlock(sQInfo2.sQPos, diff2);
                                                     });
                                             }
                                         });
                                 }
                             });
+                        }
+                        else { // no fetch
+                            self.logInfo(fnName + ': Not fetching tracks: qPos == 0 && diff1 >= 0');
+                            return checkIfMovingTracks(sQInfo1.isSQLast);
                         }
                     });
             });
@@ -669,16 +662,16 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 
     self.announceFn(fnName);
 
-    self.currStation.id = track.stationId;
-    self.currStation.name = self.pandoraHandler.getStationData()[track.stationId].name;
-
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
         .then(() => self.streamLifeChecker.stop())
         .then(() => {
-            if (self.lastUri !== track.uri) {
+            if (self.lastUri !== track.uri &&
+                    self.currStation.id == track.stationId) {
                 self.removeTrack(self.lastUri);
             }
+            self.currStation.id = track.stationId;
+            self.currStation.name = self.pandoraHandler.getStationData()[track.stationId].name;
             self.lastUri = track.uri;
 
             return self.appendTracksToMpd([track]);
