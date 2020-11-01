@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#TODO : need to detect volumio version for alsa_modular layout
 spath=/data/plugins/audio_interface/brutefir
 opath=/data/INTERNAL/Dsp
 

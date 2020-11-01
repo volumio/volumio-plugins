@@ -1,4 +1,4 @@
-October 26th 2020
+November 1st 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -120,10 +120,13 @@ nearly everythings
 ## What is not working :
 
 - ?
-- Conf for the output is corrupted if something is saved in mixer settings...
-
 
 ### 4. Last changes
+
+November 1st 2020
+
+- attenuation auto +0.5dB
+- warning for clipping detection
 
 October 26th 2020
 

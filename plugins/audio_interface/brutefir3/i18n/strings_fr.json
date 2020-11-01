@@ -49,7 +49,7 @@
   "DETECT_CLIPPING": "Détection du clipping",
   "DOC_DETECT_CLIPPING": "Si activé, la detection du clipping est proposée quand les paramètres sont sauvés.",
   "CLIPPING_DETECT_TITLE": "Teste le clipping et règle l'attenuation",
-  "CLIPPING_DETECT_MESS": "Du clipping peut apparaître selon le filtre utilisé. Le plugin peut le detecter et appliquer l'atténuation requise. La lecture va être stoppée si besoin. Appuyer sur 'tester' ou 'Quitter",
+  "CLIPPING_DETECT_MESS": "Du clipping peut apparaître selon le filtre utilisé. Le plugin peut le detecter et appliquer l'atténuation requise. La lecture va être stoppée si besoin. ---> ATTENTION! <--- un bruit rose va être joué à plein volume. Suivant votre matériel, le son devrait être coupé. Mais il est prudent de baisser le volume! Appuyer sur 'tester' ou 'Quitter",
   "CLIPPING_DETECT_EXIT": "Quitter",
   "CLIPPING_DETECT_TEST": "Tester",
   "FILTER_LENGTH":"La longueur du filtre est :",

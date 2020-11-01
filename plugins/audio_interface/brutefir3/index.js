@@ -995,9 +995,9 @@ ControllerBrutefir.prototype.testclipping = function () {
       let rightAttSet = 0;
       let corr = 0.49;
       let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
-      let leftSuggested = leftSuggestedb + 1;
+      let leftSuggested = leftSuggestedb + 1.5;
       let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
-      let rightSuggested = rightSuggestedb + 1;
+      let rightSuggested = rightSuggestedb + 1.5;
       if (leftSuggested > rightSuggested) {
         messageDisplayed = leftSuggested
       } else {

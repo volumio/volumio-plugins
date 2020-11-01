@@ -49,7 +49,7 @@
   "DETECT_CLIPPING": "Clipping detection",
   "DOC_DETECT_CLIPPING": "If enabled, clipping detection is provided when settings are set",
   "CLIPPING_DETECT_TITLE": "Test clipping and set attenuation",
-  "CLIPPING_DETECT_MESS": "Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. If something is played, it will be stop. Press 'Test' to do that or Exit.",
+  "CLIPPING_DETECT_MESS": "Depend on your filter, clipping may occur. The plugin can detect it and apply required attenuation. If something is played, it will be stop. ---> WARNING! <--- A full volume pink noise is going to be played. Volume should be mute while playing if your hardware supports it. It is safe to turn down the volume. Press 'Test' to do that or Exit.",
   "CLIPPING_DETECT_EXIT": "Exit",
   "CLIPPING_DETECT_TEST": "Test",
   "FILTER_LENGTH":"Filter length is :",
