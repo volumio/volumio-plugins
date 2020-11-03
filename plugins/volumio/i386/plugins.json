@@ -133,24 +133,6 @@
 					"updated": "19-10-2020"
 				},
 				{
-					"prettyName": "80s80s Radio",
-					"icon": "fa-headphones",
-					"name": "80s80s",
-					"version": "1.0.1",
-					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/80s80s/80s80s.zip",
-					"license": "ISC",
-					"description": "80s80s Radio Plugin for Volumio2",
-					"details": "",
-					"author": "marco79cgn",
-					"screenshots": [
-						{
-							"image": "",
-							"thumb": ""
-						}
-					],
-					"updated": "8-8-2019"
-				},
-				{
 					"prettyName": "Roon Bridge",
 					"icon": "fas fa-volume-up",
 					"name": "RoonBridge",
