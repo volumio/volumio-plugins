@@ -937,7 +937,7 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
 ControllerBrutefir.prototype.testclipping = function () {
   const self = this;
   self.commandRouter.closeModals()
-  socket.emit('pause');
+  socket.emit('stop');
   let filelength = self.config.get('filter_size');
 
   let messageDisplayed;
@@ -993,7 +993,7 @@ ControllerBrutefir.prototype.testclipping = function () {
       firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
       let leftAttSet = 0;
       let rightAttSet = 0;
-      let corr = 0.49;
+      let corr = 1.49;
       let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
       let leftSuggested = leftSuggestedb + 1.5;
       let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
@@ -2609,11 +2609,11 @@ ControllerBrutefir.prototype.convert = function (data) {
       self.logger.error('SPACE NOT ALLOWED in file name')
       return;
     };
-    /*
+    
     if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
       outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
-    */
+    
     let targetcurve = '\ /usr/share/drc/config/'
     let outsample = self.config.get('smpl_rate');
     let tc = self.config.get('tc');
