@@ -488,7 +488,7 @@ ControllerRadioParadise.prototype.pushSongState = function (metadata) {
     var rpState = {
         status: 'play',
         service: self.serviceName,
-        type: 'track',
+        type: 'webradio',
         trackType: audioFormat,
         radioType: 'rparadise',
         albumart: metadata.cover,
@@ -516,12 +516,12 @@ ControllerRadioParadise.prototype.pushSongState = function (metadata) {
     queueItem.artist =  metadata.artist;
     queueItem.album = metadata.album;
     queueItem.albumart = metadata.cover;
-    queueItem.trackType = 'Radio Paradise ' + channelMix;
+    queueItem.trackType = 'Rparadise '+ channelMix;
     queueItem.duration = metadata.time;
     queueItem.samplerate = '44.1 KHz';
     queueItem.bitdepth = '16 bit';
     queueItem.channels = 2;
-
+    
     //reset volumio internal timer
     self.commandRouter.stateMachine.currentSeek = 0;
     self.commandRouter.stateMachine.playbackStart=Date.now();
