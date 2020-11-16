@@ -1,4 +1,4 @@
-November 11th 2020
+November 16th 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+November 16th 2020
+
+- activation VoBAF
 
 November 11th 2020
 

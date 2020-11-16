@@ -64,7 +64,7 @@ ControllerBrutefir.prototype.onStart = function () {
       });
       return aplayDefer.promise;
     })
-
+  self.sendvolumelevel();
   socket.emit('getState', '');
   socket.emit('pause');
   self.config.set('displayednameofset', "Set used is 1");
@@ -1168,7 +1168,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
     fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
-        return  self.logger.error(err);
+        return self.logger.error(err);
       }
       let value;
       let devicevalue;
@@ -1674,7 +1674,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
         })
 
     }, 500);
-    
+
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
@@ -2135,7 +2135,7 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
 
   // if both condition are true, swapping possible
   // if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-    self.logger.info('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
+  self.logger.info('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
 
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
 
@@ -2609,11 +2609,11 @@ ControllerBrutefir.prototype.convert = function (data) {
       self.logger.error('SPACE NOT ALLOWED in file name')
       return;
     };
-    
+
     if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
       outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
-    
+
     let targetcurve = '\ /usr/share/drc/config/'
     let outsample = self.config.get('smpl_rate');
     let tc = self.config.get('tc');
