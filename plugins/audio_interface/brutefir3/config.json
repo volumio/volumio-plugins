@@ -261,7 +261,7 @@
     },
     "outputfilename": {
         "type": "string",
-        "value": "Empty=name of file to convert"
+        "value": "Empty=name-of-file-to-convert"
     },
     "filetoconvert": {
         "type": "string",
