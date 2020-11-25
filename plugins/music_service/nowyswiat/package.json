@@ -1,6 +1,6 @@
 {
 	"name": "nowyswiat",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"description": "Radio Nowy Swiat",
 	"main": "index.js",
 	"scripts": {

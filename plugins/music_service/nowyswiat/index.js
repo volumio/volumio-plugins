@@ -35,8 +35,12 @@ nowyswiat.prototype.onVolumioStart = function() {
 
     self.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
     self.getConf(self.configFile);
+
     self.apiDelay = self.config.get('apiDelay');
     self.logger.info('[' + Date.now() + '] ' + '[RadioNowySwiat] API delay: ' + self.apiDelay);
+    self.apiStream256 = self.config.get('apiStream256');
+    if (!self.apiStream256) self.apiStream256 = "ypqt40u0x1zuv";
+    self.logger.info('[' + Date.now() + '] ' + '[RadioNowySwiat] Stream 256Kb: http://stream.rcs.revma.com/' + self.apiStream256);
 
     return libQ.resolve();
 }
@@ -87,6 +91,7 @@ nowyswiat.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function (uiconf) {
             uiconf.sections[0].content[0].value = self.config.get('apiDelay');
+            uiconf.sections[0].content[1].value = self.config.get('apiStream256');
             defer.resolve(uiconf);
         })
         .fail(function () {
@@ -132,6 +137,12 @@ nowyswiat.prototype.updateConfig = function (data) {
     if (self.config.get('apiDelay') != data['apiDelay']) {
       self.config.set('apiDelay', data['apiDelay']);
       self.apiDelay = data['apiDelay'];
+      configUpdated = true;
+    }
+	
+    if (self.config.get('apiStream256') != data['apiStream256']) {
+      self.config.set('apiStream256', data['apiStream256']);
+      self.apiStream256 = data['apiStream256'];
       configUpdated = true;
     }
   
@@ -280,6 +291,8 @@ nowyswiat.prototype.clearAddPlayTrack = function (track) {
         self.timer.clear();
     }
 
+    self.logger.info('[ ================== >>>> ] [RADIONOWYSWIAT] Stream 256Kb: http://stream.rcs.revma.com/' + self.apiStream256);
+    //self.logger.info('[ ================== >>>> ] [RADIONOWYSWIAT] Delay: ' + parseInt(self.apiDelay));
     // normal radio streams
     return self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
@@ -336,7 +349,7 @@ nowyswiat.prototype.pushSongState = function (metadata) {
         duration: metadata.time,
         seek: 0,
         samplerate: '44.1 KHz',
-        bitdepth: '16 bit',
+        bitdepth: '24 bit',
         channels: 2
     };
 
@@ -353,7 +366,7 @@ nowyswiat.prototype.pushSongState = function (metadata) {
     queueItem.trackType = audioFormat;
     queueItem.duration = metadata.time;
     queueItem.samplerate = '44.1 KHz';
-    queueItem.bitdepth = '16 bit';
+    queueItem.bitdepth = '24 bit';
     queueItem.channels = 2;
 
     //reset volumio internal timer
@@ -461,7 +474,7 @@ nowyswiat.prototype.pushState = function(state) {
 //====================================================================================================
 nowyswiat.prototype.explodeUri = function(uri) {
 	var self = this;
-    self.logger.info('[' + Date.now() + '] ' + '[RadioNowySwiat] explodeUri: ' + uri);
+    self.logger.info('[ ================== >>>> ] [RADIONOWYSWIAT] explodeUri: ' + uri);
 	var defer = libQ.defer();
     var response = [];
 
@@ -469,21 +482,26 @@ nowyswiat.prototype.explodeUri = function(uri) {
     var channel = parseInt(uris[1]);
     var query;
     var station;
+	var rnslink;
 
     station = uris[0].substring(3);
+    self.logger.info('[ ================== >>>> ] [RADIONOWYSWIAT] channel: ' + channel);
 
     switch (uris[0]) {
         case 'webrns':
             if (self.timer) {
                 self.timer.clear();
             }
+            if (channel == 1) rnslink = "http://stream.rcs.revma.com/" + self.apiStream256;
+			else rnslink = self.radioStations.nowyswiat[channel].url;
+            self.logger.info('[ ================== >>>> ] [RADIONOWYSWIAT] RNS_Link: ' + rnslink);
             response.push({
                 service: self.serviceName,
                 type: 'track',
                 trackType: self.getRadioI18nString('PLUGIN_NAME'),
                 radioType: station,
                 albumart: '/albumart?sourceicon=music_service/nowyswiat/rns.png',
-                uri: self.radioStations.nowyswiat[channel].url,
+                uri: rnslink,
                 name: self.radioStations.nowyswiat[channel].title,
                 duration: 1000
             });
@@ -492,6 +510,7 @@ nowyswiat.prototype.explodeUri = function(uri) {
         default:
             defer.resolve();
     }
+//                uri: self.radioStations.nowyswiat[channel].url,
 
 	return defer.promise;
 };
