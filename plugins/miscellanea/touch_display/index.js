@@ -76,16 +76,19 @@ TouchDisplay.prototype.onStart = function () {
       self.logger.info(id + 'Volumio Kiosk started');
       device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
       if (device === 'Raspberry PI') {
-        // detect Raspberry Pi Foundation original touch screen
-        exec('/bin/grep "^rpi_ft5406\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-          if (error !== null) {
-            self.logger.info(id + 'No Raspberry Pi Foundation touch screen detected.');
+        fs.readFile('/proc/modules', 'utf8', function (err, data) {
+          if (err) {
+            self.logger.error(id + 'Error reading /proc/modules: ' + err);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/proc/modules: ' + err);
           } else {
-            rpiScreen = true;
-            self.logger.info(id + 'Raspberry Pi Foundation touch screen detected.');
-            // check for backlight module of Raspberry Pi Foundation original touch screen
-            exec('/bin/grep "^rpi_backlight\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-              if (error !== null) {
+            // detect Raspberry Pi Foundation original touch screen
+            if (data.match(/^rpi_ft5406\b/gm) === null && data.match(/^raspberrypi_ts\b/gm) === null) {
+              self.logger.info(id + 'No Raspberry Pi Foundation touch screen detected.');
+            } else {
+              rpiScreen = true;
+              self.logger.info(id + 'Raspberry Pi Foundation touch screen detected.');
+              // check for backlight module of Raspberry Pi Foundation original touch screen
+              if (data.match(/^rpi_backlight\b/gm) === null) {
                 self.logger.info(id + 'No backlight module of a Raspberry Pi Foundation touch screen detected.');
               } else {
                 rpiBacklight = true;
@@ -116,7 +119,7 @@ TouchDisplay.prototype.onStart = function () {
                   }
                 });
               }
-            });
+            }
           }
           // screen orientation
           self.setOrientation(self.config.get('angle'));
