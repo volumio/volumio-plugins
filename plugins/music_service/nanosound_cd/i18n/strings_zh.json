@@ -33,6 +33,7 @@
 	"UPGRADE":"升级软件",
 	"SHOWALBUMART":"显示专辑封面",
 	"EJECT":"弹出CD",
+	"AUTO_EJECT":"提取后弹出CD",
 	"SAVE_FOLDER_FORMAT_DOC":"保存文件夹的格式。 如果留空，则默认为 yyyy-MM-dd_hhmm。 您可以将％artist％用于歌手名称，将％album％用于专辑名称",
-	"SAVE_FOLDER_FORMAT":"保存文件夹格式"
+	"SAVE_FOLDER_FORMAT":"保存文件夹格式"	
 }
