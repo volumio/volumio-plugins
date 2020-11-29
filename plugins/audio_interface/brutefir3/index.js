@@ -1123,7 +1123,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   self.logger.info('--------->Skip value for wav :' + skipvalue);
 
 
-  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
+  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288];
   var check = Number(filelength);
   var valfound = false;
   if (arr.indexOf(check) > -1) {

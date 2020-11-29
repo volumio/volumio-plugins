@@ -1,4 +1,4 @@
-November 20th 2020
+November 29th 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+November 29th 2020
+
+- support for filter length 524288
 
 November 20th 2020
 
