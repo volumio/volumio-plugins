@@ -172,7 +172,7 @@
 					"prettyName": "Radio Nowy Swiat",
 					"icon": "fa-lightbulb-o",
 					"name": "nowyswiat",
-					"version": "1.0.1",
+					"version": "1.0.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/nowyswiat/nowyswiat.zip",
 					"license": "ISC",
 					"description": "Radio Nowy Swiat",
@@ -184,7 +184,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "13-7-2020"
+					"updated": "29-11-2020"
 				},
 				{
 					"prettyName": "pandora",
