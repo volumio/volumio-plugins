@@ -739,6 +739,24 @@
 						}
 					],
 					"updated": "26-3-2019"
+				},
+				{
+					"prettyName": "status2mqtt by Julien Tiphaine",
+					"icon": "fa-lightbulb-o",
+					"name": "status2mqtt",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/status2mqtt/status2mqtt.zip",
+					"license": "ISC",
+					"description": "publish volumio status to an mqtt server",
+					"details": "send volumio status to mqtt",
+					"author": "jit06",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "30-11-2020"
 				}
 			]
 		}
