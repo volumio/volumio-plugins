@@ -1,15 +1,16 @@
 #!/bin/bash
 
 echo "Installing LIRC"
-apt-get update
-apt-get -y install lirc
+sudo apt-get update
+sudo apt-get -y install lirc
 
 echo "Applying LIRC starting policy"
-systemctl disable lirc.service
-systemctl stop lirc.service
+sudo systemctl disable lirc.service
+sudo systemctl stop lirc.service
 
 echo "Creating lircrc file"
-touch /etc/lirc/lircrc
+sudo touch /etc/lirc/lircrc
+sudo chmod -R 777 /etc/lirc/*
 
-#requred to end the plugin install
+#required to end the plugin install
 echo "plugininstallend"
