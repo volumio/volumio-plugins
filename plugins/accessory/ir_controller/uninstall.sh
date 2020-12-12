@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Unistalling LIRC"
-
-apt-get -y purge lirc
+echo "Removing dependencies"
+sudo apt-get -y purge --auto-remove lirc
 
 echo "Done"
+echo "pluginuninstallend"

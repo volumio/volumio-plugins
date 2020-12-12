@@ -1,6 +1,32 @@
 {
-  "IR_CONFIGURATION":"IR Remote Konfiguration",
-  "SAVE": "Speichern",
-  "PROFILE_SELECTOR": "Profil auswählen",
-  "PROFILE_SELECTOR_DOC": "Wähle die geeignete Konfiguration für Deine Fernbedienung aus den vorhandenen Profilen aus."
+  "IRCONTROLLER":{
+    "PLUGIN_NAME":"IR Controller",
+    "ERR_WRITE":"Fehler beim Schreiben von ",
+    "ERR_READ":"Fehler beim Lesen von ",
+    "ERR_LOAD_OVERLAY":"Fehler beim Laden des IR-Overlays: ",
+    "ERR_REMOVE_OVERLAY":"Fehler beim Entfernen des IR-Overlays: ",
+    "ERR_GPIO_OCCUPIED":"Der ausgewählte GPIO-Eingang wird bereits benutzt.",
+    "GENERIC_FAILED":"Fehlgeschlagen: ",
+    "IR_CONFIGURATION":"IR Remote Konfiguration",
+    "PROFILE_SELECTOR":"Profil auswählen",
+    "PROFILE_SELECTOR_DOC":"Wähle die geeignete Konfiguration für Deine Fernbedienung aus den vorhandenen Profilen aus.",
+    "GPIO_CONFIGURATION":"GPIO Konfiguration",
+    "GPIO_DESC":"Das Plugin prüft nicht, ob die GPIO-Nummern in der Auswahlliste bereits für andere Zweck genutzt werden. Es ist daher sehr wichtig, vor der Auswahl einer GPIO-Nummer sicherzustellen, dass diese tatsächlich noch zur Verfügung steht.",
+    "GPIO_IN_PIN":"GPIO des Infrarotempfängers auswählen",
+    "GPIO_IN_PIN_DOC":"GPIO-Nummer, die vom Infrarotempfänger genutzt wird. HINWEIS: Hierbei handelt es sich nicht um die Nummer des physischen Pins, an den der Infrarotempfänger angeschlossen ist, sondern um die Broadcom Pinnummer (BCM), vgl. https://de.pinout.xyz/#.",
+    "GPIO_PULL":"\"pull-up/-down\"-Einstellung auswählen",
+    "GPIO_PULL_DOC":"Mit der Einstellung \"up\" ist der Eingang \"high\", mit der Einstellung \"down\" ist der Eingang \"low\", wenn der IR-Empänger kein Signal liefert. Wird \"aus\" ausgewählt, wird der Eingang nicht in einen definierten Zustand versetzt, wenn der IR-Empänger kein Signal liefert. Default ist \"up\".",
+    "GPIO_PULL_OFF":"aus",
+    "GPIO_PULL_DOWN":"down",
+    "GPIO_PULL_UP":"up",
+    "FORCE_ACTIVE_STATE":"Konfiguriere \"active state\" des Eingangs",
+    "FORCE_ACTIVE_STATE_DOC":"Das Aktivieren dieser Option ermöglicht es, den Eingang, an den der Infrarotempänger angeschlossen ist, als \"active-high\" oder \"active-low\" zu konfigurieren.",
+    "ACTIVE_STATE":"\"active-high/-low\"-Logik auswählen",
+    "ACTIVE_STATE_DOC":"Wenn \"active-low\" ausgewählt wird, wird der Eingang logisch high (\"active\") sein, wenn das Signal vom Infrarotempänger low ist. Wird \"active-high\" ausgewählt, wird der Eingang logisch high sein, wenn das Signal vom Infrarotempänger high ist.",
+    "ACTIVE_LOW":"active-low",
+    "ACTIVE_HIGH":"active-high",
+    "REBOOT_MSG":"Ein Neustart ist erforderlich, damit die Änderung wirksam wird.",
+    "NO_CHANGES":"Keine zu speichernde Änderung.",
+    "SAVE":"Speichern"
+  }
 }
