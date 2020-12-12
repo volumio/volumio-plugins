@@ -13,7 +13,7 @@
     "GPIO_CONFIGURATION":"Configuration GPIO",
     "GPIO_DESC":"Le Plugin ne vérifie pas si le numéro GPIO dans la liste de sélection est déja utilisé par d'autres programmes. Donc, avant de sélectionner un numéro de GPIO, il est primordial de s'assurer qu'il est disponible.",
     "GPIO_IN_PIN":"Sélectionnez le GPIO pour le récepteur IR",
-    "GPIO_IN_PIN_DOC":"Numéro du GPIO utilisé pour le récepteur IR. NOTE: Ce n’est pas le numéro du contact physique sur lequel le récepteur est connecté, mais le numéro \’Broadcom pin number\’  (BCM), cf. https://pinout.xyz/#.",
+    "GPIO_IN_PIN_DOC":"Numéro du GPIO utilisé pour le récepteur IR. NOTE: Ce n’est pas le numéro du contact physique sur lequel le récepteur est connecté, mais le numéro \"Broadcom pin number\"  (BCM), cf. https://pinout.xyz/#.",
     "GPIO_PULL":"Sélectionnez le réglage \"pull-up/down\" ",
     "GPIO_PULL_DOC":"Quand règlé sur \"up\" l'entrée lira un état \"high\", avec \"down\" un état \"low\" quand il n'y a pas de signal du récepteur. Quand réglé sur \"off\" l'entrée sera flottante quand il n'y a pas de signal du récepteur. Le défaut est \"up\".",
     "GPIO_PULL_OFF":"off",
