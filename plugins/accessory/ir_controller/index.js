@@ -237,30 +237,34 @@ IrController.prototype.saveIROptions = function (data) {
   const self = this;
   const profileFolder = data.ir_profile.value.replace(/ /g, '\\ ');
 
-  self.config.set('ir_profile', data.ir_profile.value);
-  self.createHardwareConf();
-  exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-    if (error !== null) {
-      self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
-    } else {
-      self.logger.info(id + 'File permissions successfully set on /etc/lirc/.');
-      exec('/bin/cp -r ' + path.join(__dirname, 'configurations', profileFolder, '*') + ' /etc/lirc/', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error !== null) {
-          self.logger.error(id + 'Error copying configurations: ' + error);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
-        } else {
-          self.logger.info(id + 'LIRC correctly updated.');
-          if (data.notify !== false) {
-            self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+  if (self.config.get('ir_profile') !== data.ir_profile.value) {
+    self.config.set('ir_profile', data.ir_profile.value);
+    self.createHardwareConf();
+    exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+      if (error !== null) {
+        self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
+      } else {
+        self.logger.info(id + 'File permissions successfully set on /etc/lirc/.');
+        exec('/bin/cp -r ' + path.join(__dirname, 'configurations', profileFolder, '*') + ' /etc/lirc/', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+          if (error !== null) {
+            self.logger.error(id + 'Error copying configurations: ' + error);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
+          } else {
+            self.logger.info(id + 'LIRC correctly updated.');
+            if (data.notify !== false) {
+              self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+            }
+            setTimeout(function () {
+              self.restartLirc(data.notify);
+            }, 1000);
           }
-          setTimeout(function () {
-            self.restartLirc(data.notify);
-          }, 1000);
-        }
-      });
-    }
-  });
+        });
+      }
+    });
+  } else if (data.notify !== false) {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.NO_CHANGES'));
+  }
 };
 
 IrController.prototype.saveGpioOptions = function (data) {
@@ -288,6 +292,7 @@ IrController.prototype.saveGpioOptions = function (data) {
         if (data.notify !== false) {
           self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
         }
+        self.restartLirc(data.notify);
       })
       .fail(function (uiNeedsUpdate) {
         if (uiNeedsUpdate) {
