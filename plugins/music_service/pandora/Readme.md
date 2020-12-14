@@ -153,6 +153,16 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
   * `fetchAndAddTracks` was refactored.  The logic is much simpler now -- less queue math.  There may have been a bug there.  
   * If a track from a different station was selected from the Queue page, its track length was at maxStationTracks, and the first of those tracks was selected, the tracks are now moved to the proper position (previously, the tracks were not moved until the next track played).
 
+### Version 2.8.0
+  #### Changes
+  * Stations are indexed by the `stationToken` field.  This makes much more sense in case the station list changes due to addition or deletion of Pandora stations.
+  * Measures are taken to handle a deleted or added station while this plugin is running.  Station data is periodically updated while the plugin is running.
+  * MQTT option added.  A list of stations and the current station is optionally published to a MQTT broker.  This may be useful to users with home automation setups like [Home Assistant](https://home-assistant.io).
+  * Pandora and MQTT functions were moved to `pandora_handler.js` and `mqtt_handler.js`.
+  * Configuration menu is now split into three sections.
+  * Some of the redundant logging wrappers, utility functions and constants were moved to `helpers.js` and `common.js`.
+  * `this` context is handled more cleanly in the dependent modules.  `that` is now `self` and `that.self.<ControllerPandoraFunction>` (which was defintely confusing) is now `self.context.<ControllerPandoraFunction>`.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>
@@ -166,6 +176,7 @@ After that, the functions defined for previous and next in the plugin worked fin
 I made my own consume function that removes the last track played no matter where it is in the queue.  I'm not sure if I have reinvented the wheel; Volumio might already be able to do this.  For now, my consume function does the job.
 * ~~The wrapper to the JSON Pandora API I am using is not set up to use the regular Pandora One server.  The other credentials can be passed in but the module hardcodes the server URL.  This might not matter, but I haven't been able to test it.~~<br/>
 My alpha fork of the module was rewritten to use Promises instead of callbacks, and the server is fixed.  However, it's not ready yet (there might not be a need for it).
+* Should `self.context` be `self.parent`?  I don't know the proper naming convention.
 
 ## All testers are welcome, even if they ride motorcycles.  You know who you are.
 

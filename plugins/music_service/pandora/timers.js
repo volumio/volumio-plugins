@@ -2,50 +2,52 @@
 'use strict';
 
 var libQ = require('kew');
+const { serviceName } = require('./common');
+const {PUtil} = require('./helpers');
 
 class Timer {
     constructor(context) {
-        this.self = context;
-        this.self.commandRouter = context.commandRouter;
+        this.context = context;
+        this.logger = context.logger;
+        this.commandRouter = context.commandRouter;
         this.timerID = null; // may not be needed
         this.delayStart = false;
-        this.logger = (fnName, msg) => {
-            this.self.logInfo(
-                this.className + '::' + fnName + ': ' + msg
-            );
-        };
+        this.active = false;
     }
 
     init() {
-        const that = this;
+        const self = this;
         const fnName = 'init';
+        
+        self.active = true;
+        self.pUtil = new PUtil(this, this.className);
 
         // Nested setTimeout for setInterval
         let interval_loop = () => {
-            that.self.siesta(
+            self.pUtil.siesta(
                 function call_siesta() {
-                    return that.fn()
-                        .fail(err => that.self.generalReject(
-                            that.className + ' fn()', err
+                    return self.fn()
+                        .fail(err => self.pUtil.generalReject(
+                            self.className + ' fn()', err
                         ))
-                        .then(() => that.self.siesta(
-                            call_siesta, that.className, [], that.interval
+                        .then(() => self.pUtil.siesta(
+                            call_siesta, self.className, [], self.interval
                         ))
                         .then(timerID => {
-                            that.timerID = timerID;
+                            self.timerID = timerID;
                             return libQ.resolve();
                         });
-            }, that.className, [], that.interval)
+            }, self.className, [], self.interval)
                 .then(timerID => {
-                    that.timerID = timerID;
-                    that.self.announceFn(that.className + ': Timer loaded');
-                    that.logger(fnName, 'Interval set to ' + that.interval + ' ms');            
+                    self.timerID = timerID;
+                    self.pUtil.logInfo(fnName, 'Timer loaded');
+                    self.pUtil.logInfo(fnName, 'Interval set to ' + self.interval + ' ms');            
                     return libQ.resolve();
                 });
         };
 
-        if (!that.delayStart) {
-            that.fn()
+        if (!self.delayStart) {
+            self.fn()
                 .then(interval_loop());
         }
         else interval_loop();
@@ -54,9 +56,14 @@ class Timer {
     }
 
     stop() {
+        const self = this;
         const fnName = 'stop';
-        this.logger(fnName, 'Stopping.');
-        clearTimeout(this.timerID);
+
+        if (self.active) {
+            self.pUtil.logInfo(fnName, 'Stopping.');
+            clearTimeout(self.timerID);
+        }
+        self.active = false;
 
         return libQ.resolve();
     }
@@ -69,21 +76,20 @@ class ExpireOldTracks extends Timer {
         this.interval = 5 * 60 * 1000; // 5 minutes
         this.className = 'ExpireOldTracks';
         this.delayStart = true;
-        this.init();
     }
 
     fn() {
-        const that = this;
+        const self = this;
 
         const lifetime = 45 * 60 * 1000; // 45 minutes
         const interval = 10 * 1000; // 10 seconds
         const timeNow = Date.now();
 
-        const Q = that.self.getQueue();
-        const curTrack = that.self.getQueueTrack();
+        const Q = self.context.getQueue();
+        const curTrack = self.context.getQueueTrack();
         const curUri = (curTrack) ? curTrack.uri : null;
         let victims = Q.filter(
-            item => item.service === that.self.serviceName &&
+            item => item.service === serviceName &&
             timeNow - item.fetchTime > lifetime &&
             item.uri !== curUri
         );
@@ -91,13 +97,13 @@ class ExpireOldTracks extends Timer {
         const fnName = 'reaper';
         const vhFnName = fnName + '::voorhees';
 
-        that.self.announceFn(fnName);
+        self.pUtil.announceFn(fnName);
 
         let voorhees = () => {
             // https://en.wikipedia.org/wiki/Jason_Voorhees
             let victim = victims.shift();
-            that.self.removeTrack(victim.uri);
-            that.logger(
+            self.context.removeTrack(victim.uri);
+            self.pUtil.logInfo(
                 vhFnName,
                 'Expired ' + victim.title +
                 ' by ' + victim.artist
@@ -106,17 +112,17 @@ class ExpireOldTracks extends Timer {
         };
 
         if (victims.length > 0) {
-            that.logger(fnName, 'Expiring ' + victimsLen +
+            self.pUtil.logInfo(fnName, 'Expiring ' + victimsLen +
                 ' tracks every ' + interval / 1000 + ' seconds');
             for (let i = 0; i < victimsLen; i++) {
-                that.self.siesta(
+                self.pUtil.siesta(
                     voorhees, vhFnName,
                     [], interval * (i + 1)
                 );
             }
         }
         else {
-            that.logger(fnName,
+            self.pUtil.logInfo(fnName,
                 'No victims found: ' +
                 'Expiring zero tracks.  ' + 
                 'Don\'t worry -- Jason will return.');
@@ -135,22 +141,22 @@ class StreamLifeChecker extends Timer {
     }
 
     fn() {
-        const that = this;
+        const self = this;
         const fnName = 'heartMonitor';
 
-        that.self.announceFn(fnName);
+        self.pUtil.announceFn(fnName);
 
-        return that.self.mpdPlugin.getState()
+        return self.context.mpdPlugin.getState()
             .then(state => {
                 if (state.status !== 'pause') {
                     if (state.seek == this.lastSeek) {
-                        let track = that.self.getQueueTrack();
+                        let track = self.context.getQueueTrack();
                         let msg = track.name + ' by ' + track.artist +
                             ' timed out.  Advancing track';
-                        that.self.commandRouter.pushToastMessage('info', 'Pandora', msg);
-                        that.logger(fnName, msg);
-                        return that.self.goPreviousNext('skip')
-                            .then(() => that.self.removeTrack(track.uri));
+                        self.commandRouter.pushToastMessage('info', 'Pandora', msg);
+                        self.pUtil.logInfo(fnName, msg);
+                        return self.context.goPreviousNext('skip')
+                            .then(() => self.context.removeTrack(track.uri));
                     }
                 }
                 this.lastSeek = state.seek;
@@ -166,26 +172,25 @@ class PreventAuthTimeout extends Timer {
 
         this.interval = 3 * 60 * 60 * 1000; // 3 hours
         this.className = 'PreventAuthTimeout';
-        this.init();
     }
 
     // restart() {
-    //     const that = this;
+    //     const self = this;
 
-    //     that.logger(that.className, 'Restarting interval timer');
+    //     self.pUtil.logInfo(self.className, 'Restarting interval timer');
 
-    //     return that.stop()
-    //         .then(() => that.init());
+    //     return self.stop()
+    //         .then(() => self.init());
     // }
 
     fn() {
-        const that = this;
+        const self = this;
 
-        that.self.announceFn(that.className);
+        self.pUtil.announceFn('fn');
 
-        return that.self.pandoraHandler.pandoraLoginAndGetStations()
-            .fail(err => that.self.generalReject(that.className + '::pandoraLoginAndGetStations', err))
-            .then(() => that.self.pandoraHandler.fillStationData());
+        return self.context.pandoraHandler.pandoraLoginAndGetStations()
+            .fail(err => self.pUtil.generalReject('pandoraLoginAndGetStations', err))
+            .then(() => self.context.pandoraHandler.fillStationData());
     }
 }
 
