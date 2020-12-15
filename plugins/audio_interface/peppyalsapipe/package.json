@@ -1,0 +1,23 @@
+{
+  "name": "peppyalsapipe",
+  "version": "0.0.1",
+  "description": "Easy Peppyalsa pipe for Volumio2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balbuze",
+  "license": "GPL 3.0",
+  "volumio_info": {
+    "prettyName": "Peppyalsa pipe",
+    "plugin_type": "audio_interface",
+    "icon": "fa-sliders fa-rotate-90",
+    "has_alsa_contribution": true
+  },
+  "dependencies": {
+    "child_process": "",
+    "fs-extra": "^4.0.2",
+    "kew": "",
+    "v-conf": ""
+  }
+}
