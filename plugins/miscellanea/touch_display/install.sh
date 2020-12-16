@@ -1,9 +1,8 @@
 #!/bin/bash
 
-HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
 ID=$(awk '/VERSION_ID=/' /etc/*-release | sed 's/VERSION_ID=//' | sed 's/\"//g')
 
-if [ "$HW" = "pi" ]; then # on Raspberry Pi hardware
+if grep -q Raspberry /proc/cpuinfo; then # on Raspberry Pi hardware
   echo "Installing fake packages for kernel, bootloader and pi lib"
   wget https://repo.volumio.org/Volumio2/Binaries/arm/libraspberrypi0_0.0.1_all.deb
   wget https://repo.volumio.org/Volumio2/Binaries/arm/raspberrypi-bootloader_0.0.1_all.deb
