@@ -1,4 +1,4 @@
-2020 January 17th
+2020 December 17th
 
 ###  About the plugin
 
@@ -22,6 +22,10 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+
+December 17th 2020
+
+- close all Modals
 
 January 17th 2020
 
