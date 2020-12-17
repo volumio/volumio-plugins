@@ -531,7 +531,7 @@
 					"prettyName": "System information",
 					"icon": "fa-info-circle",
 					"name": "Systeminfo",
-					"version": "0.1.3",
+					"version": "0.1.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/Systeminfo/Systeminfo.zip",
 					"license": "",
 					"description": "Information about your system",
@@ -543,7 +543,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "17-1-2020",
+					"updated": "17-12-2020",
 					"stable": true
 				},
 				{
