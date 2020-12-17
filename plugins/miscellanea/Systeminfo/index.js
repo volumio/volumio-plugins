@@ -348,7 +348,9 @@ console.log('output'+ cout + 'cmixt' + cmixt);
          size: 'lg',
          buttons: [{
           name: 'Close',
-          class: 'btn btn-warning'
+          class: 'btn btn-warning',
+          emit: 'closeModals',
+          payload: ''
          }, ]
         }
         self.commandRouter.broadcastMessage("openModal", modalData);
