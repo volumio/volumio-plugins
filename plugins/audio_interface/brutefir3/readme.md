@@ -1,4 +1,4 @@
-November 29th 2020
+December 18th 2020
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+December 18th 2020
+
+- better compatibility with other audio plugin
 
 November 29th 2020
 
