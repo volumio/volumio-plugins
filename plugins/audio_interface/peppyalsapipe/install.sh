@@ -10,7 +10,7 @@ sudo chown volumio $pipepath
 sudo chgrp volumio $pipepath
 
 echo "cloning peppymeter repo"
-git clone git clone https://github.com/project-owner/PeppyMeter.git $peppymeterpath
+git clone https://github.com/project-owner/PeppyMeter.git $peppymeterpath
 
 echo "installing pyton3-pygame"
 sudo apt-get install python3-pygame
