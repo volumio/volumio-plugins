@@ -1,6 +1,6 @@
 #!/bin/bash
 pipepath=/data/plugins/audio_interface/peppyalsapipe/myfifopeppy
-peppymeterpath=/data/plugins/audio_interface/peppyalsapipe/
+peppymeterpath=/data/plugins/audio_interface/peppyalsapipe/peppymeter
 
 echo "Installing peppyalsa plugin dependencies"
 sudo cp /data/plugins/audio_interface/peppyalsapipe/libpeppyalsa.so /usr/local/lib/
