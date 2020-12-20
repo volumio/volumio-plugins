@@ -6,9 +6,8 @@ const { exec } = require('child_process');
 const path = require('path');
 const os = require('os');
 const id = 'ir_controller: ';
-const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
-const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
-const overlay = (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) ? 'lirc-rpi' : 'gpio-ir';
+const kernelVersion = os.release().match(/[0-9]+/g);
+const overlay = (Number(kernelVersion[0]) < 4 || (Number(kernelVersion[0]) === 4 && Number(kernelVersion[1]) < 19)) ? 'lirc-rpi' : 'gpio-ir';
 var gpioConfigurable = false;
 var device, header;
 
@@ -38,6 +37,7 @@ IrController.prototype.onStart = function () {
 
   self.commandRouter.loadI18nStrings();
   device = self.getAdditionalConf('system_controller', 'system', 'device');
+  self.createHardwareConf();
   self.saveIROptions({ ir_profile: { value: self.config.get('ir_profile', 'JustBoom IR Remote') }, notify: false });
   if (device === 'Raspberry PI') {
     if (!fs.existsSync('/sys/firmware/devicetree/base/lirc_rpi') && fs.readdirSync('/sys/firmware/devicetree/base').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
@@ -95,7 +95,6 @@ IrController.prototype.onStart = function () {
 
 IrController.prototype.onStop = function () {
   const self = this;
-  const defer = libQ.defer();
 
   exec('usr/bin/sudo /bin/systemctl stop lirc.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
@@ -103,7 +102,6 @@ IrController.prototype.onStop = function () {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
     } else {
       self.logger.info(id + 'LIRC correctly stopped.');
-      defer.resolve();
     }
   });
   if (device === 'Raspberry PI') {
@@ -127,7 +125,7 @@ IrController.prototype.onStop = function () {
         }
       });
   }
-  return defer.promise;
+  return libQ.resolve();
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -237,9 +235,8 @@ IrController.prototype.saveIROptions = function (data) {
   const self = this;
   const profileFolder = data.ir_profile.value.replace(/ /g, '\\ ');
 
-  if (self.config.get('ir_profile') !== data.ir_profile.value) {
+  if (self.config.get('ir_profile') !== data.ir_profile.value || data.notify === false) {
     self.config.set('ir_profile', data.ir_profile.value);
-    self.createHardwareConf();
     exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
       if (error !== null) {
         self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);

@@ -11,7 +11,7 @@
     "PROFILE_SELECTOR":"Profil auswählen",
     "PROFILE_SELECTOR_DOC":"Wähle die geeignete Konfiguration für Deine Fernbedienung aus den vorhandenen Profilen aus.",
     "GPIO_CONFIGURATION":"GPIO Konfiguration",
-    "GPIO_DESC":"Das Plugin prüft nicht, ob die GPIO-Nummern in der Auswahlliste bereits für andere Zweck genutzt werden. Es ist daher sehr wichtig, vor der Auswahl einer GPIO-Nummer sicherzustellen, dass diese tatsächlich noch zur Verfügung steht.",
+    "GPIO_DESC":"Das Plugin prüft nicht, ob die GPIO-Nummern in der Auswahlliste bereits für andere Zwecke genutzt werden. Es ist daher sehr wichtig, vor der Auswahl einer GPIO-Nummer sicherzustellen, dass diese tatsächlich noch zur Verfügung steht.",
     "GPIO_IN_PIN":"GPIO des Infrarotempfängers auswählen",
     "GPIO_IN_PIN_DOC":"GPIO-Nummer, die vom Infrarotempfänger genutzt wird. HINWEIS: Hierbei handelt es sich nicht um die Nummer des physischen Pins, an den der Infrarotempfänger angeschlossen ist, sondern um die Broadcom Pinnummer (BCM), vgl. https://de.pinout.xyz/#.",
     "GPIO_PULL":"\"pull-up/-down\"-Einstellung auswählen",
