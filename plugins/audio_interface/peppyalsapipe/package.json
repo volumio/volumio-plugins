@@ -1,6 +1,6 @@
 {
   "name": "peppyalsapipe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Easy Peppyalsa pipe for Volumio2",
   "main": "index.js",
   "scripts": {

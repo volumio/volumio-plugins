@@ -1,0 +1,66 @@
+---
+devices:
+  samplerate: ${smpl_rate}
+  chunksize: 4096
+  target_level: 2048
+  adjust_period: 10
+  silence_threshold: -60
+  silence_timeout: 3.0
+
+  capture:
+    type: Alsa
+    channels: 2
+    device: "hw:Loopback,1"
+    format: S16LE
+     
+  playback:
+    type: Alsa
+    channels: 2
+    device: "${output_device}"
+    format: ${output_format}
+
+filters:
+  fir1:
+    type: Conv
+    parameters:
+      type: File
+      filename: ${leftfilter}
+      format: ${filter_format1}
+      ${skip_1}
+
+  fir2:
+    type: Conv
+    parameters:
+      type: File
+      filename: ${rightfilter}
+      format: ${filter_format1}
+      ${skip_1}
+
+mixers:
+  stereo:
+    channels:
+      in: 2
+      out: 2
+    mapping:
+      - dest: 0
+        sources:
+          - channel: 0
+            gain: -${lattenuation}
+            inverted: false
+      - dest: 1
+        sources:
+          - channel: 1
+            gain: -${rattenuation}
+            inverted: false
+
+pipeline:
+  - type: Mixer
+    name: stereo
+  - type: Filter
+    channel: 0
+    names:
+      - fir1
+  - type: Filter
+    channel: 1
+    names:
+      - fir2

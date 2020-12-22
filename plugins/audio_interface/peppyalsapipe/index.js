@@ -44,6 +44,18 @@ peppyalapipe.prototype.onStop = function () {
 peppyalapipe.prototype.onStart = function () {
   var self = this;
   var defer = libQ.defer();
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
+  
+  .then(function (e) {
+    var pipeDefer = libQ.defer();
+    exec("/usr/bin/mkfifo /tmp/myfifopeppy" + "; /bin/chmod 777 /tmp/myfifopeppy", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+      if (error) {
+        self.logger.warn("An error occurred when creating fifo", error);
+      }
+      pipeDefer.resolve();
+    });
+    return pipeDefer.promise;
+  });
   defer.resolve();
   return defer.promise;
 };
@@ -85,7 +97,7 @@ peppyalapipe.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
-
+/*
 peppyalapipe.prototype.getLabelForSelect = function (options, key) {
   var n = options.length;
   for (var i = 0; i < n; i++) {
@@ -94,7 +106,7 @@ peppyalapipe.prototype.getLabelForSelect = function (options, key) {
   }
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
-
+*/
 peppyalapipe.prototype.setUIConfig = function (data) {
   var self = this;
 
@@ -108,19 +120,4 @@ peppyalapipe.prototype.getConf = function (varName) {
 
 peppyalapipe.prototype.setConf = function (varName, varValue) {
   var self = this;
-  //Perform your installation tasks here
-};
-
-//here we save the asound.conf file config
-peppyalapipe.prototype.createASOUNDFile = function () {
-  var self = this;
-
-  var defer = libQ.defer();
-
-
-  var folder = self.commandRouter.pluginManager.findPluginFolder('audio_interface', 'volstereo2mono');
-
-  var alsaFile = folder + '/asound/volumioPeppyalsa.postPeppyalsa.10.conf';
-  return defer.promise;
-
 };
