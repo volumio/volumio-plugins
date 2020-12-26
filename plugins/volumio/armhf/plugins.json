@@ -286,6 +286,24 @@
 						}
 					],
 					"updated": "21-12-2020"
+				},
+				{
+					"prettyName": "Radio 357",
+					"icon": "fa-lightbulb-o",
+					"name": "trzpiesie",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/trzpiesie/trzpiesie.zip",
+					"license": "ISC",
+					"description": "Radio 357",
+					"details": "Radio 357",
+					"author": "Marek Gawlik",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "26-12-2020"
 				}
 			]
 		},
