@@ -19,7 +19,7 @@
   "VOL_MAP_LABEL":"Map volume range to percentage",
   "VOL_MAP_DOC":"Map volume range to percentage",
   "SECTION_IMPORT_LABEL":"Remote Import",
-  "SECTION_IMPORT_DESC":"If you are lucky you might find the definition for your remote on the web site linked below. Download the corresponding text file and check that the volume up, volume down, mute and power keys have the following names: KEY_VOLUMUP, KEY_VOLUMEDOWN, KEY_MUTE, KEY_POWER. Place the file in the \"/data/INTERNAL\" folder of your Volumio system (on Windows this appears as \"Network -> VOLUMIO -> Internal Storage\"). Make sure the filename follows the pattern \"FriendlyRemoteName.lirc.conf\". Once this is all done press the import key below to add it to the above list of available remotes.",
+  "SECTION_IMPORT_DESC":"If you are lucky you might find the definition for your remote on the web site linked below. Download the corresponding text file and check that the volume up, volume down, mute and power keys have the following names: KEY_VOLUMEUP, KEY_VOLUMEDOWN, KEY_MUTE, KEY_POWER. Place the file in the \"/data/INTERNAL\" folder of your Volumio system (on Windows this appears as \"Network -> VOLUMIO -> Internal Storage\"). Make sure the filename follows the pattern \"FriendlyRemoteName.lirc.conf\". Once this is all done press the import key below to add it to the above list of available remotes.",
   "IMPORT_LABEL":"Import remote definition",
   "LIRC_LABEL":"Go to LIRC database site",
   "LIRC_DOC":"Go to http://lirc-remotes.sourceforge.net/remotes-table.html",
