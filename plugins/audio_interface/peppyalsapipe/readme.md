@@ -1,2 +1,2 @@
 Peppy alsa pipe + peppyMeter 
-installation for Volumio
+installation for Volumio 
