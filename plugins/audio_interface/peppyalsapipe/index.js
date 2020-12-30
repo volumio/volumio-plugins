@@ -5,6 +5,7 @@ var libFsExtra = require('fs-extra');
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var libQ = require('kew');
+const { setFlagsFromString } = require('v8');
 var config = new (require('v-conf'))();
 
 
@@ -35,8 +36,16 @@ peppyalapipe.prototype.getConfigurationFiles = function () {
 // Plugin methods -----------------------------------------------------------------------------
 
 peppyalapipe.prototype.onStop = function () {
-  var self = this;
-  var defer = libQ.defer();
+  const self = this;
+  let defer = libQ.defer();
+  self.logger.info("Stopping PeppyMeter service");
+  self.commandRouter.stateMachine.stop().then(function () {
+    exec("/usr/bin/sudo /bin/systemctl stop peppy.service", {
+      uid: 1000,
+      gid: 1000
+    }, function (error, stdout, stderr) { })
+    socket.off();
+  });
   defer.resolve();
   return libQ.resolve();
 };
@@ -57,7 +66,26 @@ peppyalapipe.prototype.onStart = function () {
     return pipeDefer.promise;
   });
   defer.resolve();
+  self.startpeppyservice()
   return defer.promise;
+};
+
+peppyalsa.prototype.startpeppyservice = function () {
+  const self = this;
+  let defer = libQ.defer();
+  exec("/usr/bin/sudo /bin/systemctl start peppy.service", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('peppyMeter failed to start. Check your configuration ' + error);
+    } else {
+      self.commandRouter.pushConsoleMessage('PeppyMeter Daemon Started');
+     # self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+
+      defer.resolve();
+    }
+  });
 };
 
 peppyalapipe.prototype.onRestart = function () {
