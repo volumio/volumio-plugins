@@ -1,3 +1,2 @@
-Peppy alsa pipe
-provide a peppyalsa pipe
-in /tmp/myfifopeppy
+Peppy alsa pipe + peppyMeter 
+installation for Volumio

@@ -1,8 +1,13 @@
 #!/bin/bash
 peppymeterpath=/data/plugins/audio_interface/peppyalsapipe/peppymeter
+spath=/data/plugins/audio_interface/peppyalsapipe
 
 echo "Installing peppyalsa plugin dependencies"
 #sudo cp /data/plugins/audio_interface/peppyalsapipe/libpeppyalsa.so /usr/local/lib/
+cp $spath/peppy.service.tar /
+		cd /
+		sudo tar -xvf peppy.service.tar
+		rm /peppy.service.tar
 
 echo "cloning peppymeter repo"
 git clone https://github.com/balbuze/PeppyMeter $peppymeterpath
