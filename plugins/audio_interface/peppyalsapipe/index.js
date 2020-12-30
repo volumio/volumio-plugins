@@ -88,6 +88,24 @@ peppyMeter.prototype.startpeppyservice = function () {
   });
 };
 
+peppyMeter.prototype.restartpeppyservice = function () {
+  const self = this;
+  let defer = libQ.defer();
+  exec("/usr/bin/sudo /bin/systemctl restart peppy.service", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('peppyMeter failed to start. Check your configuration ' + error);
+    } else {
+      self.commandRouter.pushConsoleMessage('PeppyMeter Daemon Started');
+     //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+
+      defer.resolve();
+    }
+  });
+};
+
 peppyMeter.prototype.onRestart = function () {
   var self = this;
 };
@@ -102,30 +120,31 @@ peppyMeter.prototype.onUninstall = function () {
   //Perform your installation tasks here
 };
 
+
 peppyMeter.prototype.getUIConfig = function () {
-  var defer = libQ.defer();
   var self = this;
-
+  var defer = libQ.defer();
   var lang_code = this.commandRouter.sharedVars.get('language_code');
-
-  self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-      __dirname+'/i18n/strings_en.json',
-      __dirname + '/UIConfig.json')
-      .then(function(uiconf)
-      {
-
-
-          defer.resolve(uiconf);
-      })
-      .fail(function()
-      {
-          defer.reject(new Error());
-      });
-
+  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
+    __dirname + '/i18n/strings_en.json',
+    __dirname + '/UIConfig.json')
+    .then(function (uiconf) {
+     
+      value = self.config.get('meter');
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
+      var value;
+     
+      defer.resolve(uiconf);
+    })
+    .fail(function () {
+      defer.reject(new Error());
+    });
   return defer.promise;
 };
 
-/*
+
+
 peppyMeter.prototype.getLabelForSelect = function (options, key) {
   var n = options.length;
   for (var i = 0; i < n; i++) {
@@ -134,7 +153,74 @@ peppyMeter.prototype.getLabelForSelect = function (options, key) {
   }
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
-*/
+
+peppyMeter.prototype.savepeppy = function (data) {
+  var self = this;
+
+  var defer = libQ.defer();
+  
+  self.config.set('meter', data['meter'].value);
+  
+  self.restartpeppyservice()
+    .then(function (e) {
+      //  self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
+      defer.resolve({});
+    })
+    .fail(function (e) {
+      defer.reject(new Error('error'));
+      //  self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+    })
+
+
+  return defer.promise;
+
+};
+
+//here we save the asound.conf file config
+peppyMeter.prototype.savepeppyconfig = function () {
+  var self = this;
+
+  var defer = libQ.defer();
+  try {
+
+    fs.readFile(__dirname + "/config.txt.tmpl", 'utf8', function(err, data) {
+     if (err) {
+      defer.reject(new Error(err));
+      return console.log(err);
+     }
+  
+   
+     var conf1 = data.replace("${meter}", self.config.get('meter'));
+     var conf2 = conf1.replace("${hwouts}", hwouts);
+ 
+ 
+     fs.writeFile("/home/volumio/config.txt", conf2, 'utf8', function(err) {
+      if (err) {
+       defer.reject(new Error(err));
+       //self.logger.info('Cannot write /etc/asound.conf: '+err)
+      } else {
+       self.logger.info('asound.conf file written');
+       var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/config.txt /data/plugins/audio_interface/peppyMeter/peppymeter/config.txt', {
+        uid: 1000,
+        gid: 1000,
+        encoding: 'utf8'
+       });
+       
+       defer.resolve();
+      }
+     });
+ 
+    });
+   } catch (err) {}
+ setTimeout(function() {
+   self.restartpeppyservice();
+   return defer.promise;
+   }, 200);
+  };
+ 
+
+
+
 peppyMeter.prototype.setUIConfig = function (data) {
   var self = this;
 

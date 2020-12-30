@@ -1,7 +1,50 @@
 {
-    "page": {
-      "label": "TRANSLATE.PLUGIN_CONFIGURATION"
-    },
-    "sections": [
-    ]
-  }
+  "page": {
+    "label": "Configuration"
+  },
+  "sections": [ 
+   {
+      "id": "section_account",
+      "element": "section",
+      "label": "TRANSLATE.BINAURAL_SETTINGS",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"audio_interface/peppyMeter", "method":"savepeppy"},
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+	"meter"
+
+        ]
+      },
+    "content": 
+					[
+									{
+					"id": "meter",
+					"element": "select",
+					"doc": "TRANSLATE.DOCMETER",
+					"label": "TRANSLATE.METER",
+					"value": {
+						"value": "random",
+						"label": "random"
+					},
+					"options": [
+						{
+							"value": "bar",
+							"label": "bar"
+						},
+						{
+							"value": "black-white",
+							"label": "black-white"
+						},
+						{
+							"value": "blue-2",
+							"label": "blue-Z"
+						}
+						
+					]
+					
+				}
+					]  
+   }
+  ]
+}
