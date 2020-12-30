@@ -1,3 +1,10 @@
 {
-"meter":{"type":"string","value":"random"}
-}
+    "meter": {
+      "type": "string",
+      "value": "vintage"
+    },
+    "screensize": {
+      "type": "string",
+      "value": "medium"
+    }
+  }

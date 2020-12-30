@@ -1,5 +1,10 @@
 {
     "PLUGIN_CONFIGURATION":"No Configuration for this plugin",
+    "SETTINGS":"Settings",
+    "METER":"Meter",
+    "DOCMETER":"Choose Meter",
+    "SCREENSIZE":"Screen size",
+    "DOCSCREENSIZE":"Size of the display",
     "APPLY":"Apply",
     "SAVE":"Close"
   }

@@ -1,24 +1,27 @@
 {
-  "page": {
-    "label": "Configuration"
-  },
-  "sections": [ 
-   {
-      "id": "section_account",
-      "element": "section",
-      "label": "TRANSLATE.BINAURAL_SETTINGS",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"audio_interface/peppyMeter", "method":"savepeppy"},
-      "saveButton": {
-        "label": "TRANSLATE.APPLY",
-        "data": [
-	"meter"
-
-        ]
-      },
-    "content": 
-					[
-									{
+	"page": {
+		"label": "Configuration"
+	},
+	"sections": [
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.SETTINGS",
+			"icon": "fa-plug",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "audio_interface/peppyMeter",
+				"method": "savepeppy"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"meter",
+					"screensize"
+				]
+			},
+			"content": [
+				{
 					"id": "meter",
 					"element": "select",
 					"doc": "TRANSLATE.DOCMETER",
@@ -38,13 +41,95 @@
 						},
 						{
 							"value": "blue-2",
-							"label": "blue-Z"
+							"label": "blue-2"
+						},
+						{
+							"value": "blue",
+							"label": "blue"
+						},
+						{
+							"value": "compass",
+							"label": "compass"
+						},
+						{
+							"value": "dash",
+							"label": "dash"
+						},
+						{
+							"value": "emerald",
+							"label": "emerald"
+						},
+						{
+							"value": "gas",
+							"label": "gas"
+						},
+						{
+							"value": "gold",
+							"label": "gold"
+						},
+						{
+							"value": "grunge",
+							"label": "grunge"
+						},
+						{
+							"value": "orange",
+							"label": "orange"
+						},
+						{
+							"value": "rainbow",
+							"label": "rainbow"
+						},
+						{
+							"value": "red",
+							"label": "red"
+						},
+						{
+							"value": "royal",
+							"label": "royal"
+						},
+						{
+							"value": "tube",
+							"label": "tube"
+						},
+						{
+							"value": "vintage",
+							"label": "vintage"
+						},
+						{
+							"value": "white-red",
+							"label": "white-red"
 						}
-						
 					]
-					
+				},
+				{
+					"id": "screensize",
+					"element": "select",
+					"doc": "TRANSLATE.DOCSCREENSIZE",
+					"label": "TRANSLATE.SCREENSIZE",
+					"value": {
+						"value": "medium",
+						"label": "medium"
+					},
+					"options": [
+						{
+							"value": "small",
+							"label": "small"
+						},
+						{
+							"value": "medium",
+							"label": "medium"
+						},
+						{
+							"value": "large",
+							"label": "large"
+						},
+						{
+							"value": "wide",
+							"label": "wide"
+						}
+					]
 				}
-					]  
-   }
-  ]
+			]
+		}
+	]
 }

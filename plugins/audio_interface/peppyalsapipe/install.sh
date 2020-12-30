@@ -11,14 +11,18 @@ cp $spath/peppy.service.tar /
 echo "cloning peppymeter repo"
 git clone https://github.com/balbuze/PeppyMeter $peppymeterpath
 chmod 777 -R $peppymeterpath
+sudo chown volumio $peppymeterpath
+sudo chgrp volumio $peppymeterpath
 
 echo "installing apt packages"
-sudo apt-get install python3-pygame
+
+sudo apt-get install python3-pygame python3
 sudo apt-get install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
 
 echo "Installing peppyalsa plugin"
 mkdir /tmp/peppyalsa
 git clone https://github.com/project-owner/peppyalsa.git /tmp/peppyalsa
+
 cd /tmp/peppyalsa
 aclocal && libtoolize
 autoconf && automake --add-missing

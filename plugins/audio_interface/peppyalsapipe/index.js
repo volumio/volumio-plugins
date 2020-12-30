@@ -54,17 +54,17 @@ peppyMeter.prototype.onStart = function () {
   var self = this;
   var defer = libQ.defer();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-  
-  .then(function (e) {
-    var pipeDefer = libQ.defer();
-    exec("/usr/bin/mkfifo /tmp/myfifopeppy" + "; /bin/chmod 777 /tmp/myfifopeppy", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-      if (error) {
-        self.logger.warn("An error occurred when creating fifo", error);
-      }
-      pipeDefer.resolve();
+
+    .then(function (e) {
+      var pipeDefer = libQ.defer();
+      exec("/usr/bin/mkfifo /tmp/myfifopeppy" + "; /bin/chmod 777 /tmp/myfifopeppy", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+        if (error) {
+          self.logger.warn("An error occurred when creating fifo", error);
+        }
+        pipeDefer.resolve();
+      });
+      return pipeDefer.promise;
     });
-    return pipeDefer.promise;
-  });
   defer.resolve();
   self.startpeppyservice()
   return defer.promise;
@@ -81,7 +81,7 @@ peppyMeter.prototype.startpeppyservice = function () {
       self.logger.info('peppyMeter failed to start. Check your configuration ' + error);
     } else {
       self.commandRouter.pushConsoleMessage('PeppyMeter Daemon Started');
-     //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+      //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
 
       defer.resolve();
     }
@@ -99,7 +99,7 @@ peppyMeter.prototype.restartpeppyservice = function () {
       self.logger.info('peppyMeter failed to start. Check your configuration ' + error);
     } else {
       self.commandRouter.pushConsoleMessage('PeppyMeter Daemon Started');
-     //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+      //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
 
       defer.resolve();
     }
@@ -129,12 +129,16 @@ peppyMeter.prototype.getUIConfig = function () {
     __dirname + '/i18n/strings_en.json',
     __dirname + '/UIConfig.json')
     .then(function (uiconf) {
-     
+
       value = self.config.get('meter');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
       var value;
-     
+      value = self.config.get('screensize');
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+      var value;
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -158,17 +162,19 @@ peppyMeter.prototype.savepeppy = function (data) {
   var self = this;
 
   var defer = libQ.defer();
-  
+
   self.config.set('meter', data['meter'].value);
-  
+  self.config.set('screensize', data['screensize'].value);
+
+  self.savepeppyconfig();
   self.restartpeppyservice()
     .then(function (e) {
-      //  self.commandRouter.pushToastMessage('success', "Bauer Configuration updated");
+      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration updated");
       defer.resolve({});
     })
     .fail(function (e) {
       defer.reject(new Error('error'));
-      //  self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+      self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
     })
 
 
@@ -183,42 +189,34 @@ peppyMeter.prototype.savepeppyconfig = function () {
   var defer = libQ.defer();
   try {
 
-    fs.readFile(__dirname + "/config.txt.tmpl", 'utf8', function(err, data) {
-     if (err) {
-      defer.reject(new Error(err));
-      return console.log(err);
-     }
-  
-   
-     var conf1 = data.replace("${meter}", self.config.get('meter'));
-     var conf2 = conf1.replace("${hwouts}", hwouts);
- 
- 
-     fs.writeFile("/home/volumio/config.txt", conf2, 'utf8', function(err) {
+    fs.readFile(__dirname + "/config.txt.tmpl", 'utf8', function (err, data) {
       if (err) {
-       defer.reject(new Error(err));
-       //self.logger.info('Cannot write /etc/asound.conf: '+err)
-      } else {
-       self.logger.info('asound.conf file written');
-       var mv = execSync('/usr/bin/sudo /bin/mv /home/volumio/config.txt /data/plugins/audio_interface/peppyMeter/peppymeter/config.txt', {
-        uid: 1000,
-        gid: 1000,
-        encoding: 'utf8'
-       });
-       
-       defer.resolve();
+        defer.reject(new Error(err));
+        return console.log(err);
       }
-     });
- 
-    });
-   } catch (err) {}
- setTimeout(function() {
-   self.restartpeppyservice();
-   return defer.promise;
-   }, 200);
-  };
- 
 
+
+      let conf1 = data.replace("${meter}", self.config.get('meter'))
+      .replace("${screensize}", self.config.get("screensize"));
+      self.logger.info('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT' + conf1)
+
+      fs.writeFile("/data/plugins/audio_interface/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
+        if (err)
+          defer.reject(new Error(err));
+        else defer.resolve();
+      });
+
+    });
+
+
+  } catch (err) {
+
+
+  }
+
+  return defer.promise;
+
+};
 
 
 peppyMeter.prototype.setUIConfig = function (data) {
