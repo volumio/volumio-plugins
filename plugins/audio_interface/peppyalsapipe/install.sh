@@ -18,7 +18,7 @@ cd /tmp/peppyalsa
 aclocal && libtoolize
 autoconf && automake --add-missing
 ./configure && make
-sudo make install
+sudo make install && exit
 
 
 #required to end the plugin install
