@@ -1,7 +1,7 @@
 {
   "name": "peppyalsapipe",
-  "version": "0.0.2",
-  "description": "Easy Peppyalsa pipe for Volumio2",
+  "version": "0.0.3",
+  "description": "Easy PeppyMeter for Volumio2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
