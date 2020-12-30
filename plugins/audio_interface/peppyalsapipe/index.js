@@ -9,10 +9,10 @@ const { setFlagsFromString } = require('v8');
 var config = new (require('v-conf'))();
 
 
-// Define the peppyalapipe class
-module.exports = peppyalapipe;
+// Define the peppyMeter class
+module.exports = peppyMeter;
 
-function peppyalapipe(context) {
+function peppyMeter(context) {
   var self = this;
   self.context = context;
   self.commandRouter = self.context.coreCommand;
@@ -21,7 +21,7 @@ function peppyalapipe(context) {
   self.configManager = self.context.configManager;
 };
 
-peppyalapipe.prototype.onVolumioStart = function () {
+peppyMeter.prototype.onVolumioStart = function () {
   var self = this;
   var configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context, 'config.json');
   self.config = new (require('v-conf'))();
@@ -29,13 +29,13 @@ peppyalapipe.prototype.onVolumioStart = function () {
   return libQ.resolve();
 };
 
-peppyalapipe.prototype.getConfigurationFiles = function () {
+peppyMeter.prototype.getConfigurationFiles = function () {
   return ['config.json'];
 };
 
 // Plugin methods -----------------------------------------------------------------------------
 
-peppyalapipe.prototype.onStop = function () {
+peppyMeter.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
   self.logger.info("Stopping PeppyMeter service");
@@ -50,7 +50,7 @@ peppyalapipe.prototype.onStop = function () {
   return libQ.resolve();
 };
 
-peppyalapipe.prototype.onStart = function () {
+peppyMeter.prototype.onStart = function () {
   var self = this;
   var defer = libQ.defer();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
@@ -70,7 +70,7 @@ peppyalapipe.prototype.onStart = function () {
   return defer.promise;
 };
 
-peppyalsa.prototype.startpeppyservice = function () {
+peppyMeter.prototype.startpeppyservice = function () {
   const self = this;
   let defer = libQ.defer();
   exec("/usr/bin/sudo /bin/systemctl start peppy.service", {
@@ -81,28 +81,28 @@ peppyalsa.prototype.startpeppyservice = function () {
       self.logger.info('peppyMeter failed to start. Check your configuration ' + error);
     } else {
       self.commandRouter.pushConsoleMessage('PeppyMeter Daemon Started');
-     # self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+     //self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
 
       defer.resolve();
     }
   });
 };
 
-peppyalapipe.prototype.onRestart = function () {
+peppyMeter.prototype.onRestart = function () {
   var self = this;
 };
 
-peppyalapipe.prototype.onInstall = function () {
+peppyMeter.prototype.onInstall = function () {
   var self = this;
   //	//Perform your installation tasks here
 };
 
-peppyalapipe.prototype.onUninstall = function () {
+peppyMeter.prototype.onUninstall = function () {
   var self = this;
   //Perform your installation tasks here
 };
 
-peppyalapipe.prototype.getUIConfig = function () {
+peppyMeter.prototype.getUIConfig = function () {
   var defer = libQ.defer();
   var self = this;
 
@@ -126,7 +126,7 @@ peppyalapipe.prototype.getUIConfig = function () {
 };
 
 /*
-peppyalapipe.prototype.getLabelForSelect = function (options, key) {
+peppyMeter.prototype.getLabelForSelect = function (options, key) {
   var n = options.length;
   for (var i = 0; i < n; i++) {
     if (options[i].value == key)
@@ -135,17 +135,17 @@ peppyalapipe.prototype.getLabelForSelect = function (options, key) {
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 */
-peppyalapipe.prototype.setUIConfig = function (data) {
+peppyMeter.prototype.setUIConfig = function (data) {
   var self = this;
 
 };
 
-peppyalapipe.prototype.getConf = function (varName) {
+peppyMeter.prototype.getConf = function (varName) {
   var self = this;
   //Perform your installation tasks here
 };
 
 
-peppyalapipe.prototype.setConf = function (varName, varValue) {
+peppyMeter.prototype.setConf = function (varName, varValue) {
   var self = this;
 };
