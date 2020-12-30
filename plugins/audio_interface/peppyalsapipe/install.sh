@@ -3,7 +3,6 @@ peppymeterpath=/data/plugins/audio_interface/peppyMeter/peppymeter
 spath=/data/plugins/audio_interface/peppyMeter
 
 echo "Installing peppyalsa plugin dependencies"
-#sudo cp /data/plugins/audio_interface/peppyalsapipe/libpeppyalsa.so /usr/local/lib/
 cp $spath/peppy.service.tar /
 		cd /
 		sudo tar -xvf peppy.service.tar
