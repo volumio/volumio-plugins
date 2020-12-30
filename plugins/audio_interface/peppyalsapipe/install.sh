@@ -6,6 +6,7 @@ echo "Installing peppyalsa plugin dependencies"
 
 echo "cloning peppymeter repo"
 git clone https://github.com/balbuze/PeppyMeter $peppymeterpath
+chmod 777 -R $peppymeterpath
 
 echo "installing apt packages"
 sudo apt-get install python3-pygame
