@@ -32,6 +32,10 @@
 					},
 					"options": [
 						{
+							"value": "random",
+							"label": "random"
+						},
+						{
 							"value": "bar",
 							"label": "bar"
 						},
