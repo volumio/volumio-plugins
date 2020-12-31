@@ -56,4 +56,4 @@ volumio plugin install
 cd..
 rm -Rf pipe*
 ```
-
+## Does not work (yet) with software volume
