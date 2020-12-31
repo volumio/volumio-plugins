@@ -22,10 +22,8 @@ A more recent set of instructions can be found here: https://www.instructables.c
 
 However, when trying to get this to work with your Volumio setup, you need to keep in mind that you might be somewhat restricted in terms of usable GPIO pins, especially if you have a dedicated sound card attached to it. Such cards use at least some of the GPIOs for their own purposes, so you can't use them for your IR LED. And even if they don't use a specific pin, at least my board (a Hifiberry Digi+ clone) does not provide a pass-through connector. So I ended up soldering the connections straight onto my board...
 
-So before you get soldering I would suggest to
-1. Wire up the IR LED without any other cards connect to your system and connect it to GPIO pin 12
-2. Install the plugin, which should download and install lirc
-3. Test it first
+If you can place the IR LED close to your amplifier system (i.e. if you don't need a strong signal emitted by the LED) you do not have to use the suggest 'complicated' circuit with a transistor: just connecting the IR LED in series with a weak resistor (say 100 Ohm) between the chosen GPIO pin and GND should work fine.
+
 
 **Software:**
 
