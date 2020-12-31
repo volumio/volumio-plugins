@@ -176,8 +176,6 @@ peppyMeter.prototype.savepeppy = function (data) {
       defer.reject(new Error('error'));
       self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
     })
-
-
   return defer.promise;
 
 };
@@ -194,10 +192,8 @@ peppyMeter.prototype.savepeppyconfig = function () {
         defer.reject(new Error(err));
         return console.log(err);
       }
-
-
-      let conf1 = data.replace("${meter}", self.config.get('meter'))
-      .replace("${screensize}", self.config.get("screensize"));
+      const conf1 = data.replace("${meter}", self.config.get('meter'))
+        .replace("${screensize}", self.config.get("screensize"))
       self.logger.info('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT' + conf1)
 
       fs.writeFile("/data/plugins/audio_interface/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
@@ -208,14 +204,10 @@ peppyMeter.prototype.savepeppyconfig = function () {
 
     });
 
-
   } catch (err) {
 
-
   }
-
   return defer.promise;
-
 };
 
 

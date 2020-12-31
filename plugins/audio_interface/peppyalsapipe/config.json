@@ -1,10 +1,4 @@
 {
-    "meter": {
-      "type": "string",
-      "value": "vintage"
-    },
-    "screensize": {
-      "type": "string",
-      "value": "medium"
-    }
-  }
+"meter":{"type":"string","value":"random"},
+"screensize":{"type":"string","value":"medium"}
+}
