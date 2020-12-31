@@ -16,8 +16,8 @@ sudo chgrp volumio $peppymeterpath
 
 echo "installing apt packages"
 
-sudo apt-get install python3-pygame python3
-sudo apt-get install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
+sudo apt-get -y install python3-pygame python3
+sudo apt-get -y install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
 
 echo "Installing peppyalsa plugin"
 mkdir /tmp/peppyalsa
