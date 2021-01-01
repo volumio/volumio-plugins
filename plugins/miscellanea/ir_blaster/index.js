@@ -12,9 +12,12 @@ const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
 const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
 
 var currentvolume = '';
+var currentlyMuted = false;
 var remote = { 'gpio_pin': 12, 'remote': '', 'name': '' };
+var volScaling = {'minVol': 0, 'maxVol': 100, 'step': 5};
 
 module.exports = ir_blaster;
+
 function ir_blaster(context) {
 	var self = this;
 
@@ -24,7 +27,6 @@ function ir_blaster(context) {
 	this.configManager = this.context.configManager;
 
 }
-
 
 
 ir_blaster.prototype.onVolumioStart = function()
@@ -276,6 +278,29 @@ ir_blaster.prototype.updateVolumeSettings = function (data) {
     self.config.set('map_to_100', data['map_to_100']);
     self.logger.info('[IR-Blaster] Updated volume settings: ' + currentvolume);
     self.addVolumeScripts();
+
+    currentvolume = Number(currentvolume);
+    volScaling.minVol = data['vol_min'];
+    volScaling.maxVol = data['vol_max'];
+    if (volScaling.maxVol <= volScaling.minVol) volScaling.maxVol = volScaling.minVol + 1;
+
+    if (data['map_to_100']) {
+        volScaling.step = 100 / (volScaling.maxVol - volScaling.minVol);
+        volScaling.minVol = 0;
+        volScaling.maxVol = 100;
+        currentvolume = currentvolume * volScaling.step;
+    } else {
+        volScaling.step = 1;
+    }
+    self.logger.info('[IR-Blaster] Updated volume settings: ' + JSON.stringify(volScaling));
+    self.logger.info('[IR-Blaster] Current volume: ' + currentvolume);
+
+    // Some test calls for debugging:
+    self.alsavolume('+');
+    self.alsavolume('-');
+    self.alsavolume(50);
+    self.alsavolume('mute');
+    self.alsavolume('toggle');
 }
 
 
@@ -413,3 +438,77 @@ ir_blaster.prototype.restartLirc = function (message) {
     return defer.promise;
 }
 
+// Functions to be used with volumeOverride
+
+ir_blaster.prototype.alsavolume = function (VolumeInteger) {
+    var self = this;
+    
+    var volChange = 0;
+    var muteToggled = false;
+    
+    {
+      switch (VolumeInteger) {
+        case 'mute':
+          // Mute
+          if (!currentlyMuted) {
+            muteToggled = true;
+          }          
+          break;
+        case 'unmute':
+          // Unmute
+          if (currentlyMuted) {
+            muteToggled = true;
+          }
+          break;
+        case 'toggle':
+          // Mute or unmute, depending on current state
+          muteToggled = true;
+          break;
+        case '+':
+          if (currentvolume < volScaling.maxVol) {
+             volChange = 1;
+             currentvolume += volScaling.step;
+          }
+          break;
+        case '-':
+          // Decrease volume by one (TEST ONLY FUNCTION - IN PRODUCTION USE A NUMERIC VALUE INSTEAD)
+          if (currentvolume > volScaling.minVol) {
+            volChange = -1;
+            currentvolume -= volScaling.step;
+          }
+          break;
+        default:
+          // Set the volume with numeric value 0-100
+          if (VolumeInteger < volScaling.minVol) {
+              VolumeInteger = volScaling.minVol;
+          }
+          if (VolumeInteger > volScaling.maxVol) {
+              VolumeInteger = volScaling.maxVol;
+          }
+          if (VolumeInteger != currentvolume) {
+              volChange = Math.round((VolumeInteger - currentvolume)/volScaling.step);
+              currentvolume = VolumeInteger;
+          }
+//          Volume.vol = VolumeInteger;
+//          Volume.mute = false;
+//          Volume.disableVolumeControl = false;
+//          defer.resolve(Volume);
+
+      }
+        if (muteToggled) {
+            currentlyMuted = !currentlyMuted;
+            self.logger.info('Mute state toggled. New mute state: ' + currentlyMuted);
+        } else {
+            if (volChange != 0) {
+                self.logger.info('Volume changed by ' + volChange + ' step(s). New volume : ' + currentvolume);
+
+            }
+        }
+    }    
+    return currentvolume;
+};
+
+
+ir_blaster.prototype.retrievevolume = function () {    
+    return currentvolume;
+};
