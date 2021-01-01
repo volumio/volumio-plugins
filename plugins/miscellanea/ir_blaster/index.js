@@ -296,11 +296,11 @@ ir_blaster.prototype.updateVolumeSettings = function (data) {
     self.logger.info('[IR-Blaster] Current volume: ' + currentvolume);
 
     // Some test calls for debugging:
-    self.alsavolume('+');
-    self.alsavolume('-');
+    //self.alsavolume('+');
+    //self.alsavolume('-');
     self.alsavolume(50);
-    self.alsavolume('mute');
-    self.alsavolume('toggle');
+    //self.alsavolume('mute');
+    //self.alsavolume('toggle');
 }
 
 
@@ -379,23 +379,29 @@ ir_blaster.prototype.importRemoteDefinitions = function (data) {
     return copied;
 };
 
-
-ir_blaster.prototype.powerToggle = function(data) {
+ir_blaster.prototype.sendRemoteCommand = function (commandArray) {
     var defer = libQ.defer();
     var self = this;
-
-    execFile('/usr/bin/irsend', ['SEND_ONCE', remote.remote, 'KEY_POWER'], {uid:1000,gid:1000},
+    const arg1 = ['SEND_ONCE', remote.remote];
+    const args = arg1.concat(commandArray); 
+    execFile('/usr/bin/irsend', args, { uid: 1000, gid: 1000 },
         function (error, stdout, stderr) {
-            if(error != null) {
-                self.logger.info('[IR-Blaster] Error sending IR power toggle signal: '+error);
+            if (error != null) {
+                self.logger.info('[IR-Blaster] Error sending IR signal: ' + error);
                 defer.reject();
             } else {
-                self.logger.info('[IR-Blaster] Send IR power toggle signal');
+                self.logger.info('[IR-Blaster] Send IR signal ' + commandArray);
                 defer.resolve();
             }
         });
 
     return defer.promise;
+};
+
+
+ir_blaster.prototype.powerToggle = function(data) {
+
+    return this.sendRemoteCommand('KEY_POWER');
 };
 
 
@@ -445,66 +451,67 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
     
     var volChange = 0;
     var muteToggled = false;
-    
-    {
-      switch (VolumeInteger) {
-        case 'mute':
-          // Mute
-          if (!currentlyMuted) {
+    var cmdArray = [];
+        
+    switch (VolumeInteger) {
+    case 'mute':
+        // Mute
+        if (!currentlyMuted) muteToggled = true;                  
+        break;
+    case 'unmute':
+        // Unmute
+        if (currentlyMuted) {
             muteToggled = true;
-          }          
-          break;
-        case 'unmute':
-          // Unmute
-          if (currentlyMuted) {
-            muteToggled = true;
-          }
-          break;
-        case 'toggle':
-          // Mute or unmute, depending on current state
-          muteToggled = true;
-          break;
-        case '+':
-          if (currentvolume < volScaling.maxVol) {
-             volChange = 1;
-             currentvolume += volScaling.step;
-          }
-          break;
-        case '-':
-          // Decrease volume by one (TEST ONLY FUNCTION - IN PRODUCTION USE A NUMERIC VALUE INSTEAD)
-          if (currentvolume > volScaling.minVol) {
+        }
+        break;
+    case 'toggle':
+        // Mute or unmute, depending on current state
+        muteToggled = true;
+        break;
+    case '+':
+        if (currentvolume < volScaling.maxVol) {
+            volChange = 1;
+            currentvolume += volScaling.step;
+        }
+        break;
+    case '-':
+        // Decrease volume by one (TEST ONLY FUNCTION - IN PRODUCTION USE A NUMERIC VALUE INSTEAD)
+        if (currentvolume > volScaling.minVol) {
             volChange = -1;
             currentvolume -= volScaling.step;
-          }
-          break;
-        default:
-          // Set the volume with numeric value 0-100
-          if (VolumeInteger < volScaling.minVol) {
-              VolumeInteger = volScaling.minVol;
-          }
-          if (VolumeInteger > volScaling.maxVol) {
-              VolumeInteger = volScaling.maxVol;
-          }
-          if (VolumeInteger != currentvolume) {
-              volChange = Math.round((VolumeInteger - currentvolume)/volScaling.step);
-              currentvolume = VolumeInteger;
-          }
-//          Volume.vol = VolumeInteger;
-//          Volume.mute = false;
-//          Volume.disableVolumeControl = false;
-//          defer.resolve(Volume);
-
-      }
-        if (muteToggled) {
-            currentlyMuted = !currentlyMuted;
-            self.logger.info('Mute state toggled. New mute state: ' + currentlyMuted);
-        } else {
-            if (volChange != 0) {
-                self.logger.info('Volume changed by ' + volChange + ' step(s). New volume : ' + currentvolume);
-
+        }
+        break;
+    default:
+        // Set the volume with numeric value 0-100
+        if (VolumeInteger < volScaling.minVol) {
+            VolumeInteger = volScaling.minVol;
+        }
+        if (VolumeInteger > volScaling.maxVol) {
+            VolumeInteger = volScaling.maxVol;
+        }
+        if (VolumeInteger != currentvolume) {
+            volChange = Math.round((VolumeInteger - currentvolume)/volScaling.step);
+            currentvolume = VolumeInteger;
+        }
+    }
+    if (muteToggled) {
+        currentlyMuted = !currentlyMuted;
+        cmdArray = ['KEY_MUTE'];
+        self.logger.info('Mute state toggled. New mute state: ' + currentlyMuted);
+    } else {
+        if (volChange != 0) {
+            self.logger.info('Volume changed by ' + volChange + ' step(s). New volume : ' + currentvolume);
+            var command;
+            if (volChange > 0) command = 'KEY_VOLUMEUP '; else command = 'KEY_VOLUMEDOWN ';
+            var i = 0;
+            while (i < Math.abs(volChange)) {
+                cmdArray.push(command);
+                i++;
             }
         }
-    }    
+    }
+    self.logger.info('LIRC command string: ' + cmdArray);
+    if (cmdArray != []) self.sendRemoteCommand(cmdArray);    
     return currentvolume;
 };
 
