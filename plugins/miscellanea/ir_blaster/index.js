@@ -14,7 +14,10 @@ const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release
 var currentvolume = '';
 var currentlyMuted = false;
 var remote = { 'gpio_pin': 12, 'remote': '', 'name': '' };
-var volScaling = {'minVol': 0, 'maxVol': 100, 'step': 5};
+var volScaling = { 'minVol': 0, 'maxVol': 100, 'step': 5 };
+var volConfig = { 'minVol': 0, 'maxVol': 20, 'mapTo100': true };
+
+var useScript = true;  // if true use (shell) scripts to send IR commands, otherwise use volumeOverride
 
 module.exports = ir_blaster;
 
@@ -49,18 +52,23 @@ ir_blaster.prototype.onStart = function() {
         self.enablePIOverlay();
     }
     self.logger.info('[IR-Blaster] Loaded configuration: ' + JSON.stringify(self.config.data));
-    remote.name = self.config.get('remotename');
+    useScript = self.config.get('useScript', true);
+
+    remote.name = self.config.get('remotename');  
     remote.gpio_pin = self.config.get('gpio_pin');
     // get lirc remote name
     self.getRemoteName().then(
         function () {
             self.logger.info('[IR-Blaster] Remote details: ' + JSON.stringify(remote));
-            self.addVolumeScripts();
-        });
-    
-    self.getVolume();
-
-  	// Once the Plugin has successfull started resolve the promise
+            self.configureVolumeScale();
+            if (useScript) {
+                self.addVolumeScripts();
+                self.getVolume();
+            } else {
+                self.configureVolumeOverride();
+            }
+        });  
+  	// Once the Plugin has successfully started resolve the promise
   	defer.resolve();
 
     return defer.promise;
@@ -70,9 +78,12 @@ ir_blaster.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-    self.removeVolumeScripts();
+    if (useScript) {
+        self.removeVolumeScripts();
+    } else {
 
-    // Once the Plugin has successfull stopped resolve the promise
+    }
+    // Once the Plugin has successfully stopped resolve the promise
     defer.resolve();
 
     return libQ.resolve();
@@ -119,19 +130,24 @@ ir_blaster.prototype.getUIConfig = function() {
             }
 
             uiconf.sections[SEC_REM].content[0].value = self.config.get('gpio_pin');
+            uiconf.sections[SEC_REM].content[2].value = useScript;
             
 
             // Volume section
             const SEC_VOL = 2;
 
-            uiconf.sections[SEC_VOL].content[0].value = self.config.get('vol_min');
-            uiconf.sections[SEC_VOL].content[1].value = self.config.get('vol_max');
-            // get current volume:
-            self.getVolume();
-            uiconf.sections[SEC_VOL].content[2].value = currentvolume;
+            uiconf.sections[SEC_VOL].content[0].value = volConfig.minVol;
+            uiconf.sections[SEC_VOL].content[1].value = volConfig.maxVol;
+            if (useScript) {
+                // get current volume:
+                self.getVolume();
+                uiconf.sections[SEC_VOL].content[2].value = currentvolume;
+            } else {
+                uiconf.sections[SEC_VOL].content[2].value = Math.round(currentvolume/volScaling.step);
+            }
             //self.logger.info('[IR-Blaster] Preparing config GUI. Volume: ', currentvolume);
 
-            uiconf.sections[SEC_VOL].content[3].value = self.config.get('map_to_100');
+            uiconf.sections[SEC_VOL].content[3].value = volConfig.mapTo100;
 
             defer.resolve(uiconf);
         })
@@ -164,6 +180,7 @@ ir_blaster.prototype.setConf = function(varName, varValue) {
 
 // Actual working methods ----------------------------------------------------
 
+// Script based methods
 // Adapted from Allo Relay attenuator plugin  (alloSteppedVolumeAttenuator)
 
 ir_blaster.prototype.addVolumeScripts = function() {
@@ -174,14 +191,10 @@ ir_blaster.prototype.addVolumeScripts = function() {
     var getVolumeScript = __dirname + '/scripts/getvolume.sh';
     var setMuteScript = __dirname + '/scripts/setmute.sh ' + remote.remote;
     var getMuteScript = __dirname + '/scripts/getmute.sh';
-    var minVol = self.config.get('vol_min');
-    var maxVol = self.config.get('vol_max');
-    var mapTo100 = self.config.get('map_to_100', false);
 
-    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
+    var data = { 'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript, 'getmutescript': getMuteScript, 'minVol': volConfig.minVol, 'maxVol': volConfig.maxVol, 'mapTo100': volConfig.mapTo100};
     //self.logger.info('[IR-Blaster] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.updateVolumeScripts(data);
-    //self.commandRouter.volumioupdatevolume(Volume);
 };
 
 ir_blaster.prototype.removeVolumeScripts = function() {
@@ -192,20 +205,14 @@ ir_blaster.prototype.removeVolumeScripts = function() {
     var getVolumeScript = '';
     var setMuteScript = '';
     var getMuteScript = '';
-    var minVol = 0;
-    var maxVol = 100;
-    var mapTo100 = false;
 
-    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
+    var data = { 'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript, 'getmutescript': getMuteScript, 'minVol': volConfig.minVol, 'maxVol': volConfig.maxVol, 'mapTo100': volConfig.mapTo100};
     self.commandRouter.updateVolumeScripts(data);
 };
 
+// volumeOverride methods
 ir_blaster.prototype.configureVolumeOverride = function () {
     var self = this;
-
-    var minVol = self.config.get('vol_min');
-    var maxVol = self.config.get('vol_max');
-    var mapTo100 = self.config.get('map_to_100', false);
 
     // We have to pass 'device' and 'mixer' to 'volumioUpdateVolumeSettings' otherwise it fails!
     // Ideally 'volumeOverride' should be able to be set w/o the need to do this...
@@ -220,14 +227,42 @@ ir_blaster.prototype.configureVolumeOverride = function () {
     self.commandRouter.volumioUpdateVolumeSettings(data);
 };
 
+ir_blaster.prototype.configureVolumeScale = function () {
+    var self = this;
+
+    volConfig.minVol = Number(self.config.get('vol_min'));
+    volConfig.maxVol = Number(self.config.get('vol_max'));
+    volConfig.mapTo100 = self.config.get('map_to_100', false);
+
+    if (volConfig.mapTo100) {
+        volScaling.step = 100 / (volConfig.maxVol - volConfig.minVol);
+        volScaling.minVol = 0;
+        volScaling.maxVol = 100;
+//        currentvolume = currentvolume * volScaling.step;
+    } else {
+        volScaling.step = 1;
+        volScaling.minVol = volConfig.minVol;
+        volScaling.maxVol = volConfig.maxVol;
+    }
+    self.logger.info('[IR-Blaster] Updated volume settings: ' + JSON.stringify(volScaling));
+};
+
 ir_blaster.prototype.updateRemoteSettings = function (data) {
     var self = this;
+    var scriptChanged = false;
+
     self.logger.info('[IR-Blaster] Updated remote settings: ' + JSON.stringify(data));
 
 
     if (Number.isInteger(Number(data['gpio_pin'])) && data['gpio_pin'] != remote.gpio_pin) {
         self.config.set('gpio_pin', data['gpio_pin']);
         remote.gpio_pin = data['gpio_pin'];
+    }
+
+    if (data['useScript'] !== undefined && data['useScript'] != useScript) {
+        useScript = data['useScript'];
+        self.config.set('useScript', useScript);
+        scriptChanged = true;
     }
 
     if (data['remotename']['label'] != remote.name) {
@@ -243,11 +278,20 @@ ir_blaster.prototype.updateRemoteSettings = function (data) {
         self.restartLirc(true).then(function () {
             self.getRemoteName().then(function () {
                 // update scripts as remote name has changed...
-                self.addVolumeScripts();
+                if (useScript) self.addVolumeScripts();
                 self.commandRouter.pushToastMessage('success', 'IR-Blaster', 'Updated remote to ' + remote.name);
                 self.logger.info('[IR-Blaster] Remote details: ' + JSON.stringify(remote));
             });
         });
+    }
+
+    if (scriptChanged) {
+        if (useScript) {
+            self.addVolumeScripts();
+        } else {
+            self.configureVolumeOverride();
+            self.retrievevolume();
+        }
     }
 }
 
@@ -277,52 +321,39 @@ ir_blaster.prototype.updateVolumeSettings = function (data) {
 
     self.config.set('vol_min', data['vol_min']);
     self.config.set('vol_max', data['vol_max']);
-    self.config.set('vol_cur', data['vol_cur']);
+    self.config.set('map_to_100', data['map_to_100']);
+    self.configureVolumeScale();
+
     if (Number.isInteger(Number(data['vol_cur']))) {
         // This is to make sure data['vol_cur'] is a pure integer number. Hopefully enough to avoid shell script command injection (?)
         currentvolume = data['vol_cur'];
-        self.logger.info('[IR-Blaster] current volume ' + currentvolume);
-        execFile(__dirname + '/scripts/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
-            function (error, stdout, stderr) {
-                if (error != null) {
-                    self.logger.info('[IR-Blaster] Initvolume.sh : ' + error);
-//                    defer.reject();
-                } else {
-                    self.logger.info('[IR-Blaster] Volume initialised');
-//                    defer.resolve();
-                }
-            });
+        self.config.set('vol_cur', currentvolume);
+        if (useScript) {
+            execFile(__dirname + '/scripts/initvolume.sh', [currentvolume], { uid: 1000, gid: 1000 },
+                function (error, stdout, stderr) {
+                    if (error != null) {
+                        self.logger.info('[IR-Blaster] Initvolume.sh : ' + error);
+                        //                    defer.reject();
+                    } else {
+                        self.logger.info('[IR-Blaster] Volume initialised');
+                        //                    defer.resolve();
+                    }
+                });
+        } else {
+            currentvolume = Number(currentvolume);
+            if (volConfig.mapTo100) currentvolume *= volScaling.step;
+        }
+        self.logger.info('[IR-Blaster] Updated volume settings: ' + currentvolume);
     } else {
         self.logger.info('[IR-Blaster] Current volume should be an integer value: ' + data['vol_cur']);
     };
-    self.config.set('map_to_100', data['map_to_100']);
-    self.logger.info('[IR-Blaster] Updated volume settings: ' + currentvolume);
-    self.addVolumeScripts();
 
-    currentvolume = Number(currentvolume);
-    volScaling.minVol = data['vol_min'];
-    volScaling.maxVol = data['vol_max'];
-    if (volScaling.maxVol <= volScaling.minVol) volScaling.maxVol = volScaling.minVol + 1;
-
-    if (data['map_to_100']) {
-        volScaling.step = 100 / (volScaling.maxVol - volScaling.minVol);
-        volScaling.minVol = 0;
-        volScaling.maxVol = 100;
-        currentvolume = currentvolume * volScaling.step;
+    if (useScript) {
+        self.addVolumeScripts();
     } else {
-        volScaling.step = 1;
+        self.configureVolumeOverride();
+        self.retrievevolume();
     }
-    self.logger.info('[IR-Blaster] Updated volume settings: ' + JSON.stringify(volScaling));
-    self.logger.info('[IR-Blaster] Current volume: ' + currentvolume);
-
-    // Some test calls for debugging:
-    //self.alsavolume('+');
-    //self.alsavolume('-');
-    //self.alsavolume(50);
-    //self.alsavolume('mute');
-    //self.alsavolume('toggle');
-
-    self.configureVolumeOverride();
 }
 
 
@@ -514,7 +545,7 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
         }
         if (VolumeInteger != currentvolume) {
             volChange = Math.round((VolumeInteger - currentvolume)/volScaling.step);
-            currentvolume = VolumeInteger;
+            currentvolume += volChange * volScaling.step;
         }
     }
     if (muteToggled) {
@@ -537,16 +568,18 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
     if (cmdArray != []) self.sendRemoteCommand(cmdArray);    
 
     const Volume = {
-        'vol': currentvolume, 'mute': currentlyMuted, 'disableVolumeControl': false
+        'vol': Math.round(currentvolume), 'mute': currentlyMuted, 'disableVolumeControl': false
     };
+    self.commandRouter.volumioupdatevolume(Volume);
     defer.resolve(Volume);
+
     return defer.promise;
 };
 
 
 ir_blaster.prototype.retrievevolume = function () {    
     const Volume = {
-        'vol': currentvolume, 'mute': currentlyMuted, 'disableVolumeControl': false
+        'vol': Math.round(currentvolume), 'mute': currentlyMuted, 'disableVolumeControl': false
     };
 
     return libQ.resolve(Volume)

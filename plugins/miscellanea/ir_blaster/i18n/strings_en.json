@@ -8,6 +8,8 @@
   "GPIO_PIN_DOC":"Pin used to control the IR transmitter",
   "REMOTENAME_LABEL":"Remote name",
   "REMOTENAME_DOC":"List of locally available remote control definitions. See \"Remote Import\" section below for instructions on how to upload extra definitions.",
+  "USESCRIPT_LABEL":"Use scripts?",
+  "USESCRIPT_DOC":"Using (shell) scripts might also work for older versions of Volumio (pre summer 2020)",
   "SECTION_VOLUME_LABEL":"Volume settings",
   "SECTION_VOLUME_DESC":"Volume settings",
   "VOL_MIN_LABEL":"Minimum Volume value",

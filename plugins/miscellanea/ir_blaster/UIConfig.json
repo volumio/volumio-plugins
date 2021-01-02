@@ -38,7 +38,8 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "gpio_pin",
-          "remotename"
+          "remotename",
+		  "useScript"
         ]
       },
       "content": [
@@ -57,6 +58,13 @@
           "doc": "TRANSLATE.REMOTENAME_DOC",
           "value": {},
           "options": []
+        },
+        {
+          "id": "useScript",
+          "element": "switch",
+          "label": "TRANSLATE.USESCRIPT_LABEL",
+          "doc": "TRANSLATE.USESCRIPT_DOC",
+          "value": true
         }
       ]
     },
