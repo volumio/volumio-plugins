@@ -31,7 +31,7 @@ Now, install the plugin. It may takes several minutes. Wait for it in the UI!
 
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/miscellanea/peppyalsapipe/pipe.zip
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/miscellanea/peppyMeter/pipe.zip
 mkdir pipe
 miniunzip pipe.zip -d ./pipe
 cd pipe
