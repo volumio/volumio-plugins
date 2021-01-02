@@ -207,10 +207,17 @@ ir_blaster.prototype.configureVolumeOverride = function () {
     var maxVol = self.config.get('vol_max');
     var mapTo100 = self.config.get('map_to_100', false);
 
-    var data = { 'device': '1', 'mixer': 'SoftMaster', 'volumeOverride': true, 'pluginType': 'miscellanea', 'pluginName': 'ir_blaster', 'volumesteps': volScaling.step, 'maxvolume': volScaling.maxVol };
+    // We have to pass 'device' and 'mixer' to 'volumioUpdateVolumeSettings' otherwise it fails!
+    // Ideally 'volumeOverride' should be able to be set w/o the need to do this...
+    // This would require changes to ''
+    //
+    // For now use workaround: get current settings and pass them back...
+    var device = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
+    var mixerdev = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer');
+
+    const data = { 'device': device, 'mixer': mixerdev, 'volumeOverride': true, 'pluginType': 'miscellanea', 'pluginName': 'ir_blaster', 'volumesteps': volScaling.step, 'maxvolume': volScaling.maxVol };
     self.logger.info('[IR-Blaster] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.volumioUpdateVolumeSettings(data);
-    //self.commandRouter.volumioupdatevolume(Volume);
 };
 
 ir_blaster.prototype.updateRemoteSettings = function (data) {
@@ -308,15 +315,14 @@ ir_blaster.prototype.updateVolumeSettings = function (data) {
     self.logger.info('[IR-Blaster] Updated volume settings: ' + JSON.stringify(volScaling));
     self.logger.info('[IR-Blaster] Current volume: ' + currentvolume);
 
-
     // Some test calls for debugging:
     //self.alsavolume('+');
     //self.alsavolume('-');
-    self.alsavolume(50);
+    //self.alsavolume(50);
     //self.alsavolume('mute');
     //self.alsavolume('toggle');
-    self.configureVolumeOverride();
 
+    self.configureVolumeOverride();
 }
 
 
@@ -530,7 +536,7 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
     self.logger.info('LIRC command string: ' + cmdArray);
     if (cmdArray != []) self.sendRemoteCommand(cmdArray);    
 
-    var Volume = {
+    const Volume = {
         'vol': currentvolume, 'mute': currentlyMuted, 'disableVolumeControl': false
     };
     defer.resolve(Volume);
@@ -539,5 +545,13 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
 
 
 ir_blaster.prototype.retrievevolume = function () {    
-    return currentvolume;
+    const Volume = {
+        'vol': currentvolume, 'mute': currentlyMuted, 'disableVolumeControl': false
+    };
+
+    return libQ.resolve(Volume)
+        .then(function (Volume) {
+            libQ.defer().resolve(Volume);
+            self.commandRouter.volumioupdatevolume(Volume);
+        });
 };
