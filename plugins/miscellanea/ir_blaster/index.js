@@ -200,6 +200,19 @@ ir_blaster.prototype.removeVolumeScripts = function() {
     self.commandRouter.updateVolumeScripts(data);
 };
 
+ir_blaster.prototype.configureVolumeOverride = function () {
+    var self = this;
+
+    var minVol = self.config.get('vol_min');
+    var maxVol = self.config.get('vol_max');
+    var mapTo100 = self.config.get('map_to_100', false);
+
+    var data = { 'device': '1', 'mixer': 'SoftMaster', 'volumeOverride': true, 'pluginType': 'miscellanea', 'pluginName': 'ir_blaster', 'volumesteps': volScaling.step, 'maxvolume': volScaling.maxVol };
+    self.logger.info('[IR-Blaster] Setting parameters'+ JSON.stringify(data));
+    self.commandRouter.volumioUpdateVolumeSettings(data);
+    //self.commandRouter.volumioupdatevolume(Volume);
+};
+
 ir_blaster.prototype.updateRemoteSettings = function (data) {
     var self = this;
     self.logger.info('[IR-Blaster] Updated remote settings: ' + JSON.stringify(data));
@@ -295,12 +308,15 @@ ir_blaster.prototype.updateVolumeSettings = function (data) {
     self.logger.info('[IR-Blaster] Updated volume settings: ' + JSON.stringify(volScaling));
     self.logger.info('[IR-Blaster] Current volume: ' + currentvolume);
 
+
     // Some test calls for debugging:
     //self.alsavolume('+');
     //self.alsavolume('-');
     self.alsavolume(50);
     //self.alsavolume('mute');
     //self.alsavolume('toggle');
+    self.configureVolumeOverride();
+
 }
 
 
@@ -448,6 +464,7 @@ ir_blaster.prototype.restartLirc = function (message) {
 
 ir_blaster.prototype.alsavolume = function (VolumeInteger) {
     var self = this;
+    var defer = libQ.defer();
     
     var volChange = 0;
     var muteToggled = false;
@@ -512,7 +529,12 @@ ir_blaster.prototype.alsavolume = function (VolumeInteger) {
     }
     self.logger.info('LIRC command string: ' + cmdArray);
     if (cmdArray != []) self.sendRemoteCommand(cmdArray);    
-    return currentvolume;
+
+    var Volume = {
+        'vol': currentvolume, 'mute': currentlyMuted, 'disableVolumeControl': false
+    };
+    defer.resolve(Volume);
+    return defer.promise;
 };
 
 
