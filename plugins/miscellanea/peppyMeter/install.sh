@@ -1,6 +1,6 @@
 #!/bin/bash
-peppymeterpath=/data/plugins/audio_interface/peppyMeter/peppymeter
-spath=/data/plugins/audio_interface/peppyMeter
+peppymeterpath=/data/plugins/miscellanea/peppyMeter/peppymeter
+spath=/data/plugins/miscellanea/peppyMeter
 
 echo "Installing peppyalsa plugin dependencies"
 cp $spath/peppy.service.tar /

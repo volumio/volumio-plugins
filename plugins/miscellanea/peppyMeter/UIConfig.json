@@ -10,7 +10,7 @@
 			"icon": "fa-plug",
 			"onSave": {
 				"type": "controller",
-				"endpoint": "audio_interface/peppyMeter",
+				"endpoint": "miscellanea/peppyMeter",
 				"method": "savepeppy"
 			},
 			"saveButton": {

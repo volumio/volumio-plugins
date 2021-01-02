@@ -196,7 +196,7 @@ peppyMeter.prototype.savepeppyconfig = function () {
         .replace("${screensize}", self.config.get("screensize"))
       self.logger.info('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT' + conf1)
 
-      fs.writeFile("/data/plugins/audio_interface/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
+      fs.writeFile("/data/plugins/miscellanea/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();

@@ -1,6 +1,6 @@
 {
   "name": "peppyMeter",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Easy PeppyMeter for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "GPL 3.0",
   "volumio_info": {
     "prettyName": "PeppyMeter for Volumio",
-    "plugin_type": "audio_interface",
+    "plugin_type": "miscellanea",
     "icon": "fa-bar-chart",
     "has_alsa_contribution": true
   },
