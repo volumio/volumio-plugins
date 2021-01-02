@@ -2,6 +2,8 @@
 
 ### for From Volumio buster >= 3.015
 
+source for peppymeter and peppyalsa : [peppy](https://github.com/project-owner)
+
 January 2nd 2021
 
 installation for Volumio
