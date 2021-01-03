@@ -1,6 +1,8 @@
 ## Peppy alsa pipe + peppyMeter for RPI
 
-### for From Volumio buster >= 3.015
+### for From Volumio buster >= 3.015* 
+
+*work with 2.861 if modular_alsa enabled
 
 source for peppymeter and peppyalsa : [peppy](https://github.com/project-owner)
 
@@ -29,7 +31,7 @@ and restart
 volumio vrestart
 ```
 
-Now, install the plugin. It may takes several minutes. Wait for it in the UI!
+Now, install the plugin. It may take several minutes. Wait for it in the UI!
 
 
 ```
