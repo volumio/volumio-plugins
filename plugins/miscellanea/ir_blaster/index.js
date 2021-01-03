@@ -211,8 +211,9 @@ ir_blaster.prototype.removeVolumeScripts = function() {
 };
 
 // volumeOverride methods
-ir_blaster.prototype.configureVolumeOverride = function () {
+ir_blaster.prototype.configureVolumeOverride = function (enable) {
     var self = this;
+    var enableOverride;
 
     // We have to pass 'device' and 'mixer' to 'volumioUpdateVolumeSettings' otherwise it fails!
     // Ideally 'volumeOverride' should be able to be set w/o the need to do this...
@@ -221,8 +222,16 @@ ir_blaster.prototype.configureVolumeOverride = function () {
     // For now use workaround: get current settings and pass them back...
     var device = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
     var mixerdev = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer');
+    // These seetings are only needed for when we want to dsiable the plugin again...
+    //var volumecurve = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
+    //var mixertype = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer_type');
 
-    const data = { 'device': device, 'mixer': mixerdev, 'volumeOverride': true, 'pluginType': 'miscellanea', 'pluginName': 'ir_blaster', 'volumesteps': volScaling.step, 'maxvolume': volScaling.maxVol };
+    // Enable override by default: but if 'false' is passed to routine then switch it off
+    if (enable == false) {
+        enableOverride = false;
+    } else enableOverride = true;
+
+    const data = { 'device': device, 'mixer': mixerdev, 'volumeOverride': enableOverride, 'pluginType': 'miscellanea', 'pluginName': 'ir_blaster', 'volumesteps': volScaling.step, 'maxvolume': volScaling.maxVol };
     self.logger.info('[IR-Blaster] Setting parameters'+ JSON.stringify(data));
     self.commandRouter.volumioUpdateVolumeSettings(data);
 };
@@ -287,8 +296,10 @@ ir_blaster.prototype.updateRemoteSettings = function (data) {
 
     if (scriptChanged) {
         if (useScript) {
+            self.configureVolumeOverride(false);
             self.addVolumeScripts();
         } else {
+            currentvolume = Number(currentvolume) * volScaling.step;
             self.configureVolumeOverride();
             self.retrievevolume();
         }
