@@ -1,0 +1,8 @@
+{
+  "PLUGIN_CONFIGURATION":"Pirate Audio Plugin Konfiguration",
+  "CONFIG": {
+    "TITLE": "Pirate Audio Konfiguration",
+    "LISTMAX": "Wie viele Einträge sollen im Listview maximal angezeigt werden?",
+    "SAVE":"Speichern"
+  }
+}
