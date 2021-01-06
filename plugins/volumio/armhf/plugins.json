@@ -625,7 +625,7 @@
 					"version": "0.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/pirateaudio/pirateaudio.zip",
 					"license": "ISC",
-					"description": " Volumio plugi",
+					"description": "Volumio plugin to use pirate audio dac with volumio (including display and the 4 buttons) and a raspberry pi.",
 					"details": "Volumio plugin to use pirate audio dac with volumio (including display and the 4 buttons) and a raspberry pi. ",
 					"author": "AxLED",
 					"screenshots": [
