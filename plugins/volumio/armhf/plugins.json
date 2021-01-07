@@ -635,6 +635,24 @@
 						}
 					],
 					"updated": "5-10-2020"
+				},
+				{
+					"prettyName": "pirateaudio",
+					"icon": "fa-lightbulb-o",
+					"name": "pirateaudio",
+					"version": "0.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/pirateaudio/pirateaudio.zip",
+					"license": "ISC",
+					"description": "Python code (Plugin) to use pirate audio dac with volumio (including display and the 4 buttons) and a raspberry pi. ",
+					"details": "",
+					"author": "AxLED",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "7-1-2021"
 				}
 			]
 		},
