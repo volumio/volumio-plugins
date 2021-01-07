@@ -286,6 +286,24 @@
 						}
 					],
 					"updated": "21-12-2020"
+				},
+				{
+					"prettyName": "RADIO 357",
+					"icon": "fa-lightbulb-o",
+					"name": "rad357pl",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/rad357pl/rad357pl.zip",
+					"license": "ISC",
+					"description": "Radio 357",
+					"details": "",
+					"author": "DJack",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "7-1-2021"
 				}
 			]
 		},
