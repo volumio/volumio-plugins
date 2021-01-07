@@ -1,0 +1,8 @@
+{
+  "PLUGIN_CONFIGURATION":"Pirate Audio Plugin Configuration",
+  "CONFIG": {
+    "TITLE": "Pirate Audio Configuration",
+    "LISTMAX": "How many entries should be maximum displayed on a list view?",
+    "SAVE":"Save"
+  }
+}
