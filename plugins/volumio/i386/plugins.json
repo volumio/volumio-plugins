@@ -184,7 +184,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "29-11-2020"
+					"updated": "21-12-2020"
 				},
 				{
 					"prettyName": "pandora",
@@ -203,6 +203,24 @@
 						}
 					],
 					"updated": "31-10-2020"
+				},
+				{
+					"prettyName": "SWARM Station",
+					"icon": "fa-lightbulb-o",
+					"name": "swarmstation",
+					"version": "1.0.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/swarmstation/swarmstation.zip",
+					"license": "ISC",
+					"description": "Swarmstation space drone",
+					"details": "",
+					"author": "DJack",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "21-12-2020"
 				}
 			]
 		},
