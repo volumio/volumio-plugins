@@ -44,3 +44,7 @@ cd..
 rm -Rf pipe*
 ```
 ## Does not work (yet) with software volume
+
+January 8th 2021
+
+- fix for softvol
