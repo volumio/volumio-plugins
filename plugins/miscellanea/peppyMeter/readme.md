@@ -19,6 +19,9 @@ You need touch_display plugin installed
 You need modular_alsa enabled
 ```
 cd /volumio
+git checkout buster/alsa-pipeline
+cd..
+cd /volumio
 nano .env
 ```
 and change lines
@@ -43,7 +46,6 @@ volumio plugin install
 cd..
 rm -Rf pipe*
 ```
-## Does not work (yet) with software volume
 
 January 8th 2021
 
