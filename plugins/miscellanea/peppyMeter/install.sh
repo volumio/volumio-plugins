@@ -31,7 +31,7 @@ if [ ! -f "/usr/local/lib/libpeppyalsa.so" ];
 		./configure && make
 		sudo make install && exit
     else
-echo "peppyalsa already installed, nothing to do"
+		echo "peppyalsa already installed, nothing to do"
 fi
 
 #required to end the plugin install
