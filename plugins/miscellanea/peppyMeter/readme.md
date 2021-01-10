@@ -49,6 +49,7 @@ rm -Rf pipe*
 
 January 10th 2021
 
+- switch to disable local display
 - install check if peppyalsa is already installed
 
 January 8th 2021

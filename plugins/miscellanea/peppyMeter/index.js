@@ -129,14 +129,15 @@ peppyMeter.prototype.getUIConfig = function () {
     __dirname + '/i18n/strings_en.json',
     __dirname + '/UIConfig.json')
     .then(function (uiconf) {
+      uiconf.sections[0].content[0].value = self.config.get('localdisplay');
 
       value = self.config.get('meter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), value));
-      var value;
-      value = self.config.get('screensize');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[1].options'), value));
+      var value;
+      value = self.config.get('screensize');
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
       var value;
 
       defer.resolve(uiconf);
@@ -163,6 +164,7 @@ peppyMeter.prototype.savepeppy = function (data) {
 
   var defer = libQ.defer();
 
+  self.config.set('localdisplay', data['localdisplay']);
   self.config.set('meter', data['meter'].value);
   self.config.set('screensize', data['screensize'].value);
 
@@ -192,10 +194,14 @@ peppyMeter.prototype.savepeppyconfig = function () {
         defer.reject(new Error(err));
         return console.log(err);
       }
-      const conf1 = data.replace("${meter}", self.config.get('meter'))
+      var localdisplay = self.config.get('localdisplay')
+      if (localdisplay) {
+       var localdisplayd = 'True'
+      }
+      else if (localdisplayd = 'False');
+      const conf1 = data.replace("${meter}", self.config.get("meter"))
         .replace("${screensize}", self.config.get("screensize"))
-      self.logger.info('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT' + conf1)
-
+        .replace("${localdisplay}", localdisplayd)
       fs.writeFile("/data/plugins/miscellanea/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));

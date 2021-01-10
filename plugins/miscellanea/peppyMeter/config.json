@@ -1,4 +1,5 @@
 {
+"localdisplay":{"type":"boolean","value":true},
 "meter":{"type":"string","value":"random"},
 "screensize":{"type":"string","value":"medium"}
 }

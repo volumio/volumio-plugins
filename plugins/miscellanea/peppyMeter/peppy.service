@@ -1,0 +1,20 @@
+
+[Unit]
+Description=peppymeter Daemon
+After=syslog.target
+
+[Service]
+Type=simple
+WorkingDirectory=/data/plugins/miscellanea/peppyMeter/peppymeter
+ExecStart=/usr/bin/python3 /data/plugins/miscellanea/peppyMeter/peppymeter/peppymeter.py &> /dev/null
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+User=volumio
+Group=volumio
+TimeoutSec=1
+
+[Install]
+WantedBy=multi-user.target
+
