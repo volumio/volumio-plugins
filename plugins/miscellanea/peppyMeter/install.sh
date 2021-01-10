@@ -17,18 +17,22 @@ sudo chgrp volumio $peppymeterpath
 echo "installing apt packages"
 
 sudo apt-get -y install python3-pygame python3
-sudo apt-get -y install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
 
-echo "Installing peppyalsa plugin"
-mkdir /tmp/peppyalsa
-git clone https://github.com/project-owner/peppyalsa.git /tmp/peppyalsa
+echo "Installing peppyalsa plugin if needed"
+if [ ! -f "/usr/local/lib/libpeppyalsa.so" ];
+	then
+		sudo apt-get -y install build-essential autoconf automake libtool libasound2-dev libfftw3-dev
+		mkdir /tmp/peppyalsa
+		git clone https://github.com/project-owner/peppyalsa.git /tmp/peppyalsa
 
-cd /tmp/peppyalsa
-aclocal && libtoolize
-autoconf && automake --add-missing
-./configure && make
-sudo make install && exit
-
+		cd /tmp/peppyalsa
+		aclocal && libtoolize
+		autoconf && automake --add-missing
+		./configure && make
+		sudo make install && exit
+    else
+echo "peppyalsa already installed, nothing to do"
+fi
 
 #required to end the plugin install
 echo "plugininstallend"
