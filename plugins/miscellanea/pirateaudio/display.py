@@ -14,6 +14,7 @@ import signal
 import RPi.GPIO as GPIO
 import math
 import json
+from signal import *
 # import logging
 # logging.getLogger('socketIO-client').setLevel(logging.DEBUG)
 # logging.basicConfig()
@@ -37,13 +38,24 @@ disp = ST7789.ST7789(
 )
 
 
-# read json file
+# read json file (plugin values)
 with open('/data/configuration/miscellanea/pirateaudio/config.json', 'r') as myfile:
-    data=myfile.read()
+    data = myfile.read()
+obj = json.loads(data)  # parse file
 
-# parse file
-obj = json.loads(data)
-print('listmax:', int(obj['listmax']['value']))
+# read json file (volumio language)
+with open('/data/configuration/miscellanea/appearance/config.json', 'r') as mylangfile:
+    data_lang = mylangfile.read()
+obj_lang = json.loads(data_lang)  # parse file
+langcode = obj_lang['language_code']['value']
+langpath = '/data/plugins/miscellanea/pirateaudio/i18n/strings_' + langcode + '.json'
+if os.path.exists(langpath) is False:  # change to en as default language
+    langpath = '/data/plugins/miscellanea/pirateaudio/i18n/strings_en.json'
+
+# read json file (language file for translation)
+with open(langpath, 'r') as mytransfile:
+    data_trans = mytransfile.read()
+obj_trans = json.loads(data_trans)  # parse file
 
 WIDTH = 240
 HEIGHT = 240
@@ -60,7 +72,6 @@ nav_array_name = []
 nav_array_uri = []
 nav_array_type = []
 marker = 0
-# listmax = 5
 listmax = int(obj['listmax']['value'])  # get the value from config.json
 liststart = 0
 listresult = 0
@@ -71,8 +82,18 @@ LABELS = ['A', 'B', 'X', 'Y']
 GPIO.setmode(GPIO.BCM)  # Set up RPi.GPIO with the "BCM" numbering scheme
 
 
+# exit function (even is service is stopped)
+def clean(*args):
+    disp.set_backlight(False)
+    sys.exit(0)
+
+for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
+    signal(sig, clean)
+# exit function (even is service is stopped)
+
+
 def on_connect():
-    print('connect')
+    # print('connect')
     socketIO.on('pushState', on_push_state)
     socketIO.emit('getState', '', on_push_state)
     socketIO.on('pushBrowseSources', on_push_browsesources)
@@ -80,15 +101,18 @@ def on_connect():
 
 
 def on_disconnect():
-    print('disconnect')
-    display_stuff('bg_default', 'Verbindung verloren', 0, 0)
+    # print('disconnect')
+    # display_stuff('bg_default', 'Verbindung verloren', 0, 0)
+    display_stuff('bg_default', obj_trans['DISPLAY']['LOSTCONNECTION'], 0, 0)
 
 
 def navigation_handler(action):
     global mode, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, listresult
     if mode == 'player':
         mode = 'menu'
-        nav_array_name = ['Musikauswahl', 'Herunterfahren ?', 'Neustart Pi?']
+        # nav_array_name = ['Musikauswahl', 'Herunterfahren ?', 'Neustart Pi?']
+        # obj_trans['DISPLAY']['MUSICSELECTION']
+        nav_array_name = [obj_trans['DISPLAY']['MUSICSELECTION'], obj_trans['DISPLAY']['SHUTDOWN'], obj_trans['DISPLAY']['REBOOT']]
         nav_array_uri = ['', 'sudo shutdown -h now', 'sudo shutdown -r now']
         nav_array_type = ['', 'os', 'os']
         listresult = 3
@@ -123,7 +147,8 @@ def on_push_browselibrary(*args):
     # check header
     if head == 1:  # playlists / Wiedergabelisten
         if len(args[0]['navigation']['lists'][0]['items']) == 0:
-            display_stuff('bg_default', 'leer', marker, liststart)
+            # display_stuff('bg_default', 'leer', marker, liststart)
+            display_stuff('bg_default', obj_trans['DISPLAY']['EMPTY'], marker, liststart)
         else:
             createlines = True
     elif head == 2:
@@ -157,7 +182,8 @@ def on_push_browselibrary(*args):
 
         display_stuff('bg_default', nav_array_name, marker, liststart)
     elif result == 0:  # we have no item entries
-        display_stuff('bg_default', 'leer', marker, liststart)
+        # display_stuff('bg_default', 'leer', marker, liststart)
+        display_stuff('bg_default', obj_trans['DISPLAY']['EMPTY'], marker, liststart)
 
 
 def reset_variable(varmode):
@@ -179,8 +205,9 @@ def display_stuff(picture, text, marked, start):
         img3 = Image.open(picture)
     draw3 = ImageDraw.Draw(img3, 'RGBA')
     # y = 15
-    result = len(text)
+    # result = len(text)
     if isinstance(text, list):  # check if text is array
+        result = len(text)  # count of list/array
         # Loop for finding out the sum of textheight for positioning
         totaltextheight = 0
         for arrayitem in text:
@@ -197,20 +224,35 @@ def display_stuff(picture, text, marked, start):
                 len1, hei1 = draw3.textsize(arrayitem, font=font_m)
                 x2 = (WIDTH - len1)//2
                 if i == marked:
-                    draw3.text((x2, y), arrayitem, font=font_m, fill=(255, 0, 0))
+                    # test background
+                    draw3.rectangle((x2, y + 2, x2 + len1, y + hei1), (255, 255, 255))
+                    # draw3.text((x2, y), arrayitem, font=font_m, fill=(255, 0, 0))
+                    draw3.text((x2, y), arrayitem, font=font_m, fill=(0, 0, 0))
                 else:
                     draw3.text((x2, y), arrayitem, font=font_m, fill=(255, 255, 255))
                 y = y + hei1
             i += 1
     else:
+        result = 1  # needed for right pageindex
         len1, hei1 = draw3.textsize(text, font=font_m)
         x2 = (WIDTH - len1)//2
         y2 = (HEIGHT - hei1)//2
-        draw3.text((x2, y2), text, font=font_m, fill=(255, 0, 0))
+        draw3.rectangle((x2, y2, x2 + len1, y2 + hei1), (255, 255, 255))
+        draw3.text((x2, y2), text, font=font_m, fill=(0, 0, 0))
+    # draw symbols
     draw3.text((0, 50), u"\uf14a", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols ok
     draw3.text((210, 50), u"\uf151", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols up
     draw3.text((0, 170), u"\uf0e2", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols back
     draw3.text((210, 170), u"\uf150", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols down
+    # draw pageindex
+    # print('result, marker, listmax:', result, marker, listmax)  # can be deleted
+    page = int(math.ceil((float(marker) + 1)/float(listmax)))
+    pages = int(math.ceil(float(result)/float(listmax)))
+    if pages != 1:  # only show index if more than one site
+        pagestring = str(page) + '/' + str(pages)
+        len1, hei1 = draw3.textsize(pagestring, font=font_m)
+        x2 = (WIDTH - len1)//2
+        draw3.text((x2, HEIGHT - hei1), pagestring, font=font_m, fill=(255, 255, 255))
     disp.display(img3)
     time.sleep(0.2)
 
@@ -315,13 +357,12 @@ def on_push_state(*args):
                         draw.rectangle((5, 222, WIDTH-5, 222 + 12), bar_bgcol)  # background
                         draw.rectangle((5, 222, dur_x, 222 + 12), bar_col)
 
-        # do disp. only if img changed
+        # display only if img changed
         if img_check != img:
             img_check = img
             disp.display(img)
             time.sleep(0.2)
-        else:
-            print('img gleich, daher nicht neu gezeichnet')
+
     else:
         print('verlasse Funktion on_push_state, da mode != player', mode)
 
@@ -361,8 +402,10 @@ def handle_button(pin):
                 command = nav_array_uri[marker]
                 display_stuff('bg_default', ['executing:', command, 'shuting down ...'], 0, 0)
                 socketIO.disconnect()
+                # GPIO.cleanup()
                 os.system(command)
-                sys.exit()
+                # sys.exit()
+                clean()
             else:  # browsesource
                 reset_variable('navigation')  # reset values first
                 socketIO.emit('getBrowseSources', '', on_push_browsesources)
@@ -425,12 +468,5 @@ try:
     main()
 
 except KeyboardInterrupt:
-    img = Image.new('RGB', (240, 240), color=(0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    draw.rectangle((0, 0, 240, 240), (0, 0, 0))
-    disp.display(img)
-    disp.set_backlight(False)
+    clean()
     pass
-
-finally:
-    GPIO.cleanup()  # this ensures a clean exit
