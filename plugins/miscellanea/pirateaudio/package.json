@@ -1,7 +1,7 @@
 {
 	"name": "pirateaudio",
-	"version": "0.0.1",
-	"description": "Python code (Plugin) to use pirate audio dac with volumio (including display and the 4 buttons) and a raspberry pi. ",
+	"version": "0.0.2",
+	"description": "Volumio plugin to use pirate audio DAC (including display and the 4 buttons) on raspberry pi.",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
 	"author": "AxLED",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "pirateaudio",
+		"prettyName": "Pirate Audio",
 		"icon": "fa-television",
 		"plugin_type": "miscellanea"
 	},
