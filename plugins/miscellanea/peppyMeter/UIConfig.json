@@ -6,7 +6,7 @@
 		{
 			"id": "section_account",
 			"element": "section",
-			"label": "TRANSLATE.SETTINGS",
+			"label": "TRANSLATE.LOCALSETTINGS",
 			"icon": "fa-desktop",
 			"onSave": {
 				"type": "controller",
@@ -146,6 +146,99 @@
 					],
 					"visibleIf": {
 						"field": "localdisplay",
+						"value": true
+					  }
+				}
+			]
+		},
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.SERIAL-SETTINGS",
+			"icon": "fa-microchip",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "miscellanea/peppyMeter",
+				"method": "savepeppy2"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"serial",
+					"device",
+					"baud",
+					"stime",
+					"speriod"
+				]
+			},
+			"content": [
+				{
+					"id": "serial",
+					"element": "switch",
+					"doc": "If enabled, serial output is used",
+					"label": "Serial",
+					"value": true
+				  },
+				{
+					"id": "device",
+					"element": "input",
+					"type":"text",
+					"doc": "TRANSLATE.DOCDEVICE",
+					"label": "TRANSLATE.DEVICE",
+					"value":"/dev/serial0",
+					"visibleIf": {
+						"field": "serial",
+						"value": true
+					  }
+				},
+				{
+					"id": "baud",
+					"element": "select",
+					"doc": "TRANSLATE.BAUD",
+					"label": "TRANSLATE.BAUD",
+					"value": {
+						"value": "9600",
+						"label": "9600"
+					},
+					"options": [
+						{
+							"value": "4800",
+							"label": "4800"
+						},
+						{
+							"value": "9600",
+							"label": "9600"
+						},
+						{
+							"value": "19200",
+							"label": "19200"
+						}
+					],
+					"visibleIf": {
+						"field": "serial",
+						"value": true
+					  }
+				},
+				{
+					"id": "stime",
+					"element": "switch",
+					"doc": "If enabled, time is used",
+					"label": "time",
+					"value": false,
+				  "visibleIf": {
+					"field": "serial",
+					"value": true
+				  }
+				},
+				{
+					"id": "speriod",
+					"element": "input",
+					"type":"text",
+					"doc": "Period",
+					"label": "Period",
+					"value":"0.1",
+					"visibleIf": {
+						"field": "serial",
 						"value": true
 					  }
 				}

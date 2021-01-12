@@ -1,5 +1,10 @@
 {
 "localdisplay":{"type":"boolean","value":true},
 "meter":{"type":"string","value":"random"},
-"screensize":{"type":"string","value":"medium"}
+"screensize":{"type":"string","value":"medium"},
+"serial":{"type":"boolean","value":false},
+"device":{"type":"string","value":"/dev/serial0"},
+"baud":{"type":"string","value":"9600"},
+"stime":{"type":"boolean","value":"false"},
+"speriod":{"type":"string","value":"0.1"}
 }

@@ -140,6 +140,17 @@ peppyMeter.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[2].options'), value));
       var value;
 
+      uiconf.sections[1].content[0].value = self.config.get('serial');
+      uiconf.sections[1].content[1].value = self.config.get('device');
+      var value;
+      value = self.config.get('baud');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[2].options'), value));
+      uiconf.sections[1].content[3].value = self.config.get('stime');
+      uiconf.sections[1].content[4].value = self.config.get('speriod');
+
+      var value;
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -167,6 +178,33 @@ peppyMeter.prototype.savepeppy = function (data) {
   self.config.set('localdisplay', data['localdisplay']);
   self.config.set('meter', data['meter'].value);
   self.config.set('screensize', data['screensize'].value);
+
+
+  self.savepeppyconfig();
+  self.restartpeppyservice()
+    .then(function (e) {
+      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration updated");
+      defer.resolve({});
+    })
+    .fail(function (e) {
+      defer.reject(new Error('error'));
+      self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+    })
+  return defer.promise;
+
+};
+
+
+peppyMeter.prototype.savepeppy2 = function (data) {
+  var self = this;
+
+  var defer = libQ.defer();
+
+  self.config.set('serial', data['serial']);
+  self.config.set('device', data['device']);
+  self.config.set('baud', data['baud'].value);
+  self.config.set('stime', data['stime']);
+  self.config.set('speriod', data['speriod']);
 
   self.savepeppyconfig();
   self.restartpeppyservice()
@@ -196,12 +234,30 @@ peppyMeter.prototype.savepeppyconfig = function () {
       }
       var localdisplay = self.config.get('localdisplay')
       if (localdisplay) {
-       var localdisplayd = 'True'
+        var localdisplayd = 'True'
       }
       else if (localdisplayd = 'False');
+
+      var serial = self.config.get('serial')
+      if (serial) {
+        var seriald = 'True'
+      }
+      else if (seriald = 'False');
+
+      var stime = self.config.get('stime')
+      if (stime) {
+        var stimed = 'True'
+      }
+      else if (stimed = 'False');
+
       const conf1 = data.replace("${meter}", self.config.get("meter"))
         .replace("${screensize}", self.config.get("screensize"))
         .replace("${localdisplay}", localdisplayd)
+        .replace("${serial}", seriald)
+        .replace("${device}", self.config.get("device"))
+        .replace("${baud}", self.config.get("baud"))
+        .replace("${stime}", stimed)
+        .replace("${speriod}", self.config.get("speriod"))
       fs.writeFile("/data/plugins/miscellanea/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));

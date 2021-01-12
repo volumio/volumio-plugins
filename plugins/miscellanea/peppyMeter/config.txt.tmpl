@@ -3,7 +3,7 @@ meter = ${meter}
 random.meter.interval = 20
 screen.size = ${screensize}
 output.display = ${localdisplay}
-output.serial = False
+output.serial = ${serial}
 output.i2c = False
 output.pwm = False
 use.logging = False
@@ -17,10 +17,10 @@ video.driver = dummy
 video.display = :0
 
 [serial.interface]
-device.name = /dev/serial0
-baud.rate = 9600
-include.time = False
-update.period = 0.1
+device.name = ${device}
+baud.rate = ${baud}
+include.time = ${stime}
+update.period = ${speriod}
 
 [i2c.interface]
 port = 1

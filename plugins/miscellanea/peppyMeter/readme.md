@@ -47,9 +47,13 @@ cd..
 rm -Rf pipe*
 ```
 
+January 12th 2021
+
+- switch to disable/enable serial output
+
 January 10th 2021
 
-- switch to disable local display
+- switch to disable/enable local display
 - install check if peppyalsa is already installed
 
 January 8th 2021

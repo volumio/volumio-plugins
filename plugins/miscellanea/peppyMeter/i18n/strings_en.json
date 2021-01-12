@@ -1,10 +1,12 @@
 {
-    "PLUGIN_CONFIGURATION":"No Configuration for this plugin",
-    "SETTINGS":"Settings",
+    "LOCALSETTINGS":"Local Display settings",
     "METER":"Meter",
     "DOCMETER":"Choose Meter",
     "SCREENSIZE":"Screen size",
     "DOCSCREENSIZE":"Size of the display",
+    "SERIAL-SETTINGS":"Serial interface settings",
+    "DEVICE": "Device",
+    "BAUD":"Speed in Baud",
     "APPLY":"Apply",
     "SAVE":"Close"
   }
