@@ -14,13 +14,14 @@ sudo systemctl daemon-reload
 # Install the required packages via apt-get
 echo "Installing apt-get dependencies"
 sudo apt-get update
-sudo apt-get -y install python-rpi.gpio python-spidev python-pip python-pil python-numpy
+sudo apt-get -y install python-rpi.gpio python-spidev python-pip python-pil python-numpy --no-install-recommends
 echo "Installing pip dependencies"
 sudo pip install st7789 socketIO-client
 
 # do changes to userconfig for pirate audio hat
 echo "Adding parameters to userconfig.txt"
 sudo sed -i.bak '1 i\### End of parameters for pirateaudio plugin ###' /boot/userconfig.txt
+sudo sed -i '1 i\gpio=13=op,dl' /boot/userconfig.txt
 sudo sed -i '1 i\gpio=20=pu' /boot/userconfig.txt
 sudo sed -i '1 i\gpio=16=pu' /boot/userconfig.txt
 sudo sed -i '1 i\### Fix for Button X, Y of pirate audio ###' /boot/userconfig.txt

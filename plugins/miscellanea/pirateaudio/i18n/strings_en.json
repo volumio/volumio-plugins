@@ -4,5 +4,12 @@
     "TITLE": "Pirate Audio Configuration",
     "LISTMAX": "How many entries should be maximum displayed on a list view?",
     "SAVE":"Save"
+  },
+  "DISPLAY": {
+    "MUSICSELECTION": "Music selection",
+    "SHUTDOWN": "Shutdown?",
+    "REBOOT": "Reboot Pi?",
+    "LOSTCONNECTION": "Lost connection",
+    "EMPTY": "empty"
   }
 }
