@@ -52,15 +52,16 @@ IrController.prototype.onStart = function () {
           self.logger.info(id + 'Raspberry Pi model cannot be determined: ' + error);
         } else {
           gpioConfigurable = true;
+          stdout = stdout.trim();
           self.logger.info(id + 'Raspberry Pi revision code: ' + stdout);
-          if (stdout === 'beta' || parseInt(stdout, 16) < 4) {
+          if (stdout === 'Beta' || parseInt(stdout, 16) < 4) {
             // Model B beta, model B PCB rev. 1.0: original 26pin header (P1)
             header = '26';
-          } else if (parseInt(stdout, 16) < 16) {
+          } else if (parseInt(stdout, 16) < 22) {
             // Model B PCB rev. 2.0 and model A PCB rev. 2.0: altered 26pin header (P1) + 8pin header (P5)
             header = '34';
           } else {
-            const modelId = (stdout.length === 4) ? stdout.toString() : stdout.substr(-3, 2);
+            const modelId = (stdout.length === 4) ? stdout : stdout.substr(-3, 2);
             switch (modelId) {
               // sort out the Compute Modules
               case '0011': // CM1
