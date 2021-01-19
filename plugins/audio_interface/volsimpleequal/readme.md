@@ -1,4 +1,4 @@
-August 26th 2020
+January 17th 2021
 
 ### beta for alsa_modular! do not use! (yet ;-))
 
@@ -13,7 +13,7 @@ August 26th 2020
 
 ## Requirement
 
- A working well configured volumio > 2.041
+ A working well configured volumio > 3.015 + alsa pipeline
 
 ## How to install ?
 

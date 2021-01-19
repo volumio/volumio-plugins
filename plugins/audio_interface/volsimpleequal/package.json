@@ -1,7 +1,7 @@
 {
 	"name": "volsimpleequal",
-	"version": "1.0.0",
-	"description": "Provides a 15 bands equalizer",
+	"version": "1.0.1",
+	"description": "Provides a 15 bands equalizer with preset",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

@@ -1,6 +1,6 @@
-/*DRC-FIR plugin for volumio2. By balbuze October 10th 2020
-for next alsa_modular volumio
-...
+/*--------------------
+Dsp4Volumio plugin for volumio2. By balbuze April 13th 2020
+----------------------
 */
 
 'use strict';
@@ -12,9 +12,9 @@ const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
 const socket = io.connect('http://localhost:3000');
+//const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 const path = require('path');
-
 
 //---global Variables
 const filterfolder = "/data/INTERNAL/Dsp/filters/";
@@ -24,10 +24,10 @@ const toolspath = "/data/INTERNAL/Dsp/tools/";
 const vobaf_filterfolder = "/data/INTERNAL/Dsp/VoBAFfilters/";
 
 
-// Define the ControllerBrutefir class
-module.exports = ControllerBrutefir;
+// Define the ControllerDsp4Volumio class
+module.exports = ControllerDsp4Volumio;
 
-function ControllerBrutefir(context) {
+function ControllerDsp4Volumio(context) {
   const self = this;
   self.context = context;
   self.commandRouter = self.context.coreCommand;
@@ -38,17 +38,15 @@ function ControllerBrutefir(context) {
   this.configManager = this.context.configManager;
 };
 
-ControllerBrutefir.prototype.onVolumioStart = function () {
+ControllerDsp4Volumio.prototype.onVolumioStart = function () {
   const self = this;
   let configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
   this.config = new (require('v-conf'))();
   this.config.loadFile(configFile);
-  self.autoconfig
-
   return libQ.resolve();
 };
 
-ControllerBrutefir.prototype.onStart = function () {
+ControllerDsp4Volumio.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
@@ -64,59 +62,52 @@ ControllerBrutefir.prototype.onStart = function () {
       });
       return aplayDefer.promise;
     })
-  self.sendvolumelevel();
-  socket.emit('getState', '');
-  socket.emit('pause');
-  self.config.set('displayednameofset', "Set used is 1");
-  self.config.set('setUsedOfFilters', "1");
-  //self.askForRebootFirstUse()
+
   self.autoconfig()
+
 
     .then(function (e) {
       setTimeout(function () {
-        self.logger.info("Starting brutefir");
-        // self.startBrutefirDaemon(defer);
-        self.rebuildBRUTEFIRAndRestartDaemon(defer);
-
-      }, 100);
+        self.logger.info("Starting camilladsp");
+        self.rebuildcamilladspRestartDaemon(defer);
+      }, 1000);
       defer.resolve();
     })
     .fail(function (e) {
       defer.reject(new Error());
-    })
+    });
   return defer.promise;
-  ;
 };
 
-ControllerBrutefir.prototype.onStop = function () {
+ControllerDsp4Volumio.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
-  self.logger.info("Stopping Brutefir service");
+  self.logger.info("Stopping camilladsp service");
   self.commandRouter.stateMachine.stop().then(function () {
-    exec("/usr/bin/sudo /bin/systemctl stop brutefir.service", {
+    exec("/usr/bin/sudo /bin/systemctl stop camilladsp.service", {
       uid: 1000,
       gid: 1000
     }, function (error, stdout, stderr) { })
-    //self.restoresettingwhendisabling()
+    self.restoresettingwhendisabling()
     socket.off();
   });
   defer.resolve();
   return libQ.resolve();
 };
 
-ControllerBrutefir.prototype.onRestart = function () {
+ControllerDsp4Volumio.prototype.onRestart = function () {
   const self = this;
 };
 
-ControllerBrutefir.prototype.onInstall = function () {
+ControllerDsp4Volumio.prototype.onInstall = function () {
   const self = this;
 };
 
-ControllerBrutefir.prototype.onUninstall = function () {
+ControllerDsp4Volumio.prototype.onUninstall = function () {
   const self = this;
 };
 
-ControllerBrutefir.prototype.getI18nFile = function (langCode) {
+ControllerDsp4Volumio.prototype.getI18nFile = function (langCode) {
   const i18nFiles = fs.readdirSync(path.join(__dirname, 'i18n'));
   const langFile = 'strings_' + langCode + '.json';
 
@@ -127,10 +118,9 @@ ControllerBrutefir.prototype.getI18nFile = function (langCode) {
   // return default i18n file
   return path.join(__dirname, 'i18n', 'strings_en.json');
 }
-
 // Configuration methods------------------------------------------------------------------------
 
-ControllerBrutefir.prototype.getUIConfig = function () {
+ControllerDsp4Volumio.prototype.getUIConfig = function () {
   const self = this;
   let defer = libQ.defer();
   let output_device;
@@ -364,11 +354,11 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         });
       }
       try {
-        fs.readdir(filterfolder, function (err, item) {
 
+        fs.readdir(filterfolder, function (err, item) {
           let allfilter = 'None,' + item;
           let items = allfilter.split(',');
-          // items.pop();
+
           for (let i in items) {
             self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
               value: items[i],
@@ -402,7 +392,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
               value: items[i],
               label: items[i]
             });
-            self.logger.info('available filters :' + items[i]);
+            self.logger.info('list of available filters UI :' + items[i]);
           }
 
         });
@@ -415,7 +405,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[22].options'), value));
 
-      uiconf.sections[0].content[23].hidden = true;
       value = self.config.get('filter_size');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
@@ -423,7 +412,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', value);
 
-      //let probesmplerate;
       let probesmpleratehw = self.config.get('probesmplerate').slice(1).split(' ');
 
       for (let i in probesmpleratehw) {
@@ -434,19 +422,18 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         self.logger.info('HW sample rate detected:' + probesmpleratehw[i]);
       }
 
+
       //-------------------------------------------------
       //here we read the content of the file sortsamplec.txt (it will be generated by a script to detect hw capabilities).
 
       uiconf.sections[0].content[24].hidden = false;
-      uiconf.sections[0].content[25].hidden = true;
-
       valuestoredf = self.config.get('output_format');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.value', valuestoredf);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.label', valuestoredf);
 
       try {
         let sampleformat = self.config.get("formats").split(' ');
-        let sampleformatf = (', Factory_S16_LE, Factory_S24_LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32_LE, ');
+        let sampleformatf = (', Factory_S16LE, Factory_S24LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32LE, ');
         let sampleformato;
         let sitems;
         let js;
@@ -463,6 +450,7 @@ ControllerBrutefir.prototype.getUIConfig = function () {
           str2 = "Detection\ fails.\ Reboot\ to\ retry, "
         }
         let result = str2 + sampleformatf
+        self.logger.info('result formats ' + result);
         let str1 = result.replace(/\s/g, '');
         let str = str1.substring(0, str1.length - 1);
 
@@ -473,11 +461,10 @@ ControllerBrutefir.prototype.getUIConfig = function () {
             value: sitems[i],
             label: sitems[i]
           });
-          self.logger.info('hw format :' + sitems[i]);
         }
       } catch (e) {
         self.logger.error('Could not read file: ' + e)
-        self.logger.info(sampleformat)
+        console.log(sampleformat)
       }
       uiconf.sections[0].content[26].value = self.config.get('enableclipdetect');
 
@@ -487,9 +474,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         uiconf.sections[0].content[28].hidden = true;
 
       }
-      uiconf.sections[0].content[27].hidden = true;
-
       uiconf.sections[0].content[27].value = self.config.get('displayednameofset');
+
 
       try {
         filetoconvertl = self.config.get('filetoconvert');
@@ -569,8 +555,6 @@ ControllerBrutefir.prototype.getUIConfig = function () {
 
 
       if (ttools == false) {
-        uiconf.sections[4].content[0].hidden = true;
-
         uiconf.sections[4].content[1].hidden = true;
         uiconf.sections[4].content[2].hidden = false;
 
@@ -579,12 +563,8 @@ ControllerBrutefir.prototype.getUIConfig = function () {
         uiconf.sections[4].content[2].hidden = true;
 
       }
-
       //--------VoBAF section----------------------------------------------------------
-      if (self.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type') == 'None') {
-        uiconf.sections[1].hidden = true;
 
-      }
       uiconf.sections[1].content[0].value = self.config.get('vobaf');
 
       uiconf.sections[1].content[2].value = self.config.get('Lowsw');
@@ -694,25 +674,25 @@ ControllerBrutefir.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
-ControllerBrutefir.prototype.getConfigurationFiles = function () {
+ControllerDsp4Volumio.prototype.getConfigurationFiles = function () {
   return ['config.json'];
 };
 
-ControllerBrutefir.prototype.setUIConfig = function (data) {
+ControllerDsp4Volumio.prototype.setUIConfig = function (data) {
   const self = this;
 };
 
-ControllerBrutefir.prototype.getConf = function (varName) {
-  const self = this;
-  //Perform your installation tasks here
-};
-
-ControllerBrutefir.prototype.setConf = function (varName, varValue) {
+ControllerDsp4Volumio.prototype.getConf = function (varName) {
   const self = this;
   //Perform your installation tasks here
 };
 
-ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
+ControllerDsp4Volumio.prototype.setConf = function (varName, varValue) {
+  const self = this;
+  //Perform your installation tasks here
+};
+
+ControllerDsp4Volumio.prototype.getLabelForSelect = function (options, key) {
   let n = options.length;
   for (let i = 0; i < n; i++) {
     if (options[i].value == key)
@@ -721,18 +701,18 @@ ControllerBrutefir.prototype.getLabelForSelect = function (options, key) {
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
-ControllerBrutefir.prototype.getAdditionalConf = function (type, controller, data) {
+ControllerDsp4Volumio.prototype.getAdditionalConf = function (type, controller, data) {
   const self = this;
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-};
-
+}
 // Plugin methods -----------------------------------------------------------------------------
 
 //------------Ask for reboot for first time 
-ControllerBrutefir.prototype.askForRebootFirstUse = function () {
+ControllerDsp4Volumio.prototype.askForRebootFirstUse = function () {
   const self = this;
 
   if (self.config.get('askForReboot')) {
+    self.saveHardwareAudioParameters();
     var responseData = {
       title: self.commandRouter.getI18nString('FIRST_USE'),
       message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
@@ -748,17 +728,17 @@ ControllerBrutefir.prototype.askForRebootFirstUse = function () {
           name: 'Reboot',
           class: 'btn btn-info',
           emit: 'callMethod',
-          payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'setFalseReboot', 'data': '' }
+          payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'setFalseReboot', 'data': '' }
         }
       ]
     }
     self.commandRouter.closeModals()
-    self.commandRouter.broadcastMessage("openModal", responseData);
 
+    self.commandRouter.broadcastMessage("openModal", responseData);
   }
 };
 
-ControllerBrutefir.prototype.setFalseReboot = function () {
+ControllerDsp4Volumio.prototype.setFalseReboot = function () {
   const self = this;
   self.config.set('askForReboot', false);
   setTimeout(function () {
@@ -767,56 +747,57 @@ ControllerBrutefir.prototype.setFalseReboot = function () {
   }, 500);
 };
 
-// 
-
-
 //here we load snd_aloop module to provide a Loopback device
-ControllerBrutefir.prototype.modprobeLoopBackDevice = function () {
+ControllerDsp4Volumio.prototype.modprobeLoopBackDevice = function () {
   const self = this;
   let defer = libQ.defer();
   //self.hwinfo();
-  try {
-    execSync("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
-      uid: 1000,
-      gid: 1000
-    });
-    self.commandRouter.pushConsoleMessage('snd_aloop loaded');
-    defer.resolve();
-  } catch (err) {
-    self.logger.info('failed to load snd_aloop' + err);
-  }
+  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('failed to load snd_aloop' + error);
+    } else {
+      self.commandRouter.pushConsoleMessage('snd_aloop loaded');
+      defer.resolve();
+    }
+  });
+  setTimeout(function () {
+    return defer.promise;
+  }, 500)
 };
 
 //here we detect hw info
-ControllerBrutefir.prototype.hwinfo = function () {
+ControllerDsp4Volumio.prototype.hwinfo = function () {
   const self = this;
   let defer = libQ.defer();
 
-  let output_device = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+  let output_device = self.config.get('alsa_device');
   let nchannels;
   let formats;
   let hwinfo;
   let samplerates;
   try {
-    execSync('/data/plugins/audio_interface/brutefir/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/brutefir/hwinfo.json ', {
+    exec('/data/plugins/audio_interface/Dsp4Volumio/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json ', {
       uid: 1000,
       gid: 1000
-    });
-    hwinfo = fs.readFileSync('/data/configuration/audio_interface/brutefir/hwinfo.json');
+    }),
+      hwinfo = fs.readFileSync('/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json');
     try {
       const hwinfoJSON = JSON.parse(hwinfo);
       nchannels = hwinfoJSON.channels.value;
-      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+      formats = hwinfoJSON.formats.value.replace('_', '').replace(', ,', '').replace(',,', '');
       samplerates = hwinfoJSON.samplerates.value;
-      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
       self.config.set('nchannels', nchannels);
       self.config.set('formats', formats);
       self.config.set('probesmplerate', samplerates);
       let output_format = formats.split(" ").pop();
 
-      var arr = ['S16_LE', 'S24_LE', 'S24_3LE', 'S32_LE'];
+      var arr = ['S16LE', 'S24LE', 'S24LE3', 'S32LE'];
       var check = output_format;
       if (arr.indexOf(check) > -1) {
         let askForReboot = self.config.get('askForReboot');
@@ -841,17 +822,17 @@ ControllerBrutefir.prototype.hwinfo = function () {
   }
 };
 
-ControllerBrutefir.prototype.startBrutefirDaemon = function () {
+ControllerDsp4Volumio.prototype.startcamilladsp = function () {
   const self = this;
   let defer = libQ.defer();
-  exec("/usr/bin/sudo /bin/systemctl start brutefir.service", {
+  exec("/usr/bin/sudo /bin/systemctl start camilladsp.service", {
     uid: 1000,
     gid: 1000
   }, function (error, stdout, stderr) {
     if (error) {
-      self.logger.info('brutefir failed to start. Check your configuration ' + error);
+      self.logger.info('Camilladsp failed to start. Check your configuration ' + error);
     } else {
-      self.commandRouter.pushConsoleMessage('Brutefir Daemon Started');
+      self.commandRouter.pushConsoleMessage('Camilladsp Daemon Started');
       self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
 
       defer.resolve();
@@ -859,37 +840,37 @@ ControllerBrutefir.prototype.startBrutefirDaemon = function () {
   });
 };
 
-ControllerBrutefir.prototype.autoconfig = function () {
+ControllerDsp4Volumio.prototype.autoconfig = function () {
   const self = this;
   let defer = libQ.defer();
   self.modprobeLoopBackDevice()
-  self.rebuildBRUTEFIRAndRestartDaemon() //no sure to keep it..
+  self.rebuildcamilladspRestartDaemon() //no sure to keep it..
   self.hwinfo()
   defer.resolve()
   return defer.promise;
 };
 
 //----------------we restart the daemon-------------------
-ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
+ControllerDsp4Volumio.prototype.rebuildcamilladspRestartDaemon = function () {
   const self = this;
   let defer = libQ.defer();
-  self.createBRUTEFIRFile()
+  self.createCamilladspfile()
     .then(function (e) {
       let edefer = libQ.defer();
-      exec("/usr/bin/sudo /bin/systemctl restart brutefir.service", {
+      exec("/usr/bin/sudo /bin/systemctl restart camilladsp.service", {
         uid: 1000,
         gid: 1000
       }, function (error, stdout, stderr) {
         if (error) {
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
+          self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
         } else {
-          // self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
+          self.commandRouter.pushToastMessage('success', 'Attempt to start camilladsp...');
           setTimeout(function () {
             socket.emit('mute', '')
             setTimeout(function () {
               socket.emit('unmute', '');
             }, 100);
-          }, 500); //3500
+          }, 1500); //3500
           return defer.promise;
         }
         edefer.resolve();
@@ -897,58 +878,56 @@ ControllerBrutefir.prototype.rebuildBRUTEFIRAndRestartDaemon = function () {
 
       return edefer.promise;
     })
-    .then(self.startBrutefirDaemon.bind(self))
+    .then(self.startcamilladsp.bind(self))
     .then(function (e) {
       setTimeout(function () {
         self.logger.info("Connecting to daemon");
       }, 2000)
         .fail(function (e) {
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
-          self.logger.info("Brutefir failed to start. Check your config !");
+          self.commandRouter.pushToastMessage('error', "camilladsp failed to start. Check your config !");
+          self.logger.info("camilladsp failed to start. Check your config !");
         });
     });
   return defer.promise;
 };
 
-//------------Here we define a function to send a command to brutefir through its CLI---------------------
-ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
+//------------Here we define a function to send a command to CamillaDsp through websocket---------------------
+ControllerDsp4Volumio.prototype.sendCommandToCamilla = function (camilladspcmd) {
   const self = this;
   let client = new net.Socket();
 
-  client.connect(3002, '127.0.0.1', function (err) {
-    client.write(brutefircmd);
-    self.logger.info('cmd sent to brutefir = ' + brutefircmd);
+  client.connect(9876, '127.0.0.1', function (err) {
+    client.write(camilladspcmd);
+    console.log('cmd sent to camilladsp = ' + camilladspcmd);
   });
 
   //error handling section
   client.on('error', function (e) {
     if (e.code == 'ECONNREFUSED') {
-      self.logger.error('Huumm, is brutefir running ?');
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IS_BRUTEFIR_RUNNING'));
+      console.log('Huumm, is Camilladsp running ?');
+      self.commandRouter.pushToastMessage('error', "Camilladsp failed to start. Check your config !");
     }
   });
   client.on('data', function (data) {
-    self.logger.info('Received: ' + data);
+    console.log('Received: ' + data);
     client.destroy(); // kill client after server's response
   });
 };
 
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
-ControllerBrutefir.prototype.testclipping = function () {
+ControllerDsp4Volumio.prototype.testclipping = function () {
   const self = this;
-  self.commandRouter.closeModals()
-  socket.emit('stop');
-  let filelength = self.config.get('filter_size');
-
+  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerDsp4Volumio::clearAddPlayTrack');
   let messageDisplayed;
+  let arrreduced;
   let firstPeak = 0;
   let secondPeak = 0;
-  let brutefircmd = ('cfoa "l_out" "l_out" 0 ;cfoa "r_out" "r_out"  0');
-  self.sendCommandToBrutefir(brutefircmd);
-  self.logger.info('Cmd sent to brutefir' + brutefircmd);
+  let camilladspcmd = ('cfoa "l_out" "l_out" 0 ;cfoa "r_out" "r_out"  0');
+  //self.sendCommandToBrutefir(brutefircmd);
+  //console.log('Cmd sent to brutefir' + camilladspcmd);
   let ititle = 'Detecting clipping';
   let imessage = 'Please wait (10sec)';
-  let track = '/data/plugins/audio_interface/brutefir/testclipping/testclipping.wav';
+  let track = '/data/plugins/audio_interface/Dsp4Volumio/testclipping/testclipping.wav';
   let outsample = self.config.get('smpl_rate');
   socket.emit('mute', '')
   if (outsample == '44100') {
@@ -956,11 +935,11 @@ ControllerBrutefir.prototype.testclipping = function () {
 
       exec('/usr/bin/killall aplay');
       setTimeout(function () {
-        execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
+        execSync('/usr/bin/aplay --device=volumio ' + track);
       }, 500);//2000
       socket.emit('unmute', '')
     } catch (e) {
-      self.logger.info('/usr/bin/aplay --device=plughw:Loopback ' + track);
+      console.log('/usr/bin/aplay --device=volumio ' + track);
     };
   } else {
     let modalData = {
@@ -969,60 +948,53 @@ ControllerBrutefir.prototype.testclipping = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning',
-        emit: 'closeModals',
-        payload: ''
+        class: 'btn btn-warning'
       },]
     };
-    // self.commandRouter.broadcastMessage("openModal", modalData);
+    self.commandRouter.broadcastMessage("openModal", modalData);
   }
+  let arr = [];
+
 
   let opts = {
-    unit: 'brutefir'
+    unit: 'camilladsp'
   }
+
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
-    self.commandRouter.pushToastMessage('info', 'Detection clipping...');
-
     let pevent = event.MESSAGE.indexOf("peak");
     if (pevent != -1) {
-      let filteredMessage = event.MESSAGE.replace("peak: 0/", " ");
-      let posFirstSlash = filteredMessage.indexOf("/");
-      let posLastSlash = filteredMessage.lastIndexOf("/");
-      secondPeak = filteredMessage.slice(posLastSlash + 2);
-      firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
-      let leftAttSet = 0;
-      let rightAttSet = 0;
-      let corr = 1.49;
-      let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
-      let leftSuggested = leftSuggestedb + 1.5;
-      let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
-      let rightSuggested = rightSuggestedb + 1.5;
-      if (leftSuggested > rightSuggested) {
-        messageDisplayed = leftSuggested
-      } else {
-        messageDisplayed = rightSuggested
-      };
+      let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
+      let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
+
+      messageDisplayed = attcalculated;
     } else {
       messageDisplayed = 0;
-
     }
-    self.config.set('attenuationl', messageDisplayed);
-    self.config.set('attenuationr', messageDisplayed);
+    arr.push(messageDisplayed);
+    arr.sort((a, b) => {
+      if (a > b) return 1;
+      if (a < b) return -1;
+      return 0;
+    });
+    arrreduced = (arr.toString().split(','));
+    self.logger.info('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG ' + arrreduced.pop());
+    self.config.set('attenuationl', arrreduced.pop());
+    self.config.set('attenuationr', arrreduced.pop());
   });
   setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('FILTER_LENGTH') + filelength, self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
-    self.rebuildBRUTEFIRAndRestartDaemon();
+    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced.pop() + ' dB');
+    self.rebuildcamilladspRestartDaemon();
     journalctl.stop();
-  }, 1050);
+  }, 550);
 };
 
 //here we determine filter type and apply skip value if needed
-ControllerBrutefir.prototype.dfiltertype = function () {
+ControllerDsp4Volumio.prototype.dfiltertype = function () {
   const self = this;
   let skipvalue = '';
   let filtername = self.config.get('leftfilter');
@@ -1038,7 +1010,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       self.logger.info('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
-    auto_filter_format = 'FLOAT_LE';
+    auto_filter_format = 'FLOAT32LE';
   }
   else if (filext == 'txt') {
     let filelength;
@@ -1059,7 +1031,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       self.logger.info('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
-    auto_filter_format = 'FLOAT64_LE';
+    auto_filter_format = 'FLOAT64LE';
   }
   else if (filext == 'None') {
 
@@ -1068,7 +1040,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   else if (filext == 'wav') {
     let SampleFormat;
     try {
-      execSync('/usr/bin/python /data/plugins/audio_interface/brutefir/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
+      execSync('/usr/bin/python /data/plugins/audio_interface/Dsp4Volumio/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
       setTimeout(function () {
 
         fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
@@ -1082,7 +1054,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
             SampleFormat = resultJSON.SampleFormat;
 
             filelength = DataLength / BytesPerFrame;
-            skipvalue = ("skip:" + (8 + (+DataStart)) + ";");
+            skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
 
             self.config.set('filter_size', filelength);
             self.config.set('skipvalue', skipvalue);
@@ -1092,7 +1064,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
         });
       }, 50);
 
-      auto_filter_format = self.config.get('wavetype');
+      auto_filter_format = self.config.get('wavetype').replace('_', '');
       filelength = self.config.get('filter_size');
       skipvalue = self.config.get('skipvalue');
 
@@ -1107,9 +1079,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning',
-        emit: 'closeModals',
-        payload: ''
+        class: 'btn btn-warning'
       },]
     };
     self.commandRouter.broadcastMessage("openModal", modalData);
@@ -1123,7 +1093,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
   self.logger.info('--------->Skip value for wav :' + skipvalue);
 
 
-  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288];
+  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
   var check = Number(filelength);
   var valfound = false;
   if (arr.indexOf(check) > -1) {
@@ -1139,9 +1109,7 @@ ControllerBrutefir.prototype.dfiltertype = function () {
       size: 'lg',
       buttons: [{
         name: 'Close',
-        class: 'btn btn-warning',
-        emit: 'closeModals',
-        payload: ''
+        class: 'btn btn-warning'
       },]
     };
     self.commandRouter.broadcastMessage("openModal", modalData)
@@ -1160,22 +1128,20 @@ ControllerBrutefir.prototype.dfiltertype = function () {
 
 //---------------------------------------------------------------
 
-ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
+ControllerDsp4Volumio.prototype.createCamilladspfile = function (obj) {
   const self = this;
-  let defer = libQ.defer();
 
+  let defer = libQ.defer();
   try {
-    fs.readFile(__dirname + "/brutefir.conf.tmpl", 'utf8', function (err, data) {
+    fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
-        return self.logger.error(err);
+        return console.log(err);
       }
       let value;
       let devicevalue;
       let sbauer;
       let input_device = 'Loopback,1';
-      //  let filterfolder = "/data/INTERNAL/brutefirfilters/";
-      //let vobaf_filterfolder = "' + vobaf_filterfolder + '";
       let leftfilter, leftc2filter;
       let rightfilter, rightc2filter;
       let composeleftfilter = filterfolder + self.config.get('leftfilter');
@@ -1186,25 +1152,16 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
       let rattenuation;
       let f_ext;
       let vf_ext;
-      /*
-            if (self.config.get('vatt'))
-              if (self.config.get('filter_format') == "text") {
-                f_ext = ".txt";
-              } else if (self.config.get('filter_format') == "FLOAT_LE") {
-                f_ext = ".pcm";
-              } else if (self.config.get('filter_format') == "FLOAT64_LE") {
-                f_ext = ".dbl";
-              } else if ((self.config.get('filter_format') == "S16_LE") || (self.config.get('filter_format') == "S24_LE") || (self.config.get('filter_format') == "S32_LE")) {
-                f_ext = ".wav";
-              }
-              */
+
+
+
       if (self.config.get('vobaf_format') == "text") {
         vf_ext = ".txt";
-      } else if (self.config.get('vobaf_format') == "FLOAT_LE") {
+      } else if (self.config.get('vobaf_format') == "FLOAT32LE") {
         vf_ext = ".pcm";
-      } else if (self.config.get('vobaf_format') == "FLOAT64_LE") {
+      } else if (self.config.get('vobaf_format') == "FLOAT64LE") {
         f_ext = ".dbl";
-      } else if ((self.config.get('vobaf_format') == "S16_LE") || (self.config.get('vobaf_format') == "S24_LE") || (self.config.get('vobaf_format') == "S32_LE")) {
+      } else if ((self.config.get('vobaf_format') == "S16LE") || (self.config.get('vobaf_format') == "S24LE") || (self.config.get('vobaf_format') == "S32LE")) {
         vf_ext = ".wav";
       }
 
@@ -1246,6 +1203,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
       let vatt = self.config.get('vatt');
 
       let noldirac = self.config.get('leftfilter');
+      // let nordirac = self.config.get('rightfilter');
       let val = self.dfiltertype(obj);
       let skipval = val.skipvalue
       skipfl = skipfr = skipval;
@@ -1256,18 +1214,17 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
       } else {
         output_device = 'hw:' + self.config.get('alsa_device');
       };
-      self.logger.info(self.config.get('output_format'));
+      console.log(self.config.get('output_format'));
+
 
       let output_formatx;
       output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
 
       if ((self.config.get('leftfilter') == "Dirac pulse") || (self.config.get('leftfilter') == "None")) {
-        composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = "dirac pulse";
-        self.config.set('attenuationl', '0');
+        composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = "#";
       } else leftfilter = filterfolder + self.config.get('leftfilter');
       if ((self.config.get('rightfilter') == "Dirac pulse") || (self.config.get('rightfilter') == "None")) {
-        composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
-        self.config.set('attenuationr', '0');
+        composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "#";
       } else rightfilter = filterfolder + self.config.get('rightfilter');
 
       //--------second set of filters
@@ -1580,7 +1537,7 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
         .replace("${output_format}", output_formatx)
         .replace("${nchannels}", nchannels)
         .replace("${tdelay}", tcdelay);
-      fs.writeFile("/data/configuration/audio_interface/brutefir/volumio-brutefir-config", conf, 'utf8', function (err) {
+      fs.writeFile("/data/configuration/audio_interface/Dsp4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();
@@ -1589,26 +1546,26 @@ ControllerBrutefir.prototype.createBRUTEFIRFile = function (obj) {
 
   } catch (err) {
   }
+  let camilladspcmd = ("getconfigname")
+  self.sendCommandToCamilla(camilladspcmd);
   return defer.promise;
 };
 
 
-
 //here we save the brutefir config.json
-ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
+ControllerDsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   const self = this;
   let output_device
   let input_device = "Loopback,1";
 
   let numb_part = 8;
   output_device = self.config.get('alsa_device');
-
   let defer = libQ.defer();
   try {
-    let cp3 = execSync('/bin/cp /data/configuration/audio_interface/brutefir/config.json /data/configuration/audio_interface/brutefir/config.json-save');
+    let cp3 = execSync('/bin/cp /data/configuration/audio_interface/Dsp4Volumio/config.json /data/configuration/audio_interface/Dsp4Volumio/config.json-save');
 
   } catch (err) {
-    self.logger.info('/data/configuration/audio_interface/brutefir/config.json does not exist');
+    self.logger.info('/data/configuration/audio_interface/Dsp4Volumio/config.json does not exist');
   }
 
   self.config.set('leftfilter', data['leftfilter'].value);
@@ -1643,38 +1600,42 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
   self.config.set('output_format', data['output_format'].value);
   self.config.set('enableclipdetect', data['enableclipdetect']);
 
+  //setTimeout(function() {
   if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
-
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'));
-    self.logger.error('All filter must be of the same type')
-
-    return;
-  }
-
-  let leftfilterchk = self.config.get('leftfilter')
-  let rightfilterchk = self.config.get('rightfilter')
-  if ((leftfilterchk.includes(' ')) || (rightfilterchk.includes(' '))) {
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
-    self.logger.error('SPACE NOT ALLOWED in file name')
-    return;
+    let modalData = {
+      title: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_TITLE'),
+      message: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'),
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
+    }
+    self.commandRouter.broadcastMessage("openModal", modalData);
+    //		try {
+    let cp2 = execSync('/bin/rm /data/configuration/audio_interface/Dsp4Volumio/config.json')
+    let cp3 = exec('/bin/cp /data/configuration/Dsp4Volumio/config.json-save /data/configurDsp4Volumio/config.json');
+    self.logger.info('/data/configuration/Dsp4Volumio/config.json restored!');
 
   } else {
     setTimeout(function () {
+
       self.dfiltertype();
-      self.areSwapFilters();
-      self.rebuildBRUTEFIRAndRestartDaemon()
+      // self.areSwapFilters();
+      self.rebuildcamilladspRestartDaemon()
+
 
         .then(function (e) {
           self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
           defer.resolve({});
         })
         .fail(function (e) {
-          defer.reject(new Error('Brutefir failed to start. Check your config !'));
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
+          defer.reject(new Error('Camilladsp failed to start. Check your config !'));
+          self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
         })
 
-    }, 500);
-
+    }, 1500);//2500
+    // }
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
@@ -1690,26 +1651,26 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
               class: 'btn btn-cancel',
-              emit: 'closeModals',
+              emit: '',
               payload: ''
             },
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
               class: 'btn btn-info',
               emit: 'callMethod',
-              payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'testclipping' }
+              payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'testclipping' }
             }
           ]
         }
         self.commandRouter.broadcastMessage("openModal", responseData);
-      }, 500);
+      }, 3500);
     };
   };
   return defer.promise;
 };
 
 //------------VoBAf here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI-----
-ControllerBrutefir.prototype.sendvolumelevel = function () {
+ControllerDsp4Volumio.prototype.sendvolumelevel = function () {
   const self = this;
   socket.on('pushState', function (data) {
     let vobaf = self.config.get('vobaf');
@@ -2067,24 +2028,24 @@ ControllerBrutefir.prototype.sendvolumelevel = function () {
       }
 
       //  here wend cmd to brutefir
-      brutefircmd = ('cfc "lVoBAF" "' + lVoBAF + '" ;cfc "rVoBAF" "' + rVoBAF + '"');
+      camilladspcmd = ('cfc "lVoBAF" "' + lVoBAF + '" ;cfc "rVoBAF" "' + rVoBAF + '"');
       if (self.config.get('messon') == true) {
         setTimeout(function () {
           self.commandRouter.pushToastMessage('info', "VoBAF filter used :" + filmess);
         }, 500);
       };
-      self.sendCommandToBrutefir(brutefircmd);
+      self.sendCommandcamilladsp(camilladspcmd);
     };
   });
 };
 
 //-----------here we define how to swap filters----------------------
 
-ControllerBrutefir.prototype.areSwapFilters = function () {
+ControllerDsp4Volumio.prototype.areSwapFilters = function () {
   const self = this;
   let leftFilter1 = self.config.get('leftfilter');
   let rightFilter1 = self.config.get('rightfilter');
-  //let filterfolder = "/data/INTERNAL/brutefirfilters/";
+  // let filterfolder = "/data/INTERNAL/Dsp4Volumiofilters/";
 
   // check if filter naming is ok with _1 in name
   const isFilterSwappable = (filterName, swapWord) => {
@@ -2099,47 +2060,27 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
   let leftResult = isFilterSwappable(leftFilter1, '_1');
   let rightResult = isFilterSwappable(rightFilter1, '_1');
 
-  self.logger.info(leftResult + ' + ' + rightResult);
+  console.log(leftResult + ' + ' + rightResult);
 
   // check if secoond filter with _2 in name
   const isFileExist = (filterName, swapWord) => {
     let fileExt = filterName.slice(-4);
     let filterNameShort = filterName.slice(0, -6);
     let filterNameForSwap = filterNameShort + swapWord + fileExt;
-    /*
-        fs.open((filterfolder + filterNameForSwap), 'r', (err) => {
-          if (!err) {
-            console.log('myfile exists ' + filterNameForSwap);
-              return true
-           // return true
-          } else {
-            console.log('myfile does not exist ' + (filterfolder + filterNameForSwap));
-            return false
-          }
-    
-        });
-    */
-    if (fs.existsSync(filterfolder + filterNameForSwap)) {
+    if (fs.exists(filterfolder + filterNameForSwap)) {
       return [true, filterNameForSwap]
     } else {
       return false
     }
-
   };
-
   let leftResultExist = isFileExist(leftFilter1, '_2');
   let toSaveLeftResult = leftResultExist[1];
-
   let rightResultExist = isFileExist(rightFilter1, '_2');
   let toSaveRightResult = rightResultExist[1];
 
   // if both condition are true, swapping possible
-  // if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-  self.logger.info('result ' + leftResult + ' ' + rightResult + ' ' + leftResultExist[0] + ' ' + rightResultExist[0])
-
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-
-    self.logger.info('swap possible !!!!!!!')
+    console.log('swap possible !!!!!!!')
     self.config.set('sndleftfilter', toSaveLeftResult);
     self.config.set('sndrightfilter', toSaveRightResult);
     self.config.set('arefilterswap', true);
@@ -2149,23 +2090,22 @@ ControllerBrutefir.prototype.areSwapFilters = function () {
     self.config.set('arefilterswap', false);
   };
   setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
-      //     return self.commandRouter.reloadUi();
     }, 500);
   });
 };
 
-//-------------here we define action if filters swappable when the button' is pressed-----
-ControllerBrutefir.prototype.SwapFilters = function () {
+//-------------here we define action if filters swappable when the button is pressed-----
+ControllerDsp4Volumio.prototype.SwapFilters = function () {
   const self = this;
   let rsetUsedOfFilters = self.config.get('setUsedOfFilters');
   let brutefircmd;
   var leftfilter, rightfilter, sndleftfilter, sndrightfilter;
   if (rsetUsedOfFilters == '1') {
     self.config.set('setUsedOfFilters', 2);
-    self.logger.info('Swap to set 2 ');
+    console.log('Swap to set 2 ');
     brutefircmd = ('cfc "l_out" "' + "2l_out" + '" ;cfc "r_out" "' + "2r_out" + '"');
     self.config.set('leftftosave', self.config.get('leftfilter'));
     self.config.set('rightftosave', self.config.get('rightfilter'));
@@ -2177,7 +2117,7 @@ ControllerBrutefir.prototype.SwapFilters = function () {
 
   } else if (rsetUsedOfFilters == '2') {
     self.config.set('setUsedOfFilters', 1);
-    self.logger.info('Swap to set 1 ');
+    console.log('Swap to set 1 ');
     brutefircmd = ('cfc "l_out" "' + "l_out" + '" ;cfc "r_out" "' + "r_out" + '"');
     /* self.config.set('leftftosave', self.config.get('sndleftfilter'));
      self.config.set('rightftosave', self.config.get('sndrightfilter'));
@@ -2204,20 +2144,19 @@ ControllerBrutefir.prototype.SwapFilters = function () {
     self.commandRouter.broadcastMessage('pushUiConfig', config);
   });
 };
-
 //-----------here we save VoBAf parameters
-ControllerBrutefir.prototype.saveVoBAF = function (data) {
+ControllerDsp4Volumio.prototype.saveVoBAF = function (data) {
   const self = this;
   let defer = libQ.defer();
   let vf_ext;
 
   if (self.config.get('vobaf_format') == "text") {
     vf_ext = ".txt";
-  } else if (self.config.get('vobaf_format') == "FLOAT_LE") {
+  } else if (self.config.get('vobaf_format') == "FLOAT32LE") {
     vf_ext = ".pcm";
-  } else if (self.config.get('vobaf_format') == "FLOAT64_LE") {
+  } else if (self.config.get('vobaf_format') == "FLOAT64LE") {
     vf_ext = ".dbl";
-  } else if ((self.config.get('vobaf_format') == "S16_LE") || (self.config.get('vobaf_format') == "S24_LE") || (self.config.get('vobaf_format') == "S32_LE")) {
+  } else if ((self.config.get('vobaf_format') == "S16LE") || (self.config.get('vobaf_format') == "S24LE") || (self.config.get('vobaf_format') == "S32LE")) {
     vf_ext = ".wav";
   }
 
@@ -2256,149 +2195,127 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
     let M = (self.config.get('M'))
 
     if ((Lowsw == true) && (LM1sw == false)) {
-      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
+      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Lowsw + LM1sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM1, LM2 and LM3 Must be enabled if you want to use Low filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((LM1sw == true) && (LM2sw == false)) {
-      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM2 and LM3 Must be enabled if you want to use LM1 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((LM2sw == true) && (LM3sw == false)) {
-      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
+      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + LM1sw + LM2sw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! LM3 Must be enabled if you want to use LM2 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
     } else if ((Highsw == true) && (HMsw == false)) {
-      self.logger.error('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
+      console.log('ARCHTUNG !!!!!!!!!!!!!!!!!' + Highsw + HMsw);
       let modalData = {
         title: 'VoBAF filters activation',
         message: 'Warning !! HM Must be enabled if you want to use High filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((Lowsw == true) && (fs.existsSync(vobaf_filterfolder + '/Low' + vf_ext) == !true)) {
+    } else if ((Lowsw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/Low' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! Low' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use Low filter',
+        message: 'Warning !! Low' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use Low filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM1sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM1' + vf_ext) == !true)) {
+    } else if ((LM1sw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/LM1' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM1' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM1 filter',
+        message: 'Warning !! LM1' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use LM1 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM2sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM2' + vf_ext) == !true)) {
+    } else if ((LM2sw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/LM2' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM2' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM2 filter',
+        message: 'Warning !! LM2' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use LM2 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((LM3sw == true) && (fs.existsSync(vobaf_filterfolder + '/LM3' + vf_ext) == !true)) {
+    } else if ((LM3sw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/LM3' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! LM3' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use LM3 filter',
+        message: 'Warning !! LM3' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use LM3 filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if (fs.existsSync(vobaf_filterfolder + '/M' + vf_ext) == !true) {
+    } else if (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/M' + vf_ext) == !true) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! M' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use VoBAF',
+        message: 'Warning !! M' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use VoBAF',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((HMsw == true) && (fs.existsSync(vobaf_filterfolder + '/HM' + vf_ext) == !true)) {
+    } else if ((HMsw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/HM' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! HM' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use HM filter',
+        message: 'Warning !! HM' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use HM filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
-    } else if ((Highsw == true) && (fs.existsSync(vobaf_filterfolder + '/High' + vf_ext) == !true)) {
+    } else if ((Highsw == true) && (fs.existsSync('/data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters/High' + vf_ext) == !true)) {
       let modalData = {
         title: 'VoBAF filters activation',
-        message: 'Warning !! High' + vf_ext + ' Must exist in ' + vobaf_filterfolder + ' if you want to use High filter',
+        message: 'Warning !! High' + vf_ext + ' Must exist in /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters if you want to use High filter',
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2410,9 +2327,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2424,9 +2339,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2438,9 +2351,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2452,9 +2363,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2466,9 +2375,7 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
         size: 'lg',
         buttons: [{
           name: 'Close',
-          class: 'btn btn-warning',
-          emit: 'closeModals',
-          payload: ''
+          class: 'btn btn-warning'
         },]
       };
       self.commandRouter.broadcastMessage("openModal", modalData);
@@ -2489,10 +2396,28 @@ ControllerBrutefir.prototype.saveVoBAF = function (data) {
   return defer.promise;
 };
 
+//-----------here we save the brutefir delay calculation NOT MORE IN USE NOW!!!
+ControllerDsp4Volumio.prototype.saveBrutefirconfigroom = function (data) {
+  const self = this;
+  let defer = libQ.defer();
+  self.config.set('ldistance', data['ldistance']);
+  self.config.set('rdistance', data['rdistance']);
+  self.rebuildBRUTEFIRAndRestartDaemon()
+    .then(function (e) {
+      self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+      defer.resolve({});
+    })
+    .fail(function (e) {
+      defer.reject(new Error('Brutefir failed to start. Check your config !'));
+      self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
+    })
+  return defer.promise;
+};
+
 //--------------Tools Section----------------
 
 //here we download and install tools
-ControllerBrutefir.prototype.installtools = function () {
+ControllerDsp4Volumio.prototype.installtools = function (data) {
   const self = this;
 
   return new Promise(function (resolve, reject) {
@@ -2513,7 +2438,7 @@ ControllerBrutefir.prototype.installtools = function () {
       self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
       self.config.set('toolsinstalled', true);
 
-      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+      var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
       respconfig.then(function (config) {
         self.commandRouter.broadcastMessage('pushUiConfig', config);
 
@@ -2532,7 +2457,7 @@ ControllerBrutefir.prototype.installtools = function () {
 };
 
 //here we remove tools
-ControllerBrutefir.prototype.removetools = function (data) {
+ControllerDsp4Volumio.prototype.removetools = function (data) {
   const self = this;
   self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
   return new Promise(function (resolve, reject) {
@@ -2550,7 +2475,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
     */
     self.config.set('toolsinstalled', false);
     self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
@@ -2562,7 +2487,7 @@ ControllerBrutefir.prototype.removetools = function (data) {
 
 //------ actions tools------------
 
-ControllerBrutefir.prototype.playToolsFile = function (data) {
+ControllerDsp4Volumio.prototype.playToolsFile = function (data) {
   const self = this;
   self.config.set('toolsfiletoplay', data['toolsfiletoplay'].value);
   let toolsfile = self.config.get("toolsfiletoplay");
@@ -2570,11 +2495,10 @@ ControllerBrutefir.prototype.playToolsFile = function (data) {
   self.commandRouter.replaceAndPlay({ uri: track });
   self.commandRouter.volumioClearQueue();
 };
-
 //-----------DRC-FIR section----------------
 
 //here we save value for converted file
-ControllerBrutefir.prototype.fileconvert = function (data) {
+ControllerDsp4Volumio.prototype.fileconvert = function (data) {
   const self = this;
   let defer = libQ.defer();
   self.config.set('filetoconvert', data['filetoconvert'].value);
@@ -2586,42 +2510,22 @@ ControllerBrutefir.prototype.fileconvert = function (data) {
 };
 
 //here we convert file using sox and generate filter with DRC-FIR
-ControllerBrutefir.prototype.convert = function (data) {
+ControllerDsp4Volumio.prototype.convert = function (data) {
   const self = this;
   //let defer = libQ.defer();
+  //let filtersource = "/data/INTERNAL/brutefirfilters/filter-sources/";
   let drcconfig = self.config.get('drcconfig');
   // let filterfolder = "/data/INTERNAL/brutefirfilters/";
   let infile = self.config.get('filetoconvert');
-
-  if (infile.includes(' ')) {
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
-    self.logger.error('SPACE NOT ALLOWED in file name')
-    return;
-  };
-
-
   if (infile != 'choose a file') {
 
-    let outfile = self.config.get('outputfilename')//.replace(/ /g, '-');
-
-    if (outfile.includes(' ')) {
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
-      self.logger.error('SPACE NOT ALLOWED in file name')
-      return;
-    };
-
+    let outfile = self.config.get('outputfilename').replace(/ /g, '-');
     if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
       outfile = infile.replace(/ /g, '-').replace('.wav', '');
     };
-
     let targetcurve = '\ /usr/share/drc/config/'
     let outsample = self.config.get('smpl_rate');
     let tc = self.config.get('tc');
-    if (tc.includes(' ')) {
-      self.commandRouter.pushToastMessage('error', ' target curve :' + self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
-      self.logger.error('SPACE NOT ALLOWED in file name for target curve')
-      return;
-    };
     if (tc != 'choose a file') {
       let tcsimplified = tc.replace('.txt', '');
       let ftargetcurve
@@ -2689,33 +2593,9 @@ ControllerBrutefir.prototype.convert = function (data) {
   } else {
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_FILE'));
   };
-};
-//------ Reset plugin remove all settings as if a new install is done------------
-
-ControllerBrutefir.prototype.resetplugin = function () {
-  const self = this;
-  try {
-    execSync("/bin/rm /data/configuration/audio_interface/brutefir/config.json", {
-      uid: 1000,
-      gid: 1000
-    });
-    self.commandRouter.pushConsoleMessage('----- Dsp config reset-----');
-    let modalData = {
-      title: 'INFO!!!',
-      message: self.commandRouter.getI18nString('REBOOT_AFTER_RESET'),
-      size: 'lg',
-      buttons: [{
-        name: 'Reboot',
-        class: 'btn btn-warning',
-        emit: 'closeModals',
-        payload: ''
-      },]
-    };
-    self.commandRouter.broadcastMessage("openModal", modalData);
-    defer.resolve();
-  } catch (err) {
-    self.logger.info('failed to reset config' + err);
-  }
 }
+
+
+
 
 

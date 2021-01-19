@@ -11,13 +11,13 @@ devices:
     type: Alsa
     channels: 2
     device: "hw:Loopback,1"
-    format: S16LE
+    format: S32LE
      
   playback:
     type: Alsa
     channels: 2
-    device: "${output_device}"
-    format: ${output_format}
+    device: "fromDspx"
+    format: S24LE3
 
 filters:
   fir1:
