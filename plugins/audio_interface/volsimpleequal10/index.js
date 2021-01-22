@@ -107,7 +107,7 @@ ControllerVolsimpleequal10.prototype.sendequal = function (scoef) {
   }
   self.config.set('coef', scoef);
 
-  var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'volsimpleequal', {});
+  var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'volsimpleequal10', {});
   respconfig.then(function (config) {
     self.commandRouter.broadcastMessage('pushUiConfig', config);
   });
@@ -143,7 +143,7 @@ ControllerVolsimpleequal10.prototype.onStart = function () {
     })
     .then(function (e) {
 
-      var configFile = "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin"
+      var configFile = "/data/configuration/audio_interface/volsimpleequal10/.alsaequal.bin"
       var configDefer = libQ.defer();
 
       if (fs.existsSync(configFile)) {
