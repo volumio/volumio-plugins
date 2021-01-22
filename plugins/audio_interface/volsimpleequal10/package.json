@@ -9,7 +9,7 @@
 	"author": "Balbuze",
 	"license": "GPL-3.0",
 	"volumio_info": {
-		"prettyName": "Volumio simple equalizer",
+		"prettyName": "Volumio simple equalizer 10 bands",
 		"plugin_type": "audio_interface",
 		"icon": "fa-sliders fa-rotate-90",
 		"boot_priority": 10,
