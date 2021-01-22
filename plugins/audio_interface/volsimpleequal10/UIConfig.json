@@ -10,7 +10,7 @@
 			"icon": "fa-sliders fa-rotate-90",
 			"onSave": {
 				"type": "plugin",
-				"endpoint": "audio_interface/volsimpleequal",
+				"endpoint": "audio_interface/volsimpleequal10",
 				"method": "savealsaequal"
 			},
 			"saveButton": {
@@ -99,7 +99,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--31Hz"
+									"31Hz"
 								],
 								"tooltip": "show"
 							},
@@ -109,7 +109,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--63Hz"
+									"63Hz"
 								],
 								"tooltip": "show"
 							},{
@@ -118,7 +118,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--125Hz"
+									"125Hz"
 								],
 								"tooltip": "show"
 							},{
@@ -127,7 +127,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--250Hz"
+									"250Hz"
 								],
 								"tooltip": "show"
 							},{
@@ -136,7 +136,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--500Hz"
+									"500Hz"
 								],
 								"tooltip": "show"
 							},{
@@ -145,7 +145,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--1KHz"
+									"1KHz"
 								],
 								"tooltip": "show"
 							},
@@ -155,7 +155,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--2KHz"
+									"2KHz"
 								],
 								"tooltip": "show"
 							},
@@ -165,7 +165,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--4KHz"
+									"4KHz"
 								],
 								"tooltip": "show"
 							},
@@ -175,7 +175,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--8KHz"
+									"8KHz"
 								],
 								"tooltip": "show"
 							},
@@ -185,7 +185,7 @@
 								"step": "1",
 								"value": 0,
 								"ticksLabels": [
-									"--16KHz"
+									"16KHz"
 								],
 								"tooltip": "show"
 							}
@@ -202,7 +202,7 @@
 			"icon": "fa-cogs",
 			"onSave": {
 				"type": "plugin",
-				"endpoint": "audio_interface/volsimpleequal",
+				"endpoint": "audio_interface/volsimpleequal10",
 				"method": "saveequalizerpreset"
 			},
 			"saveButton": {
