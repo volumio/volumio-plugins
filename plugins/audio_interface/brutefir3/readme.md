@@ -1,4 +1,4 @@
-December 18th 2020
+January 22th 2021
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+January 22 th 2021
+
+- asound
 
 December 18th 2020
 
