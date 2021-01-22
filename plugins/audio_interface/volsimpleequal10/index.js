@@ -93,8 +93,10 @@ ControllerVolsimpleequal10.prototype.sendequal = function (scoef) {
     k = parseInt(coefarray[j], 10);
     x = k + z;
 
-    console.log("/bin/echo /usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x)
-    exec("/usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x, {
+    var cmd = ("/usr/bin/amixer -D volSimpleEqual cset numid=" + [i] + " " + x)
+
+    console.log(cmd)
+    exec(cmd, {
       uid: 1000,
       gid: 1000
     }, function (error, stdout, stderr) {
