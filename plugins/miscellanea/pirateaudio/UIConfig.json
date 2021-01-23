@@ -16,7 +16,8 @@
       "saveButton": {
         "label": "TRANSLATE.CONFIG.SAVE",
         "data": [
-          "listmax"
+          "listmax",
+          "gpio_ybutton"
         ]
       },
       "content": [
@@ -57,6 +58,26 @@
             {
               "value": 9,
               "label": "9"
+            }
+          ]
+        },
+        {
+          "id": "gpio_ybutton",
+          "type": "number",
+          "label": "TRANSLATE.CONFIG.GPIOYBUTTON",
+          "element": "select",
+          "value": {
+            "value": 20,
+            "label": "20"
+          },
+          "options": [
+            {
+              "value": 20,
+              "label": "20"
+            },
+            {
+              "value": 24,
+              "label": "24"
             }
           ]
         }

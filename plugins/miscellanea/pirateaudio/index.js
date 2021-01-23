@@ -92,6 +92,8 @@ pirateaudio.prototype.getUIConfig = function() {
 			//self.logger.info('Funktion getUIConfig pirate:' + self.config.get('listmax'));
 			uiconf.sections[0].content[0].value.value = self.config.get('listmax');
 			uiconf.sections[0].content[0].value.label = self.config.get('listmax');
+			uiconf.sections[0].content[1].value.value = self.config.get('gpio_ybutton');
+			uiconf.sections[0].content[1].value.label = self.config.get('gpio_ybutton');
 			//uiconf.sections[0].content[1].value = self.config.get('listmax'); //geht bei Feld input
 			//uiconf.sections[0].content[0].value = 6; //geht als statische Anzeige und bei Feld input
             defer.resolve(uiconf);
@@ -118,6 +120,7 @@ pirateaudio.prototype.setUIConfig = function(data) {
 
 	//self.config.set('listmax', parseInt(data['listmax'])); //geht bei Feld input
 	self.config.set('listmax', parseInt(data['listmax'].value));
+	self.config.set('gpio_ybutton', parseInt(data['gpio_ybutton'].value));
 	exec("/usr/bin/sudo /bin/systemctl restart pirateaudio.service", {
 		uid: 1000,
 		gid: 1000

@@ -1,6 +1,6 @@
 {
 	"name": "pirateaudio",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Volumio plugin to use pirate audio DAC (including display and the 4 buttons) on raspberry pi.",
 	"main": "index.js",
 	"scripts": {
