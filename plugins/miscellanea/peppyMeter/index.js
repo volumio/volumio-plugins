@@ -66,7 +66,11 @@ peppyMeter.prototype.onStart = function () {
       return pipeDefer.promise;
     });
   defer.resolve();
+  setTimeout(function () {
   self.startpeppyservice()
+}, 10000);
+      self.commandRouter.pushToastMessage('success', 'Starting PeppyMeter');
+
   return defer.promise;
 };
 
