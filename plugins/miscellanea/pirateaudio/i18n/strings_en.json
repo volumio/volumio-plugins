@@ -3,6 +3,7 @@
   "CONFIG": {
     "TITLE": "Pirate Audio Configuration",
     "LISTMAX": "How many entries should be maximum displayed on a list view?",
+    "GPIOYBUTTON": "Which GPIO pin is used by your pirate audio hat and revision for the Y button?",
     "SAVE":"Save"
   },
   "DISPLAY": {
@@ -10,6 +11,8 @@
     "SHUTDOWN": "Shutdown?",
     "REBOOT": "Reboot Pi?",
     "LOSTCONNECTION": "Lost connection",
-    "EMPTY": "empty"
+    "EMPTY": "empty",
+    "WAIT": "please wait",
+    "NOTSUPPORTED": "not supported by plugin"
   }
 }

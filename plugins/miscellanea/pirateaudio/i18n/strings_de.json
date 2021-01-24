@@ -3,6 +3,7 @@
   "CONFIG": {
     "TITLE": "Pirate Audio Konfiguration",
     "LISTMAX": "Wie viele Einträge sollen im Listview maximal angezeigt werden?",
+    "GPIOYBUTTON": "Welcher GPIO PIN wird von deinem pirate audio hat und Revision für den Y-Button verwendet?",
     "SAVE":"Speichern"
   },
   "DISPLAY": {
@@ -10,6 +11,8 @@
     "SHUTDOWN": "Herunterfahren?",
     "REBOOT": "Neustart Pi?",
     "LOSTCONNECTION": "Verbindung verloren",
-    "EMPTY": "leer"
+    "EMPTY": "leer",
+    "WAIT": "bitte warten",
+    "NOTSUPPORTED": "nicht unterstützt"
   }
 }

@@ -6,5 +6,9 @@
     "listmax": {
         "type": "number",
         "value": 5
+    },
+    "gpio_ybutton": {
+        "type": "number",
+        "value": 20
     }
 }

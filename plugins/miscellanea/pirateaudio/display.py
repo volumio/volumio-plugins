@@ -71,13 +71,14 @@ mode = 'player'
 nav_array_name = []
 nav_array_uri = []
 nav_array_type = []
+nav_array_service = []
 marker = 0
 listmax = int(obj['listmax']['value'])  # get the value from config.json
 liststart = 0
 listresult = 0
 
 
-BUTTONS = [5, 6, 16, 20]
+BUTTONS = [5, 6, 16, obj['gpio_ybutton']['value']]
 LABELS = ['A', 'B', 'X', 'Y']
 GPIO.setmode(GPIO.BCM)  # Set up RPi.GPIO with the "BCM" numbering scheme
 
@@ -110,8 +111,8 @@ def navigation_handler(action):
     global mode, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, listresult
     if mode == 'player':
         mode = 'menu'
-        # nav_array_name = ['Musikauswahl', 'Herunterfahren ?', 'Neustart Pi?']
-        # obj_trans['DISPLAY']['MUSICSELECTION']
+        # nav_array_name = ['Musikauswahl', 'Herunterfahren ?', 'Neustart Pi?']  # can be deleted
+        # obj_trans['DISPLAY']['MUSICSELECTION']  # can be deleted
         nav_array_name = [obj_trans['DISPLAY']['MUSICSELECTION'], obj_trans['DISPLAY']['SHUTDOWN'], obj_trans['DISPLAY']['REBOOT']]
         nav_array_uri = ['', 'sudo shutdown -h now', 'sudo shutdown -r now']
         nav_array_type = ['', 'os', 'os']
@@ -122,75 +123,49 @@ def navigation_handler(action):
 
 
 def on_push_browsesources(*args):
-    global mode, nav_array_name, nav_array_uri, nav_array_type, marker, listresult
+    global mode, nav_array_name, nav_array_uri, marker, listresult
     result = len(args[0])
     listresult = result
     i = 0
-    while i < result:
-        listitem_name = args[0][i]['name']
-        listitem_uri = args[0][i]['uri']
-        nav_array_name.append(listitem_name)
-        nav_array_uri.append(listitem_uri)
-        i += 1
+    append_n = nav_array_name.append  # to avoid dots in for loop
+    append_u = nav_array_uri.append
+    for i in range(result):
+        append_n(args[0][i]['name'])
+        append_u(args[0][i]['uri'])
     display_stuff('bg_default', nav_array_name, marker, 0)
 
 
 def on_push_browselibrary(*args):
-    global mode, nav_array_name, nav_array_uri, nav_array_type, marker, listmax, liststart, listresult
+    global mode, nav_array_service, nav_array_type, nav_array_name, nav_array_uri, marker, listmax, liststart, listresult
     reset_variable('navigation')
-    head = len(args[0]['navigation'])
     result = len(args[0]['navigation']['lists'][0]['items'])
     listresult = result
     i = 0
-    createlines = False
-
-    # check header
-    if head == 1:  # playlists / Wiedergabelisten
-        if len(args[0]['navigation']['lists'][0]['items']) == 0:
-            # display_stuff('bg_default', 'leer', marker, liststart)
-            display_stuff('bg_default', obj_trans['DISPLAY']['EMPTY'], marker, liststart)
-        else:
-            createlines = True
-    elif head == 2:
-        if result == 1 and args[0]['navigation']['lists'][0]['items'][0]['type'] == 'song':  # plays songs and podcasts
-            socketIO.emit('replaceAndPlay', {"service": args[0]['navigation']['lists'][0]['items'][0]['service'], "uri": args[0]['navigation']['lists'][0]['items'][0]['uri']})  # wrong, only play mpd and songs
-            reset_variable('player')
-        else:
-            createlines = True
-    elif head == 3:
-        if 'name' in args[0]['navigation']['info']:
-            if args[0]['navigation']['info']['name'] == 'favourites':  # favourites / Favoriten
-                createlines = True
-            else:  # playlist / Wiedergabeliste
-                socketIO.emit('playPlaylist', {'name': args[0]['navigation']['info']['title']})
-                reset_variable('player')
-        else:
-            createlines = True
-    else:
-        print('head <> 3', head)
-
-    # create lines to display
-    if result > 0 and createlines is True:  # we have item entries
-        while i < result:
-            listitem_name = args[0]['navigation']['lists'][0]['items'][i]['title']
-            listitem_uri = args[0]['navigation']['lists'][0]['items'][i]['uri']
-            listitem_type = args[0]['navigation']['lists'][0]['items'][i]['type']
-            nav_array_name.append(listitem_name)
-            nav_array_uri.append(listitem_uri)
-            nav_array_type.append(listitem_type)
-            i += 1
-
+    if result > 0:  # we have item entries
+        append_s = nav_array_service.append  # to avoid dots in for loop
+        append_t = nav_array_type.append
+        append_n = nav_array_name.append
+        append_u = nav_array_uri.append
+        for i in range(result):
+            append_s(args[0]['navigation']['lists'][0]['items'][i]['service'])
+            append_t(args[0]['navigation']['lists'][0]['items'][i]['type'])
+            append_n(args[0]['navigation']['lists'][0]['items'][i]['title'])
+            append_u(args[0]['navigation']['lists'][0]['items'][i]['uri'])
         display_stuff('bg_default', nav_array_name, marker, liststart)
     elif result == 0:  # we have no item entries
-        # display_stuff('bg_default', 'leer', marker, liststart)
         display_stuff('bg_default', obj_trans['DISPLAY']['EMPTY'], marker, liststart)
 
 
 def reset_variable(varmode):
-    global mode, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, img_check, albumart
+    global mode, nav_array_service, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, img_check, albumart
     mode = varmode
-    nav_array_name, nav_array_uri, nav_array_type, marker, liststart = [], [], [], 0, 0
+    nav_array_name, nav_array_uri, nav_array_type, nav_array_service, marker, liststart = [], [], [], [], 0, 0
     img_check, albumart = '', ''  # reset albumart so display gets refreshed
+
+
+def sendtodisplay(img):
+    disp.display(img)
+    # time.sleep(0.2)
 
 
 def display_stuff(picture, text, marked, start):
@@ -204,10 +179,9 @@ def display_stuff(picture, text, marked, start):
     else:
         img3 = Image.open(picture)
     draw3 = ImageDraw.Draw(img3, 'RGBA')
-    # y = 15
-    # result = len(text)
+
     if isinstance(text, list):  # check if text is array
-        result = len(text)  # count of list/array
+        result = len(text)  # count items of list/array
         # Loop for finding out the sum of textheight for positioning
         totaltextheight = 0
         for arrayitem in text:
@@ -224,9 +198,7 @@ def display_stuff(picture, text, marked, start):
                 len1, hei1 = draw3.textsize(arrayitem, font=font_m)
                 x2 = (WIDTH - len1)//2
                 if i == marked:
-                    # test background
                     draw3.rectangle((x2, y + 2, x2 + len1, y + hei1), (255, 255, 255))
-                    # draw3.text((x2, y), arrayitem, font=font_m, fill=(255, 0, 0))
                     draw3.text((x2, y), arrayitem, font=font_m, fill=(0, 0, 0))
                 else:
                     draw3.text((x2, y), arrayitem, font=font_m, fill=(255, 255, 255))
@@ -244,8 +216,7 @@ def display_stuff(picture, text, marked, start):
     draw3.text((210, 50), u"\uf151", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols up
     draw3.text((0, 170), u"\uf0e2", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols back
     draw3.text((210, 170), u"\uf150", font=font_fas, fill=(255, 255, 255))  # Fontawesome symbols down
-    # draw pageindex
-    # print('result, marker, listmax:', result, marker, listmax)  # can be deleted
+
     page = int(math.ceil((float(marker) + 1)/float(listmax)))
     pages = int(math.ceil(float(result)/float(listmax)))
     if pages != 1:  # only show index if more than one site
@@ -253,12 +224,14 @@ def display_stuff(picture, text, marked, start):
         len1, hei1 = draw3.textsize(pagestring, font=font_m)
         x2 = (WIDTH - len1)//2
         draw3.text((x2, HEIGHT - hei1), pagestring, font=font_m, fill=(255, 255, 255))
-    disp.display(img3)
-    time.sleep(0.2)
+    # disp.display(img3)
+    # time.sleep(0.2)
+    sendtodisplay(img3)
 
 
 def on_push_state(*args):
-    global img, img2, dark, txt_col, bar_bgcol, bar_col, status, service, albumart, img_check, mode
+    global img, img2, dark, txt_col, bar_bgcol, bar_col, status, service, volume, albumart, img_check, mode
+    volume = int(args[0]['volume'])
     if mode == 'player':
         status = args[0]['status'].encode('ascii', 'ignore')
         service = args[0]['service'].encode('ascii', 'ignore')
@@ -360,11 +333,9 @@ def on_push_state(*args):
         # display only if img changed
         if img_check != img:
             img_check = img
-            disp.display(img)
-            time.sleep(0.2)
-
-    else:
-        print('verlasse Funktion on_push_state, da mode != player', mode)
+            # disp.display(img)
+            # time.sleep(0.2)
+            sendtodisplay(img)
 
 
 img = Image.new('RGBA', (240, 240), color=(0, 0, 0, 25))
@@ -375,8 +346,9 @@ socketIO.on('disconnect', on_disconnect)
 
 def handle_button(pin):
     label = LABELS[BUTTONS.index(pin)]
-    global mode, nav_array_name, nav_array_uri, marker, liststart, listresult
-    if pin == 5:  # Button A
+    global mode, nav_array_service, nav_array_type, nav_array_name, nav_array_uri, marker, liststart, listresult, browselibrary, volume
+
+    if pin == 5:  # Button A, only needs single press function
         if mode == 'player':
             if (status == 'play') and (service == 'webradio'):
                 socketIO.emit('stop')
@@ -386,14 +358,32 @@ def handle_button(pin):
                 socketIO.emit('play')
         elif mode == 'navigation':
             if len(nav_array_uri) != 0:
-                if 'http' in nav_array_uri[marker]:  # catch webradio
-                    socketIO.emit('replaceAndPlay', {"service": "webradio", "type": "webradio", "title": nav_array_name[marker], "uri": nav_array_uri[marker]})
-                    reset_variable('player')
+                if len(nav_array_type) == 0:
+                    browselibrary = True
                 else:
+                    if nav_array_type[marker] == 'song' or nav_array_type[marker] == 'webradio':
+                        socketIO.emit('replaceAndPlay', {"service": nav_array_service[marker], "type": nav_array_type[marker], "title": nav_array_name[marker], "uri": nav_array_uri[marker]})
+                        reset_variable('player')
+                    elif nav_array_type[marker] == 'playlist':
+                        socketIO.emit('playPlaylist', {'name': nav_array_name[marker]})
+                        reset_variable('player')
+                    elif 'folder' in nav_array_type[marker]:
+                        if nav_array_service[marker] == 'podcast':
+                            display_stuff('bg_default', obj_trans['DISPLAY']['WAIT'], marker, liststart)  # note, please wait
+                        browselibrary = True
+                    elif 'radio-' in nav_array_type[marker]:  # the minus (-) is important, otherwise i cant decide between 'radiofolder' and 'webradiostream'
+                        browselibrary = True
+                    elif 'streaming-' in nav_array_type[marker]:
+                        display_stuff('bg_default', obj_trans['DISPLAY']['NOTSUPPORTED'], marker, liststart)
+                    else:
+                        display_stuff('bg_default', obj_trans['DISPLAY']['NOTSUPPORTED'], marker, liststart)
+
+                if browselibrary is True:
                     # replace "mnt/" in uri through "music-library/", otherwise calling them dont work (at least in favourites)
                     uri = nav_array_uri[marker]
                     uri = uri.replace('mnt/', 'music-library/')
                     socketIO.emit('browseLibrary', {'uri': uri})
+                    browselibrary = False
             else:
                 reset_variable('player')
                 socketIO.emit('getState', '', on_push_state)
@@ -402,60 +392,62 @@ def handle_button(pin):
                 command = nav_array_uri[marker]
                 display_stuff('bg_default', ['executing:', command, 'shuting down ...'], 0, 0)
                 socketIO.disconnect()
-                # GPIO.cleanup()
                 os.system(command)
-                # sys.exit()
                 clean()
             else:  # browsesource
-                reset_variable('navigation')  # reset values first
+                reset_variable('navigation')
                 socketIO.emit('getBrowseSources', '', on_push_browsesources)
         else:
-            print('handle_button2 else eingetreten, schalte auf player um')
             reset_variable('player')
             socketIO.emit('getState', '', on_push_state)
 
-    if pin == 6:  # Button B
+    if pin == 6:  # Button B, needs a pressed function in player mode
         if mode == 'player':
-            socketIO.emit('volume', '-')
+            while not GPIO.input(6) and volume > 0:  # limit/exit at volume 0 so amixer dont go crazy
+                socketIO.emit('volume', '-')
+                time.sleep(0.5)
         elif mode == 'navigation' or mode == 'menu':
             reset_variable('player')
             socketIO.emit('getState', '', on_push_state)
 
-    if pin == 16:  # Button X
+    if pin == 16:  # Button X, needs a pressed function in navigation and menu mode
         if mode == 'player':
             navigation_handler('')
         elif mode == 'navigation' or mode == 'menu':
-            marker -= 1  # count minus 1
-            if marker < 0:  # blaettere nach oben durch
-                marker = listresult-1
-                if listresult > listmax - 1:  # dann aendere auch noch den liststart
-                    liststart = int(liststart + (math.floor(listresult/listmax)*listmax))
-            liststart = int(math.floor(marker/listmax)*listmax)  # definiert das blaettern zur naechsten Seite
-            display_stuff('bg_default', nav_array_name, marker, liststart)
+            while not GPIO.input(16):
+                marker -= 1  # count minus 1
+                if marker < 0:  # blaettere nach oben durch
+                    marker = listresult-1
+                    if listresult > listmax - 1:  # dann aendere auch noch den liststart
+                        liststart = int(liststart + (math.floor(listresult/listmax)*listmax))
+                liststart = int(math.floor(marker/listmax)*listmax)  # definiert das blaettern zur naechsten Seite
+                display_stuff('bg_default', nav_array_name, marker, liststart)
 
-    if pin == 20:  # Button Y
-        if mode == 'player':
-            socketIO.emit('volume', '+')
-        elif mode == 'navigation' or mode == 'menu':
-            marker += 1  # count plus 1
-            liststart = int(math.floor(marker/listmax)*listmax)  # definiert das blaettern zur naechsten Seite
-            if marker > listresult-1:  # blaettere nach unten durch
-                marker = 0
-                liststart = 0
-            display_stuff('bg_default', nav_array_name, marker, liststart)
+    if pin == BUTTONS[3]:  # Button Y, needs a pressed function in  all modes
+        while not GPIO.input(BUTTONS[3]):
+            if mode == 'player' and volume < 100:  # limit/exit at volume 100 so amixer dont go crazy:
+                socketIO.emit('volume', '+')
+                time.sleep(0.5)
+            elif mode == 'navigation' or mode == 'menu':
+                marker += 1  # count plus 1
+                liststart = int(math.floor(marker/listmax)*listmax)  # definiert das blaettern zur naechsten Seite
+                if marker > listresult-1:  # blaettere nach unten durch
+                    marker = 0
+                    liststart = 0
+                display_stuff('bg_default', nav_array_name, marker, liststart)
 
 
 def setup_channel(channel):
     try:
-        print "register %d" %channel
+        print('register %d') % channel
         GPIO.setup(channel, GPIO.IN, GPIO.PUD_UP)
-        GPIO.add_event_detect(channel, GPIO.FALLING, handle_button, bouncetime=400)
-        print 'success'
+        GPIO.add_event_detect(channel, GPIO.FALLING, handle_button, bouncetime=250)
+        print('success')
     except (ValueError, RuntimeError) as e:
-        print 'ERROR:', e
+        print('ERROR:', e)
 
 
-for x in [5, 6, 16, 20]:
+for x in BUTTONS:
     setup_channel(x)
 
 
