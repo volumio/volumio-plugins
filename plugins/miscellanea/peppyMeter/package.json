@@ -12,6 +12,7 @@
     "prettyName": "PeppyMeter for Volumio",
     "plugin_type": "miscellanea",
     "icon": "fa-bar-chart",
+    "boot_priority": 15,
     "has_alsa_contribution": true
   },
   "dependencies": {
