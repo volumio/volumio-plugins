@@ -1,0 +1,63 @@
+{
+  "page": {
+    "label": "TRANSLATE.COMMON.CONFIG_SECTION_TITLE"
+  },
+  "sections": [
+    {
+      "id": "HOTELRADIO_SECTION",
+      "element": "section",
+      "label": "TRANSLATE.HOTELRADIO.SECTION_ACCOUNT",
+      "image": "fa-user",
+      "description": "TRANSLATE.HOTELRADIO.ACCOUNT_LOGIN_DESC",
+      "hidden":false,
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/hotelradio",
+        "method": "saveAccountCredentials"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.COMMON.LOGIN",
+        "data": [
+          "hotelradio_username",
+          "hotelradio_password"
+        ]
+      },
+      "content": [
+        {
+          "id":"hotelradio_free_trial",
+          "element": "button",
+          "label": "TRANSLATE.HOTELRADIO.FREE_TRIAL",
+          "description": "TRANSLATE.HOTELRADIO.FREE_TRIAL_DESCR",
+          "onClick": {"type":"oauth", "performerUrl":"https://hotelradio.fm/en/volumio","plugin":"music_service/hotelradio", "scopes":["r_usr","w_usr","w_sub"]},
+          "hidden":false
+        },
+        {
+          "id": "hotelradio_username",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.HOTELRADIO.USERNAME_DOC",
+          "label": "TRANSLATE.COMMON.USERNAME",
+          "value": "",
+          "hidden":false
+        },
+        {
+          "id": "hotelradio_password",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.HOTELRADIO.PASSWORD_DOC",
+          "label": "TRANSLATE.COMMON.PASSWORD",
+          "value": "",
+          "hidden":false
+        },
+        {
+          "id":"hotelradio_reset_password",
+          "element": "button",
+          "label": "TRANSLATE.HOTELRADIO.RESET_PASSWORD",
+          "description": "TRANSLATE.HOTELRADIO.RESET_PASSWORD_DESCR",
+          "onClick": {"type":"openUrl", "url":"http://www.qobuz.com/store-router/pages/volumio"},
+          "hidden":true
+        }
+      ]
+    }
+  ]
+}
