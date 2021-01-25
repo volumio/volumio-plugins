@@ -222,22 +222,23 @@
 					],
 					"updated": "21-12-2020"
 				},
-				{
+				{	"prettyName": "Hotelradio.fm",
 					"icon": "fa-lightbulb-o",
 					"name": "hotelradio",
 					"version": "1.0.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/hotelradio/hotelradio.zip",
 					"license": "ISC",
-					"description": "hotelradio.fm plugin for Volumio2",
+					"description": "hotelradio.fm plugin for Volumio. With hotelradio.fm, you get over 80 premium music channels into your home, with always new titles and of course without advertising interruption.",
 					"details": "",
-					"author": "",
+					"author": "Volumio Team",
 					"screenshots": [
 						{
 							"image": "",
 							"thumb": ""
 						}
 					],
-					"updated": "25-1-2021"
+					"updated": "25-1-2021",
+				 	"stable": true
 				}
 			]
 		},
