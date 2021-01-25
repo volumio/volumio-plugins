@@ -221,6 +221,23 @@
 						}
 					],
 					"updated": "21-12-2020"
+				},
+				{
+					"icon": "fa-lightbulb-o",
+					"name": "hotelradio",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/hotelradio/hotelradio.zip",
+					"license": "ISC",
+					"description": "hotelradio.fm plugin for Volumio2",
+					"details": "",
+					"author": "",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-1-2021"
 				}
 			]
 		},
