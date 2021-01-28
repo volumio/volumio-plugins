@@ -757,6 +757,24 @@
 						}
 					],
 					"updated": "30-11-2020"
+				},
+				{
+					"prettyName": "ledStatus by Julien Tiphaine",
+					"icon": "fa-lightbulb-o",
+					"name": "ledstatus",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/ledstatus/ledstatus.zip",
+					"license": "ISC",
+					"description": "blink gpio led while playing",
+					"details": "Plugin that blink a led wired to a GPIO pin",
+					"author": "jit06",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "28-1-2021"
 				}
 			]
 		}
