@@ -1,0 +1,30 @@
+{
+  "VOLSPOTCONNECT": {
+    "VOLSPOTCONNECTCONF": "Konfiguracja Volumio Spotify Connect",
+    "VOLSPOTCONNECTACCOUNT": "konto Spotify",
+    "USERNAME": "Nazwa użytkownika",
+    "PASSWORD": "Hasło",
+    "HIGHBITRATE": "Szybkość transmisji (bitrate)",
+    "SHAREDDEVICE": "Urządzenie współdzielone",
+    "SAVE": "Zapisz",
+    "INITVOL": "Głośność początkowa",
+    "DESCINITVOL": "Głośność Spotify podczas uruchamiania.",
+    "VOLNORM": "Normalizacja głośności",
+    "DESCVOLNORM": "Ustawia taką samą głośność dla wszystkich utworów.",
+    "DEBUG": "Tryb debug",
+    "DESCDEBUG": "Włącz szczegółowe logi",
+    "VOLUMECTRL": "Wewnętrzna regulacja głośności",
+    "VOLUMECTRL_LINEAR": "Liniowa",
+    "VOLUMECTRL_LOG": "Logarytmiczna",
+    "VOLUMECTRL_FIXED": "Stała",
+    "DESCPVOLUMECTRL": "Metoda regulacji głośności (programowa).",
+    "GAPLESS": "Odtwarzanie bez przerw",
+    "DESCGAPLESS": "Włącza / wyłącza odtwarzanie bez przerw między utworami.",
+    "AUTOPLAY": "Autoplay",
+    "DESCAUTOPLAY": "Automatycznie odtwarzaj podobne utwory, gdy skończy się Twoja muzyka.",
+    "DESCSHAREDDEVICE": "Jeśli ta opcja jest włączona, z urządzenia może korzystać każdy użytkownik w sieci. Jeśli jest wyłączona, używa go unikalny użytkownik.",
+    "TIPSPOTACCOUNT":"wprowadź nazwę użytkownika",
+    "TIPSPOTPASSWD":"wprowadź hasło użytkownika",
+    "DESCHIGHBITRATE":"Im wyższa jest wartość bitrate, tym lepsza jakość dźwięku, ale również większe zapotrzebowanie na pasmo sieci."
+  }
+}

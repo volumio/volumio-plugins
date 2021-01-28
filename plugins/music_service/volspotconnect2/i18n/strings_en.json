@@ -4,7 +4,7 @@
     "VOLSPOTCONNECTACCOUNT": "Spotify account",
     "USERNAME": "Username",
     "PASSWORD": "Password",
-    "HIGHBITRATE": "Stream bitrate",
+    "HIGHBITRATE": "Bitrate",
     "SHAREDDEVICE": "Multi-user device",
     "SAVE": "Save",
     "INITVOL": "Initial volume",
@@ -21,6 +21,8 @@
     "GAPLESS": "Gapless playback",
     "DESCGAPLESS": "Enable/Disable gapless playback between tracks",
     "AUTOPLAY": "Autoplay",
-    "DESCAUTOPLAY": "Autoplay similar songs when your music ends "
+    "DESCAUTOPLAY": "Autoplay similar songs when your music ends",
+    "DESCSHAREDDEVICE": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+    "DESCHIGHBITRATE":"The higher the bitrate value, the better the sound quality, but also the greater bandwidth requirement"
   }
 }

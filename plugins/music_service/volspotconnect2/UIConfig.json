@@ -55,8 +55,8 @@
       {
         "id": "bitrate",
         "element": "select",
-        "doc": "Bitrate",
-        "label": "Bitrate",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCHIGHBITRATE",
+        "label": "TRANSLATE.VOLSPOTCONNECT.HIGHBITRATE",
         "value": {
           "value": 320,
           "label": "320"
@@ -78,7 +78,7 @@
       {
         "id": "shareddevice",
         "element": "switch",
-        "doc": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCSHAREDDEVICE",
         "label": "TRANSLATE.VOLSPOTCONNECT.SHAREDDEVICE",
         "value": true
       },
