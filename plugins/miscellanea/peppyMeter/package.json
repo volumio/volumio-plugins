@@ -1,6 +1,6 @@
 {
   "name": "peppyMeter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Easy PeppyMeter for Volumio2",
   "main": "index.js",
   "scripts": {

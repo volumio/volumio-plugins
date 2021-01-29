@@ -47,6 +47,10 @@ cd..
 rm -Rf pipe*
 ```
 
+January 29th 2021
+
+- new alsa contrib using dummy-snd
+
 January 12th 2021
 
 - switch to disable/enable serial output
