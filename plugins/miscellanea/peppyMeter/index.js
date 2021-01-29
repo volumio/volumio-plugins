@@ -53,6 +53,7 @@ peppyMeter.prototype.onStop = function () {
 peppyMeter.prototype.onStart = function () {
   var self = this;
   var defer = libQ.defer();
+  self.modprobedummy()
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
 
     .then(function (e) {
@@ -73,6 +74,25 @@ peppyMeter.prototype.onStart = function () {
 
   return defer.promise;
 };
+
+
+//here we load snd-dummy module
+peppyMeter.prototype.modprobedummy = function () {
+  const self = this;
+  let defer = libQ.defer();
+  //self.hwinfo();
+  try {
+    execSync("/usr/bin/sudo /sbin/modprobe snd-dummy", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('snd-dummy loaded');
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to load snd-dummy' + err);
+  }
+};
+
 
 peppyMeter.prototype.startpeppyservice = function () {
   const self = this;
