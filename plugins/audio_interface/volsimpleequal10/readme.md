@@ -1,11 +1,11 @@
-January 17th 2021
+January 30th 2021
 
 ### beta for alsa_modular! do not use! (yet ;-))
 
 
 	Volsimpleequal volumio simple equalizer
 
-# A simple 15 bands graphic Equalizer plugin for Volumio2.
+# A simple 10 bands graphic Equalizer plugin for Volumio2.
 
 
 ![Alt text](volsimpleequal.png?raw=true "Equalizer")
@@ -30,6 +30,10 @@ note : if no sound don't change anything in volumio settings. Reboot and try to 
 
 
 ## Last changes
+
+30th January
+
+- mod eq internal offset
 
 13th January
 

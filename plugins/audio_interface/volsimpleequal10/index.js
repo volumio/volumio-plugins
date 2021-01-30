@@ -79,7 +79,7 @@ ControllerVolsimpleequal10.prototype.sendequal = function (scoef) {
   var x
   var k
   //equalizer offset
-  var z = 60;
+  var z = 50;
   var coefarray = scoef.split(',');
 
   // for every value that we put in array, we set the according bar value
