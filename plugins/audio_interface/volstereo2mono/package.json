@@ -16,8 +16,6 @@
     "has_alsa_contribution":true
   },
   "dependencies": {
-    "fs-extra": "^0.28.0",
-    "child_process":"",
     "kew": "^0.7.0",
     "v-conf": "^0.10.0"
           }

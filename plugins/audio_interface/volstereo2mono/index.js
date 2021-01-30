@@ -1,10 +1,5 @@
 'use strict';
 
-//var io = require('socket.io-client');
-var fs = require('fs-extra');
-var libFsExtra = require('fs-extra');
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
 var libQ = require('kew');
 var config = new (require('v-conf'))();
 
@@ -39,8 +34,9 @@ ControllerVolstereo2mono.prototype.onStop = function () {
   var self = this;
   var defer = libQ.defer();
   defer.resolve();
-  return libQ.resolve();
-};
+  return defer.promise;
+}
+
 
 ControllerVolstereo2mono.prototype.onStart = function () {
   var self = this;
@@ -69,19 +65,17 @@ ControllerVolstereo2mono.prototype.getUIConfig = function () {
 
   var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-  self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-      __dirname+'/i18n/strings_en.json',
-      __dirname + '/UIConfig.json')
-      .then(function(uiconf)
-      {
+  self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
+    __dirname + '/i18n/strings_en.json',
+    __dirname + '/UIConfig.json')
+    .then(function (uiconf) {
 
 
-          defer.resolve(uiconf);
-      })
-      .fail(function()
-      {
-          defer.reject(new Error());
-      });
+      defer.resolve(uiconf);
+    })
+    .fail(function () {
+      defer.reject(new Error());
+    });
 
   return defer.promise;
 };
@@ -110,18 +104,4 @@ ControllerVolstereo2mono.prototype.getConf = function (varName) {
 ControllerVolstereo2mono.prototype.setConf = function (varName, varValue) {
   var self = this;
   //Perform your installation tasks here
-};
-
-//here we save the asound.conf file config
-ControllerVolstereo2mono.prototype.createASOUNDFile = function () {
-  var self = this;
-
-  var defer = libQ.defer();
-
-
-  var folder = self.commandRouter.pluginManager.findPluginFolder('audio_interface', 'volstereo2mono');
-
-  var alsaFile = folder + '/asound/volst2mono.postSt2mono.10.conf';
-  return defer.promise;
-
-};
+}
