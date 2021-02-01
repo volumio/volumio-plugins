@@ -6,7 +6,7 @@
 
 source for peppymeter and peppyalsa : [peppy](https://github.com/project-owner)
 
-![Alt text](peppymeterinvolumio.png?raw=true "PeppyMeter plugin in Volumio")
+![Alt text](peppymeterinvolumio.jpg?raw=true "PeppyMeter plugin in Volumio")
 
 installation for Volumio
 
