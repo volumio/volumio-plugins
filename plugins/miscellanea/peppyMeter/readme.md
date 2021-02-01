@@ -47,9 +47,9 @@ cd..
 rm -Rf pipe*
 ```
 
-January 29th 2021
+Febuary 01st 2021
 
-- new alsa contrib using dummy-snd
+- enabled features for i2c, pwm, serial
 
 January 12th 2021
 

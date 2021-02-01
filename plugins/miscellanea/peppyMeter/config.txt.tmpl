@@ -4,8 +4,8 @@ random.meter.interval = 20
 screen.size = ${screensize}
 output.display = ${localdisplay}
 output.serial = ${serial}
-output.i2c = False
-output.pwm = False
+output.i2c = ${i2c}
+output.pwm = ${pwm}
 use.logging = False
 frame.rate = 30
 
@@ -23,17 +23,17 @@ include.time = ${stime}
 update.period = ${speriod}
 
 [i2c.interface]
-port = 1
-left.channel.address = 0x21
-right.channel.address = 0x20
-output.size = 10
-update.period = 0.1
+port = ${port}
+left.channel.address = ${leftc}
+right.channel.address = $[rightc]
+output.size = ${outputsize}
+update.period = ${updateperiod}
 
 [pwm.interface]
-frequency = 500
-gpio.pin.left = 24
-gpio.pin.right = 25
-update.period = 0.1 
+frequency = ${pwmfreq}
+gpio.pin.left = ${gpiol}
+gpio.pin.right = ${gpior}
+update.period = ${pwmupdateperiod}
 
 [data.source]
 type = pipe

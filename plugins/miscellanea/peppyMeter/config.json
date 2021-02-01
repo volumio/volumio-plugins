@@ -6,5 +6,16 @@
 "device":{"type":"string","value":"/dev/serial0"},
 "baud":{"type":"string","value":"9600"},
 "stime":{"type":"boolean","value":"false"},
-"speriod":{"type":"string","value":"0.1"}
+"speriod":{"type":"string","value":"0.1"},
+"i2c":{"type":"boolean","value":false},
+"port":{"type":"string","value":"1"},
+"leftc":{"type":"string","value":"0x20"},
+"rightc":{"type":"string","value":"0x21"},
+"outputsize":{"type":"string","value":"10"},
+"updateperiod":{"type":"string","value":"0.1"},
+"pwm":{"type":"boolean","value":false},
+"pwmfreq":{"type":"string","value":"500"},
+"gpiol":{"type":"string","value":"24"},
+"gpior":{"type":"string","value":"25"},
+"pwmupdateperiod":{"type":"string","value":"0.1"}
 }

@@ -7,6 +7,8 @@
     "SERIAL-SETTINGS":"Serial interface settings",
     "DEVICE": "Device",
     "BAUD":"Speed in Baud",
+    "I2C-SETTINGS":"I2c Settings",
+    "PWM-SETTINGS":"PWM Settings",
     "APPLY":"Apply",
     "SAVE":"Close"
   }

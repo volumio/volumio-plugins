@@ -1,0 +1,305 @@
+{
+  "page": {
+    "label": "Paramettric Eq"
+  },
+  "sections": [
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "SETTINGS",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "saveparameq"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+          "type1",
+          "eq1",
+          "type2",
+          "eq2",
+          "type3",
+          "eq3",
+          "type4",
+          "eq4",
+          "type5",
+          "eq5",
+          "type6",
+          "eq6",
+          "type7",
+          "eq7"
+        ]
+      },
+      "content": [
+        {
+          "id": "type1",
+          "element": "select",
+          "doc": "type1",
+          "label": "type1",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq1",
+          "element": "input",
+          "label": "eq1",
+          "description": "eq1",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type2",
+          "element": "select",
+          "doc": "type2",
+          "label": "type2",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq2",
+          "element": "input",
+          "label": "eq2",
+          "description": "eq2",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type3",
+          "element": "select",
+          "doc": "type3",
+          "label": "type3",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq3",
+          "element": "input",
+          "label": "eq3",
+          "description": "eq3",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type4",
+          "element": "select",
+          "doc": "type4",
+          "label": "type4",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq4",
+          "element": "input",
+          "label": "eq4",
+          "description": "eq4",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type5",
+          "element": "select",
+          "doc": "type5",
+          "label": "TYPE5",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq5",
+          "element": "input",
+          "label": "eq5",
+          "description": "eq5",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type6",
+          "element": "select",
+          "doc": "type6",
+          "label": "type6",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq6",
+          "element": "input",
+          "label": "eq6",
+          "description": "eq6",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type7",
+          "element": "select",
+          "doc": "type7",
+          "label": "type7",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "Lowshelf",
+              "label": "Lowshelf"
+            },
+            {
+              "value": "Peaking",
+              "label": "Peaking"
+            },
+            {
+              "value": "Highself",
+              "label": "Highself"
+            }
+          ]
+        },
+        {
+          "id": "eq7",
+          "element": "input",
+          "label": "eq7",
+          "description": "eq7",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+       "type1": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq1": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type2": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq2": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type3": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq3": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type4": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq4": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type5": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq5": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type6": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq6": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type7": {
+        "type": "string",
+        "value": "None"
+    },
+    "eq7": {
+        "type": "string",
+        "value": "0,0,0"
+    }
+}

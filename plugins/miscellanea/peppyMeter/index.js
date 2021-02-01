@@ -173,6 +173,20 @@ peppyMeter.prototype.getUIConfig = function () {
       uiconf.sections[1].content[3].value = self.config.get('stime');
       uiconf.sections[1].content[4].value = self.config.get('speriod');
 
+      uiconf.sections[2].content[0].value = self.config.get('i2c');
+      uiconf.sections[2].content[1].value = self.config.get('port');
+      uiconf.sections[2].content[2].value = self.config.get('leftc');
+      uiconf.sections[2].content[3].value = self.config.get('rightc');
+      uiconf.sections[2].content[4].value = self.config.get('outputsize');
+      uiconf.sections[2].content[5].value = self.config.get('updateperiod');
+
+      uiconf.sections[3].content[0].value = self.config.get('pwm');
+      uiconf.sections[3].content[1].value = self.config.get('pwmfreq');
+      uiconf.sections[3].content[2].value = self.config.get('gpiol');
+      uiconf.sections[3].content[3].value = self.config.get('gpior');
+      uiconf.sections[3].content[4].value = self.config.get('pwmupdateperiod');
+
+
       var value;
 
       defer.resolve(uiconf);
@@ -233,7 +247,59 @@ peppyMeter.prototype.savepeppy2 = function (data) {
   self.savepeppyconfig();
   self.restartpeppyservice()
     .then(function (e) {
-      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration updated");
+      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration for SERIALupdated");
+      defer.resolve({});
+    })
+    .fail(function (e) {
+      defer.reject(new Error('error'));
+      self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+    })
+  return defer.promise;
+
+};
+
+peppyMeter.prototype.savepeppy3 = function (data) {
+  var self = this;
+
+  var defer = libQ.defer();
+
+  self.config.set('i2c', data['i2c']);
+  self.config.set('port', data['port']);
+  self.config.set('leftc', data['leftc']);
+  self.config.set('rightc', data['rightc']);
+  self.config.set('outputsize', data['outputsize']);
+  self.config.set('updateperiod', data['updateperiod']);
+
+  self.savepeppyconfig();
+  self.restartpeppyservice()
+    .then(function (e) {
+      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration for i2c updated");
+      defer.resolve({});
+    })
+    .fail(function (e) {
+      defer.reject(new Error('error'));
+      self.commandRouter.pushToastMessage('error', "failed to start. Check your config !");
+    })
+  return defer.promise;
+
+};
+
+
+peppyMeter.prototype.savepeppy4 = function (data) {
+  var self = this;
+
+  var defer = libQ.defer();
+
+  self.config.set('pwm', data['pwm']);
+  self.config.set('pwmfreq', data['pwmfreq']);
+  self.config.set('gpiol', data['gpiol']);
+  self.config.set('gpior', data['gpior']);
+  self.config.set('pwmupdateperiod', data['pwmupdateperiod']);
+
+  self.savepeppyconfig();
+  self.restartpeppyservice()
+    .then(function (e) {
+      self.commandRouter.pushToastMessage('success', "PeppyMeter Configuration for PWM updated");
       defer.resolve({});
     })
     .fail(function (e) {
@@ -274,6 +340,18 @@ peppyMeter.prototype.savepeppyconfig = function () {
       }
       else if (stimed = 'False');
 
+      var i2c = self.config.get('i2c')
+      if (i2c) {
+        var i2cd = 'True'
+      }
+      else if (i2cd = 'False');
+
+      var pwm = self.config.get('pwm')
+      if (pwm) {
+        var pwmd = 'True'
+      }
+      else if (pwmd = 'False');
+
       const conf1 = data.replace("${meter}", self.config.get("meter"))
         .replace("${screensize}", self.config.get("screensize"))
         .replace("${localdisplay}", localdisplayd)
@@ -282,6 +360,18 @@ peppyMeter.prototype.savepeppyconfig = function () {
         .replace("${baud}", self.config.get("baud"))
         .replace("${stime}", stimed)
         .replace("${speriod}", self.config.get("speriod"))
+        .replace("${i2c}", i2cd)
+        .replace("${port}", self.config.get("port"))
+        .replace("${leftc}", self.config.get("leftc"))
+        .replace("${rightc}", self.config.get("rightc"))
+        .replace("${outputsize}", self.config.get("outputsize"))
+        .replace("${updateperiod}", self.config.get("updateperiod"))
+        .replace("${pwm}", pwmd)
+        .replace("${pwmfreq}", self.config.get("pwmfreq"))
+        .replace("${gpiol}", self.config.get("gpiol"))
+        .replace("${gpior}", self.config.get("gpior"))
+        .replace("${pwmupdateperiod}", self.config.get("pwmupdateperiod"))
+
       fs.writeFile("/data/plugins/miscellanea/peppyMeter/peppymeter/config.txt", conf1, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));

@@ -243,6 +243,175 @@
 					  }
 				}
 			]
+		},
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.I2C-SETTINGS",
+			"icon": "fa-microchip",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "miscellanea/peppyMeter",
+				"method": "savepeppy3"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"i2c",
+					"port",
+					"leftc",
+					"rightc",
+					"outputsize",
+					"updateperiod"
+				]
+			},
+			"content": [
+				{
+					"id": "i2c",
+					"element": "switch",
+					"doc": "If enabled, i2C output is used",
+					"label": "i2c",
+					"value": true
+				  },
+				{
+					"id": "port",
+					"element": "input",
+					"type":"text",
+					"doc": "TRANSLATE.DOCDEVICE",
+					"label": "TRANSLATE.DEVICE",
+					"value":"1",
+					"visibleIf": {
+						"field": "i2c",
+						"value": true
+					  }
+				},
+				{
+					"id": "leftc",
+					"element": "input",
+					"type":"text",
+					"doc": "left",
+					"label": "left",
+					"value":"0x20",
+					"visibleIf": {
+						"field": "i2c",
+						"value": true
+					  }
+				},
+				{
+					"id": "rightc",
+					"element": "input",
+					"type":"text",
+					"doc": "right",
+					"label": "right",
+					"value":"0x21",
+					"visibleIf": {
+						"field": "i2c",
+						"value": true
+					  }
+				},
+				{
+					"id": "outputsize",
+					"element": "input",
+					"type":"text",
+					"doc": "outputsize",
+					"label": "outputsize",
+					"value":"10",
+					"visibleIf": {
+						"field": "i2c",
+						"value": true
+					  }
+				},
+				{
+					"id": "updateperiod",
+					"element": "input",
+					"type":"text",
+					"doc": "Period",
+					"label": "Period",
+					"value":"0.1",
+					"visibleIf": {
+						"field": "i2c",
+						"value": true
+					  }
+				}
+			]
+		},
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.PWM-SETTINGS",
+			"icon": "fa-microchip",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "miscellanea/peppyMeter",
+				"method": "savepeppy4"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"pwm",
+					"pwmfreq",
+					"gpiol",
+					"gpior",
+					"pwmupdateperiod"
+				]
+			},
+			"content": [
+				{
+					"id": "pwm",
+					"element": "switch",
+					"doc": "If enabled, PWM output is used",
+					"label": "pwm",
+					"value": true
+				  },
+				{
+					"id": "pwmfreq",
+					"element": "input",
+					"type":"text",
+					"doc": "PWM Freq",
+					"label": "PWM Freq",
+					"value":"500",
+					"visibleIf": {
+						"field": "pwm",
+						"value": true
+					  }
+				},
+				{
+					"id": "gpiol",
+					"element": "input",
+					"type":"text",
+					"doc": "left GPIO",
+					"label": "left GPIO",
+					"value":"24",
+					"visibleIf": {
+						"field": "pwm",
+						"value": true
+					  }
+				},
+				{
+					"id": "gpior",
+					"element": "input",
+					"type":"text",
+					"doc": "right GPIO",
+					"label": "right GPIO",
+					"value":"25",
+					"visibleIf": {
+						"field": "pwm",
+						"value": true
+					  }
+				},
+				{
+					"id": "pwmupdateperiod",
+					"element": "input",
+					"type":"text",
+					"doc": "Pwm Period",
+					"label": "Pwm Period",
+					"value":"0.1",
+					"visibleIf": {
+						"field": "pwm",
+						"value": true
+					  }
+				}
+			]
 		}
 	]
 }

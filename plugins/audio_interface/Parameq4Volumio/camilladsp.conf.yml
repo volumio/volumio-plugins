@@ -1,0 +1,58 @@
+---
+devices:
+  samplerate: 44100
+  chunksize: 4096
+  target_level: 2048
+  adjust_period: 10
+  silence_threshold: -60
+  silence_timeout: 3.0
+
+  capture:
+    type: Alsa
+    channels: 2
+    device: "hw:Loopback,1"
+    format: S32LE
+     
+  playback:
+    type: Alsa
+    channels: 2
+    device: "fromDspx"
+    format: S24LE3
+
+${eq1c}
+${eq2c}
+${eq3c}
+${eq4c}
+${eq5c}
+${eq6c}
+${eq7c}
+
+
+mixers:
+  stereo:
+    channels:
+      in: 2
+      out: 2
+    mapping:
+      - dest: 0
+        sources:
+          - channel: 0
+            gain: -10
+            inverted: false
+      - dest: 1
+        sources:
+          - channel: 1
+            gain: -10
+            inverted: false
+
+pipeline:
+  - type: Mixer
+    name: stereo
+  - type: Filter
+    channel: 0
+    names:
+      - ${pipelineL}
+  - type: Filter
+    channel: 1
+    names:
+      - ${pipelineR}
