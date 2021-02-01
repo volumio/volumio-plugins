@@ -20,10 +20,11 @@ sudo apt-get update
 echo "Installing Flask"
 
 cd /home/volumio
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python get-pip.py
+#curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+#sudo python get-pip.py
 
-sudo apt-get -y install python-setuptools python-dev
+sudo apt-get -y install python-setuptools python-pip python-dev
+sudo -H pip install --upgrade pip==20.3.4
 sudo pip install Flask
 sudo pip install flask_table
 sudo pip install flask_cors
