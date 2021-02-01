@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Status to mqtt configuration",
+  "PLUGIN_SECTION_TITLE":"Status2Mqtt settings",
+  "MQTT_USERNAME_LBL":"Username",
+  "MQTT_USERNAME_DOC":"This is the mqtt username (may be empty)",
+  "MQTT_PASSWORD_LBL":"Password",
+  "MQTT_PASSWORD_DOC":"This is the mqtt password (may be empty)",
+  "MQTT_SERVER_LBL":"Server",
+  "MQTT_SERVER_DOC":"This is the mqtt host (ip adress or fqdn)",
+  "MQTT_TOPIC_LBL":"Topic",
+  "MQTT_TOPIC_DOC":"This is the mqtt topic to publish on",
+  "MQTT_CLIENTID_LBL":"client ID",
+  "MQTT_CLIENTID_DOC":"This is the client identifier to send mqtt message on behalf of",
+  "SAVE":"Save",
+  "ERROR_SERVER_EMTPY_TITLE":"Server is empty",
+  "ERROR_SERVER_EMTPY_MESSAGE":"Can't do anything without an mqtt server",
+  "ERROR_SERVER_INVALID_TITLE":"Invalid server",
+  "ERROR_SERVER_INVALID_MESSAGE":"Server must begin with mqtt:// or mqtts://",
+  "SUCCESS_TITLE":"Saved settings",
+  "SUCCESS_MESSAGE":"Successfully saved settings"
+}
