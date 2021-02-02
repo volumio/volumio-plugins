@@ -812,6 +812,24 @@
 						}
 					],
 					"updated": "26-3-2019"
+				},
+				{
+					"prettyName": "ledStatus by Julien Tiphaine",
+					"icon": "fa-lightbulb-o",
+					"name": "ledstatus",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/ledstatus/ledstatus.zip",
+					"license": "ISC",
+					"description": "blink gpio led while playing",
+					"details": "",
+					"author": "jit06",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "2-2-2021"
 				}
 			]
 		}
