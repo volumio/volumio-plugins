@@ -1,0 +1,69 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+ {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"user_interface/status2mqtt", "method":"saveSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "username",
+          "password",
+          "server",
+          "topic",
+          "clientid"
+        ]
+      },
+      "content": [
+        {
+          "id": "username",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.MQTT_USERNAME_DOC",
+          "label": "TRANSLATE.MQTT_USERNAME_LBL",
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type":"password",
+          "element": "input",
+          "doc": "TRANSLATE.MQTT_PASSWORD_DOC",
+          "label": "TRANSLATE.MQTT_PASSWORD_LBL",
+          "value": ""
+        },
+        {
+          "id": "server",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.MQTT_SERVER_DOC",
+          "label": "TRANSLATE.MQTT_SERVER_LBL",
+          "attributes": [ {"placeholder": "mqtt://mqtt.local.lan:8883"} ],
+          "value": ""
+        },
+        {
+          "id": "topic",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.MQTT_TOPIC_DOC",
+          "label": "TRANSLATE.MQTT_TOPIC_LBL",
+          "attributes": [ {"placeholder": "volumio"} ],
+          "value": ""
+        },
+        {
+          "id": "clientid",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.MQTT_CLIENTID_DOC",
+          "label": "TRANSLATE.MQTT_CLIENTID_LBL",
+          "attributes": [ {"placeholder": "volumio"} ],
+          "value": ""
+        }
+      ]
+    }
+  ]
+}
