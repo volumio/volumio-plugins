@@ -1,6 +1,6 @@
 {
 	"name": "status2mqtt",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "publish volumio status to an mqtt server",
 	"main": "index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 	"author": "jit06",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "status2mqtt by Julien Tiphaine",
+		"prettyName": "Status2mqtt",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "user_interface"
 	},
