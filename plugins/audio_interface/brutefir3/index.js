@@ -1671,7 +1671,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
               class: 'btn btn-cancel',
-              emit: 'closeModals',
+              emit: 'callMethod',
               payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'aftersave' }
             },
             {
