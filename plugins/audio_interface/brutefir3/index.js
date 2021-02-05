@@ -1656,8 +1656,6 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
     return;
 
   } else {
-
-
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
@@ -1686,7 +1684,9 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
         }
         self.commandRouter.broadcastMessage("openModal", responseData);
       }, 500);
-    };
+    } else {
+      self.aftersave();
+    }
   };
   return defer.promise;
 };
