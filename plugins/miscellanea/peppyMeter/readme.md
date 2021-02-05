@@ -47,6 +47,10 @@ cd..
 rm -Rf pipe*
 ```
 
+Febuary 5th 2021
+
+- fix for youtube
+
 Febuary 01st 2021
 
 - enabled features for i2c, pwm, serial
