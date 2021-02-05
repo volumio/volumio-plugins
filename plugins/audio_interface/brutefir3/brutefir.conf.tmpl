@@ -25,7 +25,7 @@
 #-----------------------
 
 input "l_in", "r_in" {
-            device: "alsa" {device: "hw:${input_device}";};
+            device: "alsa" {device: "plughw:${input_device}"; link: false;};
             sample: "s32_le";   # sample format
             channels: 2;            # number of open channels / which to use
 delay: ${delay};
@@ -219,7 +219,7 @@ process: -1;
 
 output "l_out","r_out"${enablec2}{
 #device: "alsa" {device: "${output_device}"; ignore_xrun: true; };
-device: "alsa" {device: "fromDsp"; ignore_xrun: true; };
+device: "alsa" {device: "fromDsp"; ignore_xrun: true; link: false; };
 sample: "S32_LE";#"${output_format}";   # sample format
 ${nchannels}       # number of open channels / which to use
 ${tdelay}; #delay for each channel if set in the plugin

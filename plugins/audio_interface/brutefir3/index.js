@@ -53,7 +53,7 @@ ControllerBrutefir.prototype.onStart = function () {
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-    .then(function (e) {
+  /*  .then(function (e) {
       var aplayDefer = libQ.defer();
       // Play a short sample of silence to initialise the config file
       exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioDsp", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
@@ -64,6 +64,7 @@ ControllerBrutefir.prototype.onStart = function () {
       });
       return aplayDefer.promise;
     })
+    */
   self.sendvolumelevel();
   socket.emit('getState', '');
   socket.emit('pause');
@@ -937,6 +938,7 @@ ControllerBrutefir.prototype.sendCommandToBrutefir = function (brutefircmd) {
 ControllerBrutefir.prototype.testclipping = function () {
   const self = this;
   self.commandRouter.closeModals()
+  self.aftersave();
   socket.emit('stop');
   let filelength = self.config.get('filter_size');
 
@@ -1604,12 +1606,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
   output_device = self.config.get('alsa_device');
 
   let defer = libQ.defer();
-  try {
-    let cp3 = execSync('/bin/cp /data/configuration/audio_interface/brutefir/config.json /data/configuration/audio_interface/brutefir/config.json-save');
 
-  } catch (err) {
-    self.logger.info('/data/configuration/audio_interface/brutefir/config.json does not exist');
-  }
 
   self.config.set('leftfilter', data['leftfilter'].value);
   self.config.set('lc1delay', data['lc1delay']);
@@ -1659,21 +1656,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
     return;
 
   } else {
-    setTimeout(function () {
-      self.dfiltertype();
-      self.areSwapFilters();
-      self.rebuildBRUTEFIRAndRestartDaemon()
 
-        .then(function (e) {
-          self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-          defer.resolve({});
-        })
-        .fail(function (e) {
-          defer.reject(new Error('Brutefir failed to start. Check your config !'));
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
-        })
-
-    }, 500);
 
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
@@ -1691,7 +1674,7 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
               class: 'btn btn-cancel',
               emit: 'closeModals',
-              payload: ''
+              payload: { 'endpoint': 'audio_interface/brutefir', 'method': 'aftersave' }
             },
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
@@ -1706,6 +1689,25 @@ ControllerBrutefir.prototype.saveBrutefirconfigAccount2 = function (data, obj) {
     };
   };
   return defer.promise;
+};
+
+ControllerBrutefir.prototype.aftersave = function () {
+  const self = this;
+  setTimeout(function () {
+    self.dfiltertype();
+    self.areSwapFilters();
+    self.rebuildBRUTEFIRAndRestartDaemon()
+
+      .then(function (e) {
+        self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+        defer.resolve({});
+      })
+      .fail(function (e) {
+        defer.reject(new Error('Brutefir failed to start. Check your config !'));
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FAIL_TO_START_BRUTEFIR'));
+      })
+
+  }, 500);
 };
 
 //------------VoBAf here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI-----

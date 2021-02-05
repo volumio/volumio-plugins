@@ -1,4 +1,4 @@
-January 22th 2021
+Febuary 5th 2021
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+Febuary 5th 2021
+
+- new work for Buster
 
 January 22 th 2021
 
