@@ -1,0 +1,16 @@
+{
+  "SPOTIFY_USERNAME":"Spotify Benutzername",
+  "SPOTIFY_PASSWORD":"Spotify Passwort",
+  "HIGH_BITRATE":"Hohe Qualität",
+  "SEARCH_RESULTS":"Anzahl der Suchergebnisse",
+  "PLUGINS":"Last.fm",
+  "LAST_FM_USERNAME":"Last.fm Benutzername",
+  "LAST_FM_PASSWORD":"Last.fm Passwort",
+  "SEARCH_SONGS_SECTION":"Spotify Lieder",
+  "SEARCH_ALBUMS_SECTION":"Spotity Alben",
+  "SEARCH_ARTISTS_SECTION":"Spotify Künstler",
+  "SPOTIFY_CONFIGURATION":"Spotify Einstellungen",
+  "SPOTIFY_ACCOUNT":"Spotify Konto",
+  "SAVE":"Speichern"
+
+}
