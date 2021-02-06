@@ -47,6 +47,11 @@ cd..
 rm -Rf pipe*
 ```
 
+Febuary 6th 2021
+
+- dummy device index=- and one substream
+- now creates /tmp/myfifosapeppy
+
 Febuary 5th 2021
 
 - fix for youtube

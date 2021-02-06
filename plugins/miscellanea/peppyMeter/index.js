@@ -58,7 +58,7 @@ peppyMeter.prototype.onStart = function () {
 
     .then(function (e) {
       var pipeDefer = libQ.defer();
-      exec("/usr/bin/mkfifo /tmp/myfifopeppy" + "; /bin/chmod 777 /tmp/myfifopeppy", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+      exec("/usr/bin/mkfifo /tmp/myfifopeppy" + "; /bin/chmod 777 /tmp/myfifopeppy" + "; /usr/bin/mkfifo /tmp/myfifosapeppy" + "; /bin/chmod 777 /tmp/myfifosapeppy", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
         if (error) {
           self.logger.warn("An error occurred when creating fifo", error);
         }
@@ -82,7 +82,7 @@ peppyMeter.prototype.modprobedummy = function () {
   let defer = libQ.defer();
   //self.hwinfo();
   try {
-    execSync("/usr/bin/sudo /sbin/modprobe snd-dummy", {
+    execSync("/usr/bin/sudo /sbin/modprobe snd-dummy index=6 pcm_substreams=1", {
       uid: 1000,
       gid: 1000
     });
