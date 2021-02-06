@@ -814,7 +814,7 @@
 					"updated": "26-3-2019"
 				},
 				{
-					"prettyName": "ledStatus by Julien Tiphaine",
+					"prettyName": "LedStatus",
 					"icon": "fa-lightbulb-o",
 					"name": "ledstatus",
 					"version": "1.0.1",
@@ -832,7 +832,7 @@
 					"updated": "6-2-2021"
 				},
 				{
-					"prettyName": "status2mqtt by Julien Tiphaine",
+					"prettyName": "Status2mqtt",
 					"icon": "fa-lightbulb-o",
 					"name": "status2mqtt",
 					"version": "1.0.1",
