@@ -553,7 +553,8 @@ ControllerVolspotconnect.prototype.createConfigFile = async function () {
       // to be fixed with soft volume set in volumio
       if (mixt === 'Software') {
         hwdev = 'volumio';
-        mixdev = '2';
+        var outdevv = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+        mixdev = 'hw:' + outdevv;
         mixlin = true;
         mixidx = 0// this.getAdditionalConf('audio_interface', 'alsa_controller', 'softvolumenumber');
         mixeropts = 'linear';
