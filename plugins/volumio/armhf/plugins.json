@@ -835,7 +835,7 @@
 					"prettyName": "status2mqtt by Julien Tiphaine",
 					"icon": "fa-lightbulb-o",
 					"name": "status2mqtt",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/status2mqtt/status2mqtt.zip",
 					"license": "ISC",
 					"description": "publish volumio status to an mqtt server",
@@ -847,7 +847,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "2-2-2021"
+					"updated": "6-2-2021"
 				}
 			]
 		}
