@@ -959,7 +959,7 @@ ControllerBrutefir.prototype.testclipping = function () {
       exec('/usr/bin/killall aplay');
       setTimeout(function () {
         execSync('/usr/bin/aplay --device=plughw:Loopback ' + track);
-      }, 500);//2000
+      }, 1000);//2000
       socket.emit('unmute', '')
     } catch (e) {
       self.logger.info('/usr/bin/aplay --device=plughw:Loopback ' + track);
@@ -986,33 +986,35 @@ ControllerBrutefir.prototype.testclipping = function () {
   journalctl.on('event', (event) => {
     self.commandRouter.pushToastMessage('info', 'Detection clipping...');
 
-    let pevent = event.MESSAGE.indexOf("peak");
-    if (pevent != -1) {
-      let filteredMessage = event.MESSAGE.replace("peak: 0/", " ");
-      let posFirstSlash = filteredMessage.indexOf("/");
-      let posLastSlash = filteredMessage.lastIndexOf("/");
-      secondPeak = filteredMessage.slice(posLastSlash + 2);
-      firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
-      let leftAttSet = 0;
-      let rightAttSet = 0;
-      let corr = 1.49;
-      let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
-      let leftSuggested = leftSuggestedb + 1.5;
-      let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
-      let rightSuggested = rightSuggestedb + 1.5;
-      if (leftSuggested > rightSuggested) {
-        messageDisplayed = leftSuggested
+      let pevent = event.MESSAGE.indexOf("peak");
+      if (pevent != -1) {
+        let filteredMessage = event.MESSAGE.replace("peak: 0/", " ");
+        let posFirstSlash = filteredMessage.indexOf("/");
+        let posLastSlash = filteredMessage.lastIndexOf("/");
+        secondPeak = filteredMessage.slice(posLastSlash + 2);
+        firstPeak = filteredMessage.slice(posFirstSlash + 2, posFirstSlash + 6);
+        let leftAttSet = 0;
+        let rightAttSet = 0;
+        let corr = 1.49;
+        let leftSuggestedb = Math.round(Number(firstPeak) + Number(leftAttSet) + corr);
+        let leftSuggested = leftSuggestedb + 1.5;
+        let rightSuggestedb = Math.round(Number(secondPeak) + Number(rightAttSet) + corr);
+        let rightSuggested = rightSuggestedb + 1.5;
+        if (leftSuggested > rightSuggested) {
+          messageDisplayed = leftSuggested
+        } else {
+          messageDisplayed = rightSuggested
+        };
       } else {
-        messageDisplayed = rightSuggested
-      };
-    } else {
-      messageDisplayed = 0;
+        messageDisplayed = 0;
 
-    }
-    self.config.set('attenuationl', messageDisplayed);
-    self.config.set('attenuationr', messageDisplayed);
+      }
+      self.config.set('attenuationl', messageDisplayed);
+      self.config.set('attenuationr', messageDisplayed);
+
   });
   setTimeout(function () {
+
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
