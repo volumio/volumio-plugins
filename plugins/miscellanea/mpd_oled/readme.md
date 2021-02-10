@@ -1,7 +1,7 @@
 9th Feb 2021
 #	VOLUMIO MPD OLED
 
-This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project.
+This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project.  You can now fully customise your display without having to go to the command line!
 
 The `mpd_oled` program displays an information screen including a music frequency spectrum on an OLED screen connected to a Raspberry Pi (or similar) running MPD, this includes Moode, Volumio and RuneAudio. The program supports I2C and SPI 128x64 OLED displays with an SSD1306, SSD1309, SH1106 or SSH1106 controller. 
 
