@@ -1,11 +1,13 @@
 9th Feb 2021
 #	VOLUMIO MPD OLED
 
-This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project developed by Adrian Rossiter.  This plugin was written by supercrab.
+This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project.
 
 The `mpd_oled` program displays an information screen including a music frequency spectrum on an OLED screen connected to a Raspberry Pi (or similar) running MPD, this includes Moode, Volumio and RuneAudio. The program supports I2C and SPI 128x64 OLED displays with an SSD1306, SSD1309, SH1106 or SSH1106 controller. 
 
 [Click here to visit the mpd_oled project on GitHub](https://github.com/antiprism/mpd_oled)
+
+![I2C OLED in action](oled.jpg?raw=true "I2C OLED in action")
 
 ![Plugin Screenshot 1](mpd_oled_plugin1.png?raw=true "Plugin Screenshot 1")
 
@@ -68,3 +70,19 @@ If you have other I2C devices connected then they will also be listed and it is 
 9th Feb 2021
 
 - Initial upload for testing
+
+## To do
+
+- More translations
+
+## Credits
+
+MPD_OLED drives the display and communicates with Volumio and reads spectrum audio data from C.A.V.A <https://github.com/antiprism/mpd_oled>
+
+C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
+
+OLED interface based on ArduiPI_OLED: <https://github.com/hallard/ArduiPi_OLED>
+(which is based on the Adafruit_SSD1306, Adafruit_GFX, and bcm2835 library
+code).
+
+C library for Broadcom BCM 2835: <https://www.airspayce.com/mikem/bcm2835/>
