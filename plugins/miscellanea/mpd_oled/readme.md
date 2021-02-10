@@ -77,7 +77,7 @@ If you have other I2C devices connected then they will also be listed and it is 
 
 ## Credits
 
-MPD_OLED drives the display and communicates with Volumio and reads spectrum audio data from C.A.V.A <https://github.com/antiprism/mpd_oled>
+MPD_OLED is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
 
 C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
 
