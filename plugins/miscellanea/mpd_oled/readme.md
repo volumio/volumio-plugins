@@ -17,11 +17,11 @@ The `mpd_oled` program displays an information screen including a music frequenc
 
 The small OLED displays intended for this setup are normally controlled via I2C or SPI.  I2C is the easiest type of screen to hook up with only 4 pins: power, gnd, SDA and SCL.
 
-You can hook up your screens like so
+You can hook up your screens like so:
 
-https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true
+![I2C wiring](https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true)
 
-https://github.com/antiprism/mpd_oled/blob/master/wiring_spi.png?raw=true
+![SPI wiring](https://github.com/antiprism/mpd_oled/blob/master/wiring_spi.png?raw=true)
 
 
 ### 2. Enable SSH and connect to Volumio
@@ -36,7 +36,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
+wget https://supercrab.co.uk/mpd_oled.zip
 mkdir ./mop
 miniunzip mpd_oled.zip -d ./mop
 cd ./mop
@@ -49,7 +49,6 @@ rm -Rf mpd_oled.zip
 ### 3. Enable the plugin
 
 In the Volumio web UI, go to the plugin section and enable it!
-
 
 ### 4. Configure the plugin
 
@@ -65,8 +64,6 @@ If you have other I2C devices connected then they will also be listed and it is 
 * Raspberry Pi Zero
 
 ## Last changes
-
----
 
 9th Feb 2021
 
