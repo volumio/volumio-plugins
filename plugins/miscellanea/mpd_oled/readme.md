@@ -38,7 +38,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 Type the following commands to download and install plugin:
 
 ```
-wget https://supercrab.co.uk/mpd_oled.zip
+wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
 mkdir ./mop
 miniunzip mpd_oled.zip -d ./mop
 cd ./mop
