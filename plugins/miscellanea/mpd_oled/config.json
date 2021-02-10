@@ -1,0 +1,130 @@
+{
+	"oledType": {
+		"value": 0,
+		"type": "number"
+	},
+	"oledTypeLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"numberOfBars": {
+		"value": 16,
+		"type": "number"
+	},
+	"numberOfBarsLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"gapBetweenBars": {
+		"value": 1,
+		"type": "number"
+	},
+	"gapBetweenBarsLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"frameRate": {
+		"value": 15,
+		"type": "number"
+	},
+	"frameRateLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"scrollRate": {
+		"value": 8,
+		"type": "number"
+	},
+	"scrollRateLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"scrollDelay": {
+		"value": 5,
+		"type": "number"
+	},
+	"scrollDelayLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"clockFormat": {
+		"value": 0,
+		"type": "number"
+	},
+	"clockFormatLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"pauseScreenType": {
+		"value": "p",
+		"type": "string"
+	},
+	"pauseScreenTypeLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"cavaInputMethodAndSourceEnabled": {
+		"value": false,
+		"type": "boolean"
+	},
+	"cavaInputMethodAndSource": {
+		"value": "fifo,/tmp/mpd_oled_fifo",
+		"type": "string"
+	},
+	"rotateDisplay": {
+		"value": false,
+		"type": "boolean"
+	},
+	"invertDisplayEnabled": {
+		"value": false,
+		"type": "boolean"
+	},
+	"invertDisplayPeriod": {
+		"value": 0,
+		"type": "number"
+	},
+	"invertDisplayPeriodLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"i2cAddress": {
+		"value": "",
+		"type": "string"
+	},
+	"i2cAddressLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"i2cBus": {
+		"value": 1,
+		"type": "number"
+	},
+	"i2cBusLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"spiResetGPIONumber": {
+		"value": 25,
+		"type": "number"
+	},
+	"spiResetGPIONumberLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"spiDCGPIONumber": {
+		"value": 24,
+		"type": "number"
+	},
+	"spiDCGPIONumberLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	},
+	"spiCS": {
+		"value": 0,
+		"type": "number"
+	},
+	"spiCSLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
+	}
+}

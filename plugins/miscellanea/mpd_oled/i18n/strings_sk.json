@@ -1,0 +1,147 @@
+{
+	"PLUGIN_CONFIGURATION": "Nastavenie MPD OLED",
+	"PLUGIN_DESCRIPTION": "Ovládajte OLED displej cez MPD OLED",
+	"PLUGIN_TOOLS": "Nástroje",
+	"PLUGIN_LINKS": "Uporabne povezave",
+	"SETTINGS_SAVED": "Nastavenia MPD OLED boli úspešne aktualizované",
+	"VALID_CONFIGURATION": "Platná konfigurácia",
+	"INVALID_CONFIGURATION": "Nelatná konfigurácia",
+	"RESET_DC_ERROR": "Čísla I2C/SPI reset GPIO a SPI DC GPIO musia byť odlišné",
+	"OLED_TYPE_ERROR": "Prosím vyberte typ OLED displeja",
+	"CAVA_ERROR": "Prosím vložte typ a zdroj CAVA vstupu",
+	"PROCESS_START_ERROR": "Nemôžem spustiť MPD OLED proces.  Chybové hlásenie: <ERROR>",
+	"PROCESS_STOP_ERROR": "Nemôžem zastaviť MPD OLED proces.  Chybové hlásenie: <ERROR>",
+	"GAP_BARS_ERROR": "Šírka spektra grafu je <SPECT_WIDTH>: pre zobrazenie <BARS> s medzerou <GAP> vyžaduje minimálnu šírku <MIN_WIDTH>. Znížte počet stĺpcov a/alebo medzery",
+	"SAVE": "Uložiť",
+	"OK": "Hotovo",
+	"I2C_DEVICE_SCAN": "Skenovanie I2C zariadenia",
+	"I2C_NO_TOOLS": "Nemôžem spustiť zariadenie I2C, pretože nie sú nainštalované i2c-tools",
+	"I2C_SCAN_ERROR": "Chyba počas skenovania <I2C_BUS>: <ERROR>",
+	"I2C_BUS_DISABLED": "<strong>Neboli nájdené žiadne zariadenia na I2C zbernici <I2C_BUS>, pretože vyzerá byť zakázaná.</strong>",
+	"I2C_DEVICE_LIST": "Nájdené zariadenia na zbernici I2C <I2C_BUS> boli:<br/><br/><strong><DEVICES></strong>",
+	"I2C_DEVICES_NONE": "Žiadne",
+	"OLED_TYPE": {
+		"LABEL": "Typ OLED displeja",
+		"DOC": "Vyberte typ pripojeného OLED displeja.",
+		"DEFAULT": "Výber...",
+		"ITEM1" : "1. Adafruit SPI 128x64",
+		"ITEM3" : "3. Adafruit I2C 128x64",
+		"ITEM4" : "4. Seeed I2C 128x64",
+		"ITEM6" : "6. SH1106 I2C 128x64",
+		"ITEM7" : "7. SH1106 SPI 128x64"
+	},
+	"NUMBER_OF_BARS": {
+		"LABEL": "Počet stĺpcov",
+		"DOC": "Vyberte počet stĺpcov spektrového analyzéra.",
+		"DEFAULT": "16 (predvolené)"
+	},
+	"GAP_BETWEEN_BARS": {
+		"LABEL": "Medzera medzi stĺpcami",
+		"DOC": "Vyberte medzeru medzi stĺpcami (pixelov).",
+		"DEFAULT": "1 (predvolené)"
+	},
+	"FRAME_RATE": {
+		"LABEL": "Rýchlosť prekresľovania",
+		"DOC": "Vyberte, ako rýchlo sa bude prekresľovať displej (Hz)<br/><br/>Inštalačný proces zvýšil rýchlosť I2C na 800 Kbit/s, ale na túto zmenu musíte reštartovať svoje Raspberry Pi.<br/><br/>Tip: Raspberry Pi 3 s rýchlosťou prekresľovania 50Hz vykazuje výborné výsledky.",
+		"DEFAULT": "15 (predvolené)"
+	},
+	"SCROLL_RATE": {
+		"LABEL": "Rýchlosť skrolovania",
+		"DOC": "Vyberte rýchlosť skrolovania textu (pixelov/sekundu).",
+		"DEFAULT": "8 (predvolené)"
+	},
+	"SCROLL_DELAY": {
+		"LABEL": "Oneskorenie skrolovania",
+		"DOC": "Vyberte oneskorenie skrolovania (sekundy).",
+		"DEFAULT": "5 (predvolené)"
+	},
+	"CLOCK_FORMAT": {
+		"LABEL": "Formát hodín",
+		"DOC": "Vyberte formát hodín.",
+		"DEFAULT": "24h nula na začiatku 0 (predvolené)",
+		"ITEM1" : "24h bez nuly na začiatku 0",
+		"ITEM2" : "12h nula na začiatku 0",
+		"ITEM3" : "12h bez nuly na začiatku 0"
+	},
+	"PAUSE_SCREEN_TYPE": {
+		"LABEL": "Typ obrazovky počas pauzy",
+		"DOC": "Vyberte typ obrazovky počas pauzy.",
+		"DEFAULT": "Prehrávanie (predvolené)",
+		"ITEM1" : "Stop"
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
+		"LABEL": "Nastavenie CAVA",
+		"DOC": "Povoliť vlastný spôsob vstupu a zdroj CAVA."
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE": {
+		"LABEL": "Spôsob vstupu a zdroj CAVA",
+		"DOC": "Definuje spôsob vstupu a zdroj CAVA.<br/><br/>Príklady:<br/><br/>fifo,/tmp/mpd_oled_fifo (predvolené)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse."
+	},
+	"ROTATE_DISPLAY": {
+		"LABEL": "Otočiť displej",
+		"DOC": "Vyberte, ak chcete otočiť displej o 180 stupňov."
+	},
+	"INVERT_DISPLAY_ENABLED": {
+		"LABEL": "Invertovať displej",
+		"DOC": "Invertuje čiernu a bielu na displeji."
+	},
+	"INVERT_DISPLAY_PERIOD": {
+		"LABEL": "Perióda",
+		"DOC": "Počet hodín, za koľko bude displej invertovaný, čo môže zlepšit problém vypaľovania displeja.",
+		"DEFAULT": "Zakázané (prednastavené)",
+		"ITEM1": "1 minúta",
+		"ITEM2": "2 minúty",
+		"ITEM3": "3 minúty",
+		"ITEM4": "6 minút",
+		"ITEM5": "12 minút",
+		"ITEM6": "24 minút",
+		"ITEM7": "48 minút",
+		"ITEM8": "1 hodina",
+		"ITEM9": "2 hodiny",
+		"ITEM10": "3 hodiny",
+		"ITEM11": "6 hodín"
+	},
+	"I2C_ADDRESS": {
+		"LABEL": "Adresa I2C",
+		"DOC": "Vyberte I2c adresu displeja.",
+		"DEFAULT": "Predvolená pre displej"
+	},
+	"I2C_BUS": {
+		"LABEL": "Zbernica I2C",
+		"DOC": "Vyberte zbernicu I2C v závislosti od vášho modelu Raspberry Pi.<br/><br/>/dev/i2c-1 pre Model A, B Rev 2, alebo B+ Pi<br>/dev/i2c-0 pre originálny Model B Rev 1 Pi.",
+		"ITEM0": "/dev/i2c-0",
+		"ITEM1": "/dev/i2c-1",
+		"DEFAULT": "/dev/i2c-1 (predvolené)"
+	},
+	"SPI_RESET_GPIO_NUMBER": {
+		"LABEL": "Číslo GPIO pre reset I2C/SPI",
+		"DOC": "Vyberte číslo GPIO pripojeného na reset pin displeju (ak je dostupný).",
+		"DEFAULT": "25 (predvolené)"
+	},
+	"SPI_DC_GPIO_NUMBER": {
+		"LABEL": "Číslo GPIO pre SPI DC",
+		"DOC": "Vyberte číslo GPIO pripojené na DC pin displeja.",
+		"DEFAULT": "24 (predvolené)"
+	},
+	"SPI_CS": {
+		"LABEL": "Linka SPI CS",
+		"DOC": "Vyberte linku CS pripojenú na displej.",
+		"DEFAULT": "0 (predvolené)"
+	},
+	"I2C_SCAN": {
+		"LABEL": "Sken zariadenia I2C",
+		"DESC": "Skenujte zariadenia na zberniciach I2C."
+	},
+	"I2C_WIRING_LINK": {
+		"LABEL": "I2C OLED ožičenje",
+		"DESC": "Shema ožičenja za OLED displeja."
+	},
+	"SPI_WIRING_LINK": {
+		"LABEL": "SPI OLED ožičenje",
+		"DESC": "Shema ožičenja za OLED displeja."
+	},
+	"MPD_OLED_LINK": {
+		"LABEL": "MPD OLED na GitHub",
+		"DESC": "Navštívte projekt MPD OLED na GitHub."
+	}
+}
