@@ -35,6 +35,8 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
+**Although I have included instructions for downloading and installing the plugin, it is envisaged that the plugin will become part of the Volumio distributable and a manual install or update will not be required.**
+
 Type the following commands to download and install plugin:  
 
 **When you run the `volumio plugin install` command,  when it tells you that the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
@@ -51,8 +53,6 @@ rm -Rf mop
 rm -Rf mpd_oled.zip
 ```
 
-
-
 ### 3. Enable the plugin
 
 In the Volumio web UI, go to the plugin section and enable it!
@@ -61,11 +61,11 @@ In the Volumio web UI, go to the plugin section and enable it!
 
 You will need to first select the type of OLED you have from the `OLED Display Type` drop down.  If you are not sure you can try selecting each type and clicking the `Save` button.
 
-If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to any of the I2C buses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
+If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
 
-If you have other I2C devices connected then they will also be listed and it is not possible to tell which ones are displays.  In this even, try setting the `I2C address` and `I2C Bus` drop downs and clicking the `Save` button for each device.
+If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address`, `I2C Bus` drop downs and clicking the `Save` button for each device.   Note: if you have HiFiBerry or similar DAC attached and it is working, it won't appear in the I2C scan because it's already in ue.
 
-### 5. Update already installed plugin
+### 5. Plugin Upgrade
 
 If you have the plugin installed and would like to update the it, please use the following commands:  
 
@@ -100,6 +100,7 @@ rm -Rf mpd_oled.zip
 
 - Updated readme.md
 - Spanish translation
+- Fixed issue where the 12h clock option did not work
 
 9th Feb 2021
 
