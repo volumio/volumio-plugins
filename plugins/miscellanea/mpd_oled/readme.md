@@ -62,12 +62,19 @@ In the Volumio web UI, go to the plugin section and enable it!
 
 You will need to first select the type of OLED you have from the `OLED Display Type` drop down.  If you are not sure you can try selecting each type and clicking the `Save` button.
 
+If you have an I2C OLED and the default configuration does not work then see the section below.
+
+If you have an SPI OLED make sure the SPI reset, SPI DC, SPI CS dropdowns all match your hardware connections.
+
+### 5. I2C Device Scan
+
 If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
 
-If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address`, `I2C Bus` drop downs and clicking the `Save` button for each device.   Note: if you have HiFiBerry or similar DAC attached and it is working, it won't appear in the I2C scan because it's already in ue.
+If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address`, `I2C Bus` drop downs and clicking the `Save` button for each device. 
 
+**Note: if you have HiFiBerry or similar DAC attached and it is working, it might not appear in the I2C scan because it is in use.**
 
-### 5. Plugin Upgrade
+### 6. Plugin Upgrade
 
 If you have the plugin installed and would like to update the it, please use the following commands:  
 
