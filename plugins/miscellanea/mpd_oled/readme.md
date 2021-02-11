@@ -76,7 +76,7 @@ If you have other I2C devices connected (that are not currently used by a driver
 
 ### 6. Plugin Upgrade
 
-If you have the plugin installed and would like to update the it, please use the following commands:  
+If you have the plugin installed and would like to update it then, please use the following commands:  
 
 ```
 wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
