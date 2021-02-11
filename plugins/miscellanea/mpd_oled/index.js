@@ -471,7 +471,7 @@ MpdOled.prototype.i2cScanBus = function(bus){
 	var msg = self.getI18nString("I2C_DEVICE_LIST");
 	
 	if (matches){
-		devices = matches.map(string => string.trim()).join("<br/>");
+		devices = matches.map(item => item.trim()).join("<br/>");
 	}
 	else{
 		devices = self.getI18nString("I2C_DEVICES_NONE");

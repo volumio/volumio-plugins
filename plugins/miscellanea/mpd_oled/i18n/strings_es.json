@@ -24,11 +24,11 @@
 		"LABEL": "Tipo de pantalla OLED",
 		"DOC": "Escoja el tipo de pantalla OLED conectada.",
 		"DEFAULT": "Escoja...",
-		"ITEM1" : "1. Adafruit SPI 128x64",
-		"ITEM3" : "3. Adafruit I2C 128x64",
-		"ITEM4" : "4. Seeed I2C 128x64",
-		"ITEM6" : "6. SH1106 I2C 128x64",
-		"ITEM7" : "7. SH1106 SPI 128x64"
+		"ITEM1": "1. Adafruit SPI 128x64",
+		"ITEM3": "3. Adafruit I2C 128x64",
+		"ITEM4": "4. Seeed I2C 128x64",
+		"ITEM6": "6. SH1106 I2C 128x64",
+		"ITEM7": "7. SH1106 SPI 128x64"
 	},
 	"NUMBER_OF_BARS": {
 		"LABEL": "Número de barras",
@@ -59,15 +59,15 @@
 		"LABEL": "Formato de reloj",
 		"DOC": "Escoja el formato de reloj.",
 		"DEFAULT": "24h con 0 inicial (por defecto)",
-		"ITEM1" : "24h sin 0 inicial",
-		"ITEM2" : "12h con 0 inicial",
-		"ITEM3" : "12h sin 0 inicial"
+		"ITEM1": "24h sin 0 inicial",
+		"ITEM2": "12h con 0 inicial",
+		"ITEM3": "12h sin 0 inicial"
 	},
 	"PAUSE_SCREEN_TYPE": {
 		"LABEL": "Tipo de pantalla de pausa",
 		"DOC": "Escoja el tipo de pantalla de pausa.",
 		"DEFAULT": "Reproduccion (por defecto)",
-		"ITEM1" : "Parada"
+		"ITEM1": "Parada"
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
 		"LABEL": "Configurar CAVA",

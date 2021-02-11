@@ -912,11 +912,11 @@
 							"label": "TRANSLATE.CLOCK_FORMAT.ITEM1"
 						},
 						{
-							"value": 3,
+							"value": 2,
 							"label": "TRANSLATE.CLOCK_FORMAT.ITEM2"
 						},
 						{
-							"value": 4,
+							"value": 3,
 							"label": "TRANSLATE.CLOCK_FORMAT.ITEM3"
 						}
 					]

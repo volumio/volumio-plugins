@@ -35,7 +35,9 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
-Type the following commands to download and install plugin:
+Type the following commands to download and install plugin:  
+
+**When you run the `volumio plugin install` command,  when it tells you that the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
 
 ```
 wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
@@ -43,10 +45,13 @@ mkdir ./mop
 miniunzip mpd_oled.zip -d ./mop
 cd ./mop
 volumio plugin install
+volumio vrestart
 cd ..
 rm -Rf mop
 rm -Rf mpd_oled.zip
 ```
+
+
 
 ### 3. Enable the plugin
 
@@ -60,16 +65,34 @@ If you have an I2C OLED display then you can check it is wired up correctly by c
 
 If you have other I2C devices connected then they will also be listed and it is not possible to tell which ones are displays.  In this even, try setting the `I2C address` and `I2C Bus` drop downs and clicking the `Save` button for each device.
 
+### 5. Update already installed plugin
+
+If you have the plugin installed and would like to update the it, please use the following commands:  
+
+```
+wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
+mkdir ./mop
+miniunzip mpd_oled.zip -d ./mop
+cd ./mop
+volumio plugin refresh && volumio vrestart
+cd ..
+rm -Rf mop
+rm -Rf mpd_oled.zip
+```
+
 ## Tested on
 
 * Raspberry Pi 3 B+
 * Raspberry Pi Zero
 
-## Available langues
+
+## Available languages
 
 * English (en)
 * Slovakian (sk)
 * Spanish (es)
+* German (soon to come!) (dk)
+
 
 ## Last changes
 
@@ -88,7 +111,7 @@ If you have other I2C devices connected then they will also be listed and it is 
 
 ## Credits
 
-Thanks to Adrian Rossiter for creating MPD_OLED in the first place, testing, helping with the install & uninstall scripts and providing the Spanish translation! <https://github.com/antiprism>
+Thanks to Adrian Rossiter for help creating the install & uninstall scripts, providing the Spanish translation and for writing `mpd_oled` in the first place! <https://github.com/antiprism>  
 
 Thanks to misko903 for the Slovakian translation. <https://github.com/misko903>
 

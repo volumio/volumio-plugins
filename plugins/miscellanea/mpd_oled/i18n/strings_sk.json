@@ -24,11 +24,11 @@
 		"LABEL": "Typ OLED displeja",
 		"DOC": "Vyberte typ pripojeného OLED displeja.",
 		"DEFAULT": "Výber...",
-		"ITEM1" : "1. Adafruit SPI 128x64",
-		"ITEM3" : "3. Adafruit I2C 128x64",
-		"ITEM4" : "4. Seeed I2C 128x64",
-		"ITEM6" : "6. SH1106 I2C 128x64",
-		"ITEM7" : "7. SH1106 SPI 128x64"
+		"ITEM1": "1. Adafruit SPI 128x64",
+		"ITEM3": "3. Adafruit I2C 128x64",
+		"ITEM4": "4. Seeed I2C 128x64",
+		"ITEM6": "6. SH1106 I2C 128x64",
+		"ITEM7": "7. SH1106 SPI 128x64"
 	},
 	"NUMBER_OF_BARS": {
 		"LABEL": "Počet stĺpcov",
@@ -59,15 +59,15 @@
 		"LABEL": "Formát hodín",
 		"DOC": "Vyberte formát hodín.",
 		"DEFAULT": "24h nula na začiatku 0 (predvolené)",
-		"ITEM1" : "24h bez nuly na začiatku 0",
-		"ITEM2" : "12h nula na začiatku 0",
-		"ITEM3" : "12h bez nuly na začiatku 0"
+		"ITEM1": "24h bez nuly na začiatku 0",
+		"ITEM2": "12h nula na začiatku 0",
+		"ITEM3": "12h bez nuly na začiatku 0"
 	},
 	"PAUSE_SCREEN_TYPE": {
 		"LABEL": "Typ obrazovky počas pauzy",
 		"DOC": "Vyberte typ obrazovky počas pauzy.",
 		"DEFAULT": "Prehrávanie (predvolené)",
-		"ITEM1" : "Stop"
+		"ITEM1": "Stop"
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
 		"LABEL": "Nastavenie CAVA",
