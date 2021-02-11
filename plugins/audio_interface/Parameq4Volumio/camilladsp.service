@@ -1,20 +1,18 @@
-
 [Unit]
 Description=CamillaDSP Daemon
 After=syslog.target
 
 [Service]
 Type=simple
-ExecStart=/data/plugins/audio_interface/dsp4Volumio/camilladsp -p9876 -v /data/configuration/audio_interface/Dsp4Volumio/camilladsp.yml
+ExecStart=/data/plugins/audio_interface/Parameq4Volumio/camilladsp -p9876 -v /data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml
 Restart=always
-RestartSec=1
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=volumio
-User=root
-Group=root
-CPUSchedulingPolicy=fifo
-CPUSchedulingPriority=10
+User=volumio
+Group=volumio
+TimeoutSec=100ms
 
 [Install]
 WantedBy=multi-user.target
+

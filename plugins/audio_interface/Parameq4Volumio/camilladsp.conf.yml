@@ -16,18 +16,11 @@ devices:
   playback:
     type: Alsa
     channels: 2
-    device: "fromDspx"
+    device: "fromDsp1"
     format: S24LE3
 
-${eq1c}
-${eq2c}
-${eq3c}
-${eq4c}
-${eq5c}
-${eq6c}
-${eq7c}
-
-
+filters:
+${resulteq}
 mixers:
   stereo:
     channels:

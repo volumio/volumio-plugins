@@ -15,6 +15,7 @@ const socket = io.connect('http://localhost:3000');
 //const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 const path = require('path');
+const WebSocket = require('ws')
 
 
 // Define the Parameq class
@@ -44,20 +45,21 @@ Parameq.prototype.onStart = function () {
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-    .then(function (e) {
-      var aplayDefer = libQ.defer();
-      // Play a short sample of silence to initialise the config file
-      exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioDsp", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error) {
-          self.logger.warn("An error occurred when trying to initialize VolumioDsp", error);
-        }
-        aplayDefer.resolve();
-      });
-      return aplayDefer.promise;
-    })
-
+  /*
+ .then(function (e) {
+     var aplayDefer = libQ.defer();
+     // Play a short sample of silence to initialise the config file
+     exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioDsp", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+       if (error) {
+         self.logger.warn("An error occurred when trying to initialize VolumioDsp", error);
+       }
+       aplayDefer.resolve();
+     });
+     return aplayDefer.promise;
+   })
+*/
   self.autoconfig()
-
+/*
 
     .then(function (e) {
       setTimeout(function () {
@@ -69,6 +71,9 @@ Parameq.prototype.onStart = function () {
     .fail(function (e) {
       defer.reject(new Error());
     });
+    */
+   self.startcamilladsp();
+   defer.resolve();
   return defer.promise;
 };
 
@@ -343,79 +348,108 @@ Parameq.prototype.rebuildcamilladspRestartDaemon = function () {
 
       return edefer.promise;
     })
-    .then(self.startcamilladsp.bind(self))
-    .then(function (e) {
-      setTimeout(function () {
-        self.logger.info("Connecting to daemon");
-      }, 2000)
-        .fail(function (e) {
-          self.commandRouter.pushToastMessage('error', "camilladsp failed to start. Check your config !");
-          self.logger.info("camilladsp failed to start. Check your config !");
-        });
-    });
+
   return defer.promise;
 };
 
 //------------Here we define a function to send a command to CamillaDsp through websocket---------------------
 Parameq.prototype.sendCommandToCamilla = function (camilladspcmd) {
   const self = this;
-  let client = new net.Socket();
+  
+const url = 'ws://localhost:9876'
+const command = ('\"Reload\"');
+const connection = new WebSocket(url)
 
-  client.connect(9876, '127.0.0.1', function (err) {
-    client.write(camilladspcmd);
-    console.log('cmd sent to camilladsp = ' + camilladspcmd);
-  });
+connection.onopen = () => {
+  connection.send(command) 
+}
 
-  //error handling section
-  client.on('error', function (e) {
-    if (e.code == 'ECONNREFUSED') {
-      console.log('Huumm, is Camilladsp running ?');
-      self.commandRouter.pushToastMessage('error', "Camilladsp failed to start. Check your config !");
-    }
-  });
-  client.on('data', function (data) {
-    console.log('Received: ' + data);
-    client.destroy(); // kill client after server's response
-  });
+connection.onerror = (error) => {
+  console.log(`WebSocket error: ${error}`)
+}
+
+connection.onmessage = (e) => {
+  console.log(e.data)
+}
+  
 };
 
 //----------------------------------------------------------
 
 Parameq.prototype.createCamilladspfile = function (obj) {
   const self = this;
-  var eq1c,eq2,eq3,eq3,eq4,eq5,eq6,eq7;
-  var pipelineL,pipelineR;
-
+  var eq1c, eq2c, eq3c, eq3c, eq4c, eq5c, eq6c, eq7c;
+  var pipelineL, pipelineR;
+  var eqo;
+  var o;
+  //var typec, typer;
   let defer = libQ.defer();
+  var result = '';
+  var pipeline = '';
+  var composedeq = '';
+  let pipeliner, pipelines = '';
+
   try {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
         return console.log(err);
       }
+      //var o;
+      for (o = 1; o < 8; o++) {
+        var eqc;
+        eqo = ("eq" + o + "c");
+        eqc = ("eq" + o);
+        var typec = ("type" + o);
 
-     let conf = data.replace("${eq1c}", eq1c)
-        .replace("${eq2}", eq2)
-        .replace("${eq3}", eq3)
-        .replace("${eq4}", eq4)
-        .replace("${eq5}", eq5)
-        .replace("${eq6}", eq6)
-        .replace("${eq7}", eq7)
-        .replace("${pipelineL}", pipelineL)
-        .replace("${pipelineR}", pipelineR);
+        var typer = self.config.get(typec);
+        var eqv = self.config.get(eqc).split(',');
+        var coef;
+        if (typer != 'None') {
+
+          if ((typer == 'Highshelf' || typer == 'Lowshelf')) {
+            coef = 'slope'
+          } else if (typer == 'Peaking') {
+            coef = 'q'
+          }
+          composedeq += '  ' + eqc + ':\n';
+          composedeq += '    type: Biquad' + '\n';
+          composedeq += '    parameters:' + '\n';
+          composedeq += '      type: ' + typer + '\n';
+          composedeq += '      freq: ' + eqv[0] + '\n';
+          composedeq += '      ' + coef + ': ' + eqv[1] + '\n';
+          composedeq += '      gain: ' + eqv[2] + '\n';
+          composedeq += '' + '\n';
+          pipeline += '      - ' + eqc + '\n';
+
+        } else if (typer == 'None') {
+          composedeq = ''
+          pipeline = ''
+        }
+        result += composedeq
+        pipeliner += pipeline
+      };
+      pipelines = pipeliner.slice(17)
+
+      self.logger.info(result)
+      self.logger.info("pipeline " + pipelines)
+
+      let conf = data.replace("${resulteq}", result)
+        .replace("${pipelineL}", pipelines)
+        .replace("${pipelineR}", pipelines)
         ;
-
-      fs.writeFile("/data/configuration/audio_interface/Dsp4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
+      fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();
       });
+      let camilladspcmd = ("getconfigname")
+      self.sendCommandToCamilla(camilladspcmd);
     });
 
   } catch (err) {
   }
-  let camilladspcmd = ("getconfigname")
-  self.sendCommandToCamilla(camilladspcmd);
+
   return defer.promise;
 };
 
@@ -444,20 +478,21 @@ Parameq.prototype.saveparameq = function (data, obj) {
 
 
   setTimeout(function () {
-
-    self.rebuildcamilladspRestartDaemon()
-
-
-      .then(function (e) {
-        self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-        defer.resolve({});
-      })
-      .fail(function (e) {
-        defer.reject(new Error('Camilladsp failed to start. Check your config !'));
-        self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
-      })
-
-  }, 1500);
+    /*
+        self.rebuildcamilladspRestartDaemon()
+    
+    
+          .then(function (e) {
+            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+            defer.resolve({});
+          })
+          .fail(function (e) {
+            defer.reject(new Error('Camilladsp failed to start. Check your config !'));
+            self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
+          })
+    */
+    self.createCamilladspfile()
+  }, 500);
 
   return defer.promise;
 }
