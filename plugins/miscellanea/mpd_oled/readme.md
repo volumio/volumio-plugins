@@ -65,7 +65,18 @@ If you have other I2C devices connected then they will also be listed and it is 
 * Raspberry Pi 3 B+
 * Raspberry Pi Zero
 
+## Available langues
+
+* English (en)
+* Slovakian (sk)
+* Spanish (es)
+
 ## Last changes
+
+11th Feb 2021
+
+- Updated readme.md
+- Spanish translation
 
 9th Feb 2021
 
@@ -76,6 +87,10 @@ If you have other I2C devices connected then they will also be listed and it is 
 - More translations
 
 ## Credits
+
+Thanks to Adrian Rossiter for creating MPD_OLED in the first place, testing, helping with the install & uninstall scripts and providing the Spanish translation! <https://github.com/antiprism>
+
+Thanks to misko903 for the Slovakian translation. <https://github.com/misko903>
 
 MPD_OLED is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
 

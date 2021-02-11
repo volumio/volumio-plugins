@@ -1,0 +1,147 @@
+{
+	"PLUGIN_CONFIGURATION": "Configuración de MPD OLED",
+	"PLUGIN_DESCRIPTION": "Controlar una pantalla OLED con MPD OLED",
+	"PLUGIN_TOOLS": "Herramientas",
+	"PLUGIN_LINKS": "Enlaces Útiles",
+	"SETTINGS_SAVED": "Los ajustes de MPD OLED se han aplicado con éxito.",
+	"VALID_CONFIGURATION": "Configuración Válida",
+	"INVALID_CONFIGURATION": "Configuración Inválida",
+	"RESET_DC_ERROR": "El número de GPIO de reset I2C/SPI y el número de GPIO de DC SPI deben ser distintos.",
+	"OLED_TYPE_ERROR": "Por favor escoja el tipo de pantalla OLED.",
+	"CAVA_ERROR": "Por favor introduzca el método de entrada y la fuente para CAVA.",
+	"PROCESS_START_ERROR": "No se pudo activar el proceso MPD OLED. Se produjo el siguiente error: <ERROR>",
+	"PROCESS_STOP_ERROR": "No se pudo detener el proceso MPD OLED. Se produjo el siguiente error: <ERROR>",
+	"GAP_BARS_ERROR": "El ancho del gráfico del espectro es <SPECT_WIDTH>: para mostrar <BARS> barras con un espacio de <GAP> requiere un ancho mínimo de <MIN_WIDTH>. Reduzca el número de barras y/o el espacio.",
+	"SAVE": "Guardar",
+	"OK": "Ok",
+	"I2C_DEVICE_SCAN": "Escaneo de Dispositivos I2C",
+	"I2C_NO_TOOLS": "No se ha podido ejecutar un escaneo de dispositivos I2C porque no se ha instalado el i2c-tools.",
+	"I2C_SCAN_ERROR": "Se ha encontrado un error durante el escaneo de <I2C_BUS>: <ERROR>",
+	"I2C_BUS_DISABLED": "<strong>No se han encontrado dispositivos en el bus I2C <I2C_BUS> porque parece que está desactivado.</strong>",
+	"I2C_DEVICE_LIST": "Se ha encontrado los siguientes dispositivos en el bus I2C <I2C_BUS>:<br/><br/><strong><DEVICES></strong>",
+	"I2C_DEVICES_NONE": "Ninguno",
+	"OLED_TYPE": {
+		"LABEL": "Tipo de pantalla OLED",
+		"DOC": "Escoja el tipo de pantalla OLED conectada.",
+		"DEFAULT": "Escoja...",
+		"ITEM1" : "1. Adafruit SPI 128x64",
+		"ITEM3" : "3. Adafruit I2C 128x64",
+		"ITEM4" : "4. Seeed I2C 128x64",
+		"ITEM6" : "6. SH1106 I2C 128x64",
+		"ITEM7" : "7. SH1106 SPI 128x64"
+	},
+	"NUMBER_OF_BARS": {
+		"LABEL": "Número de barras",
+		"DOC": "Escoja el número de barras en el analizador del espectro.",
+		"DEFAULT": "16 (por defecto)"
+	},
+	"GAP_BETWEEN_BARS": {
+		"LABEL": "Espacio entre las barras",
+		"DOC": "Escoja el espacio entre las barras (píxeles).",
+		"DEFAULT": "1 (por defecto)"
+	},
+	"FRAME_RATE": {
+		"LABEL": "Frecuencia de imágenes",
+		"DOC": "Escoja la frecuencia de imágenes (Hz) para refrescar la pantalla<br/><br/>El proceso de installación aumenta la velocidad del bus I2C hasta 800 Kbits/s pero, para activar este cambio debe reiniciar su Raspberry Pi.<br/><br/>Consejo: se obtiene resultados buenos con un Raspberry Pi 3 y una frecuencia de imágenes de 50Hz.",
+		"DEFAULT": "15 (por defecto)"
+	},
+	"SCROLL_RATE": {
+		"LABEL": "Velocidad de desplazamiento",
+		"DOC": "Escoja la velocidad de desplazamiento de texto (pixeles/segundo).",
+		"DEFAULT": "8 (por defecto)"
+	},
+	"SCROLL_DELAY": {
+		"LABEL": "Retraso de desplazamiento",
+		"DOC": "Escoja el retraso de desplazamiento de texto (segundos).",
+		"DEFAULT": "5 (por defecto)"
+	},
+	"CLOCK_FORMAT": {
+		"LABEL": "Formato de reloj",
+		"DOC": "Escoja el formato de reloj.",
+		"DEFAULT": "24h con 0 inicial (por defecto)",
+		"ITEM1" : "24h sin 0 inicial",
+		"ITEM2" : "12h con 0 inicial",
+		"ITEM3" : "12h sin 0 inicial"
+	},
+	"PAUSE_SCREEN_TYPE": {
+		"LABEL": "Tipo de pantalla de pausa",
+		"DOC": "Escoja el tipo de pantalla de pausa.",
+		"DEFAULT": "Reproduccion (por defecto)",
+		"ITEM1" : "Parada"
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
+		"LABEL": "Configurar CAVA",
+		"DOC": "Habilita un método de entrada y una fuente para Cava a medida."
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE": {
+		"LABEL": "Método de entrada y fuente para CAVA",
+		"DOC": "Especifica el método de entrada y la fuente para CAVA.<br/><br/>Ejemplos:<br/><br/>fifo,/tmp/mpd_oled_fifo (por defecto)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
+	},
+	"ROTATE_DISPLAY": {
+		"LABEL": "Girar pantalla",
+		"DOC": "Escoja si quiere girar la pantalla 180 grados."
+	},
+	"INVERT_DISPLAY_ENABLED": {
+		"LABEL": "Invertir pantalla",
+		"DOC": "Invierte los colores blanco y negro en la pantalla."
+	},
+	"INVERT_DISPLAY_PERIOD": {
+		"LABEL": "Periodo",
+		"DOC": "La frequencia en la que la pantalla se invierte periodicamente, para ayudar evitar una quemadura de pantalla.",
+		"DEFAULT": "Deshabilitado (por defecto)",
+		"ITEM1": "1 minuto",
+		"ITEM2": "2 minutos",
+		"ITEM3": "3 minutos",
+		"ITEM4": "6 minutos",
+		"ITEM5": "12 minutos",
+		"ITEM6": "24 minutos",
+		"ITEM7": "48 minutos",
+		"ITEM8": "1 hora",
+		"ITEM9": "2 horas",
+		"ITEM10": "3 horas",
+		"ITEM11": "6 horas"
+	},
+	"I2C_ADDRESS": {
+		"LABEL": "Dirección I2C",
+		"DOC": "Escoja la dirección I2C de la pantalla.",
+		"DEFAULT": "Valor por defecto de la pantalla"
+	},
+	"I2C_BUS": {
+		"LABEL": "Bus I2C",
+		"DOC": "Escoja el bus I2C dependiendo de su modelo de Raspberry Pi.<br/><br/>/dev/i2c-1 para Model A, B Rev 2 o B+ Pi<br>/dev/i2c-0 para el original Model B Rev 1 Pi.",
+		"ITEM0": "/dev/i2c-0",
+		"ITEM1": "/dev/i2c-1",
+		"DEFAULT": "/dev/i2c-1 (por defecto)"
+	},
+	"SPI_RESET_GPIO_NUMBER": {
+		"LABEL": "El número de GPIO de reset I2C/SPI",
+		"DOC": "Escoja el número de GPIO conectado al pin de reset de la pantalla (si existe).",
+		"DEFAULT": "25 (por defecto)"
+	},
+	"SPI_DC_GPIO_NUMBER": {
+		"LABEL": "El número de GPIO de DC SPI",
+		"DOC": "Escoja número de GPIO conectado al pin DC de la pantalla.",
+		"DEFAULT": "24 (por defecto)"
+	},
+	"SPI_CS": {
+		"LABEL": "Linea CS SPI",
+		"DOC": "Escoja la linea CS conectada a la pantalla.",
+		"DEFAULT": "0 (por defecto)"
+	},
+	"I2C_SCAN": {
+		"LABEL": "Escaneo de dispositivos I2C",
+		"DESC": "Escanea dispositivos en los buses I2C"
+	},
+	"I2C_WIRING_LINK": {
+		"LABEL": "Cableado de OLED I2C",
+		"DESC": "Diagrama de cableado para pantallas OLED I2C."
+	},
+	"SPI_WIRING_LINK": {
+		"LABEL": "Cableado de OLED SPI",
+		"DESC": "Diagrama de cableado para pantallas OLED SPI."
+	},
+	"MPD_OLED_LINK": {
+		"LABEL": "MPD OLED en GitHub",
+		"DESC": "Visite el proyecto de MPD OLED en GitHub."
+	}
+}
