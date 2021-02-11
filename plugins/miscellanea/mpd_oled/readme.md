@@ -57,6 +57,7 @@ rm -Rf mpd_oled.zip
 
 In the Volumio web UI, go to the plugin section and enable it!
 
+
 ### 4. Configure the plugin
 
 You will need to first select the type of OLED you have from the `OLED Display Type` drop down.  If you are not sure you can try selecting each type and clicking the `Save` button.
@@ -64,6 +65,7 @@ You will need to first select the type of OLED you have from the `OLED Display T
 If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
 
 If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address`, `I2C Bus` drop downs and clicking the `Save` button for each device.   Note: if you have HiFiBerry or similar DAC attached and it is working, it won't appear in the I2C scan because it's already in ue.
+
 
 ### 5. Plugin Upgrade
 
@@ -106,17 +108,19 @@ rm -Rf mpd_oled.zip
 
 - Initial upload for testing
 
+
 ## To do
 
 - More translations
 
+
 ## Credits
 
-Thanks to Adrian Rossiter for help creating the install & uninstall scripts, providing the Spanish translation and for writing `mpd_oled` in the first place! <https://github.com/antiprism>  
+Thanks to Adrian Rossiter for help creating the install & uninstall scripts, testing, providing the Spanish translation and for writing `mpd_oled` in the first place: <https://github.com/antiprism>  
 
-Thanks to misko903 for the Slovakian translation. <https://github.com/misko903>
+`mpd_oled` is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
 
-MPD_OLED is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
+Thanks to misko903 for the Slovakian translation and for giving me the idea to write this plugin: <https://github.com/misko903>
 
 C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
 
