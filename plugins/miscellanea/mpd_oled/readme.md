@@ -92,7 +92,7 @@ rm -Rf mpd_oled.zip
 ## Tested on
 
 * Raspberry Pi 3 B+
-* Raspberry Pi Zero
+* Raspberry Pi Zero 
 
 
 ## Available languages
