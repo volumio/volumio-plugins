@@ -1826,21 +1826,30 @@
 					"element": "button",
 					"label": "TRANSLATE.I2C_WIRING_LINK.LABEL",
 					"description": "TRANSLATE.I2C_WIRING_LINK.DESC",
-					"onClick": { "type" : "openUrl", "url" : "https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true" }   
+					"onClick": { 
+						"type" : "openUrl", 
+						"url" : "https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true" 
+					}   
 				},
 				{
 					"id": "spiWiringlink",
 					"element": "button",
 					"label": "TRANSLATE.SPI_WIRING_LINK.LABEL",
 					"description": "TRANSLATE.SPI_WIRING_LINK.DESC",
-					"onClick": { "type" : "openUrl", "url" : "https://github.com/antiprism/mpd_oled/blob/master/wiring_spi.png?raw=true" }   
+					"onClick": { 
+						"type" : "openUrl", 
+						"url" : "https://github.com/antiprism/mpd_oled/blob/master/wiring_spi.png?raw=true" 
+					}   
 				},
 				{
 					"id": "mpdOledlink",
 					"element": "button",
 					"label": "TRANSLATE.MPD_OLED_LINK.LABEL",
 					"description": "TRANSLATE.MPD_OLED_LINK.DESC",
-					"onClick": { "type" : "openUrl", "url" : "https://github.com/antiprism/mpd_oled" }   
+					"onClick": { 
+						"type" : "openUrl", 
+						"url" : "https://github.com/antiprism/mpd_oled" 
+					}   
 				}
 			]
 		}
