@@ -25,13 +25,11 @@ volumio stop
 
 # record if MPD is initially running as service, and stop if running
 if systemctl is-active --quiet mpd; then
-  mpd_is_running="true"
   systemctl stop mpd
 fi
 
 # record if mpd_oled is initially running as service, and stop if running
 if systemctl is-active --quiet mpd_oled; then
-  mpd_oled_is_running="true"
   systemctl stop mpd_oled
 fi
 

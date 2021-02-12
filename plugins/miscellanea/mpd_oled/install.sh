@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # If you need to differentiate install for armhf and i386 you can get the variable like this
 #DPKG_ARCH=`dpkg --print-architecture`
 # Then use it to differentiate your install
@@ -84,8 +83,8 @@ else
 
   # record if mpd_oled is initially running as service, and stop if running
   if systemctl is-active --quiet mpd_oled; then
-    mpd_oled_is_running="true"
     systemctl stop mpd_oled
+    systemctl disable mpd_oled
   fi
 
   # Kill mpd_oled, mpd_oled_cava and cava, just to be sure, don't restart later
@@ -140,16 +139,6 @@ else
   # tidy up
   rm -rf "$tmp_dir"
 
-
-  ##################
-  # restart services
-
-  # no need to start MPD, handled by Volumio
-
-  # start mpd_oled if initially running
-  if test "$mpd_oled_is_running" = "true"; then
-    systemctl start mpd_oled
-  fi
 fi
 
 echo "Done"
