@@ -39,7 +39,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 
 - Type the following commands to download and install plugin:  
 
-**When you run the `volumio plugin install` command,  when it tells you that the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
+**When you run the `volumio plugin install` command and it tells you the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
 
 ```
 wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
