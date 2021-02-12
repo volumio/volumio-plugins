@@ -1,9 +1,9 @@
 9th Feb 2021
 #	VOLUMIO MPD OLED
 
-This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project.  You can now fully customise your display without having to go to the command line!
+- This plugin was designed to provide an easy way to install and configure the popular `mpd_oled` project.  You can now fully customise your display without having to go to the command line!
 
-The `mpd_oled` program displays an information screen including a music frequency spectrum on an OLED screen connected to a Raspberry Pi (or similar) running MPD, this includes Moode, Volumio and RuneAudio. The program supports I2C and SPI 128x64 OLED displays with an SSD1306, SSD1309, SH1106 or SSH1106 controller. 
+- The `mpd_oled` program displays an information screen including a music frequency spectrum on an OLED screen connected to a Raspberry Pi (or similar) running MPD, this includes Moode, Volumio and RuneAudio. The program supports I2C and SPI 128x64 OLED displays with an SSD1306, SSD1309, SH1106 or SSH1106 controller. 
 
 [Click here to visit the mpd_oled project on GitHub](https://github.com/antiprism/mpd_oled)
 
@@ -15,11 +15,13 @@ The `mpd_oled` program displays an information screen including a music frequenc
 
 ## How to install
 
+- Although I have included instructions for downloading, installing and updating the plugin, it is envisaged that the plugin will become part of the Volumio distributable and these manual steps will not be required.
+
 ### 1. Connect your OLED display to your device
 
-The small OLED displays intended for this setup are normally controlled via I2C or SPI.  I2C is the easiest type of screen to hook up with only 4 pins: power, gnd, SDA and SCL.
+- The small OLED displays intended for this setup are normally controlled via I2C or SPI.  I2C is the easiest type of screen to hook up with only 4 pins: power, gnd, SDA and SCL.
 
-You can hook up your screens like so:
+- You can hook up your screens like so:
 
 ![I2C wiring](https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true)
 
@@ -28,16 +30,14 @@ You can hook up your screens like so:
 
 ### 2. Enable SSH and connect to Volumio
 
-To do that, have a look here:
+- To do that, have a look here:
 
 https://volumio.github.io/docs/User_Manual/SSH.html
 
 
 ### 2. Download and install the plugin
 
-**Although I have included instructions for downloading and installing the plugin, it is envisaged that the plugin will become part of the Volumio distributable and a manual install or update will not be required.**
-
-Type the following commands to download and install plugin:  
+- Type the following commands to download and install plugin:  
 
 **When you run the `volumio plugin install` command,  when it tells you that the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
 
@@ -55,28 +55,28 @@ rm -Rf mpd_oled.zip
 
 ### 3. Enable the plugin
 
-In the Volumio web UI, go to the plugin section and enable it!
+- In the Volumio web UI, go to the plugin section and enable it!
 
 
 ### 4. Configure the plugin
 
-You will need to first select the type of OLED you have from the `OLED Display Type` drop down.  If you are not sure you can try selecting each type and clicking the `Save` button.
+- You will need to first select the type of OLED you have from the `OLED Display Type` drop down.  If you are not sure you can try selecting each type on by one and clicking the `Save` button.
 
-If you have an I2C OLED and the default configuration does not work then see the section below.
+- If you have an I2C OLED and the default option for the `I2C Address` dropdown does not update your display then see the section below.
 
-If you have an SPI OLED make sure the SPI reset, SPI DC, SPI CS dropdowns all match your hardware connections.
+- If you have an SPI OLED make sure the SPI reset, SPI DC, SPI CS dropdowns all match your hardware connections.
 
 ### 5. I2C Device Scan
 
-If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
+- If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
 
-If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address`, `I2C Bus` drop downs and clicking the `Save` button for each device. 
+- If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address` and `I2C Bus` drop downs for each device and click the `Save` button. 
 
-**Note: if you have HiFiBerry or similar DAC attached and it is working, it might not appear in the I2C scan because it is in use.**
+- Note: if you have HiFiBerry or similar DAC attached, it might not appear in the I2C scan because it's in use.
 
 ### 6. Plugin Upgrade
 
-If you have the plugin installed and would like to update it then, please use the following commands:  
+- If you have the plugin installed and would like to update it then, please use the following commands:  
 
 ```
 wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
@@ -123,18 +123,18 @@ rm -Rf mpd_oled.zip
 
 ## Credits
 
-Thanks to Adrian Rossiter for help creating the install & uninstall scripts, testing, providing the Spanish translation and for writing `mpd_oled` in the first place: <https://github.com/antiprism>  
+- Thanks to Adrian Rossiter for help creating the install & uninstall scripts, testing, providing the Spanish translation and for writing `mpd_oled` in the first place: <https://github.com/antiprism>  
 
-`mpd_oled` is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
+- `mpd_oled` is the application that does all the hard work.  It communicates with Volumio, reads audio spectrum data from C.A.V.A and displays it on the screen: <https://github.com/antiprism/mpd_oled>
 
-Thanks to misko903 for the Slovakian translation and for giving me the push to write this plugin: <https://github.com/misko903>
+- Thanks to misko903 for the Slovakian translation and for giving me the push to write this plugin: <https://github.com/misko903>
 
-German translation by Josef.
+- German translation by Josef.
 
-C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
+- C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
 
-OLED interface based on ArduiPI_OLED: <https://github.com/hallard/ArduiPi_OLED>
+- OLED interface based on ArduiPI_OLED: <https://github.com/hallard/ArduiPi_OLED>
 (which is based on the Adafruit_SSD1306, Adafruit_GFX, and bcm2835 library
 code).
 
-C library for Broadcom BCM 2835: <https://www.airspayce.com/mikem/bcm2835/>
+- C library for Broadcom BCM 2835: <https://www.airspayce.com/mikem/bcm2835/>
