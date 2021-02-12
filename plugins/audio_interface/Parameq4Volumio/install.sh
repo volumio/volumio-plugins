@@ -1,8 +1,9 @@
 #!/bin/bash
+LIB=/data/plugins/audio_interface/parameq4Volumio/arm
+TARGET = $libasound_module_pcm_cdsp
 
 echo "Installing/Parameq4Volumio dependencies"
-echo "unload Loopback module if exists"
-sudo rmmod snd_aloop
+
 echo "remove previous configuration"
 if [ ! -f "/data/configuration/audio_interface/Parameq4Volumio/config.json" ];
 	then
@@ -12,23 +13,23 @@ if [ ! -f "/data/configuration/audio_interface/Parameq4Volumio/config.json" ];
 		sudo rm -Rf /data/configuration/audio_interface/Parameq4Volumio
 fi
 
-		cp /data/plugins/audio_interface/Parameq4Volumio/camilladsp.service.tar /
-		cd /
-		sudo tar -xvf camilladsp.service.tar
-		rm /camilladsp.service.tar
-
+		
 echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
 if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
-sudo cp /data/plugins/audio_interface/Parameq4Volumio/c/hw_params_arm /data/plugins/audio_interface/Parameq4Volumio/hw_params
-sudo chmod +x /data/plugins/audio_interface/Parameq4Volumio/hw_params
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
+tar -xvf camilladsp-linux-armv7.tar.gz
+sudo cp $LIB/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
+
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
-sudo cp /data/plugins/audio_interface/Parameq4Volumio/c/hw_params_x86 /data/plugins/audio_interface/Parameq4Volumio/hw_params
-sudo chmod +x /data/plugins/audio_interface/Parameq4Volumio/hw_params
+
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
+tar -xvf camilladsp-linux-amd64.tar.gz
+
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."

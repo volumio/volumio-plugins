@@ -1,4 +1,4 @@
----
+
 devices:
   samplerate: 44100
   chunksize: 4096
@@ -6,13 +6,12 @@ devices:
   adjust_period: 10
   silence_threshold: -60
   silence_timeout: 3.0
-
   capture:
-    type: Alsa
+    type: File
     channels: 2
-    device: "hw:Loopback,1"
     format: S32LE
-     
+    filename: "/dev/stdin"
+    extra_samples: 8192
   playback:
     type: Alsa
     channels: 2

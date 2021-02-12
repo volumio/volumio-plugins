@@ -895,10 +895,10 @@ ControllerDsp4Volumio.prototype.rebuildcamilladspRestartDaemon = function () {
 ControllerDsp4Volumio.prototype.sendCommandToCamilla = function (camilladspcmd) {
   const self = this;
   let client = new net.Socket();
-
+let camilladspcmdc = "GetConfig"
   client.connect(9876, '127.0.0.1', function (err) {
-    client.write(camilladspcmd);
-    console.log('cmd sent to camilladsp = ' + camilladspcmd);
+    client.write(camilladspcmdc);
+    console.log('cmd sent to camilladsp = ' + camilladspcmdc);
   });
 
   //error handling section

@@ -2,7 +2,7 @@
 
 echo "Unistalling Brutefir dependencies"
 
-echo "Removing Brutefir"
+echo "Removing CamillaDsp"
 
 echo "Done"
 echo "pluginuninstallend"
