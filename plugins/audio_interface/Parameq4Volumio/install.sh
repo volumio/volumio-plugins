@@ -20,17 +20,20 @@ cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
 if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
+cd $LIB
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz
 sudo chmod +x camilladsp
 sudo cp ./arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
+rm camilladsp-linux-armv7.tar.gz
 
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
-
+cd $LIB
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz
 sudo chmod +x camilladsp
+rm camilladsp-linux-armv7.tar.gz
 
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
