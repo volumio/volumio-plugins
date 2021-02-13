@@ -22,8 +22,8 @@ if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz
-sudo chmod +x /data/plugins/audio_interface/Parameq4Volumio/camilladsp
-sudo cp $LIB/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
+sudo chmod +x camilladsp
+sudo cp ./arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
 
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
@@ -31,6 +31,7 @@ then
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz
 sudo chmod +x camilladsp
+
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
