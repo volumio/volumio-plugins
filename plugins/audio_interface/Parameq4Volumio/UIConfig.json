@@ -65,7 +65,7 @@
           "id": "eq1",
           "element": "input",
           "label": "eq1",
-          "description": "eq1",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -74,7 +74,7 @@
         {
           "id": "type2",
           "element": "select",
-          "doc": "type2",
+          "doc": "Type2",
           "label": "type2",
           "value": {
             "value": "None",
@@ -103,7 +103,7 @@
           "id": "eq2",
           "element": "input",
           "label": "eq2",
-          "description": "eq2",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -141,7 +141,7 @@
           "id": "eq3",
           "element": "input",
           "label": "eq3",
-          "description": "eq3",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -179,7 +179,7 @@
           "id": "eq4",
           "element": "input",
           "label": "eq4",
-          "description": "eq4",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -217,7 +217,7 @@
           "id": "eq5",
           "element": "input",
           "label": "eq5",
-          "description": "eq5",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -255,7 +255,7 @@
           "id": "eq6",
           "element": "input",
           "label": "eq6",
-          "description": "eq6",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
@@ -293,7 +293,7 @@
           "id": "eq7",
           "element": "input",
           "label": "eq7",
-          "description": "eq7",
+          "doc": "TRANSLATE.EQ",
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"

@@ -195,10 +195,13 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
   connection.onerror = (error) => {
     console.log(`WebSocket error: ${error}`)
+
   }
 
   connection.onmessage = (e) => {
     console.log(e.data)
+    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+
   }
 
 };
@@ -287,6 +290,7 @@ Parameq.prototype.createCamilladspfile = function () {
     });
 
   } catch (err) {
+
   }
 
   return defer.promise;
@@ -316,22 +320,22 @@ Parameq.prototype.saveparameq = function (data, obj) {
   self.config.set('eq7', data['eq7']);
 
 
+  for (var o = 1; o < 8; o++) {
+
+    let test = self.config.get('eq' + o).split(',')
+    var reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
+    if ((reg.test(test[0])) && (reg.test(test[1])) && (reg.test(test[2]))) {
+      self.commandRouter.pushToastMessage('info', 'Values saved !');
+      //      console.log('String contains = ' + test)
+    } else {
+      self.commandRouter.pushToastMessage('error', 'Only number! Check your config !');
+      return;
+    }
+  }
+
   setTimeout(function () {
-    /*
-        self.rebuildcamilladspRestartDaemon()
-    
-    
-          .then(function (e) {
-            self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-            defer.resolve({});
-          })
-          .fail(function (e) {
-            defer.reject(new Error('Camilladsp failed to start. Check your config !'));
-            self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
-          })
-    */
     self.createCamilladspfile()
-  }, 500);
+  }, 100);
 
   return defer.promise;
 }
