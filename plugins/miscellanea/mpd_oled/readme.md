@@ -9,9 +9,9 @@
 
 ![I2C OLED in action](oled.jpg?raw=true "I2C OLED in action")
 
-![Plugin Screenshot 1](mpd_oled_plugin1.png?raw=true "Plugin Screenshot 1")
+![Plugin Screenshot 1](screenshot1.png?raw=true "Plugin Screenshot 1")
 
-![Plugin Screenshot 2](mpd_oled_plugin2.png?raw=true "Plugin Screenshot 2")
+![Plugin Screenshot 2](screenshot2.png?raw=true "Plugin Screenshot 2")
 
 ## How to install
 
