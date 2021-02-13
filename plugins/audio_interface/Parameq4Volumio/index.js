@@ -224,8 +224,15 @@ Parameq.prototype.createCamilladspfile = function () {
         return console.log(err);
       }
       if ((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None')) {
-        pipeline = ''
-        composedeq = ''
+        composedeq += '  nulleq:' + '\n';
+        composedeq += '    type: Conv' + '\n';
+        //composedeq += '    parameters:' + '\n';
+        //composedeq += '' + '\n';
+        pipeline += '      - nulleq' + '\n';
+        result += composedeq
+        pipeliner += pipeline
+
+        pipelines = pipeliner.slice(17)
       } else {
 
         //var o;
