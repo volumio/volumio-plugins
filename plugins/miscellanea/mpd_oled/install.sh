@@ -84,8 +84,8 @@ else
   # record if mpd_oled is initially running as service, and stop if running
   if systemctl is-active --quiet mpd_oled; then
     systemctl stop mpd_oled
-    systemctl disable mpd_oled
   fi
+  systemctl disable mpd_oled --quiet
 
   # Kill mpd_oled, mpd_oled_cava and cava, just to be sure, don't restart later
   killall --quiet cava

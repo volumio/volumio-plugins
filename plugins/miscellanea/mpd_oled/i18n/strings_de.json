@@ -17,7 +17,7 @@
 	"I2C_DEVICE_SCAN": "I2C Geräte Scan",
 	"I2C_NO_TOOLS": "Der I2C Geräte Scan konnte nicht durchgeführt werden, da die i2c-tools nicht installiert sind.",
 	"I2C_SCAN_ERROR": "Beim Scan des I2C Busses <I2C_BUS> trat folgender Fehler auf: <ERROR>",
-	"I2C_BUS_DISABLED": "<strong>Auf dem I2C bus <I2C_BUS> wurden keine Geräte gefunden. I2C ist möglicherweise deaktiviert (?).</strong>",
+	"I2C_BUS_DISABLED": "<strong>Auf dem I2C bus <I2C_BUS> wurden keine Geräte gefunden. I2C ist möglicherweise deaktiviert.</strong>",
 	"I2C_DEVICE_LIST": "Auf I2C bus <I2C_BUS> wurden folgende Geräte gefunden:<br/><br/><strong><DEVICES></strong>",
 	"I2C_DEVICES_NONE": "Keine",
 	"OLED_TYPE": {

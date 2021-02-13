@@ -105,6 +105,10 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
+12th Feb 2021
+
+- German translation
+
 11th Feb 2021
 
 - Updated readme.md
