@@ -1,5 +1,5 @@
 #!/bin/bash
-LIB=/data/plugins/audio_interface/parameq4Volumio/arm
+LIB=/data/plugins/audio_interface/parameq4Volumio
 TARGET = $libasound_module_pcm_cdsp
 
 echo "Installing/Parameq4Volumio dependencies"
@@ -24,7 +24,7 @@ cd $LIB
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz
 sudo chmod +x camilladsp
-sudo cp ./arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
+sudo cp $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
 rm camilladsp-linux-armv7.tar.gz
 
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
