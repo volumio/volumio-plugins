@@ -1,5 +1,5 @@
 #!/bin/bash
-LIB=/data/plugins/audio_interface/parameq4Volumio
+LIB=/data/plugins/audio_interface/Parameq4Volumio
 TARGET = $libasound_module_pcm_cdsp
 
 echo "Installing/Parameq4Volumio dependencies"
@@ -20,12 +20,13 @@ cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
 if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
-cd $LIB
+cd /tmp
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
-tar -xvf camilladsp-linux-armv7.tar.gz
+tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
 sudo chmod +x camilladsp
-sudo cp $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so
-rm camilladsp-linux-armv7.tar.gz
+mv /tmp/camilladsp $LIB/
+rm /tmp/camilladsp-linux-armv7.tar.gz
+sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
@@ -36,10 +37,11 @@ sudo chmod +x camilladsp
 rm camilladsp-linux-armv7.tar.gz
 
 else
-        echo "Sorry, cpu is $cpu and your device is not yet supported !"
+    echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
 	exit -1
 fi
 
 #required to end the plugin install
 echo "plugininstallend"
+

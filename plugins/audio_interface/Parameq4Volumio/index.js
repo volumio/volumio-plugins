@@ -44,8 +44,14 @@ Parameq.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
-  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-  defer.resolve();
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
+
+  setTimeout(function () {
+    self.createCamilladspfile()
+
+  }, 2000);  
+    defer.resolve();
+
   return defer.promise;
 };
 
