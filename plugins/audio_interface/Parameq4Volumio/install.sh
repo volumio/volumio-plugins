@@ -23,6 +23,8 @@ then
 cd /tmp
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
+sudo chown volumio camilladsp
+sudo chgrp volumio camilladsp
 sudo chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
