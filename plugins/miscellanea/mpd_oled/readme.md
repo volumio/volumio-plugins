@@ -105,6 +105,10 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
+14th Feb 2021
+
+- Fix install.sh for building mpd_oled on buster
+
 12th Feb 2021
 
 - German translation

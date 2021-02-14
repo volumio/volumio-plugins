@@ -58,7 +58,13 @@ then
   sudo apt -y install build-essential git-core autoconf make libtool libi2c-dev i2c-tools lm-sensors libcurl4-openssl-dev libmpdclient-dev libjsoncpp-dev
   git clone https://github.com/antiprism/mpd_oled
   cd mpd_oled
-  PLAYER=VOLUMIO make
+  if cat /etc/os-release | grep -q buster; then
+    # buster build
+    PLAYER=VOLUMIO LDLIBS="-li2c" make
+  else
+    # raspbian build
+    PLAYER=VOLUMIO make
+  fi
 else
   echo "MPD_OLED already installed"
 fi
