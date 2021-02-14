@@ -1,29 +1,29 @@
 {
 	"PLUGIN_CONFIGURATION": "MPD OLED Konfiguration",
-	"PLUGIN_DESCRIPTION": "OLED Display Ansteuerung mit MPD OLED",
+	"PLUGIN_DESCRIPTION": "MPD OLED Display Ansteuerung",
 	"PLUGIN_TOOLS": "Tools",
-	"PLUGIN_LINKS": "Hilfreiche Links",
-	"SETTINGS_SAVED": "MPD OLED Einstellungen wurden erfolgreich gespeichert.",
+	"PLUGIN_LINKS": "Weiterführende Links",
+	"SETTINGS_SAVED": "MPD OLED Einstellungen erfolgreich gespeichert.",
 	"VALID_CONFIGURATION": "Gültige Konfiguration",
 	"INVALID_CONFIGURATION": "Ungültige Konfiguration",
 	"RESET_DC_ERROR": "I2C/SPI reset GPIO und SPI DC GPIO dürfen nicht gleich sein.",
 	"OLED_TYPE_ERROR": "Wählen Sie den OLED Display Typ.",
-	"CAVA_ERROR": "Wählen Sie die CAVA input Methode und die Quelle.",
-	"PROCESS_START_ERROR": "Der MPD OLED process konnte nicht gestartet werden.  Der folgende Fehler ist aufgetreten: <ERROR>",
-	"PROCESS_STOP_ERROR": "Der MPD OLED process konnte nicht gestoppt werden.  Der folgende Fehler ist aufgetreten: <ERROR>",
+	"CAVA_ERROR": "CAVA input method and source.",
+	"PROCESS_START_ERROR": "MPD OLED process konnte nicht gestartet werden. Fehler: <ERROR>",
+	"PROCESS_STOP_ERROR": "MPD OLED process konnte nicht gestoppt werden. Fehler: <ERROR>",
 	"GAP_BARS_ERROR": "Spectrum Graph Breite ist <SPECT_WIDTH>: Um <BARS> Graphen mit einer Breite der Zwischenräume von <GAP> anzuzeigen werden mindestens <MIN_WIDTH> benötigt. Verringern Sie die Anzahl der Graphen und/oder die Breite der Zwischenräume.",
 	"SAVE": "Speichern",
-	"OK": "Hab's verstanden",
+	"OK": "O.K. verstanden",
 	"I2C_DEVICE_SCAN": "I2C Geräte Scan",
 	"I2C_NO_TOOLS": "Der I2C Geräte Scan konnte nicht durchgeführt werden, da die i2c-tools nicht installiert sind.",
 	"I2C_SCAN_ERROR": "Beim Scan des I2C Busses <I2C_BUS> trat folgender Fehler auf: <ERROR>",
-	"I2C_BUS_DISABLED": "<strong>Auf dem I2C bus <I2C_BUS> wurden keine Geräte gefunden. I2C ist möglicherweise deaktiviert.</strong>",
+	"I2C_BUS_DISABLED": "<strong>Auf I2C bus <I2C_BUS> wurden keine Geräte gefunden.</strong>",
 	"I2C_DEVICE_LIST": "Auf I2C bus <I2C_BUS> wurden folgende Geräte gefunden:<br/><br/><strong><DEVICES></strong>",
 	"I2C_DEVICES_NONE": "Keine",
 	"OLED_TYPE": {
 		"LABEL": "OLED Display Typ",
-		"DOC": "Wählen Sie den Typ des angeschlossenen OLED displays.",
-		"DEFAULT": "Wähle...",
+		"DOC": "Typ des angeschlossenen OLED displays.",
+		"DEFAULT": "Auswahl",
 		"ITEM1": "1. Adafruit SPI 128x64",
 		"ITEM3": "3. Adafruit I2C 128x64",
 		"ITEM4": "4. Seeed I2C 128x64",
@@ -31,8 +31,8 @@
 		"ITEM7": "7. SH1106 SPI 128x64"
 	},
 	"NUMBER_OF_BARS": {
-		"LABEL": "Anzahl der Graphen (Frequenzkanäle)",
-		"DOC": "Wählen Sie die Anzahl der Graphen des Spectrum Analysers.",
+		"LABEL": "Anzahl der Graphen",
+		"DOC": "Anzahl der Graphen des Spectrum Analysers.",
 		"DEFAULT": "16 (default)"
 	},
 	"GAP_BETWEEN_BARS": {
@@ -56,8 +56,8 @@
 		"DEFAULT": "5 (default)"
 	},
 	"CLOCK_FORMAT": {
-		"LABEL": "Darstellung der Zeit (Zeitformat)",
-		"DOC": "Wählen Sie das Zeitformat.",
+		"LABEL": "Zeitformat",
+		"DOC": "Zeitformat.",
 		"DEFAULT": "24h mit führender 0 (default)",
 		"ITEM1": "24h ohne führende 0",
 		"ITEM2": "12h mit führender 0",
@@ -65,21 +65,21 @@
 	},
 	"PAUSE_SCREEN_TYPE": {
 		"LABEL": "Anzeige während einer Pause",
-		"DOC": "Wählen Sie was während einer Pause angezeigt wird.",
+		"DOC": "Anzeige während einer Pause.",
 		"DEFAULT": "Play (default)",
 		"ITEM1": "Stop"
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
 		"LABEL": "CAVA Konfiguration",
-		"DOC": "Aktiviert erweiterte CAVA input method und source Einstellungen (fortgeschritten)."
+		"DOC": "CAVA input method und source settings (advanced)."
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE": {
-		"LABEL": "Erweiterte CAVA input method und source Einstellungen (fortgeschritten)",
-		"DOC": "Definiert die CAVA input method und Quelle.<br/><br/>Examples:<br/><br/>fifo,/tmp/mpd_oled_fifo (default)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
+		"LABEL": "CAVA input method und source settings (advanced)",
+		"DOC": "CAVA input method und source.<br/><br/>Examples:<br/><br/>fifo,/tmp/mpd_oled_fifo (default)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
 	},
 	"ROTATE_DISPLAY": {
 		"LABEL": "Display drehen",
-		"DOC": "Wählen Sie ob das Display um 180 Grad gedreht werden soll."
+		"DOC": "Display um 180 Grad drehen."
 	},
 	"INVERT_DISPLAY_ENABLED": {
 		"LABEL": "Anzeige invertieren",
@@ -103,24 +103,24 @@
 	},
 	"I2C_ADDRESS": {
 		"LABEL": "I2C Adresse",
-		"DOC": "Wählen Sie die I2C Adresse des Displays.",
+		"DOC": "I2C Adresse des Displays.",
 		"DEFAULT": "Default for display"
 	},
 	"I2C_BUS": {
 		"LABEL": "I2C bus",
-		"DOC": "Wählen Sie den I2C Bus - abhängig von dem Modell Ihres Raspberry Pi.<br/><br/>/dev/i2c-1 für Model A, B Rev 2 or B+ Pi oder neuer<br>/dev/i2c-0 für den original Model B Rev 1 Pi.",
+		"DOC": "I2C Bus - abhängig vom Modell Ihres RasPi's.<br/><br/>/dev/i2c-1 für Model A, B Rev 2 or B+ Pi oder neuer<br>/dev/i2c-0 für das alte Model B Rev 1.",
 		"ITEM0": "/dev/i2c-0",
 		"ITEM1": "/dev/i2c-1",
 		"DEFAULT": "/dev/i2c-1 (default)"
 	},
 	"SPI_RESET_GPIO_NUMBER": {
 		"LABEL": "I2C/SPI reset GPIO number",
-		"DOC": "Wählen den GPIO port, der mit dem Reset Pin Ihres Displays verbunden ist (falls verfügbar).",
+		"DOC": "GPIO port, der mit dem Reset Pin Ihres Displays verbunden ist (falls verfügbar).",
 		"DEFAULT": "25 (default)"
 	},
 	"SPI_DC_GPIO_NUMBER": {
 		"LABEL": "SPI DC GPIO number",
-		"DOC": "Wählen den GPIO port,der mit dem DC Pin Ihres Displays verbunden ist (SPI)",
+		"DOC": "GPIO port, der mit dem DC Pin Ihres Displays verbunden ist (SPI)",
 		"DEFAULT": "24 (default)"
 	},
 	"SPI_CS": {
@@ -130,18 +130,18 @@
 	},
 	"I2C_SCAN": {
 		"LABEL": "I2C Gerätesuche (Scan)",
-		"DESC": "Suche Geräte auf den I2C Bussen"
+		"DESC": "Gerätesuche auf I2C bus"
 	},
 	"I2C_WIRING_LINK": {
-		"LABEL": "I2C OLED Anschlußbelegung (Web link)",
-		"DESC": "Anschlußbelegung für I2C OLED displays."
+		"LABEL": "I2C OLED Anschlußbelegung",
+		"DESC": "Anschlussbelegung für I2C OLED displays."
 	},
 	"SPI_WIRING_LINK": {
-		"LABEL": "SPI OLED Anschlussbelegung (Web link)",
+		"LABEL": "SPI OLED Anschlussbelegung",
 		"DESC": "Anschlussbelegung für SPI OLED Displays."
 	},
 	"MPD_OLED_LINK": {
-		"LABEL": "MPD OLED auf GitHub (Web link)",
-		"DESC": "Besuchen Sie die MPD OLED Projektseite auf GitHub."
+		"LABEL": "MPD OLED auf GitHub",
+		"DESC": "MPD OLED Projektseite auf GitHub."
 	}
 }
