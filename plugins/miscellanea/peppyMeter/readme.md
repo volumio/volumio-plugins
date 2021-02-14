@@ -46,6 +46,9 @@ volumio plugin install
 cd..
 rm -Rf pipe*
 ```
+Febuary 14th 2021
+
+- better compatibility with high res file
 
 Febuary 6th 2021
 
