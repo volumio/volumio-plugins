@@ -101,6 +101,7 @@ rm -Rf mpd_oled.zip
 * Slovakian (sk)
 * Spanish (es)
 * German (de)
+* Italian (it)
 
 
 ## Last changes
@@ -108,10 +109,11 @@ rm -Rf mpd_oled.zip
 14th Feb 2021
 
 - Fix install.sh for building mpd_oled on buster
+- Italian translation added
 
 12th Feb 2021
 
-- German translation
+- German translation added
 
 11th Feb 2021
 
@@ -138,6 +140,8 @@ rm -Rf mpd_oled.zip
 - Thanks to misko903 for the Slovakian translation and for giving me the push to write this plugin: <https://github.com/misko903>
 
 - German translation by Josef.
+
+- Italian translation by Pasquale D'Orsi.
 
 - C.A.V.A. is a bar spectrum audio visualizer: <https://github.com/karlstav/cava>
 

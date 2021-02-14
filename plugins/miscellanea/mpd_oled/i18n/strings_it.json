@@ -1,0 +1,147 @@
+{
+	"PLUGIN_CONFIGURATION": "Configurazione MPD OLED",
+	"PLUGIN_DESCRIPTION": "Controlla un display OLED usando MPD OLED",
+	"PLUGIN_TOOLS": "Tools",
+	"PLUGIN_LINKS": "Links utili",
+	"SETTINGS_SAVED": "Impostazioni di MPD OLED applicate con successo.",
+	"VALID_CONFIGURATION": "Configurazione Valida",
+	"INVALID_CONFIGURATION": "Configurazione non valida",
+	"RESET_DC_ERROR": "I numeri I2C/SPI reset GPIO e SPI DC GPIO devono essere diversi.",
+	"OLED_TYPE_ERROR": "Per favore seleziona il tipo di display OLED.",
+	"CAVA_ERROR": "Per favore inserisci il metodo di input CAVA e la sorgente.",
+	"PROCESS_START_ERROR": "Impossibile avviare il processo MPD OLED. L'errore restituito e': <ERROR>",
+	"PROCESS_STOP_ERROR": "Impossibile fermare il processo MPD OLED. L'errore restituito e': <ERROR>",
+	"GAP_BARS_ERROR": "La larghezza del grafico dello Spettro e' <SPECT_WIDTH>: per mostrare <BARS> barre con uno spazio di <GAP> pixel occorre una larghezza minima di <MIN_WIDTH>. Ridurre il numero di barre e/o lo spazio.",
+	"SAVE": "Salva",
+	"OK": "Capito",
+	"I2C_DEVICE_SCAN": "Scansione dispositivo I2C",
+	"I2C_NO_TOOLS": "Impossibile effettuare la scansione di un dispositivo perche' non e' installato i2c-tools.",
+	"I2C_SCAN_ERROR": "Errore riscontrato durante la scansione <I2C_BUS>: <ERROR>",
+	"I2C_BUS_DISABLED": "<strong>Non ci sono dispositivi sul bus I2C <I2C_BUS> perche' questo sembra essere disabilitato.</strong>",
+	"I2C_DEVICE_LIST": "I dispositivi trovati sul bus I2C <I2C_BUS> sono:<br/><br/><strong><DEVICES></strong>",
+	"I2C_DEVICES_NONE": "Nessuno",
+	"OLED_TYPE": {
+		"LABEL": "Tipo di display OLED",
+		"DOC": "Seleziona il tipo di display OLED connesso.",
+		"DEFAULT": "Scegli...",
+		"ITEM1": "1. Adafruit SPI 128x64",
+		"ITEM3": "3. Adafruit I2C 128x64",
+		"ITEM4": "4. Seeed I2C 128x64",
+		"ITEM6": "6. SH1106 I2C 128x64",
+		"ITEM7": "7. SH1106 SPI 128x64"
+	},
+	"NUMBER_OF_BARS": {
+		"LABEL": "Numero di barre",
+		"DOC": "Scegli il numero di barre nell'analizzatore di spettro.",
+		"DEFAULT": "16 (default)"
+	},
+	"GAP_BETWEEN_BARS": {
+		"LABEL": "Spazio tra le barre",
+		"DOC": "Scegli lo spazio tra le barre (pixels).",
+		"DEFAULT": "1 (default)"
+	},
+	"FRAME_RATE": {
+		"LABEL": "Velocita' di aggiornamento del display",
+		"DOC": "Scegli la velocita' di aggiornamento del display (Hz)<br/><br/>Il processo di installazione incrementa la velocita' I2C a 800 Kbit/s ma e' necessario riavviare il Raspberry Pi per rendere effettiva la modifica.<br/><br/>Consiglio: un Raspberry Pi 3 con un frame rate di 50Hz produce ottimi risultati.",
+		"DEFAULT": "15 (default)"
+	},
+	"SCROLL_RATE": {
+		"LABEL": "Velocita' di scorrimento del testo",
+		"DOC": "Scegli la velocita' di scorrimento del testo (pixels/secondo).",
+		"DEFAULT": "8 (default)"
+	},
+	"SCROLL_DELAY": {
+		"LABEL": "Ritardo di scorrimento del testo",
+		"DOC": "Scegli il ritardo di scorrimento del testo (secondi).",
+		"DEFAULT": "5 (default)"
+	},
+	"CLOCK_FORMAT": {
+		"LABEL": "Formato dell'orologio",
+		"DOC": "Scegli il formato dell'orologio.",
+		"DEFAULT": "24h nessuno 0 iniziale (default)",
+		"ITEM1": "24h nessuno 0 iniziale",
+		"ITEM2": "12h 0 iniziale",
+		"ITEM3": "12h nessuno 0 iniziale"
+	},
+	"PAUSE_SCREEN_TYPE": {
+		"LABEL": "Tipo di schermata di pausa",
+		"DOC": "Scegli il tipo di schermata di pausa.",
+		"DEFAULT": "Play (default)",
+		"ITEM1": "Stop"
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
+		"LABEL": "Configura CAVA",
+		"DOC": "Abilita la personalizzazione del metodo di input e della sorgente CAVA."
+	},
+	"CAVA_INPUT_METHOD_AND_SOURCE": {
+		"LABEL": "Metodo di input e sorgente CAVA",
+		"DOC": "Definisci il metodo di input e la sorgente CAVA.<br/><br/>Esempi:<br/><br/>fifo,/tmp/mpd_oled_fifo (default)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
+	},
+	"ROTATE_DISPLAY": {
+		"LABEL": "Ruotare il display",
+		"DOC": "Scegli se ruotare il display di 180 gradi."
+	},
+	"INVERT_DISPLAY_ENABLED": {
+		"LABEL": "Inverti il display",
+		"DOC": "Inverte il bianco e il nero sul display."
+	},
+	"INVERT_DISPLAY_PERIOD": {
+		"LABEL": "Periodo",
+		"DOC": "La frequenza con cui il display sara' periodicamente invertito per evitare lo scolorimento dello schermo (screen burn-in).",
+		"DEFAULT": "Disabilitato (default)",
+		"ITEM1": "1 minuto",
+		"ITEM2": "2 minuti",
+		"ITEM3": "3 minuti",
+		"ITEM4": "6 minuti",
+		"ITEM5": "12 minuti",
+		"ITEM6": "24 minuti",
+		"ITEM7": "48 minuti",
+		"ITEM8": "1 ora",
+		"ITEM9": "2 ore",
+		"ITEM10": "3 ore",
+		"ITEM11": "6 ore"
+	},
+	"I2C_ADDRESS": {
+		"LABEL": "Indirizzo I2C",
+		"DOC": "Scegli l'indirizzo I2C del display.",
+		"DEFAULT": "Default per display"
+	},
+	"I2C_BUS": {
+		"LABEL": "Bus I2C",
+		"DOC": "Scegli il bus I2C a seconda del tuo modello di Raspberry Pi.<br/><br/>/dev/i2c-1 per il Model A, B Rev 2 oppure B+ Pi<br>/dev/i2c-0 per il Model B Rev 1 Pi.",
+		"ITEM0": "/dev/i2c-0",
+		"ITEM1": "/dev/i2c-1",
+		"DEFAULT": "/dev/i2c-1 (default)"
+	},
+	"SPI_RESET_GPIO_NUMBER": {
+		"LABEL": "Numero di GPIO per il reset I2C/SPI",
+		"DOC": "Secegli il numero di GPIO connesso al pin di reset del display (se disponibile).",
+		"DEFAULT": "25 (default)"
+	},
+	"SPI_DC_GPIO_NUMBER": {
+		"LABEL": "Numero di GPIO per SPI DC",
+		"DOC": "Scegli il numero di GPIO a cui e' connesso il pin SPI DC del display.",
+		"DEFAULT": "24 (default)"
+	},
+	"SPI_CS": {
+		"LABEL": "Linea SPI CS",
+		"DOC": "Scegli la linea CS connessa al display.",
+		"DEFAULT": "0 (default)"
+	},
+	"I2C_SCAN": {
+		"LABEL": "Scansione dispositivo I2C",
+		"DESC": "Scansione dei dispositivi collegati al bus I2C"
+	},
+	"I2C_WIRING_LINK": {
+		"LABEL": "Schema display OLED I2C",
+		"DESC": "Schema di collegamento dei display OLED in I2C."
+	},
+	"SPI_WIRING_LINK": {
+		"LABEL": "Schema display OLED SPI",
+		"DESC": "Schema di collegamento dei display OLED in SPI."
+	},
+	"MPD_OLED_LINK": {
+		"LABEL": "MPD OLED su GitHub",
+		"DESC": "Visita il progetto MPD OLED su GitHub."
+	}
+}
