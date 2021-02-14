@@ -341,7 +341,7 @@ Parameq.prototype.saveparameq = function (data, obj) {
 
   setTimeout(function () {
     self.createCamilladspfile()
-  }, 100);
+  }, 500);
 
   return defer.promise;
 }
