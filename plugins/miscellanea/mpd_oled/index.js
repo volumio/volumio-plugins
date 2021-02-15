@@ -89,6 +89,10 @@ const uiElement = {
 	spiCS : {
 		name: "spiCS",
 		key: "SPI_CS"
+	},
+	dateFormat : {
+		name: "dateFormat",
+		key: "DATE_FORMAT"
 	}
 };
 
@@ -107,7 +111,8 @@ const comboElements = [
 	uiElement.i2cBus,
 	uiElement.spiResetGPIONumber,
 	uiElement.spiDCGPIONumber,
-	uiElement.spiCS
+	uiElement.spiCS,
+	uiElement.dateFormat
 ];
 
 // Define the MpdOled class
@@ -196,13 +201,19 @@ MpdOled.prototype.getUIConfig = function() {
 				});
 			}
 
+			// Retrieve the combo value and label from config file
 			var comboName = item.name;
 			var comboValue = config.get(comboName);   
 			var comboLabel = config.get(comboName + "Label");
 
-			self.info(`Populating: ${comboName}: ${comboValue} - ${comboLabel}`);
+			if (comboValue !== undefined){
+				self.info(`Populating: ${comboName}: ${comboValue} - ${comboLabel}`);
 
-			self.setSelectElement(uiconf, comboName, comboValue, comboLabel);
+				self.setSelectElement(uiconf, comboName, comboValue, comboLabel);
+			}
+			else{
+				self.info(`Could not find ${comboName} in config.json - using default`);
+			}
 		});
 
 		// Populate switches
@@ -384,6 +395,9 @@ MpdOled.prototype.getParameters = function(){
 	ret += " -r " + config.get(uiElement.spiResetGPIONumber.name);	
 	ret += " -D " + config.get(uiElement.spiDCGPIONumber.name);
 	ret += " -S " + config.get(uiElement.spiCS.name);
+	if (config.get(uiElement.dateFormat.name) == 1){
+		ret += " -d ";
+	}
 
 	return ret;
 };

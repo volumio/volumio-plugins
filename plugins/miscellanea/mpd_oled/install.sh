@@ -56,7 +56,7 @@ if [ ! -d "/home/volumio/mpd_oled" ]
 then
   echo "Installing MPD_OLED"
   sudo apt -y install build-essential git-core autoconf make libtool libi2c-dev i2c-tools lm-sensors libcurl4-openssl-dev libmpdclient-dev libjsoncpp-dev
-  git clone https://github.com/antiprism/mpd_oled
+  git clone https://github.com/supercrab/mpd_oled
   cd mpd_oled
   if cat /etc/os-release | grep -q buster; then
     # buster build

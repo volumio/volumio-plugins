@@ -110,7 +110,6 @@
 		"LABEL": "Zbernica I2C",
 		"DOC": "Vyberte zbernicu I2C v závislosti od vášho modelu Raspberry Pi.<br/><br/>/dev/i2c-1 pre Model A, B Rev 2, alebo B+ Pi<br>/dev/i2c-0 pre originálny Model B Rev 1 Pi.",
 		"ITEM0": "/dev/i2c-0",
-		"ITEM1": "/dev/i2c-1",
 		"DEFAULT": "/dev/i2c-1 (predvolené)"
 	},
 	"SPI_RESET_GPIO_NUMBER": {
@@ -143,5 +142,11 @@
 	"MPD_OLED_LINK": {
 		"LABEL": "MPD OLED na GitHub",
 		"DESC": "Navštívte projekt MPD OLED na GitHub."
+	},
+	"DATE_FORMAT": {
+		"LABEL": "Formát dátumu",
+		"DOC": "Vyberte formát dátumu.",
+		"DEFAULT": "DD-MM-YYYY (predvolené)",
+		"ITEM1": "MM-DD-YYYY"
 	}
 }

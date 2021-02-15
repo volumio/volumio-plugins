@@ -126,5 +126,13 @@
 	"spiCSLabel": {
 		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
 		"type": "string"
+	},
+	"dateFormat": {
+		"value": 0,
+		"type": "number"
+	},
+	"dataFormatLabel": {
+		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
+		"type": "string"
 	}
 }

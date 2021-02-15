@@ -110,7 +110,6 @@
 		"LABEL": "I2C bus",
 		"DOC": "Select the I2C bus depending on your model of Raspberry Pi.<br/><br/>/dev/i2c-1 for Model A, B Rev 2 or B+ Pi<br>/dev/i2c-0 for original Model B Rev 1 Pi.",
 		"ITEM0": "/dev/i2c-0",
-		"ITEM1": "/dev/i2c-1",
 		"DEFAULT": "/dev/i2c-1 (default)"
 	},
 	"SPI_RESET_GPIO_NUMBER": {
@@ -143,5 +142,11 @@
 	"MPD_OLED_LINK": {
 		"LABEL": "MPD OLED on GitHub",
 		"DESC": "Visit the MPD OLED project on GitHub."
+	},
+	"DATE_FORMAT": {
+		"LABEL": "Date format",
+		"DOC": "Select the date format.",
+		"DEFAULT": "DD-MM-YYYY (default)",
+		"ITEM1": "MM-DD-YYYY"
 	}
 }
