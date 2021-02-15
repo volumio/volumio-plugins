@@ -1,4 +1,4 @@
-Febuary 12th 2021
+Febuary 15th 2021
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -46,6 +46,12 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 15th 2021
+
+- first usable (?) version
+- autoset attenuation
+- misc fixes
 
 Febuary 12th 2021
 - 

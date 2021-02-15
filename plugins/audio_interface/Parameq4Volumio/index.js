@@ -49,8 +49,8 @@ Parameq.prototype.onStart = function () {
   setTimeout(function () {
     self.createCamilladspfile()
 
-  }, 2000);  
-    defer.resolve();
+  }, 2000);
+  defer.resolve();
 
   return defer.promise;
 };
@@ -216,15 +216,13 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
 Parameq.prototype.createCamilladspfile = function () {
   const self = this;
-  var eqo;
+  var eqo, eqc, eqv;
   //var o; // nbre of eq
-  //var typec, typer;
+  var typec, typer;
   let defer = libQ.defer();
   var result = '';
-  var pipeline = '';
-  var composedeq = '';
-  let pipeliner, pipelines = '';
-
+  var pipeliner, pipelines = '';
+  let gainmaxused;
 
   try {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
@@ -245,14 +243,16 @@ Parameq.prototype.createCamilladspfile = function () {
       } else {
 
         //var o;
-        for (var o = 1; o < 8; o++) {
-          var eqc;
+        for (let o = 1; o < 8; o++) {
           eqo = ("eq" + o + "c");
           eqc = ("eq" + o);
-          var typec = ("type" + o);
+          typec = ("type" + o);
+          var composedeq = '';
+          var pipeline = '';
+          var gainmax = [];
 
-          var typer = self.config.get(typec);
-          var eqv = self.config.get(eqc).split(',');
+          typer = self.config.get(typec);
+          eqv = self.config.get(eqc).split(',');
           var coef;
           if (typer != 'None') {
 
@@ -261,6 +261,7 @@ Parameq.prototype.createCamilladspfile = function () {
             } else if (typer == 'Peaking') {
               coef = 'q'
             }
+
             composedeq += '  ' + eqc + ':\n';
             composedeq += '    type: Biquad' + '\n';
             composedeq += '    parameters:' + '\n';
@@ -270,20 +271,42 @@ Parameq.prototype.createCamilladspfile = function () {
             composedeq += '      gain: ' + eqv[2] + '\n';
             composedeq += '' + '\n';
             pipeline += '      - ' + eqc + '\n';
+            gainmax = ',' + eqv[2];
 
           } else if (typer == 'None') {
             composedeq = ''
             pipeline = ''
+            gainmaxused = 0
           }
           result += composedeq
           pipeliner += pipeline
+          gainmaxused += gainmax
+
+
         };
         pipelines = pipeliner.slice(17)
+
       };
+
+      let arr = [];
+      arr.push(gainmaxused);
+      arr.sort((a, b) => {
+        if (a > b) return 1;
+        if (a < b) return -1;
+        return 0;
+      });
+
+      gainmaxused = ('-'+(arr.toString().split(',').slice(1).sort((a, b) => a - b)).pop());
+      if (gainmaxused = 'undifined') {
+        gainmaxused = '0'
+      }
+      self.logger.info('gain max in array = ' + gainmaxused);
       self.logger.info(result)
       self.logger.info("pipeline " + pipelines)
 
       let conf = data.replace("${resulteq}", result)
+        .replace("${gain}", (gainmaxused))
+        .replace("${gain}", (gainmaxused))
         .replace("${pipelineL}", pipelines)
         .replace("${pipelineR}", pipelines)
         ;

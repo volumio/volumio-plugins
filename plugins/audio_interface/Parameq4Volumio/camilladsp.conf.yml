@@ -26,12 +26,12 @@ mixers:
       - dest: 0
         sources:
           - channel: 0
-            gain: -10
+            gain: ${gain}
             inverted: false
       - dest: 1
         sources:
           - channel: 1
-            gain: -10
+            gain: ${gain}
             inverted: false
 
 pipeline:
