@@ -108,6 +108,7 @@ rm -Rf mpd_oled.zip
 
 15th Feb 2021
 
+- Updated version number
 - Changed install.sh to point to a new branch of `mpd_oled` whilst the author makes potential breaking changes
 - Added ability to change the date format
 - Manually updated translations

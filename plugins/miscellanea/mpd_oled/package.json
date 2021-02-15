@@ -1,6 +1,6 @@
 {
 	"name": "mpd_oled",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Volumio plugin to install and configure MPD_OLED which displays song information and spectrum analyser on cheap OLED displays.",
 	"main": "index.js",
 	"scripts": {
