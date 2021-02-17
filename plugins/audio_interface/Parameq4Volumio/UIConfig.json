@@ -43,22 +43,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+           
           ]
         },
         {
@@ -81,22 +66,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+         
           ]
         },
         {
@@ -119,22 +89,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+          
           ]
         },
         {
@@ -157,22 +112,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+          
           ]
         },
         {
@@ -195,22 +135,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+          
           ]
         },
         {
@@ -233,22 +158,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+           
           ]
         },
         {
@@ -271,22 +181,7 @@
             "label": "None"
           },
           "options": [
-            {
-              "value": "None",
-              "label": "None"
-            },
-            {
-              "value": "Lowshelf",
-              "label": "Lowshelf"
-            },
-            {
-              "value": "Peaking",
-              "label": "Peaking"
-            },
-            {
-              "value": "Highshelf",
-              "label": "Highshelf"
-            }
+           
           ]
         },
         {

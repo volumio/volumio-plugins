@@ -1,4 +1,4 @@
-Febuary 15th 2021
+Febuary 17th 2021
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
@@ -46,6 +46,11 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 17th 2021
+
+- add lowpass and highpass filters
+- attenuation fix
 
 Febuary 15th 2021
 

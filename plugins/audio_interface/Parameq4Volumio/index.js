@@ -146,6 +146,40 @@ Parameq.prototype.getUIConfig = function () {
       uiconf.sections[0].content[13].value = self.config.get('eq7');
 
 
+      let items = ('None,Peaking,Lowshelf,Highshelf,Highpass,Lowpass').split(',');
+      for (let i in items) {
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[2].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[4].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[6].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[8].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[10].options', {
+          value: items[i],
+          label: items[i]
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
+          value: items[i],
+          label: items[i]
+        });
+
+        //self.logger.info('available filters :' + items[i]);
+      }
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -216,13 +250,7 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
 Parameq.prototype.createCamilladspfile = function () {
   const self = this;
-  var eqo, eqc, eqv;
-  //var o; // nbre of eq
-  var typec, typer;
   let defer = libQ.defer();
-  var result = '';
-  var pipeliner, pipelines = '';
-  let gainmaxused;
 
   try {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
@@ -230,16 +258,24 @@ Parameq.prototype.createCamilladspfile = function () {
         defer.reject(new Error(err));
         return console.log(err);
       }
+      var pipeliner, pipelines = '';
+      var eqo, eqc, eqv;
+      var typec, typer;
+      var result = '';
+      var gainmaxused = [];
+
       if ((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None')) {
+        var composedeq = '';
+        //var pipeline = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
         //composedeq += '    parameters:' + '\n';
         //composedeq += '' + '\n';
-        pipeline += '      - nulleq' + '\n';
+        pipeliner = '      - nulleq';
         result += composedeq
-        pipeliner += pipeline
+        pipelines = pipeliner.slice(8)
+        gainresult = 0
 
-        pipelines = pipeliner.slice(17)
       } else {
 
         //var o;
@@ -248,65 +284,80 @@ Parameq.prototype.createCamilladspfile = function () {
           eqc = ("eq" + o);
           typec = ("type" + o);
           var composedeq = '';
+          var gainmax;
+
           var pipeline = '';
-          var gainmax = [];
 
           typer = self.config.get(typec);
           eqv = self.config.get(eqc).split(',');
           var coef;
-          if (typer != 'None') {
 
-            if ((typer == 'Highshelf' || typer == 'Lowshelf')) {
-              coef = 'slope'
-            } else if (typer == 'Peaking') {
-              coef = 'q'
-            }
+          if ((typer == 'Highshelf' || typer == 'Lowshelf')) {
 
             composedeq += '  ' + eqc + ':\n';
             composedeq += '    type: Biquad' + '\n';
             composedeq += '    parameters:' + '\n';
             composedeq += '      type: ' + typer + '\n';
             composedeq += '      freq: ' + eqv[0] + '\n';
-            composedeq += '      ' + coef + ': ' + eqv[1] + '\n';
+            composedeq += '      slope: ' + eqv[1] + '\n';
             composedeq += '      gain: ' + eqv[2] + '\n';
             composedeq += '' + '\n';
             pipeline += '      - ' + eqc + '\n';
             gainmax = ',' + eqv[2];
 
+          } else if (typer == 'Peaking') {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      q: ' + eqv[1] + '\n';
+            composedeq += '      gain: ' + eqv[2] + '\n';
+            composedeq += '' + '\n';
+            pipeline += '      - ' + eqc + '\n';
+            gainmax = ',' + eqv[2];
+
+          } else if ((typer == 'Lowpass' || typer == 'Highpass')) {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      q: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            pipeline += '      - ' + eqc + '\n';
+            gainmax = ',' + 0
+
           } else if (typer == 'None') {
+
             composedeq = ''
-            pipeline = ''
-            gainmaxused = 0
+            pipeline += ''
+            gainmax = ',' + 0
+
           }
+
           result += composedeq
           pipeliner += pipeline
           gainmaxused += gainmax
 
-
         };
         pipelines = pipeliner.slice(17)
+        var gainresult
+
+        gainresult = ('-' + (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop());
 
       };
 
-      let arr = [];
-      arr.push(gainmaxused);
-      arr.sort((a, b) => {
-        if (a > b) return 1;
-        if (a < b) return -1;
-        return 0;
-      });
+      console.log(gainresult)
 
-      gainmaxused = ('-'+(arr.toString().split(',').slice(1).sort((a, b) => a - b)).pop());
-      if (gainmaxused = 'undifined') {
-        gainmaxused = '0'
-      }
-      self.logger.info('gain max in array = ' + gainmaxused);
       self.logger.info(result)
       self.logger.info("pipeline " + pipelines)
 
       let conf = data.replace("${resulteq}", result)
-        .replace("${gain}", (gainmaxused))
-        .replace("${gain}", (gainmaxused))
+        .replace("${gain}", (gainresult))
+        .replace("${gain}", (gainresult))
         .replace("${pipelineL}", pipelines)
         .replace("${pipelineR}", pipelines)
         ;
@@ -332,7 +383,6 @@ Parameq.prototype.saveparameq = function (data, obj) {
 
   let defer = libQ.defer();
 
-
   self.config.set('type1', data['type1'].value);
   self.config.set('eq1', data['eq1']);
   self.config.set('type2', data['type2'].value);
@@ -353,7 +403,7 @@ Parameq.prototype.saveparameq = function (data, obj) {
 
     let test = self.config.get('eq' + o).split(',')
     var reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
-    if ((reg.test(test[0])) && (reg.test(test[1])) && (reg.test(test[2]))) {
+    if ((reg.test(test[0])) && (reg.test(test[1]))/* && (reg.test(test[2]))*/) {
       self.commandRouter.pushToastMessage('info', 'Values saved !');
       //      console.log('String contains = ' + test)
     } else {
