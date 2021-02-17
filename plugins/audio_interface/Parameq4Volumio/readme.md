@@ -9,6 +9,7 @@ Febuary 17th 2021
 
 This plugin is designed to apply a Parametric Eq based on CamillaDsp
 
+![Alt text](Parameq4Volumio.png?raw=true "Main interface")
 
 
 
