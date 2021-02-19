@@ -1,6 +1,6 @@
 {
 	"name": "nanosoundone",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": "Companion plugin for NanoSound One",
 	"main": "index.js",
 	"scripts": {
