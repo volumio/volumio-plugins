@@ -121,7 +121,7 @@ nanosound.prototype.onStart = function() {
 	//---------------- End of LIRC setup -------------------
 	self.restartNSLirc(true);
 	
-	if(self.config.get('model')=="DAC2")
+	if(self.config.get('model')=="DAC2" || self.config.get('model')=="DAC3")
 		self.restartRotary(true)
 	//---------------- Start of GPIO setup -----------------
 
@@ -201,6 +201,11 @@ nanosound.prototype.createTriggers = function() {
 	{
 		actions = ["playPause", "previous", "next", "shutdown"];
 		pins = [16,12,5,4]
+	}
+	else if(model=="DAC3")
+	{
+		actions = ["playPause", "previous", "next", "shutdown"];
+		pins = [20,12,5,4]
 	}
 	else
 	{	//DAC, ProdBoard
@@ -309,7 +314,7 @@ nanosound.prototype.onStop = function() {
 									
 								}
 								
-								if(self.config.get('model')=="DAC2")
+								if(self.config.get('model')=="DAC2" || self.config.get('model')=="DAC3")
 								{
 									exec('usr/bin/sudo /bin/systemctl stop nanosound_rotary.service', {uid:1000,gid:1000},
 									function (error, stdout, stderr) {
@@ -386,6 +391,8 @@ nanosound.prototype.getUIConfig = function() {
 				modellabel="DAC"
 			else if(self.config.get('model')=="DAC2")
 				modellabel="DAC2"
+			else if(self.config.get('model')=="DAC3")
+				modellabel="DAC3"
 			else if(self.config.get('model')=="ProdBoard")
 				modellabel="ProdBoard"
 			else
