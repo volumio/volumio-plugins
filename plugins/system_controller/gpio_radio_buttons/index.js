@@ -240,9 +240,9 @@ gpioRadioButtons.prototype.createTriggers = function() {
 
         if (isEnabled === true) {
             self.logger.info('GPIO Radio Buttons: '+ button + ' on pin ' + gpioPin.toString() + ' tunes to ' + stationName + ' using uri ' + stationUri);
-            var pin = new Gpio(gpioPin,'in','rising', {debounceTimeout: 250});
+            var pin = new Gpio(gpioPin, 'in', 'rising', {debounceTimeout: 250});
             pin.watch(self.listener.bind(self, {stationName: stationName, stationUri: stationUri}));
-            self.triggers.push(j);
+            self.triggers.push(pin);
         }
     }
         
@@ -267,7 +267,7 @@ gpioRadioButtons.prototype.clearTriggers = function() {
 gpioRadioButtons.prototype.listener = function(station, err, value) {
     var self = this;
     
-    self.logger.info('GPI Radio Buttons: Changing station to ' + station.title);
+    self.logger.info('GPIO Radio Buttons: Changing station to ' + station.stationName);
     self.changeStation(station);
 };
 
