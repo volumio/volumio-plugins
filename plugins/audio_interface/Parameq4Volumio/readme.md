@@ -1,10 +1,9 @@
 Febuary 17th 2021
 
 
-##  Experimental version for modular_alsa - Do not use!!!
+##  Experimental version for modular_alsa !
 
 
-#	DSP for Volumio (previously Brutefir3)
 
 
 This plugin is designed to apply a Parametric Eq based on CamillaDsp
@@ -47,6 +46,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 19th 2021
+
+- equalizer scope
 
 Febuary 17th 2021
 

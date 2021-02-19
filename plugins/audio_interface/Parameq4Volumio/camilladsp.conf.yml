@@ -16,6 +16,8 @@ devices:
     format: S24LE3
 
 filters:
+  nulleq2:
+    type: Conv
 ${resulteq}
 mixers:
   stereo:
