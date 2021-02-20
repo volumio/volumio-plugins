@@ -36,22 +36,41 @@
           "eq6",
           "type7",
           "scope7",
-          "eq7"
+          "eq7",
+          "type8",
+          "scope8",
+          "eq8",
+          "type9",
+          "scope9",
+          "eq9",
+          "type10",
+          "scope10",
+          "eq10",
+          "type11",
+          "scope11",
+          "eq11",
+          "type12",
+          "scope12",
+          "eq12",
+          "type13",
+          "scope13",
+          "eq13",
+          "type14",
+          "scope14",
+          "eq14"
         ]
       },
       "content": [
         {
           "id": "type1",
           "element": "select",
-          "doc": "type1",
-          "label": "type1",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 1",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "scope1",
@@ -62,9 +81,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq1",
@@ -79,15 +96,13 @@
         {
           "id": "type2",
           "element": "select",
-          "doc": "Type2",
-          "label": "type2",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 2",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-         
-          ]
+          "options": []
         },
         {
           "id": "scope2",
@@ -98,9 +113,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq2",
@@ -115,15 +128,13 @@
         {
           "id": "type3",
           "element": "select",
-          "doc": "type3",
-          "label": "type3",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 3",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-          
-          ]
+          "options": []
         },
         {
           "id": "scope3",
@@ -134,9 +145,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq3",
@@ -151,15 +160,13 @@
         {
           "id": "type4",
           "element": "select",
-          "doc": "type4",
-          "label": "type4",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 4",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-          
-          ]
+          "options": []
         },
         {
           "id": "scope4",
@@ -170,9 +177,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq4",
@@ -187,15 +192,13 @@
         {
           "id": "type5",
           "element": "select",
-          "doc": "type5",
-          "label": "type5",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 5",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-          
-          ]
+          "options": []
         },
         {
           "id": "scope5",
@@ -206,9 +209,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq5",
@@ -223,15 +224,13 @@
         {
           "id": "type6",
           "element": "select",
-          "doc": "type6",
-          "label": "type6",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 6",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "scope6",
@@ -242,9 +241,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq6",
@@ -259,15 +256,13 @@
         {
           "id": "type7",
           "element": "select",
-          "doc": "type7",
-          "label": "type7",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 7",
           "value": {
             "value": "None",
             "label": "None"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "scope7",
@@ -278,9 +273,7 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": [
-           
-          ]
+          "options": []
         },
         {
           "id": "eq7",
@@ -290,6 +283,252 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type8",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 8",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope8",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq8",
+          "element": "input",
+          "label": "eq8",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type9",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type9",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope9",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq9",
+          "element": "input",
+          "label": "eq9",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type10",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type10",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope10",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq10",
+          "element": "input",
+          "label": "eq10",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type11",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type11",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope11",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq11",
+          "element": "input",
+          "label": "eq11",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type12",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 12",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope12",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq12",
+          "element": "input",
+          "label": "eq12",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type13",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 13",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope13",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq13",
+          "element": "input",
+          "label": "eq13",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "type14",
+          "element": "select",
+          "doc": "TRANSLATE.TYPEEQ",
+          "label": "type 14",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": []
+        },
+        {
+          "id": "scope14",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "eq14",
+          "element": "input",
+          "label": "eq14",
+          "doc": "TRANSLATE.EQ",
+          "value": {
+            "value": "0,0,0",
+            "label": "0,0,0"
+          }
+        },
+        {
+          "id": "addeq",
+          "element": "button",
+          "label": "Add equalizer",
+          "description": "Add equalizer",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Parameq4Volumio",
+            "method": "addeq"
+          }
+        },
+        {
+          "id": "removeeq",
+          "element": "button",
+          "label": "Remove equalizer",
+          "description": "Remove equalizer",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Parameq4Volumio",
+            "method": "removeeq"
           }
         }
       ]

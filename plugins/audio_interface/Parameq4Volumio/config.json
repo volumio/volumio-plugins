@@ -1,4 +1,8 @@
 {
+    "nbreq": {
+        "type":"number",
+        "value": "1"
+    },
    "type1": {
         "type": "string",
         "value": "None"
@@ -80,6 +84,90 @@
         "value": "L+R"
     },
     "eq7": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type_": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope8": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq8": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type9": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope9": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq9": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type10": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope10": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq10": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type11": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope11": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq11": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type12": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope12": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq12": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type13": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope13": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq13": {
+        "type": "string",
+        "value": "0,0,0"
+    },
+    "type14": {
+        "type": "string",
+        "value": "None"
+    },
+    "scope14": {
+        "type": "string",
+        "value": "L+R"
+    },
+    "eq14": {
         "type": "string",
         "value": "0,0,0"
     }

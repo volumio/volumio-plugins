@@ -1,4 +1,4 @@
-Febuary 17th 2021
+Febuary 20th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,11 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 20th 2021
+
+- 14 eq
+- adapativ UI
 
 Febuary 19th 2021
 
