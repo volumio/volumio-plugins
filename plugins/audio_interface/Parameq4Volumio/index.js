@@ -54,7 +54,6 @@ Parameq.prototype.onStart = function () {
 
   }, 2000);
   defer.resolve();
-
   return defer.promise;
 };
 
@@ -100,8 +99,8 @@ Parameq.prototype.getUIConfig = function () {
     __dirname + '/UIConfig.json')
 
     .then(function (uiconf) {
-      var value;
       var nsections = '0';
+      let value;
       let ncontent = self.config.get('nbreq')
 
       for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
@@ -111,48 +110,189 @@ Parameq.prototype.getUIConfig = function () {
       }
 
       if (ncontent == 1) {
-        self.logger.info('ncontent = '+ ncontent)
         uiconf.sections[nsections].content[43].hidden = true;
       }
       if (ncontent > 13) {
-        self.logger.info('ncontent = '+ ncontent)
 
-       uiconf.sections[nsections].content[42].hidden = true;
+        uiconf.sections[nsections].content[42].hidden = true;
       }
+      /*
+            for (var a = 0; a < tnbreq; a++) {
+              var c = 3 * a
+              value = self.config.get('type' + (a + 1));
+              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].value.value', value);
+              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content]' + c + '].value.label', value)
+              value = self.config.get('scope' + (a + 1));
+              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.value', value);
+              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.label', value)
+              */
 
       for (var a = 0; a < tnbreq; a++) {
         var c = 3 * a
-        value = self.config.get('type' + (a + 1));
-        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].value.value', value);
-        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content]' + c + '].value.label', value)
-        self.logger.info('type sections[' + nsections + '].content[' + c + '].value.value' + ' ' + a)
-        value = self.config.get('scope' + (a + 1));
-        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.value', value);
-        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.label', value)
-        self.logger.info('scope sections[' + nsections + '].content[' + (c + 1) + '].value.value' + ' ' + a)
 
-        uiconf.sections[nsections].content[(c + 2)].value = self.config.get('eq' + (a + 1));
-        self.logger.info('eq sections ' + (c + 2) + ' ' + (a + 1))
+        let items = ('None,Peaking,Lowshelf,Highshelf,Highpass,Lowpass').split(',');
+        for (let x in items) {
+          self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].options', {
+            value: items[x],
+            label: items[x]
+          });
+        }
+
         let sitems = ('L,R,L+R').split(',');
         for (let i in sitems) {
           self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].options', {
             value: sitems[i],
             label: sitems[i]
           });
-
-
         }
+        /*
+       
+                uiconf.sections[nsections].content[(c + 2)].value = self.config.get('eq' + (a + 1));
+        */
 
-        let items = ('None,Peaking,Lowshelf,Highshelf,Highpass,Lowpass').split(',');
-        for (let i in items) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].options', {
-            value: items[i],
-            label: items[i]
-          });
 
-        }
+        value = self.config.get('type1');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[0].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[0].value.label', value);
+
+        value = self.config.get('scope1');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[1].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[1].value.label', value);
+
+
+        uiconf.sections[0].content[2].value = self.config.get('eq1');
+
+        value = self.config.get('type2');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[3].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[3].value.label', value);
+
+        value = self.config.get('scope2');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[4].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[4].value.label', value);
+
+        uiconf.sections[0].content[5].value = self.config.get('eq2');
+
+        value = self.config.get('type3');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[6].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[6].value.label', value);
+
+        value = self.config.get('scope3');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[7].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[7].value.label', value);
+
+        uiconf.sections[0].content[8].value = self.config.get('eq3');
+
+        value = self.config.get('type4');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[9].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[9].value.label', value);
+
+        value = self.config.get('scope4');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[10].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[10].value.label', value);
+
+        uiconf.sections[0].content[11].value = self.config.get('eq4');
+
+        value = self.config.get('type5');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[12].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[12].value.label', value);
+
+        value = self.config.get('scope5');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[13].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[13].value.label', value);
+
+        uiconf.sections[0].content[14].value = self.config.get('eq5');
+
+        value = self.config.get('type6');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[15].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[15].value.label', value);
+
+        value = self.config.get('scope6');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[16].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[16].value.label', value);
+
+        uiconf.sections[0].content[17].value = self.config.get('eq6');
+
+        value = self.config.get('type7');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[18].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[18].value.label', value);
+
+        value = self.config.get('scope7');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[19].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[19].value.label', value);
+
+        uiconf.sections[0].content[20].value = self.config.get('eq7');
+
+        value = self.config.get('type8');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[21].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[21].value.label', value);
+
+        value = self.config.get('scope8');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[22].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[22].value.label', value);
+
+
+        uiconf.sections[0].content[23].value = self.config.get('eq8');
+
+        value = self.config.get('type9');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[24].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[24].value.label', value);
+
+        value = self.config.get('scope9');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[25].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[25].value.label', value);
+
+        uiconf.sections[0].content[26].value = self.config.get('eq9');
+
+        value = self.config.get('type10');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[27].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[27].value.label', value);
+
+        value = self.config.get('scope10');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[28].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[28].value.label', value);
+
+        uiconf.sections[0].content[29].value = self.config.get('eq10');
+
+        value = self.config.get('type11');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[30].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[30].value.label', value);
+
+        value = self.config.get('scope11');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[31].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[31].value.label', value);
+
+        uiconf.sections[0].content[32].value = self.config.get('eq11');
+
+        value = self.config.get('type12');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[33].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[33].value.label', value);
+
+        value = self.config.get('scope12');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[34].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[34].value.label', value);
+
+        uiconf.sections[0].content[35].value = self.config.get('eq12');
+
+        value = self.config.get('type13');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[36].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[36].value.label', value);
+
+        value = self.config.get('scope13');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[37].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[37].value.label', value);
+
+        uiconf.sections[0].content[38].value = self.config.get('eq13');
+
+        value = self.config.get('type14');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[39].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[39].value.label', value);
+
+        value = self.config.get('scope14');
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.value', value);
+        self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.label', value);
+
+        uiconf.sections[0].content[41].value = self.config.get('eq14');
       }
-
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -162,7 +302,7 @@ Parameq.prototype.getUIConfig = function () {
 };
 
 
-Parameq.prototype.addeq = function () {
+Parameq.prototype.addeq = function (data) {
   const self = this;
   var n = self.config.get('nbreq')
   n = n + 1;
@@ -181,7 +321,7 @@ Parameq.prototype.addeq = function () {
   }, 200);
 };
 
-Parameq.prototype.removeeq = function () {
+Parameq.prototype.removeeq = function (data) {
   const self = this;
   var n = self.config.get('nbreq')
   n = n - 1;
@@ -438,7 +578,7 @@ Parameq.prototype.createCamilladspfile = function () {
 
 
 //here we save eqs config.json
-Parameq.prototype.saveparameq = function (data, obj) {
+Parameq.prototype.saveparameq = function (data) {
   const self = this;
 
   let defer = libQ.defer();
@@ -446,24 +586,22 @@ Parameq.prototype.saveparameq = function (data, obj) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
+    let test = self.config.get('eq' + o).split(',')
+    let reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
+
+    if (typec == 'Peaking') {
+      if ((reg.test(test[0]))) {
+        self.commandRouter.pushToastMessage('info', 'Values saved !');
+      } else {
+        self.commandRouter.pushToastMessage('error', 'Frequency in filter ' + eqc + ' must be an integer [1-20000]');
+        return;
+      }
+    }
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
-
-
-
-
-
-    let test = self.config.get('eq' + o).split(',')
-    var reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
-    if ((reg.test(test[0])) && (reg.test(test[1]))) {
-      self.commandRouter.pushToastMessage('info', 'Values saved !');
-      //      console.log('String contains = ' + test)
-    } else {
-      self.commandRouter.pushToastMessage('error', 'Only number! Check your config !');
-      return;
-    }
   }
+
   setTimeout(function () {
     self.createCamilladspfile()
   }, 500);

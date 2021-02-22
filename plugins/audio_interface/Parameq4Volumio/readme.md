@@ -1,4 +1,4 @@
-Febuary 20th 2021
+Febuary 22th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 22th 2021
+
+- fix for values not restored in UI
 
 Febuary 20th 2021
 
