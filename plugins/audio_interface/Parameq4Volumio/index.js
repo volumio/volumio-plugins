@@ -130,7 +130,7 @@ Parameq.prototype.getUIConfig = function () {
       for (var a = 0; a < tnbreq; a++) {
         var c = 3 * a
 
-        let items = ('None,Peaking,Lowshelf,Highshelf,Highpass,Lowpass').split(',');
+        let items = ('None,Peaking,Lowshelf,Highshelf,Notch,Highpass,Lowpass').split(',');
         for (let x in items) {
           self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].options', {
             value: items[x],
@@ -500,7 +500,7 @@ Parameq.prototype.createCamilladspfile = function () {
 
             }
 
-          } else if ((typer == 'Lowpass' || typer == 'Highpass')) {
+          } else if ((typer == 'Lowpass' || typer == 'Highpass' || typer == 'Notch')) {
 
             composedeq += '  ' + eqc + ':\n';
             composedeq += '    type: Biquad' + '\n';

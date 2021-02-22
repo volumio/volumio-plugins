@@ -50,6 +50,7 @@ nearly everythings
 Febuary 22th 2021
 
 - fix for values not restored in UI
+- add notch filter
 
 Febuary 20th 2021
 
