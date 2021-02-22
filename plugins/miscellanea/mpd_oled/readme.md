@@ -23,9 +23,9 @@
 
 - You can hook up your screens like so:
 
-![I2C wiring](https://github.com/antiprism/mpd_oled/blob/master/wiring_i2c.png?raw=true)
+![I2C wiring](https://github.com/antiprism/mpd_oled/blob/master/doc/wiring_i2c.png?raw=true)
 
-![SPI wiring](https://github.com/antiprism/mpd_oled/blob/master/wiring_spi.png?raw=true)
+![SPI wiring](https://github.com/antiprism/mpd_oled/blob/master/doc/wiring_spi.png?raw=true)
 
 
 ### 2. Enable SSH and connect to Volumio
