@@ -90,21 +90,26 @@ gpiorandom.prototype.createPlaylist = function() {
         
         // whlie browsing, we encounter either songs : we add it to playlist...
         if (item.type == 'song') {
-            self.logger.info("gpioRandom : \tadd to queue - " + item.title);
+            self.logger.info("gpioRandom : add to queue - " + item.title);
             socket.emit('addToQueue', {'uri':item.uri});
         } else { // ... or folders : we scan them
             var list = data.navigation.lists[0].items;
             var random = self.rand(list.length - 1, 0);
             var select = list[random];
-            self.logger.info("gpioRandom : \tbrowse into " + item.title);
+            
+            self.logger.info("gpioRandom : browse into " + item.title);
             socket.emit('browseLibrary', {'uri':select.uri});
         }
     });
     
-    // as son as maximum songs are in queue, start to play
+    // as son as maximum songs are in queue, stop listening to changes and start to play
     socket.on('pushQueue', function(data) {
         if (data.length >= self.nbsongs) {
-            self.logger.info("gpioRandom : \tadded "+self.nbsongs+" entries - start playing");
+            self.logger.info("gpioRandom : added "+self.nbsongs+ " - unregister library and queue event");
+            socket.off('pushBrowseLibrary');
+            socket.off('pushQueue');
+            
+            self.logger.info("gpioRandom : now start playing");
             socket.emit('play',{'value':0});
         } else {
             socket.emit('browseLibrary', {'uri':'albums://'});
