@@ -333,7 +333,7 @@ MpdOled.prototype.startProcess = function(interactive){
 	else{
 		// Start process asynchronously
 		// If the process starts OK, no exit code is returned
-		const command = "/home/volumio/mpd_oled/mpd_oled " + self.getParameters();
+		const command = "/usr/bin/sudo -S /home/volumio/mpd_oled/mpd_oled " + self.getParameters();
 		var errorMessage = "";
 		self.info(`Starting mpd_oled: ${command}`);
 		exec(command, function(error, stdout, stderr){
