@@ -106,6 +106,10 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
+23rd Feb 2021
+
+- Allow `mpd_oled` to run with root privilages to allow SPI devices to run
+
 15th Feb 2021
 
 - Updated version number
