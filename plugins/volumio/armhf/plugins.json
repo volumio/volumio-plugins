@@ -623,7 +623,7 @@
 					"prettyName": "NanoSound One",
 					"icon": "fa-lightbulb-o",
 					"name": "nanosoundone",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/nanosoundone/nanosoundone.zip",
 					"license": "ISC",
 					"description": "Companion plugin for NanoSound One",
@@ -635,7 +635,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "8-8-2020"
+					"updated": "23-2-2021"
 				},
 				{
 					"prettyName": "Cisco DUO",
