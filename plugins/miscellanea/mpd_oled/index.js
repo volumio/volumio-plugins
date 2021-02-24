@@ -292,7 +292,7 @@ MpdOled.prototype.stopProcess = function(interactive, callback){
 	const PROCESS_FINISH_DELAY_MS = 50;
 	const disableService = "/usr/bin/sudo /usr/sbin/service mpd_oled status && /usr/bin/sudo /bin/systemctl disable mpd_oled";
 	const killProcess = "/usr/bin/sudo /usr/bin/killall mpd_oled";
-	const killCavaProcess = "/usr/bin/sudo /usr/bin/killall cava";
+	const killCavaProcess = "/usr/bin/sudo /usr/bin/killall -q -w cava";
 
 	// Disable mpd_oled service
 	self.info(`Disabling mpd_oled service: ${disableService}`);
