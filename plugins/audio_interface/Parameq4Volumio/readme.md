@@ -1,4 +1,4 @@
-Febuary 22th 2021
+Febuary 24th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 24th 2021
+
+- Integrity checking for values in each eq
 
 Febuary 22th 2021
 

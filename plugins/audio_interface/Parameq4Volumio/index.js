@@ -423,7 +423,7 @@ Parameq.prototype.createCamilladspfile = function () {
       var result = '';
       var gainmaxused = [];
       var scopec, scoper;
-
+      var nbreq = (self.config.get('nbreq'))
 
       if ((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None')) {
         var composedeq = '';
@@ -439,7 +439,7 @@ Parameq.prototype.createCamilladspfile = function () {
 
       } else {
 
-        for (let o = 1; o < (tnbreq + 1); o++) {
+        for (let o = 1; o < (nbreq + 1); o++) {
           eqo = ("eq" + o + "c");
           eqc = ("eq" + o);
           typec = ("type" + o);
@@ -582,34 +582,85 @@ Parameq.prototype.saveparameq = function (data) {
   const self = this;
 
   let defer = libQ.defer();
-  for (var o = 1; o < (tnbreq + 1); o++) {
+  var nbreq = self.config.get('nbreq')
+  for (var o = 1; o < (nbreq + 1); o++) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-    let test = self.config.get('eq' + o).split(',')
-    let reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
+    var typer = (data[typec].value)
+    var eqr = (data[eqc]).split(',')
 
-    if (typec == 'Peaking') {
-      if ((reg.test(test[0]))) {
-        self.commandRouter.pushToastMessage('info', 'Values saved !');
+    self.logger.info('data = ' + eqr)
+    //var test = self.config.set(eqc).split(',')
+    //let reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
+    //  var typer = self.config.get(typec)
+    var veq = Number(eqr[0]);
+    // self.logger.info('data split= ' + veq)
+
+    if (Number.isInteger(veq) && (veq > 0 && veq < 20001)) {
+      self.logger.info('value ok ')
+
+    } else {
+      self.logger.info('wrong value in '+eqc)
+      self.commandRouter.pushToastMessage('error', 'Frequency Hz in filter ' + eqc + ' must be an integer [1-20000]')
+      return;
+    }
+    if (typer == 'Peaking' || typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
+
+      var q = Number(eqr[1]);
+      if ((Number.parseFloat(q)) && (q > 0 && q < 15.1)) {
+
       } else {
-        self.commandRouter.pushToastMessage('error', 'Frequency in filter ' + eqc + ' must be an integer [1-20000]');
+        self.commandRouter.pushToastMessage('error', 'Coefficient Q in filter ' + eqc + ' must be a float [0.1-15]')
+        return;
+      }
+
+    }
+    if (typer == 'Peaking' || typer == 'Highshelf' || typer == 'Lowshelf') {
+
+      var g = Number(eqr[2]);
+      if ((Number.isInteger(g)) && (g > -21 && g < 21)) {
+
+      } else {
+        self.commandRouter.pushToastMessage('error', 'Gain in filter ' + eqc + ' must be a integer [-20-20]')
+        return;
+      }
+
+    }
+    if (typer == 'Highshelf' || typer == 'Lowshelf') {
+
+      var s = Number(eqr[1]);
+      if ((Number.isInteger(s)) && (s > 0 && s < 16)) {
+
+      } else {
+        self.commandRouter.pushToastMessage('error', 'Slope in filter ' + eqc + ' must be a integer [1-15]')
         return;
       }
     }
+    if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
+
+      var q = eqr[2];
+      self.logger.info('last value ' + q)
+      if (q != undefined) {
+        self.commandRouter.pushToastMessage('error', 'No need third coefficient for ' + eqc)
+        return;
+      } else {
+        //do nthing
+      }
+
+    }
+  }
+  for (var o = 1; o < (nbreq + 1); o++) {
+
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
-  }
+    self.commandRouter.pushToastMessage('info', 'Values saved !')
 
+  }
   setTimeout(function () {
     self.createCamilladspfile()
   }, 500);
 
   return defer.promise;
 }
-
-
-
-
-
