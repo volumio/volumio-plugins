@@ -106,6 +106,10 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
+24rd Feb 2021
+
+- Kill any rogue CAVA processes which could be holding on to audio devices
+
 23rd Feb 2021
 
 - Allow `mpd_oled` to run with root privilages to allow SPI devices to run
