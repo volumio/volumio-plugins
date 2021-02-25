@@ -1,4 +1,4 @@
-Febuary 24th 2021
+Febuary 25th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 25th 2021
+
+- install for x86_64
 
 Febuary 24th 2021
 

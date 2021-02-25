@@ -30,13 +30,17 @@ mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
 sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 
-elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
+elif [ $cpu = "x86_64" ]
 then
 cd $LIB
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
-tar -xvf camilladsp-linux-amd64.tar.gz
+tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
+sudo chown volumio camilladsp
+sudo chgrp volumio camilladsp
 sudo chmod +x camilladsp
-rm camilladsp-linux-armv7.tar.gz
+mv /tmp/camilladsp $LIB/
+rm /tmp/camilladsp-linux-armv7.tar.gz
+sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
 
 else
     echo "Sorry, cpu is $cpu and your device is not yet supported !"
