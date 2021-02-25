@@ -1,0 +1,19 @@
+{
+  "page": {
+    "label": "GPIO Radio Buttons"
+  },
+  "sections": [
+    {
+      "id": "gpio_setup",
+      "element": "section",
+      "label": "Setup your GPIO Radio Buttons",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"system_controller/gpio_radio_buttons", "method":"saveConfig"},
+      "saveButton": {
+        "label": "Save",
+        "data": []
+      },
+      "content": []
+    }
+  ]
+}
