@@ -752,6 +752,24 @@
 						}
 					],
 					"updated": "29-3-2019"
+				},
+				{
+					"prettyName": "GPIO Radio Buttons",
+					"icon": "fa-lightbulb-o",
+					"name": "gpio_radio_buttons",
+					"version": "0.1.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/system_controller/gpio_radio_buttons/gpio_radio_buttons.zip",
+					"license": "ISC",
+					"description": "Allows the Raspberry PI GPIO pins to be used with physical push buttons to select different radio stations from the 'Favourite Radios' list in a modern take on old-fashioned radio buttons.",
+					"details": "",
+					"author": "Kevin Thomas",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "25-2-2021"
 				}
 			]
 		},
