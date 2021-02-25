@@ -10,22 +10,37 @@ cd /home/volumio/
 # refresh packages
 echo "Updating packages"
 sudo apt-get update
+sudo apt-get -y install build-essential git-core autoconf make libtool libfftw3-dev libmpdclient-dev libi2c-dev i2c-tools lm-sensors
 
 ##############################
 # install CAVA if not present
 if [ ! -d "/home/volumio/cava" ]
 then
   echo "Installing CAVA"
-  sudo apt-get -y install git-core autoconf make libtool libfftw3-dev libasound2-dev
   git clone https://github.com/karlstav/cava
   cd cava
   ./autogen.sh
-  ./configure
+  ./configure --disable-input-portaudio --disable-input-sndio --disable-output-ncurses --disable-input-pulse --program-prefix=mpd_oled_
   make
-  sudo make install
+  sudo make install-strip
   cd ..
 else
   echo "CAVA already installed"
+fi
+
+##########################
+# install mpd_oled
+if [ ! -d "/home/volumio/mpd_oled" ]
+then
+  echo "Installing MPD_OLED"
+  git clone https://github.com/antiprism/mpd_oled
+  cd mpd_oled
+  sudo ./bootstrap
+  CPPFLAGS="-W -Wall -Wno-psabi" ./configure
+  make
+  sudo make install-strip
+else
+  echo "MPD_OLED already installed"
 fi
 
 ########################
@@ -39,35 +54,27 @@ fi
 if ! grep -q "dtparam=i2c_vc=on" "/boot/config.txt"; then
   echo "* I2C-0 bus enabled"
 else
-  echo "* I2C-0 bus DISabled"
+  echo "* I2C-0 bus disabled"
 fi
 
 ###############################################
 # append I2C baudrate if it is not already set
 if ! grep -q "i2c_arm_baudrate" "/boot/config.txt"; then
   if ! grep -q "i2c_arm_baudrate" "/boot/userconfig.txt"; then
+    echo "Setting I2C baudrate"
     echo "dtparam=i2c_arm_baudrate=800000" >> /boot/userconfig.txt
   fi
 fi
 
-##########################
-# install mpd_oled
-if [ ! -d "/home/volumio/mpd_oled" ]
-then
-  echo "Installing MPD_OLED"
-  sudo apt -y install build-essential git-core autoconf make libtool libi2c-dev i2c-tools lm-sensors libcurl4-openssl-dev libmpdclient-dev libjsoncpp-dev
-  git clone https://github.com/supercrab/mpd_oled
-  cd mpd_oled
-  if cat /etc/os-release | grep -q buster; then
-    # buster build
-    PLAYER=VOLUMIO LDLIBS="-li2c" make
-  else
-    # raspbian build
-    PLAYER=VOLUMIO make
+#############################################
+# enable SPI if not enabled
+if ! grep -q "spi=on" "/boot/config.txt"; then
+  if ! grep -q "spi=on" "/boot/userconfig.txt"; then
+    echo "Enabling SPI"
+    echo "dtparam=spi=on" >> /boot/userconfig.txt
   fi
-else
-  echo "MPD_OLED already installed"
 fi
+
 
 # template file used to create /etc/mpd.conf
 tmpl_file="/volumio/app/plugins/music_service/mpd/mpd.conf.tmpl"

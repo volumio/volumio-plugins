@@ -37,9 +37,10 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
-- Type the following commands to download and install plugin:  
+- This process takes a few minutes on a Pi4 and much longer on a Pi0.
+- Type the following commands to download and compile the depencies and install the plugin:  
 
-**When you run the `volumio plugin install` command and it tells you the plugin has been successfully installed, you will need to press `Ctrl + C` to finish the process.**
+**When you run the `volumio plugin install` command and it will output finalizing installation.   you will need to press `Ctrl + C` to finish the process.**
 
 ```
 wget https://github.com/supercrab/volumio-plugins/raw/master/plugins/miscellanea/mpd_oled/mpd_oled.zip
@@ -106,9 +107,9 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
-24rd Feb 2021
+25th Feb 2021
 
-- Kill any rogue CAVA processes which could be holding on to audio devices
+- Use new method of building and install CAVA and mpd_oled
 
 23rd Feb 2021
 
