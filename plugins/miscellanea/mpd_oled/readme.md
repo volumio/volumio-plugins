@@ -109,7 +109,6 @@ rm -Rf mpd_oled.zip
 
 25th Feb 2021
 
-- Changed install script to use new method of building and installing CAVA and mpd_oled
 - Fixed date format label typo in consig.json
 
 23rd Feb 2021

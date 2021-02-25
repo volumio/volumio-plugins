@@ -10,19 +10,19 @@ cd /home/volumio/
 # refresh packages
 echo "Updating packages"
 sudo apt-get update
-sudo apt-get -y install build-essential git-core autoconf make libtool libfftw3-dev libmpdclient-dev libi2c-dev i2c-tools lm-sensors
 
 ##############################
 # install CAVA if not present
 if [ ! -d "/home/volumio/cava" ]
 then
   echo "Installing CAVA"
+  sudo apt-get -y install git-core autoconf make libtool libfftw3-dev libasound2-dev
   git clone https://github.com/karlstav/cava
   cd cava
   ./autogen.sh
-  ./configure --disable-input-portaudio --disable-input-sndio --disable-output-ncurses --disable-input-pulse --program-prefix=mpd_oled_
+  ./configure
   make
-  sudo make install-strip
+  sudo make install
   cd ..
 else
   echo "CAVA already installed"
@@ -33,15 +33,22 @@ fi
 if [ ! -d "/home/volumio/mpd_oled" ]
 then
   echo "Installing MPD_OLED"
-  git clone https://github.com/antiprism/mpd_oled
+  sudo apt -y install build-essential git-core autoconf make libtool libi2c-dev i2c-tools lm-sensors libcurl4-openssl-dev libmpdclient-dev libjsoncpp-dev
+  git clone https://github.com/supercrab/mpd_oled
   cd mpd_oled
-  sudo ./bootstrap
-  CPPFLAGS="-W -Wall -Wno-psabi" ./configure
-  make
-  sudo make install-strip
+  if cat /etc/os-release | grep -q buster; then
+    # buster build
+    PLAYER=VOLUMIO LDLIBS="-li2c" make
+  else
+    # raspbian build
+    PLAYER=VOLUMIO make
+  fi
+  # Copy file to bin folder for easy access
+  cp mpd_oled /usr/local/bin/mpd_oled
 else
   echo "MPD_OLED already installed"
 fi
+
 
 ########################
 # check i2c system buses 
