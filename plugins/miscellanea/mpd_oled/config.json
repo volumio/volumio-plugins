@@ -131,7 +131,7 @@
 		"value": 0,
 		"type": "number"
 	},
-	"dataFormatLabel": {
+	"dateFormatLabel": {
 		"value": "TRANSLATE.COMBO_LABEL_DEFAULT",
 		"type": "string"
 	}
