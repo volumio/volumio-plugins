@@ -127,7 +127,7 @@ gpiorandom.prototype.onStop = function() {
     var defer=libQ.defer();
     
     self.logger.info("gpioRandom : free GPIO");
-    self.led.unexport();
+    if(typeof(self.button) == 'object') self.button.unexport();
     self.running = false;
     
     // Once the Plugin has successfull stopped resolve the promise
