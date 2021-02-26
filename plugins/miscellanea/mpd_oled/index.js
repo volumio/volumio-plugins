@@ -292,7 +292,7 @@ MpdOled.prototype.stopProcess = function(interactive, callback){
 	const PROCESS_FINISH_DELAY_MS = 50;
 	const disableService = "/usr/bin/sudo /usr/sbin/service mpd_oled status && /usr/bin/sudo /bin/systemctl disable mpd_oled";
 	const killProcess = "/usr/bin/sudo /usr/bin/killall mpd_oled";
-	const killCavaProcess = "/usr/bin/sudo /usr/bin/killall cava";
+	const killCavaProcess = "/usr/bin/sudo /usr/bin/killall cava & /usr/bin/sudo /usr/bin/killall mpd_oled_cava";
 
 	// Kill any CAVA processes
 	exec(killCavaProcess, function(error, stdout, stderr){
@@ -330,17 +330,26 @@ MpdOled.prototype.stopProcess = function(interactive, callback){
 MpdOled.prototype.startProcess = function(interactive){
 	const self = this;
 	const PROCESS_CHECK_DELAY = 250;
+	const oledType = config.get(uiElement.oledType.name);
 	var errorMessage = "";
 
-	if (config.get(uiElement.oledType.name) == 0){
+	if (oledType == 0){
 		// We need oled_type to be defined
 		self.info("Not starting mpd_oled because oled type is not configured yet");
 	}
 	else{
+
+		// Get the command to run
+		var command = "mpd_oled " + self.getParameters();
+		
+		// Run mpd_oled with sudo if running an SPI device
+		// (Causes occasional error in UI)
+		if (oledType == 1 || oledType == 7){
+			command = "/bin/echo volumio | /usr/bin/sudo -S " + command;
+		}
+
 		// Start process asynchronously
 		// If the process starts OK, no exit code is returned
-		const command = "/bin/echo volumio | /usr/bin/sudo -S mpd_oled " + self.getParameters();
-		
 		self.info(`Starting mpd_oled: ${command}`);
 		exec(command, function(error, stdout, stderr){
 			errorMessage = stderr;
