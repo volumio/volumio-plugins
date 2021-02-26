@@ -110,6 +110,7 @@ rm -Rf mpd_oled.zip
 26th Feb 2021
 
 - Added code to kill any orphaned CAVA processes that might hold on to a reference to an audio input device
+- Plugin will only run mpd_oled using sudo if an SPI display has been selected
 
 25th Feb 2021
 
