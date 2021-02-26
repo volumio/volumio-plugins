@@ -2,13 +2,15 @@
 devices:
   samplerate: 44100
   chunksize: 4096
+  silence_threshold: -60
+  silence_timeout: 3.0
   queuelimit: 1
   capture:
     type: File
     channels: 2
     format: S32LE
     filename: "/dev/stdin"
-    extra_samples: 8192
+    extra_samples: 4096
   playback:
     type: Alsa
     channels: 2

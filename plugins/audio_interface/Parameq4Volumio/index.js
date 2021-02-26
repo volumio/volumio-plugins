@@ -449,7 +449,7 @@ Parameq.prototype.createCamilladspfile = function () {
           var pipelineL = '';
           var pipelineR = '';
           scoper = self.config.get(scopec);
-          self.logger.info('type ' + typec + 'scope ' + scopec + 'eq ' + eqc)
+       //   self.logger.info('type ' + typec + 'scope ' + scopec + 'eq ' + eqc)
 
           typer = self.config.get(typec);
           eqv = self.config.get(eqc).split(',');
@@ -547,17 +547,23 @@ Parameq.prototype.createCamilladspfile = function () {
 
         };
         var gainresult
-        gainresult = ('-' + (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop());
-
+        var gainclipfree
+     //   self.logger.info('pipeliner ' + pipelinelr)
+        if (pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') {
+          gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
+          gainclipfree = ('-' + gainresult - 2)
+        } else {
+          gainclipfree = 0
+        }
       };
 
       self.logger.info(result)
 
-      self.logger.info('gain applied ' + gainresult)
+      self.logger.info('gain applied ' + gainclipfree)
 
       let conf = data.replace("${resulteq}", result)
-        .replace("${gain}", (gainresult))
-        .replace("${gain}", (gainresult))
+        .replace("${gain}", (gainclipfree))
+        .replace("${gain}", (gainclipfree))
         .replace("${pipelineL}", pipelinelr)
         .replace("${pipelineR}", pipelinerr)
         ;
@@ -590,7 +596,7 @@ Parameq.prototype.saveparameq = function (data) {
     var typer = (data[typec].value)
     var eqr = (data[eqc]).split(',')
 
-    self.logger.info('data = ' + eqr)
+   // self.logger.info('data = ' + eqr)
     //var test = self.config.set(eqc).split(',')
     //let reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
     //  var typer = self.config.get(typec)
@@ -601,7 +607,7 @@ Parameq.prototype.saveparameq = function (data) {
       self.logger.info('value ok ')
 
     } else {
-      self.logger.info('wrong value in '+eqc)
+      self.logger.info('wrong value in ' + eqc)
       self.commandRouter.pushToastMessage('error', 'Frequency Hz in filter ' + eqc + ' must be an integer [1-20000]')
       return;
     }
@@ -655,7 +661,7 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
-    self.commandRouter.pushToastMessage('info', 'Values saved !')
+    self.commandRouter.pushToastMessage('info', 'Values saved and applied!')
 
   }
   setTimeout(function () {
