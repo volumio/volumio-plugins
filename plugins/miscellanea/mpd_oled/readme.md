@@ -107,6 +107,10 @@ rm -Rf mpd_oled.zip
 
 ## Last changes
 
+26th Feb 2021
+
+- Added code to kill any orphaned CAVA processes that might hold on to a reference to an audio input device
+
 25th Feb 2021
 
 - Fixed date format label typo in consig.json

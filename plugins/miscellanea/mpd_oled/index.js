@@ -292,31 +292,36 @@ MpdOled.prototype.stopProcess = function(interactive, callback){
 	const PROCESS_FINISH_DELAY_MS = 50;
 	const disableService = "/usr/bin/sudo /usr/sbin/service mpd_oled status && /usr/bin/sudo /bin/systemctl disable mpd_oled";
 	const killProcess = "/usr/bin/sudo /usr/bin/killall mpd_oled";
+	const killCavaProcess = "/usr/bin/sudo /usr/bin/killall cava";
 
-	// Disable mpd_oled service
-	self.info(`Disabling mpd_oled service: ${disableService}`);
-	exec(disableService, function(error, stdout, stderr){
+	// Kill any CAVA processes
+	exec(killCavaProcess, function(error, stdout, stderr){
 
-		// Stop mpd_oled process
-		self.info(`Stopping mpd_oled: ${killProcess}`);
-		exec(killProcess, function(error, stdout, stderr) {
-			if (stderr){
-				if (stderr.toString().includes("no process found")){
-					self.info("mpd_oled process is not running");
-				}
-				else{
-					self.error(`Cannot stop mpd_oled process: ${stderr}`);
-					if (interactive){
-						let msg = self.getI18nString("PROCESS_STOP_ERROR").replace("<ERROR>", stderr);
-						self.commandRouter.pushToastMessage("error", self.getI18nString("PLUGIN_CONFIGURATION"), msg);
+		// Disable mpd_oled service
+		self.info(`Disabling mpd_oled service: ${disableService}`);
+		exec(disableService, function(error, stdout, stderr){
+
+			// Stop mpd_oled process
+			self.info(`Stopping mpd_oled: ${killProcess}`);
+			exec(killProcess, function(error, stdout, stderr) {
+				if (stderr){
+					if (stderr.toString().includes("no process found")){
+						self.info("mpd_oled process is not running");
 					}
-					return;
+					else{
+						self.error(`Cannot stop mpd_oled process: ${stderr}`);
+						if (interactive){
+							let msg = self.getI18nString("PROCESS_STOP_ERROR").replace("<ERROR>", stderr);
+							self.commandRouter.pushToastMessage("error", self.getI18nString("PLUGIN_CONFIGURATION"), msg);
+						}
+						return;
+					}
 				}
-			}
-			// Execute callback when finished
-			if (callback && typeof(callback) === "function") {
-				callback();
-			}
+				// Execute callback when finished
+				if (callback && typeof(callback) === "function") {
+					callback();
+				}
+			});
 		});
 	});
 };
