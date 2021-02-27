@@ -4,6 +4,7 @@ from ambx.ambx import AMBX, Lights
 import struct
 import sys
 import argparse
+import syslog
 
 lights = [Lights.LEFT, Lights.WWLEFT, Lights.WWCENTER, Lights.WWRIGHT, Lights.RIGHT]
 
@@ -16,16 +17,19 @@ def set_color(light, red, green, blue):
                 try:
                     dev.set_color_rgb8(light, [red, green, blue])
                 except IOError:
-                    print('USB Error')
+                    syslog.syslog(syslog.LOG_ERR, "USB Error")
+                    sys.exit(74)
                     break
         else:
             try:
                 dev.set_color_rgb8(lights[light-1], [red, green, blue])
             except IOError:
-                print('USB Error')
+                syslog.syslog(syslog.LOG_ERR, "USB Error")
+                sys.exit(74)
     except IndexError:
         if dev is None:
-            print('No amBX found!')
+            syslog.syslog(syslog.LOG_ERR, "No AmbX found")
+            sys.exit(69)
 
 def color8bit(x):
     x = int(x)

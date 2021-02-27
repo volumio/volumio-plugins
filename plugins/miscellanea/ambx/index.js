@@ -32,11 +32,11 @@ ambx.prototype.updateColor = function() {
         if (typeof config !== 'undefined') {
             var color = config.match(/[A-Za-z0-9]{2}/g).map(function(v) { return parseInt(v, 16) });
 
-            exec("ambx_set_color -r " + color[0] + " -g " + color[1] + " -b " + color[2], function (error, stdout, stderr) {
-                if(error){
-                    return false;
-                }
-            });
+            try {
+                execSync("ambx_set_color -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
+            } catch (error) {
+                return false;
+            }
         }
     } else {
         var configs = [self.config.get('colorLeft'),
@@ -50,11 +50,11 @@ ambx.prototype.updateColor = function() {
             if (typeof configs[i] !== 'undefined') {
                 var color = configs[i].match(/[A-Za-z0-9]{2}/g).map(function(v) { return parseInt(v, 16) });
 
-                exec("ambx_set_color -l " + (i+1) + " -r " + color[0] + " -g " + color[1] + " -b " + color[2], function (error, stdout, stderr) {
-                    if(error){
-                        return false;
-                    }
-                });
+                try {
+                    execSync("ambx_set_color -l " + (i+1) + " -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
+                } catch (error) {
+                    return false;
+                }
             }
         }
     }
@@ -82,11 +82,8 @@ ambx.prototype.onStop = function() {
     exec("ambx_set_color", function (error, stdout, stderr) {
         if(error){
             self.logger.info('No control on AmbX');
-            defer.reject(new Error());
-        } else {
-            // Once the Plugin has successfull stopped resolve the promise
-            defer.resolve();
         }
+        defer.resolve();
     });
 
     return defer.promise;
