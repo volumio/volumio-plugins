@@ -866,6 +866,24 @@
 						}
 					],
 					"updated": "6-2-2021"
+				},
+				{
+					"prettyName": "Gpio Random",
+					"icon": "fa-lightbulb-o",
+					"name": "gpiorandom",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/gpiorandom/gpiorandom.zip",
+					"license": "ISC",
+					"description": "Create a randomized playlist and start playing when a GPIO driven button is pressed",
+					"details": "",
+					"author": "jit06",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "27-2-2021"
 				}
 			]
 		}
