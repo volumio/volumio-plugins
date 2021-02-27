@@ -112,6 +112,7 @@ ledstatus.prototype.startBlink = function() {
     var defer=libQ.defer();
     
     var milisec = self.config.get('intmilisec');
+    var gpionum = self.config.get('gpionum');
     if (isNaN(gpionum)) gpionum = 12;
     
     self.logger.info("LedStatus : set interval for blinking");
