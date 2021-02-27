@@ -672,6 +672,24 @@
 						}
 					],
 					"updated": "24-1-2021"
+				},
+				{
+					"prettyName": "Philips amBX",
+					"icon": "fa-lightbulb-o",
+					"name": "ambx",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/ambx/ambx.zip",
+					"license": "BSD-3-Clause",
+					"description": "A rudimentary controller for the LEDs of the Philips amBX sound system.",
+					"details": "",
+					"author": "Jan Siegmund",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "27-2-2021"
 				}
 			]
 		},
