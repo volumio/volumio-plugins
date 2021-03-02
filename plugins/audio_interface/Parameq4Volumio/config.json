@@ -3,6 +3,10 @@
         "type":"number",
         "value": "1"
     },
+    "effect": {
+        "type":"boolean",
+        "value": true
+    },
    "type1": {
         "type": "string",
         "value": "None"

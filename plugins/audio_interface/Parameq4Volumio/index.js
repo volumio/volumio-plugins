@@ -102,6 +102,17 @@ Parameq.prototype.getUIConfig = function () {
       var nsections = '0';
       let value;
       let ncontent = self.config.get('nbreq')
+      var effect = self.config.get('effect')
+      self.logger.info('effect ' + effect)
+      if (effect == true) {
+        uiconf.sections[nsections].content[43].hidden = true;
+        uiconf.sections[nsections].content[42].hidden = false;
+
+      } else if (effect == false) {
+        uiconf.sections[nsections].content[42].hidden = true;
+        uiconf.sections[nsections].content[43].hidden = false;
+
+      }
 
       for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
         uiconf.sections[nsections].content[i].hidden = true;
@@ -110,11 +121,11 @@ Parameq.prototype.getUIConfig = function () {
       }
 
       if (ncontent == 1) {
-        uiconf.sections[nsections].content[43].hidden = true;
+        uiconf.sections[nsections].content[45].hidden = true;
       }
       if (ncontent > 13) {
 
-        uiconf.sections[nsections].content[42].hidden = true;
+        uiconf.sections[nsections].content[44].hidden = true;
       }
       /*
             for (var a = 0; a < tnbreq; a++) {
@@ -310,9 +321,10 @@ Parameq.prototype.addeq = function (data) {
     self.logger.info('Max eq reached!')
     return
   }
-
   self.config.set('nbreq', n)
+
   self.logger.info('nbre eq ' + n)
+
   setTimeout(function () {
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
     respconfig.then(function (config) {
@@ -345,6 +357,36 @@ Parameq.prototype.removeeq = function (data) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
   }, 200);
+};
+
+Parameq.prototype.disableeffect = function () {
+  const self = this;
+  self.config.set('effect', false)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+  }, 200);
+
+};
+
+Parameq.prototype.enableeffect = function () {
+  const self = this;
+  self.config.set('effect', true)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+  }, 200);
+
 };
 
 Parameq.prototype.getConfigurationFiles = function () {
@@ -424,8 +466,10 @@ Parameq.prototype.createCamilladspfile = function () {
       var gainmaxused = [];
       var scopec, scoper;
       var nbreq = (self.config.get('nbreq'))
+      var effect = self.config.get('effect')
+      var gainresult;
 
-      if ((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None')) {
+      if (((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None')) || (effect == false)) {
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
@@ -436,6 +480,7 @@ Parameq.prototype.createCamilladspfile = function () {
 
         self.logger.info('Nulleq applied')
         gainresult = 0
+        gainclipfree = 0
 
       } else {
 
@@ -449,7 +494,7 @@ Parameq.prototype.createCamilladspfile = function () {
           var pipelineL = '';
           var pipelineR = '';
           scoper = self.config.get(scopec);
-       //   self.logger.info('type ' + typec + 'scope ' + scopec + 'eq ' + eqc)
+          //   self.logger.info('type ' + typec + 'scope ' + scopec + 'eq ' + eqc)
 
           typer = self.config.get(typec);
           eqv = self.config.get(eqc).split(',');
@@ -546,10 +591,8 @@ Parameq.prototype.createCamilladspfile = function () {
           gainmaxused += gainmax
 
         };
-        var gainresult
         var gainclipfree
-     //   self.logger.info('pipeliner ' + pipelinelr)
-        if (pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') {
+        if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
           gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
           gainclipfree = ('-' + gainresult - 2)
         } else {
@@ -596,7 +639,7 @@ Parameq.prototype.saveparameq = function (data) {
     var typer = (data[typec].value)
     var eqr = (data[eqc]).split(',')
 
-   // self.logger.info('data = ' + eqr)
+    // self.logger.info('data = ' + eqr)
     //var test = self.config.set(eqc).split(',')
     //let reg = /^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/;
     //  var typer = self.config.get(typec)

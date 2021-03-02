@@ -1,4 +1,4 @@
-Febuary 25th 2021
+Febuary 2nd 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Febuary 2nd 2021
+
+- add buttons to enable/disable effects
 
 Febuary 25th 2021
 
