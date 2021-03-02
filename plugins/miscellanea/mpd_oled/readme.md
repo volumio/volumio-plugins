@@ -160,7 +160,7 @@ rm -Rf mpd_oled.zip
 
 - Thanks to misko903 for the Slovakian translation and for giving me the push to write this plugin: <https://github.com/misko903>
 
-- German translation by Josef.
+- German translation by Josef and Judydudi.
 
 - Italian translation by Pasquale D'Orsi.
 

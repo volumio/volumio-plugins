@@ -2,28 +2,28 @@
 	"PLUGIN_CONFIGURATION": "MPD OLED Konfiguration",
 	"PLUGIN_DESCRIPTION": "MPD OLED Display Ansteuerung",
 	"PLUGIN_TOOLS": "Tools",
-	"PLUGIN_LINKS": "WeiterfÃ¼hrende Links",
+	"PLUGIN_LINKS": "Weiterführende Links",
 	"SETTINGS_SAVED": "MPD OLED Einstellungen erfolgreich gespeichert.",
-	"VALID_CONFIGURATION": "GÃ¼ltige Konfiguration",
-	"INVALID_CONFIGURATION": "UngÃ¼ltige Konfiguration",
-	"RESET_DC_ERROR": "I2C/SPI reset GPIO und SPI DC GPIO dÃ¼rfen nicht gleich sein.",
-	"OLED_TYPE_ERROR": "WÃ¤hlen Sie den OLED Display Typ.",
-	"CAVA_ERROR": "CAVA input method and source.",
-	"PROCESS_START_ERROR": "MPD OLED process konnte nicht gestartet werden. Fehler: <ERROR>",
-	"PROCESS_STOP_ERROR": "MPD OLED process konnte nicht gestoppt werden. Fehler: <ERROR>",
-	"GAP_BARS_ERROR": "Spectrum Graph Breite ist <SPECT_WIDTH>: Um <BARS> Graphen mit einer Breite der ZwischenrÃ¤ume von <GAP> anzuzeigen werden mindestens <MIN_WIDTH> benÃ¶tigt. Verringern Sie die Anzahl der Graphen und/oder die Breite der ZwischenrÃ¤ume.",
+	"VALID_CONFIGURATION": "Gültige Konfiguration",
+	"INVALID_CONFIGURATION": "Ungültige Konfiguration",
+	"RESET_DC_ERROR": "I2C/SPI reset GPIO und SPI DC GPIO dürfen nicht gleich sein.",
+	"OLED_TYPE_ERROR": "Wählen Sie den OLED Display Typ.",
+	"CAVA_ERROR": "CAVA Eingabe Methode und Quellen.",
+	"PROCESS_START_ERROR": "MPD OLED Prozess konnte nicht gestartet werden. Fehler: <ERROR>",
+	"PROCESS_STOP_ERROR": "MPD OLED Prozess konnte nicht gestoppt werden. Fehler: <ERROR>",
+	"GAP_BARS_ERROR": "Spectrum Graph Breite ist <SPECT_WIDTH>: Um <BARS> Graphen mit einer Breite der Zwischenräume von <GAP> anzuzeigen werden mindestens <MIN_WIDTH> benötigt. Verringern Sie die Anzahl der Graphen und/oder die Breite der Zwischenräume.",
 	"SAVE": "Speichern",
 	"OK": "O.K. verstanden",
-	"I2C_DEVICE_SCAN": "I2C GerÃ¤te Scan",
-	"I2C_NO_TOOLS": "Der I2C GerÃ¤te Scan konnte nicht durchgefÃ¼hrt werden, da die i2c-tools nicht installiert sind.",
+	"I2C_DEVICE_SCAN": "I2C Geräte Scan",
+	"I2C_NO_TOOLS": "Der I2C Geräte Scan konnte nicht durchgeführt werden, da die i2c-tools nicht installiert sind.",
 	"I2C_SCAN_ERROR": "Beim Scan des I2C Busses <I2C_BUS> trat folgender Fehler auf: <ERROR>",
-	"I2C_BUS_DISABLED": "<strong>Auf I2C bus <I2C_BUS> wurden keine GerÃ¤te gefunden.</strong>",
-	"I2C_DEVICE_LIST": "Auf I2C bus <I2C_BUS> wurden folgende GerÃ¤te gefunden:<br/><br/><strong><DEVICES></strong>",
+	"I2C_BUS_DISABLED": "<strong>Auf I2C bus <I2C_BUS> wurden keine Geräte gefunden.</strong>",
+	"I2C_DEVICE_LIST": "Auf I2C bus <I2C_BUS> wurden folgende Geräte gefunden:<br/><br/><strong><DEVICES></strong>",
 	"I2C_DEVICES_NONE": "Keine",
 	"OLED_TYPE": {
 		"LABEL": "OLED Display Typ",
 		"DOC": "Typ des angeschlossenen OLED displays.",
-		"DEFAULT": "Auswahl",
+		"Voreinstellung": "Auswahl",
 		"ITEM1": "1. Adafruit SPI 128x64",
 		"ITEM3": "3. Adafruit I2C 128x64",
 		"ITEM4": "4. Seeed I2C 128x64",
@@ -33,49 +33,49 @@
 	"NUMBER_OF_BARS": {
 		"LABEL": "Anzahl der Graphen",
 		"DOC": "Anzahl der Graphen des Spectrum Analysers.",
-		"DEFAULT": "16 (default)"
+		"Voreinstellung": "16 (Voreinstellung)"
 	},
 	"GAP_BETWEEN_BARS": {
-		"LABEL": "Breite der ZwischenrÃ¤ume zwischen den Graphen",
-		"DOC": "Breite der ZwischenrÃ¤ume (in Pixel).",
-		"DEFAULT": "1 (default)"
+		"LABEL": "Breite der Zwischenräume zwischen den Graphen",
+		"DOC": "Breite der Zwischenräume (in Pixel).",
+		"Voreinstellung": "1 (Voreinstellung)"
 	},
 	"FRAME_RATE": {
 		"LABEL": "Frame rate (Bildwiederholrate)",
-		"DOC": "WÃ¤hlen Sie die Bildwiederholrate (in Hz)<br/><br/>Das Plugin setup erhÃ¶ht die I2C Busgeschwindigkeit auf 800 Kbit/s - jedoch erst nach dem nÃ¤chsten Neustart Ihres Raspberry Pi.<br/><br/>Empfehlung: Ein Raspberry Pi 3 erzielt erfahrungsgemÃ¤ÃŸ mit 50Hz das beste Ergebnis.",
-		"DEFAULT": "15 (default)"
+		"DOC": "Wählen Sie die Bildwiederholrate (in Hz)<br/><br/>Das Plugin setup erhöht die I2C Busgeschwindigkeit auf 800 Kbit/s - jedoch erst nach dem nächsten Neustart Ihres Raspberry Pi.<br/><br/>Empfehlung: Ein Raspberry Pi 3 erzielt erfahrungsgemäß mit 50Hz das beste Ergebnis.",
+		"Voreinstellung": "15 (Voreinstellung)"
 	},
 	"SCROLL_RATE": {
 		"LABEL": "Scroll rate (Rollgeschwindigkeit)",
 		"DOC": "Stellen Sie die scroll rate  ein (Pixel/Sekunde).",
-		"DEFAULT": "8 (default)"
+		"Voreinstellung": "8 (Voreinstellung)"
 	},
 	"SCROLL_DELAY": {
 		"LABEL": "Scroll delay (Zeit bis das Scrollen beginnt)",
-		"DOC": "Stellen Sie die Zeit ein ab wann das Scrollen beginnt (VerzÃ¶gerung in Sekunden).",
-		"DEFAULT": "5 (default)"
+		"DOC": "Stellen Sie die Zeit ein ab wann das Scrollen beginnt (Verzögerung in Sekunden).",
+		"Voreinstellung": "5 (Voreinstellung)"
 	},
 	"CLOCK_FORMAT": {
 		"LABEL": "Zeitformat",
 		"DOC": "Zeitformat.",
-		"DEFAULT": "24h mit fÃ¼hrender 0 (default)",
-		"ITEM1": "24h ohne fÃ¼hrende 0",
-		"ITEM2": "12h mit fÃ¼hrender 0",
-		"ITEM3": "12h ohne fÃ¼hrende 0"
+		"Voreinstellung": "24h mit führender 0 (Voreinstellung)",
+		"ITEM1": "24h ohne führende 0",
+		"ITEM2": "12h mit führender 0",
+		"ITEM3": "12h ohne führende 0"
 	},
 	"PAUSE_SCREEN_TYPE": {
-		"LABEL": "Anzeige wÃ¤hrend einer Pause",
-		"DOC": "Anzeige wÃ¤hrend einer Pause.",
-		"DEFAULT": "Play (default)",
+		"LABEL": "Anzeige während einer Pause",
+		"DOC": "Anzeige während einer Pause.",
+		"Voreinstellung": "Play (Voreinstellung)",
 		"ITEM1": "Stop"
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE_ENABLED": {
 		"LABEL": "CAVA Konfiguration",
-		"DOC": "CAVA input method und source settings (advanced)."
+		"DOC": "CAVA Eingabe Methode und Quellen Einstellungen (fortgeschritten)."
 	},
 	"CAVA_INPUT_METHOD_AND_SOURCE": {
-		"LABEL": "CAVA input method und source settings (advanced)",
-		"DOC": "CAVA input method und source.<br/><br/>Examples:<br/><br/>fifo,/tmp/mpd_oled_fifo (default)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
+		"LABEL": "CAVA Eingabe Methode und Quellen Einstellungen (fortgeschritten)",
+		"DOC": "CAVA Eingabe Methode und Quelle.<br/><br/>Beispiele:<br/><br/>fifo,/tmp/mpd_oled_fifo (Voreinstellung)<br/>fifo,/tmp/my_fifo<br/>alsa,hw:5,0<br/>pulse"
 	},
 	"ROTATE_DISPLAY": {
 		"LABEL": "Display drehen",
@@ -83,12 +83,12 @@
 	},
 	"INVERT_DISPLAY_ENABLED": {
 		"LABEL": "Anzeige invertieren",
-		"DOC": "Schwarz/WeiÃŸ invertieren."
+		"DOC": "Schwarz/Weiß invertieren."
 	},
 	"INVERT_DISPLAY_PERIOD": {
 		"LABEL": "Invertierungsintervall",
 		"DOC": "Zeitspanne nach der das Display periodisch invertiert wird um ein Einbrennen zu verhindern.",
-		"DEFAULT": "Disabled (default)",
+		"Voreinstellung": "Disabled (Voreinstellung)",
 		"ITEM1": "1 Minute",
 		"ITEM2": "2 Minuten",
 		"ITEM3": "3 Minuten",
@@ -104,40 +104,40 @@
 	"I2C_ADDRESS": {
 		"LABEL": "I2C Adresse",
 		"DOC": "I2C Adresse des Displays.",
-		"DEFAULT": "Default for display"
+		"Voreinstellung": "Voreinstellung für Display"
 	},
 	"I2C_BUS": {
 		"LABEL": "I2C bus",
-		"DOC": "I2C Bus - abhÃ¤ngig vom Modell Ihres RasPi's.<br/><br/>/dev/i2c-1 fÃ¼r Model A, B Rev 2 or B+ Pi oder neuer<br>/dev/i2c-0 fÃ¼r das alte Model B Rev 1.",
+		"DOC": "I2C Bus - abhängig vom Modell Ihres RasPi's.<br/><br/>/dev/i2c-1 für Model A, B Rev 2 or B+ Pi oder neuer<br>/dev/i2c-0 für das alte Model B Rev 1.",
 		"ITEM0": "/dev/i2c-0",
-		"DEFAULT": "/dev/i2c-1 (default)"
+		"Voreinstellung": "/dev/i2c-1 (Voreinstellung)"
 	},
 	"SPI_RESET_GPIO_NUMBER": {
-		"LABEL": "I2C/SPI reset GPIO number",
-		"DOC": "GPIO port, der mit dem Reset Pin Ihres Displays verbunden ist (falls verfÃ¼gbar).",
-		"DEFAULT": "25 (default)"
+		"LABEL": "I2C/SPI reset GPIO Nummer",
+		"DOC": "GPIO Port, der mit dem Reset Pin Ihres Displays verbunden ist (falls verfügbar).",
+		"Voreinstellung": "25 (Voreinstellung)"
 	},
 	"SPI_DC_GPIO_NUMBER": {
-		"LABEL": "SPI DC GPIO number",
-		"DOC": "GPIO port, der mit dem DC Pin Ihres Displays verbunden ist (SPI)",
-		"DEFAULT": "24 (default)"
+		"LABEL": "SPI DC GPIO Nummer",
+		"DOC": "GPIO Port, der mit dem DC Pin Ihres Displays verbunden ist (SPI)",
+		"Voreinstellung": "24 (Voreinstellung)"
 	},
 	"SPI_CS": {
 		"LABEL": "SPI CS line",
-		"DOC": "WÃ¤hlen den CS Kanal fÃ¼r Ihr Displays (SPI)",
-		"DEFAULT": "0 (default)"
+		"DOC": "Wählen den CS Kanal für Ihr Displays (SPI)",
+		"Voreinstellung": "0 (Voreinstellung)"
 	},
 	"I2C_SCAN": {
-		"LABEL": "I2C GerÃ¤tesuche (Scan)",
-		"DESC": "GerÃ¤tesuche auf I2C bus"
+		"LABEL": "I2C Gerätesuche (Scan)",
+		"DESC": "Gerätesuche auf I2C bus"
 	},
 	"I2C_WIRING_LINK": {
-		"LABEL": "I2C OLED AnschluÃŸbelegung",
-		"DESC": "Anschlussbelegung fÃ¼r I2C OLED displays."
+		"LABEL": "I2C OLED Anschlussbelegung",
+		"DESC": "Anschlussbelegung für I2C OLED Displays."
 	},
 	"SPI_WIRING_LINK": {
 		"LABEL": "SPI OLED Anschlussbelegung",
-		"DESC": "Anschlussbelegung fÃ¼r SPI OLED Displays."
+		"DESC": "Anschlussbelegung für SPI OLED Displays."
 	},
 	"MPD_OLED_LINK": {
 		"LABEL": "MPD OLED auf GitHub",
@@ -145,8 +145,8 @@
 	},
 	"DATE_FORMAT": {
 		"LABEL": "Datumsformat",
-		"DOC": "WÃ¤hlen Sie das Datumsformat.",
-		"DEFAULT": "DD-MM-YYYY (default)",
+		"DOC": "Wählen Sie das Datumsformat.",
+		"Voreinstellung": "DD-MM-YYYY (Voreinstellung)",
 		"ITEM1": "MM-DD-YYYY"
 	}
 }
