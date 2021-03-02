@@ -69,9 +69,9 @@ rm -Rf mpd_oled.zip
 
 ### 5. I2C Device Scan
 
-- If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the finding.  
+- If you have an I2C OLED display then you can check it is wired up correctly by clicking the `I2C Device Scan` button.  This will return the addresses of any devices attached to the I2C busses.  If it finds a device then be sure to set the `I2C Address` and `I2C Bus` drop downs to match the findings and click the `Save` button.  
 
-- If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices appear in the scan, try setting the `I2C address` and `I2C Bus` drop downs for each device and click the `Save` button. 
+- If you have other I2C devices connected (that are not currently used by a driver) they will also be listed.  It is not possible to tell which devices are displays, so if multiple devices do appear in the scan, try setting the `I2C address` and `I2C Bus` drop downs for each device and click the `Save` button until you find a setting that works. 
 
 - Note: if you have HiFiBerry or similar DAC attached, it might not appear in the I2C scan because it's in use.
 
