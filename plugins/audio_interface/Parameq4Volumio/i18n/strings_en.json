@@ -1,5 +1,5 @@
 {
-  "EQ": "<h4>Values for Equaliseur</h4><br><br>Value are separated with a comma : \",\"</br>With Peaking :<br>Frequency(Hz),q,gain(dB) </li><ul><li>ex 250,2.6,-11</ul></li></br><br>With LowShelf and HighShelf :<br>Frequency(Hz),slope(dB/octave),gain(dB) </li><ul><li>ex 1250,12,-11</ul></li></br><br>With Lowpass and Highpass :<br>Cutoff Frequency(Hz),Q-Value</li><ul><li>ex 12,-1</ul></li></br><br>",
+  "EQ": "<h4>Values for Equaliseur</h4><br><br>Value are separated with a comma : \",\"</br>With Peaking :<br>Frequency(Hz),gain(dB), Q </li><ul><li>ex 250,-11,2.6</ul></li></br><br>With LowShelf and HighShelf :<br>Frequency(Hz), gain(dB), slope(dB/octave) </li><ul><li>ex 1250,12,11</ul></li></br><br>With Notch :<br>Frequency(Hz),Q </li><ul><li>ex 1250,5</ul></li></br><br>With Lowpass and Highpass :<br>Cutoff Frequency(Hz), Q-Value</li><ul><li>ex 12,2</ul></li></br><br>",
   "EQSCOPE":"Equalizer scope",
   "TYPEEQ":"Choose the type of effect you want",
   "APPLY": "Apply"

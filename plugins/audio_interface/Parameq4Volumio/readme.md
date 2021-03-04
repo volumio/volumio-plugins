@@ -1,4 +1,4 @@
-Febuary 2nd 2021
+Febuary 4th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -47,7 +47,12 @@ nearly everythings
 
 ### 4. Last changes
 
-Febuary 2nd 2021
+Mars 4th 2021
+
+- correction for unsaved values
+- new setting order to match with REW : Freq, Gain, Q
+
+Mars 2nd 2021
 
 - add buttons to enable/disable effects
 
