@@ -233,6 +233,17 @@ Parameq.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
+Parameq.prototype.refreshUI = function () {
+  const self = this;
+
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+  }, 100);
+}
+
 Parameq.prototype.addeq = function (data) {
   const self = this;
   var n = self.config.get('nbreq')
@@ -248,13 +259,7 @@ Parameq.prototype.addeq = function (data) {
   setTimeout(function () {
     self.createCamilladspfile()
   }, 100);
-
-  setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-  }, 100);
+  self.refreshUI();
 };
 
 Parameq.prototype.removeeq = function (data) {
@@ -274,13 +279,8 @@ Parameq.prototype.removeeq = function (data) {
   setTimeout(function () {
     self.createCamilladspfile()
   }, 100);
+  self.refreshUI();
 
-  setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-  }, 100);
 };
 
 Parameq.prototype.disableeffect = function () {
@@ -289,12 +289,8 @@ Parameq.prototype.disableeffect = function () {
   setTimeout(function () {
     self.createCamilladspfile()
   }, 100);
-  setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-  }, 100);
+  self.refreshUI();
+
 };
 
 Parameq.prototype.enableeffect = function () {
@@ -303,12 +299,8 @@ Parameq.prototype.enableeffect = function () {
   setTimeout(function () {
     self.createCamilladspfile()
   }, 100);
-  setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
-  }, 100);
+  self.refreshUI();
+
 };
 
 Parameq.prototype.getConfigurationFiles = function () {
@@ -361,7 +353,7 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
   connection.onmessage = (e) => {
     console.log(e.data)
-    self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
+    self.commandRouter.pushToastMessage('success',  self.commandRouter.getI18nString('CONFIG_UPDATED'));
   }
 
 };
@@ -589,7 +581,7 @@ Parameq.prototype.saveparameq = function (data) {
     } else {
 
       self.logger.info('wrong value in ' + eqc)
-      self.commandRouter.pushToastMessage('error', 'Frequency Hz in filter ' + eqc + ' must be an integer [1-20000]')
+      self.commandRouter.pushToastMessage('error',  self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
       return;
     }
 
@@ -599,7 +591,7 @@ Parameq.prototype.saveparameq = function (data) {
       if ((Number.parseFloat(g)) && (g > 0 && g < 15.1)) {
 
       } else {
-        self.commandRouter.pushToastMessage('error', 'Coefficient Q in filter ' + eqc + ' must be a float [0.1-15]')
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
         return;
       }
 
@@ -610,7 +602,7 @@ Parameq.prototype.saveparameq = function (data) {
       if ((Number.parseFloat(q)) && (q > 0 && q < 15.1)) {
 
       } else {
-        self.commandRouter.pushToastMessage('error', 'Coefficient Q in filter ' + eqc + ' must be a float [0.1-15]')
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
         return;
       }
 
@@ -622,7 +614,7 @@ Parameq.prototype.saveparameq = function (data) {
       if ((Number.isInteger(g)) && (g > -21 && g < 21)) {
 
       } else {
-        self.commandRouter.pushToastMessage('error', 'Gain in filter ' + eqc + ' must be a integer [-20-20]')
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('GAIN_RANGE') + eqc)
         return;
       }
 
@@ -633,7 +625,7 @@ Parameq.prototype.saveparameq = function (data) {
       if ((Number.isInteger(s)) && (s > 0 && s < 16)) {
 
       } else {
-        self.commandRouter.pushToastMessage('error', 'Slope in filter ' + eqc + ' must be a integer [1-15]')
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('SLOPE_RANGE') + eqc)
         return;
       }
     }
@@ -642,7 +634,7 @@ Parameq.prototype.saveparameq = function (data) {
       var q = eqr[2];
       self.logger.info('last value ' + q)
       if (q != undefined) {
-        self.commandRouter.pushToastMessage('error', 'No need third coefficient for ' + eqc)
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('NO_THIRDCOEFF') + eqc)
         return;
       } else {
         //do nthing
@@ -662,10 +654,8 @@ Parameq.prototype.saveparameq = function (data) {
   self.config.set('effect', true)
 
   setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
+    self.refreshUI();
+
     self.createCamilladspfile()
   }, 300);
   return defer.promise;
@@ -731,14 +721,12 @@ Parameq.prototype.usethispreset = function (data) {
     self.config.set(eqc, self.config.get(spreset + eqc));
     self.config.set("nbreq", nbreqc);
 
-    self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
+    self.commandRouter.pushToastMessage('info', ' My preset ' + spreset + ' is loaded and used')
   }
 
   setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
-    respconfig.then(function (config) {
-      self.commandRouter.broadcastMessage('pushUiConfig', config);
-    });
+    self.refreshUI();
+
     self.createCamilladspfile()
   }, 300);
   let defer = libQ.defer();
