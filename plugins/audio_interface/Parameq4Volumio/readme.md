@@ -29,7 +29,14 @@ To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/U
 Type the following commands to download and install plugin:
 
 ```
-
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/Parameq4Volumio/Parameq4Volumio.zip
+mkdir eq
+miniunzip Parameq4Volumio.zip -d ./eq
+cd eq
+volumio plugin install
+cd ..
+rm -Rf eq
+rm Parameq4Volumio.zip
 ```
 
 ### 3. Using the plugin
