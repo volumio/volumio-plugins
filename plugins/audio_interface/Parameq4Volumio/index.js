@@ -530,12 +530,14 @@ Parameq.prototype.createCamilladspfile = function () {
         if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
           gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
           self.logger.info('gainresult ' + gainresult)
-          gainclipfree = ('-' + (parseInt(gainresult) + 2))
-          self.config.set('gainapplied', gainclipfree)
           if (gainresult < 0) {
             gainclipfree = -2
+          } else {
+            gainclipfree = ('-' + (parseInt(gainresult) + 2))
+
+            //else
           }
-          //else
+          self.config.set('gainapplied', gainclipfree)
         }
       };
 
