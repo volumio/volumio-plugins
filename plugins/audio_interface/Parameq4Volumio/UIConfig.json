@@ -544,8 +544,7 @@
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "addeq",
             "data": [
-             
-            ]
+                         ]
           }
         },
         {
@@ -556,7 +555,9 @@
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
-            "method": "removeeq"
+            "method": "removeeq",
+            "data": [
+            ]
           }
         }
       ]

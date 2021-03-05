@@ -1,7 +1,7 @@
 {
   "name": "Parameq4Volumio",
-  "version": "0.0.1",
-  "description": "7 bands parametric Eq for Volumio2",
+  "version": "0.0.2",
+  "description": "14 bands parametric Eq for Volumio2",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

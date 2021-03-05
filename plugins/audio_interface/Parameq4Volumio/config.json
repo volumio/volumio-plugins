@@ -7,6 +7,10 @@
         "type":"boolean",
         "value": true
     },
+    "gainapplied": {
+        "type":"number",
+        "value": "0"
+    },
    "type1": {
         "type": "string",
         "value": "None"

@@ -1,4 +1,4 @@
-Febuary 4th 2021
+Febuary 5th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -46,6 +46,12 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Mars 5th 2021
+
+- improvement in UI
+- now the global gain is used when effects are disabled
+- new image in readme
 
 Mars 4th 2021
 

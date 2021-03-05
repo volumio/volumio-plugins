@@ -1,5 +1,6 @@
 /*--------------------
 Parameq plugin for volumio2. By balbuze Febuary  2021
+Up to 14 eq
 Based on CamillaDsp
 ----------------------
 */
@@ -223,7 +224,6 @@ Parameq.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
-
 Parameq.prototype.addeq = function (data) {
   const self = this;
   var n = self.config.get('nbreq')
@@ -233,15 +233,19 @@ Parameq.prototype.addeq = function (data) {
     return
   }
   self.config.set('nbreq', n)
-
+  self.config.set('effect', true)
   self.logger.info('nbre eq ' + n)
+
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
 
   setTimeout(function () {
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  }, 200);
+  }, 100);
 };
 
 Parameq.prototype.removeeq = function (data) {
@@ -253,7 +257,7 @@ Parameq.prototype.removeeq = function (data) {
     return
   }
   var typec = 'type' + (n + 1);
-
+  self.config.set('effect', true)
   self.config.set(typec, 'None')
   self.config.set('nbreq', n)
   self.logger.info('nbre eq ' + n + ' last removed ' + typec + ' set to None')
@@ -267,7 +271,7 @@ Parameq.prototype.removeeq = function (data) {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  }, 200);
+  }, 100);
 };
 
 Parameq.prototype.disableeffect = function () {
@@ -281,8 +285,7 @@ Parameq.prototype.disableeffect = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  }, 200);
-
+  }, 100);
 };
 
 Parameq.prototype.enableeffect = function () {
@@ -296,8 +299,7 @@ Parameq.prototype.enableeffect = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-  }, 200);
-
+  }, 100);
 };
 
 Parameq.prototype.getConfigurationFiles = function () {
@@ -336,7 +338,6 @@ Parameq.prototype.getAdditionalConf = function (type, controller, data) {
 //------------Here we define a function to send a command to CamillaDsp through websocket---------------------
 Parameq.prototype.sendCommandToCamilla = function () {
   const self = this;
-
   const url = 'ws://localhost:9876'
   const command = ('\"Reload\"');
   const connection = new WebSocket(url)
@@ -347,13 +348,11 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
   connection.onerror = (error) => {
     console.log(`WebSocket error: ${error}`)
-
   }
 
   connection.onmessage = (e) => {
     console.log(e.data)
     self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-
   }
 
 };
@@ -380,7 +379,7 @@ Parameq.prototype.createCamilladspfile = function () {
       var effect = self.config.get('effect')
       var gainresult;
 
-      if (((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None')) || (effect == false)) {
+      if (((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None') && effect == false)) {
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
@@ -390,8 +389,23 @@ Parameq.prototype.createCamilladspfile = function () {
         pipelinerr = pipeliner.slice(8)
 
         self.logger.info('Nulleq applied')
+
         gainresult = 0
         gainclipfree = 0
+      }
+
+      if (effect == false) {
+        var composedeq = '';
+        composedeq += '  nulleq:' + '\n';
+        composedeq += '    type: Conv' + '\n';
+        pipeliner = '      - nulleq';
+        result += composedeq
+        pipelinelr = pipeliner.slice(8)
+        pipelinerr = pipeliner.slice(8)
+
+        self.logger.info('Effects disabled, Nulleq applied')
+        gainresult = 0
+        gainclipfree = self.config.get('gainapplied')
 
       } else {
 
@@ -507,14 +521,11 @@ Parameq.prototype.createCamilladspfile = function () {
           gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
           self.logger.info('gainresult ' + gainresult)
           gainclipfree = ('-' + (parseInt(gainresult) + 2))
+          self.config.set('gainapplied', gainclipfree)
           if (gainresult < 0) {
             gainclipfree = -2
           }
-          /*
-        } else {
-          gainclipfree = 0
-        }
-        */
+          //else
         }
       };
 
@@ -636,11 +647,15 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
     self.commandRouter.pushToastMessage('info', 'Values saved and applied!')
-
   }
-  setTimeout(function () {
-    self.createCamilladspfile()
-  }, 500);
+  self.config.set('effect', true)
 
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+    self.createCamilladspfile()
+  }, 300);
   return defer.promise;
 }
