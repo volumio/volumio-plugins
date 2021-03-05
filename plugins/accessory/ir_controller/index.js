@@ -2,12 +2,14 @@
 
 const libQ = require('kew');
 const fs = require('fs-extra');
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 const path = require('path');
 const os = require('os');
 const id = 'ir_controller: ';
 const kernelVersion = os.release().match(/[0-9]+/g);
 const overlay = (Number(kernelVersion[0]) < 4 || (Number(kernelVersion[0]) === 4 && Number(kernelVersion[1]) < 19)) ? 'lirc-rpi' : 'gpio-ir';
+const lircVersion = execSync('/usr/bin/dpkg -s lirc', { encoding: 'utf8', uid: 1000, gid: 1000 }).match(/^Version: .+$/m).toString().match(/[0-9]+/g);
+const lircLegacy = (Number(lircVersion[0]) === 0 && (Number(lircVersion[1]) < 9 || (Number(lircVersion[1]) === 9 && Number(lircVersion[2]) < 4)));
 var gpioConfigurable = false;
 var device, header;
 
@@ -24,7 +26,7 @@ function IrController (context) {
 
 IrController.prototype.onVolumioStart = function () {
   const self = this;
-  const configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+  const configFile = self.commandRouter.pluginManager.getConfigurationFile(self.context, 'config.json');
 
   self.config = new (require('v-conf'))();
   self.config.loadFile(configFile);
@@ -36,97 +38,99 @@ IrController.prototype.onStart = function () {
   const defer = libQ.defer();
 
   self.commandRouter.loadI18nStrings();
-  device = self.getAdditionalConf('system_controller', 'system', 'device');
-  self.createHardwareConf();
-  self.saveIROptions({ ir_profile: { value: self.config.get('ir_profile', 'JustBoom IR Remote') }, notify: false });
-  if (device === 'Raspberry PI') {
-    if (!fs.existsSync('/sys/firmware/devicetree/base/lirc_rpi') && fs.readdirSync('/sys/firmware/devicetree/base').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
-      if (overlay === 'gpio-ir') {
-        self.logger.info(id + 'HAT did not load /proc/device-tree/ir_receiver!');
-      } else {
-        self.logger.info(id + 'HAT did not load /proc/device-tree/lirc_rpi!');
-      }
-      // determine header pincount by Raspberry Pi revision code (https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md)
-      exec('awk \'/^Revision/ {sub("^1000", "", $3); print $3}\' /proc/cpuinfo', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error !== null) {
-          self.logger.info(id + 'Raspberry Pi model cannot be determined: ' + error);
-        } else {
-          gpioConfigurable = true;
-          stdout = stdout.trim();
-          self.logger.info(id + 'Raspberry Pi revision code: ' + stdout);
-          if (stdout === 'Beta' || parseInt(stdout, 16) < 4) {
-            // Model B beta, model B PCB rev. 1.0: original 26pin header (P1)
-            header = '26';
-          } else if (parseInt(stdout, 16) < 22) {
-            // Model B PCB rev. 2.0 and model A PCB rev. 2.0: altered 26pin header (P1) + 8pin header (P5)
-            header = '34';
+  device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
+  self.prepareLirc()
+    .then(function () {
+      self.saveIROptions({ ir_profile: { value: self.config.get('ir_profile', 'JustBoom IR Remote') }, notify: false });
+      if (device === 'Raspberry PI') {
+        if (!fs.existsSync('/sys/firmware/devicetree/base/lirc_rpi') && fs.readdirSync('/sys/firmware/devicetree/base').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
+          if (overlay === 'gpio-ir') {
+            self.logger.info(id + 'HAT did not load /proc/device-tree/ir_receiver!');
           } else {
-            const modelId = (stdout.length === 4) ? stdout : stdout.substr(-3, 2);
-            switch (modelId) {
-              // sort out the Compute Modules
-              case '0011': // CM1
-              case '0014': // CM1
-              case '06': // CM
-              case '0a': // CM3
-              case '10': // CM3+
-              case '14': // CM4
-                gpioConfigurable = false;
-                break;
-              default:
-                // Models B+, A+, 2B, 3B, 3B+, 3A+, 4B, Zero, Zero W, Pi 400: 40pin header (P1)
-                header = '40';
-            }
+            self.logger.info(id + 'HAT did not load /proc/device-tree/lirc_rpi!');
           }
-          if (gpioConfigurable) {
-            self.saveGpioOptions({ header40_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header34_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header26_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, gpio_pull: { value: self.config.get('gpio_pull', 'up') }, forceActiveState: self.config.get('forceActiveState', false), activeState: { value: self.config.get('activeState', 1) }, notify: false });
+          // determine header pincount by Raspberry Pi revision code (https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md)
+          exec('awk \'/^Revision/ {sub("^1000", "", $3); print $3}\' /proc/cpuinfo', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+            if (error !== null) {
+              self.logger.info(id + 'Raspberry Pi model cannot be determined: ' + error);
+            } else {
+              gpioConfigurable = true;
+              stdout = stdout.trim();
+              self.logger.info(id + 'Raspberry Pi revision code: ' + stdout);
+              if (stdout === 'Beta' || parseInt(stdout, 16) < 4) {
+                // Model B beta, model B PCB rev. 1.0: original 26pin header (P1)
+                header = '26';
+              } else if (parseInt(stdout, 16) < 22) {
+                // Model B PCB rev. 2.0 and model A PCB rev. 2.0: altered 26pin header (P1) + 8pin header (P5)
+                header = '34';
+              } else {
+                const modelId = (stdout.length === 4) ? stdout : stdout.substr(-3, 2);
+                switch (modelId) {
+                  // sort out the Compute Modules except CM4
+                  case '0011': // CM1
+                  case '0014': // CM1
+                  case '06': // CM
+                  case '0a': // CM3
+                  case '10': // CM3+
+                    gpioConfigurable = false;
+                    break;
+                  default:
+                    // Models B+, A+, 2B, 3B, 3B+, 3A+, 4B, Zero, Zero W, Pi 400, CM4 IO Board: 40pin header (P1)
+                    header = '40';
+                }
+              }
+              if (gpioConfigurable) {
+                self.saveGpioOptions({ header40_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header34_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header26_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, gpio_pull: { value: self.config.get('gpio_pull', 'up') }, forceActiveState: self.config.get('forceActiveState', false), activeState: { value: self.config.get('activeState', 1) }, notify: false });
+              }
+            }
+          });
+        } else {
+          if (overlay === 'gpio-ir') {
+            self.logger.info(id + 'HAT already loaded /proc/device-tree/ir_receiver!');
+          } else {
+            self.logger.info(id + 'HAT already loaded /proc/device-tree/lirc_rpi!');
           }
         }
-      });
-    } else {
-      if (overlay === 'gpio-ir') {
-        self.logger.info(id + 'HAT already loaded /proc/device-tree/ir_receiver!');
-      } else {
-        self.logger.info(id + 'HAT already loaded /proc/device-tree/lirc_rpi!');
       }
-    }
-  }
-  defer.resolve();
+      defer.resolve();
+    })
+    .fail(function () {
+      defer.reject();
+    });
   return defer.promise;
 };
 
 IrController.prototype.onStop = function () {
   const self = this;
+  const defer = libQ.defer();
+  const lircService = lircLegacy ? 'lirc' : 'lircd';
 
-  exec('usr/bin/sudo /bin/systemctl stop lirc.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-    if (error !== null) {
-      self.logger.error(id + 'Error stopping LIRC: ' + error);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
-    } else {
-      self.logger.info(id + 'LIRC correctly stopped.');
-    }
-  });
-  if (device === 'Raspberry PI') {
-    let gpioPin = ' gpio_pin=' + self.config.get('gpio_in_pin');
-    let activeState = (self.config.get('forceActiveState')) ? ' invert=' + self.config.get('activeState') : '';
-    if (overlay === 'lirc-rpi') {
-      gpioPin = ' gpio_in_pin=' + self.config.get('gpio_in_pin');
-      activeState = (self.config.get('forceActiveState')) ? ' sense=' + self.config.get('activeState') : '';
-    }
-    const params = gpioPin + ' gpio_pull=' + self.config.get('gpio_pull') + activeState;
-    self.dtoverlayIndex(params + '$')
-      .then(function (i) {
-        if (i !== -1) {
-          self.dtoverlay('-r ' + i)
-            .then(function () {
-              self.logger.info(id + overlay + ' overlay removed.');
-            })
-            .fail(function (e) {
-              self.logger.error(id + 'Error removing ' + overlay + ' overlay: ' + e);
-            });
+  self.systemctl('stop ' + lircService + '.service')
+    .fin(function () {
+      if (device === 'Raspberry PI') {
+        let gpioPin = ' gpio_pin=' + self.config.get('gpio_in_pin');
+        let activeState = (self.config.get('forceActiveState')) ? ' invert=' + self.config.get('activeState') : '';
+        if (overlay === 'lirc-rpi') {
+          gpioPin = ' gpio_in_pin=' + self.config.get('gpio_in_pin');
+          activeState = (self.config.get('forceActiveState')) ? ' sense=' + self.config.get('activeState') : '';
         }
-      });
-  }
-  return libQ.resolve();
+        const params = gpioPin + ' gpio_pull=' + self.config.get('gpio_pull') + activeState;
+        self.dtoverlayIndex(params + '$')
+          .then(function (i) {
+            if (i !== -1) {
+              self.dtoverlay('-r ' + i)
+                .then(function () {
+                  self.logger.info(id + overlay + ' overlay removed.');
+                })
+                .fail(function (e) {
+                  self.logger.error(id + 'Error removing ' + overlay + ' overlay: ' + e);
+                });
+            }
+          });
+      }
+      defer.resolve();
+    });
+  return defer.promise;
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -191,7 +195,8 @@ IrController.prototype.getUIConfig = function () {
       }
       defer.resolve(uiconf);
     })
-    .fail(function () {
+    .fail(function (e) {
+      self.logger.error(id + 'Could not fetch UI configuration: ' + e);
       defer.reject(new Error());
     });
   return defer.promise;
@@ -199,14 +204,12 @@ IrController.prototype.getUIConfig = function () {
 
 IrController.prototype.updateUIConfig = function () {
   const self = this;
-  const defer = libQ.defer();
 
   self.commandRouter.getUIConfigOnPlugin('accessory', 'ir_controller', {})
     .then(function (uiconf) {
       self.commandRouter.broadcastMessage('pushUiConfig', uiconf);
     });
   self.commandRouter.broadcastMessage('pushUiConfig');
-  return defer.promise;
 };
 
 IrController.prototype.getConfigurationFiles = function () {
@@ -225,41 +228,35 @@ IrController.prototype.getI18nFile = function (langCode) {
   return path.join(__dirname, 'i18n', 'strings_en.json');
 };
 
-IrController.prototype.getAdditionalConf = function (type, controller, data) {
-  const self = this;
-  const confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
-
-  return confs;
-};
-
 IrController.prototype.saveIROptions = function (data) {
   const self = this;
-  const profileFolder = data.ir_profile.value.replace(/ /g, '\\ ');
 
   if (self.config.get('ir_profile') !== data.ir_profile.value || data.notify === false) {
     self.config.set('ir_profile', data.ir_profile.value);
-    exec('/usr/bin/sudo /bin/chmod -R 777 /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-      if (error !== null) {
-        self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);
-        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
+    try {
+      const profileFiles = fs.readdirSync(path.join(__dirname, 'configurations', data.ir_profile.value));
+      let c = 0;
+      profileFiles.forEach(function (profileFile) {
+        if (profileFile === 'lircrc' || profileFile === 'lircd.conf') {
+          fs.writeFileSync(path.join('etc', 'lirc', profileFile), fs.readFileSync(path.join(path.join(__dirname, 'configurations', data.ir_profile.value, profileFile)), 'utf8'), 'utf8');
+          c++;
+        }
+      });
+      if (c === 2) {
+        self.logger.info(id + 'LIRC correctly updated.');
+        if (data.notify !== false) {
+          self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+        }
+        setTimeout(function () {
+          self.restartLirc(data.notify);
+        }, 1000);
       } else {
-        self.logger.info(id + 'File permissions successfully set on /etc/lirc/.');
-        exec('/bin/cp -r ' + path.join(__dirname, 'configurations', profileFolder, '*') + ' /etc/lirc/', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-          if (error !== null) {
-            self.logger.error(id + 'Error copying configurations: ' + error);
-            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
-          } else {
-            self.logger.info(id + 'LIRC correctly updated.');
-            if (data.notify !== false) {
-              self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
-            }
-            setTimeout(function () {
-              self.restartLirc(data.notify);
-            }, 1000);
-          }
-        });
+        throw new Error('Missing "lircrc" and / or "lircd.conf" files.');
       }
-    });
+    } catch (e) {
+      self.logger.error(id + 'Error copying configurations: ' + e);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVE_ERROR'));
+    }
   } else if (data.notify !== false) {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.NO_CHANGES'));
   }
@@ -304,63 +301,68 @@ IrController.prototype.saveGpioOptions = function (data) {
 
 // Plugin Methods ------------------------------------------------------------------------------------
 
-IrController.prototype.createHardwareConf = function (callback) {
+IrController.prototype.prepareLirc = function () {
   const self = this;
-  let conf;
+  const defer = libQ.defer();
+  const fn = lircLegacy ? '/etc/lirc/hardware.conf' : '/etc/lirc/lirc_options.conf';
 
-  exec('/usr/bin/sudo /bin/chmod 777 /etc/lirc/hardware.conf', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+  exec('/usr/bin/sudo /bin/chmod -R a+rwX /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error(id + 'Error setting file permissions on /etc/hardware.conf: ' + error);
+      self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
+      defer.reject();
     } else {
-      self.logger.info(id + 'File permissions successfully set on /etc/hardware.conf.');
-      try {
-        fs.readFile(path.join(__dirname, 'hardware.conf.tmpl'), 'utf8', function (err, data) {
-          if (err) {
-            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.ERR_READ' + '/etc/lirc/hardware.conf: ') + err);
-            return self.logger.error(id + 'Error reading /etc/lirc/hardware.conf: ' + err);
-          }
-          if (device === 'Odroid-C') {
-            conf = data.replace(/\${module}/g, 'meson-ir');
+      self.logger.info(id + 'File permissions successfully set on /etc/lirc/.');
+      fs.readFile(fn, 'utf8', function (err, data) {
+        if (err) {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.ERR_READ' + fn + ': ') + err);
+          self.logger.error(id + 'Error reading ' + fn + ': ' + err);
+          defer.reject();
+        } else {
+          if (lircLegacy) {
+            data = data.replace(new RegExp('^#? *LIRCD_ARGS=".*"$', 'm'), 'LIRCD_ARGS="--uinput"');
+            data = data.replace(new RegExp('^#? *DRIVER=".*"$', 'm'), 'DRIVER="default"');
+            data = data.replace(new RegExp('^#? *DEVICE=".*"$', 'm'), 'DEVICE="/dev/lirc0"');
+            if (device === 'Odroid-C') {
+              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES="meson-ir"');
+            } else {
+              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES=' + ((overlay === 'gpio-ir') ? '"gpio_ir_recv"' : '"lirc_rpi"'));
+            }
           } else {
-            conf = (overlay === 'gpio-ir') ? data.replace(/\${module}/g, 'gpio_ir_recv') : data.replace(/\${module}/g, 'lirc_rpi');
+            data = data.replace(new RegExp('^#? *driver *=.*$', 'm'), 'driver          = default');
+            data = data.replace(new RegExp('^#? *device *=.*$', 'm'), 'device          = /dev/lirc0');
           }
-          fs.writeFile('/etc/lirc/hardware.conf', conf, 'utf8', function (err) {
+          fs.writeFile(fn, data, 'utf8', function (err) {
             if (err) {
-              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.ERR_WRITE' + '/etc/lirc/hardware.conf: ') + err);
-              return self.logger.error(id + 'Error writing /etc/lirc/hardware.conf: ' + err);
+              self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.ERR_WRITE' + fn + ': ') + err);
+              self.logger.error(id + 'Error writing ' + fn + ': ' + err);
+              defer.reject();
+            } else {
+              defer.resolve();
             }
           });
-        });
-      } catch (err) {
-        callback(err);
-      }
+        }
+      });
     }
   });
+  return defer.promise;
 };
 
 IrController.prototype.restartLirc = function (notify) {
   const self = this;
+  const lircService = lircLegacy ? 'lirc' : 'lircd';
 
-  exec('usr/bin/sudo /bin/systemctl stop lirc.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-    if (error !== null) {
-      self.logger.error(id + 'Failed to stop lirc.service: ' + error);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
-    }
-    setTimeout(function () {
-      exec('usr/bin/sudo /bin/systemctl start lirc.service', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error !== null) {
-          self.logger.error(id + 'Error restarting lirc.service: ' + error);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_ERROR'));
-        } else {
-          self.logger.info(id + 'lirc.service correctly started.');
-          if (notify !== false) {
-            self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
-          }
-        }
-      });
-    }, 1000);
-  });
+  self.systemctl('restart ' + lircService + '.service')
+    .then(function () {
+      if (!lircLegacy) {
+        self.systemctl('restart irexec.service');
+      }
+    })
+    .then(function () {
+      if (notify !== false) {
+        self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+      }
+    });
 };
 
 IrController.prototype.dtoverlay = function (options) {
@@ -379,7 +381,7 @@ IrController.prototype.dtoverlay = function (options) {
 IrController.prototype.dtoverlayIndex = function (params) {
   const defer = libQ.defer();
   const self = this;
-  var i = -1;
+  let i = -1;
 
   exec('/usr/bin/dtoverlay -l', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
@@ -466,5 +468,22 @@ IrController.prototype.manageIrOverlays = function (gpioInPin, data) {
             });
         });
     });
+  return defer.promise;
+};
+
+IrController.prototype.systemctl = function (systemctlCmd) {
+  const self = this;
+  const defer = libQ.defer();
+
+  exec('/usr/bin/sudo /bin/systemctl ' + systemctlCmd, { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+    if (error !== null) {
+      self.logger.error(id + 'Failed to ' + systemctlCmd + ': ' + error);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + systemctlCmd + ': ' + error);
+      defer.reject(error);
+    } else {
+      self.logger.info(id + 'systemctl ' + systemctlCmd + ' succeeded.');
+      defer.resolve();
+    }
+  });
   return defer.promise;
 };
