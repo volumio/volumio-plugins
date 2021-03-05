@@ -563,7 +563,7 @@
       "id": "advanced",
       "element": "section",
       "label": "TRANSLATE.SAVEPRESET",
-      "icon": "fa-cogs",
+      "icon": "fa-download",
       "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/Parameq4Volumio",
@@ -606,7 +606,7 @@
       "id": "advanced",
       "element": "section",
       "label": "TRANSLATE.USETHISPRESET",
-      "icon": "fa-cogs",
+      "icon": "fa-upload",
       "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/Parameq4Volumio",
