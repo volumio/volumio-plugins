@@ -215,6 +215,15 @@ Parameq.prototype.getUIConfig = function () {
 
       uiconf.sections[0].content[41].value = self.config.get('eq14');
 
+      value = self.config.get('eqpresetsaved');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
+
+
+      value = self.config.get('usethispreset');
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[0].options'), value));
+
       //}
       defer.resolve(uiconf);
     })
@@ -377,6 +386,7 @@ Parameq.prototype.createCamilladspfile = function () {
       var scopec, scoper;
       var nbreq = (self.config.get('nbreq'))
       var effect = self.config.get('effect')
+
       var gainresult;
 
       if (((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None') && effect == false)) {
@@ -642,7 +652,6 @@ Parameq.prototype.saveparameq = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-    // self.logger.info('typec' + data[typec].value + ' scopec ' + data[scopec].value + ' eqc ' + data[eqc])
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
@@ -658,4 +667,77 @@ Parameq.prototype.saveparameq = function (data) {
     self.createCamilladspfile()
   }, 300);
   return defer.promise;
+};
+
+Parameq.prototype.saveequalizerpreset = function (data) {
+  const self = this;
+  let preset = (data['eqpresetsaved'].value);
+  var nbreq = self.config.get('nbreq')
+  self.logger.info('eqpresetsaved ' + preset)
+  switch (preset) {
+    case ("mypreset1"):
+      var spreset = 'p1'
+      break;
+    case ("mypreset2"):
+      var spreset = 'p2'
+      break;
+    case ("mypreset3"):
+      var spreset = 'p3'
+  }
+  self.logger.info('spreset = ' + spreset)
+  for (var o = 1; o < (nbreq + 1); o++) {
+    var typec = 'type' + o;
+    var scopec = 'scope' + o;
+    var eqc = 'eq' + o;
+    self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+    self.config.set(spreset + typec, self.config.get(typec));
+    self.config.set(spreset + scopec, self.config.get(scopec));
+    self.config.set(spreset + eqc, self.config.get(eqc));
+    self.config.set(spreset + 'nbreq', nbreq);
+
+    self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
+  }
+  let defer = libQ.defer();
+};
+
+
+Parameq.prototype.usethispreset = function (data) {
+  const self = this;
+  let preset = (data['usethispreset'].value);
+
+  switch (preset) {
+    case ("mypreset1"):
+      var spreset = 'p1'
+      break;
+    case ("mypreset2"):
+      var spreset = 'p2'
+      break;
+    case ("mypreset3"):
+      var spreset = 'p3'
+  }
+  self.logger.info('spreset = ' + spreset)
+  var nbreqc = self.config.get(spreset + 'nbreq')
+
+  for (var o = 1; o < (nbreqc + 1); o++) {
+    var typec = 'type' + o;
+    var scopec = 'scope' + o;
+    var eqc = 'eq' + o;
+
+    self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+    self.config.set(typec, self.config.get(spreset + typec));
+    self.config.set(scopec, self.config.get(spreset + scopec));
+    self.config.set(eqc, self.config.get(spreset + eqc));
+    self.config.set("nbreq", nbreqc);
+
+    self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
+  }
+
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+    self.createCamilladspfile()
+  }, 300);
+  let defer = libQ.defer();
 }

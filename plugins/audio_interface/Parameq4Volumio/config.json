@@ -1,17 +1,37 @@
 {
     "nbreq": {
-        "type":"number",
+        "type": "number",
+        "value": "1"
+    },
+    "p1nbreq": {
+        "type": "number",
+        "value": "1"
+    },
+    "p2nbreq": {
+        "type": "number",
+        "value": "1"
+    },
+    "p3nbreq": {
+        "type": "number",
         "value": "1"
     },
     "effect": {
-        "type":"boolean",
+        "type": "boolean",
         "value": true
     },
     "gainapplied": {
-        "type":"number",
+        "type": "number",
         "value": "0"
     },
-   "type1": {
+    "eqpresetsaved": {
+        "type": "string",
+        "value": "mypreset1"
+    },
+    "usethispreset": {
+        "type": "string",
+        "value": "nopreset"
+    },
+    "type1": {
         "type": "string",
         "value": "None"
     },
@@ -177,6 +197,510 @@
     },
     "eq14": {
         "type": "string",
+        "value": "0,0,0"
+    },
+    "p1type1": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope1": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq1": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type2": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope2": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq2": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type3": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope3": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq3": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type4": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope4": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq4": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type5": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope5": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq5": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type6": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope6": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq6": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type7": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope7": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq7": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type8": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope8": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq8": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type9": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope9": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq9": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type10": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope10": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq10": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type11": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope11": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq11": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type12": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope12": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq12": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type13": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope13": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq13": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p1type14": {
+        "p1type": "string",
+        "value": "None"
+    },
+    "p1scope14": {
+        "p1type": "string",
+        "value": "L+R"
+    },
+    "p1eq14": {
+        "p1type": "string",
+        "value": "0,0,0"
+    },
+    "p2type1": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope1": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq1": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type2": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope2": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq2": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type3": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope3": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq3": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type4": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope4": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq4": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type5": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope5": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq5": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type6": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope6": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq6": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type7": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope7": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq7": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type8": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope8": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq8": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type9": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope9": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq9": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type10": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope10": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq10": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type11": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope11": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq11": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type12": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope12": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq12": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type13": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope13": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq13": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p2type14": {
+        "p2type": "string",
+        "value": "None"
+    },
+    "p2scope14": {
+        "p2type": "string",
+        "value": "L+R"
+    },
+    "p2eq14": {
+        "p2type": "string",
+        "value": "0,0,0"
+    },
+    "p3type1": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope1": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq1": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type2": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope2": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq2": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type3": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope3": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq3": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type4": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope4": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq4": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type5": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope5": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq5": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type6": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope6": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq6": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type7": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope7": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq7": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type8": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope8": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq8": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type9": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope9": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq9": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type10": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope10": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq10": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type11": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope11": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq11": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type12": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope12": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq12": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type13": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope13": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq13": {
+        "p3type": "string",
+        "value": "0,0,0"
+    },
+    "p3type14": {
+        "p3type": "string",
+        "value": "None"
+    },
+    "p3scope14": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "p3eq14": {
+        "p3type": "string",
         "value": "0,0,0"
     }
 }

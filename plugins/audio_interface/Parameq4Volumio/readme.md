@@ -52,6 +52,7 @@ Mars 5th 2021
 - improvement in UI
 - now the global gain is used when effects are disabled
 - new image in readme
+- 3 preset!
 
 Mars 4th 2021
 

@@ -526,7 +526,6 @@
           "element": "button",
           "label": "Click to enable effects",
           "description": "Enable equalizers effect",
-
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
@@ -543,8 +542,7 @@
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "addeq",
-            "data": [
-                         ]
+            "data": []
           }
         },
         {
@@ -556,9 +554,98 @@
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "removeeq",
-            "data": [
-            ]
+            "data": []
           }
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "TRANSLATE.SAVEPRESET",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "saveequalizerpreset"
+      },
+      "saveButton": {
+        "label": "save",
+        "data": [
+          "eqpresetsaved"
+        ]
+      },
+      "content": [
+        {
+          "id": "eqpresetsaved",
+          "element": "select",
+          "doc": "TRANSLATE.DOCSAVECURRENTEQ",
+          "label": "TRANSLATE.SAVECURRENTEQ",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": [
+            {
+              "value": "mypreset1",
+              "label": "TRANSLATE.LABELPS1"
+            },
+            {
+              "value": "mypreset2",
+              "label": "TRANSLATE.LABELPS2"
+            },
+            {
+              "value": "mypreset3",
+              "label": "TRANSLATE.LABELPS3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "TRANSLATE.USETHISPRESET",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "usethispreset"
+      },
+      "saveButton": {
+        "label": "Load and use",
+        "data": [
+          "usethispreset"
+        ]
+      },
+      "content": [
+        {
+          "id": "usethispreset",
+          "element": "select",
+          "doc": "Use this preset",
+          "label": "Use this preset",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": [
+            {
+              "value": "nopreset",
+              "label": "no preset"
+            },
+            {
+              "value": "mypreset1",
+              "label": "TRANSLATE.LABELPS1"
+            },
+            {
+              "value": "mypreset2",
+              "label": "TRANSLATE.LABELPS2"
+            },
+            {
+              "value": "mypreset3",
+              "label": "TRANSLATE.LABELPS3"
+            }
+          ]
         }
       ]
     }
