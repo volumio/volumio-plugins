@@ -101,7 +101,7 @@ def on_connect():
     socketIO.on('pushBrowseLibrary', on_push_browselibrary)
     socketIO.on('pushQueue', on_push_queue)
     socketIO.emit('getQueue', on_push_queue)
-    print("on_connect--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("on_connect--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def on_disconnect():
@@ -109,7 +109,7 @@ def on_disconnect():
 
 
 def navigation_handler():
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global mode, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, listresult
     if mode == 'player':
         mode = 'menu'
@@ -121,11 +121,11 @@ def navigation_handler():
         display_stuff('bg_default', nav_array_name, marker, liststart)
     else:
         print('else navigation_handler() eingetreten')
-    print("navigation_handler--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("navigation_handler--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def on_push_browsesources(*args):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global listresult  # v.0.0.4 removed some globals, as thex not needed here
     if mode == 'navigation':  # v.0.0.4 added, to make sure this getting not displayed on_connect
         listresult = len(args[0])
@@ -136,11 +136,11 @@ def on_push_browsesources(*args):
             append_n(args[0][i]['name'])
             append_u(args[0][i]['uri'])
         display_stuff('bg_default', nav_array_name, marker, 0)
-    print("on_push_browsesources--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("on_push_browsesources--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def on_push_browselibrary(*args):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global listresult  # v.0.0.4 removed some globals, as thex not needed here
     reset_variable('navigation')
     listresult = len(args[0]['navigation']['lists'][0]['items'])  # v.0.0.4 code cleaning
@@ -161,11 +161,11 @@ def on_push_browselibrary(*args):
         display_stuff('bg_default', nav_array_name, marker, liststart)
     elif listresult == 0:  # we have no item entries
         display_stuff('bg_default', obj_trans['DISPLAY']['EMPTY'], marker, liststart)
-    print("on_push_browselibrary--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("on_push_browselibrary--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def reset_variable(varmode):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global mode, nav_array_service, nav_array_name, nav_array_uri, nav_array_type, marker, liststart, img_check, albumart
     mode = varmode
     del nav_array_name[:]  # v.0.0.4 del is cleaner than = []
@@ -174,18 +174,18 @@ def reset_variable(varmode):
     del nav_array_service[:]
     marker, liststart = 0, 0
     img_check, albumart = '', ''  # reset albumart so display gets refreshed
-    print("reset_variable--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("reset_variable--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def sendtodisplay(img):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     disp.display(img)
     # time.sleep(0.1)  # ohne sleep 82% CPU, sleep: 0.5 = 40%, 0.25 = 53%, 0.1 = 70%
-    print("sendtodisplay--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("sendtodisplay--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def display_stuff(picture, text, marked, start, icons='nav'):  # v.0.0.4 test for better performance
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global img3, listmax  # v.0.0.4
     i = 0
     if picture == 'bg_default':
@@ -249,7 +249,7 @@ def display_stuff(picture, text, marked, start, icons='nav'):  # v.0.0.4 test fo
         x2 = (WIDTH - len1)//2
         draw3.text((x2, HEIGHT - hei1), pagestring, font=font_m, fill=(255, 255, 255))
     sendtodisplay(img3)
-    print("displaystuff--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("displaystuff--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 # position in code is important, so display_stuff works v.0.0.4
@@ -258,7 +258,7 @@ socketIO = SocketIO('localhost', 3000)
 
 
 def seeking(direction):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global seek, duration
     step = 60000  # 60 seconds
     if direction == '+':
@@ -271,11 +271,11 @@ def seeking(direction):
             seek -= step
             socketIO.emit('seek', int(float(seek/1000)))
             display_stuff('bg_default', [obj_trans['DISPLAY']['SEEK'], strftime("%M:%S", gmtime(int(float(seek/1000)))) + ' / ' + strftime("%M:%S", gmtime(duration))], 0, 0, 'seek')
-    print("seeking--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("seeking--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def prevnext(direction):
-    start_time = time.time()  # debug, time of code execution
+    # start_time = time.time()  # debug, time of code execution
     global position
     if direction == 'prev':
         position -= 1
@@ -288,7 +288,7 @@ def prevnext(direction):
     display_stuff('bg_default', [str(position + 1) + '/' + str(len_queue), obj_trans['DISPLAY']['PREVNEXT'], title_queue[position]], 1, 0, 'seek')
     socketIO.emit('stop')
     socketIO.emit('play', {"value": position})
-    print("prevnext--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
+    # print("prevnext--- %s seconds ---" % (time.time() - start_time))  # debug, time of code execution
 
 
 def on_push_queue(*args):
