@@ -31,7 +31,6 @@ pirateaudio.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 
-
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
 	self.startpirateaudioservice();
@@ -62,7 +61,7 @@ pirateaudio.prototype.onStop = function() {
 	exec("/usr/bin/sudo /bin/systemctl stop pirateaudio.service", {
 		uid: 1000,
 		gid: 1000
-	}, function (error, stdout, stderr) { })
+	}, function (error, stdout, stderr) { });
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -89,11 +88,12 @@ pirateaudio.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 			//Debug
-			//self.logger.info('Funktion getUIConfig pirate:' + self.config.get('listmax'));
+			//self.logger.info('Funktion getUIConfig pirate:' + self.config.get('sleeptimer'));
 			uiconf.sections[0].content[0].value.value = self.config.get('listmax');
 			uiconf.sections[0].content[0].value.label = self.config.get('listmax');
-			uiconf.sections[0].content[1].value.value = self.config.get('gpio_ybutton');
-			uiconf.sections[0].content[1].value.label = self.config.get('gpio_ybutton');
+			uiconf.sections[0].content[1].value.value = self.config.get('gpio_ybutton'); //works on fieldtype select
+			uiconf.sections[0].content[1].value.label = self.config.get('gpio_ybutton'); //works on fieldtype select
+			uiconf.sections[0].content[2].value = self.config.get('sleeptimer'); //works on fieldtype input, needs no label
 			//uiconf.sections[0].content[1].value = self.config.get('listmax'); //geht bei Feld input
 			//uiconf.sections[0].content[0].value = 6; //geht als statische Anzeige und bei Feld input
             defer.resolve(uiconf);
@@ -115,12 +115,10 @@ pirateaudio.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your tasks here
 	//Debug
-	//var alex = data['listmax'].value;
-	//self.logger.info('Wert: ' + alex);
-
-	//self.config.set('listmax', parseInt(data['listmax'])); //geht bei Feld input
-	self.config.set('listmax', parseInt(data['listmax'].value));
-	self.config.set('gpio_ybutton', parseInt(data['gpio_ybutton'].value));
+	//self.logger.info('Wert: ' + data['sleeptimer']);
+	self.config.set('listmax', parseInt(data['listmax'].value));//works on fieldtype select
+	self.config.set('gpio_ybutton', parseInt(data['gpio_ybutton'].value));//works on fieldtype select
+	self.config.set('sleeptimer', parseInt(data['sleeptimer']));//works on fieldtype input
 	exec("/usr/bin/sudo /bin/systemctl restart pirateaudio.service", {
 		uid: 1000,
 		gid: 1000

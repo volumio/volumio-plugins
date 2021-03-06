@@ -10,5 +10,9 @@
     "gpio_ybutton": {
         "type": "number",
         "value": 20
+    },
+    "sleeptimer": {
+        "type": "number",
+        "value": 15
     }
 }
