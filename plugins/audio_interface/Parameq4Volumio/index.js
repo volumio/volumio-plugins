@@ -766,6 +766,7 @@ Parameq.prototype.usethispreset = function (data) {
       break;
     case ("mypreset3"):
       var spreset = 'p3'
+      break;
     default:
       self.commandRouter.pushToastMessage('error', ' Choose a preset')
       return;
