@@ -220,18 +220,18 @@ Parameq.prototype.getUIConfig = function () {
       */
 
       value = self.config.get('eqpresetsaved');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', value);
       self.logger.info('eqpresetsaved value ' + value)
 
       value = self.config.get('usethispreset');
-      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', value);
 
 
       let pitems = ('mypreset1,mypreset2,mypreset3').split(',');
       for (let x in pitems) {
-        self.logger.info('pitems ' + pitems)
+        //self.logger.info('pitems ' + pitems)
 
         switch (pitems[x]) {
           case ("mypreset1"):
@@ -246,16 +246,16 @@ Parameq.prototype.getUIConfig = function () {
           default: var plabel = "nolabel"
         }
         self.logger.info('plabel ' + plabel)
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
-          value: pitems[x],
-          label: plabel
-        });
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
           value: pitems[x],
           label: plabel
         });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
+          value: pitems[x],
+          label: plabel
+        });
       }
-      uiconf.sections[1].content[2].value = self.config.get('renpreset');
+      uiconf.sections[2].content[2].value = self.config.get('renpreset');
 
 
       //  self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[0].options'), value));
@@ -739,7 +739,7 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-    self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+  //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
     self.config.set(spreset + typec, self.config.get(typec));
     self.config.set(spreset + scopec, self.config.get(scopec));
     self.config.set(spreset + eqc, self.config.get(eqc));
@@ -771,7 +771,7 @@ Parameq.prototype.usethispreset = function (data) {
       return;
 
   }
-  self.logger.info('spreset = ' + spreset)
+//  self.logger.info('spreset = ' + spreset)
   var nbreqc = self.config.get(spreset + 'nbreq')
 
   for (var o = 1; o < (nbreqc + 1); o++) {
@@ -779,7 +779,7 @@ Parameq.prototype.usethispreset = function (data) {
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
 
-    self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+  //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
     self.config.set(typec, self.config.get(spreset + typec));
     self.config.set(scopec, self.config.get(spreset + scopec));
     self.config.set(eqc, self.config.get(spreset + eqc));

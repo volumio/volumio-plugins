@@ -562,6 +562,36 @@
     {
       "id": "advanced",
       "element": "section",
+      "label": "TRANSLATE.USETHISPRESET",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "usethispreset"
+      },
+      "saveButton": {
+        "label": "Load and use",
+        "data": [
+          "usethispreset"
+        ]
+      },
+      "content": [
+        {
+          "id": "usethispreset",
+          "element": "select",
+          "doc": "Use this preset",
+          "label": "Use this preset",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
       "label": "TRANSLATE.SAVEPRESET",
       "icon": "fa-download",
       "onSave": {
@@ -608,36 +638,6 @@
             "field": "hideren",
             "value": true
           }
-        }
-      ]
-    },
-    {
-      "id": "advanced",
-      "element": "section",
-      "label": "TRANSLATE.USETHISPRESET",
-      "icon": "fa-upload",
-      "onSave": {
-        "type": "plugin",
-        "endpoint": "audio_interface/Parameq4Volumio",
-        "method": "usethispreset"
-      },
-      "saveButton": {
-        "label": "Load and use",
-        "data": [
-          "usethispreset"
-        ]
-      },
-      "content": [
-        {
-          "id": "usethispreset",
-          "element": "select",
-          "doc": "Use this preset",
-          "label": "Use this preset",
-          "value": {
-            "value": "",
-            "label": ""
-          },
-          "options": []
         }
       ]
     }
