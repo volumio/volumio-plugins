@@ -659,7 +659,7 @@
 					"prettyName": "pirateaudio",
 					"icon": "fa-lightbulb-o",
 					"name": "pirateaudio",
-					"version": "0.0.3",
+					"version": "0.0.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/pirateaudio/pirateaudio.zip",
 					"license": "ISC",
 					"description": "Volumio plugin to use pirate audio DAC (including display and the 4 buttons) on raspberry pi.",
@@ -671,7 +671,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "24-1-2021"
+					"updated": "7-3-2021"
 				},
 				{
 					"prettyName": "Philips amBX",
