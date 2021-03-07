@@ -17,7 +17,8 @@
         "label": "TRANSLATE.CONFIG.SAVE",
         "data": [
           "listmax",
-          "gpio_ybutton"
+          "gpio_ybutton",
+          "sleeptimer"
         ]
       },
       "content": [
@@ -80,6 +81,16 @@
               "label": "24"
             }
           ]
+        },
+        {
+          "id": "sleeptimer",
+          "type": "number",
+          "label": "TRANSLATE.CONFIG.SLEEPTIMER",
+          "element": "input",
+          "value": {
+            "value": 15,
+            "label": "15"
+          }
         }
       ]
     }
