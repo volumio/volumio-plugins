@@ -1,4 +1,4 @@
-Febuary 5th 2021
+Febuary 7th 2021
 
 
 ##  Experimental version for modular_alsa !
@@ -53,6 +53,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+Mars 7th 2021
+
+- preset can be renamed by user
 
 Mars 5th 2021
 

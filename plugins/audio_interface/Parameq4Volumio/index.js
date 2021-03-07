@@ -213,16 +213,52 @@ Parameq.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.label', value);
 
-      uiconf.sections[0].content[41].value = self.config.get('eq14');
+      /*
+            value = self.config.get('eqpresetsaved');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
+      */
 
       value = self.config.get('eqpresetsaved');
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
-
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', value);
+      self.logger.info('eqpresetsaved value ' + value)
 
       value = self.config.get('usethispreset');
       self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[0].options'), value));
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', value);
+
+
+      let pitems = ('mypreset1,mypreset2,mypreset3').split(',');
+      for (let x in pitems) {
+        self.logger.info('pitems ' + pitems)
+
+        switch (pitems[x]) {
+          case ("mypreset1"):
+            var plabel = self.config.get('renpreset1')
+            break;
+          case ("mypreset2"):
+            var plabel = self.config.get('renpreset2')
+            break;
+          case ("mypreset3"):
+            var plabel = self.config.get('renpreset3')
+            break;
+          default: var plabel = "nolabel"
+        }
+        self.logger.info('plabel ' + plabel)
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
+          value: pitems[x],
+          label: plabel
+        });
+        self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
+          value: pitems[x],
+          label: plabel
+        });
+      }
+      uiconf.sections[1].content[2].value = self.config.get('renpreset');
+
+
+      //  self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[0].options'), value));
 
       //}
       defer.resolve(uiconf);
@@ -353,7 +389,7 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
   connection.onmessage = (e) => {
     console.log(e.data)
-    self.commandRouter.pushToastMessage('success',  self.commandRouter.getI18nString('CONFIG_UPDATED'));
+    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
   }
 
 };
@@ -581,7 +617,7 @@ Parameq.prototype.saveparameq = function (data) {
     } else {
 
       self.logger.info('wrong value in ' + eqc)
-      self.commandRouter.pushToastMessage('error',  self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
       return;
     }
 
@@ -646,6 +682,7 @@ Parameq.prototype.saveparameq = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
+
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
@@ -663,19 +700,40 @@ Parameq.prototype.saveparameq = function (data) {
 
 Parameq.prototype.saveequalizerpreset = function (data) {
   const self = this;
+  let defer = libQ.defer();
+
   let preset = (data['eqpresetsaved'].value);
+  if (preset == 'Select a preset') {
+    self.commandRouter.pushToastMessage('error', ' Choose a preset')
+    return;
+  }
   var nbreq = self.config.get('nbreq')
   self.logger.info('eqpresetsaved ' + preset)
-  switch (preset) {
-    case ("mypreset1"):
-      var spreset = 'p1'
-      break;
-    case ("mypreset2"):
-      var spreset = 'p2'
-      break;
-    case ("mypreset3"):
-      var spreset = 'p3'
-  }
+  var rpreset = (data['renpreset'])
+  //if (rpreset != 'choose a name') {
+    switch (preset) {
+      case ("mypreset1"):
+        var spreset = 'p1'
+        var renprsetr = '1'
+        break;
+      case ("mypreset2"):
+        var spreset = 'p2'
+        var renprsetr = '2'
+        break;
+      case ("mypreset3"):
+        var spreset = 'p3'
+        var renprsetr = '3'
+        break;
+    }
+    if (rpreset == 'choose a name') {
+      self.logger.info('No change in name !')
+    } else {
+      self.config.set("renpreset" + renprsetr, (data['renpreset']));
+      let name = (self.config.get('renpreset' + renprsetr));
+      self.logger.info('renpreset ' + name)
+    }
+ // }
+
   self.logger.info('spreset = ' + spreset)
   for (var o = 1; o < (nbreq + 1); o++) {
     var typec = 'type' + o;
@@ -689,14 +747,16 @@ Parameq.prototype.saveequalizerpreset = function (data) {
 
     self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
   }
-  let defer = libQ.defer();
+  self.refreshUI();
+
+  return defer.promise;
 };
 
 
 Parameq.prototype.usethispreset = function (data) {
   const self = this;
   let preset = (data['usethispreset'].value);
-
+  let defer = libQ.defer();
   switch (preset) {
     case ("mypreset1"):
       var spreset = 'p1'
@@ -706,6 +766,10 @@ Parameq.prototype.usethispreset = function (data) {
       break;
     case ("mypreset3"):
       var spreset = 'p3'
+    default:
+      self.commandRouter.pushToastMessage('error', ' Choose a preset')
+      return;
+
   }
   self.logger.info('spreset = ' + spreset)
   var nbreqc = self.config.get(spreset + 'nbreq')
@@ -729,5 +793,6 @@ Parameq.prototype.usethispreset = function (data) {
 
     self.createCamilladspfile()
   }, 300);
-  let defer = libQ.defer();
+  return defer.promise;
+
 }

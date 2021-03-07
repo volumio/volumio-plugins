@@ -7,6 +7,22 @@
         "type": "number",
         "value": "1"
     },
+    "renpreset": {
+        "type": "string",
+        "value": "choose a name"
+      },
+    "renpreset1": {
+        "type": "string",
+        "value": "mypreset1"
+    },
+    "renpreset2": {
+        "type": "string",
+        "value": "mypreset2"
+    },
+    "renpreset3": {
+        "type": "string",
+        "value": "mypreset3"
+    },
     "p2nbreq": {
         "type": "number",
         "value": "1"
@@ -25,7 +41,7 @@
     },
     "eqpresetsaved": {
         "type": "string",
-        "value": "mypreset1"
+        "value": "Select a preset"
     },
     "usethispreset": {
         "type": "string",
