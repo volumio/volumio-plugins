@@ -308,11 +308,11 @@ IrController.prototype.prepareLirc = function () {
 
   exec('/usr/bin/sudo /bin/chmod -R a+rwX /etc/lirc/*', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
     if (error !== null) {
-      self.logger.error(id + 'Error setting file permissions on /etc/lirc/: ' + error);
+      self.logger.error(id + 'Error setting file permissions on /etc/lirc/*: ' + error);
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.GENERIC_FAILED') + error);
       defer.reject();
     } else {
-      self.logger.info(id + 'File permissions successfully set on /etc/lirc/.');
+      self.logger.info(id + 'File permissions successfully set on /etc/lirc/*.');
       fs.readFile(fn, 'utf8', function (err, data) {
         if (err) {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('IRCONTROLLER.ERR_READ' + fn + ': ') + err);
@@ -352,16 +352,21 @@ IrController.prototype.restartLirc = function (notify) {
   const self = this;
   const lircService = lircLegacy ? 'lirc' : 'lircd';
 
-  self.systemctl('restart ' + lircService + '.service')
+  self.systemctl('stop ' + lircService + '.service')
     .then(function () {
-      if (!lircLegacy) {
-        self.systemctl('restart irexec.service');
-      }
-    })
-    .then(function () {
-      if (notify !== false) {
-        self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
-      }
+      setTimeout(function () {
+        self.systemctl('start ' + lircService + '.service')
+          .then(function () {
+            if (!lircLegacy) {
+              self.systemctl('restart irexec.service');
+            }
+          })
+          .then(function () {
+            if (notify !== false) {
+              self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('IRCONTROLLER.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.CONFIGURATION_UPDATE_DESCRIPTION'));
+            }
+          });
+      }, lircLegacy ? 1000 : 1);
     });
 };
 
