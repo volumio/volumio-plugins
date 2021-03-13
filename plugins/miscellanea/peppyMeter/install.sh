@@ -29,8 +29,8 @@ if [ ! -f "/usr/local/lib/libpeppyalsa.so" ];
 		echo "Detected cpu architecture as $cpu"
 		if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 		then
-		sudo mv $LIB/arm/libpeppyalsa.so /usr/local/lib/
-
+		sudo mv $LIB/arm/libpeppyalsa.so.0.0 /usr/local/lib/
+        sudo ln -s -f libpeppyalsa.so.0.0.0 libpeppyalsa.so
 		else
 			echo "Sorry, cpu is $cpu and your device is not yet supported !"
 			echo "exit now..."
