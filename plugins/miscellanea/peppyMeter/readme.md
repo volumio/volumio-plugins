@@ -22,6 +22,10 @@ volumio plugin install
 cd..
 rm -Rf pipe*
 ```
+March 13th 2021
+
+- peppy service was not installed
+
 
 March 12th 2021
 
