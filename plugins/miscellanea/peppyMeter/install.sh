@@ -6,6 +6,7 @@ cp $LIB/peppy.service.tar /
 		cd /
 		sudo tar -xvf peppy.service.tar
 		rm /peppy.service.tar
+sudo apt-get -y install python3-pygame python3
 
 echo "cloning peppymeter repo"
 git clone https://github.com/balbuze/PeppyMeter $LIB/peppymeter
@@ -13,9 +14,7 @@ chmod 777 -R $LIB/peppymeter
 sudo chown volumio $LIB/peppymeter
 sudo chgrp volumio $LIB/peppymeter
 
-echo "installing apt packages"
 
-sudo apt-get -y install python3-pygame python3
 
 
 
