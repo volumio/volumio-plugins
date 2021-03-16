@@ -607,20 +607,22 @@ Parameq.prototype.saveparameq = function (data) {
     var eqc = 'eq' + o;
     var typer = (data[typec].value)
     var eqr = (data[eqc]).split(',')
-    self.logger.info('type in ' + eqc + ' ' + self.config.get(typec) + ' ' + 'values ' + eqr)
+   // self.logger.info('type in ' + eqc + ' ' + self.config.get(typec) + ' ' + 'values ' + eqr)
 
     var veq = Number(eqr[0]);
 
-    if (Number.isInteger(veq) && (veq > 0 && veq < 20001)) {
-      self.logger.info('value ok ')
+    if (typer != 'None') {
 
-    } else {
+      if (Number.isInteger(veq) && (veq > 0 && veq < 20001)) {
+        self.logger.info('value ok ')
 
-      self.logger.info('wrong value in ' + eqc)
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
-      return;
+      } else {
+
+        self.logger.info('wrong value in ' + eqc)
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
+        return;
+      }
     }
-
     if (typer == 'Peaking') {
 
       var g = Number(eqr[2]);
@@ -676,6 +678,8 @@ Parameq.prototype.saveparameq = function (data) {
         //do nthing
       }
 
+    } else {
+      self.logger.info('nothing todo');
     }
   }
   for (var o = 1; o < (nbreq + 1); o++) {
@@ -711,35 +715,35 @@ Parameq.prototype.saveequalizerpreset = function (data) {
   self.logger.info('eqpresetsaved ' + preset)
   var rpreset = (data['renpreset'])
   //if (rpreset != 'choose a name') {
-    switch (preset) {
-      case ("mypreset1"):
-        var spreset = 'p1'
-        var renprsetr = '1'
-        break;
-      case ("mypreset2"):
-        var spreset = 'p2'
-        var renprsetr = '2'
-        break;
-      case ("mypreset3"):
-        var spreset = 'p3'
-        var renprsetr = '3'
-        break;
-    }
-    if (rpreset == 'choose a name') {
-      self.logger.info('No change in name !')
-    } else {
-      self.config.set("renpreset" + renprsetr, (data['renpreset']));
-      let name = (self.config.get('renpreset' + renprsetr));
-      self.logger.info('renpreset ' + name)
-    }
- // }
+  switch (preset) {
+    case ("mypreset1"):
+      var spreset = 'p1'
+      var renprsetr = '1'
+      break;
+    case ("mypreset2"):
+      var spreset = 'p2'
+      var renprsetr = '2'
+      break;
+    case ("mypreset3"):
+      var spreset = 'p3'
+      var renprsetr = '3'
+      break;
+  }
+  if (rpreset == 'choose a name') {
+    self.logger.info('No change in name !')
+  } else {
+    self.config.set("renpreset" + renprsetr, (data['renpreset']));
+    let name = (self.config.get('renpreset' + renprsetr));
+    self.logger.info('renpreset ' + name)
+  }
+  // }
 
   self.logger.info('spreset = ' + spreset)
   for (var o = 1; o < (nbreq + 1); o++) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-  //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+    //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
     self.config.set(spreset + typec, self.config.get(typec));
     self.config.set(spreset + scopec, self.config.get(scopec));
     self.config.set(spreset + eqc, self.config.get(eqc));
@@ -772,7 +776,7 @@ Parameq.prototype.usethispreset = function (data) {
       return;
 
   }
-//  self.logger.info('spreset = ' + spreset)
+  //  self.logger.info('spreset = ' + spreset)
   var nbreqc = self.config.get(spreset + 'nbreq')
 
   for (var o = 1; o < (nbreqc + 1); o++) {
@@ -780,7 +784,7 @@ Parameq.prototype.usethispreset = function (data) {
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
 
-  //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
+    //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
     self.config.set(typec, self.config.get(spreset + typec));
     self.config.set(scopec, self.config.get(spreset + scopec));
     self.config.set(eqc, self.config.get(spreset + eqc));
