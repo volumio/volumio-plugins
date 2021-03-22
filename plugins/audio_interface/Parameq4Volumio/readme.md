@@ -11,11 +11,11 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 ![Alt text](Parameq4Volumio.png?raw=true "Main interface")
 
 
-Up to 14 bands (peaking, lowshelf, highshel, lowpass, highpass)
-Auto gain
-Toggle with/without effect
-Scope for each band (L, R, L+R)
-3 preset
+- Up to 14 bands (peaking, lowshelf, highshel, lowpass, highpass)
+- Auto gain
+- Toggle with/without effect
+- Scope for each band (L, R, L+R)
+- 3 preset
 
 
 ## INSTALLATION WARNING
