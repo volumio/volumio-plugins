@@ -15,13 +15,13 @@ const socket = io.connect('http://localhost:3000');
 //const wavFileInfo = require('wav-file-info');
 const Journalctl = require('journalctl');
 const path = require('path');
+const WebSocket = require('ws')
 
 //---global Variables
 const filterfolder = "/data/INTERNAL/Dsp/filters/";
 const filtersource = "/data/INTERNAL/Dsp/filter-sources/";
 const tccurvepath = "/data/INTERNAL/Dsp/target-curves/";
 const toolspath = "/data/INTERNAL/Dsp/tools/";
-const vobaf_filterfolder = "/data/INTERNAL/Dsp/VoBAFfilters/";
 
 
 // Define the ControllerDsp4Volumio class
@@ -50,32 +50,13 @@ ControllerDsp4Volumio.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
-  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile')
-    .then(function (e) {
-      var aplayDefer = libQ.defer();
-      // Play a short sample of silence to initialise the config file
-      exec("dd if=/dev/zero iflag=count_bytes count=128 | aplay -f cd -D volumioDsp", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-        if (error) {
-          self.logger.warn("An error occurred when trying to initialize VolumioDsp", error);
-        }
-        aplayDefer.resolve();
-      });
-      return aplayDefer.promise;
-    })
+  self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
 
-  self.autoconfig()
+  setTimeout(function () {
+    self.createCamilladspfile()
 
-
-    .then(function (e) {
-      setTimeout(function () {
-        self.logger.info("Starting camilladsp");
-        self.rebuildcamilladspRestartDaemon(defer);
-      }, 1000);
-      defer.resolve();
-    })
-    .fail(function (e) {
-      defer.reject(new Error());
-    });
+  }, 2000);
+  defer.resolve();
   return defer.promise;
 };
 
@@ -83,14 +64,6 @@ ControllerDsp4Volumio.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
   self.logger.info("Stopping camilladsp service");
-  self.commandRouter.stateMachine.stop().then(function () {
-    exec("/usr/bin/sudo /bin/systemctl stop camilladsp.service", {
-      uid: 1000,
-      gid: 1000
-    }, function (error, stdout, stderr) { })
-    self.restoresettingwhendisabling()
-    socket.off();
-  });
   defer.resolve();
   return libQ.resolve();
 };
@@ -170,166 +143,6 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
 
       uiconf.sections[0].content[5].value = self.config.get('rc1delay');
 
-
-      let nchannelssection = self.config.get('nchannels');
-      self.logger.info('Number of channels detected : ----------->' + nchannelssection);
-      if (nchannelssection == '2') {
-        uiconf.sections[0].content[6].hidden = true;
-
-      } else {
-        uiconf.sections[0].content[6].hidden = false;
-      }
-      if (nchannelssection == '2') { //&& (addchannels == true)) {
-
-        uiconf.sections[0].content[7].hidden = true;
-        uiconf.sections[0].content[8].hidden = true;
-        uiconf.sections[0].content[9].hidden = true;
-        uiconf.sections[0].content[10].hidden = true;
-        uiconf.sections[0].content[11].hidden = true;
-        uiconf.sections[0].content[12].hidden = true;
-        uiconf.sections[0].content[13].hidden = true;
-        uiconf.sections[0].content[14].hidden = true;
-        uiconf.sections[0].content[15].hidden = true;
-        uiconf.sections[0].content[16].hidden = true;
-        uiconf.sections[0].content[17].hidden = true;
-        uiconf.sections[0].content[18].hidden = true;
-        uiconf.sections[0].content[19].hidden = true;
-        uiconf.sections[0].content[20].hidden = true;
-        uiconf.sections[0].content[21].hidden = true;
-      }
-      /*
-          if (nchannelssection == '3') { //&& (addchannels == true)) {
-      
-           uiconf.sections[0].content[9].hidden = true;
-           uiconf.sections[0].content[10].hidden = true;
-           uiconf.sections[0].content[11].hidden = true;
-           uiconf.sections[0].content[12].hidden = true;
-           uiconf.sections[0].content[13].hidden = true;
-           uiconf.sections[0].content[14].hidden = true;
-           uiconf.sections[0].content[15].hidden = true;
-           uiconf.sections[0].content[16].hidden = true;
-           uiconf.sections[0].content[17].hidden = true;
-           uiconf.sections[0].content[18].hidden = true;
-           uiconf.sections[0].content[19].hidden = true;
-           uiconf.sections[0].content[20].hidden = true;
-           uiconf.sections[0].content[21].hidden = true;
-          }
-      */
-      if (nchannelssection == '4') { //&& (addchannels == true)) {
-
-        uiconf.sections[0].content[11].hidden = false;
-        uiconf.sections[0].content[12].hidden = true;
-        uiconf.sections[0].content[13].hidden = true;
-        uiconf.sections[0].content[14].hidden = true;
-        uiconf.sections[0].content[15].hidden = true;
-        uiconf.sections[0].content[16].hidden = true;
-        uiconf.sections[0].content[17].hidden = true;
-        uiconf.sections[0].content[18].hidden = true;
-        uiconf.sections[0].content[19].hidden = true;
-        uiconf.sections[0].content[20].hidden = true;
-        uiconf.sections[0].content[21].hidden = true;
-      }
-      /*
-          if (nchannelssection == '5') { //&& (addchannels == true)) {
-           uiconf.sections[0].content[12].hidden = true;
-           uiconf.sections[0].content[13].hidden = true;
-           uiconf.sections[0].content[14].hidden = true;
-           uiconf.sections[0].content[15].hidden = true;
-           uiconf.sections[0].content[16].hidden = true;
-           uiconf.sections[0].content[17].hidden = true;
-           uiconf.sections[0].content[18].hidden = true;
-           uiconf.sections[0].content[19].hidden = true;
-           uiconf.sections[0].content[20].hidden = true;
-           uiconf.sections[0].content[21].hidden = true;
-          }
-      */
-      if (nchannelssection == '6') { //&& (addchannels == true)) {
-        uiconf.sections[0].content[11].hidden = false;
-        uiconf.sections[0].content[12].hidden = false;
-        uiconf.sections[0].content[13].hidden = false;
-        uiconf.sections[0].content[14].hidden = false;
-        uiconf.sections[0].content[15].hidden = false;
-        uiconf.sections[0].content[16].hidden = true;
-        uiconf.sections[0].content[17].hidden = true;
-        uiconf.sections[0].content[18].hidden = true;
-        uiconf.sections[0].content[19].hidden = true;
-        uiconf.sections[0].content[20].hidden = true;
-        uiconf.sections[0].content[21].hidden = true;
-      }
-      /*
-          if (nchannelssection == '7') { //&& (addchannels == true)) {
-      
-           uiconf.sections[0].content[17].hidden = false;
-           uiconf.sections[0].content[18].hidden = true;
-           uiconf.sections[0].content[19].hidden = true;
-           uiconf.sections[0].content[20].hidden = true;
-           uiconf.sections[0].content[21].hidden = true;
-          }
-      */
-      if (nchannelssection == '8') { //&& (addchannels == true)) {
-        uiconf.sections[0].content[11].hidden = false;
-        uiconf.sections[0].content[12].hidden = false;
-        uiconf.sections[0].content[13].hidden = false;
-        uiconf.sections[0].content[14].hidden = false;
-        uiconf.sections[0].content[15].hidden = false;
-        uiconf.sections[0].content[16].hidden = false;
-        uiconf.sections[0].content[17].hidden = false;
-        uiconf.sections[0].content[18].hidden = false;
-        uiconf.sections[0].content[19].hidden = false;
-        uiconf.sections[0].content[20].hidden = false;
-        uiconf.sections[0].content[21].hidden = false;
-      }
-
-      uiconf.sections[0].content[6].value = self.config.get('addchannels');
-
-      valuestoredls = self.config.get('leftc2filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.value', valuestoredls);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[7].value.label', valuestoredls);
-
-      uiconf.sections[0].content[8].value = self.config.get('lc2delay');
-
-      valuestoredrs = self.config.get('rightc2filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.value', valuestoredrs);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[9].value.label', valuestoredrs);
-
-      uiconf.sections[0].content[10].value = self.config.get('rc2delay');
-
-      let attenuationlr2 = self.config.get('attenuationlr2');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.value', attenuationlr2);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[11].value.label', attenuationlr2);
-
-      valuestoredls = self.config.get('leftc3filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.value', valuestoredls);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[12].value.label', valuestoredls);
-
-      uiconf.sections[0].content[13].value = self.config.get('lc3delay');
-
-      valuestoredrs = self.config.get('rightc3filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.value', valuestoredrs);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[14].value.label', valuestoredrs);
-
-      uiconf.sections[0].content[15].value = self.config.get('rc3delay');
-
-      let attenuationlr3 = self.config.get('attenuationlr3');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.value', attenuationlr3);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[16].value.label', attenuationlr3);
-
-      valuestoredls = self.config.get('leftc4filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[17].value.value', valuestoredls);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[17].value.label', valuestoredls);
-
-      uiconf.sections[0].content[18].value = self.config.get('lc4delay');
-
-      valuestoredrs = self.config.get('rightc4filter');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.value', valuestoredrs);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[19].value.label', valuestoredrs);
-
-      uiconf.sections[0].content[20].value = self.config.get('rc4delay');
-
-      let attenuationlr4 = self.config.get('attenuationlr4');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.value', attenuationlr4);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[21].value.label', attenuationlr4);
-
       //	for (let n = 0; n < 22; n++) {
       for (let n = 0; n < 22; n = n + 0.5) {
         self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[1].options', {
@@ -340,18 +153,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
           value: (n),
           label: (n)
         });
-        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[11].options', {
-          value: (n),
-          label: (n)
-        });
-        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[16].options', {
-          value: (n),
-          label: (n)
-        });
-        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[21].options', {
-          value: (n),
-          label: (n)
-        });
+        
       }
       try {
 
@@ -368,30 +170,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
               value: items[i],
               label: items[i]
             });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[7].options', {
-              value: items[i],
-              label: items[i]
-            });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[9].options', {
-              value: items[i],
-              label: items[i]
-            });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[12].options', {
-              value: items[i],
-              label: items[i]
-            });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[14].options', {
-              value: items[i],
-              label: items[i]
-            });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[17].options', {
-              value: items[i],
-              label: items[i]
-            });
-            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[19].options', {
-              value: items[i],
-              label: items[i]
-            });
+         
             self.logger.info('list of available filters UI :' + items[i]);
           }
 
@@ -707,211 +486,27 @@ ControllerDsp4Volumio.prototype.getAdditionalConf = function (type, controller, 
 }
 // Plugin methods -----------------------------------------------------------------------------
 
-//------------Ask for reboot for first time 
-ControllerDsp4Volumio.prototype.askForRebootFirstUse = function () {
-  const self = this;
-
-  if (self.config.get('askForReboot')) {
-    self.saveHardwareAudioParameters();
-    var responseData = {
-      title: self.commandRouter.getI18nString('FIRST_USE'),
-      message: self.commandRouter.getI18nString('FIRST_USE_MESS'),
-      size: 'lg',
-      buttons: [
-        {
-          name: self.commandRouter.getI18nString('CONTINUE'),
-          class: 'btn btn-cancel',
-          emit: 'closeModals',
-          payload: ''
-        },
-        {
-          name: 'Reboot',
-          class: 'btn btn-info',
-          emit: 'callMethod',
-          payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'setFalseReboot', 'data': '' }
-        }
-      ]
-    }
-    self.commandRouter.closeModals()
-
-    self.commandRouter.broadcastMessage("openModal", responseData);
-  }
-};
-
-ControllerDsp4Volumio.prototype.setFalseReboot = function () {
-  const self = this;
-  self.config.set('askForReboot', false);
-  setTimeout(function () {
-    console.log(self.config.get('askForReboot'));
-    socket.emit('reboot');
-  }, 500);
-};
-
-//here we load snd_aloop module to provide a Loopback device
-ControllerDsp4Volumio.prototype.modprobeLoopBackDevice = function () {
-  const self = this;
-  let defer = libQ.defer();
-  //self.hwinfo();
-  exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('failed to load snd_aloop' + error);
-    } else {
-      self.commandRouter.pushConsoleMessage('snd_aloop loaded');
-      defer.resolve();
-    }
-  });
-  setTimeout(function () {
-    return defer.promise;
-  }, 500)
-};
-
-//here we detect hw info
-ControllerDsp4Volumio.prototype.hwinfo = function () {
-  const self = this;
-  let defer = libQ.defer();
-
-  let output_device = self.config.get('alsa_device');
-  let nchannels;
-  let formats;
-  let hwinfo;
-  let samplerates;
-  try {
-    exec('/data/plugins/audio_interface/Dsp4Volumio/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json ', {
-      uid: 1000,
-      gid: 1000
-    }),
-      hwinfo = fs.readFileSync('/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json');
-    try {
-      const hwinfoJSON = JSON.parse(hwinfo);
-      nchannels = hwinfoJSON.channels.value;
-      formats = hwinfoJSON.formats.value.replace('_', '').replace(', ,', '').replace(',,', '');
-      samplerates = hwinfoJSON.samplerates.value;
-      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-      self.config.set('nchannels', nchannels);
-      self.config.set('formats', formats);
-      self.config.set('probesmplerate', samplerates);
-      let output_format = formats.split(" ").pop();
-
-      var arr = ['S16LE', 'S24LE', 'S24LE3', 'S32LE'];
-      var check = output_format;
-      if (arr.indexOf(check) > -1) {
-        let askForReboot = self.config.get('askForReboot');
-        let firstOutputFormat = self.config.get('firstOutputFormat');
-        console.log(askForReboot + " and " + firstOutputFormat)
-        if ((askForReboot == false) && firstOutputFormat) {
-          self.config.set('output_format', output_format);
-          self.config.set('firstOutputFormat', false);
-          self.logger.info('Auto set output format : ----->' + output_format);
-        }
-      } else {
-        self.logger.info('Can\'t determine a compatible value for output format');
-      }
-    } catch (err) {
-      self.logger.info('Error reading hwinfo.json, detection failed :', err);
-    }
-
-    defer.resolve();
-  } catch (err) {
-    self.logger.info('----Hw detection failed :' + err);
-    defer.reject(err);
-  }
-};
-
-ControllerDsp4Volumio.prototype.startcamilladsp = function () {
-  const self = this;
-  let defer = libQ.defer();
-  exec("/usr/bin/sudo /bin/systemctl start camilladsp.service", {
-    uid: 1000,
-    gid: 1000
-  }, function (error, stdout, stderr) {
-    if (error) {
-      self.logger.info('Camilladsp failed to start. Check your configuration ' + error);
-    } else {
-      self.commandRouter.pushConsoleMessage('Camilladsp Daemon Started');
-      self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('START_BRUTEFIR'));
-
-      defer.resolve();
-    }
-  });
-};
-
-ControllerDsp4Volumio.prototype.autoconfig = function () {
-  const self = this;
-  let defer = libQ.defer();
-  self.modprobeLoopBackDevice()
-  self.rebuildcamilladspRestartDaemon() //no sure to keep it..
-  self.hwinfo()
-  defer.resolve()
-  return defer.promise;
-};
-
-//----------------we restart the daemon-------------------
-ControllerDsp4Volumio.prototype.rebuildcamilladspRestartDaemon = function () {
-  const self = this;
-  let defer = libQ.defer();
-  self.createCamilladspfile()
-    .then(function (e) {
-      let edefer = libQ.defer();
-      exec("/usr/bin/sudo /bin/systemctl restart camilladsp.service", {
-        uid: 1000,
-        gid: 1000
-      }, function (error, stdout, stderr) {
-        if (error) {
-          self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
-        } else {
-          self.commandRouter.pushToastMessage('success', 'Attempt to start camilladsp...');
-          setTimeout(function () {
-            socket.emit('mute', '')
-            setTimeout(function () {
-              socket.emit('unmute', '');
-            }, 100);
-          }, 1500); //3500
-          return defer.promise;
-        }
-        edefer.resolve();
-      });
-
-      return edefer.promise;
-    })
-    .then(self.startcamilladsp.bind(self))
-    .then(function (e) {
-      setTimeout(function () {
-        self.logger.info("Connecting to daemon");
-      }, 2000)
-        .fail(function (e) {
-          self.commandRouter.pushToastMessage('error', "camilladsp failed to start. Check your config !");
-          self.logger.info("camilladsp failed to start. Check your config !");
-        });
-    });
-  return defer.promise;
-};
 
 //------------Here we define a function to send a command to CamillaDsp through websocket---------------------
-ControllerDsp4Volumio.prototype.sendCommandToCamilla = function (camilladspcmd) {
+ControllerDsp4Volumio.prototype.sendCommandToCamilla = function () {
   const self = this;
-  let client = new net.Socket();
-let camilladspcmdc = "GetConfig"
-  client.connect(9876, '127.0.0.1', function (err) {
-    client.write(camilladspcmdc);
-    console.log('cmd sent to camilladsp = ' + camilladspcmdc);
-  });
+  const url = 'ws://localhost:9876'
+  const command = ('\"Reload\"');
+  const connection = new WebSocket(url)
 
-  //error handling section
-  client.on('error', function (e) {
-    if (e.code == 'ECONNREFUSED') {
-      console.log('Huumm, is Camilladsp running ?');
-      self.commandRouter.pushToastMessage('error', "Camilladsp failed to start. Check your config !");
-    }
-  });
-  client.on('data', function (data) {
-    console.log('Received: ' + data);
-    client.destroy(); // kill client after server's response
-  });
+  connection.onopen = () => {
+    connection.send(command)
+  }
+
+  connection.onerror = (error) => {
+    console.log(`WebSocket error: ${error}`)
+  }
+
+  connection.onmessage = (e) => {
+    console.log(e.data)
+    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
+  }
+
 };
 
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
@@ -1130,425 +725,111 @@ ControllerDsp4Volumio.prototype.dfiltertype = function () {
 
 ControllerDsp4Volumio.prototype.createCamilladspfile = function (obj) {
   const self = this;
-
   let defer = libQ.defer();
+
   try {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
         return console.log(err);
       }
-      let value;
-      let devicevalue;
-      let sbauer;
-      let input_device = 'Loopback,1';
-      let leftfilter, leftc2filter;
-      let rightfilter, rightc2filter;
-      let composeleftfilter = filterfolder + self.config.get('leftfilter');
-      let composeleftfilter1, composeleftfilter2, composeleftfilter3, composeleftfilter4, composeleftfilter5, composeleftfilter6, composeleftfilter7, composeleftfilter8
-      let composerightfilter = filterfolder + self.config.get('rightfilter');
-      let composerightfilter1, composerightfilter2, composerightfilter3, composerightfilter4, composerightfilter5, composerightfilter6, composerightfilter7, composerightfilter8
-      let lattenuation;
-      let rattenuation;
-      let f_ext;
-      let vf_ext;
+      var pipeliner, pipelines, pipelinelr, pipelinerr = '';
+     
+      var result = '';
+      var gainmaxused = [];
+      var effect = self.config.get('effect')
+      var leftfilter = self.config.get('leftfilter');
+      var rightfilter = self.config.get('rightfilter');
+      var attenuationl = self.config.get('attenuationl');
+      var attenuationlr = self.config.get('attenuationr');
+      var gain = self.config.get('attenuationl')
+
+      var gainresult;
 
 
+      if (effect == false) {
+        var composedeq = '';
+        composedeq += '  :' + '\n';
+        composedeq += '    type: Conv' + '\n';
+        pipeliner = '      - nulleq';
+        result += composedeq
+        pipelinelr = pipeliner.slice(8)
+        pipelinerr = pipeliner.slice(8)
 
-      if (self.config.get('vobaf_format') == "text") {
-        vf_ext = ".txt";
-      } else if (self.config.get('vobaf_format') == "FLOAT32LE") {
-        vf_ext = ".pcm";
-      } else if (self.config.get('vobaf_format') == "FLOAT64LE") {
-        f_ext = ".dbl";
-      } else if ((self.config.get('vobaf_format') == "S16LE") || (self.config.get('vobaf_format') == "S24LE") || (self.config.get('vobaf_format') == "S32LE")) {
-        vf_ext = ".wav";
-      }
+        self.logger.info('Effects disabled, Nulleq applied')
+        gainresult = 0
+        gainclipfree = self.config.get('gainapplied')
 
-      // delay calculation section for both channels NO MORE USED!!!!
-      let delay
-      let sldistance = self.config.get('ldistance');
-      let srdistance = self.config.get('rdistance');
-      let diff;
-      let cdelay;
-      let sample_rate = self.config.get('smpl_rate');
-      let sv = 34300; // sound velocity cm/s
-
-      if (sldistance > srdistance) {
-        diff = sldistance - srdistance
-        cdelay = (diff / sv * sample_rate)
-        delay = ('0,' + Math.round(cdelay))
-        self.logger.info('l>r ' + delay)
-      }
-      if (sldistance < srdistance) {
-        diff = srdistance - sldistance
-        cdelay = (diff / sv * sample_rate)
-        delay = (Math.round(cdelay) + ',0')
-        self.logger.info('l<r ' + delay)
-      }
-      if (sldistance == srdistance) {
-        self.logger.info('no delay needed');
-        delay = ('0,0')
-      }
-      //-----------------------------------------
-
-      let n_part = self.config.get('numb_part');
-      let num_part = parseInt(n_part);
-      let f_size = self.config.get('filter_size');
-      let filter_size = parseInt(f_size);
-      let filtersizedivided = filter_size / num_part;
-      let output_device;
-      let skipfl;
-      let skipfr;
-      let vatt = self.config.get('vatt');
-
-      let noldirac = self.config.get('leftfilter');
-      // let nordirac = self.config.get('rightfilter');
-      let val = self.dfiltertype(obj);
-      let skipval = val.skipvalue
-      skipfl = skipfr = skipval;
-
-      let routput_device = self.config.get('alsa_device');
-      if (routput_device == 'softvolume') {
-        output_device = 'softvolume';
       } else {
-        output_device = 'hw:' + self.config.get('alsa_device');
-      };
-      console.log(self.config.get('output_format'));
+        var composedeq = '';
+        composedeq += '  :' + '\n';
+        composedeq += '    type: Conv' + '\n';
+        pipeliner = '      - nulleq';
+        result += composedeq
+        pipelinelr = pipeliner.slice(8)
+        pipelinerr = pipeliner.slice(8)
 
-
-      let output_formatx;
-      output_formatx = self.config.get('output_format').replace(/HW-Detected-/g, "").replace(/Factory_/g, "");
-
-      if ((self.config.get('leftfilter') == "Dirac pulse") || (self.config.get('leftfilter') == "None")) {
-        composeleftfilter = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = "#";
-      } else leftfilter = filterfolder + self.config.get('leftfilter');
-      if ((self.config.get('rightfilter') == "Dirac pulse") || (self.config.get('rightfilter') == "None")) {
-        composerightfilter = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "#";
-      } else rightfilter = filterfolder + self.config.get('rightfilter');
-
-      //--------second set of filters
-      let arefilterswap = self.config.get('arefilterswap');
-      let sndleftfilter;
-      let sndrightfilter;
-      let enableswap;
-      if (arefilterswap) {
-        sndleftfilter = filterfolder + self.config.get('sndleftfilter');
-        sndrightfilter = filterfolder + self.config.get('sndrightfilter');
-        enableswap = "";
-      } else {
-        sndleftfilter = "dirac pulse";
-        sndrightfilter = "dirac pulse";
-        enableswap = "#";
+        self.logger.info('Effects disabled, Nulleq applied')
+        gainresult = 0
+        gainclipfree = self.config.get('gainapplied')
       }
+     
+        var outlpipeline, outrpipeline;
+        result += composedeq
+        outlpipeline += pipelineL
+        outrpipeline += pipelineR
+        pipelinelr = outlpipeline.slice(17)
+        pipelinerr = outrpipeline.slice(17)
+        if (pipelinelr == '') {
+          pipelinelr = 'nulleq2'
 
-      //--------VoBAF section
-      let vobaf = self.config.get('vobaf');
-
-      let skipflv;
-      let skipfrv;
-      if (vobaf == false) {
-        composeleftfilter1 = composeleftfilter2 = composeleftfilter3 = composeleftfilter4 = composeleftfilter5 = composeleftfilter6 = composeleftfilter7 = composeleftfilter8 = composerightfilter1 = composerightfilter2 = composerightfilter3 = composerightfilter4 = composerightfilter5 = composerightfilter6 = composerightfilter7 = composerightfilter8 = "dirac pulse";
-
-        skipflv = skipfrv = "";
-        vatt = '0';
-      } else {
-
-        if (self.config.get('Lowsw') == true) {
-          composeleftfilter2 = composerightfilter2 = vobaf_filterfolder + '/Low' + vf_ext;
-          skipflv = skipfrv;
-        } else {
-          composeleftfilter2 = composerightfilter2 = "dirac pulse";
-          skipflv = skipfrv = ""
         }
-
-        if (self.config.get('LM1sw') == true) {
-          composeleftfilter3 = composerightfilter3 = vobaf_filterfolder + '/LM1' + vf_ext;
-          skipflv = skipfrv = skipfl;
-        } else {
-          composeleftfilter3 = composerightfilter3 = "dirac pulse";
-          skipflv = skipfrv = ""
+        if (pipelinerr == '') {
+          pipelinerr = 'nulleq2'
         }
+        gainmaxused += gainmax
 
-        if (self.config.get('LM2sw') == true) {
-          composeleftfilter4 = composerightfilter4 = vobaf_filterfolder + '/LM2' + vf_ext;
+      
+      var gainclipfree
+      if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
+        gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
+        self.logger.info('gainresult ' + gainresult)
+        if (gainresult < 0) {
+          gainclipfree = -2
         } else {
-          composeleftfilter4 = composerightfilter4 = "dirac pulse";
-          skipflv = skipfrv = ""
-        };
+          gainclipfree = ('-' + (parseInt(gainresult) + 2))
 
-        if (self.config.get('LM3sw') == true) {
-          composeleftfilter8 = composerightfilter8 = vobaf_filterfolder + '/LM3' + vf_ext;
-        } else {
-          composeleftfilter8 = composerightfilter8 = "dirac pulse";
-          skipflv = skipfrv = ""
-        };
-
-        composeleftfilter5 = composerightfilter5 = vobaf_filterfolder + '/M' + vf_ext;
-
-
-        if (self.config.get('HMsw') == true) {
-
-          composeleftfilter6 = composerightfilter6 = vobaf_filterfolder + '/HM' + vf_ext;
-          skipflv = skipfr;
-
-        } else {
-          composeleftfilter6 = composerightfilter6 = "dirac pulse";
-          skipflv = skipfrv = "";
+          //else
         }
-
-        if (self.config.get('Highsw') == true) {
-          composeleftfilter7 = composerightfilter7 = vobaf_filterfolder + '/High' + vf_ext;
-
-        } else {
-          composeleftfilter7 = composerightfilter7 = "dirac pulse";
-          skipflv = skipfrv = "";
-        }
-      };
-
-      //------ Multichannels section-------
-      let tolfilters;
-      let torfilters;
-      let enablec2;
-      let nchannels;
-      let enablefc2, enablefc3, enablefc4, enablefc5, enablefc6, enablefc7;
-      let lc1delay, rc1delay, lc2delay, rc2delay, lc3delay, rc3delay, lc4delay, rc4delay;
-      let calc1delay, carc1delay, calc2delay, carc2delay, calc3delay, carc3delay, calc4delay, carc4delay;
-      let tcdelay, tc2delay, tc3delay, tc4delay, tc5delay, tc6delay, tc7delay, tc8delay;
-      let composeleftc2filter, composerightc2filter, composeleftc3filter, composerightc3filter, composeleftc4filter, composerightc4filter;
-
-      calc1delay = (Math.round(self.config.get('lc1delay') / 1000 * sample_rate));
-      carc1delay = (Math.round(self.config.get('rc1delay') / 1000 * sample_rate));
-      calc2delay = (Math.round(self.config.get('lc2delay') / 1000 * sample_rate));
-      carc2delay = (Math.round(self.config.get('rc2delay') / 1000 * sample_rate));
-      calc3delay = (Math.round(self.config.get('lc3delay') / 1000 * sample_rate));
-      carc3delay = (Math.round(self.config.get('rc3delay') / 1000 * sample_rate));
-      calc4delay = (Math.round(self.config.get('lc4delay') / 1000 * sample_rate));
-      carc4delay = (Math.round(self.config.get('rc4delay') / 1000 * sample_rate));
-
-      tc2delay = 'delay:' + calc1delay + ',' + carc1delay;
-      tc3delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay;
-      tc4delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay + ',' + carc2delay;
-      tc5delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay + ',' + carc2delay + ',' + calc3delay;
-      tc6delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay + ',' + carc2delay + ',' + calc3delay + ',' + carc3delay;
-      tc7delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay + ',' + carc2delay + ',' + calc3delay + ',' + carc3delay + ',' + calc4delay;
-      tc8delay = 'delay:' + calc1delay + ',' + carc1delay + ',' + calc2delay + ',' + carc2delay + ',' + calc3delay + ',' + carc3delay + ',' + calc4delay + ',' + carc4delay;
-
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '3')) {
-        enablec2 = ',"l_c3_out" ';
-        nchannels = "channels: 3/0,1,2;";
-        enablefc2 = "";
-        tcdelay = tc3delay;
-        tolfilters = 'l_out","lc2_out';
-        torfilters = 'r_out';
+        self.config.set('gainapplied', gainclipfree)
       }
+    
 
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '4')) {
-        enablec2 = ',"l_c2_out","r_c2_out" ';
-        nchannels = "channels: 4/0,1,2,3;";
-        enablefc2 = enablefc3 = "";
-        tcdelay = tc4delay
-        tolfilters = 'l_out","l_c2_out';
-        torfilters = 'r_out","r_c2_out';
-      }
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '5')) {
-        enablec2 = ',"l_c2_out","r_c2_out","l_c3_out" ';
-        nchannels = "channels: 5/0,1,2,3,4;";
-        enablefc2 = enablefc3 = enablefc4 = "";
-        tcdelay = tc5delay
-        tolfilters = 'l_out","l_c2_out,"l_c3_out';
-        torfilters = 'r_out","r_c2_out';
-      }
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '6')) {
-        enablec2 = ',"l_c2_out","r_c2_out","l_c3_out","r_c3_out" ';
-        nchannels = "channels: 6/0,1,2,3,4,5;";
-        enablefc2 = enablefc3 = enablefc4 = enablefc5 = "";
-        tcdelay = tc6delay
-        tolfilters = 'l_out","l_c2_out","l_c3_out';
-        torfilters = 'r_out","r_c2_out","r_c3_out';
-      }
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '7')) {
-        enablec2 = ',"l_c2_out","r_c2_out","l_c3_out","r_c3_out","l_c4_out" ';
-        nchannels = "channels: 7/0,1,2,3,4,5,6;";
-        enablefc2 = enablefc3 = enablefc4 = enablefc5 = enablefc6 = "";
-        tcdelay = tc7delay
-        tolfilters = 'l_out","l_c2_out","l_c3_out","l_c4_out';
-        torfilters = 'r_out","r_c2_out","r_c3_out';
-      }
-      if ((self.config.get('addchannels') == true) && (self.config.get('nchannels') == '8')) {
-        enablec2 = ',"l_c2_out","r_c2_out","l_c3_out","r_c3_out","l_c4_out","r_c4_out" ';
-        nchannels = "channels: 8/0,1,2,3,4,5,6,7;";
-        enablefc2 = enablefc3 = enablefc4 = enablefc5 = enablefc6 = enablefc7 = "";
-        tcdelay = tc8delay
-        tolfilters = 'l_out","l_c2_out","l_c3_out","l_c4_out';
-        torfilters = 'r_out","r_c2_out","r_c3_out","r_c4_out';
-      } else {
-        nchannels = "channels: 2;";
-        enablefc2 = enablefc3 = enablefc4 = enablefc5 = enablefc6 = enablefc7 = "#";
-        enablec2 = "";
-        tcdelay = tc2delay
-        tolfilters = 'l_out';
-        torfilters = 'r_out';
-      };
+      self.logger.info(result)
 
-      if ((self.config.get('leftc2filter') == "Dirac pulse") || (self.config.get('leftc2filter') == "None")) {
-        composeleftc2filter = "dirac pulse";
-      } else composeleftc2filter = filterfolder + self.config.get('leftc2filter');
+      self.logger.info('gain applied ' + gainclipfree)
 
-      if ((self.config.get('rightc2filter') == "Dirac pulse") || (self.config.get('rightc2filter') == "None")) {
-        composerightc2filter = "dirac pulse";
-      } else composerightc2filter = filterfolder + self.config.get('rightc2filter');
-
-      if ((self.config.get('leftc3filter') == "Dirac pulse") || (self.config.get('leftc3filter') == "None")) {
-        composeleftc3filter = "dirac pulse";
-      } else composeleftc3filter = filterfolder + self.config.get('leftc3filter');
-
-      if ((self.config.get('rightc3filter') == "Dirac pulse") || (self.config.get('rightc3filter') == "None")) {
-        composerightc3filter = "dirac pulse";
-      } else composerightc3filter = filterfolder + self.config.get('rightc3filter');
-
-      if ((self.config.get('leftc4filter') == "Dirac pulse") || (self.config.get('leftc4filter') == "None")) {
-        composeleftc4filter = "dirac pulse";
-      } else composeleftc4filter = filterfolder + self.config.get('leftc4filter');
-
-      if ((self.config.get('rightc4filter') == "Dirac pulse") || (self.config.get('rightc4filter') == "None")) {
-        composerightc4filter = "dirac pulse";
-      } else composerightc4filter = filterfolder + self.config.get('rightc4filter');
-
-      //-----Brutefir config file generation----
-      //-----not clean!!! need to be rewritten....
-      let conf = data.replace("${smpl_rate}", self.config.get('smpl_rate'))
-        .replace("${filter_size}", filtersizedivided)
-        .replace("${numb_part}", num_part)
-        .replace("${input_device}", input_device)
-        .replace("${delay}", delay)
-        .replace("${enablefc2}", enablefc2)
-        .replace("${enablefc3}", enablefc3)
-        .replace("${enablefc4}", enablefc4)
-        .replace("${enablefc5}", enablefc5)
-        .replace("${enablefc6}", enablefc6)
-        .replace("${enablefc7}", enablefc7)
-        .replace("${enablefc2}", enablefc2)
-        .replace("${enablefc3}", enablefc3)
-        .replace("${enablefc4}", enablefc4)
-        .replace("${enablefc5}", enablefc5)
-        .replace("${enablefc6}", enablefc6)
-        .replace("${enablefc7}", enablefc7)
-        .replace("${sndleftfilter}", sndleftfilter)
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${skip_1}", skipfl)
-        .replace("${enableswap}", enableswap)
-        .replace("${enableswap}", enableswap)
-        .replace("${sndrightfilter}", sndrightfilter)
-        .replace("${filter_format2}", self.config.get('filter_format'))
-        .replace("${skip_2}", skipfl)
-        .replace("${leftc2filter}", composeleftc2filter)
-        .replace("${rightc2filter}", composerightc2filter)
-        .replace("${leftc3filter}", composeleftc3filter)
-        .replace("${rightc3filter}", composerightc3filter)
-        .replace("${leftc4filter}", composeleftc4filter)
-        .replace("${rightc4filter}", composerightc4filter)
-        .replace("${attenuationlr2}", self.config.get('attenuationlr2'))
-        .replace("${attenuationlr2}", self.config.get('attenuationlr2'))
-        .replace("${attenuationlr3}", self.config.get('attenuationlr3'))
-        .replace("${attenuationlr3}", self.config.get('attenuationlr3'))
-        .replace("${attenuationlr4}", self.config.get('attenuationlr4'))
-        .replace("${attenuationlr4}", self.config.get('attenuationlr4'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${skip_c2}", skipfr)
-        .replace("${skip_c2}", skipfr)
-        .replace("${skip_c2}", skipfr)
-        .replace("${skip_c2}", skipfr)
-        .replace("${skip_c2}", skipfr)
-        .replace("${skip_c2}", skipfr)
-        .replace("${tolfilters}", tolfilters)
-        .replace("${torfilters}", torfilters)
-        .replace("${leftfilter}", composeleftfilter)
-        .replace("${filter_format1}", self.config.get('filter_format'))
-        .replace("${skip_1}", skipfl)
-        .replace("${lattenuation}", self.config.get('attenuationl'))
-        .replace("${leftfilter}", composeleftfilter2)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter3)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter4)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter8)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter5)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter6)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${leftfilter}", composeleftfilter7)
-        .replace("${filter_format1}", self.config.get('vobaf_format'))
-        .replace("${skip_1}", skipflv)
-        .replace("${lattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter)
-        .replace("${filter_format2}", self.config.get('filter_format'))
-        .replace("${skip_2}", skipfr)
-        .replace("${rattenuation}", self.config.get('attenuationr'))
-        .replace("${rightfilter}", composerightfilter2)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter3)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter4)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter8)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter5)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter6)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${rightfilter}", composerightfilter7)
-        .replace("${filter_format2}", self.config.get('vobaf_format'))
-        .replace("${skip_2}", skipfrv)
-        .replace("${rattenuation}", vatt)
-        .replace("${enablec2}", enablec2)
-        .replace("${output_device}", output_device)
-        .replace("${output_format}", output_formatx)
-        .replace("${nchannels}", nchannels)
-        .replace("${tdelay}", tcdelay);
-      fs.writeFile("/data/configuration/audio_interface/Dsp4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
+      let conf = data.replace("${resulteq}", result)
+        .replace("${gain}", (gainclipfree))
+        .replace("${gain}", (gainclipfree))
+        .replace("${pipelineL}", pipelinelr)
+        .replace("${pipelineR}", pipelinerr)
+        ;
+      fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();
       });
+      self.sendCommandToCamilla();
     });
 
   } catch (err) {
+
   }
-  let camilladspcmd = ("getconfigname")
-  self.sendCommandToCamilla(camilladspcmd);
+
   return defer.promise;
+
+
 };
 
 

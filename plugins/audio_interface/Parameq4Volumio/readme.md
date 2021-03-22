@@ -1,16 +1,21 @@
-March 15th 2021
+March 22th 2021
 
 
-##  Experimental version for modular_alsa !
+##  For Volumio >= 3.054
 
 
 
 
-This plugin is designed to apply a Parametric Eq based on CamillaDsp
+This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://github.com/HEnquist/camilladsp)
 
 ![Alt text](Parameq4Volumio.png?raw=true "Main interface")
 
 
+Up to 14 bands (peaking, lowshelf, highshel, lowpass, highpass)
+Auto gain
+Toggle with/without effect
+Scope for each band (L, R, L+R)
+3 preset
 
 
 ## INSTALLATION WARNING

@@ -10,8 +10,8 @@
       "icon": "fa-cogs",
       "onSave": {
         "type": "plugin",
-        "endpoint": "audio_interface/brutefir",
-        "method": "saveBrutefirconfigAccount2"
+        "endpoint": "audio_interface/Dsp4Volumio",
+        "method": "saveDsp4VolumioAccount2"
       },
       "saveButton": {
         "label": "TRANSLATE.APPLY",
@@ -22,27 +22,9 @@
           "rightfilter",
           "rc1delay",
           "attenuationr",
-          "addchannels",
-          "leftc2filter",
-          "lc2delay",
-          "rightc2filter",
-          "rc2delay",
-          "attenuationlr2",
-          "leftc3filter",
-          "lc3delay",
-          "rightc3filter",
-          "rc3delay",
-          "attenuationlr3",
-          "leftc4filter",
-          "lc4delay",
-          "rightc4filter",
-          "rc4delay",
-          "attenuationlr4",
-          "filter_format",
-          "filter_size",
           "smpl_rate",
-          "output_format",
-          "enableclipdetect"
+          "enableclipdetect",
+          "effect"
         ]
       },
       "content": [
@@ -128,324 +110,7 @@
             "value": true
           }
         },
-        {
-          "id": "addchannels",
-          "element": "switch",
-          "doc": "Enable other channels. The DAC must handle it",
-          "label": "Enable Multi-channel",
-          "value": false
-        },
-        {
-          "id": "leftc2filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_LFILTERC2",
-          "label": "TRANSLATE.LEFT_FILTER_C2",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "lc2delay",
-          "element": "input",
-          "label": "Channel 3 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rightc2filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_RFILTERC2",
-          "label": "TRANSLATE.RIGHT_FILTER_C2",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rc2delay",
-          "element": "input",
-          "label": "Channel 4 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "attenuationlr2",
-          "element": "select",
-          "label": "l3 and r4 channels attenuation",
-          "description": "dB",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "leftc3filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_LFILTERC3",
-          "label": "TRANSLATE.LEFT_FILTER_C3",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "lc3delay",
-          "element": "input",
-          "label": "Channel 5 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rightc3filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_RFILTERC3",
-          "label": "TRANSLATE.RIGHT_FILTER_C3",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rc3delay",
-          "element": "input",
-          "label": "Channel 6 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "attenuationlr3",
-          "element": "select",
-          "label": "l5 and r6 channels attenuation",
-          "description": "dB",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "leftc4filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_LFILTERC4",
-          "label": "TRANSLATE.LEFT_FILTER_C4",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "lc4delay",
-          "element": "input",
-          "label": "Channel 7 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rightc4filter",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_RFILTERC4",
-          "label": "TRANSLATE.RIGHT_FILTER_C4",
-          "value": {
-            "value": "items",
-            "label": "none if empty"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "rc4delay",
-          "element": "input",
-          "label": "Channel 8 delay",
-          "description": "delay in ms",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "attenuationlr4",
-          "element": "select",
-          "label": "l7 and r8 channels  attenuation",
-          "description": "dB",
-          "value": {
-            "value": "0",
-            "label": "0"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "addchannels",
-            "value": true
-          }
-        },
-        {
-          "id": "filter_format",
-          "element": "select",
-          "doc": "filters format",
-          "label": "TRANSLATE.FILTER_FORMAT",
-          "value": {
-            "value": "text",
-            "label": "text"
-          },
-          "options": [
-            {
-              "value": "text",
-              "label": "text- 32/64 bits floats line (.txt)"
-            },
-            {
-              "value": "S16_LE",
-              "label": "S16_LE- 16 bits LPCM mono (.wav)"
-            },
-            {
-              "value": "S24_LE",
-              "label": "S24_LE- 24 bits LPCM mono (.wav)"
-            },
-            {
-              "value": "S32_LE",
-              "label": "S32_LE- 32 bits LPCM mono (.wav)"
-            },
-            {
-              "value": "FLOAT_LE",
-              "label": "FLOAT_LE- 32 bits floating point (.pcm)"
-            },
-            {
-              "value": "FLOAT64_LE",
-              "label": "FLOAT64_LE- 64 bits IEEE-754 (.dbl)"
-            }
-          ],
-          "visibleIf": {
-            "field": "advsettings",
-            "value": true
-          }
-        },
-        {
-          "id": "filter_size",
-          "element": "select",
-          "doc": "TRANSLATE.DOC_FILTERSIZE",
-          "label": "TRANSLATE.FILTER_SIZE",
-          "value": {
-            "value": "8192",
-            "label": "8192"
-          },
-          "options": [
-            {
-              "value": "1024",
-              "label": "1024"
-            },
-            {
-              "value": "2048",
-              "label": "2048"
-            },
-            {
-              "value": "4096",
-              "label": "4096"
-            },
-            {
-              "value": "8192",
-              "label": "8192"
-            },
-            {
-              "value": "16384",
-              "label": "16384"
-            },
-            {
-              "value": "32768",
-              "label": "32768"
-            },
-            {
-              "value": "65536",
-              "label": "65536"
-            },
-            {
-              "value": "131072",
-              "label": "131072"
-            },
-            {
-              "value": "262144",
-              "label": "262144"
-            }
-          ],
-          "visibleIf": {
-            "field": "advsettings",
-            "value": true
-          }
-        },
+       
         {
           "id": "smpl_rate",
           "element": "select",
@@ -456,21 +121,6 @@
             "label": "probesmplerate"
           },
           "options": []
-        },
-        {
-          "id": "output_format",
-          "element": "select",
-          "doc": "output format",
-          "label": "TRANSLATE.OUTPUT_FORMAT",
-          "value": {
-            "value": "sitems",
-            "label": "sitems"
-          },
-          "options": [],
-          "visibleIf": {
-            "field": "advsettings",
-            "value": true
-          }
         },
         {
           "id": "enableclipdetect",
@@ -500,7 +150,7 @@
           "description": "Swap Filters",
           "onClick": {
             "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
+            "endpoint": "audio_interface/Dsp4Volumio",
             "method": "SwapFilters"
           }
         },
@@ -520,7 +170,7 @@
       "icon": "fa-volume-up",
       "onSave": {
         "type": "plugin",
-        "endpoint": "audio_interface/brutefir",
+        "endpoint": "audio_interface/Dsp4Volumio",
         "method": "saveVoBAF"
       },
       "saveButton": {
@@ -839,46 +489,7 @@
         }
       ]
     },
-    {
-      "id": "roomsettings",
-      "element": "section",
-      "label": "Room settings",
-      "icon": "fas fa-home",
-      "onSave": {
-        "type": "plugin",
-        "endpoint": "audio_interface/brutefir",
-        "method": "saveBrutefirconfigroom"
-      },
-      "saveButton": {
-        "label": "TRANSLATE.APPLY",
-        "data": [
-          "ldistance",
-          "rdistance"
-        ]
-      },
-      "content": [
-        {
-          "id": "ldistance",
-          "element": "input",
-          "label": "left speaker distance in cm",
-          "doc": "Left speaker distance from listener in cm. Identical value with right = no effect",
-          "value": {
-            "value": "0",
-            "label": "0"
-          }
-        },
-        {
-          "id": "rdistance",
-          "element": "input",
-          "label": "right speaker distance in cm",
-          "doc": "Right speaker distance from listener in cm. Identical value with left = no effect",
-          "value": {
-            "value": "0",
-            "label": "0"
-          }
-        }
-      ]
-    },
+    
     {
       "id": "filtercreat",
       "element": "section",
@@ -886,7 +497,7 @@
       "icon": "fa-filter",
       "onSave": {
         "type": "plugin",
-        "endpoint": "audio_interface/brutefir",
+        "endpoint": "audio_interface/Dsp4Volumio",
         "method": "fileconvert"
       },
       "saveButton": {
@@ -1007,7 +618,7 @@
       "icon": "fa-wrench",
       "onSave": {
         "type": "plugin",
-        "endpoint": "audio_interface/brutefir",
+        "endpoint": "audio_interface/Dsp4Volumio",
         "method": "playToolsFile"
       },
       "saveButton": {

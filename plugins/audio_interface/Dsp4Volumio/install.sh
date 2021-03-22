@@ -1,8 +1,10 @@
 #!/bin/bash
+LIB=/data/plugins/audio_interface/Ds4Volumio
+TARGET = $libasound_module_pcm_cdsp
+opath=/data/INTERNAL/Dsp
 
-echo "Installing/Dsp4Volumio dependencies"
-echo "unload Loopback module if exists"
-sudo rmmod snd_aloop
+echo "Installing/Parameq4Volumio dependencies"
+
 echo "remove previous configuration"
 if [ ! -f "/data/configuration/audio_interface/Dsp4Volumio/config.json" ];
 	then
@@ -12,39 +14,58 @@ if [ ! -f "/data/configuration/audio_interface/Dsp4Volumio/config.json" ];
 		sudo rm -Rf /data/configuration/audio_interface/Dsp4Volumio
 fi
 
-		cp /data/plugins/audio_interface/Dsp4Volumio/camilladsp.service.tar /
-		cd /
-		sudo tar -xvf camilladsp.service.tar
-		rm /camilladsp.service.tar
-
 echo "creating filters folder and copying demo filters"
-mkdir -m 777 /data/INTERNAL/Dsp4Volumiofilters
-mkdir -m 777 /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters
-mkdir -m 777 /data/INTERNAL/Dsp4Volumiofilters/filter-sources
-mkdir -m 777 /data/INTERNAL/Dsp4Volumiofilters/target-curves
+
+mkdir -m 777 $opath
+mkdir -m 777 $opath/tools
+mkdir -m 777 $opath/filters
+mkdir -m 777 $opath/filter-sources
+mkdir -m 777 $opath/target-curves
 echo "copying demo flters"
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/filters/* /data/INTERNAL/Dsp4Volumiofilters/
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/VoBAFfilters/* /data/INTERNAL/Dsp4Volumiofilters/VoBAFfilters
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/target-curves/* /data/INTERNAL/Dsp4Volumiofilters/target-curves/
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/filter-sources/* /data/INTERNAL/Dsp4Volumiofilters/filter-sources/
-rm -Rf /data/plugins/audio_interface/Dsp4Volumio/filters
+cp $LIB/mpdignore $opath/.mpdignore
+cp $LIB/readme.txt $opath/readme.txt
+cp $LIB/filters/* $opath/filters/
+p $LIB/target-curves/* $opath/target-curves/
+cp $LIB/filter-sources/* $opath/filter-sources/
+rm -Rf $LIB/filters
+rm -Rf $LIB/VoBAFfilters
+rm -Rf $LIB/target-curves
+rm -Rf $LIB/filters-sources
+		
 echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
 if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/c/hw_params_arm /data/plugins/audio_interface/Dsp4Volumio/hw_params
-sudo chmod +x /data/plugins/audio_interface/Dsp4Volumio/hw_params
-elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
+cd /tmp
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
+tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
+sudo chown volumio camilladsp
+sudo chgrp volumio camilladsp
+sudo chmod +x camilladsp
+mv /tmp/camilladsp $LIB/
+rm /tmp/camilladsp-linux-armv7.tar.gz
+sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+
+elif [ $cpu = "x86_64" ]
 then
-sudo cp /data/plugins/audio_interface/Dsp4Volumio/c/hw_params_x86 /data/plugins/audio_interface/Dsp4Volumio/hw_params
-sudo chmod +x /data/plugins/audio_interface/Dsp4Volumio/hw_params
+cd $LIB
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
+tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
+sudo chown volumio camilladsp
+sudo chgrp volumio camilladsp
+sudo chmod +x camilladsp
+mv /tmp/camilladsp $LIB/
+rm /tmp/camilladsp-linux-armv7.tar.gz
+sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
+
 else
-        echo "Sorry, cpu is $cpu and your device is not yet supported !"
+    echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
 	exit -1
 fi
 
 #required to end the plugin install
 echo "plugininstallend"
+

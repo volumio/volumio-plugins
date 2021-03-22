@@ -21,7 +21,6 @@
     "kew": "",
     "socket.io-client": "2.4.0",
     "v-conf": "",
-    "wav-file-info": "0.0.8",
     "ws": "^7.4.3"
   }
 }

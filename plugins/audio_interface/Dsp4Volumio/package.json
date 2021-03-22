@@ -21,7 +21,7 @@
     "socket.io": "",
     "socket.io-client": "",
     "v-conf": "",
-    "wav-file-info": "0.0.8",
-    "journalctl": ""
+    "journalctl": "",
+    "ws": "^7.4.3"
   }
 }
