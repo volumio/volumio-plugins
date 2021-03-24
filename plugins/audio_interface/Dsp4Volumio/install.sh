@@ -1,5 +1,5 @@
 #!/bin/bash
-LIB=/data/plugins/audio_interface/Ds4Volumio
+LIB=/data/plugins/audio_interface/Dsp4Volumio
 TARGET = $libasound_module_pcm_cdsp
 opath=/data/INTERNAL/Dsp
 
@@ -13,6 +13,9 @@ if [ ! -f "/data/configuration/audio_interface/Dsp4Volumio/config.json" ];
 		echo "File exists removing it"
 		sudo rm -Rf /data/configuration/audio_interface/Dsp4Volumio
 fi
+
+sudo apt-get update
+sudo apt-get -y install drc
 
 echo "creating filters folder and copying demo filters"
 

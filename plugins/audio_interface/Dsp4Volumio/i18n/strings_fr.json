@@ -15,6 +15,7 @@
   "DOC_RATT": "Attenuation d'entrée : doit être au moins égale à la valeur max en dB de la correction",
   "AUTO_ATTENUATION_SET": "Attenuation réglée à ",
   "FILTER_FORMAT_TITLE": "Format non supporté",
+  "WARN_SPACE_INFILTER":"Spaces are not allowed in filter name. Please check!",
   "FILTER_FORMAT_MESS": "<h4>Filtre</h4><br>Choisir un fichier dans /INTERNAL/Dsp/filters<br>Formats supportés:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
   "LEFT_FILTER": "Filtre gauche",
   "DOC_LFILTER": "<h4>Filtre gauche</h4><br>Selectionnez le filtre gauche. Le fichier doit être placé dans /INTERNAL/Dsp/filters<br>Types supportés:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",

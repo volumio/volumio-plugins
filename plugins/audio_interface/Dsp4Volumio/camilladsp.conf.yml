@@ -1,41 +1,24 @@
----
+
 devices:
   samplerate: ${smpl_rate}
   chunksize: 4096
-  target_level: 2048
-  adjust_period: 10
   silence_threshold: -60
   silence_timeout: 3.0
-
+  queuelimit: 1
   capture:
-    type: Alsa
+    type: File
     channels: 2
-    device: "hw:Loopback,1"
     format: S32LE
-     
+    filename: "/dev/stdin"
+    extra_samples: 4096
   playback:
     type: Alsa
     channels: 2
-    device: "fromDspx"
+    device: "fromDsp1"
     format: S24LE3
 
-filters:
-  fir1:
-    type: Conv
-    parameters:
-      type: File
-      filename: ${leftfilter}
-      format: ${filter_format1}
-      ${skip_1}
-
-  fir2:
-    type: Conv
-    parameters:
-      type: File
-      filename: ${rightfilter}
-      format: ${filter_format1}
-      ${skip_1}
-
+filters: 
+${resulteq}
 mixers:
   stereo:
     channels:
@@ -45,12 +28,12 @@ mixers:
       - dest: 0
         sources:
           - channel: 0
-            gain: -${lattenuation}
+            gain: ${gain}
             inverted: false
       - dest: 1
         sources:
           - channel: 1
-            gain: -${rattenuation}
+            gain: ${gain}
             inverted: false
 
 pipeline:
@@ -59,8 +42,8 @@ pipeline:
   - type: Filter
     channel: 0
     names:
-      - fir1
+      - ${pipelineL}
   - type: Filter
     channel: 1
     names:
-      - fir2
+      - ${pipelineR}

@@ -1,5 +1,5 @@
 /*--------------------
-Dsp4Volumio plugin for volumio2. By balbuze April 13th 2020
+Dsp4Volumio plugin for volumio2. By balbuze March 22th 2021
 ----------------------
 */
 
@@ -24,10 +24,10 @@ const tccurvepath = "/data/INTERNAL/Dsp/target-curves/";
 const toolspath = "/data/INTERNAL/Dsp/tools/";
 
 
-// Define the ControllerDsp4Volumio class
-module.exports = ControllerDsp4Volumio;
+// Define the Dsp4Volumio class
+module.exports = Dsp4Volumio;
 
-function ControllerDsp4Volumio(context) {
+function Dsp4Volumio(context) {
   const self = this;
   self.context = context;
   self.commandRouter = self.context.coreCommand;
@@ -38,7 +38,7 @@ function ControllerDsp4Volumio(context) {
   this.configManager = this.context.configManager;
 };
 
-ControllerDsp4Volumio.prototype.onVolumioStart = function () {
+Dsp4Volumio.prototype.onVolumioStart = function () {
   const self = this;
   let configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
   this.config = new (require('v-conf'))();
@@ -46,7 +46,7 @@ ControllerDsp4Volumio.prototype.onVolumioStart = function () {
   return libQ.resolve();
 };
 
-ControllerDsp4Volumio.prototype.onStart = function () {
+Dsp4Volumio.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
@@ -60,7 +60,7 @@ ControllerDsp4Volumio.prototype.onStart = function () {
   return defer.promise;
 };
 
-ControllerDsp4Volumio.prototype.onStop = function () {
+Dsp4Volumio.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
   self.logger.info("Stopping camilladsp service");
@@ -68,19 +68,19 @@ ControllerDsp4Volumio.prototype.onStop = function () {
   return libQ.resolve();
 };
 
-ControllerDsp4Volumio.prototype.onRestart = function () {
+Dsp4Volumio.prototype.onRestart = function () {
   const self = this;
 };
 
-ControllerDsp4Volumio.prototype.onInstall = function () {
+Dsp4Volumio.prototype.onInstall = function () {
   const self = this;
 };
 
-ControllerDsp4Volumio.prototype.onUninstall = function () {
+Dsp4Volumio.prototype.onUninstall = function () {
   const self = this;
 };
 
-ControllerDsp4Volumio.prototype.getI18nFile = function (langCode) {
+Dsp4Volumio.prototype.getI18nFile = function (langCode) {
   const i18nFiles = fs.readdirSync(path.join(__dirname, 'i18n'));
   const langFile = 'strings_' + langCode + '.json';
 
@@ -93,11 +93,9 @@ ControllerDsp4Volumio.prototype.getI18nFile = function (langCode) {
 }
 // Configuration methods------------------------------------------------------------------------
 
-ControllerDsp4Volumio.prototype.getUIConfig = function () {
+Dsp4Volumio.prototype.getUIConfig = function () {
   const self = this;
   let defer = libQ.defer();
-  let output_device;
-  output_device = self.config.get('output_device');
 
   let lang_code = this.commandRouter.sharedVars.get('language_code');
   self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
@@ -113,13 +111,16 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
       let filetoconvertl;
       let tc;
 
-      //-----Room settings section
-      uiconf.sections[2].hidden = true;
-      uiconf.sections[2].content[0].value = self.config.get('ldistance');
-      uiconf.sections[2].content[1].value = self.config.get('rdistance');
-      // ------
+      var effect = self.config.get('effect')
+      if (effect == true) {
+        uiconf.sections[0].content[11].hidden = true;
+        uiconf.sections[0].content[10].hidden = false;
 
-      uiconf.sections[3].content[3].value = self.config.get('outputfilename');
+      } else if (effect == false) {
+        uiconf.sections[0].content[10].hidden = true;
+        uiconf.sections[0].content[11].hidden = false;
+
+      }
 
       //-----------------------------------
 
@@ -153,7 +154,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
           value: (n),
           label: (n)
         });
-        
+
       }
       try {
 
@@ -170,7 +171,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
               value: items[i],
               label: items[i]
             });
-         
+
             self.logger.info('list of available filters UI :' + items[i]);
           }
 
@@ -179,18 +180,9 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
         self.logger.error('Could not read file: ' + e)
       }
 
-      uiconf.sections[0].content[22].hidden = true;
-      value = self.config.get('filter_format');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[22].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[22].options'), value));
-
-      value = self.config.get('filter_size');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[23].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[23].options'), value));
       value = self.config.get('smpl_rate');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[24].value.label', value);
-
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', value);
       let probesmpleratehw = self.config.get('probesmplerate').slice(1).split(' ');
 
       for (let i in probesmpleratehw) {
@@ -202,64 +194,22 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
       }
 
 
-      //-------------------------------------------------
-      //here we read the content of the file sortsamplec.txt (it will be generated by a script to detect hw capabilities).
-
-      uiconf.sections[0].content[24].hidden = false;
-      valuestoredf = self.config.get('output_format');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.value', valuestoredf);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[25].value.label', valuestoredf);
-
-      try {
-        let sampleformat = self.config.get("formats").split(' ');
-        let sampleformatf = (', Factory_S16LE, Factory_S24LE, Factory_S24_3LE, Factory_S24_4LE, Factory_S32LE, ');
-        let sampleformato;
-        let sitems;
-        let js;
-        let str2;
-        if (sampleformat == "") {
-          sampleformato = sampleformatf;
-        } else {
-          let str22 = sampleformat.toString().replace(/S/g, "HW-Detected-S");
-          str2 = str22.toString().replace(/\s/g, '');
-          let str21 = str2.substring(0, str2.length - 1);
-          js = str21
-        }
-        if (str2 == null) {
-          str2 = "Detection\ fails.\ Reboot\ to\ retry, "
-        }
-        let result = str2 + sampleformatf
-        self.logger.info('result formats ' + result);
-        let str1 = result.replace(/\s/g, '');
-        let str = str1.substring(0, str1.length - 1);
-
-        sitems = str.split(',');
-        sitems.shift();
-        for (let i in sitems) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[25].options', {
-            value: sitems[i],
-            label: sitems[i]
-          });
-        }
-      } catch (e) {
-        self.logger.error('Could not read file: ' + e)
-        console.log(sampleformat)
-      }
-      uiconf.sections[0].content[26].value = self.config.get('enableclipdetect');
+      uiconf.sections[0].content[7].value = self.config.get('enableclipdetect');
 
       let filterswap = self.config.get('arefilterswap');
       if (filterswap == false) {
-        uiconf.sections[0].content[27].hidden = true;
-        uiconf.sections[0].content[28].hidden = true;
+        uiconf.sections[0].content[8].hidden = true;
+        uiconf.sections[0].content[9].hidden = true;
 
       }
-      uiconf.sections[0].content[27].value = self.config.get('displayednameofset');
+
+      uiconf.sections[0].content[8].value = self.config.get('displayednameofset');
 
 
       try {
         filetoconvertl = self.config.get('filetoconvert');
-        self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', filetoconvertl);
-        self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', filetoconvertl);
+        self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', filetoconvertl);
+        self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', filetoconvertl);
 
         fs.readdir(filtersource, function (err, fitem) {
           let fitems;
@@ -267,7 +217,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
           fitems = filetoconvert.split(',');
           // console.log(fitems)
           for (let i in fitems) {
-            self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
               value: fitems[i],
               label: fitems[i]
             });
@@ -279,8 +229,8 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
       }
 
       tc = self.config.get('tc');
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.value', tc);
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[1].value.label', tc);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.value', tc);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[1].value.label', tc);
       try {
         fs.readdir(tccurvepath, function (err, bitem) {
           let bitems;
@@ -288,7 +238,7 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
           bitems = filetoconvert.split(',');
           //console.log(bitems)
           for (let i in bitems) {
-            self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[1].options', {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[1].options', {
               value: bitems[i],
               label: bitems[i]
             });
@@ -301,150 +251,155 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
       }
 
       value = self.config.get('drcconfig');
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[3].content[2].options'), value));
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[2].options'), value));
+      uiconf.sections[2].content[3].value = self.config.get('outputfilename');
+      
+            //--------Tools section------------------------------------------------
+      
+            let ttools = self.config.get('toolsinstalled');
+      
+            let toolsfiletoplay = self.config.get('toolsfiletoplay');
+            self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', toolsfiletoplay);
+            self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', toolsfiletoplay);
+      
+            try {
+              fs.readdir(toolspath, function (err, bitem) {
+                let filetools = '' + bitem;
+      
+                let bitems = filetools.split(',');
+      
+                //console.log(bitems)
+                for (let i in bitems) {
+                  self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+                    value: bitems[i],
+                    label: bitems[i]
+                  });
+                  self.logger.info('tools file to play :' + bitems[i]);
+      
+                }
+              });
+            } catch (e) {
+              self.logger.error('Could not read file: ' + e)
+            }
+      
+      
+            if (ttools == false) {
+              uiconf.sections[3].content[0].hidden = true;
 
-      //--------Tools section------------------------------------------------
-
-      let ttools = self.config.get('toolsinstalled');
-
-      let toolsfiletoplay = self.config.get('toolsfiletoplay');
-      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', toolsfiletoplay);
-      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', toolsfiletoplay);
-
-      try {
-        fs.readdir(toolspath, function (err, bitem) {
-          let filetools = '' + bitem;
-
-          let bitems = filetools.split(',');
-
-          //console.log(bitems)
-          for (let i in bitems) {
-            self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[0].options', {
-              value: bitems[i],
-              label: bitems[i]
-            });
-            self.logger.info('tools file to play :' + bitems[i]);
-
-          }
-        });
-      } catch (e) {
-        self.logger.error('Could not read file: ' + e)
-      }
-
-
-      if (ttools == false) {
-        uiconf.sections[4].content[1].hidden = true;
-        uiconf.sections[4].content[2].hidden = false;
-
-      } else {
-        uiconf.sections[4].content[1].hidden = false;
-        uiconf.sections[4].content[2].hidden = true;
-
-      }
-      //--------VoBAF section----------------------------------------------------------
-
-      uiconf.sections[1].content[0].value = self.config.get('vobaf');
-
-      uiconf.sections[1].content[2].value = self.config.get('Lowsw');
-      let Low = self.config.get('Low');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
-
-      for (let i = 0; i < 50; i++) {
-
-        //   self.logger.info('list of low values :' + (i));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
-          value: (i),
-          label: (i)
-        });
-      }
-      uiconf.sections[1].content[4].value = self.config.get('LM1sw');
-      let LM1 = self.config.get('LM1');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
-
-      for (let j = 0; j < 70; j++) {
-
-        //   self.logger.info('list of LM1 values :' + (j));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
-          value: (j),
-          label: (j)
-        });
-      }
-      uiconf.sections[1].content[6].value = self.config.get('LM2sw');
-      let LM2 = self.config.get('LM2');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
-
-      for (let k = 0; k < 80; k++) {
-
-        //  self.logger.info('list of LM2 values :' + (k));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
-          value: (k),
-          label: (k)
-        });
-      }
-
-      uiconf.sections[1].content[8].value = self.config.get('LM3sw');
-      let LM3 = self.config.get('LM3');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
-
-      for (let o = 0; o < 85; o++) {
-
-        //  self.logger.info('list of LM3 values :' + (0));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
-          value: (o),
-          label: (o)
-        });
-      }
-
-      let M = self.config.get('M');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', M);
-
-      for (let l = 0; l < 100; l++) {
-
-        //   self.logger.info('list of M values :' + (l));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
-          value: (l),
-          label: (l)
-        });
-      }
-      uiconf.sections[1].content[12].value = self.config.get('HMsw');
-      let HM = self.config.get('HM');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
-
-      for (let m = 30; m < 100; m++) {
-
-        //  self.logger.info('list of HM values :' + (m));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
-          value: (m),
-          label: (m)
-        });
-      }
-      uiconf.sections[1].content[14].value = self.config.get('Highsw');
-
-      let vatt = self.config.get('vatt');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.value', vatt);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.label', vatt);
-
-      for (let n = 0; n < 30; n++) {
-
-        //  self.logger.info('list of HM values :' + (n));
-        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[16].options', {
-          value: (n),
-          label: (n)
-        });
-      }
-
-      value = self.config.get('vobaf_format');
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
-
-      uiconf.sections[1].content[18].value = self.config.get('messon');
+              uiconf.sections[3].content[1].hidden = true;
+              uiconf.sections[3].content[2].hidden = false;
+      
+            } else {
+              uiconf.sections[3].content[1].hidden = false;
+              uiconf.sections[3].content[2].hidden = true;
+      
+            }
+            
+            //--------VoBAF section----------------------------------------------------------
+      
+            uiconf.sections[1].content[0].value = self.config.get('vobaf');
+      
+            uiconf.sections[1].content[2].value = self.config.get('Lowsw');
+            let Low = self.config.get('Low');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
+      
+            for (let i = 0; i < 50; i++) {
+      
+              //   self.logger.info('list of low values :' + (i));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
+                value: (i),
+                label: (i)
+              });
+            }
+            uiconf.sections[1].content[4].value = self.config.get('LM1sw');
+            let LM1 = self.config.get('LM1');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
+      
+            for (let j = 0; j < 70; j++) {
+      
+              //   self.logger.info('list of LM1 values :' + (j));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
+                value: (j),
+                label: (j)
+              });
+            }
+            uiconf.sections[1].content[6].value = self.config.get('LM2sw');
+            let LM2 = self.config.get('LM2');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
+      
+            for (let k = 0; k < 80; k++) {
+      
+              //  self.logger.info('list of LM2 values :' + (k));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
+                value: (k),
+                label: (k)
+              });
+            }
+      
+            uiconf.sections[1].content[8].value = self.config.get('LM3sw');
+            let LM3 = self.config.get('LM3');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
+      
+            for (let o = 0; o < 85; o++) {
+      
+              //  self.logger.info('list of LM3 values :' + (0));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
+                value: (o),
+                label: (o)
+              });
+            }
+      
+            let M = self.config.get('M');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', M);
+      
+            for (let l = 0; l < 100; l++) {
+      
+              //   self.logger.info('list of M values :' + (l));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
+                value: (l),
+                label: (l)
+              });
+            }
+            uiconf.sections[1].content[12].value = self.config.get('HMsw');
+            let HM = self.config.get('HM');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
+      
+            for (let m = 30; m < 100; m++) {
+      
+              //  self.logger.info('list of HM values :' + (m));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
+                value: (m),
+                label: (m)
+              });
+            }
+            uiconf.sections[1].content[14].value = self.config.get('Highsw');
+      
+            let vatt = self.config.get('vatt');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.value', vatt);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.label', vatt);
+      
+            for (let n = 0; n < 30; n++) {
+      
+              //  self.logger.info('list of HM values :' + (n));
+              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[16].options', {
+                value: (n),
+                label: (n)
+              });
+            }
+      
+            value = self.config.get('vobaf_format');
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
+            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
+      
+            uiconf.sections[1].content[18].value = self.config.get('messon');
+          
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -453,25 +408,25 @@ ControllerDsp4Volumio.prototype.getUIConfig = function () {
   return defer.promise;
 };
 
-ControllerDsp4Volumio.prototype.getConfigurationFiles = function () {
+Dsp4Volumio.prototype.getConfigurationFiles = function () {
   return ['config.json'];
 };
 
-ControllerDsp4Volumio.prototype.setUIConfig = function (data) {
+Dsp4Volumio.prototype.setUIConfig = function (data) {
   const self = this;
 };
 
-ControllerDsp4Volumio.prototype.getConf = function (varName) {
-  const self = this;
-  //Perform your installation tasks here
-};
-
-ControllerDsp4Volumio.prototype.setConf = function (varName, varValue) {
+Dsp4Volumio.prototype.getConf = function (varName) {
   const self = this;
   //Perform your installation tasks here
 };
 
-ControllerDsp4Volumio.prototype.getLabelForSelect = function (options, key) {
+Dsp4Volumio.prototype.setConf = function (varName, varValue) {
+  const self = this;
+  //Perform your installation tasks here
+};
+
+Dsp4Volumio.prototype.getLabelForSelect = function (options, key) {
   let n = options.length;
   for (let i = 0; i < n; i++) {
     if (options[i].value == key)
@@ -480,17 +435,49 @@ ControllerDsp4Volumio.prototype.getLabelForSelect = function (options, key) {
   return 'VALUE NOT FOUND BETWEEN SELECT OPTIONS!';
 };
 
-ControllerDsp4Volumio.prototype.getAdditionalConf = function (type, controller, data) {
+Dsp4Volumio.prototype.getAdditionalConf = function (type, controller, data) {
   const self = this;
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 }
 // Plugin methods -----------------------------------------------------------------------------
 
 
-//------------Here we define a function to send a command to CamillaDsp through websocket---------------------
-ControllerDsp4Volumio.prototype.sendCommandToCamilla = function () {
+
+Dsp4Volumio.prototype.disableeffect = function () {
   const self = this;
-  const url = 'ws://localhost:9876'
+  self.config.set('effect', false)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  self.refreshUI();
+
+};
+
+Dsp4Volumio.prototype.enableeffect = function () {
+  const self = this;
+  self.config.set('effect', true)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  self.refreshUI();
+
+};
+
+Dsp4Volumio.prototype.refreshUI = function () {
+  const self = this;
+
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    });
+  }, 100);
+}
+
+//------------Here we define a function to send a command to CamillaDsp through websocket---------------------
+Dsp4Volumio.prototype.sendCommandToCamilla = function () {
+  const self = this;
+  const url = 'ws://localhost:9877'
   const command = ('\"Reload\"');
   const connection = new WebSocket(url)
 
@@ -510,31 +497,23 @@ ControllerDsp4Volumio.prototype.sendCommandToCamilla = function () {
 };
 
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
-ControllerDsp4Volumio.prototype.testclipping = function () {
+Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'ControllerDsp4Volumio::clearAddPlayTrack');
+  socket.emit('mute', '')
   let messageDisplayed;
-  let arrreduced;
-  let firstPeak = 0;
-  let secondPeak = 0;
-  let camilladspcmd = ('cfoa "l_out" "l_out" 0 ;cfoa "r_out" "r_out"  0');
-  //self.sendCommandToBrutefir(brutefircmd);
-  //console.log('Cmd sent to brutefir' + camilladspcmd);
-  let ititle = 'Detecting clipping';
-  let imessage = 'Please wait (10sec)';
   let track = '/data/plugins/audio_interface/Dsp4Volumio/testclipping/testclipping.wav';
   let outsample = self.config.get('smpl_rate');
-  socket.emit('mute', '')
+  let arrreduced;
   if (outsample == '44100') {
     try {
 
       exec('/usr/bin/killall aplay');
       setTimeout(function () {
-        execSync('/usr/bin/aplay --device=volumio ' + track);
+        execSync('/usr/bin/aplay --device=volumioDsp ' + track);
       }, 500);//2000
       socket.emit('unmute', '')
     } catch (e) {
-      console.log('/usr/bin/aplay --device=volumio ' + track);
+      console.log('/usr/bin/aplay --device=volumioDsp ' + track);
     };
   } else {
     let modalData = {
@@ -552,20 +531,21 @@ ControllerDsp4Volumio.prototype.testclipping = function () {
 
 
   let opts = {
-    unit: 'camilladsp'
+    unit: 'volumio'
   }
 
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
-    let pevent = event.MESSAGE.indexOf("peak");
-    if (pevent != -1) {
-      let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
-      let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
-
-      messageDisplayed = attcalculated;
-    } else {
-      messageDisplayed = 0;
-    }
+    let pevent = event.MESSAGE//.indexOf("peak");
+    self.logger.info('pevent ' + pevent)
+    // if (pevent != -1) {
+    let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
+    let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
+    self.logger.info('filteredMessage ' + filteredMessage)
+    messageDisplayed = attcalculated;
+    // } else {
+    //  messageDisplayed = 0;
+    // }
     arr.push(messageDisplayed);
     arr.sort((a, b) => {
       if (a > b) return 1;
@@ -583,13 +563,13 @@ ControllerDsp4Volumio.prototype.testclipping = function () {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
     self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced.pop() + ' dB');
-    self.rebuildcamilladspRestartDaemon();
+    self.createCamilladspfile();
     journalctl.stop();
   }, 550);
 };
 
 //here we determine filter type and apply skip value if needed
-ControllerDsp4Volumio.prototype.dfiltertype = function () {
+Dsp4Volumio.prototype.dfiltertype = function (data) {
   const self = this;
   let skipvalue = '';
   let filtername = self.config.get('leftfilter');
@@ -709,13 +689,11 @@ ControllerDsp4Volumio.prototype.dfiltertype = function () {
     };
     self.commandRouter.broadcastMessage("openModal", modalData)
     self.logger.error('File size not found in array!');
-
   };
   var obj = {
     skipvalue: skipvalue,
     valfound: valfound
   };
-
   return obj;
 
   // return (skipvalue,valfound);
@@ -723,7 +701,7 @@ ControllerDsp4Volumio.prototype.dfiltertype = function () {
 
 //---------------------------------------------------------------
 
-ControllerDsp4Volumio.prototype.createCamilladspfile = function (obj) {
+Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
   const self = this;
   let defer = libQ.defer();
 
@@ -734,88 +712,67 @@ ControllerDsp4Volumio.prototype.createCamilladspfile = function (obj) {
         return console.log(err);
       }
       var pipeliner, pipelines, pipelinelr, pipelinerr = '';
-     
+
       var result = '';
-      var gainmaxused = [];
       var effect = self.config.get('effect')
-      var leftfilter = self.config.get('leftfilter');
-      var rightfilter = self.config.get('rightfilter');
-      var attenuationl = self.config.get('attenuationl');
-      var attenuationlr = self.config.get('attenuationr');
-      var gain = self.config.get('attenuationl')
-
-      var gainresult;
-
-
+      var filter1 = self.config.get('leftfilter');
+      var filter2 = self.config.get('rightfilter');
+      var attenuation = self.config.get('attenuationl');
+      var smpl_rate = self.config.get('smpl_rate')
+      var filter_format = self.config.get('filter_format')
+      let val = self.dfiltertype(obj);
+      let skipval = val.skipvalue
+      var composedeq = '';
+      var channels = 2;
+      var pipeline1, pipeline2, pipeline;
+      var filterr;
       if (effect == false) {
         var composedeq = '';
-        composedeq += '  :' + '\n';
+        composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
-        pipeliner = '      - nulleq';
+        pipeline1 = pipeline2 = 'nulleq';
         result += composedeq
-        pipelinelr = pipeliner.slice(8)
-        pipelinerr = pipeliner.slice(8)
 
-        self.logger.info('Effects disabled, Nulleq applied')
-        gainresult = 0
-        gainclipfree = self.config.get('gainapplied')
 
       } else {
-        var composedeq = '';
-        composedeq += '  :' + '\n';
-        composedeq += '    type: Conv' + '\n';
-        pipeliner = '      - nulleq';
-        result += composedeq
-        pipelinelr = pipeliner.slice(8)
-        pipelinerr = pipeliner.slice(8)
+        for (let a = 1; a <= (channels); a++) {
+          filterr = eval('filter' + a)
+          self.logger.info('aaaaaaaaaaaaaaaaaaaa ' + filterr + '  ' + a)
 
-        self.logger.info('Effects disabled, Nulleq applied')
-        gainresult = 0
-        gainclipfree = self.config.get('gainapplied')
+          var composedeq = '';
+          composedeq += '  conv' + [a] + ':\n';
+          composedeq += '    type: Conv' + '\n';
+          composedeq += '    parameters:' + '\n';
+          composedeq += '      type: File' + '\n';
+          composedeq += '      filename: ' + filterfolder + filterr + '\n';
+          composedeq += '      format: ' + filter_format + '\n';
+          composedeq += '      ' + skipval + '\n';
+          composedeq += '' + '\n';
+          //  self.logger.info('aaaaaaaaaaaaaaaaaaaa ' + filterr)
+
+          if (a == 1) {
+            pipeline1 = 'conv1'
+          }
+          if (a == 2) {
+            pipeline2 = 'conv2'
+          }
+
+          result += composedeq
+
+        }
+
+
       }
-     
-        var outlpipeline, outrpipeline;
-        result += composedeq
-        outlpipeline += pipelineL
-        outrpipeline += pipelineR
-        pipelinelr = outlpipeline.slice(17)
-        pipelinerr = outrpipeline.slice(17)
-        if (pipelinelr == '') {
-          pipelinelr = 'nulleq2'
 
-        }
-        if (pipelinerr == '') {
-          pipelinerr = 'nulleq2'
-        }
-        gainmaxused += gainmax
-
-      
-      var gainclipfree
-      if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
-        gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
-        self.logger.info('gainresult ' + gainresult)
-        if (gainresult < 0) {
-          gainclipfree = -2
-        } else {
-          gainclipfree = ('-' + (parseInt(gainresult) + 2))
-
-          //else
-        }
-        self.config.set('gainapplied', gainclipfree)
-      }
-    
-
-      self.logger.info(result)
-
-      self.logger.info('gain applied ' + gainclipfree)
 
       let conf = data.replace("${resulteq}", result)
-        .replace("${gain}", (gainclipfree))
-        .replace("${gain}", (gainclipfree))
-        .replace("${pipelineL}", pipelinelr)
-        .replace("${pipelineR}", pipelinerr)
+        .replace("${smpl_rate}", (smpl_rate))
+        .replace("${gain}", ('-' + attenuation))
+        .replace("${gain}", ('-' + attenuation))
+        .replace("${pipelineL}", pipeline1)
+        .replace("${pipelineR}", pipeline2)
         ;
-      fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
+      fs.writeFile("/data/configuration/audio_interface/Dsp4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();
@@ -834,76 +791,28 @@ ControllerDsp4Volumio.prototype.createCamilladspfile = function (obj) {
 
 
 //here we save the brutefir config.json
-ControllerDsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
+Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   const self = this;
-  let output_device
-  let input_device = "Loopback,1";
-
-  let numb_part = 8;
-  output_device = self.config.get('alsa_device');
   let defer = libQ.defer();
-  try {
-    let cp3 = execSync('/bin/cp /data/configuration/audio_interface/Dsp4Volumio/config.json /data/configuration/audio_interface/Dsp4Volumio/config.json-save');
 
-  } catch (err) {
-    self.logger.info('/data/configuration/audio_interface/Dsp4Volumio/config.json does not exist');
+  //  //if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
+  if ((data['leftfilter'].value).split('.').pop().toString() != (data['rightfilter'].value).split('.').pop().toString()) {
+
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'));
+    self.logger.error('All filter must be of the same type')
+    return;
   }
-
-  self.config.set('leftfilter', data['leftfilter'].value);
-  self.config.set('lc1delay', data['lc1delay']);
-  self.config.set('attenuationl', data['attenuationl'].value);
-  self.config.set('rightfilter', data['rightfilter'].value);
-  self.config.set('attenuationr', data['attenuationr'].value);
-  self.config.set('rc1delay', data['rc1delay']);
-  self.config.set('addchannels', data['addchannels']);
-  self.config.set('leftc2filter', data['leftc2filter'].value);
-  self.config.set('lc2delay', data['lc2delay']);
-  self.config.set('rightc2filter', data['rightc2filter'].value);
-  self.config.set('rc2delay', data['rc2delay']);
-  self.config.set('attenuationlr2', data['attenuationlr2'].value);
-  self.config.set('leftc3filter', data['leftc3filter'].value);
-  self.config.set('lc3delay', data['lc3delay']);
-  self.config.set('rightc3filter', data['rightc3filter'].value);
-  self.config.set('rc3delay', data['rc3delay']);
-  self.config.set('attenuationlr3', data['attenuationlr3'].value);
-  self.config.set('leftc4filter', data['leftc4filter'].value);
-  self.config.set('lc4delay', data['lc4delay']);
-  self.config.set('rightc4filter', data['rightc4filter'].value);
-  self.config.set('rc4delay', data['rc4delay']);
-  self.config.set('attenuationlr4', data['attenuationlr4'].value);
-  self.config.set('filter_size', data['filter_size'].value);
-  //self.config.set('numb_part', data['numb_part']);
-  //   self.config.set('numb_part', data['numb_part'].value);
-  self.config.set('filter_format', data['filter_format'].value);
-  self.config.set('smpl_rate', data['smpl_rate'].value);
-  self.config.set('input_device', data['input_device']);
-  self.config.set('output_device', data['output_device']);
-  self.config.set('output_format', data['output_format'].value);
-  self.config.set('enableclipdetect', data['enableclipdetect']);
-
-  //setTimeout(function() {
-  if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
-    let modalData = {
-      title: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_TITLE'),
-      message: self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'),
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
-    }
-    self.commandRouter.broadcastMessage("openModal", modalData);
-    //		try {
-    let cp2 = execSync('/bin/rm /data/configuration/audio_interface/Dsp4Volumio/config.json')
-    let cp3 = exec('/bin/cp /data/configuration/Dsp4Volumio/config.json-save /data/configurDsp4Volumio/config.json');
-    self.logger.info('/data/configuration/Dsp4Volumio/config.json restored!');
+  if (((data['leftfilter'].value).includes(' ')) || ((data['rightfilter'].value).includes(' '))) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('WARN_SPACE_INFILTER'));
+    self.logger.error('SPACE NOT ALLOWED in file name')
+    return;
 
   } else {
     setTimeout(function () {
 
-      self.dfiltertype();
+      self.dfiltertype(data);
       // self.areSwapFilters();
-      self.rebuildcamilladspRestartDaemon()
+      self.createCamilladspfile()
 
 
         .then(function (e) {
@@ -915,8 +824,16 @@ ControllerDsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
           self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
         })
 
-    }, 1500);//2500
-    // }
+    }, 500);//2500
+
+    self.config.set('leftfilter', data['leftfilter'].value);
+    self.config.set('lc1delay', data['lc1delay']);
+    self.config.set('attenuationl', data['attenuationl'].value);
+    self.config.set('rightfilter', data['rightfilter'].value);
+    self.config.set('attenuationr', data['attenuationr'].value);
+    self.config.set('rc1delay', data['rc1delay']);
+    self.config.set('enableclipdetect', data['enableclipdetect']);
+
     let enableclipdetect = self.config.get('enableclipdetect');
     let leftfilter = self.config.get('leftfilter');
     let rightfilter = self.config.get('rightfilter');
@@ -939,19 +856,21 @@ ControllerDsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
               class: 'btn btn-info',
               emit: 'callMethod',
-              payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'testclipping' }
+              payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'testclipping', 'data': '' }
             }
           ]
         }
         self.commandRouter.broadcastMessage("openModal", responseData);
-      }, 3500);
+      }, 500);
     };
   };
+
+
   return defer.promise;
 };
 
 //------------VoBAf here we switch roomEQ filters depending on volume level and send cmd to brutefir using its CLI-----
-ControllerDsp4Volumio.prototype.sendvolumelevel = function () {
+Dsp4Volumio.prototype.sendvolumelevel = function () {
   const self = this;
   socket.on('pushState', function (data) {
     let vobaf = self.config.get('vobaf');
@@ -1322,7 +1241,7 @@ ControllerDsp4Volumio.prototype.sendvolumelevel = function () {
 
 //-----------here we define how to swap filters----------------------
 
-ControllerDsp4Volumio.prototype.areSwapFilters = function () {
+Dsp4Volumio.prototype.areSwapFilters = function () {
   const self = this;
   let leftFilter1 = self.config.get('leftfilter');
   let rightFilter1 = self.config.get('rightfilter');
@@ -1379,7 +1298,7 @@ ControllerDsp4Volumio.prototype.areSwapFilters = function () {
 };
 
 //-------------here we define action if filters swappable when the button is pressed-----
-ControllerDsp4Volumio.prototype.SwapFilters = function () {
+Dsp4Volumio.prototype.SwapFilters = function () {
   const self = this;
   let rsetUsedOfFilters = self.config.get('setUsedOfFilters');
   let brutefircmd;
@@ -1418,15 +1337,15 @@ ControllerDsp4Volumio.prototype.SwapFilters = function () {
 
   };
 
-  self.sendCommandToBrutefir(brutefircmd);
+  //  self.sendCommandToBrutefir(brutefircmd);
 
-  var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'brutefir', {});
+  var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
   respconfig.then(function (config) {
     self.commandRouter.broadcastMessage('pushUiConfig', config);
   });
 };
 //-----------here we save VoBAf parameters
-ControllerDsp4Volumio.prototype.saveVoBAF = function (data) {
+Dsp4Volumio.prototype.saveVoBAF = function (data) {
   const self = this;
   let defer = libQ.defer();
   let vf_ext;
@@ -1677,28 +1596,10 @@ ControllerDsp4Volumio.prototype.saveVoBAF = function (data) {
   return defer.promise;
 };
 
-//-----------here we save the brutefir delay calculation NOT MORE IN USE NOW!!!
-ControllerDsp4Volumio.prototype.saveBrutefirconfigroom = function (data) {
-  const self = this;
-  let defer = libQ.defer();
-  self.config.set('ldistance', data['ldistance']);
-  self.config.set('rdistance', data['rdistance']);
-  self.rebuildBRUTEFIRAndRestartDaemon()
-    .then(function (e) {
-      self.commandRouter.pushToastMessage('success', "Configuration update", 'The configuration has been successfully updated');
-      defer.resolve({});
-    })
-    .fail(function (e) {
-      defer.reject(new Error('Brutefir failed to start. Check your config !'));
-      self.commandRouter.pushToastMessage('error', 'Brutefir failed to start. Check your config !');
-    })
-  return defer.promise;
-};
-
 //--------------Tools Section----------------
 
 //here we download and install tools
-ControllerDsp4Volumio.prototype.installtools = function (data) {
+Dsp4Volumio.prototype.installtools = function (data) {
   const self = this;
 
   return new Promise(function (resolve, reject) {
@@ -1738,7 +1639,7 @@ ControllerDsp4Volumio.prototype.installtools = function (data) {
 };
 
 //here we remove tools
-ControllerDsp4Volumio.prototype.removetools = function (data) {
+Dsp4Volumio.removetools = function (data) {
   const self = this;
   self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
   return new Promise(function (resolve, reject) {
@@ -1768,7 +1669,7 @@ ControllerDsp4Volumio.prototype.removetools = function (data) {
 
 //------ actions tools------------
 
-ControllerDsp4Volumio.prototype.playToolsFile = function (data) {
+Dsp4Volumio.prototype.playToolsFile = function (data) {
   const self = this;
   self.config.set('toolsfiletoplay', data['toolsfiletoplay'].value);
   let toolsfile = self.config.get("toolsfiletoplay");
@@ -1779,7 +1680,7 @@ ControllerDsp4Volumio.prototype.playToolsFile = function (data) {
 //-----------DRC-FIR section----------------
 
 //here we save value for converted file
-ControllerDsp4Volumio.prototype.fileconvert = function (data) {
+Dsp4Volumio.prototype.fileconvert = function (data) {
   const self = this;
   let defer = libQ.defer();
   self.config.set('filetoconvert', data['filetoconvert'].value);
@@ -1791,12 +1692,10 @@ ControllerDsp4Volumio.prototype.fileconvert = function (data) {
 };
 
 //here we convert file using sox and generate filter with DRC-FIR
-ControllerDsp4Volumio.prototype.convert = function (data) {
+Dsp4Volumio.prototype.convert = function (data) {
   const self = this;
   //let defer = libQ.defer();
-  //let filtersource = "/data/INTERNAL/brutefirfilters/filter-sources/";
   let drcconfig = self.config.get('drcconfig');
-  // let filterfolder = "/data/INTERNAL/brutefirfilters/";
   let infile = self.config.get('filetoconvert');
   if (infile != 'choose a file') {
 

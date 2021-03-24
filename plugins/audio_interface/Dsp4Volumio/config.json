@@ -7,6 +7,10 @@
         "type": "boolean",
         "value": true
     },
+    "effect": {
+        "type": "boolean",
+        "value": true
+    },
     "askForReboot": {
         "type": "boolean",
         "value": true
@@ -30,10 +34,6 @@
     "setUsedOfFilters": {
         "type": "string",
         "value": "1"
-    },
-    "subChunkListSize": {
-        "type": "number",
-        "value": ""
     },
     "displayednameofset": {
         "type": "string",
@@ -98,66 +98,6 @@
     "addchannels": {
         "type": "boolean",
         "value": false
-    },
-    "leftc2filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "lc2delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "rightc2filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "rc2delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "attenuationlr2": {
-        "type": "string",
-        "value": "0"
-    },
-    "leftc3filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "lc3delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "rightc3filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "rc3delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "attenuationlr3": {
-        "type": "string",
-        "value": "0"
-    },
-    "leftc4filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "lc4delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "rightc4filter": {
-        "type": "string",
-        "value": "None"
-    },
-    "rc4delay": {
-        "type": "string",
-        "value": "0"
-    },
-    "attenuationlr4": {
-        "type": "string",
-        "value": "0"
     },
     "filter_size": {
         "type": "string",

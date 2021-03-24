@@ -13,7 +13,7 @@
     "plugin_type": "audio_interface",
     "icon": "fa-sliders fa-rotate-90",
     "has_alsa_contribution": true
-    },
+  },
   "dependencies": {
     "child_process": "",
     "fs-extra": "^4.0.2",

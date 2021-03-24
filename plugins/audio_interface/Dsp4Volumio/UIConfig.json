@@ -23,8 +23,7 @@
           "rc1delay",
           "attenuationr",
           "smpl_rate",
-          "enableclipdetect",
-          "effect"
+          "enableclipdetect"
         ]
       },
       "content": [
@@ -110,7 +109,6 @@
             "value": true
           }
         },
-       
         {
           "id": "smpl_rate",
           "element": "select",
@@ -152,6 +150,30 @@
             "type": "plugin",
             "endpoint": "audio_interface/Dsp4Volumio",
             "method": "SwapFilters"
+          }
+        },
+        {
+          "id": "disableeffect",
+          "element": "button",
+          "label": "Click to disable effects",
+          "description": "Disable equalizers effect",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Dsp4Volumio",
+            "method": "disableeffect",
+            "data": []
+          }
+        },
+        {
+          "id": "enableeffect",
+          "element": "button",
+          "label": "Click to enable effects",
+          "description": "Enable equalizers effect",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Dsp4Volumio",
+            "method": "enableeffect",
+            "data": []
           }
         },
         {
