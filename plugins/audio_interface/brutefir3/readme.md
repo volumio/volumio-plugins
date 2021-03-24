@@ -1,9 +1,9 @@
-Febuary 5th 2021
+March 21h 2021
 
 
 ##  Experimental version for modular_alsa - Do not use!!!
 
-
+## DEPRECATED (but should work)
 #	DSP for Volumio (previously Brutefir3)
 
 
@@ -98,7 +98,7 @@ To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/U
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/brutefir.zip
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/brutefir3/brutefir.zip
 mkdir ./brutefir
 miniunzip brutefir.zip -d ./brutefir
 cd ./brutefir
@@ -124,6 +124,10 @@ nearly everythings
 
 
 ### 4. Last changes
+
+March 24th
+
+- readme update
 
 Febuary 5th 2021
 
