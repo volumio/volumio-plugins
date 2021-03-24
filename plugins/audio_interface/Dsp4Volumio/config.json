@@ -7,6 +7,10 @@
         "type": "boolean",
         "value": true
     },
+    "autoswitchsamplerate": {
+        "type": "boolean",
+        "value": false
+    },
     "effect": {
         "type": "boolean",
         "value": true

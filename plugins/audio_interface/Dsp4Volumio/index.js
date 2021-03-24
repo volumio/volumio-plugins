@@ -51,7 +51,7 @@ Dsp4Volumio.prototype.onStart = function () {
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
-
+  self.hwinfo();
   setTimeout(function () {
     self.createCamilladspfile()
 
@@ -63,7 +63,7 @@ Dsp4Volumio.prototype.onStart = function () {
 Dsp4Volumio.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
-  self.logger.info("Stopping camilladsp service");
+  self.logger.info("Stopping Dsp4Volumio plugin");
   defer.resolve();
   return libQ.resolve();
 };
@@ -116,8 +116,9 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       //-----------------------------------
 
       valuestoredl = self.config.get('leftfilter');
+      let valuestoredllabel = valuestoredl.replace("$samplerate$","variable samplerate")
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', valuestoredl);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredl);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredllabel);
 
       value = self.config.get('attenuationl');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
@@ -127,8 +128,9 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       uiconf.sections[0].content[2].value = self.config.get('lc1delay');
 
       valuestoredr = self.config.get('rightfilter');
+      let valuestoredrlabel = valuestoredr.replace("$samplerate$","variable samplerate")
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredr);
+      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredrlabel);
 
       value = self.config.get('attenuationr');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
@@ -190,13 +192,17 @@ Dsp4Volumio.prototype.getUIConfig = function () {
         self.logger.error('Could not read file: ' + e)
       }
 
+      let autoswitchsamplerate = self.config.get('autoswitchsamplerate');
+      if (autoswitchsamplerate) {
+        uiconf.sections[0].content[6].hidden = true;
+      }
       value = self.config.get('smpl_rate');
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', value);
       let probesmpleratehw = self.config.get('probesmplerate').slice(1).split(' ');
 
       for (let i in probesmpleratehw) {
-        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[24].options', {
+        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[6].options', {
           value: probesmpleratehw[i],
           label: probesmpleratehw[i]
         });
@@ -307,7 +313,7 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       }
 
       //--------VoBAF section----------------------------------------------------------
-
+      uiconf.sections[1].hidden = true;
       uiconf.sections[1].content[0].value = self.config.get('vobaf');
 
       uiconf.sections[1].content[2].value = self.config.get('Lowsw');
@@ -450,6 +456,59 @@ Dsp4Volumio.prototype.getAdditionalConf = function (type, controller, data) {
   return self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
 }
 // Plugin methods -----------------------------------------------------------------------------
+//here we detect hw info
+Dsp4Volumio.prototype.hwinfo = function () {
+  const self = this;
+  let defer = libQ.defer();
+
+  let output_device = this.getAdditionalConf('audio_interface', 'alsa_controller', 'outputdevice');
+  let nchannels;
+  let formats;
+  let hwinfo;
+  let samplerates;
+  try {
+    execSync('/data/plugins/audio_interface/Dsp4Volumio/hw_params volumioDsp >/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json ', {
+      uid: 1000,
+      gid: 1000
+    });
+    hwinfo = fs.readFileSync('/data/configuration/audio_interface/Dsp4Volumio/hwinfo.json');
+    try {
+      const hwinfoJSON = JSON.parse(hwinfo);
+      nchannels = hwinfoJSON.channels.value;
+      formats = hwinfoJSON.formats.value.replace(' SPECIAL', '').replace(', ,', '').replace(',,', '');
+      samplerates = hwinfoJSON.samplerates.value;
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.config.set('nchannels', nchannels);
+      self.config.set('formats', formats);
+      self.config.set('probesmplerate', samplerates);
+      let output_format = formats.split(" ").pop();
+
+      var arr = ['S16_LE', 'S24_LE', 'S24_3LE', 'S32_LE'];
+      var check = output_format;
+      if (arr.indexOf(check) > -1) {
+        let askForReboot = self.config.get('askForReboot');
+        let firstOutputFormat = self.config.get('firstOutputFormat');
+        console.log(askForReboot + " and " + firstOutputFormat)
+        if ((askForReboot == false) && firstOutputFormat) {
+          self.config.set('output_format', output_format);
+          self.config.set('firstOutputFormat', false);
+          self.logger.info('Auto set output format : ----->' + output_format);
+        }
+      } else {
+        self.logger.info('Can\'t determine a compatible value for output format');
+      }
+    } catch (err) {
+      self.logger.info('Error reading hwinfo.json, detection failed :', err);
+    }
+
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('----Hw detection failed :' + err);
+    defer.reject(err);
+  }
+};
 
 
 
@@ -541,12 +600,12 @@ Dsp4Volumio.prototype.testclipping = function () {
 
 
   let opts = {
-    unit: 'volumio'
+    unit: ''
   }
 
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
-    let pevent = event.MESSAGE//.indexOf("peak");
+    let pevent = event.MESSAGE.indexOf("peak");
     self.logger.info('pevent ' + pevent)
     // if (pevent != -1) {
     let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
@@ -677,32 +736,33 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
   self.logger.info('--------->filter size ' + filelength);
   self.logger.info('--------->Skip value for wav :' + skipvalue);
 
-
-  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
-  var check = Number(filelength);
-  var valfound = false;
-  if (arr.indexOf(check) > -1) {
-    valfound = true;
-  }
-  if (valfound) {
-    self.logger.info('File size found in array!');
-  }
-  if (valfound === false) {
-    let modalData = {
-      title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
-      message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
+  /*
+    var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
+    var check = Number(filelength);
+    var valfound = false;
+    if (arr.indexOf(check) > -1) {
+      valfound = true;
+    }
+    if (valfound) {
+      self.logger.info('File size found in array!');
+    }
+    if (valfound === false) {
+      let modalData = {
+        title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
+        message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
+        size: 'lg',
+        buttons: [{
+          name: 'Close',
+          class: 'btn btn-warning'
+        },]
+      };
+      self.commandRouter.broadcastMessage("openModal", modalData)
+      self.logger.error('File size not found in array!');
     };
-    self.commandRouter.broadcastMessage("openModal", modalData)
-    self.logger.error('File size not found in array!');
-  };
+    */
   var obj = {
     skipvalue: skipvalue,
-    valfound: valfound
+    //valfound: valfound
   };
   return obj;
 
@@ -851,15 +911,17 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
     self.config.set('attenuationr', attenuationr);
     self.config.set('rc1delay', data['rc1delay']);
     self.config.set('enableclipdetect', data['enableclipdetect']);
+    self.config.set('smpl_rate', data['smpl_rate'].value);
     self.refreshUI();
-
 
 
     let enableclipdetect = self.config.get('enableclipdetect');
 
     let val = self.dfiltertype(obj);
-    let valfound = val.valfound
-    if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+   // let valfound = val.valfound
+   // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+      if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+
       setTimeout(function () {
         var responseData = {
           title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
@@ -882,7 +944,10 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
         }
         self.commandRouter.broadcastMessage("openModal", responseData);
       }, 500);
+
     };
+    self.areSampleswitch();
+
   };
 
 
@@ -1317,6 +1382,67 @@ Dsp4Volumio.prototype.areSwapFilters = function () {
   });
 };
 
+//-----------here we define how to swap filters----------------------
+
+Dsp4Volumio.prototype.areSampleswitch = function () {
+  const self = this;
+  let leftFilter1 = self.config.get('leftfilter');
+  let rightFilter1 = self.config.get('rightfilter');
+
+  // check if filter naming is ok with 44100 in name
+  const isFilterSwappable = (filterName, swapWord) => {
+    let threeLastChar = filterName.slice(-9, -4);
+    if (threeLastChar == swapWord) {
+      return true
+    }
+    else {
+      return false
+    }
+  };
+  let leftResult = isFilterSwappable(leftFilter1, '44100');
+  let rightResult = isFilterSwappable(rightFilter1, '44100');
+
+  console.log(leftResult + ' + ' + rightResult);
+
+  // check if secoond filter with 96000 in name
+  const isFileExist = (filterName, swapWord) => {
+    let fileExt = filterName.slice(-4);
+    let filterNameShort = filterName.slice(0, -9);
+    let filterNameForSwapc = filterNameShort + swapWord + fileExt;
+    let filterNameForSwap = filterNameShort + "$samplerate$" + fileExt;
+
+    if (fs.exists(filterfolder + filterNameForSwap)) {
+      return [true, filterNameForSwap]
+    } else {
+      return false
+    }
+  };
+  let leftResultExist = isFileExist(leftFilter1, '96000');
+  let toSaveLeftResult = leftResultExist[1];
+  let rightResultExist = isFileExist(rightFilter1, '96000');
+  let toSaveRightResult = rightResultExist[1];
+
+  // if both condition are true, swapping possible
+  if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
+    console.log('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    self.config.set('leftfilter', toSaveLeftResult);
+    self.config.set('rightfilter', toSaveRightResult);
+    self.config.set('autoswitchsamplerate', true);
+  } else {
+    self.config.set('autoswitchsamplerate', false);
+
+
+  };
+  /*
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    }, 500);
+  */
+  //});
+};
+
 //-------------here we define action if filters swappable when the button is pressed-----
 Dsp4Volumio.prototype.SwapFilters = function () {
   const self = this;
@@ -1717,6 +1843,7 @@ Dsp4Volumio.prototype.convert = function (data) {
   //let defer = libQ.defer();
   let drcconfig = self.config.get('drcconfig');
   let infile = self.config.get('filetoconvert');
+  let sr;
   if (infile != 'choose a file') {
 
     let outfile = self.config.get('outputfilename').replace(/ /g, '-');
@@ -1733,19 +1860,23 @@ Dsp4Volumio.prototype.convert = function (data) {
       if ((outsample == 44100) || (outsample == 48000) || (outsample == 88200) || (outsample == 96000)) {
         if (outsample == 44100) {
           ftargetcurve = '44.1\\ kHz/';
-          curve = '44.1';
+          curve = '44.1'
+          sr = '44100';
         } else if (outsample == 48000) {
           ftargetcurve = '48.0\\ kHz/';
           curve = '48.0';
+          sr = '48000';
         } else if (outsample == 88200) {
           ftargetcurve = '88.2\\ kHz/';
           curve = '88.2';
+          sr = '88200';
         } else if (outsample == 96000) {
           ftargetcurve = '96.0\\ kHz/';
           curve = '96.0';
+          sr = '96000';
         };
 
-        let destfile = (filterfolder + outfile + "-" + drcconfig + "-" + curve + "kHz-" + tcsimplified + ".pcm");
+        let destfile = (filterfolder + outfile + "-" + drcconfig + "-" + tcsimplified + "-" + sr + ".pcm");
         self.commandRouter.loadI18nStrings();
         try {
           let cmdsox = ("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);

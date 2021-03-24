@@ -68,3 +68,5 @@ nearly everythings
  - clipping detection
 
 ### 4. Last changes
+
+- first step for sample rate autoswitch
