@@ -1,5 +1,5 @@
 {
-  "VOLUMIO_DSP": "Centre DSP de Volumio",
+  "VOLUMIO_DSP": "Centre DSP de Volumio avec CamillaDSP",
   "FIRST_USE": "Première utilisation",
   "FIRST_USE_MESS": "Vous avez activé le plugin pour la première fois. Vous devez redémarrer pour une meilleure détection du matériel.",
   "CONTINUE": "Continuer",

@@ -110,17 +110,8 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       let allfilter;
       let filetoconvertl;
       let tc;
-
       var effect = self.config.get('effect')
-      if (effect == true) {
-        uiconf.sections[0].content[11].hidden = true;
-        uiconf.sections[0].content[10].hidden = false;
 
-      } else if (effect == false) {
-        uiconf.sections[0].content[10].hidden = true;
-        uiconf.sections[0].content[11].hidden = false;
-
-      }
 
       //-----------------------------------
 
@@ -132,6 +123,7 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[1].value.label', value);
 
+      uiconf.sections[0].content[2].hidden = true;
       uiconf.sections[0].content[2].value = self.config.get('lc1delay');
 
       valuestoredr = self.config.get('rightfilter');
@@ -142,7 +134,25 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', value);
 
+      uiconf.sections[0].content[5].hidden = true;
       uiconf.sections[0].content[5].value = self.config.get('rc1delay');
+
+
+      if ((valuestoredl == 'None') && (valuestoredr == 'None')) {
+        uiconf.sections[0].content[11].hidden = true;
+        uiconf.sections[0].content[10].hidden = true;
+      } else {
+        if (effect == true) {
+          uiconf.sections[0].content[11].hidden = true;
+          uiconf.sections[0].content[10].hidden = false;
+
+        } else if (effect == false) {
+          uiconf.sections[0].content[10].hidden = true;
+          uiconf.sections[0].content[11].hidden = false;
+
+        }
+      }
+
 
       //	for (let n = 0; n < 22; n++) {
       for (let n = 0; n < 22; n = n + 0.5) {
@@ -254,152 +264,152 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[2].content[2].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[2].options'), value));
       uiconf.sections[2].content[3].value = self.config.get('outputfilename');
-      
-            //--------Tools section------------------------------------------------
-      
-            let ttools = self.config.get('toolsinstalled');
-      
-            let toolsfiletoplay = self.config.get('toolsfiletoplay');
-            self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', toolsfiletoplay);
-            self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', toolsfiletoplay);
-      
-            try {
-              fs.readdir(toolspath, function (err, bitem) {
-                let filetools = '' + bitem;
-      
-                let bitems = filetools.split(',');
-      
-                //console.log(bitems)
-                for (let i in bitems) {
-                  self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
-                    value: bitems[i],
-                    label: bitems[i]
-                  });
-                  self.logger.info('tools file to play :' + bitems[i]);
-      
-                }
-              });
-            } catch (e) {
-              self.logger.error('Could not read file: ' + e)
-            }
-      
-      
-            if (ttools == false) {
-              uiconf.sections[3].content[0].hidden = true;
 
-              uiconf.sections[3].content[1].hidden = true;
-              uiconf.sections[3].content[2].hidden = false;
-      
-            } else {
-              uiconf.sections[3].content[1].hidden = false;
-              uiconf.sections[3].content[2].hidden = true;
-      
-            }
-            
-            //--------VoBAF section----------------------------------------------------------
-      
-            uiconf.sections[1].content[0].value = self.config.get('vobaf');
-      
-            uiconf.sections[1].content[2].value = self.config.get('Lowsw');
-            let Low = self.config.get('Low');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
-      
-            for (let i = 0; i < 50; i++) {
-      
-              //   self.logger.info('list of low values :' + (i));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
-                value: (i),
-                label: (i)
-              });
-            }
-            uiconf.sections[1].content[4].value = self.config.get('LM1sw');
-            let LM1 = self.config.get('LM1');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
-      
-            for (let j = 0; j < 70; j++) {
-      
-              //   self.logger.info('list of LM1 values :' + (j));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
-                value: (j),
-                label: (j)
-              });
-            }
-            uiconf.sections[1].content[6].value = self.config.get('LM2sw');
-            let LM2 = self.config.get('LM2');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
-      
-            for (let k = 0; k < 80; k++) {
-      
-              //  self.logger.info('list of LM2 values :' + (k));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
-                value: (k),
-                label: (k)
-              });
-            }
-      
-            uiconf.sections[1].content[8].value = self.config.get('LM3sw');
-            let LM3 = self.config.get('LM3');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
-      
-            for (let o = 0; o < 85; o++) {
-      
-              //  self.logger.info('list of LM3 values :' + (0));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
-                value: (o),
-                label: (o)
-              });
-            }
-      
-            let M = self.config.get('M');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', M);
-      
-            for (let l = 0; l < 100; l++) {
-      
-              //   self.logger.info('list of M values :' + (l));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
-                value: (l),
-                label: (l)
-              });
-            }
-            uiconf.sections[1].content[12].value = self.config.get('HMsw');
-            let HM = self.config.get('HM');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
-      
-            for (let m = 30; m < 100; m++) {
-      
-              //  self.logger.info('list of HM values :' + (m));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
-                value: (m),
-                label: (m)
-              });
-            }
-            uiconf.sections[1].content[14].value = self.config.get('Highsw');
-      
-            let vatt = self.config.get('vatt');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.value', vatt);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.label', vatt);
-      
-            for (let n = 0; n < 30; n++) {
-      
-              //  self.logger.info('list of HM values :' + (n));
-              self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[16].options', {
-                value: (n),
-                label: (n)
-              });
-            }
-      
-            value = self.config.get('vobaf_format');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
-      
-            uiconf.sections[1].content[18].value = self.config.get('messon');
-          
+      //--------Tools section------------------------------------------------
+
+      let ttools = self.config.get('toolsinstalled');
+
+      let toolsfiletoplay = self.config.get('toolsfiletoplay');
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', toolsfiletoplay);
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', toolsfiletoplay);
+
+      try {
+        fs.readdir(toolspath, function (err, bitem) {
+          let filetools = '' + bitem;
+
+          let bitems = filetools.split(',');
+
+          //console.log(bitems)
+          for (let i in bitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+              value: bitems[i],
+              label: bitems[i]
+            });
+            self.logger.info('tools file to play :' + bitems[i]);
+
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
+
+
+      if (ttools == false) {
+        uiconf.sections[3].content[0].hidden = true;
+
+        uiconf.sections[3].content[1].hidden = true;
+        uiconf.sections[3].content[2].hidden = false;
+
+      } else {
+        uiconf.sections[3].content[1].hidden = false;
+        uiconf.sections[3].content[2].hidden = true;
+
+      }
+
+      //--------VoBAF section----------------------------------------------------------
+
+      uiconf.sections[1].content[0].value = self.config.get('vobaf');
+
+      uiconf.sections[1].content[2].value = self.config.get('Lowsw');
+      let Low = self.config.get('Low');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', Low);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', Low);
+
+      for (let i = 0; i < 50; i++) {
+
+        //   self.logger.info('list of low values :' + (i));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[3].options', {
+          value: (i),
+          label: (i)
+        });
+      }
+      uiconf.sections[1].content[4].value = self.config.get('LM1sw');
+      let LM1 = self.config.get('LM1');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.value', LM1);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[5].value.label', LM1);
+
+      for (let j = 0; j < 70; j++) {
+
+        //   self.logger.info('list of LM1 values :' + (j));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[5].options', {
+          value: (j),
+          label: (j)
+        });
+      }
+      uiconf.sections[1].content[6].value = self.config.get('LM2sw');
+      let LM2 = self.config.get('LM2');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.value', LM2);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[7].value.label', LM2);
+
+      for (let k = 0; k < 80; k++) {
+
+        //  self.logger.info('list of LM2 values :' + (k));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[7].options', {
+          value: (k),
+          label: (k)
+        });
+      }
+
+      uiconf.sections[1].content[8].value = self.config.get('LM3sw');
+      let LM3 = self.config.get('LM3');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.value', LM3);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[9].value.label', LM3);
+
+      for (let o = 0; o < 85; o++) {
+
+        //  self.logger.info('list of LM3 values :' + (0));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[9].options', {
+          value: (o),
+          label: (o)
+        });
+      }
+
+      let M = self.config.get('M');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.value', M);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[11].value.label', M);
+
+      for (let l = 0; l < 100; l++) {
+
+        //   self.logger.info('list of M values :' + (l));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[11].options', {
+          value: (l),
+          label: (l)
+        });
+      }
+      uiconf.sections[1].content[12].value = self.config.get('HMsw');
+      let HM = self.config.get('HM');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.value', HM);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[13].value.label', HM);
+
+      for (let m = 30; m < 100; m++) {
+
+        //  self.logger.info('list of HM values :' + (m));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[13].options', {
+          value: (m),
+          label: (m)
+        });
+      }
+      uiconf.sections[1].content[14].value = self.config.get('Highsw');
+
+      let vatt = self.config.get('vatt');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.value', vatt);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[16].value.label', vatt);
+
+      for (let n = 0; n < 30; n++) {
+
+        //  self.logger.info('list of HM values :' + (n));
+        self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[16].options', {
+          value: (n),
+          label: (n)
+        });
+      }
+
+      value = self.config.get('vobaf_format');
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[17].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[17].options'), value));
+
+      uiconf.sections[1].content[18].value = self.config.get('messon');
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -737,7 +747,7 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
       } else {
         for (let a = 1; a <= (channels); a++) {
           filterr = eval('filter' + a)
-          self.logger.info('aaaaaaaaaaaaaaaaaaaa ' + filterr + '  ' + a)
+          //  self.logger.info('aaaaaaaaaaaaaaaaaaaa ' + filterr + '  ' + a)
 
           var composedeq = '';
           composedeq += '  conv' + [a] + ':\n';
@@ -758,10 +768,7 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
           }
 
           result += composedeq
-
         }
-
-
       }
 
 
@@ -794,9 +801,20 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
 Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   const self = this;
   let defer = libQ.defer();
+  let attenuationl = (data['attenuationl'].value);
+  let attenuationr = (data['attenuationr'].value);
+  let leftfilter = (data['leftfilter'].value);
+  let rightfilter = (data['rightfilter'].value);
+  self.logger.error('Sxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + leftfilter)
 
-  //  //if (self.config.get('leftfilter').split('.').pop().toString() != self.config.get('rightfilter').split('.').pop().toString()) {
-  if ((data['leftfilter'].value).split('.').pop().toString() != (data['rightfilter'].value).split('.').pop().toString()) {
+  if ((leftfilter == 'None') && (rightfilter == 'None')) {
+    attenuationl = attenuationr = 0
+    self.config.set('effect', false)
+  } else {
+    self.config.set('effect', true)
+  }
+
+  if ((leftfilter.split('.').pop().toString()) != (rightfilter.split('.').pop().toString())) {
 
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DIFF_FILTER_TYPE_MESS'));
     self.logger.error('All filter must be of the same type')
@@ -824,19 +842,21 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
           self.commandRouter.pushToastMessage('error', 'camilladsp failed to start. Check your config !');
         })
 
-    }, 500);//2500
+    }, 100);//2500
 
-    self.config.set('leftfilter', data['leftfilter'].value);
+    self.config.set('leftfilter', leftfilter);
     self.config.set('lc1delay', data['lc1delay']);
-    self.config.set('attenuationl', data['attenuationl'].value);
-    self.config.set('rightfilter', data['rightfilter'].value);
-    self.config.set('attenuationr', data['attenuationr'].value);
+    self.config.set('attenuationl', attenuationl);
+    self.config.set('rightfilter', rightfilter);
+    self.config.set('attenuationr', attenuationr);
     self.config.set('rc1delay', data['rc1delay']);
     self.config.set('enableclipdetect', data['enableclipdetect']);
+    self.refreshUI();
+
+
 
     let enableclipdetect = self.config.get('enableclipdetect');
-    let leftfilter = self.config.get('leftfilter');
-    let rightfilter = self.config.get('rightfilter');
+
     let val = self.dfiltertype(obj);
     let valfound = val.valfound
     if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
