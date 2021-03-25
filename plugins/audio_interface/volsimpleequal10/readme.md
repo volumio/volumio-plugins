@@ -23,7 +23,7 @@ January 30th 2021
  cd volsimpleequal10
  volumio plugin install
  cd ..
- rm -Rf volsimpleequall10*
+ rm -Rf volsimpleequal10*
  ```
 
 ## What is working ?
