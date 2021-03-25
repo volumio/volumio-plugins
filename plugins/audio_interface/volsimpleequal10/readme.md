@@ -1,6 +1,5 @@
 January 30th 2021
 
-### beta for alsa_modular! do not use! (yet ;-))
 
 
 	Volsimpleequal volumio simple equalizer
@@ -13,14 +12,19 @@ January 30th 2021
 
 ## Requirement
 
- A working well configured volumio > 3.015 + alsa pipeline
+ volumio > 3.054
 
 ## How to install ?
 
- Download volsimpleequal.zip and drop it in the "updload a plugin" zone of volumio.
- Enable it and... enjoy
-
-note : if no sound don't change anything in volumio settings. Reboot and try to play a track.
+ ```
+ wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/volsimpleequal10/volsimpleequal10.zip
+ mkdir volsimpleequal10
+ miniunzip volsimpleequal10.zip -d ./volsimpleequal10
+ cd volsimpleequal10
+ volumio plugin install
+ cd ..
+ rm -Rf volsimpleequall10*
+ ```
 
 ## What is working ?
 
