@@ -1,4 +1,4 @@
-March 24th 2021
+March 26th 2021
 
 
 ##  For Volumio >3.054
@@ -29,7 +29,7 @@ Supported :
 
 # Special thanks
 
-- Thanks a lot @krunok for your great help and suggestion to design this plugin. Your knowledge was more than helpful! ;-)
+- Thanks a lot @krunok for your great help and suggestion to design the brutefir version of this plugin. Your knowledge was more than helpful! ;-)
 
 
 
@@ -69,4 +69,4 @@ nearly everythings
 
 ### 4. Last changes
 
-- first step for sample rate autoswitch
+- camilladsp config

@@ -600,7 +600,7 @@ Dsp4Volumio.prototype.testclipping = function () {
 
 
   let opts = {
-    unit: ''
+    unit: 'volumio'
   }
 
   const journalctl = new Journalctl(opts);

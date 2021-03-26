@@ -1,14 +1,16 @@
 
 devices:
   samplerate: ${smpl_rate}
-  chunksize: 4096
+  chunksize: 8192
   silence_threshold: -60
   silence_timeout: 3.0
   queuelimit: 1
+  adjust_period: 8192
+  target_level: 10
   capture:
     type: File
     channels: 2
-    format: S32LE
+    format: S24LE3
     filename: "/dev/stdin"
     extra_samples: 4096
   playback:
