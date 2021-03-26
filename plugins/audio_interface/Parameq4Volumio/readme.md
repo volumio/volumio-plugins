@@ -1,4 +1,4 @@
-March 24th 2021
+March 26th 2021
 
 
 ##  For Volumio >= 3.054
@@ -58,6 +58,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+March 26th 2021
+
+- adjustement camilliadasp config
 
 March 24th 2021
 

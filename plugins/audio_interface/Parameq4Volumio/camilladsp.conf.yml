@@ -1,10 +1,12 @@
 
 devices:
   samplerate: 44100
-  chunksize: 4096
+  chunksize: 8192
   silence_threshold: -60
   silence_timeout: 3.0
   queuelimit: 1
+  adjust_period: 8192
+  target_level: 10
   capture:
     type: File
     channels: 2
