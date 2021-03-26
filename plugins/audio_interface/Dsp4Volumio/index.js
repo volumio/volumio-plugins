@@ -116,7 +116,7 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       //-----------------------------------
 
       valuestoredl = self.config.get('leftfilter');
-      let valuestoredllabel = valuestoredl.replace("$samplerate$","variable samplerate")
+      let valuestoredllabel = valuestoredl.replace("$samplerate$", "variable samplerate")
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', valuestoredl);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', valuestoredllabel);
 
@@ -128,7 +128,7 @@ Dsp4Volumio.prototype.getUIConfig = function () {
       uiconf.sections[0].content[2].value = self.config.get('lc1delay');
 
       valuestoredr = self.config.get('rightfilter');
-      let valuestoredrlabel = valuestoredr.replace("$samplerate$","variable samplerate")
+      let valuestoredrlabel = valuestoredr.replace("$samplerate$", "variable samplerate")
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.value', valuestoredr);
       self.configManager.setUIConfigParam(uiconf, 'sections[0].content[3].value.label', valuestoredrlabel);
 
@@ -570,71 +570,63 @@ Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
   socket.emit('mute', '')
   let messageDisplayed;
-  let track = '/data/plugins/audio_interface/Dsp4Volumio/testclipping/testclipping.wav';
-  let outsample = self.config.get('smpl_rate');
   let arrreduced;
-  if (outsample == '44100') {
-    try {
+  self.config.set('attenuationl', 0);
+  self.config.set('attenuationr', 0);
+  self.createCamilladspfile();
+  setTimeout(function () {
 
+    let track = '/data/plugins/audio_interface/Dsp4Volumio/testclipping/testclipping.wav';
+    try {
+      let cmd = ('/usr/bin/aplay --device=volumioDsp ' + track);
       exec('/usr/bin/killall aplay');
       setTimeout(function () {
-        execSync('/usr/bin/aplay --device=volumioDsp ' + track);
-      }, 500);//2000
-      socket.emit('unmute', '')
+        execSync(cmd);
+      }, 50);
+     // socket.emit('unmute', '')
     } catch (e) {
-      console.log('/usr/bin/aplay --device=volumioDsp ' + track);
+      console.log(cmd);
     };
-  } else {
-    let modalData = {
-      title: ititle,
-      message: imessage,
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
-    };
-    self.commandRouter.broadcastMessage("openModal", modalData);
-  }
+  }, 500);
+
   let arr = [];
-
-
   let opts = {
-    unit: 'volumio'
+    unit: ''
   }
-
   const journalctl = new Journalctl(opts);
   journalctl.on('event', (event) => {
-    let pevent = event.MESSAGE.indexOf("peak");
-    self.logger.info('pevent ' + pevent)
-    // if (pevent != -1) {
-    let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
-    let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
-    self.logger.info('filteredMessage ' + filteredMessage)
-    messageDisplayed = attcalculated;
-    // } else {
-    //  messageDisplayed = 0;
-    // }
+    let pevent = event.MESSAGE.indexOf("Clipping detected");
+    if (pevent != -1) {
+      let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
+      self.logger.info('filteredMessage ' + filteredMessage)
+      let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
+
+      messageDisplayed = attcalculated;
+    } else {
+      messageDisplayed = 0;
+    }
     arr.push(messageDisplayed);
     arr.sort((a, b) => {
       if (a > b) return 1;
       if (a < b) return -1;
       return 0;
     });
-    arrreduced = (arr.toString().split(','));
-    self.logger.info('GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG ' + arrreduced.pop());
-    self.config.set('attenuationl', arrreduced.pop());
-    self.config.set('attenuationr', arrreduced.pop());
+    arrreduced = (arr.toString().split(',')).pop();
+
   });
   setTimeout(function () {
+    self.logger.info('arrreduced  ' + arrreduced);
+    self.config.set('attenuationl', arrreduced);
+    self.config.set('attenuationr', arrreduced);
+    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced + ' dB');
+    self.createCamilladspfile();
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
-    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced.pop() + ' dB');
-    self.createCamilladspfile();
+
     journalctl.stop();
-  }, 550);
+  }, 5510);
 };
 
 //here we determine filter type and apply skip value if needed
@@ -918,9 +910,9 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
     let enableclipdetect = self.config.get('enableclipdetect');
 
     let val = self.dfiltertype(obj);
-   // let valfound = val.valfound
-   // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
-      if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+    // let valfound = val.valfound
+    // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+    if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
       setTimeout(function () {
         var responseData = {
