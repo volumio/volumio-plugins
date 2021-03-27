@@ -71,6 +71,10 @@
         "type": "string",
         "value": "None"
     },
+    "leftfilterlabel": {
+        "type": "string",
+        "value": "None"
+    },
     "sndleftfilter": {
         "type": "string",
         "value": "None"

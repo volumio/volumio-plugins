@@ -36,8 +36,7 @@ mixers:
         sources:
           - channel: 1
             gain: ${gain}
-            inverted: false
-
+            inverted: false          
 pipeline:
   - type: Mixer
     name: stereo

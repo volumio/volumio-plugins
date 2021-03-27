@@ -1,4 +1,4 @@
-March 26th 2021
+March 27th 2021
 
 
 ##  For Volumio >3.054
@@ -65,8 +65,9 @@ nearly everythings
 
 
 ## What is not working :
- - clipping detection
+- Does note mute while doing auto clipping detection
 
 ### 4. Last changes
 
+- autoclipping
 - camilladsp config

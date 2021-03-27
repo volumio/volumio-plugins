@@ -641,7 +641,8 @@
       "onSave": {
         "type": "plugin",
         "endpoint": "audio_interface/Dsp4Volumio",
-        "method": "playToolsFile"
+        "method": "playToolsFile",
+        "data": []
       },
       "saveButton": {
         "label": "TRANSLATE.PLAY_SELECTED_FILE",
@@ -668,8 +669,9 @@
           "description": "TRANSLATE.DESC_REMOVE_TOOLS",
           "onClick": {
             "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "removetools"
+            "endpoint": "audio_interface/Dsp4Volumio",
+            "method": "removetools",
+            "data": []
           }
         },
         {
@@ -679,8 +681,9 @@
           "description": "TRANSLATE.DESC_INSTALL_TOOLS",
           "onClick": {
             "type": "plugin",
-            "endpoint": "audio_interface/brutefir",
-            "method": "installtools"
+            "endpoint": "audio_interface/Dsp4Volumio",
+            "method": "installtools",
+            "data": []
           }
         }
       ]

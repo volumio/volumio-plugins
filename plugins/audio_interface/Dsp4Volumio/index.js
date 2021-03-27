@@ -52,6 +52,7 @@ Dsp4Volumio.prototype.onStart = function () {
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
   self.hwinfo();
+  socket.emit('getState', '');
   setTimeout(function () {
     self.createCamilladspfile()
 
@@ -64,6 +65,7 @@ Dsp4Volumio.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
   self.logger.info("Stopping Dsp4Volumio plugin");
+  socket.off();
   defer.resolve();
   return libQ.resolve();
 };
@@ -568,7 +570,7 @@ Dsp4Volumio.prototype.sendCommandToCamilla = function () {
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
 Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
-  socket.emit('mute', '')
+  socket.emit('stop');
   let messageDisplayed;
   let arrreduced;
   self.config.set('attenuationl', 0);
@@ -583,7 +585,7 @@ Dsp4Volumio.prototype.testclipping = function () {
       setTimeout(function () {
         execSync(cmd);
       }, 50);
-     // socket.emit('unmute', '')
+      // socket.emit('unmute', '')
     } catch (e) {
       console.log(cmd);
     };
@@ -611,8 +613,9 @@ Dsp4Volumio.prototype.testclipping = function () {
       if (a < b) return -1;
       return 0;
     });
-    arrreduced = (arr.toString().split(',')).pop();
-
+    let offset = 3;
+    let arrreducedr = ((arr.toString().split(',')).pop());
+    arrreduced = +arrreducedr + offset;
   });
   setTimeout(function () {
     self.logger.info('arrreduced  ' + arrreduced);
@@ -633,15 +636,16 @@ Dsp4Volumio.prototype.testclipping = function () {
 Dsp4Volumio.prototype.dfiltertype = function (data) {
   const self = this;
   let skipvalue = '';
-  let filtername = self.config.get('leftfilter');
+  let filtername = self.config.get('leftfilterlabel');
   var auto_filter_format;
-  let filext = self.config.get('leftfilter').split('.').pop().toString();
+  let filext = self.config.get('leftfilterlabel').split('.').pop().toString();
   var wavetype;
   let filelength;
 
   if (filext == 'pcm') {
     try {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 4);
+      self.logger.info('filelength '+filelength)
     } catch (err) {
       self.logger.info('An error occurs while reading file');
     }
@@ -728,37 +732,38 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
   self.logger.info('--------->filter size ' + filelength);
   self.logger.info('--------->Skip value for wav :' + skipvalue);
 
-  /*
-    var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
-    var check = Number(filelength);
-    var valfound = false;
-    if (arr.indexOf(check) > -1) {
-      valfound = true;
-    }
-    if (valfound) {
-      self.logger.info('File size found in array!');
-    }
-    if (valfound === false) {
-      let modalData = {
-        title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
-        message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
-        size: 'lg',
-        buttons: [{
-          name: 'Close',
-          class: 'btn btn-warning'
-        },]
-      };
-      self.commandRouter.broadcastMessage("openModal", modalData)
-      self.logger.error('File size not found in array!');
+
+  var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
+  var check = Number(filelength);
+  var valfound = false;
+  if (arr.indexOf(check) > -1) {
+    valfound = true;
+  }
+  if (valfound) {
+    self.logger.info('File size found in array!');
+  }
+  if (valfound === false) {
+ /*   let modalData = {
+      title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
+      message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
+      size: 'lg',
+      buttons: [{
+        name: 'Close',
+        class: 'btn btn-warning'
+      },]
     };
-    */
+    self.commandRouter.broadcastMessage("openModal", modalData)
+   */
+    self.logger.error('File size not found in array!');
+  };
+
   var obj = {
     skipvalue: skipvalue,
-    //valfound: valfound
+    valfound: valfound
   };
   return obj;
 
-  // return (skipvalue,valfound);
+  //return (skipvalue,valfound);
 };
 
 //---------------------------------------------------------------
@@ -849,7 +854,7 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
 };
 
 
-//here we save the brutefir config.json
+//here we save the config.json
 Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   const self = this;
   let defer = libQ.defer();
@@ -857,7 +862,8 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   let attenuationr = (data['attenuationr'].value);
   let leftfilter = (data['leftfilter'].value);
   let rightfilter = (data['rightfilter'].value);
-  self.logger.error('Sxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + leftfilter)
+  self.logger.error('Sxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + leftfilter);
+  self.config.set('leftfilterlabel',leftfilter);
 
   if ((leftfilter == 'None') && (rightfilter == 'None')) {
     attenuationl = attenuationr = 0
@@ -910,9 +916,9 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
     let enableclipdetect = self.config.get('enableclipdetect');
 
     let val = self.dfiltertype(obj);
-    // let valfound = val.valfound
-    // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
-    if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+    let valfound = val.valfound
+   // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+       if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
       setTimeout(function () {
         var responseData = {
@@ -938,7 +944,10 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
       }, 500);
 
     };
+    setTimeout(function () {
+
     self.areSampleswitch();
+  }, 1500);
 
   };
 
@@ -1414,7 +1423,7 @@ Dsp4Volumio.prototype.areSampleswitch = function () {
   let rightResultExist = isFileExist(rightFilter1, '96000');
   let toSaveRightResult = rightResultExist[1];
 
-  // if both condition are true, swapping possible
+  // if conditions are true, switching possible
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
     console.log('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     self.config.set('leftfilter', toSaveLeftResult);
@@ -1777,7 +1786,7 @@ Dsp4Volumio.prototype.installtools = function (data) {
 };
 
 //here we remove tools
-Dsp4Volumio.removetools = function (data) {
+Dsp4Volumio.prototype.removetools = function (data) {
   const self = this;
   self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
   return new Promise(function (resolve, reject) {
