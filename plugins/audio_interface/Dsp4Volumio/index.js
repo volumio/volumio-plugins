@@ -571,6 +571,8 @@ Dsp4Volumio.prototype.sendCommandToCamilla = function () {
 Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
   socket.emit('stop');
+  socket.emit('mute', '');
+
   let messageDisplayed;
   let arrreduced;
   self.config.set('attenuationl', 0);
@@ -585,7 +587,7 @@ Dsp4Volumio.prototype.testclipping = function () {
       setTimeout(function () {
         execSync(cmd);
       }, 50);
-      // socket.emit('unmute', '')
+      socket.emit('unmute', '')
     } catch (e) {
       console.log(cmd);
     };
@@ -645,7 +647,7 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
   if (filext == 'pcm') {
     try {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 4);
-      self.logger.info('filelength '+filelength)
+      self.logger.info('filelength ' + filelength)
     } catch (err) {
       self.logger.info('An error occurs while reading file');
     }
@@ -743,17 +745,17 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
     self.logger.info('File size found in array!');
   }
   if (valfound === false) {
- /*   let modalData = {
-      title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
-      message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
-      size: 'lg',
-      buttons: [{
-        name: 'Close',
-        class: 'btn btn-warning'
-      },]
-    };
-    self.commandRouter.broadcastMessage("openModal", modalData)
-   */
+    /*   let modalData = {
+         title: self.commandRouter.getI18nString('FILTER_LENGTH_TITLE'),
+         message: self.commandRouter.getI18nString('FILTER_LENGTH_MESS'),
+         size: 'lg',
+         buttons: [{
+           name: 'Close',
+           class: 'btn btn-warning'
+         },]
+       };
+       self.commandRouter.broadcastMessage("openModal", modalData)
+      */
     self.logger.error('File size not found in array!');
   };
 
@@ -863,7 +865,7 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
   let leftfilter = (data['leftfilter'].value);
   let rightfilter = (data['rightfilter'].value);
   self.logger.error('Sxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + leftfilter);
-  self.config.set('leftfilterlabel',leftfilter);
+  self.config.set('leftfilterlabel', leftfilter);
 
   if ((leftfilter == 'None') && (rightfilter == 'None')) {
     attenuationl = attenuationr = 0
@@ -917,8 +919,8 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
 
     let val = self.dfiltertype(obj);
     let valfound = val.valfound
-   // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
-       if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+    // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
+    if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
       setTimeout(function () {
         var responseData = {
@@ -946,8 +948,8 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
     };
     setTimeout(function () {
 
-    self.areSampleswitch();
-  }, 1500);
+      self.areSampleswitch();
+    }, 1500);
 
   };
 

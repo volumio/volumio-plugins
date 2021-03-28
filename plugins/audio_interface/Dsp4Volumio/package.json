@@ -1,6 +1,6 @@
 {
   "name": "Dsp4Volumio",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "DSP for Volumio2",
   "main": "index.js",
   "scripts": {
@@ -18,8 +18,8 @@
     "child_process": "",
     "fs-extra": "^4.0.2",
     "kew": "",
-    "socket.io": "",
-    "socket.io-client": "",
+    "socket.io": "1.4.8",
+    "socket.io-client": "^1.7.4",
     "v-conf": "",
     "journalctl": "",
     "ws": "^7.4.3"
