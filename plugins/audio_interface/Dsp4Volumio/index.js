@@ -570,10 +570,11 @@ Dsp4Volumio.prototype.sendCommandToCamilla = function () {
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
 Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
-  socket.emit('stop');
-  socket.emit('mute', '');
-
+   socket.emit('mute', '');
+  self.commandRouter.closeModals();
   let messageDisplayed;
+  socket.emit('stop');
+
   let arrreduced;
   self.config.set('attenuationl', 0);
   self.config.set('attenuationr', 0);
@@ -931,14 +932,16 @@ Dsp4Volumio.prototype.saveDsp4VolumioAccount2 = function (data, obj) {
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
               class: 'btn btn-cancel',
-              emit: '',
+              emit: 'closeModals',
               payload: ''
             },
             {
               name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
               class: 'btn btn-info',
               emit: 'callMethod',
-              payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'testclipping', 'data': '' }
+              payload: { 'endpoint': 'audio_interface/Dsp4Volumio', 'method': 'testclipping', 'data': '' },
+              //     emit: 'closeModals'
+
             }
           ]
         }

@@ -3,7 +3,7 @@ devices:
   samplerate: ${smpl_rate}
   chunksize: 8192
   silence_threshold: -60
-  silence_timeout: 3.0
+  silence_timeout: 1.0
   queuelimit: 1
   adjust_period: 8192
   target_level: 10
