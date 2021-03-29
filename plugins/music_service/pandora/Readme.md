@@ -163,6 +163,10 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
   * Some of the redundant logging wrappers, utility functions and constants were moved to `helpers.js` and `common.js`.
   * `this` context is handled more cleanly in the dependent modules.  `that` is now `self` and `that.self.<ControllerPandoraFunction>` (which was defintely confusing) is now `self.context.<ControllerPandoraFunction>`.
 
+### Version 2.8.1
+   #### Fixes
+   * `PandoraHandler::setMQTTEnabled` fix: Error in variable name caused `PandoraHandler::fillStationData` to skip publishing `self.stationData` to MQTT broker.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>

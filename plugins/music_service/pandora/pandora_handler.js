@@ -114,7 +114,7 @@ PandoraHandler.prototype.setMaxStationTracks = function (maxTracks) {
 
 PandoraHandler.prototype.setMQTTEnabled = function (mqttEnabled) {
     const self = this;
-    self.mqttHandler = mqttEnabled;
+    self.mqttEnabled = mqttEnabled;
 };
 
 PandoraHandler.prototype.getSongMaxDiff = function () {
