@@ -548,8 +548,11 @@ ControllerPandora.prototype.setCurrStationInfo = function (stationToken) {
     };
 
     if (self.mqttEnabled) {
+        const stationNameObj = {
+            stationName: self.currStation.name
+        };
         return self.mqttHandler.publishData(
-            self.currStation.name,
+            stationNameObj,
             'stationName'
         );
     }
