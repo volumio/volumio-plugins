@@ -570,25 +570,31 @@ Dsp4Volumio.prototype.sendCommandToCamilla = function () {
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
 Dsp4Volumio.prototype.testclipping = function () {
   const self = this;
-   socket.emit('mute', '');
+  //socket.emit('mute', '');
   self.commandRouter.closeModals();
   let messageDisplayed;
   socket.emit('stop');
-
   let arrreduced;
-  self.config.set('attenuationl', 0);
-  self.config.set('attenuationr', 0);
-  self.createCamilladspfile();
+
+  setTimeout(function () {
+    self.config.set('attenuationl', 0);
+    self.config.set('attenuationr', 0);
+    self.config.set('testclipping', true)
+    self.createCamilladspfile();
+  }, 300);
+
   setTimeout(function () {
 
     let track = '/data/plugins/audio_interface/Dsp4Volumio/testclipping/testclipping.wav';
     try {
       let cmd = ('/usr/bin/aplay --device=volumioDsp ' + track);
-      exec('/usr/bin/killall aplay');
+      self.commandRouter.pushToastMessage('info', 'Clipping detection in progress...');
+
+      // exec('/usr/bin/killall aplay');
       setTimeout(function () {
         execSync(cmd);
       }, 50);
-      socket.emit('unmute', '')
+      // socket.emit('unmute', '')
     } catch (e) {
       console.log(cmd);
     };
@@ -624,6 +630,8 @@ Dsp4Volumio.prototype.testclipping = function () {
     self.logger.info('arrreduced  ' + arrreduced);
     self.config.set('attenuationl', arrreduced);
     self.config.set('attenuationr', arrreduced);
+    self.config.set('testclipping', false)
+
     self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced + ' dB');
     self.createCamilladspfile();
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
@@ -788,6 +796,7 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
       var filter1 = self.config.get('leftfilter');
       var filter2 = self.config.get('rightfilter');
       var attenuation = self.config.get('attenuationl');
+      var testclipping = self.config.get('testclipping')
       var smpl_rate = self.config.get('smpl_rate')
       var filter_format = self.config.get('filter_format')
       let val = self.dfiltertype(obj);
@@ -803,8 +812,23 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
         pipeline1 = pipeline2 = 'nulleq';
         result += composedeq
 
-
       } else {
+        if (testclipping) {
+          var composeout = ''
+          composeout += '  playback:' + '\n';
+          composeout += '    type: File' + '\n';
+          composeout += '    channels: 2' + '\n';
+          composeout += '    filename: "/dev/null"' + '\n';
+          composeout += '    format: S24LE3' + '\n';
+        } else {
+          var composeout = ''
+          composeout += '  playback:' + '\n';
+          composeout += '    type: Alsa' + '\n';
+          composeout += '    channels: 2' + '\n';
+          composeout += '    device: "fromDsp1"' + '\n';
+          composeout += '    format: S24LE3' + '\n';
+        }
+
         for (let a = 1; a <= (channels); a++) {
           filterr = eval('filter' + a)
           //  self.logger.info('aaaaaaaaaaaaaaaaaaaa ' + filterr + '  ' + a)
@@ -833,6 +857,7 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
 
 
       let conf = data.replace("${resulteq}", result)
+        .replace("${composeout}", (composeout))
         .replace("${smpl_rate}", (smpl_rate))
         .replace("${gain}", ('-' + attenuation))
         .replace("${gain}", ('-' + attenuation))

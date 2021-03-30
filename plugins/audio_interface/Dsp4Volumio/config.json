@@ -15,6 +15,10 @@
         "type": "boolean",
         "value": true
     },
+    "composetout": {
+        "type": "boolean",
+        "value": false
+    },
     "askForReboot": {
         "type": "boolean",
         "value": true

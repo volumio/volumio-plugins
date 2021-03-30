@@ -1,0 +1,12 @@
+{
+  "TITLE":"Volumio smart power settings",
+  "SUBTITLE":"Setup your GPIO button actions",
+  "SUBTITLEWARN":"WARNING !!! Setting a wrong GPIO pin may damage your device ! Set carefully ! We disclaim any responsabilities in case of problem",
+  "SAVE":"Save",
+  "ENABLESHUTDOWN":"Enable shutdown",
+  "DESCENABLESHUTDOWN":"Shutdown the device when this GPIO pin is activated",
+  "ENABLEBOOTOK":"Enable BootOK signal",
+  "DESCENABLEBOOTOK":"Output this pin when device is ready",
+  "ENABLESOFTSD":"Enable Soft reboot",
+  "DESCENABLEDSOFTSD":"Reboot the device when this GPIO pin is activated"
+}

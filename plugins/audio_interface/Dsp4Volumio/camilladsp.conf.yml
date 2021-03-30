@@ -13,11 +13,7 @@ devices:
     format: S24LE3
     filename: "/dev/stdin"
     extra_samples: 4096
-  playback:
-    type: Alsa
-    channels: 2
-    device: "fromDsp1"
-    format: S24LE3
+${composeout}
 
 filters: 
 ${resulteq}

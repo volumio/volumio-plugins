@@ -1,4 +1,4 @@
-March 28th 2021
+March 30th 2021
 
 
 ##  For Volumio >3.054
@@ -68,6 +68,10 @@ nearly everythings
 - Does note mute while doing auto clipping detection
 
 ### 4. Last changes
+
+March 30th 2021
+
+- clipping detection with output /dev/null
 
 March 28th
 

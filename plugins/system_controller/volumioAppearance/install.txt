@@ -1,0 +1,17 @@
+1. DUPLICATE original css (not rename)
+	/volumio/http/www3/styles/app-313de2febe.css
+to	/volumio/http/www3/styles/app-313de2febe_0.css
+
+2. copy modified css to (have you only one file then only _1)
+	/volumio/http/www3/styles/app-313de2febe_1.css
+	/volumio/http/www3/styles/app-313de2febe_2.css
+
+3. copy index.js, config.json, UIConfig.json to (backup this files before)
+	/volumio/app/plugins/miscellanea/appearance
+
+4. rename or delete! (then your background and language is set to default)
+	/data/configuration/miscellanea/appearance/config.json
+
+5. restart
+
+6. set your background and language new 
