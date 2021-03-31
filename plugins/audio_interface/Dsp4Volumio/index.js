@@ -671,7 +671,7 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
       self.logger.info('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
-    auto_filter_format = 'text';
+    auto_filter_format = 'TEXT';
     self.logger.info('Filter length' + filelength);
 
   }
@@ -686,7 +686,7 @@ Dsp4Volumio.prototype.dfiltertype = function (data) {
   }
   else if (filext == 'None') {
 
-    auto_filter_format = 'text';
+    auto_filter_format = 'TEXT';
   }
   else if (filext == 'wav') {
     let SampleFormat;
