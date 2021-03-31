@@ -575,7 +575,7 @@ Dsp4Volumio.prototype.testclipping = function () {
   let messageDisplayed;
   socket.emit('stop');
   let arrreduced;
-
+  let filelength = self.config.get('filter_size');
   setTimeout(function () {
     self.config.set('attenuationl', 0);
     self.config.set('attenuationr', 0);
@@ -631,8 +631,8 @@ Dsp4Volumio.prototype.testclipping = function () {
     self.config.set('attenuationl', arrreduced);
     self.config.set('attenuationr', arrreduced);
     self.config.set('testclipping', false)
-
-    self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced + ' dB');
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('FILTER_LENGTH') + filelength, self.commandRouter.getI18nString('AUTO_ATTENUATION_SET') + messageDisplayed + ' dB');
+ //   self.commandRouter.pushToastMessage('info', 'Attenuation set to: ' + arrreduced + ' dB');
     self.createCamilladspfile();
     var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
     respconfig.then(function (config) {
