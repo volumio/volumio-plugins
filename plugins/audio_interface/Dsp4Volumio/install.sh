@@ -50,8 +50,8 @@ sudo chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
 sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
-sudo cp $LIB/c/hw_params_arm $opath/hw_params
-sudo chmod +x $opath/hw_params
+sudo cp $LIB/c/hw_params_arm $LIB/hw_params
+sudo chmod +x $LIB/hw_params
 elif [ $cpu = "x86_64" ]
 then
 cd $LIB
@@ -63,8 +63,8 @@ sudo chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
 sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
-sudo cp $LIB/c/hw_params_x86 $opath/hw_params
-sudo chmod +x $opath/hw_params
+sudo cp $LIB/c/hw_params_x86 $LIB/hw_params
+sudo chmod +x $LIB/hw_params
 else
     echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
