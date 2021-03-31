@@ -1007,9 +1007,10 @@ ControllerPandora.prototype.next = function () {
     return self.goPreviousNext(fnName);
 };
 
-ControllerPandora.prototype.clearAndPlayStation = function (stationName) {
+ControllerPandora.prototype.clearAndPlayStation = function (stationJSON) {
     var self = this;
     const fnName = 'clearAndPlayStation';
+    const stationName = JSON.parse(stationJSON).stationName;
 
     self.pUtil.announceFn(fnName);
 
