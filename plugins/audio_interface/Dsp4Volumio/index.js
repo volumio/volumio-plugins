@@ -52,11 +52,11 @@ Dsp4Volumio.prototype.onStart = function () {
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
   self.hwinfo();
-  socket.emit('getState', '');
+  //socket.emit('getState', '');
   setTimeout(function () {
     self.createCamilladspfile()
 
-  }, 2000);
+  }, 4000);
   defer.resolve();
   return defer.promise;
 };
@@ -811,7 +811,12 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
         composedeq += '    type: Conv' + '\n';
         pipeline1 = pipeline2 = 'nulleq';
         result += composedeq
-
+        var composeout = ''
+        composeout += '  playback:' + '\n';
+        composeout += '    type: Alsa' + '\n';
+        composeout += '    channels: 2' + '\n';
+        composeout += '    device: "fromDsp1"' + '\n';
+        composeout += '    format: S24LE3' + '\n';
       } else {
         if (testclipping) {
           var composeout = ''
@@ -820,7 +825,9 @@ Dsp4Volumio.prototype.createCamilladspfile = function (obj) {
           composeout += '    channels: 2' + '\n';
           composeout += '    filename: "/dev/null"' + '\n';
           composeout += '    format: S24LE3' + '\n';
-        } else {
+          self.logger.info('aaaaaaaaaaaaaaaaaaaa ')
+
+        } else if (testclipping == false) {
           var composeout = ''
           composeout += '  playback:' + '\n';
           composeout += '    type: Alsa' + '\n';

@@ -1,4 +1,4 @@
-March 30th 2021
+March 31th 2021
 
 
 ##  For Volumio >3.054
@@ -65,9 +65,12 @@ nearly everythings
 
 
 ## What is not working :
-- Does note mute while doing auto clipping detection
 
 ### 4. Last changes
+
+March 31th 2021
+
+- correction undefined output at startup
 
 March 30th 2021
 

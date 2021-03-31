@@ -7,13 +7,17 @@
         "type": "boolean",
         "value": true
     },
+    "testclipping": {
+        "type": "boolean",
+        "value": false
+    },
     "autoswitchsamplerate": {
         "type": "boolean",
         "value": false
     },
     "effect": {
         "type": "boolean",
-        "value": true
+        "value": false
     },
     "composetout": {
         "type": "boolean",
