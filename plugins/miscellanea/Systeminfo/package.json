@@ -1,6 +1,6 @@
 {
 	"name": "Systeminfo",
-	"version": "0.1.4",
+	"version": "0.1.6",
 	"description": "Information about your system",
 	"main": "index.js",
 	"scripts": {
@@ -10,12 +10,13 @@
 	"license": "",
 	"volumio_info": {
 		"prettyName": "System information",
-		"plugin_type": "miscellanea"
+		"plugin_type": "miscellanea",
+		"icon": "fa-info-circle"
 	},
 	"dependencies": {
 		"kew": "^0.7.0",
 		"v-conf": "^0.10.0",
 		"fs-extra": "^4.0.2",
-		"systeminformation": ""
+		"systeminformation": "5.6.0"
 	}
 }

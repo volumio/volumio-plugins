@@ -1,4 +1,5 @@
-2020 December 17th
+
+2021 April 1st
 
 ###  About the plugin
 
@@ -23,9 +24,18 @@ cd ..
 rm -Rf Systeminfo*
 ```
 
-December 17th 2020
+April 1st 2021
 
-- close all Modals
+- new node systeminformation
+- correction for CPU freq
+
+October 21st 2020
+
+- close modals on all screen
+
+March 22th 2020
+
+- code cleaning
 
 January 17th 2020
 

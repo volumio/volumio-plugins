@@ -326,7 +326,7 @@ console.log('output'+ cout + 'cmixt' + cmixt);
 //messages generation
       var messages1 = "<br><li>Board info</br></li><ul><li>Manufacturer: " + data.system.manufacturer + "</li><li>Model: " + data.system.model + "</li><li>Version: " + data.system.version + "</li><li>Firmware Version: " + firmware + "</li></ul>";
 
-      var messages2 = "<br><li>CPU info</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Mhz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgload*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
+      var messages2 = "<br><li>CPU info</br></li><ul><li>Brand: " + data.cpu.brand + "</li><li>Speed: " + data.cpu.speed + "Ghz</li><li>Number of cores: " + data.cpu.cores + "</li><li>Physical cores: " + data.cpu.physicalCores + "</li><li>Average load: " + (data.currentLoad.avgLoad*100).toFixed(0) + "%</li><li>Temperature: " + roundtemp + "°C</li></ul>";
 
       var messages3 = "<br><li>Memory info</br></li><ul><li>Memory: " + memtotal + "</li><li>Free: " + memfree + "</li><li>Used: " + memused + "</li></ul>";
 
