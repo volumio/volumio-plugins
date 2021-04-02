@@ -28,6 +28,7 @@ April 1st 2021
 
 - new node systeminformation
 - correction for CPU freq
+- storage display in several raws
 
 October 21st 2020
 
