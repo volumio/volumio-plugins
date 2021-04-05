@@ -2,7 +2,7 @@
 
 echo "Installing PyUSB"
 sudo apt update
-sudo apt -y install python-pip --no-install-recommends
+sudo apt -y install python3-pip --no-install-recommends
 sudo pip3 install ambx
 
 echo "Installing color change executable"
