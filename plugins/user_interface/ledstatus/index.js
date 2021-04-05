@@ -71,27 +71,6 @@ ledstatus.prototype.onStart = function() {
     return defer.promise;
 };
 
-
-ledstatus.prototype.shellcmd = function (command, errorMessage, okMessage) {
-    var self = this;
-    var defer=libQ.defer();
-    var errorMessage = errorMessage;
-    var okMessage = okMessage;
-    
-    exec(command, function (error, stdout, stderr) {
-        if (error == null && okMessage != null) {
-            self.commandRouter.pushToastMessage('success',"Led status plugin", okMessage);
-            defer.resolve();
-	}
-	else {
-            self.commandRouter.pushToastMessage('error',"Led status plugin", stderr/*errorMessage*/);
-            defer.reject(new Error());
-	}	
-    });
-    
-};
-
-
 ledstatus.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
