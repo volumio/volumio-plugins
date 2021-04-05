@@ -66,5 +66,9 @@
   "showPointer": {
     "type": "boolean",
     "value": false
+  },
+  "scale": {
+    "type": "number",
+    "value": 100
   }
 }
