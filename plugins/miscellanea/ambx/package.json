@@ -1,6 +1,6 @@
 {
 	"name": "ambx",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A rudimentary controller for the LEDs of the Philips amBX sound system.",
 	"main": "index.js",
 	"author": "Jan Siegmund",
