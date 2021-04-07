@@ -8,7 +8,7 @@
                 "element": "section",
                 "label": "TRANSLATE.REMOTEPI.REMOTEPI_CONF",
                 "description": "TRANSLATE.REMOTEPI.REMOTEPI_DESC",
-                "icon": "fa-plug",
+                "icon": "fa-cogs",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/remotepi", "method":"saveConf"},
                 "saveButton": {
                               "label": "TRANSLATE.REMOTEPI.SAVE",
