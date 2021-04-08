@@ -115,6 +115,15 @@ PandoraHandler.prototype.setMaxStationTracks = function (maxTracks) {
 PandoraHandler.prototype.setMQTTEnabled = function (mqttEnabled) {
     const self = this;
     self.mqttEnabled = mqttEnabled;
+
+    if (self.mqttEnabled) {
+        return self.context.stationDataHandler.init();
+    }
+    else if (typeof(self.context.stationDataHandler) !== 'undefined'){
+        return self.context.stationDataHandler.stop();
+    }
+    
+    return libQ.resolve();
 };
 
 PandoraHandler.prototype.getSongMaxDiff = function () {
@@ -249,16 +258,22 @@ PandoraHandler.prototype.fillStationData = function () {
         })
         .then(() => {
             if (self.mqttEnabled) {
-                let stationDataNoRadio = Object.assign({}, self.stationData);
-                for (const key of Object.keys(stationDataNoRadio)) {
-                    const newStationName = stationDataNoRadio[key].name.replace(' Radio', '');
-                    stationDataNoRadio[key].name = newStationName; 
-                }
-                return self.context.mqttHandler.publishData(stationDataNoRadio, 'stationData');
-            } else {
-                return libQ.resolve();
+                return self.publishStationData();
             }
         });
+};
+
+PandoraHandler.prototype.publishStationData = function () {
+    const self = this;
+    const fnName = 'publisStationData';
+    self.pUtil.announceFn(fnName);
+
+    let stationDataNoRadio = Object.assign({}, self.stationData);
+    for (const key of Object.keys(stationDataNoRadio)) {
+        const newStationName = stationDataNoRadio[key].name.replace(' Radio', '');
+        stationDataNoRadio[key].name = newStationName; 
+    }
+    return self.context.mqttHandler.publishData(stationDataNoRadio, 'stationData');
 };
 
 PandoraHandler.prototype.fetchTracks = function () {
@@ -368,8 +383,8 @@ PandoraHandler.prototype.fetchTracks = function () {
             }
             else { // station doesn't exist!
                 // pick a station near the old one in age
-                const nextStationToken = Object.keys(self.stationData)
-                    [Math.min(self.context.currStation.id, self.stationData.length)];
+                const nextStationIndex = Math.min(self.context.currStation.id, self.stationData.length)
+                const nextStationToken = Object.keys(self.stationData)[nextStationIndex];
 
                 self.commandRouter.pushToastMessage('warning', 'Pandora', 'Station ' +
                     self.context.currStation.name + ' no longer exists!');

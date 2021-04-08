@@ -167,6 +167,11 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
    #### Fixes
    * `PandoraHandler::setMQTTEnabled` fix: Error in variable name caused `PandoraHandler::fillStationData` to skip publishing `self.stationData` to MQTT broker.
 
+### Version 2.9.0
+   ### Changes
+   * `PandoraHandler::setMQTTEnabled` now starts stationDataHandler timer to periodically publish station data as a JSON to MQTT if flag is enabled in options.
+   * `setCurrStationInfo` now publishes `stationName` as a JSON.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>

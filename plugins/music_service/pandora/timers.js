@@ -194,6 +194,26 @@ class PreventAuthTimeout extends Timer {
     }
 }
 
+class StationDataPublisher extends Timer {
+    constructor(context) {
+        super(context);
+
+        this.interval = 60000; // 1 minute
+        this.className = 'StationDataPublisher';
+    }
+
+    fn() {
+        const self = this;
+
+        self.pUtil.announceFn('fn');
+
+        return self.context.pandoraHandler.publishStationData()
+            .fail(err => self.pUtil.generalReject('publishStationData', err));
+    }
+}
+
+
 module.exports.ExpireOldTracks = ExpireOldTracks;
 module.exports.StreamLifeChecker = StreamLifeChecker;
 module.exports.PreventAuthTimeout = PreventAuthTimeout;
+module.exports.StationDataPublisher = StationDataPublisher;

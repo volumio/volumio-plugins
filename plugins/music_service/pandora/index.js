@@ -6,7 +6,7 @@ var libQ = require('kew');
 var dnsSync = require('dns-sync');
 const { serviceName, uriParts, uriPrefix, uriStaRE } = require('./common');
 const { PUtil } = require('./helpers');
-const { ExpireOldTracks, PreventAuthTimeout, StreamLifeChecker } = require('./timers');
+const { ExpireOldTracks, PreventAuthTimeout, StreamLifeChecker, StationDataPublisher } = require('./timers');
 const { PandoraHandler } = require('./pandora_handler');
 var mqtt_handler = require('./mqtt_handler');
 
@@ -78,6 +78,7 @@ ControllerPandora.prototype.onStop = function () {
     if (typeof(self.expireHandler) !== 'undefined') self.expireHandler.stop();
     if (typeof(self.streamLifeChecker) !== 'undefined') self.streamLifeChecker.stop();
     if (typeof(self.preventAuthTimeout)  !== 'undefined') self.preventAuthTimeout.stop();
+    if (typeof(self.stationDataHandler) !== 'undefined') self.stationDataHandler.stop();
     if (typeof(self.mqttHandler) !== 'undefined') self.mqttHandler.disconnect();
 
     return self.flushPandora()
@@ -120,10 +121,11 @@ ControllerPandora.prototype.initialSetup = function (email, password, isPandoraO
     self.pUtil.announceFn('initialSetup');
 
     self.pandoraHandler = new PandoraHandler(self);
+    self.stationDataHandler = new StationDataPublisher(self);
 
     return self.pandoraHandler.init()
+        .then(() => self.pandoraHandler.setMQTTEnabled(self.mqttEnabled))
         .then(() => {
-            self.pandoraHandler.setMQTTEnabled(self.mqttEnabled);
             const maxStationTracks = self.config.get('maxStationTracks', '16');
             self.pandoraHandler.setMaxStationTracks(maxStationTracks);
             const bandFilter = self.config.get('bandFilter', '');
@@ -136,6 +138,7 @@ ControllerPandora.prototype.initialSetup = function (email, password, isPandoraO
             self.preventAuthTimeout = new PreventAuthTimeout(self);
             return self.preventAuthTimeout.init();
         })
+
         .then(() => {
             self.expireHandler = new ExpireOldTracks(self);
             self.streamLifeChecker = new StreamLifeChecker(self);
