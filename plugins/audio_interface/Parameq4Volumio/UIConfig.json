@@ -1,6 +1,6 @@
 {
   "page": {
-    "label": "Parametric Eq"
+    "label": "Parametric Eq with CamillaDsp"
   },
   "sections": [
     {
@@ -650,6 +650,36 @@
             "method": "exporteq",
             "data": []
           }
+        }
+      ]
+    },
+    {
+      "id": "advanced2",
+      "element": "section",
+      "label": "Import EQ from AutoEQ",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "importeq"
+      },
+      "saveButton": {
+        "label": "Import Eq",
+        "data": [
+          "importeq"
+        ]
+      },
+      "content": [
+        {
+          "id": "importeq",
+          "element": "select",
+          "doc": "Choose your headphone. May take a while before displaying the list",
+          "label": "Choose EQ",
+          "value": {
+            "value": "Choose a preset",
+            "label": "Choose a preset"
+          },
+          "options": []
         }
       ]
     }

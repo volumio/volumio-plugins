@@ -1,4 +1,4 @@
-March 26th 2021
+April 10th 2021
 
 
 ##  For Volumio >= 3.054
@@ -9,6 +9,7 @@ March 26th 2021
 This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://github.com/HEnquist/camilladsp)
 
 ![Alt text](Parameq4Volumio.png?raw=true "Main interface")
+![Alt text](Parameq4VolumioAutoEq.png?raw=true "AutoEq selection")
 
 
 - Up to 14 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch)
@@ -16,6 +17,7 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 - Toggle with/without effect
 - Scope for each band (L, R, L+R)
 - 3 preset
+- More than 2500 headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
 
 
 ## INSTALLATION WARNING
@@ -58,6 +60,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+April 10th 2021
+
+- AutoEq profil for headphones
 
 March 26th 2021
 

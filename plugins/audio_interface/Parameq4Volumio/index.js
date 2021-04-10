@@ -257,10 +257,25 @@ Parameq.prototype.getUIConfig = function () {
       }
       uiconf.sections[2].content[2].value = self.config.get('renpreset');
 
+      value = self.config.get('importeq');
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', value);
 
-      //  self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[2].content[0].options'), value));
+      try {
+        let listf = fs.readFileSync('/data/plugins/audio_interface/Parameq4Volumio/list.json');
+        const listJSON = JSON.parse(listf);
+        var i = 0;
+        for (var i in listJSON) {
+          self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+            value: listJSON[i].link.slice(0, -1),
+            label: listJSON[i].name.replace(' ', '\ ')
+          });
 
-      //}
+        };
+      } catch (err) {
+        self.logger.info('failed to read list.json' + err);
+      }
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -607,7 +622,7 @@ Parameq.prototype.saveparameq = function (data) {
     var eqc = 'eq' + o;
     var typer = (data[typec].value)
     var eqr = (data[eqc]).split(',')
-   // self.logger.info('type in ' + eqc + ' ' + self.config.get(typec) + ' ' + 'values ' + eqr)
+    // self.logger.info('type in ' + eqc + ' ' + self.config.get(typec) + ' ' + 'values ' + eqr)
 
     var veq = Number(eqr[0]);
 
@@ -800,4 +815,64 @@ Parameq.prototype.usethispreset = function (data) {
   }, 300);
   return defer.promise;
 
+};
+
+Parameq.prototype.importeq = function (data) {
+  const self = this;
+  let path = 'https://raw.githubusercontent.com/jaakkopasanen/AutoEq//master/results'
+  let defer = libQ.defer();
+  var name = data['importeq'].label
+  var namepath = data['importeq'].value
+  var destpath = '/tmp';
+  // self.config.set('importeq', namepath)
+  var toDownload = (path + namepath + '/' + name.replace(' ', '%20') + '%20ParametricEQ.txt\'')
+  self.logger.info('wget \'' + toDownload)
+  try {
+    execSync("/usr/bin/wget \'" + toDownload + " -O /tmp/EQfile.txt", {
+      uid: 1000,
+      gid: 1000
+    });
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to load download' + err);
+  }
+  self.convertimportedeq();
+  return defer.promise;
+};
+
+
+Parameq.prototype.convertimportedeq = function (data) {
+  const self = this;
+  let defer = libQ.defer();
+
+  let EQfile;
+  try {
+    EQfile = fs.readFileSync('/tmp/EQfile.txt', "utf8");
+    var o = 1;
+
+    var result = (EQfile.replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ',').split('\n'));
+    for (var o; o < 11; o++) {
+      var eqv = (result[o]);
+      var param = eqv.split(',')
+      var eqs = (param[1] + ',' + param[2] + ',' + param[3])
+      var typec = 'type' + o;
+      var scopec = 'scope' + o;
+      var eqc = 'eq' + o;
+
+      self.config.set(typec, 'Peaking');
+      self.config.set(scopec, 'L+R');
+      self.config.set(eqc, eqs);
+      self.config.set("nbreq", o);
+
+    }
+  } catch (err) {
+    self.logger.info('failed to read EQfile.txt ' + err);
+  }
+  setTimeout(function () {
+    self.refreshUI();
+
+    self.createCamilladspfile()
+  }, 300);
+
+  return defer.promise;
 }

@@ -11,6 +11,10 @@
         "type": "string",
         "value": "choose a name"
       },
+      "importeq": {
+        "type": "string",
+        "value": "choose your headphone"
+      },
     "renpreset1": {
         "type": "string",
         "value": "mypreset1"
