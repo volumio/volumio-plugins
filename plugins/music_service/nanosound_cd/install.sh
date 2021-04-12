@@ -25,17 +25,17 @@ cd /home/volumio
 
 sudo apt-get -y install python-setuptools python-pip python-dev
 sudo -H pip install --upgrade pip==20.3.4
-sudo pip install Flask
+sudo pip install Flask==1.1.2
 sudo pip install flask_table
 sudo pip install flask_cors
 
 echo "Installing memcache"
 sudo apt-get -y install memcached
-sudo pip install pymemcache
+sudo pip install pymemcache==3.4.1
 
 echo "Installing VLC"
 sudo apt-get -y install vlc
-sudo pip install python-vlc
+sudo pip install python-vlc==3.0.11115
 
 echo "Installing Audio Libraries"
 sudo apt-get -y install libasound2-plugins
