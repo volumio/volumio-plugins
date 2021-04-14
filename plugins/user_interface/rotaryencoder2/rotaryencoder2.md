@@ -130,14 +130,10 @@ _Oscilloscope trace of one channel of an ALPS rotary encoder. You can see the bo
 
 To filter the high frequency signals (the spikes) out, you can use a simple extension of your circuit with two resistors (R1 and R2) and a capacitor (C1).
 I use two resistors of R=10kΩ and a capacitor of C=100nF. The timeconstant for charging is 
-$$
-\tau_{Charge} = R \times C = 2 \times 10 \mathrm{k}\Omega \times 100\mathrm{nF} = 2 \mathrm{ms}
-$$
+<img src="./Images/tau_charge.jpg" width= 500 alt="tau = R x C = 2ms">
 
 and for discharging 
-$$
-\tau_{Discharge} = R \times C = 10\mathrm{k}\Omega \times 100\mathrm{nF} = 1 \mathrm{ms}
-$$
+<img src="./Images/tau_discharge.jpg" width= 500 alt="tau = R x C = 1ms">
 
 respectively (after the timeconstant has passed the charge will be on _1/e_ of its reference level).      
 
