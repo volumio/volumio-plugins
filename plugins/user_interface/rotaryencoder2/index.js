@@ -76,7 +76,7 @@ rotaryencoder2.prototype.onVolumioStart = function()
 	self.events=[].fill(null,0,maxRotaries);
 	self.buttons=[].fill(null,0,maxRotaries);
 	self.pushDownTime=[].fill(0,0,maxRotaries);
-
+	self.status=null;
     return libQ.resolve();
 }
 
@@ -91,6 +91,11 @@ rotaryencoder2.prototype.onStart = function() {
 			activate.push(i);
 		}	
 	}
+	socket.emit('getState');
+	socket.on('pushState',function(data){
+		self.status = data;		
+		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] received Websock Status: ' + JSON.stringify(self.status));
+	})
 	self.activateRotaries(activate)
 	.then(_ => {
 		self.commandRouter.pushToastMessage('success',"Rotary Encoder II",  self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_START_SUCCESS'))
@@ -118,7 +123,7 @@ rotaryencoder2.prototype.onStop = function() {
 			deactivate.push(i);
 		}	
 	}
-
+	socket.off();
 	self.deactivateRotaries(deactivate)
 	.then(_ => {
 		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onStop: Plugin successfully stopped.');				
@@ -126,7 +131,7 @@ rotaryencoder2.prototype.onStop = function() {
 	})
 	.fail(err => {
 		self.commandRouter.pushToastMessage('error',"Rotary Encoder II", "Failed to stop plugin.")
-		self.logger.error('[ROTARYENCODER2] onStop: Failed to stop plugin.')
+		self.logger.error('[ROTARYENCODER2] onStop: Failed to stop plugin.');
 		defer.reject();
 	})
     return defer.promise;
@@ -134,8 +139,14 @@ rotaryencoder2.prototype.onStop = function() {
 
 rotaryencoder2.prototype.onRestart = function() {
     var self = this;
-	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onRestart: doing nothing');
-    // Optional, use if you need it
+    var defer=libQ.defer();
+
+	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onRestart: free resources');
+	this.onStop()
+	.then(defer.resolve())
+	.fail(defer.reject())
+
+	return defer.promise;
 };
 
 
@@ -152,77 +163,33 @@ rotaryencoder2.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-			//Settings for rotary 0
-			uiconf.sections[0].content[0].value = (self.config.get('enabled0')==true)
-			uiconf.sections[0].content[1].value.value = self.config.get('rotaryType0') | 0;
-			uiconf.sections[0].content[1].value.label = rotaryTypes[parseInt(self.config.get('rotaryType0'))|0];
-			uiconf.sections[0].content[2].value = parseInt(self.config.get('pinA0')) | 0;
-			uiconf.sections[0].content[3].value = parseInt(self.config.get('pinB0')) | 0;
-			uiconf.sections[0].content[4].value.value = self.config.get('dialAction0') | 0;
-			uiconf.sections[0].content[4].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+dialActions[parseInt(self.config.get('dialAction0'))|0]);
-			uiconf.sections[0].content[5].value = self.config.get('socketCmdCCW0');
-			uiconf.sections[0].content[6].value = self.config.get('socketDataCCW0');
-			uiconf.sections[0].content[7].value = self.config.get('socketCmdCW0');
-			uiconf.sections[0].content[8].value = self.config.get('socketDataCW0');
-			uiconf.sections[0].content[9].value = parseInt(self.config.get('pinPush0')) | 0;
-			uiconf.sections[0].content[10].value = parseInt(self.config.get('pinPushDebounce0')) | 0;
-			uiconf.sections[0].content[11].value = (self.config.get('pushState0')==true)
-			uiconf.sections[0].content[12].value.value = self.config.get('pushAction0') | 0;
-			uiconf.sections[0].content[12].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('pushAction0'))|0]);
-			uiconf.sections[0].content[13].value = self.config.get('socketCmdPush0');
-			uiconf.sections[0].content[14].value = self.config.get('socketDataPush0');
-			uiconf.sections[0].content[15].value.value = self.config.get('longPushAction0') | 0;
-			uiconf.sections[0].content[15].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('longPushAction0'))|0]);
-			uiconf.sections[0].content[16].value = self.config.get('socketCmdLongPush0');
-			uiconf.sections[0].content[17].value = self.config.get('socketDataLongPush0');
-			//Settings for rotary 1
-			uiconf.sections[1].content[0].value = (self.config.get('enabled1')==true)
-			uiconf.sections[1].content[1].value.value = self.config.get('rotaryType1') | 0;
-			uiconf.sections[1].content[1].value.label = rotaryTypes[parseInt(self.config.get('rotaryType1'))|0];
-			uiconf.sections[1].content[2].value = parseInt(self.config.get('pinA1')) | 0;
-			uiconf.sections[1].content[3].value = parseInt(self.config.get('pinB1')) | 0;
-			uiconf.sections[1].content[4].value.value = self.config.get('dialAction1') | 0;
-			uiconf.sections[1].content[4].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+dialActions[parseInt(self.config.get('dialAction1'))|0]);
-			uiconf.sections[1].content[5].value = self.config.get('socketCmdCCW1');
-			uiconf.sections[1].content[6].value = self.config.get('socketDataCCW1');
-			uiconf.sections[1].content[7].value = self.config.get('socketCmdCW1');
-			uiconf.sections[1].content[8].value = self.config.get('socketDataCW1');
-			uiconf.sections[1].content[9].value = parseInt(self.config.get('pinPush1')) | 0;
-			uiconf.sections[1].content[10].value = parseInt(self.config.get('pinPushDebounce1')) | 0;
-			uiconf.sections[1].content[11].value = (self.config.get('pushState1')==true)
-			uiconf.sections[1].content[12].value.value = self.config.get('pushAction1') | 0;
-			uiconf.sections[1].content[12].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('pushAction1'))|0]);
-			uiconf.sections[1].content[13].value = self.config.get('socketCmdPush1');
-			uiconf.sections[1].content[14].value = self.config.get('socketDataPush1');
-			uiconf.sections[1].content[15].value.value = self.config.get('longPushAction1') | 0;
-			uiconf.sections[1].content[15].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('longPushAction1'))|0]);
-			uiconf.sections[1].content[16].value = self.config.get('socketCmdLongPush1');
-			uiconf.sections[1].content[17].value = self.config.get('socketDataLongPush1');
-			//Settings for rotary 2
-			uiconf.sections[2].content[0].value = (self.config.get('enabled2')==true)
-			uiconf.sections[2].content[1].value.value = self.config.get('rotaryType2') | 0;
-			uiconf.sections[2].content[1].value.label = rotaryTypes[parseInt(self.config.get('rotaryType2'))|0];
-			uiconf.sections[2].content[2].value = parseInt(self.config.get('pinA2')) | 0;
-			uiconf.sections[2].content[3].value = parseInt(self.config.get('pinB2')) | 0;
-			uiconf.sections[2].content[4].value.value = self.config.get('dialAction2') | 0;
-			uiconf.sections[2].content[4].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+dialActions[parseInt(self.config.get('dialAction2'))|0]);
-			uiconf.sections[2].content[5].value = self.config.get('socketCmdCCW2');
-			uiconf.sections[2].content[6].value = self.config.get('socketDataCCW2');
-			uiconf.sections[2].content[7].value = self.config.get('socketCmdCW2');
-			uiconf.sections[2].content[8].value = self.config.get('socketDataCW2');
-			uiconf.sections[2].content[9].value = parseInt(self.config.get('pinPush2')) | 0;
-			uiconf.sections[2].content[10].value = parseInt(self.config.get('pinPushDebounce2')) | 0;
-			uiconf.sections[2].content[11].value = (self.config.get('pushState2')==true)
-			uiconf.sections[2].content[12].value.value = self.config.get('pushAction2') | 0;
-			uiconf.sections[2].content[12].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('pushAction2'))|0]);
-			uiconf.sections[2].content[13].value = self.config.get('socketCmdPush2');
-			uiconf.sections[2].content[14].value = self.config.get('socketDataPush2');
-			uiconf.sections[2].content[15].value.value = self.config.get('longPushAction2') | 0;
-			uiconf.sections[2].content[15].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('longPushAction2'))|0]);
-			uiconf.sections[2].content[16].value = self.config.get('socketCmdLongPush2');
-			uiconf.sections[2].content[17].value = self.config.get('socketDataLongPush2');
+			//Settings for rotaries
+			for (let i = 0; i < maxRotaries; i++) {
+				uiconf.sections[i].content[0].value = (self.config.get('enabled' + i)==true)
+				uiconf.sections[i].content[1].value.value = self.config.get('rotaryType' + i) | 0;
+				uiconf.sections[i].content[1].value.label = rotaryTypes[parseInt(self.config.get('rotaryType' + i))|0];
+				uiconf.sections[i].content[2].value = parseInt(self.config.get('pinA' + i)) | 0;
+				uiconf.sections[i].content[3].value = parseInt(self.config.get('pinB' + i)) | 0;
+				uiconf.sections[i].content[4].value.value = self.config.get('dialAction' + i) | 0;
+				uiconf.sections[i].content[4].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+dialActions[parseInt(self.config.get('dialAction' + i))|0]);
+				uiconf.sections[i].content[5].value = self.config.get('socketCmdCCW' + i);
+				uiconf.sections[i].content[6].value = self.config.get('socketDataCCW' + i);
+				uiconf.sections[i].content[7].value = self.config.get('socketCmdCW' + i);
+				uiconf.sections[i].content[8].value = self.config.get('socketDataCW' + i);
+				uiconf.sections[i].content[9].value = parseInt(self.config.get('pinPush' + i)) | 0;
+				uiconf.sections[i].content[10].value = parseInt(self.config.get('pinPushDebounce' + i)) | 0;
+				uiconf.sections[i].content[11].value = (self.config.get('pushState' + i)==true)
+				uiconf.sections[i].content[12].value.value = self.config.get('pushAction' + i) | 0;
+				uiconf.sections[i].content[12].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('pushAction' + i))|0]);
+				uiconf.sections[i].content[13].value = self.config.get('socketCmdPush' + i);
+				uiconf.sections[i].content[14].value = self.config.get('socketDataPush' + i);
+				uiconf.sections[i].content[15].value.value = self.config.get('longPushAction' + i) | 0;
+				uiconf.sections[i].content[15].value.label = self.commandRouter.getI18nString('ROTARYENCODER2.'+btnActions[parseInt(self.config.get('longPushAction' + i))|0]);
+				uiconf.sections[i].content[16].value = self.config.get('socketCmdLongPush' + i);
+				uiconf.sections[i].content[17].value = self.config.get('socketDataLongPush' + i);	
+			}
 			//logging section
-			uiconf.sections[3].content[0].value = (self.config.get('logging')==true)
+			uiconf.sections[maxRotaries].content[0].value = (self.config.get('logging')==true)
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -413,6 +380,7 @@ rotaryencoder2.prototype.updateDebugSettings = function (data) {
 	var defer = libQ.defer();
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] updateDebugSettings: Saving Debug Settings:' + JSON.stringify(data));
 	self.config.set('logging', (data['logging']))
+	self.debugLogging = data['logging'];
 	defer.resolve();
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved debug settings.");
 	return defer.promise;
@@ -593,14 +561,17 @@ rotaryencoder2.prototype.buttonAction = function (duration, rotaryIndex) {
 		case btnActions.indexOf("STOP"):
 			socket.emit('stop','')
 			break;
-		// TODO: need to catch state changes via emit, so we know the state and can toggle it
-		// case btnActions.indexOf("REPEAT"):
-		// 	socket.emit('setRepeat','')
-		// 	break;
-		// TODO: need to catch state changes via emit, so we know the state and can toggle it
-		// case btnActions.indexOf("RANDOM"):
-		// 	socket.emit('setRandom','')
-		// 	break;
+		case btnActions.indexOf("REPEAT"):
+			var newVal = !(self.status.repeat && self.status.repeatSingle);
+			var newSingle = !(self.status.repeat == self.status.repeatSingle);
+			socket.emit('setRepeat',{
+				'value': newVal,
+				'repeatSingle': newSingle
+			})
+			break;
+		case btnActions.indexOf("RANDOM"):
+			socket.emit('setRandom',{'value':!self.status.random})
+			break;
 		case btnActions.indexOf("CLEARQUEUE"):
 			socket.emit('clearQueue','')
 			break;
@@ -610,20 +581,24 @@ rotaryencoder2.prototype.buttonAction = function (duration, rotaryIndex) {
 		case btnActions.indexOf("UNMUTE"):
 			socket.emit('unmute','')
 			break;
-		// TODO: need to catch state changes via emit, so we know the state and can toggle it
-		// case btnActions.indexOf("TOGGLEMUTE"):
-		// 	break;
+		case btnActions.indexOf("TOGGLEMUTE"):
+			if (self.status.mute) {
+				socket.emit('unmute','');
+			} else {
+				socket.emit('mute','');
+			}
+			break;
 		case btnActions.indexOf("SHUTDOWN"):
 			socket.emit('shutdown','')
 			break;
 		case btnActions.indexOf("REBOOT"):
 			socket.emit('reboot','')
 			break;
-		// TODO: check what this does in original plugin
+		// TODO: vrestart command on commandline
 		// case btnActions.indexOf("RESTARTAPP"):
 	
 		// 	break;
-		// TODO: check what this does in original plugin or remove
+		// TODO: dumplog command on commandline
 		// case btnActions.indexOf("DUMPLOG"):
 			
 		// 	break;
