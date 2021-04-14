@@ -1,6 +1,6 @@
 {
   "name": "Parameq4Volumio",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "14 bands parametric Eq for Volumio2",
   "main": "index.js",
   "scripts": {

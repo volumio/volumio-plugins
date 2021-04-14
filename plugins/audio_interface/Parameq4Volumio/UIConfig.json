@@ -638,18 +638,6 @@
             "field": "hideren",
             "value": true
           }
-        },
-        {
-          "id": "exporteq",
-          "element": "button",
-          "label": "Click to export eq",
-          "description": "Export equalizers effect",
-          "onClick": {
-            "type": "plugin",
-            "endpoint": "audio_interface/Parameq4Volumio",
-            "method": "exporteq",
-            "data": []
-          }
         }
       ]
     },
@@ -680,6 +668,18 @@
             "label": "Choose a preset"
           },
           "options": []
+        },
+        {
+          "id": "updatelist",
+          "element": "button",
+          "label": "Click to update list",
+          "description": "Update headphone list from AutoEq",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Parameq4Volumio",
+            "method": "updatelist",
+            "data": []
+          }
         }
       ]
     }

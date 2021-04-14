@@ -261,20 +261,30 @@ Parameq.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', value);
 
-      try {
-        let listf = fs.readFileSync('/data/plugins/audio_interface/Parameq4Volumio/list.json');
-        const listJSON = JSON.parse(listf);
-        var i = 0;
-        for (var i in listJSON) {
-          self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
-            value: listJSON[i].link.slice(0, -1),
-            label: listJSON[i].name.replace(' ', '\ ')
-          });
 
-        };
+      try {
+        let listf = fs.readFileSync('/data/plugins/audio_interface/Parameq4Volumio/downloadedlist.txt', "utf8");
+        var result = (listf.split('\n'));
+        let i;
+
+        for (i = 16; i < result.length; i++) {
+          var preparedresult = result[i].replace(/- \[/g, "").replace("](.", ",").slice(0, -1);
+
+          var param = preparedresult.split(',')
+          var namel = (param[0])
+          var linkl = param[1]
+
+          self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
+            value: linkl,
+            label: namel
+          });
+        }
+
+
       } catch (err) {
-        self.logger.info('failed to read list.json' + err);
+        self.logger.info('failed to read downloadedlist.txt' + err);
       }
+
 
       defer.resolve(uiconf);
     })
@@ -834,7 +844,7 @@ Parameq.prototype.importeq = function (data) {
     });
     defer.resolve();
   } catch (err) {
-    self.logger.info('failed to load download' + err);
+    self.logger.info('failed to download Eq' + err);
   }
   self.convertimportedeq();
   return defer.promise;
@@ -873,6 +883,30 @@ Parameq.prototype.convertimportedeq = function (data) {
 
     self.createCamilladspfile()
   }, 300);
+
+  return defer.promise;
+};
+
+Parameq.prototype.updatelist = function (data) {
+  const self = this;
+  let path = 'https://raw.githubusercontent.com/jaakkopasanen/AutoEq//master/results';
+  let name = 'README.md';
+  let defer = libQ.defer();
+  var destpath = ' \'/data/plugins/audio_interface/Parameq4Volumio';
+  // self.config.set('importeq', namepath)
+  var toDownload = (path + '/' + name + '\'');
+  self.logger.info('wget \'' + toDownload)
+  try {
+    execSync("/usr/bin/wget \'" + toDownload + " -O" + destpath + "/downloadedlist.txt\'", {
+      uid: 1000,
+      gid: 1000
+    });
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to  download file ' + err);
+  }
+
+
 
   return defer.promise;
 }
