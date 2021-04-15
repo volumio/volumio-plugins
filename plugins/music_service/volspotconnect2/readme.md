@@ -37,7 +37,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 Type the following commands to download and install plugin:
 
 ```
-https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/music_service/volspotconnect2/volspotconnect2.zip
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/music_service/volspotconnect2/volspotconnect2.zip
 mkdir ./volspotconnect2
 miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
