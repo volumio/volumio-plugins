@@ -567,7 +567,7 @@
 					"prettyName": "miniDLNA",
 					"icon": "fa-server",
 					"name": "minidlna",
-					"version": "1.1.5",
+					"version": "1.1.6",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/minidlna/minidlna.zip",
 					"license": "ISC",
 					"description": "The plugin installs and configures a miniDLNA server.",
@@ -579,7 +579,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "6-8-2020",
+					"updated": "15-4-2021",
 					"stable": true
 				},
 				{
