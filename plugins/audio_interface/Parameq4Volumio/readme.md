@@ -1,4 +1,4 @@
-April 14th 2021
+April 15th 2021
 
 
 ##  For Volumio >= 3.054
@@ -60,6 +60,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+April 15th 2021
+
+- Gain can be a float
 
 April 14th 2021
 

@@ -674,7 +674,7 @@ Parameq.prototype.saveparameq = function (data) {
     if (typer == 'Peaking' || typer == 'Highshelf' || typer == 'Lowshelf') {
 
       var g = Number(eqr[1]);
-      if ((Number.isInteger(g)) && (g > -21 && g < 21)) {
+      if ((Number.parseFloat(g)) && (g > -20.1 && g < 20.1)) {
 
       } else {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('GAIN_RANGE') + eqc)
