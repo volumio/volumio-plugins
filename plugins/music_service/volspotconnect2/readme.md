@@ -1,4 +1,4 @@
-October 1st 2020
+April 15th 2021
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -37,7 +37,7 @@ https://volumio.github.io/docs/User_Manual/SSH.html
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/master/plugins/music_service/volspotconnect2/volspotconnect2.zip
+https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/music_service/volspotconnect2/volspotconnect2.zip
 mkdir ./volspotconnect2
 miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
@@ -60,6 +60,10 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+April 15th 2021
+
+- update readme
 
 October 1 st 2020
 
