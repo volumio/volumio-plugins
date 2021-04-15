@@ -2,7 +2,7 @@
 
 const libQ = require('kew');
 const fs = require('fs-extra');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const path = require('path');
 const id = 'minidlna: ';
 const configItems = ['show_more', 'media_dir_a', 'media_dir_p', 'media_dir_v', 'merge_media_dirs',
@@ -61,14 +61,14 @@ minidlna.prototype.onStart = function () {
       self.logger.info(id + 'Found miniDLNA version ' + minidlnaVersion);
     }
     self.initialConf()
-      .then(function (e) {
+      .then(function () {
         self.logger.info(id + 'Starting minidlna.service');
         self.systemctl('start minidlna.service')
-          .then(function (e) {
+          .then(function () {
             defer.resolve();
           });
       })
-      .fail(function (e) {
+      .fail(function () {
         defer.reject(new Error('on starting miniDLNA plugin'));
       });
   });
@@ -81,11 +81,8 @@ minidlna.prototype.onStop = function () {
 
   self.logger.info(id + 'Stopping minidlna.service');
   self.systemctl('stop minidlna.service')
-    .then(function (e) {
+    .fin(function () {
       defer.resolve();
-    })
-    .fail(function (e) {
-      defer.reject(new Error('on stopping miniDLNA plugin'));
     });
   return defer.promise;
 };
@@ -124,8 +121,8 @@ minidlna.prototype.getUIConfig = function () {
           case 'loglevel_http':
           case 'loglevel_ssdp':
           case 'loglevel_tivo':
-            self.configManager.setUIConfigParam(uiconf, 'sections[0].content[' + i + '].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[0].content[' + i + '].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[' + i + '].options'), value));
+            uiconf.sections[0].content[i].value.value = value;
+            uiconf.sections[0].content[i].value.label = self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[' + i + '].options'), value);
             break;
           default:
             uiconf.sections[0].content[i].value = value;
@@ -141,7 +138,8 @@ minidlna.prototype.getUIConfig = function () {
       });
       defer.resolve(uiconf);
     })
-    .fail(function () {
+    .fail(function (e) {
+      self.logger.error(id + 'Could not fetch UI configuration: ' + e);
       defer.reject(new Error());
     });
   return defer.promise;
@@ -149,14 +147,12 @@ minidlna.prototype.getUIConfig = function () {
 
 minidlna.prototype.updateUIConfig = function () {
   const self = this;
-  const defer = libQ.defer();
 
   self.commandRouter.getUIConfigOnPlugin('miscellanea', 'minidlna', {})
     .then(function (uiconf) {
       self.commandRouter.broadcastMessage('pushUiConfig', uiconf);
     });
   self.commandRouter.broadcastMessage('pushUiConfig');
-  return defer.promise;
 };
 
 minidlna.prototype.getConfigurationFiles = function () {
@@ -219,16 +215,16 @@ minidlna.prototype.saveConf = function (data) {
     }
   });
   self.createMinidlnaConf()
-    .then(function (e) {
+    .then(function () {
       self.logger.info(id + 'Restarting minidlna.service');
       self.systemctl('restart minidlna.service')
-        .then(function (e) {
+        .then(function () {
           self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.CONF_UPDATED'));
           self.logger.success('The miniDLNA configuration has been updated.');
           defer.resolve();
         });
     })
-    .fail(function (e) {
+    .fail(function () {
       defer.reject();
     });
   return defer.promise;
@@ -264,10 +260,10 @@ minidlna.prototype.initialConf = function () {
     }
   } catch (e) {
     self.createMinidlnaConf()
-      .then(function (e) {
+      .then(function () {
         defer.resolve();
       })
-      .fail(function (e) {
+      .fail(function () {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.ERR_CREATE') + '/data/minidlna.conf.');
         defer.reject(new Error('on creating /data/minidlna.conf.'));
       });
