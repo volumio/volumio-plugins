@@ -32,6 +32,8 @@ declare -A VLS_BIN=(
     [armv7l]="vollibrespot-armv7l.tar.xz" \
     [aarch64]="vollibrespot-armv7l.tar.xz" \
     [i686]="vollibrespot-i686.tar.xz" \
+    [x86_64]="vollibrespot-i686.tar.xz" \
+
   )
 
 # Find arch
