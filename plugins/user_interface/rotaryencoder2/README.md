@@ -1,5 +1,5 @@
 # Rotary Encoder II Plugin<!-- omit in toc -->
-This is an alternative implementation of a rotary encoder driver for integration with Volumio. It dynamically loads device tree overlays to access the rotaries and is more responsive than the existing plugin.   
+This is an alternative implementation of a rotary encoder driver for integration with Volumio. It dynamically loads device tree overlays to access the rotaries and is more responsive than the existing plugin with the tested encoders.   
 
 - [Using the Plugin](#using-the-plugin)
   - [Periods per step](#periods-per-step)
@@ -43,13 +43,13 @@ From one tick to the next, only one of both switches of the encoder changes stat
 </ul>
 If you are uncertain about your type, check the manufacturers datasheet or use a multimeter to measure the situation in your rotary.
 
-<img src="./Images/rotary_types.jpg" width=450 alt="Supported rotary types">
+<img src="./Images/rotary_types.jpg" width=650 alt="Supported rotary types">
 
 _Switching characteristic of different rotary types supported._
 
 
 ### Pin A GPIO/ Pin B GPIO
-The GPIO pins that are connected to the switches of your encoder (depending on [Hardware debouncing](#Debouncing-your-Encoder) via Schmitt trigger or RC combination.)
+The GPIO pins that are connected to the A and B channels of your encoder.
 
 ### Dial Function
 Pick the functionality you would like for your encoder:
@@ -88,7 +88,7 @@ If you do not have hardware debouncing for your push button, you can set a softw
 By default the plugin assumes, that your GPIOs are pulled low and that the GPIO will become logical high, when you push the button. If your hardware works the other way round and your button pulls the GPIO low when pressed, you have to activate this switch.
 
 ### Short Press Action/ Long Press action
-Various functionalities that can be associated with the push button. For compatibility I have added the same functions as the initial _Rotary Encoder Plugin_. Additionally there is a an Emit Function equivalent to the one available for the rotation. You find more information there.    
+Various functionalities that can be associated with the push button. For compatibility I have added most functions that the initial _Rotary Encoder Plugin_ supports. Additionally there is a an Emit Function equivalent to the one available for the rotation. You find more information there.    
 Long press action is executed if the button is pushed for longer than 1.5 seconds.   
 Available Commands:
 <ul>
@@ -104,18 +104,16 @@ Available Commands:
 <li>Toggle Mute
 <li>System Shutdown
 <li>System Reboot
-<li>Restart Volumio Application
-<li>Dump logfile
 <li>Emit websocket message
 </ul>
 
 ## Differences compared to _Rotary Encoder Plugin_ 
 The initial rotary encoder plugin by _Saiyato_ is built based on npm OnOff library and a derived onoff-rotary to read the GPIO pins of the Linux system (e.g. Raspberry Pi) and the implementation of the Gray-Code is tailored to the use of the KY040 encoder.  
 With my custom made hardware using three _ALPS STEC11B03_ encoders, it worked but the response was not really satisfactory because the plugin would only respond on every second 'tick' of the encoder and would sometimes misinterpret the direction.  
-After spending hours to explore different options I realized, that most implementations on high level in Python or Node, which are discussed all over the web, suffer from the fact, that they do not necessarily get the required resources when they need them because they are quite far away from the kernel level.      
+I spent hours trying different implementations in Python and Node, but there was always some lagging and dropped ticks and the occassional wrong direction turn (even after I perfrected my hardware debouncing).      
 I finally came across the dtoverlay for rotary-encoders by coincidence. It immediately worked with a performance that was way above all of my previous experiments. No more lost ticks, no wrong direction turns anymore.
-My final implementation with _Hardware Debouncing_ and _Kernel level GPIO management_ works perfect now. I did not bother, to try it without the Schmitt-Trigger - I guess that it may work without it also (RPi GPIOs have a built-in Schmitt-Trigger anyway, but I could not find details).  
-After looking into integrating my final solution into the existing plugin, I finally decided to write a new plugin, since my solution is not a supplemental implementation but rather an alternative. On systems supporting DT overlays for rotary-encoders it should be able to replace the existing plugin. If for some reason the approach without overlays is preferred, the other plugin may still be your first choice. 
+My final implementation with _Hardware Debouncing_ and _Kernel level GPIO management_ works perfect now. I did not bother, to try it without the Schmitt-Trigger - I guess that it would work without it, too (RPi GPIOs have a built-in Schmitt-Trigger anyway, but I could not find details). Feel free to leave a note, if you can confirm this.    
+After looking into integrating my final solution into the existing plugin, I finally decided to write a new plugin, since my solution is not a supplemental implementation but rather an alternative. On systems supporting DT overlays for rotary-encoders it should be able to be an alternative for the existing plugin. If for some reason the approach without overlays is preferred, the other plugin may still be your first choice. 
 Feel free to try both Plugins and pick the one, that suits your application best. Keep in mind, I tried this on an RPi, if you are on another platform, dtoverlays may not work (check the documentation).   
 If this Plugin works for you and you use a new type of encoder, it would be nice if you add your model to the list of supported devices below, so others can pick one that is working.   
 If you should observe problems, you may create an issue, but I have very limited time to look into that. I rely on enthusiasts to dig into the limitations of the plugin - the debug function in the settings is very chatty, so it should help to get to the issue fast.
@@ -129,12 +127,10 @@ Like all mechanical switches, they are not digitally flipping between on and off
 _Oscilloscope trace of one channel of an ALPS rotary encoder. You can see the bouncing during the transition from off to on. The bounce here takes about 400µs. The ALPS specification allows even up to 2ms._    
 
 To filter the high frequency signals (the spikes) out, you can use a simple extension of your circuit with two resistors (R1 and R2) and a capacitor (C1).
-I use two resistors of R=10kΩ and a capacitor of C=100nF. The timeconstant for charging is 
-<img src="./Images/tau_charge.jpg" width= 500 alt="tau = R x C = 2ms">
-
-and for discharging 
-<img src="./Images/tau_discharge.jpg" width= 500 alt="tau = R x C = 1ms">
-
+I use four resistors of R=10kΩ and two capacitors of C=100nF. The timeconstant for charging is     
+<img src="./Images/tau_charge.jpg" width= 350 alt="tau = R x C = 2ms">    
+and for discharging     
+<img src="./Images/tau_discharge.jpg" width= 350 alt="tau = R x C = 1ms">     
 respectively (after the timeconstant has passed the charge will be on _1/e_ of its reference level).      
 
 <img src="./Images/RC-filter.jpg" width= 500 alt="Schematic of an RC-debouncing circuit for both switches">
@@ -145,7 +141,7 @@ This will remove the spikes but also slow down the transition between the states
 
 <img src="./Images/RC-debounced.jpg" width= 300 alt="Oscilloscope trace of a transition with RC-Filter.">
 
-_Both channels with RC-filter. The transition takes 6ms now(~10 times longer, still 10 times faster than needed), but the spikes are gone. I calculated the RC values based on the ALPS spec of up to 2ms bounce. You can see, that the voltage (i.e. charge on the capacitor) has reduced from 4.3V to 4.3V/2.7 = 1.6V after about 1ms, as expected with 10kΩ and 0.1µF._   
+_Both channels with RC-filter. The transition takes 6ms now(~10 times longer, still 10 times faster than needed), but the spikes are gone. I calculated the RC values based on the ALPS spec of up to 2ms bounce. You can see, that the voltage (i.e. charge on the capacitor) has reduced from 4.3V to 4.3V/2.7 = 1.6V after about 1ms, as expected with 10kΩ and 0.1µF._   
 
 <img src="./Images/RC-debounced2.jpg" width= 500 alt="Oscilloscope trace of a rotation of 120 degrees."> 
 
@@ -166,9 +162,9 @@ _Input (red) and Output (blue) of the Schmitt-Trigger. You can see, that the sig
 _Both channels with Schmitt-Trigger. A signal like from a text-book for digital logic. Note how you can even see the acceleration during the turn. The squares become shorter from left to right._   
 
 ## Linux Device Tree Overlay: Rotary Encoder
-Even with a perfect signal from RC-filter and  Schmitt-trigger, there are still missed ticks sometimes. My assumption is, that with multi-threading systems or asynchronous operation, that system is just not able to react fast enough, if other operations are fighting for resources as well. The scripts are quite far away from the hardware.   
+Even with a perfect signal from RC-filter and  Schmitt-trigger, there were still missed ticks sometimes. My assumption is, that with multi-threading systems or asynchronous operation, that system is just not able to react fast enough, if other operations are fighting for resources as well. The scripts are quite far away from the hardware.   
 
-Raspbian (and Volumio) however has built in support for rotary-encoders in the device tree. If you load the device-tree overlay for a rotary, you no longer need to take care of the Gray-Code and just hook up to a device that will nicely send you information about turns of the rotary encoder (relative or absolute).
+Raspbian (and Volumio) however has built in support for rotary-encoders in the device tree. If you load the device-tree overlay for a rotary, you no longer need to take care of the Gray-Code and just hook up to a device that will nicely send you information about turns of the rotary encoder (relative or absolute, the plugin only supports relative so far).
 
 The advantages of the dtoverlay solution:
 - Very fast response, due to Kernel level implementation
