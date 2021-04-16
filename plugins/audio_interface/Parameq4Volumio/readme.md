@@ -1,4 +1,4 @@
-April 15th 2021
+April 16th 2021
 
 
 ##  For Volumio >= 3.054
@@ -60,6 +60,11 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+April 16th 2021
+
+- preset used is shown until values are changed
+- switch to hide values for eq
 
 April 15th 2021
 

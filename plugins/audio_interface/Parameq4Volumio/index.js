@@ -225,13 +225,24 @@ Parameq.prototype.getUIConfig = function () {
       self.logger.info('eqpresetsaved value ' + value)
 
       value = self.config.get('usethispreset');
+      switch (value) {
+        case ("mypreset1"):
+          var plabel = self.config.get('renpreset1')
+          break;
+        case ("mypreset2"):
+          var plabel = self.config.get('renpreset2')
+          break;
+        case ("mypreset3"):
+          var plabel = self.config.get('renpreset3')
+          break;
+        default: var plabel = "No preset used"
+      }
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', plabel);
 
 
       let pitems = ('mypreset1,mypreset2,mypreset3').split(',');
       for (let x in pitems) {
-        //self.logger.info('pitems ' + pitems)
 
         switch (pitems[x]) {
           case ("mypreset1"):
@@ -243,13 +254,14 @@ Parameq.prototype.getUIConfig = function () {
           case ("mypreset3"):
             var plabel = self.config.get('renpreset3')
             break;
-          default: var plabel = "nolabel"
+          default: var plabel = "choose a preset"
         }
         self.logger.info('plabel ' + plabel)
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
           value: pitems[x],
           label: plabel
         });
+
         self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
           value: pitems[x],
           label: plabel
@@ -715,9 +727,11 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
+    self.config.set('usethispreset', 'no preset used')
     self.commandRouter.pushToastMessage('info', 'Values saved and applied!')
   }
   self.config.set('effect', true)
+  self.config.set('showeq',data["showeq"])
 
   setTimeout(function () {
     self.refreshUI();
@@ -773,7 +787,6 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     self.config.set(spreset + scopec, self.config.get(scopec));
     self.config.set(spreset + eqc, self.config.get(eqc));
     self.config.set(spreset + 'nbreq', nbreq);
-
     self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
   }
   self.refreshUI();
@@ -814,6 +827,7 @@ Parameq.prototype.usethispreset = function (data) {
     self.config.set(scopec, self.config.get(spreset + scopec));
     self.config.set(eqc, self.config.get(spreset + eqc));
     self.config.set("nbreq", nbreqc);
+    self.config.set("usethispreset", preset);
 
     self.commandRouter.pushToastMessage('info', ' My preset ' + spreset + ' is loaded and used')
   }

@@ -16,6 +16,7 @@
       "saveButton": {
         "label": "TRANSLATE.APPLY",
         "data": [
+          "showeq",
           "type1",
           "scope1",
           "eq1",
@@ -70,7 +71,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope1",
@@ -81,7 +86,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq1",
@@ -91,6 +100,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -102,7 +115,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope2",
@@ -113,7 +130,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq2",
@@ -123,6 +144,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -134,7 +159,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope3",
@@ -145,7 +174,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq3",
@@ -155,6 +188,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -166,7 +203,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope4",
@@ -177,7 +218,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq4",
@@ -187,6 +232,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -198,7 +247,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope5",
@@ -209,7 +262,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq5",
@@ -219,6 +276,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -230,7 +291,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope6",
@@ -241,7 +306,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq6",
@@ -251,6 +320,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -262,7 +335,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope7",
@@ -273,7 +350,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq7",
@@ -283,6 +364,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -294,7 +379,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope8",
@@ -305,7 +394,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq8",
@@ -315,6 +408,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -326,7 +423,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope9",
@@ -337,7 +438,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq9",
@@ -347,6 +452,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -358,7 +467,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope10",
@@ -369,7 +482,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq10",
@@ -379,6 +496,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -390,7 +511,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope11",
@@ -401,7 +526,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq11",
@@ -411,6 +540,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -422,7 +555,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope12",
@@ -433,7 +570,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq12",
@@ -443,6 +584,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -454,7 +599,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope13",
@@ -465,7 +614,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq13",
@@ -475,6 +628,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -486,7 +643,11 @@
             "value": "None",
             "label": "None"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "scope14",
@@ -497,7 +658,11 @@
             "value": "L+R",
             "label": "L+R"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
         },
         {
           "id": "eq14",
@@ -507,6 +672,10 @@
           "value": {
             "value": "0,0,0",
             "label": "0,0,0"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -543,6 +712,10 @@
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "addeq",
             "data": []
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
         },
         {
@@ -555,7 +728,18 @@
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "removeeq",
             "data": []
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
           }
+        },
+        {
+          "id": "showeq",
+          "element": "switch",
+          "doc": "Show settings",
+          "label": "Show settings",
+          "value": true
         }
       ]
     },
