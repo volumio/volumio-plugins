@@ -836,7 +836,7 @@
         "method": "importeq"
       },
       "saveButton": {
-        "label": "Import Eq",
+        "label": "Import and load selected Eq",
         "data": [
           "importeq"
         ]

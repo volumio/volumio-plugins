@@ -114,20 +114,30 @@ Parameq.prototype.getUIConfig = function () {
         uiconf.sections[nsections].content[43].hidden = false;
 
       }
-
+      /*
+            var showeq = self.config.get('showeq');
+            if (showeq == false) {
+              self.logger.info('display settings ' + showeq)
+      
+              for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
+                uiconf.sections[nsections].content[i].hidden = true;
+                uiconf.sections[nsections].content[i + 1].hidden = true;
+                uiconf.sections[nsections].content[i + 2].hidden = true;
+              }
+            } else {
+      */
       for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
         uiconf.sections[nsections].content[i].hidden = true;
         uiconf.sections[nsections].content[i + 1].hidden = true;
         uiconf.sections[nsections].content[i + 2].hidden = true;
       }
-
       if (ncontent == 1) {
         uiconf.sections[nsections].content[45].hidden = true;
       }
       if (ncontent > 13) {
-
         uiconf.sections[nsections].content[44].hidden = true;
       }
+
       var a
 
       for (a = 0; a < tnbreq; a++) {
@@ -256,7 +266,7 @@ Parameq.prototype.getUIConfig = function () {
             break;
           default: var plabel = "choose a preset"
         }
-        self.logger.info('plabel ' + plabel)
+        self.logger.info('preset label' + plabel)
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
           value: pitems[x],
           label: plabel
@@ -288,7 +298,7 @@ Parameq.prototype.getUIConfig = function () {
 
           self.configManager.pushUIConfigParam(uiconf, 'sections[3].content[0].options', {
             value: linkl,
-            label: namel
+            label: +i - 15 + "  " + namel
           });
         }
 
@@ -730,14 +740,14 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set('usethispreset', 'no preset used')
     self.commandRouter.pushToastMessage('info', 'Values saved and applied!')
   }
-  self.config.set('effect', true)
-  self.config.set('showeq',data["showeq"])
+  self.config.set('effect', true);
+  // self.config.set('showeq', data["showeq"]);
 
   setTimeout(function () {
     self.refreshUI();
 
     self.createCamilladspfile()
-  }, 300);
+  }, 800);
   return defer.promise;
 };
 
@@ -845,9 +855,10 @@ Parameq.prototype.importeq = function (data) {
   const self = this;
   let path = 'https://raw.githubusercontent.com/jaakkopasanen/AutoEq//master/results'
   let defer = libQ.defer();
-  var name = data['importeq'].label
+  var nameh = data['importeq'].label
+  var name = nameh.split('  ').slice(1).toString();
+  self.logger.info('name ' + typeof (name));
   var namepath = data['importeq'].value
-  var destpath = '/tmp';
   // self.config.set('importeq', namepath)
   var toDownload = (path + namepath + '/' + name.replace(' ', '%20') + '%20ParametricEQ.txt\'')
   self.logger.info('wget \'' + toDownload)
@@ -887,6 +898,7 @@ Parameq.prototype.convertimportedeq = function (data) {
       self.config.set(scopec, 'L+R');
       self.config.set(eqc, eqs);
       self.config.set("nbreq", o);
+      self.config.set('effect', true)
 
     }
   } catch (err) {
@@ -896,6 +908,8 @@ Parameq.prototype.convertimportedeq = function (data) {
     self.refreshUI();
 
     self.createCamilladspfile()
+    self.commandRouter.pushToastMessage('info', ' New Eq profil is loaded and used')
+
   }, 300);
 
   return defer.promise;
@@ -915,12 +929,14 @@ Parameq.prototype.updatelist = function (data) {
       uid: 1000,
       gid: 1000
     });
+    self.commandRouter.pushToastMessage('info', 'List successfully updated!')
+
     defer.resolve();
   } catch (err) {
+    self.commandRouter.pushToastMessage('error', 'Fail to update List!')
+
     self.logger.info('failed to  download file ' + err);
   }
-
-
 
   return defer.promise;
 }

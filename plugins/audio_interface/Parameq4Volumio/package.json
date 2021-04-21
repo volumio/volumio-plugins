@@ -1,7 +1,7 @@
 {
   "name": "Parameq4Volumio",
-  "version": "0.1.1",
-  "description": "14 bands parametric Eq for Volumio2",
+  "version": "0.1.2",
+  "description": "14 bands parametric Eq for Volumio2 with AutoEq Headphones profils",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
