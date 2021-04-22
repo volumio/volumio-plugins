@@ -1,12 +1,12 @@
 {
   "page": {
-    "label": "Parametric Eq with CamillaDsp"
+    "label": "TRANSLATE.PAGE_LABEL"
   },
   "sections": [
     {
       "id": "advanced",
       "element": "section",
-      "label": "SETTINGS",
+      "label": "TRANSLATE.SETTINGS",
       "icon": "fa-cogs",
       "onSave": {
         "type": "plugin",
@@ -681,8 +681,8 @@
         {
           "id": "disableeffect",
           "element": "button",
-          "label": "Click to disable effects",
-          "description": "Disable equalizers effect",
+          "label": "TRANSLATE.DISABLE_EFFECT",
+          "description": "TRANSLATE.DISABLE_EFFECT_DESC",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
@@ -693,8 +693,8 @@
         {
           "id": "enableeffect",
           "element": "button",
-          "label": "Click to enable effects",
-          "description": "Enable equalizers effect",
+          "label": "TRANSLATE.ENABLE_EFFECT",
+          "description": "TRANSLATE.ENABLE_EFFECT_DESC",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
@@ -705,8 +705,8 @@
         {
           "id": "addeq",
           "element": "button",
-          "label": "Add equalizer",
-          "description": "Add equalizer",
+          "label": "TRANSLATE.ADD_EQ",
+          "description": "TRANSLATE.ADD_EQ_DESC",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
@@ -721,8 +721,8 @@
         {
           "id": "removeeq",
           "element": "button",
-          "label": "Remove equalizer",
-          "description": "Remove equalizer",
+          "label": "TRANSLATE.REMOVE_EQ",
+          "description": "TRANSLATE.REMOVE_EQ_DESC",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",
@@ -737,8 +737,8 @@
         {
           "id": "showeq",
           "element": "switch",
-          "doc": "Show settings",
-          "label": "Show settings",
+          "doc": "TRANSLATE.SHOW_SETTINGS_DOC",
+          "label": "TRANSLATE.SHOW_SETTINGS",
           "value": true
         }
       ]
@@ -754,7 +754,7 @@
         "method": "usethispreset"
       },
       "saveButton": {
-        "label": "Load and use",
+        "label": "TRANSLATE.LOAD_AND_USE",
         "data": [
           "usethispreset"
         ]
@@ -763,8 +763,8 @@
         {
           "id": "usethispreset",
           "element": "select",
-          "doc": "Use this preset",
-          "label": "Use this preset",
+          "doc": "TRANSLATE.USETHISPRESET_DOC",
+          "label": "TRANSLATE.USETHISPRESET",
           "value": {
             "value": "",
             "label": ""
@@ -784,7 +784,7 @@
         "method": "saveequalizerpreset"
       },
       "saveButton": {
-        "label": "save",
+        "label": "TRANSLATE.SAVE",
         "data": [
           "eqpresetsaved",
           "renpreset"
@@ -797,16 +797,16 @@
           "doc": "TRANSLATE.DOCSAVECURRENTEQ",
           "label": "TRANSLATE.SAVECURRENTEQ",
           "value": {
-            "value": "Choose a preset",
-            "label": "Choose a preset"
+            "value": "",
+            "label": ""
           },
           "options": []
         },
         {
           "id": "hideren",
           "element": "switch",
-          "doc": "Rename preset",
-          "label": "Rename preset",
+          "doc": "TRANSLATE.RENAME_PRESET_SW_DOC",
+          "label": "TRANSLATE.RENAME_PRESET_SW",
           "value": false
         },
         {
@@ -828,7 +828,7 @@
     {
       "id": "advanced2",
       "element": "section",
-      "label": "Import EQ from AutoEQ",
+      "label": "TRANSLATE.IMPORT_FROM_AUTOEQ",
       "icon": "fa-upload",
       "onSave": {
         "type": "plugin",
@@ -836,7 +836,7 @@
         "method": "importeq"
       },
       "saveButton": {
-        "label": "Import and load selected Eq",
+        "label": "TRANSLATE.IMPORT_LOAD",
         "data": [
           "importeq"
         ]
@@ -845,19 +845,19 @@
         {
           "id": "importeq",
           "element": "select",
-          "doc": "Choose your headphone. May take a while before displaying the list",
-          "label": "Choose EQ",
+          "doc": "TRANSLATE.CHOOSE_EQ_DOC",
+          "label": "TRANSLATE.CHOOSE_EQ",
           "value": {
-            "value": "Choose a preset",
-            "label": "Choose a preset"
+            "value": "TRANSLATE.CHOOSE_HEADPHONE",
+            "label": "TRANSLATE.CHOOSE_HEADPHONE"
           },
           "options": []
         },
         {
           "id": "updatelist",
           "element": "button",
-          "label": "Click to update list",
-          "description": "Update headphone list from AutoEq",
+          "label": "TRANSLATE.CLICK_TO_UPDATE_LIST",
+          "description": "TRANSLATE.CLICK_TO_UPDATE_LIST_DESC",
           "onClick": {
             "type": "plugin",
             "endpoint": "audio_interface/Parameq4Volumio",

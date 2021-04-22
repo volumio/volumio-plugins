@@ -1,4 +1,4 @@
-April 21th 2021
+April 22th 2021
 
 
 ##  For Volumio >= 3.054
@@ -60,6 +60,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+April 22th 2021
+
+- support for translation + french language
 
 April 21th 2021
 

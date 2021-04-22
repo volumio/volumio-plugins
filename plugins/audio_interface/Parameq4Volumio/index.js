@@ -230,8 +230,7 @@ Parameq.prototype.getUIConfig = function () {
       */
 
       value = self.config.get('eqpresetsaved');
-      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', value);
+     
       self.logger.info('eqpresetsaved value ' + value)
 
       value = self.config.get('usethispreset');
@@ -245,8 +244,10 @@ Parameq.prototype.getUIConfig = function () {
         case ("mypreset3"):
           var plabel = self.config.get('renpreset3')
           break;
-        default: var plabel = "No preset used"
+        default: var plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
       }
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', plabel);
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', plabel);
 
@@ -264,7 +265,7 @@ Parameq.prototype.getUIConfig = function () {
           case ("mypreset3"):
             var plabel = self.config.get('renpreset3')
             break;
-          default: var plabel = "choose a preset"
+          default: var plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
         }
         self.logger.info('preset label' + plabel)
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
@@ -738,10 +739,10 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
     self.config.set('usethispreset', 'no preset used')
-    self.commandRouter.pushToastMessage('info', 'Values saved and applied!')
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
   }
   self.config.set('effect', true);
-  // self.config.set('showeq', data["showeq"]);
+  self.config.set('showeq', data["showeq"]);
 
   setTimeout(function () {
     self.refreshUI();
@@ -757,7 +758,7 @@ Parameq.prototype.saveequalizerpreset = function (data) {
 
   let preset = (data['eqpresetsaved'].value);
   if (preset == 'Select a preset') {
-    self.commandRouter.pushToastMessage('error', ' Choose a preset')
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CHOOSE_PRESET'))
     return;
   }
   var nbreq = self.config.get('nbreq')
@@ -797,7 +798,7 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     self.config.set(spreset + scopec, self.config.get(scopec));
     self.config.set(spreset + eqc, self.config.get(eqc));
     self.config.set(spreset + 'nbreq', nbreq);
-    self.commandRouter.pushToastMessage('info', 'Values saved in My preset ' + spreset)
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spreset)
   }
   self.refreshUI();
 
@@ -820,11 +821,10 @@ Parameq.prototype.usethispreset = function (data) {
       var spreset = 'p3'
       break;
     default:
-      self.commandRouter.pushToastMessage('error', ' Choose a preset')
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CHOOSE_PRESET'))
       return;
 
   }
-  //  self.logger.info('spreset = ' + spreset)
   var nbreqc = self.config.get(spreset + 'nbreq')
 
   for (var o = 1; o < (nbreqc + 1); o++) {
@@ -832,14 +832,13 @@ Parameq.prototype.usethispreset = function (data) {
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
 
-    //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
     self.config.set(typec, self.config.get(spreset + typec));
     self.config.set(scopec, self.config.get(spreset + scopec));
     self.config.set(eqc, self.config.get(spreset + eqc));
     self.config.set("nbreq", nbreqc);
     self.config.set("usethispreset", preset);
 
-    self.commandRouter.pushToastMessage('info', ' My preset ' + spreset + ' is loaded and used')
+    self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
   }
 
   setTimeout(function () {
@@ -908,7 +907,7 @@ Parameq.prototype.convertimportedeq = function (data) {
     self.refreshUI();
 
     self.createCamilladspfile()
-    self.commandRouter.pushToastMessage('info', ' New Eq profil is loaded and used')
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('EQ_LOADED_USED'))
 
   }, 300);
 
@@ -929,11 +928,11 @@ Parameq.prototype.updatelist = function (data) {
       uid: 1000,
       gid: 1000
     });
-    self.commandRouter.pushToastMessage('info', 'List successfully updated!')
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('LIST_SUCCESS_UPDATED'))
 
     defer.resolve();
   } catch (err) {
-    self.commandRouter.pushToastMessage('error', 'Fail to update List!')
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('LIST_FAIL_UPDATE'))
 
     self.logger.info('failed to  download file ' + err);
   }
