@@ -1,4 +1,4 @@
-March 31th 2021
+April 24th 2021
 
 
 ##  For Volumio >3.054
@@ -67,6 +67,10 @@ nearly everythings
 ## What is not working :
 
 ### 4. Last changes
+
+April 24th 2021
+
+- bump to camilladsp 0.5.0-s24test
 
 March 31th 2021
 
