@@ -1,0 +1,62 @@
+// randomTracks
+
+// You can increase the number of tracks (variable 'tracks').
+// The variable 'timer' setting of 300 works for my system (Pi with ssd attatched)
+// if your system is slower to retrieve files from your library you may not load
+// as many tracks as you expect.  Increase 'timer' until all tracks are loaded.
+// This script will temporarily suspend I.R control until it finishes.
+// Setting 'timer' too high will prolong the suspension.
+
+
+
+function rand(max, min) {
+        return Math.floor(Math.random() * (+max - +min)) + min;
+}
+
+var i = 0;
+var track = 0;
+var tracks = 25;
+var timer = 300;
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+socket.emit('stop');
+socket.emit('clearQueue');
+('browseLibrary', {'uri':'albums://'});
+socket.on('pushBrowseLibrary',function(data) {
+  item = data.navigation.lists[0].items[0];
+  if (item.type == 'song') {
+    try {
+      while (item.type == 'song') {
+        item = data.navigation.lists[0].items[i];
+        i++;
+      }
+    }
+    catch(err) {
+      i-- ;
+      track = rand(i, 0);
+      item = data.navigation.lists[0].items[track];
+      i = 0;
+    }
+    socket.emit('addToQueue', {'uri':item.uri});
+  } else {
+     var list = data.navigation.lists[0].items;
+     var random = rand(list.length - 1, 0);
+     select = list[random];
+     socket.emit('browseLibrary', {'uri':select.uri});
+  }
+});
+
+socket.on('pushQueue', function(data) {
+      if (data.length > tracks) {
+            socket.emit("play",{"value":0});
+            socket.disconnect()
+      } else {
+            socket.emit('browseLibrary', {'uri':'albums://'});
+      }
+});
+
+setTimeout(function() { socket.disconnect(); }, (tracks * timer));
+
+
+
+
