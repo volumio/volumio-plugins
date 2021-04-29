@@ -230,7 +230,7 @@ Parameq.prototype.getUIConfig = function () {
       */
 
       value = self.config.get('eqpresetsaved');
-     
+
       self.logger.info('eqpresetsaved value ' + value)
 
       value = self.config.get('usethispreset');
@@ -885,7 +885,7 @@ Parameq.prototype.convertimportedeq = function (data) {
     var o = 1;
 
     var result = (EQfile.replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ',').split('\n'));
-    for (var o; o < 11; o++) {
+    for (o; o < result.length - 1; o++) {
       var eqv = (result[o]);
       var param = eqv.split(',')
       var eqs = (param[1] + ',' + param[2] + ',' + param[3])
@@ -898,6 +898,7 @@ Parameq.prototype.convertimportedeq = function (data) {
       self.config.set(eqc, eqs);
       self.config.set("nbreq", o);
       self.config.set('effect', true)
+      self.logger.info('number of eq o = : ' + o);
 
     }
   } catch (err) {
@@ -939,3 +940,23 @@ Parameq.prototype.updatelist = function (data) {
 
   return defer.promise;
 }
+/*
+Parameq.prototype.displayfilters = function () {
+  const self = this;
+  const express = require('express');
+  const app = express();
+  const port = 8087;
+
+  // Define the static file path
+  app.use(express.static(__dirname));
+
+  app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/filtersview.html');
+  })
+
+  app.listen(port, () => console.log('The server running on Port ' + port));
+
+  //return defer.promise;
+}
+
+*/

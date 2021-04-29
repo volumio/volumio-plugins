@@ -1,4 +1,4 @@
-April 24th 2021
+April 29th 2021
 
 
 ##  For Volumio >= 3.054
@@ -60,6 +60,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+April 29th 2021
+
+- improve Eq import from AutoEq for n eq variable
 
 April 24th 2021
 
