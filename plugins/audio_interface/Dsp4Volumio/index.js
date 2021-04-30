@@ -562,7 +562,7 @@ Dsp4Volumio.prototype.sendCommandToCamilla = function () {
 
   connection.onmessage = (e) => {
     console.log(e.data)
-    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
+   // self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
   }
 
 };
@@ -608,7 +608,7 @@ Dsp4Volumio.prototype.testclipping = function () {
   journalctl.on('event', (event) => {
     let pevent = event.MESSAGE.indexOf("Clipping detected");
     if (pevent != -1) {
-      let filteredMessage = event.MESSAGE.split(',').pop().replace("peak ", "").slice(0, -1);
+      let filteredMessage = event.MESSAGE.split(',').slice(0, -1).pop().replace("peak ", "").slice(0, -1);
       self.logger.info('filteredMessage ' + filteredMessage)
       let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
 
@@ -1965,6 +1965,31 @@ Dsp4Volumio.prototype.convert = function (data) {
 }
 
 
+Dsp4Volumio.prototype.updatelist = function (data) {
+  const self = this;
+  let path = 'https://raw.githubusercontent.com/jaakkopasanen/AutoEq//master/results';
+  let name = 'README.md';
+  let defer = libQ.defer();
+  var destpath = ' \'/data/plugins/audio_interface/Parameq4Volumio';
+  // self.config.set('importeq', namepath)
+  var toDownload = (path + '/' + name + '\'');
+  self.logger.info('wget \'' + toDownload)
+  try {
+    execSync("/usr/bin/wget \'" + toDownload + " -O" + destpath + "/downloadedlist.txt\'", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('LIST_SUCCESS_UPDATED'))
+
+    defer.resolve();
+  } catch (err) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('LIST_FAIL_UPDATE'))
+
+    self.logger.info('failed to  download file ' + err);
+  }
+
+  return defer.promise;
+}
 
 
 

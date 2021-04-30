@@ -1,6 +1,6 @@
 {
   "name": "Dsp4Volumio",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "DSP for Volumio2",
   "main": "index.js",
   "scripts": {

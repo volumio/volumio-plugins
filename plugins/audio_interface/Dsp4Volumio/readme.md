@@ -1,4 +1,4 @@
-April 24th 2021
+April 30th 2021
 
 
 ##  For Volumio >3.054
@@ -67,6 +67,10 @@ nearly everythings
 ## What is not working :
 
 ### 4. Last changes
+
+April 30th 2021
+
+- fix clipping detection with new CamillaDsp
 
 April 24th 2021
 
