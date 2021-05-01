@@ -17,8 +17,26 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 - Toggle with/without effect
 - Scope for each band (L, R, L+R)
 - 3 preset
-- More than 3400 headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
+- More than 3800 headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
+- import for local EQ file (must be in /data/INTERNAM/Parameq4Volumio/)
 
+Data follow this format (max 14 bands)
+```
+Test file for import. This syntaxe must be used. Add Left and right channel EQ then choose the scope after import
+Filter 4: ON PK Fc 48.05 Hz Gain -0.70 dB Q 23.967
+Filter 5: ON PK Fc 53.10 Hz Gain -7.90 dB Q 3.340
+Filter 6: ON PK Fc 57.20 Hz Gain -1.90 dB Q 10.194
+Filter 7: ON PK Fc 60.00 Hz Gain -1.70 dB Q 13.930
+Filter 8: ON PK Fc 62.30 Hz Gain -1.20 dB Q 22.931
+Filter 9: ON PK Fc 133.5 Hz Gain -4.80 dB Q 4.247
+Filter 10: ON PK Fc 178.5 Hz Gain 4.10 dB Q 2.002
+Filter 11: ON PK Fc 249.0 Hz Gain -2.80 dB Q 8.261
+Filter 2: ON PK Fc 57.00 Hz Gain -5.30 dB Q 3.902
+Filter 2: ON PK Fc 134.5 Hz Gain -5.70 dB Q 3.683
+Filter 3: ON PK Fc 166.0 Hz Gain -4.90 dB Q 2.129
+Filter 4: ON PK Fc 272.0 Hz Gain 5.30 dB Q 1.002
+Filter 5: ON PK Fc 327.0 Hz Gain -4.60 dB Q 4.546
+```
 
 ## INSTALLATION WARNING
 
