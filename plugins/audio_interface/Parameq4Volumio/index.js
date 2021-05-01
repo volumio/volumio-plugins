@@ -319,6 +319,32 @@ Parameq.prototype.getUIConfig = function () {
       }
 
 
+      value = self.config.get('importlocal');
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', value);
+
+      var localEQfolder = '/data/INTERNAL/Parameq4Volumio'
+      try {
+        fs.readdir(localEQfolder, function (err, item) {
+
+          let allfilter = '' + item;
+          let items = allfilter.split(',');
+          // items.pop();
+          for (let i in items) {
+
+            self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[0].options', {
+              value: items[i],
+              label: items[i]
+            });
+          }
+
+        });
+      } catch (err) {
+        self.logger.info('failed to read local file' + err);
+      }
+
+
+
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -625,21 +651,20 @@ Parameq.prototype.createCamilladspfile = function () {
 
             //else
           }
-          self.config.set('gainapplied', gainclipfree)
+          //self.config.set('gainapplied', gainclipfree)
         }
       };
-      var leftgain = (+gainclipfree + (+leftlevel))
-      var rightgain = (+gainclipfree + +rightlevel)
-
+      var leftgain = (+gainclipfree + +leftlevel)
+      var rightgain = (+gainclipfree + +rightlevel);
       self.logger.info(result)
 
       self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
 
       let conf = data.replace("${resulteq}", result)
         .replace("${gain}", leftgain)
-          .replace("${gain}", rightgain)
-            .replace("${pipelineL}", pipelinelr)
-            .replace("${pipelineR}", pipelinerr)
+        .replace("${gain}", rightgain)
+        .replace("${pipelineL}", pipelinelr)
+        .replace("${pipelineR}", pipelinerr)
         ;
       fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
@@ -675,7 +700,7 @@ Parameq.prototype.saveparameq = function (data) {
 
     if (typer != 'None') {
 
-      if (Number.isInteger(veq) && (veq > 0 && veq < 20001)) {
+      if (Number.parseFloat(veq) && (veq > 0 && veq < 20001)) {
         self.logger.info('value ok ')
 
       } else {
@@ -687,8 +712,8 @@ Parameq.prototype.saveparameq = function (data) {
     }
     if (typer == 'Peaking') {
 
-      var g = Number(eqr[2]);
-      if ((Number.parseFloat(g)) && (g > 0 && g < 15.1)) {
+      var q = Number(eqr[2]);
+      if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
 
       } else {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
@@ -699,7 +724,7 @@ Parameq.prototype.saveparameq = function (data) {
     if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
 
       var q = Number(eqr[1]);
-      if ((Number.parseFloat(q)) && (q > 0 && q < 15.1)) {
+      if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
 
       } else {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
@@ -748,7 +773,7 @@ Parameq.prototype.saveparameq = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-
+    //var reslteq =b
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
@@ -887,23 +912,52 @@ Parameq.prototype.importeq = function (data) {
   } catch (err) {
     self.logger.info('failed to download Eq' + err);
   }
+  self.config.set('eqfrom', 'autoeq');
+
   self.convertimportedeq();
   return defer.promise;
 };
 
-Parameq.prototype.convertimportedeq = function (data) {
+Parameq.prototype.importlocal = function (data) {
   const self = this;
   let defer = libQ.defer();
+  let file = data['importlocal'].value;
+  if ((file == '') || (file =='select a file')) {
+    self.commandRouter.pushToastMessage('error', 'Choose a file')
 
-  let EQfile;
+    return;
+  }
+  self.config.set('eqfrom', data['importlocal'].value);
+  //self.config.set('localfile', data[]);
+
+  self.convertimportedeq();
+  return defer.promise;
+};
+
+Parameq.prototype.convertimportedeq = function () {
+  const self = this;
+  let defer = libQ.defer();
+  var filepath;
+  var EQfile;
+  var EQfilef = self.config.get('eqfrom')
+  if (EQfilef == 'autoeq') {
+    filepath = ('/tmp/EQfile.txt');
+
+  } else {
+    filepath = ('/data/INTERNAL/Parameq4Volumio/'+ EQfilef);
+
+  }
   try {
-    EQfile = fs.readFileSync('/tmp/EQfile.txt', "utf8");
+    // EQfile = fs.readFileSync('/tmp/EQfile.txt', "utf8");
+    EQfile = fs.readFileSync(filepath, "utf8");
+
     var o = 1;
 
     var result = (EQfile.replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ',').split('\n'));
     for (o; o < result.length - 1; o++) {
       var eqv = (result[o]);
       var param = eqv.split(',')
+      // console.log(param)
       var eqs = (param[1] + ',' + param[2] + ',' + param[3])
       var typec = 'type' + o;
       var scopec = 'scope' + o;
@@ -914,11 +968,11 @@ Parameq.prototype.convertimportedeq = function (data) {
       self.config.set(eqc, eqs);
       self.config.set("nbreq", o);
       self.config.set('effect', true)
-      self.logger.info('number of eq o = : ' + o);
+      self.logger.info('number of eq o = : ' + o + eqs);
 
     }
   } catch (err) {
-    self.logger.info('failed to read EQfile.txt ' + err);
+    self.logger.info('failed to read EQ file ' + err);
   }
   setTimeout(function () {
     self.refreshUI();

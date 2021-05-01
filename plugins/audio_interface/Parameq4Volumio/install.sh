@@ -1,7 +1,7 @@
 #!/bin/bash
 LIB=/data/plugins/audio_interface/Parameq4Volumio
 TARGET = $libasound_module_pcm_cdsp
-
+mkdir /data/INTERNAL/Parameq4Volumio
 echo "Installing/Parameq4Volumio dependencies"
 
 echo "remove previous configuration"
@@ -18,11 +18,10 @@ echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
-if [ $cpu = "armv7l" ] #|| [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
+if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
 cd /tmp
-wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-armv7.tar.gz
-#wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
 sudo chown volumio camilladsp
 sudo chgrp volumio camilladsp
@@ -34,8 +33,7 @@ sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-
 elif [ $cpu = "x86_64" ]
 then
 cd $LIB
-wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-amd64.tar.gz
-#wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.4.2/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
 sudo chown volumio camilladsp
 sudo chgrp volumio camilladsp

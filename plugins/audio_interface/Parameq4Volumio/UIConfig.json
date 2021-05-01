@@ -918,6 +918,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "advanced3",
+      "element": "section",
+      "label": "TRANSLATE.IMPORT_FROM_LOCAL",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/Parameq4Volumio",
+        "method": "importlocal"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.IMPORT_LOCAL",
+        "data": [
+          "importlocal"
+        ]
+      },
+      "content": [
+        {
+          "id": "importlocal",
+          "element": "select",
+          "doc": "TRANSLATE.CHOOSE_LOCALEQ_DOC",
+          "label": "TRANSLATE.CHOOSE_LOCALEQ",
+          "value": {
+            "value": "local",
+            "label": "local"
+          },
+          "options": []
+        }      ]
     }
   ]
 }

@@ -27,7 +27,7 @@
   "RENAME_PRESET_SW_DOC":"Donnez un nom pour le preset", 
   "NO_PRESET_USED":"Pas de preset utilisé",
   "CONFIG_UPDATED":"The configuration has been successfully updated",
-  "FREQUENCY_RANGE":"Frequence Hz doit être un nombre entier [10-20000] dans ",
+  "FREQUENCY_RANGE":"Frequence Hz doit être un nombre décimal [10-20000] dans ",
   "GAIN_RANGE":"Gain dB doit être un nombre décimal [-20-20] dans ",
   "Q_RANGE":"Coefficient Q doit être un nombre décimal [0.1-15] dans ",
   "SLOPE_RANGE":"Slope doit être un nombre entier [1-15] dans ",
@@ -63,5 +63,9 @@
   "CHOOSE_EQ":"Choisissez votre casque",
   "CLICK_TO_UPDATE_LIST":"Mise à jour de la liste",
   "CHOOSE_HEADPHONE":"Choisissez votre casque",
-  "CLICK_TO_UPDATE_LIST_DESC": "Mettre à jour la listes des casques depuis AutoEq"
+  "CLICK_TO_UPDATE_LIST_DESC": "Mettre à jour la listes des casques depuis AutoEq",
+  "IMPORT_FROM_LOCAL":"Importer un fichier local",
+  "IMPORT_LOCAL":"Charger le fichier",
+  "CHOOSE_LOCALEQ_DOC":"Choisissez un fichier texte qui contient les paramètres d'EQ",
+  "CHOOSE_LOCALEQ":"Choisissez le fichier"
 }

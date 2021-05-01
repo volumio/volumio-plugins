@@ -1,6 +1,6 @@
 {
   "name": "Parameq4Volumio",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "14 bands parametric Eq for Volumio2 with AutoEq Headphones profils",
   "main": "index.js",
   "scripts": {

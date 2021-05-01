@@ -11,11 +11,19 @@
         "type": "boolean",
         "value": true
     },
+    "eqfrom": {
+        "type": "string",
+        "value": "local"
+      },
     "renpreset": {
         "type": "string",
         "value": "choose a name"
       },
       "importeq": {
+        "type": "string",
+        "value": ""
+      },
+      "importlocal": {
         "type": "string",
         "value": ""
       },

@@ -28,7 +28,7 @@
   "RENAME_PRESET_SW_DOC":"Give a name for the preset",
   "NO_PRESET_USED":"NO preset used",
   "CONFIG_UPDATED":"The configuration has been successfully updated",
-  "FREQUENCY_RANGE":"Frequency Hz must be an integer [10-20000] in ",
+  "FREQUENCY_RANGE":"Frequency Hz must be a float [10-20000] in ",
   "GAIN_RANGE":"Gain must be a float [-20-20] in ",
   "Q_RANGE":"Coefficient Q must be a float [0.1-15] in ",
   "SLOPE_RANGE":"Slope must be a integer [1-15] in ",
@@ -64,5 +64,9 @@
   "CHOOSE_EQ":"Choose headphone profil",
   "CLICK_TO_UPDATE_LIST":"Click to update list",
   "CHOOSE_HEADPHONE":"Choose your headphone",
-  "CLICK_TO_UPDATE_LIST_DESC": "Update headphones list from AutoEq"
+  "CLICK_TO_UPDATE_LIST_DESC": "Update headphones list from AutoEq",
+  "IMPORT_FROM_LOCAL":"Import a local EQ file",
+  "IMPORT_LOCAL":"Choose a local file",
+  "CHOOSE_LOCALEQ_DOC":"Choose txt file containing EQ settings",
+  "CHOOSE_LOCALEQ":"Select a file"
 }

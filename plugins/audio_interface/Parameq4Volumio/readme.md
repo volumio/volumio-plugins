@@ -64,6 +64,7 @@ nearly everythings
 May 1st 2021
 
 - Add gain setting for for each channel
+- Import EQ from local file
 
 April 29th 2021
 
