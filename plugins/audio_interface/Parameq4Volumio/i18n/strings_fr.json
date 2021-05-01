@@ -1,7 +1,6 @@
 {
   "EQ": "Egaliseur",
-  "EQ_DOC": "<h1>test</h1><img src='/data/plugins/audio_interface/Parameq4Volumio/graphe.png;charset=utf-8,base64'/>",
-  "EQSCOPE":"Portée de l'égaliseur",
+  "EQ_DOC": "<h4>Valeurs pour égaliseur</h4><br><br>Les valeurs sont séparées par des virgules : \",\"</br>Avec Peaking :<br>Frequence(Hz),gain(dB), Q </li><ul><li>ex 250,-11,2.6</ul></li></br><br>Avec LowShelf et HighShelf :<br>Frequence(Hz), gain(dB), slope(dB/octave) </li><ul><li>ex 1250,12,11</ul></li></br><br>Avec Notch :<br>Frequence(Hz),Q </li><ul><li>ex 1250,5</ul></li></br><br>Avec Lowpass et Highpass :<br>Frequence de coupure(Hz), Q-Value</li><ul><li>ex 12,2</ul></li></br><br>",  "EQSCOPE":"Portée de l'égaliseur",
   "EQSCOPE_DOC":"Définie la portée de l'égaliseur:  L, R or L&R channels",
   "TYPEEQ_DOC":"Choisissez le type d'égaliseur. Possible: PEAKING, LOWSHELF, HIGHSHELF, HIGHPASS, LOWPASS, NOTCH",
   "GAIN_EQUALIZER":"Egaliseur",
