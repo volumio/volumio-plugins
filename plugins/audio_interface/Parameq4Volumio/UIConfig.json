@@ -58,7 +58,9 @@
           "eq13",
           "type14",
           "scope14",
-          "eq14"
+          "eq14",
+          "leftlevel",
+          "rightlevel"
         ]
       },
       "content": [
@@ -735,6 +737,52 @@
           }
         },
         {
+          "id": "leftlevel",
+          "element": "equalizer",
+          "label": "TRANSLATE.LEFTLEVEL",
+          "doc": "TRANSLATE.LEFTLEVEL_DESC",
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          },
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": "-20",
+                "max": "0",
+                "step": "0.1",
+                "value": "0",
+                "ticksLabels": ["dB"	],
+                "tooltip":"always"
+              }
+            ]
+          }
+        },
+          {
+            "id": "rightlevel",
+            "element": "equalizer",
+            "label": "TRANSLATE.RIGHTLEVEL",
+            "doc": "TRANSLATE.RIGHTLEVEL_DESC",
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            },
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": "-20",
+                "max": "0",
+                "step": "0.1",
+                "value": "0",
+                "ticksLabels": ["dB"	],
+                "tooltip":"always"
+              }
+            ]
+          }
+        },
+        {
           "id": "showeq",
           "element": "switch",
           "doc": "TRANSLATE.SHOW_SETTINGS_DOC",
@@ -863,6 +911,36 @@
             "endpoint": "audio_interface/Parameq4Volumio",
             "method": "updatelist",
             "data": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "element": "section",
+      "label": "Howto Wiki",
+      "icon": "fa-info-circle",
+      "content": [
+        {
+          "id": "updatelist",
+          "element": "button",
+          "label": "TRANSLATE.CLICK_TO_UPDATE_LIST",
+          "description": "TRANSLATE.CLICK_TO_UPDATE_LIST_DESC",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/Parameq4Volumio",
+            "method": "displayfilters",
+            "data": []
+          }
+        },
+        {
+          "id": "wikilink",
+          "element": "button",
+          "label": "TRANSLATE.OPEN_WIKI",
+          "doc": "TRANSLATE.DOC_OPENW",
+          "onClick": {
+            "type": "openUrl",
+            "url": "http://192.168.1.80:8087"
           }
         }
       ]

@@ -1,4 +1,4 @@
-April 29th 2021
+May 1st 2021
 
 
 ##  For Volumio >= 3.054
@@ -60,6 +60,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 1st 2021
+
+- Add gain setting for for each channel
 
 April 29th 2021
 

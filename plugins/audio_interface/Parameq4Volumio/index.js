@@ -105,6 +105,7 @@ Parameq.prototype.getUIConfig = function () {
       let ncontent = self.config.get('nbreq')
       var effect = self.config.get('effect')
       self.logger.info('effect ' + effect)
+
       if (effect == true) {
         uiconf.sections[nsections].content[43].hidden = true;
         uiconf.sections[nsections].content[42].hidden = false;
@@ -114,6 +115,7 @@ Parameq.prototype.getUIConfig = function () {
         uiconf.sections[nsections].content[43].hidden = false;
 
       }
+
       /*
             var showeq = self.config.get('showeq');
             if (showeq == false) {
@@ -222,6 +224,14 @@ Parameq.prototype.getUIConfig = function () {
       value = self.config.get('scope14');
       self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.label', value);
+
+
+
+      uiconf.sections[0].content[46].config.bars[0].value = self.config.get('leftlevel')
+
+
+      uiconf.sections[0].content[47].config.bars[0].value = self.config.get('rightlevel')
+
 
       /*
             value = self.config.get('eqpresetsaved');
@@ -462,6 +472,8 @@ Parameq.prototype.createCamilladspfile = function () {
       var scopec, scoper;
       var nbreq = (self.config.get('nbreq'))
       var effect = self.config.get('effect')
+      var leftlevel = self.config.get('leftlevel')
+      var rightlevel = self.config.get('rightlevel')
 
       var gainresult;
 
@@ -616,16 +628,18 @@ Parameq.prototype.createCamilladspfile = function () {
           self.config.set('gainapplied', gainclipfree)
         }
       };
+      var leftgain = (+gainclipfree + (+leftlevel))
+      var rightgain = (+gainclipfree + +rightlevel)
 
       self.logger.info(result)
 
-      self.logger.info('gain applied ' + gainclipfree)
+      self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
 
       let conf = data.replace("${resulteq}", result)
-        .replace("${gain}", (gainclipfree))
-        .replace("${gain}", (gainclipfree))
-        .replace("${pipelineL}", pipelinelr)
-        .replace("${pipelineR}", pipelinerr)
+        .replace("${gain}", leftgain)
+          .replace("${gain}", rightgain)
+            .replace("${pipelineL}", pipelinelr)
+            .replace("${pipelineR}", pipelinerr)
         ;
       fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
@@ -738,6 +752,9 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(typec, data[typec].value);
     self.config.set(scopec, data[scopec].value);
     self.config.set(eqc, data[eqc]);
+    self.config.set('leftlevel', data.leftlevel);
+    self.config.set('rightlevel', data.rightlevel);
+
     self.config.set('usethispreset', 'no preset used')
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
   }
@@ -873,7 +890,6 @@ Parameq.prototype.importeq = function (data) {
   self.convertimportedeq();
   return defer.promise;
 };
-
 
 Parameq.prototype.convertimportedeq = function (data) {
   const self = this;

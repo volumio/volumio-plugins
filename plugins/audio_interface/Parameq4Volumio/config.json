@@ -39,6 +39,14 @@
         "type": "number",
         "value": "1"
     },
+    "leftlevel": {
+        "type": "number",
+        "value": "0"
+    },
+    "rightlevel": {
+        "type": "number",
+        "value": "0"
+    },
     "effect": {
         "type": "boolean",
         "value": true
