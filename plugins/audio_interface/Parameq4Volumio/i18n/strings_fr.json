@@ -66,6 +66,6 @@
   "CLICK_TO_UPDATE_LIST_DESC": "Mettre à jour la listes des casques depuis AutoEq",
   "IMPORT_FROM_LOCAL":"Importer un fichier local",
   "IMPORT_LOCAL":"Charger le fichier",
-  "CHOOSE_LOCALEQ_DOC":"Choisissez un fichier texte qui contient les paramètres d'EQ",
+  "CHOOSE_LOCALEQ_DOC":"Choisissez un fichier texte qui contient les paramètres d'EQ. Les fichiers doivent être dans /data/INTERNAL/Parameq4Volumio/",
   "CHOOSE_LOCALEQ":"Choisissez le fichier"
 }

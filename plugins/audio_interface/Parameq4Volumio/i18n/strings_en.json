@@ -67,6 +67,6 @@
   "CLICK_TO_UPDATE_LIST_DESC": "Update headphones list from AutoEq",
   "IMPORT_FROM_LOCAL":"Import a local EQ file",
   "IMPORT_LOCAL":"Choose a local file",
-  "CHOOSE_LOCALEQ_DOC":"Choose txt file containing EQ settings",
+  "CHOOSE_LOCALEQ_DOC":"Choose txt file containing EQ settings. Files must be in /data/INTERNAL/Parameq4Volumio/",
   "CHOOSE_LOCALEQ":"Select a file"
 }

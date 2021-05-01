@@ -2,6 +2,7 @@
 LIB=/data/plugins/audio_interface/Parameq4Volumio
 TARGET = $libasound_module_pcm_cdsp
 mkdir /data/INTERNAL/Parameq4Volumio
+cp /data/plugins/audio_interface/Parameq4Volumio/testEQ.txt /data/INTERNAL/Parameq4Volumio/
 echo "Installing/Parameq4Volumio dependencies"
 
 echo "remove previous configuration"
