@@ -922,7 +922,7 @@ Parameq.prototype.importlocal = function (data) {
   const self = this;
   let defer = libQ.defer();
   let file = data['importlocal'].value;
-  if ((file == '') || (file =='select a file')) {
+  if ((file == '') || (file == 'select a file')) {
     self.commandRouter.pushToastMessage('error', 'Choose a file')
 
     return;
@@ -944,32 +944,39 @@ Parameq.prototype.convertimportedeq = function () {
     filepath = ('/tmp/EQfile.txt');
 
   } else {
-    filepath = ('/data/INTERNAL/Parameq4Volumio/'+ EQfilef);
+    filepath = ('/data/INTERNAL/Parameq4Volumio/' + EQfilef);
 
   }
   try {
-    // EQfile = fs.readFileSync('/tmp/EQfile.txt', "utf8");
     EQfile = fs.readFileSync(filepath, "utf8");
 
     var o = 1;
-
-    var result = (EQfile.replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ',').split('\n'));
+    var nbreq = 0;
+    var result = (EQfile.split('\n'));
     for (o; o < result.length - 1; o++) {
-      var eqv = (result[o]);
-      var param = eqv.split(',')
-      // console.log(param)
-      var eqs = (param[1] + ',' + param[2] + ',' + param[3])
-      var typec = 'type' + o;
-      var scopec = 'scope' + o;
-      var eqc = 'eq' + o;
+      if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && (result[o].indexOf("PK") != -1)) {
+        var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
+        self.logger.info('filter in line ' + o + lresult)
 
-      self.config.set(typec, 'Peaking');
-      self.config.set(scopec, 'L+R');
-      self.config.set(eqc, eqs);
-      self.config.set("nbreq", o);
-      self.config.set('effect', true)
-      self.logger.info('number of eq o = : ' + o + eqs);
+        var eqv = (lresult);
+        var param = eqv.split(',')
+        // console.log(param)
+        var eqs = (param[1] + ',' + param[2] + ',' + param[3])
+        var typec = 'type' + nbreq;
+        var scopec = 'scope' + nbreq;
+        var eqc = 'eq' + nbreq;
+        nbreq = nbreq + 1;
+        self.config.set(typec, 'Peaking');
+        self.config.set(scopec, 'L+R');
+        self.config.set(eqc, eqs);
+        self.config.set("nbreq", nbreq);
+        self.config.set('effect', true)
+        self.logger.info('number of eq  = : ' + nbreq + eqs);
+        self.config.set('usethispreset', 'no preset used')
 
+      } else {
+        // self.logger.info('No usable filter')
+      }
     }
   } catch (err) {
     self.logger.info('failed to read EQ file ' + err);

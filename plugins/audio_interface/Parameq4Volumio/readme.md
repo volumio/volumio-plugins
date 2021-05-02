@@ -20,7 +20,8 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 - More than 3800 headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
 - import for local EQ file (must be in /data/INTERNAM/Parameq4Volumio/)
 
-Data follow this format (max 14 bands)
+Data follow this format (max 14 bands). Only PK (peaking) filters are imported. From REW, export 'filter settings as text' in Filter tasks tab.
+
 ```
 Test file for import. This syntaxe must be used. Add Left and right channel EQ then choose the scope after import
 Filter 4: ON PK Fc 48.05 Hz Gain -0.70 dB Q 23.967
@@ -31,7 +32,7 @@ Filter 8: ON PK Fc 62.30 Hz Gain -1.20 dB Q 22.931
 Filter 9: ON PK Fc 133.5 Hz Gain -4.80 dB Q 4.247
 Filter 10: ON PK Fc 178.5 Hz Gain 4.10 dB Q 2.002
 Filter 11: ON PK Fc 249.0 Hz Gain -2.80 dB Q 8.261
-Filter 2: ON PK Fc 57.00 Hz Gain -5.30 dB Q 3.902
+Filter 1: ON PK Fc 57.00 Hz Gain -5.30 dB Q 3.902
 Filter 2: ON PK Fc 134.5 Hz Gain -5.70 dB Q 3.683
 Filter 3: ON PK Fc 166.0 Hz Gain -4.90 dB Q 2.129
 Filter 4: ON PK Fc 272.0 Hz Gain 5.30 dB Q 1.002
@@ -78,6 +79,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 2nd 2021
+
+- improve import from REW EQ
 
 May 1st 2021
 
