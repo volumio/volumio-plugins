@@ -1,0 +1,30 @@
+{
+	"name": "hotelradio",
+	"version": "1.0.0",
+	"description": "hotelradio.fm plugin for Volumio2",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/volumio/hotelradio-plugin.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/volumio/hotelradio-plugin/issues"
+	},
+	"homepage": "https://github.com/volumio/hotelradio-plugin#readme",
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"public-ip": "^4.0.2",
+		"unirest": "^0.6.0",
+		"v-conf": "^1.4.2"
+	},
+	"volumio_info": {
+		"plugin_type": "music_service",
+		"boot_priority": 100
+	}
+}

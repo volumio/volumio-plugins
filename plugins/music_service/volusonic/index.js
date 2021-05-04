@@ -4,9 +4,10 @@ var libQ = require('kew');
 var libNet = require('net');
 var exec = require('child_process').exec;
 var config = new(require('v-conf'))();
-var volusonicApi = require('./volusonicAPI');
+var backend = require('./backend');
 var fs = require('fs');
 var myUri = "";
+var semver = require('semver');
 
 module.exports = ControllerVolusonic;
 
@@ -34,7 +35,7 @@ ControllerVolusonic.prototype.onStart = function() {
   var defer = libQ.defer();
 
 
-  self.api = new volusonicApi(self.commandRouter.logger, self.config);
+  self.backend = new backend(self.commandRouter.logger, self.config);
   self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
   self.commandRouter.loadI18nStrings();
@@ -68,7 +69,7 @@ ControllerVolusonic.prototype.resetPlugin = function() {
   var defer = libQ.defer();
 
   self.commandRouter.volumioClearQueue();
-  self.api.cacheReset();
+  self.backend.cacheReset();
   //TO DO - FIND A WAY TO SET NAV TO HOME IN BROWSE PANNEL
 
   defer.resolve();
@@ -112,6 +113,7 @@ ControllerVolusonic.prototype.getUIConfig = function() {
       uiconf.sections[0].content[0].value = self.config.get('server');
       uiconf.sections[0].content[1].value = self.config.get('username');
       uiconf.sections[0].content[2].value = self.config.get('auth');
+      uiconf.sections[0].content[3].value = self.config.get('salt');
 
       uiconf.sections[1].content[0].value = findOption(self.config.get('transcode'), uiconf.sections[1].content[0].options);
       uiconf.sections[1].content[1].value = findOption(self.config.get('listsSize'), uiconf.sections[1].content[1].options);
@@ -160,9 +162,10 @@ ControllerVolusonic.prototype.savePluginCredentials = function(data) {
 
   self.config.set('server', data['server']);
   self.config.set('username', data['username']);
-  self.config.set('auth', self.api.getAuth(data['username'], data['auth']));
+  self.config.set('salt', data['salt']);
+  self.config.set('auth', self.backend.getAuth(data['username'], data['auth'], data['salt']));
 
-  var result = self.api.submitQuery('ping?')
+  var result = self.backend.submitQuery('ping.view?')
     .then(function(result) {
       var msg;
       var tit;
@@ -248,7 +251,7 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
   var uriParts = curUri.split('/');
   var defer = libQ.defer();
 
-  if (self.config.get('path')){
+  if (self.config.get('path')) {
     if ((curUri == 'volusonic') && (myUri != "") && (myUri.split('/').length > 2)) {
       curUri = myUri;
     } else {
@@ -258,12 +261,13 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
 
   var uriParts = curUri.split('/');
 
-  var ping = self.api.submitQuery('ping?')
+  var ping = self.backend.submitQuery('ping.view?')
     .then(function(ping) {
       if (ping['subsonic-response'].status == 'ok') {
+        var ApiVersion = ping['subsonic-response'].version;
         if (curUri.startsWith('volusonic')) {
           if (curUri == 'volusonic') {
-            response = libQ.resolve({
+            var nav = ({
               navigation: {
                 prev: {
                   uri: '/'
@@ -312,15 +316,6 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
                     {
                       service: 'volusonic',
                       type: 'item-no-menu',
-                      title: self.commandRouter.getI18nString('ARTISTS'),
-                      artist: '',
-                      album: '',
-                      icon: 'fa fa-microphone',
-                      uri: 'volusonic/artists'
-                    },
-                    {
-                      service: 'volusonic',
-                      type: 'item-no-menu',
                       title: self.commandRouter.getI18nString('PLAYLISTS'),
                       artist: '',
                       album: '',
@@ -340,6 +335,18 @@ ControllerVolusonic.prototype.handleBrowseUri = function(curUri) {
                 }]
               }
             });
+            if (semver.satisfies(ApiVersion, '>=1.11.0')) {
+              nav.navigation['lists'][0]['items'].push({
+                service: 'volusonic',
+                type: 'item-no-menu',
+                title: self.commandRouter.getI18nString('ARTISTS'),
+                artist: '',
+                album: '',
+                icon: 'fa fa-microphone',
+                uri: 'volusonic/artists'
+              });
+            }
+            response = libQ.resolve(nav);
           } else if (curUri.startsWith('volusonic/index')) {
             if (curUri == 'volusonic/index') {
               response = self.listMusicFolders(uriParts, curUri);
@@ -529,7 +536,7 @@ ControllerVolusonic.prototype.playlistEntrys = function(uriParts, curUri) {
   var id = uriParts.pop();
   var params = 'id=' + id;
 
-  var result = self.api.get('getPlaylist', id, params)
+  var result = self.backend.get('getPlaylist', id, params)
     .then(function(result) {
       var items = [];
       var playlist = result['subsonic-response']['playlist'];
@@ -572,78 +579,84 @@ ControllerVolusonic.prototype.showArtist = function(uriParts, curUri) {
   infos.then(function(infos) {
     var artist = self._artist(id);
     artist.then(function(artist) {
-      var top = self._topSongs(encodeURIComponent(artist.name), '10');
-      top.then(function(top) {
-        //head section
-        info.title = artist.name;
-        if (infos.mediumImageUrl !== undefined) {
-          info.albumart = infos.mediumImageUrl;
-        } else {
-          info.albumart = self.config.get('server') + '/rest/getCoverArt?id=' + artist.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth');
-        }
-        //bio section
-        var meta = "";
-        if ((infos.biography !== undefined) && (self.config.get('metas'))) meta = infos.biography;
-        var bio = {
-          title: meta,
-          type: 'folder',
-          availableListViews: ['list', 'grid'],
-          items: [{
-            service: 'volusonic',
-            type: 'song',
-            icon: 'fa fa-bolt',
-            title: self.commandRouter.getI18nString('START_RADIO'),
-            uri: 'volusonic/radio/' + id,
-          }]
-        }
-        nav.navigation['lists'].push(bio);
-        //top songs section
-        if (top.song !== undefined) {
-          var sgs = [];
-          top['song'].forEach(function(song) {
-            sgs.push(self._formatSong(song, curUri));
-          });
-          var topSongs = {
-            title: self.commandRouter.getI18nString('TOP_SONGS'),
-            type: 'song',
-            availableListViews: ['list', 'grid'],
-            items: sgs
+      var artistArt = self._getArtistArt(encodeURIComponent(artist.name));
+      artistArt.then(function(artistArt) {
+        var top = self._topSongs(encodeURIComponent(artist.name), '10');
+        top.then(function(top) {
+          //head section
+          info.title = artist.name;
+          info.albumart = artistArt;
+          //bio section
+          var meta = "";
+          if ((infos.biography !== undefined) && (self.config.get('metas'))) {
+            if (typeof infos.biography == "string") meta = infos.biography; //ampache hack
           }
-          nav.navigation['lists'].push(topSongs);
-        }
-        //albums section
-        if ((artist.album !== undefined) || (artist.child !== undefined)) {
-          var alb = "child";
-          if (self.config.get('ID3')) alb = "album";
-          var albs = [];
-          artist[alb].forEach(function(album) {
-            albs.push(self._formatAlbum(album, curUri));
-          });
-          var albums = {
-            title: self.commandRouter.getI18nString('ALBUMS'),
+          var bio = {
+            title: meta,
             type: 'folder',
             availableListViews: ['list', 'grid'],
-            items: albs
+            items: [{
+              service: 'volusonic',
+              type: 'song',
+              icon: 'fa fa-bolt',
+              title: self.commandRouter.getI18nString('START_RADIO'),
+              uri: 'volusonic/radio/' + id,
+            }]
           }
-          nav.navigation['lists'].push(albums);
-        }
-        //similar artists
-        if (infos.similarArtist !== undefined) {
-          var arts = [];
-          infos['similarArtist'].forEach(function(similar) {
-            arts.push(self._formatArtist(similar, self._prevUri(curUri)));
-          });
-          var similars = {
-            title: self.commandRouter.getI18nString('SIMILAR_ARTISTS'),
-            type: 'folder',
-            availableListViews: ['list', 'grid'],
-            items: arts
+          nav.navigation['lists'].push(bio);
+          //top songs section
+          if (top.song !== undefined) {
+            var sgs = [];
+            top['song'].forEach(function(song) {
+              sgs.push(self._formatSong(song, curUri));
+            });
+            var topSongs = {
+              title: self.commandRouter.getI18nString('TOP_SONGS'),
+              type: 'song',
+              availableListViews: ['list', 'grid'],
+              items: sgs
+            }
+            nav.navigation['lists'].push(topSongs);
           }
-          nav.navigation['lists'].push(similars);
-        }
+          //albums section
+          if ((artist.album !== undefined) || (artist.child !== undefined)) {
+            var alb = "child";
+            if (self.config.get('ID3')) alb = "album";
+            var albs = [];
+            artist[alb].forEach(function(album) {
+              albs.push(self._formatAlbum(album, curUri));
+            });
+            var albums = {
+              title: self.commandRouter.getI18nString('ALBUMS'),
+              type: 'folder',
+              availableListViews: ['list', 'grid'],
+              items: albs
+            }
+            nav.navigation['lists'].push(albums);
+          }
+          //similar artists
+          if (infos.similarArtist !== undefined) {
+            var arts = [];
 
-        nav.navigation['info'] = info;
-        defer.resolve(nav);
+            if (infos['similarArtist']['0'] !== undefined) { //ampache hack
+              infos['similarArtist'].forEach(function(similar) {
+                arts.push(self._formatArtist(similar, self._prevUri(curUri)));
+              });
+            } else {
+              arts.push(self._formatArtist(infos['similarArtist'], self._prevUri(curUri)));
+            }
+            var similars = {
+              title: self.commandRouter.getI18nString('SIMILAR_ARTISTS'),
+              type: 'folder',
+              availableListViews: ['list', 'grid'],
+              items: arts
+            }
+            nav.navigation['lists'].push(similars);
+          }
+
+          nav.navigation['info'] = info;
+          defer.resolve(nav);
+        });
       });
     });
   });
@@ -660,7 +673,7 @@ ControllerVolusonic.prototype._artist = function(id) {
   var artist = "directory";
   if (self.config.get('ID3')) artist = "artist";
 
-  var result = self.api.get(getArtist, id, "id=" + id)
+  var result = self.backend.get(getArtist, id, "id=" + id)
     .then(function(result) {
       defer.resolve(result['subsonic-response'][artist]);
     })
@@ -669,14 +682,31 @@ ControllerVolusonic.prototype._artist = function(id) {
     });
   return defer.promise;
 }
+ControllerVolusonic.prototype._getArtistArt = function(artist) {
+  var self = this;
+  var defer = libQ.defer();
+
+  var result = self.backend.getArtistArt(artist)
+    .then(function(result) {
+      defer.resolve(result.data);
+    })
+    .fail(function() {
+      defer.resolve("/albumart");
+    });
+  return defer.promise;
+}
 
 ControllerVolusonic.prototype._topSongs = function(artist, count) {
   var self = this;
   var defer = libQ.defer();
 
-  var result = self.api.get('getTopSongs', artist + count, "artist=" + artist + "&count=" + count)
+  var result = self.backend.get('getTopSongs', artist + count, "artist=" + artist + "&count=" + count)
     .then(function(result) {
-      defer.resolve(result['subsonic-response']['topSongs']);
+      if (result['subsonic-response']['topSongs'] !== undefined) { //lms hack
+        defer.resolve(result['subsonic-response']['topSongs']);
+      } else {
+        defer.resolve(result);
+      }
     })
     .fail(function(result) {
       defer.reject(new Error('_topSongs'));
@@ -694,8 +724,13 @@ ControllerVolusonic.prototype._artistInfos = function(id) {
   var listInfo = 'artistInfo';
   if (self.config.get('ID3')) listInfo = "artistInfo2";
 
-  var result = self.api.get(getInfo, id, "id=" + id)
+  var result = self.backend.get(getInfo, id, "id=" + id)
     .then(function(result) {
+      if (result['subsonic-response']['artistInfo2'] !== undefined) { //ampache hack
+        listInfo = "artistInfo2"; //ampache hack
+      } else { //ampache hack
+        listInfo = "artistInfo" //ampache hack
+      } //ampache hack
       defer.resolve(result['subsonic-response'][listInfo]);
     })
     .fail(function(result) {
@@ -714,7 +749,7 @@ ControllerVolusonic.prototype._album = function(id) {
   var container = 'directory';
   if (self.config.get('ID3')) container = "album";
 
-  var result = self.api.get(getAlbum, id, "id=" + id)
+  var result = self.backend.get(getAlbum, id, "id=" + id)
     .then(function(result) {
       defer.resolve(result['subsonic-response'][container]);
     })
@@ -741,7 +776,7 @@ ControllerVolusonic.prototype.listTracks = function(uriParts, curUri) {
   var item = 'child';
   if (self.config.get('ID3')) item = "song";
 
-  var result = self.api.get(getAlbum, id, params)
+  var result = self.backend.get(getAlbum, id, params)
     .then(function(result) {
       var album = result['subsonic-response'][container];
       var items = [];
@@ -749,17 +784,17 @@ ControllerVolusonic.prototype.listTracks = function(uriParts, curUri) {
         items.push(self._formatSong(song, curUri));
       });
       var play = self._formatPlay(album.name, album.artist, album.coverArt, album.year, album.duration, items, self._prevUri(curUri), curUri);
-      var albumInfos = self._albumInfos(id);
-      albumInfos.then(function(albumInfos) {
-        if (albumInfos.mediumImageUrl !== undefined && albumInfos.mediumImageUrl !== "") {
-          play.navigation['info'].albumart = albumInfos.mediumImageUrl;
-        }
-        if ((albumInfos.notes !== undefined) && (self.config.get('metas'))) {
-          play.navigation.lists[0].title = albumInfos.notes;
-          play.navigation.lists[0].type = 'folder';
-        }
-        defer.resolve(play);
-      });
+      var albumInfos = self._albumInfos(id)
+        .then(function(albumInfos) {
+          if ((albumInfos.notes !== undefined) && (self.config.get('metas'))) {
+            play.navigation.lists[0].title = albumInfos.notes;
+            play.navigation.lists[0].type = 'folder';
+          }
+          defer.resolve(play);
+        })
+        .fail(function() {
+          defer.resolve(play);
+        });
     })
     .fail(function(result) {
       defer.reject(new Error('listTracks'));
@@ -775,9 +810,13 @@ ControllerVolusonic.prototype._albumInfos = function(id) {
   if (self.config.get('ID3')) getInfo = "getAlbumInfo2";
 
 
-  var result = self.api.get(getInfo, id, "id=" + id)
+  var result = self.backend.get(getInfo, id, "id=" + id)
     .then(function(result) {
-      defer.resolve(result['subsonic-response']['albumInfo']);
+      if (result['subsonic-response']['albumInfo'] !== undefined) {
+        defer.resolve(result['subsonic-response']['albumInfo']);
+      } else {
+        defer.resolve(result['subsonic-response']);
+      }
     })
     .fail(function(result) {
       defer.reject(new Error('_albumInfos'));
@@ -804,7 +843,7 @@ ControllerVolusonic.prototype._formatPlay = function(album, artist, coverart, ye
         service: 'volusonic',
         artist: artist,
         album: album,
-        albumart: self.config.get('server') + '/rest/getCoverArt?id=' + coverart + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+        albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + coverart + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
         year: year,
         type: 'album',
         duration: parseInt(duration / 60) + 'mns'
@@ -820,7 +859,7 @@ ControllerVolusonic.prototype.listPlaylists = function(uriParts, curUri) {
 
   var params = '';
 
-  var result = self.api.get('getPlaylists', 'All', params)
+  var result = self.backend.get('getPlaylists', 'All', params)
     .then(function(result) {
       var items = [];
       result['subsonic-response']['playlists']['playlist'].forEach(function(playlist) {
@@ -841,7 +880,7 @@ ControllerVolusonic.prototype.listPodcasts = function(uriParts, curUri) {
   var id = "All";
   var params = "includeEpisodes=no";
 
-  var result = self.api.get('getPodcasts', id, params)
+  var result = self.backend.get('getPodcasts', id, params)
     .then(function(result) {
       var items = [];
       result['subsonic-response']['podcasts']['channel'].forEach(function(podcast) {
@@ -862,7 +901,7 @@ ControllerVolusonic.prototype.podcastEpisodes = function(uriParts, curUri) {
   var id = uriParts.pop();
   var params = "id=" + id;
 
-  var result = self.api.get('getPodcasts', id, params)
+  var result = self.backend.get('getPodcasts', id, params)
     .then(function(result) {
       var items = [];
       result['subsonic-response']['podcasts']['channel']['0']['episode'].forEach(function(episode) {
@@ -895,7 +934,7 @@ ControllerVolusonic.prototype.listAlbums = function(uriParts, curUri) {
   var aList = 'albumList';
   if (self.config.get('ID3')) aList = "albumList2";
 
-  var result = self.api.get(getList, id, params)
+  var result = self.backend.get(getList, id, params)
     .then(function(result) {
       var items = [];
       result['subsonic-response'][aList]['album'].forEach(function(album) {
@@ -942,7 +981,7 @@ ControllerVolusonic.prototype._formatPodcastEpisode = function(episode, curUri) 
     title: episode.title,
     artist: new Date(episode.publishDate).toLocaleDateString(),
     album: episode.description,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + episode.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + episode.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
     uri: 'volusonic/track/' + episode.streamId + "C" + episode.channelId //we had the channelId so it can be passed to the queue (goto call)
   }
   return item;
@@ -955,7 +994,7 @@ ControllerVolusonic.prototype._formatSong = function(song, curUri) {
     type: 'song',
     title: song.title,
     artist: song.artist,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
     uri: 'volusonic/track/' + song.id,
   }
   return item;
@@ -969,7 +1008,7 @@ ControllerVolusonic.prototype._formatPodcast = function(podcast, curUri) {
     title: podcast.title,
     artist: podcast.description,
     album: "",
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + podcast.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + podcast.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
     icon: "",
     uri: curUri + '/' + podcast.id
   }
@@ -986,7 +1025,7 @@ ControllerVolusonic.prototype._formatAlbum = function(album, curUri) {
     title: tit + ' (' + new Date(album.created).getFullYear() + ')',
     artist: album.artist,
     album: "",
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + album.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + album.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
     icon: "",
     uri: curUri + '/' + album.id
   }
@@ -999,7 +1038,7 @@ ControllerVolusonic.prototype._formatPlaylist = function(playlist, curUri) {
     service: 'volusonic',
     type: 'folder',
     title: playlist.name + ' (' + new Date(playlist.created).getFullYear() + ')',
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + playlist.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + playlist.coverArt + '&' + self.getSetting('artSize') + '&' + self.config.get('auth'),
     icon: "",
     uri: curUri + '/' + playlist.id
   }
@@ -1038,7 +1077,7 @@ ControllerVolusonic.prototype._formatDirectory = function(folder, curUri) {
 ControllerVolusonic.prototype.listGenres = function(uriParts, curUri) {
   var self = this;
   var defer = libQ.defer();
-  var result = self.api.get('getGenres', 'All', '')
+  var result = self.backend.get('getGenres', 'All', '')
     .then(function(result) {
       var item;
       var items = [];
@@ -1086,7 +1125,7 @@ ControllerVolusonic.prototype.listArtists = function(uriParts, curUri) {
   var container = "indexes";
   if (self.config.get('ID3')) container = "artists";
 
-  var result = self.api.get(getArtists, 'Artists', '')
+  var result = self.backend.get(getArtists, 'Artists', '')
     .then(function(result) {
       var list = [];
       var item;
@@ -1128,7 +1167,7 @@ ControllerVolusonic.prototype.listMusicFolders = function(uriParts, curUri) {
   var self = this;
   var defer = libQ.defer();
 
-  var result = self.api.get('getMusicFolders', 'All', '')
+  var result = self.backend.get('getMusicFolders', 'All', '')
     .then(function(result) {
       var folder;
       var folders = [];
@@ -1156,7 +1195,7 @@ ControllerVolusonic.prototype.listIndexes = function(uriParts, curUri) {
 
   var container = "indexes";
 
-  var result = self.api.get('getIndexes', 'Indexes' + id, params)
+  var result = self.backend.get('getIndexes', 'Indexes' + id, params)
     .then(function(result) {
       var list = [];
       var item;
@@ -1204,7 +1243,7 @@ ControllerVolusonic.prototype.listMusicDirectory = function(uriParts, curUri) {
 
   var container = 'directory';
 
-  var result = self.api.get('getMusicDirectory', id, params)
+  var result = self.backend.get('getMusicDirectory', id, params)
     .then(function(result) {
       var directory = result['subsonic-response']['directory'];
       var items = [];
@@ -1230,7 +1269,7 @@ ControllerVolusonic.prototype.artistInfo = function(uriParts, curUri) {
 
   var getInfo = 'getArtistInfo';
   if (self.config.get('ID3')) getInfo = "getArtistInfo2";
-  var result = self.api.get(getInfo, id, 'id=' + id)
+  var result = self.backend.get(getInfo, id, 'id=' + id)
     .then(function(result) {
 
     })
@@ -1262,9 +1301,13 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
     } else {
       params = 'id=' + id;
     }
-    var result = self.api.get(command, id, params)
+    var result = self.backend.get(command, id, params)
       .then(function(result) {
-        song = result['subsonic-response']['song'];
+        if (result['subsonic-response']['song']['0'] !== undefined) { //ampache hack
+          song = result['subsonic-response']['song']['0'];
+        } else {
+          song = result['subsonic-response']['song'];
+        }
         var playable = self._getPlayable(song);
         if (channelId !== undefined) {
           playable.channelId = channelId;
@@ -1277,7 +1320,7 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
   } else if (uri.startsWith('volusonic/playlists')) {
     command = 'getPlaylist';
     params = 'id=' + id;
-    var result = self.api.get(command, id, params)
+    var result = self.backend.get(command, id, params)
       .then(function(result) {
         result['subsonic-response']['playlist']['entry'].forEach(function(song) {
           items.push(self._getPlayable(song));
@@ -1295,8 +1338,13 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
     if (self.config.get('ID3')) similar = "similarSongs2";
 
     params = 'id=' + id + "&count=500";
-    var result = self.api.get(command, id, params)
+    var result = self.backend.get(command, id, params)
       .then(function(result) {
+        if (result['subsonic-response']['similarSongs'] !== undefined) { //ampache hack
+          similar = "similarSongs"; //ampache hack
+        } else { //ampache hack
+          similar = "similarSongs2"; //ampache hack
+        } //ampache hack
         result['subsonic-response'][similar]['song'].forEach(function(song) {
           items.push(self._getPlayable(song));
         });
@@ -1333,7 +1381,7 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
     command = 'getRandomSongs';
     params = 'genre=' + id + "&size=" + self.getSetting('listsSize');
 
-    var result = self.api.get(command, id, params)
+    var result = self.backend.get(command, id, params)
       .then(function(result) {
         result['subsonic-response']['randomSongs']['song'].forEach(function(song) {
           items.push(self._getPlayable(song));
@@ -1366,7 +1414,7 @@ ControllerVolusonic.prototype.explodeUri = function(uri) {
 
 
     params = 'id=' + id;
-    var result = self.api.get(command, id, params)
+    var result = self.backend.get(command, id, params)
       .then(function(result) {
         result['subsonic-response'][container][item].forEach(function(song) {
           items.push(self._getPlayable(song));
@@ -1385,7 +1433,7 @@ ControllerVolusonic.prototype._getRecursiveTracks = function(id) {
   var defer = libQ.defer();
   var params = 'id=' + id;
 
-  var result = self.api.get('getMusicDirectory', id, params)
+  var result = self.backend.get('getMusicDirectory', id, params)
     .then(function(result) {
       var directory = result['subsonic-response']['directory'];
       var items = [];
@@ -1442,8 +1490,8 @@ ControllerVolusonic.prototype._getPlayable = function(song) {
     albumId: song.albumId,
     genre: song.genre,
     type: song.type,
-    albumart: self.config.get('server') + '/rest/getCoverArt?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
-    uri: self.config.get('server') + '/rest/stream?id=' + song.id + '&' + format + '&' + self.config.get('auth'),
+    albumart: self.config.get('server') + '/rest/getCoverArt.view?id=' + song.coverArt + '&size=' + self.getSetting('artSize') + '&' + self.config.get('auth'),
+    uri: self.config.get('server') + '/rest/stream.view?id=' + song.id + '&' + format + '&' + self.config.get('auth'),
     samplerate: bRate + " kbps",
     trackType: type,
     streaming: true
@@ -1451,14 +1499,13 @@ ControllerVolusonic.prototype._getPlayable = function(song) {
   return track;
 }
 
-
 ControllerVolusonic.prototype.getTrackInfo = function(uri) {
   var self = this;
   var deferred = libQ.defer();
   var uriParts = uri.split('/');
 
   if (uri.startsWith('volusonic/track')) {
-    var result = self.api.get('getSong', uriParts[2], 'id=' + uriParts[2])
+    var result = self.backend.get('getSong', uriParts[2], 'id=' + uriParts[2])
       .then(function(result) {
         var song = result['subsonic-response']['song'];
         defer.resolve(self._getPlayable(song));
@@ -1482,7 +1529,7 @@ ControllerVolusonic.prototype.search = function(query) {
   var sResult = "searchResult2";
   if (self.config.get('ID3')) sResult = "searchResult3";
 
-  var result = self.api.get(getSearch, id, params)
+  var result = self.backend.get(getSearch, id, params)
     .then(function(result) {
       var answer = [];
       var artists = [];

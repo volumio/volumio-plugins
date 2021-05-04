@@ -4,7 +4,7 @@ const libQ = require('kew');
 const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
-const Gpio = require('onoff').Gpio;
+const { Gpio } = require('onoff');
 const id = 'remotepi: ';
 var hwShutdown = false;
 var shutdownCtrl, initShutdown;
@@ -91,7 +91,8 @@ remotepi.prototype.getUIConfig = function () {
       uiconf.sections[0].content[0].value = self.config.get('enable_gpio17');
       defer.resolve(uiconf);
     })
-    .fail(function () {
+    .fail(function (e) {
+      self.logger.error(id + 'Could not fetch UI configuration: ' + e);
       defer.reject(new Error());
     });
   return defer.promise;
@@ -170,14 +171,13 @@ remotepi.prototype.dtctHwShutdown = function () {
 
 remotepi.prototype.modBootConfig = function (gpio17) {
   const self = this;
-  const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
-  const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
+  const kernelVersion = os.release().match(/[0-9]+/g);
   const configTxtBanner = '#### RemotePi lirc setting below: do not alter ####' + os.EOL;
   const searchexp = configTxtBanner + 'dtoverlay=.*';
-  let bootstring = (gpio17) ? 'dtoverlay=gpio-ir,gpio_pin=17' : 'dtoverlay=gpio-ir,gpio_pin=18';
+  let bootstring = gpio17 ? 'dtoverlay=gpio-ir,gpio_pin=17' : 'dtoverlay=gpio-ir,gpio_pin=18';
   let configFile = '/boot/userconfig.txt';
 
-  if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
+  if (Number(kernelVersion[0]) < 4 || (Number(kernelVersion[0]) === 4 && Number(kernelVersion[1]) < 19)) {
     bootstring = bootstring.replace('gpio-ir,gpio_pin', 'lirc-rpi,gpio_in_pin');
   }
   try {

@@ -7,7 +7,7 @@
                 "id": "minidlna_conf",
                 "element": "section",
                 "label": "TRANSLATE.MINIDLNA.MINIDLNA_CONF",
-                "icon": "fa-plug",
+                "icon": "fa-cogs",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"saveConf"},
                 "saveButton": {
                               "label": "TRANSLATE.MINIDLNA.SAVE",
@@ -16,6 +16,7 @@
                                       "media_dir_a",
                                       "media_dir_p",
                                       "media_dir_v",
+                                      "merge_media_dirs",
                                       "db_dir",
                                       "log_dir",
                                       "root_container",
@@ -30,6 +31,7 @@
                                       "album_art_names",
                                       "strict_dlna",
                                       "enable_tivo",
+                                      "tivo_discovery",
                                       "notify_interval",
                                       "minissdpdsocket",
                                       "force_sort_criteria",
@@ -42,7 +44,8 @@
                                       "loglevel_metadata",
                                       "loglevel_http",
                                       "loglevel_ssdp",
-                                      "loglevel_tivo"
+                                      "loglevel_tivo",
+                                      "wide_links"
                                       ]
                                },
                 "content": [
@@ -58,9 +61,9 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.AUDIO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.AUDIO_FOLDER",
-                             "value": "/mnt/",
+                             "value": "/mnt",
                              "attributes": [
-                                             {"placeholder": "/mnt/"}
+                                             {"placeholder": "/mnt"}
                                            ]
                              },
                              {
@@ -69,9 +72,9 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.PICTURE_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.PICTURE_FOLDER",
-                             "value": "/mnt/",
+                             "value": "/mnt",
                              "attributes": [
-                                             {"placeholder": "/mnt/"}
+                                             {"placeholder": "/mnt"}
                                            ]
                              },
                              {
@@ -80,10 +83,18 @@
                              "type":"text",
                              "doc": "TRANSLATE.MINIDLNA.VIDEO_FOLDER_DOC",
                              "label": "TRANSLATE.MINIDLNA.VIDEO_FOLDER",
-                             "value": "/mnt/",
+                             "value": "/mnt",
                              "attributes": [
-                                             {"placeholder": "/mnt/"}
+                                             {"placeholder": "/mnt"}
                                            ]
+                             },
+                             {
+                             "id": "merge_media_dirs",
+                             "element": "switch",
+                             "doc": "TRANSLATE.MINIDLNA.ENABLE_MERGE_MEDIA_DIRS_DOC",
+                             "label": "TRANSLATE.MINIDLNA.ENABLE_MERGE_MEDIA_DIRS",
+                             "visibleIf": {"field": "show_more", "value": true},
+                             "value": false
                              },
                              {
                              "id": "db_dir",
@@ -115,7 +126,7 @@
                              "doc": "TRANSLATE.MINIDLNA.ROOT_CONTAINER_DOC",
                              "label": "TRANSLATE.MINIDLNA.ROOT_CONTAINER",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "." ,"label": "TRANSLATE.MINIDLNA.STANDARD_CONTAINER"},
+                             "value": {"value": ".", "label": "TRANSLATE.MINIDLNA.STANDARD_CONTAINER"},
                              "options": [
                                           {
                                           "value": ".",
@@ -136,6 +147,118 @@
                                           {
                                           "value": "V",
                                           "label": "TRANSLATE.MINIDLNA.VIDEO"
+                                          },
+                                          {
+                                          "value": "64",
+                                          "label": "TRANSLATE.MINIDLNA.BROWSEDIR_ID"
+                                          },
+                                          {
+                                          "value": "1",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_ID"
+                                          },
+                                          {
+                                          "value": "2",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_ID"
+                                          },
+                                          {
+                                          "value": "3",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_ID"
+                                          },
+                                          {
+                                          "value": "1$4",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_ALL_ID"
+                                          },
+                                          {
+                                          "value": "1$5",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_GENRE_ID"
+                                          },
+                                          {
+                                          "value": "1$6",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_ARTIST_ID"
+                                          },
+                                          {
+                                          "value": "1$7",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_ALBUM_ID"
+                                          },
+                                          {
+                                          "value": "1$F",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_PLIST_ID"
+                                          },
+                                          {
+                                          "value": "1$14",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_DIR_ID"
+                                          },
+                                          {
+                                          "value": "1$100",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_CONTRIB_ARTIST_ID"
+                                          },
+                                          {
+                                          "value": "1$107",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_ALBUM_ARTIST_ID"
+                                          },
+                                          {
+                                          "value": "1$108",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_COMPOSER_ID"
+                                          },
+                                          {
+                                          "value": "1$101",
+                                          "label": "TRANSLATE.MINIDLNA.MUSIC_RATING_ID"
+                                          },
+                                          {
+                                          "value": "2$8",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_ALL_ID"
+                                          },
+                                          {
+                                          "value": "2$9",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_GENRE_ID"
+                                          },
+                                          {
+                                          "value": "2$A",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_ACTOR_ID"
+                                          },
+                                          {
+                                          "value": "2$E",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_SERIES_ID"
+                                          },
+                                          {
+                                          "value": "2$10",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_PLIST_ID"
+                                          },
+                                          {
+                                          "value": "2$15",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_DIR_ID"
+                                          },
+                                          {
+                                          "value": "2$200",
+                                          "label": "TRANSLATE.MINIDLNA.VIDEO_RATING_ID"
+                                          },
+                                          {
+                                          "value": "3$B",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_ALL_ID"
+                                          },
+                                          {
+                                          "value": "3$C",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_DATE_ID"
+                                          },
+                                          {
+                                          "value": "3$D",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_ALBUM_ID"
+                                          },
+                                          {
+                                          "value": "3$D2",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_CAMERA_ID"
+                                          },
+                                          {
+                                          "value": "3$11",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_PLIST_ID"
+                                          },
+                                          {
+                                          "value": "3$16",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_DIR_ID"
+                                          },
+                                          {
+                                          "value": "3$300",
+                                          "label": "TRANSLATE.MINIDLNA.IMAGE_RATING_ID"
                                           }
                                         ]
                              },
@@ -263,6 +386,24 @@
                              "value": false
                              },
                              {
+                             "id": "tivo_discovery",
+                             "element": "select",
+                             "doc": "TRANSLATE.MINIDLNA.TIVO_DISCOVERY_DOC",
+                             "label": "TRANSLATE.MINIDLNA.TIVO_DISCOVERY",
+                             "visibleIf": {"field": "show_more", "value": true},
+                             "value": {"value": "bonjour", "label": "TRANSLATE.MINIDLNA.BONJOUR"},
+                             "options": [
+                                          {
+                                          "value": "bonjour",
+                                          "label": "TRANSLATE.MINIDLNA.BONJOUR"
+                                          },
+                                          {
+                                          "value": "beacon",
+                                          "label": "TRANSLATE.MINIDLNA.BEACON"
+                                          }
+                                        ]
+                             },
+                             {
                              "id": "notify_interval",
                              "element": "input",
                              "type": "number",
@@ -316,7 +457,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_GENERAL",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -350,7 +491,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_ARTWORK",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -384,7 +525,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_DATABASE",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -418,7 +559,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_INOTIFY",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -452,7 +593,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_SCANNER",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -486,7 +627,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_METADATA",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -520,7 +661,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_HTTP",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -554,7 +695,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_SSDP",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -588,7 +729,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_TIVO",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -615,6 +756,14 @@
                                           "label": "TRANSLATE.MINIDLNA.LOGLEVEL_DEBUG"
                                           }
                                         ]
+                             },
+                             {
+                             "id": "wide_links",
+                             "element": "switch",
+                             "doc": "TRANSLATE.MINIDLNA.ENABLE_WIDE_LINKS_DOC",
+                             "label": "TRANSLATE.MINIDLNA.ENABLE_WIDE_LINKS",
+                             "visibleIf": {"field": "show_more", "value": true},
+                             "value": false
                              }
                            ]
                 },
@@ -622,7 +771,7 @@
                 "id": "force_rescan",
                 "element": "section",
                 "label": "TRANSLATE.MINIDLNA.FORCE_RESCAN",
-                "icon": "fa-spinner",
+                "icon": "fa-refresh",
                 "content": [
                               {
                               "id": "rescan",

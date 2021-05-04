@@ -20,9 +20,9 @@
  "LABELPS2":"my preset 2",
  "LABELPS3":"my preset 3",
  "SAVE":"Save",
- "TOASTSUCCESSAPPLY":"New equalizer successfully applied"
-
-
- 
-
+ "TOASTSUCCESSAPPLY":"New equalizer successfully applied",
+ "SAVECURRENTEQ": "Save current Equalizer in :",
+ "DOCSAVECURRENTEQ": "Save current Equalizer to create your own custom preset",
+ "REBOOT_TITLE" : "Reboot Needed",
+ "REBOOT" : "You have to reboot or you may experience no sound or anormal sound"
 }

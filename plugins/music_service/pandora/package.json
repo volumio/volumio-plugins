@@ -9,7 +9,7 @@
 	"author": "truckershitch",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "pandora",
+		"prettyName": "Pandora",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "music_service"
 	},

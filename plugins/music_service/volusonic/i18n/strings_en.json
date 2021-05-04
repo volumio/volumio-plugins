@@ -47,5 +47,7 @@
   "METAS":"Show biographies and albums infos from subsonic",
   "INDEXS":"Index",
   "PATH_DOC":"Memorize the Volusonic path for the next navigation",
-  "PATH":"Persistent path"
+  "PATH":"Persistent path",
+  "SALT":"Salt + md5 encoded password",
+  "SALT_DOC":"Recommended. Some API implementations (ie:owncloud/nextcloud) does not support it"
 }

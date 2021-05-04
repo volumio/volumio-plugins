@@ -1,11 +1,9 @@
 #!/bin/bash
 
-echo "Uninstalling miniDLNA dependencies"
-
-echo "Removing miniDLNA"
+echo "Removing dependencies"
 sudo apt-get -y purge --auto-remove minidlna
 
-echo "Deleting /etc/minidlna.conf"
+echo "Deleting /data/minidlna.conf"
 sudo rm /data/minidlna.conf
 
 echo "Deleting systemd unit /etc/systemd/system/minidlna.service"

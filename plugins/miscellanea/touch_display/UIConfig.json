@@ -58,7 +58,10 @@
                                       "maxBr",
                                       "brightnessCurve",
                                       "midBr",
-                                      "manualBr"
+                                      "manualBr",
+                                      "br1StartTime",
+                                      "manualBr2",
+                                      "br2StartTime"
                                       ]
                               },
                 "content": [
@@ -152,6 +155,51 @@
                                              {"max": {}}
                                            ],
                              "value": 255,
+                             "visibleIf": {"field": "autoMode", "value": false}
+                             },
+                             {
+                             "id": "br1StartTime",
+                             "element": "input",
+                             "type": "string",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.BR1STARTTIME_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.BR1STARTTIME",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": "00:00",
+                             "visibleIf": {"field": "autoMode", "value": false}
+                             },
+                             {
+                             "id": "manualBr2",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.MANUALBR2_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.MANUALBR2",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": 255,
+                             "visibleIf": {"field": "autoMode", "value": false}
+                             },
+                             {
+                             "id": "br2StartTime",
+                             "element": "input",
+                             "type": "string",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.BR2STARTTIME_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.BR2STARTTIME",
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ],
+                             "value": "00:00",
                              "visibleIf": {"field": "autoMode", "value": false}
                              }
                           ]
@@ -259,6 +307,37 @@
                              "doc": "TRANSLATE.TOUCH_DISPLAY.SHOWPOINTER_DOC",
                              "label": "TRANSLATE.TOUCH_DISPLAY.SHOWPOINTER",
                              "value": false
+                             }
+                           ]
+                },
+                {
+                "id": "scale",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.SCALE_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.SCALE_DESC",
+                "icon": "fa-expand",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveScaleConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "scale"
+                                      ]
+                              },
+                "content": [
+                             {
+                             "id": "scale",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.SCALE_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.SCALE",
+                             "value": 100,
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ]
                              }
                            ]
                 }

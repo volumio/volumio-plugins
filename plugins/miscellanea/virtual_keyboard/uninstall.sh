@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "Uninstalling Virtual Keyboard dependencies"
+echo "Uninstalling Virtual Keyboard plugin"
 
-echo "Removing Matchbox window manager and Matchbox keyboard"
+echo "Removing dependencies"
 sudo apt-get -y purge --auto-remove matchbox-window-manager matchbox-keyboard
 
 echo "Done"

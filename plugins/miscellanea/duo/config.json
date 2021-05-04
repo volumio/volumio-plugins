@@ -1,0 +1,26 @@
+{
+  "enable_duo": {
+    "type": "boolean",
+    "value": false
+  },  
+  "ikey": {
+    "type": "string",
+    "value": "integration key"
+  },
+  "skey": {
+    "type": "string",
+    "value": "secret key"
+  },
+  "api_host": {
+    "type": "string",
+    "value": "api hostname"
+  },
+  "failmode": {
+    "type": "string",
+    "value": "safe"
+  },
+  "disable_password": {
+    "type": "boolean",
+    "value": false
+  }
+}

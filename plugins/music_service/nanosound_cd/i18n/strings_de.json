@@ -32,5 +32,8 @@
 	"SHOWVERSION":"Version anzeigen",
 	"UPGRADE":"Upgrade Version",
 	"SHOWALBUMART":"Albumcover anzeigen",
-	"EJECT":"CD auswerfen"
+	"EJECT":"CD auswerfen",
+	"AUTO_EJECT":"CD nach Extraktion auswerfen",
+	"SAVE_FOLDER_FORMAT_DOC":"Das Format des Speicherordners. Wenn Sie dieses Feld leer lassen, ist es standardmäßig jjjj-MM-tt_hhmm. Sie können %artist% für den Sängernamen und %album% für den Albumnamen verwenden",
+	"SAVE_FOLDER_FORMAT":"Ordnerformat speichern"	
 }

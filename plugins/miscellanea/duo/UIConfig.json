@@ -1,0 +1,83 @@
+{
+	"page": {
+		"label": "TRANSLATE.DUO.DUOCONF"
+	},
+	"sections": [{
+		"id": "section_general",
+		"element": "section",
+		"label": "TRANSLATE.DUO.GENERAL",
+		"doc": "TRANSLATE.DUO.D_GENERAL",
+		"description": "TRANSLATE.DUO.DD_GENERAL",
+		"icon": "fa-shield",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/duo",
+			"method": "saveConfig"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.DUO.SAVE",
+			"data": ["enable_duo",
+			"ikey",
+			"skey",
+			"api_host",
+			"failmode",
+			"disable_password"]
+		},
+		"content": [{
+			"id": "enable_duo",
+			"element": "switch",
+			"doc": "TRANSLATE.DUO.D_ENABLE_DUO",
+			"description": "TRANSLATE.DUO.DD_ENABLE_DUO",
+			"label": "TRANSLATE.DUO.ENABLE_DUO",
+			"value": true
+		},
+		{
+			"id": "ikey",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.DUO.D_INTEGRATION_KEY",
+			"description": "TRANSLATE.DUO.DD_INTEGRATION_KEY",
+			"label": "TRANSLATE.DUO.INTEGRATION_KEY",
+			"value": ""
+		},
+		{
+			"id": "skey",
+			"element": "input",
+			"type": "password",
+			"doc": "TRANSLATE.DUO.D_SECRET_KEY",
+			"description": "TRANSLATE.DUO.DD_SECRET_KEY",
+			"label": "TRANSLATE.DUO.SECRET_KEY",
+			"value": ""
+		},
+		{
+			"id": "api_host",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.DUO.D_API_HOST",
+			"description": "TRANSLATE.DUO.DD_API_HOST",
+			"label": "TRANSLATE.DUO.API_HOST",
+			"value": ""
+		},
+		{
+			"id": "failmode",
+			"element": "select",
+			"type": "text",
+			"doc": "TRANSLATE.DUO.D_FAIL_MODE",
+			"description": "TRANSLATE.DUO.DD_FAIL_MODE",
+			"label": "TRANSLATE.DUO.FAIL_MODE",
+			"value": {
+				"value": "safe",
+				"label": "Safe (default)"
+			},
+			"options": []
+		},
+		{
+			"id": "disable_password",
+			"element": "switch",
+			"doc": "TRANSLATE.DUO.D_DISABLE_PASSWORD",
+			"description": "TRANSLATE.DUO.DD_DISABLE_PASSWORD",
+			"label": "TRANSLATE.DUO.DISABLE_PASSWORD",
+			"value": false
+		}]
+	}]
+}

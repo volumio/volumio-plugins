@@ -1,0 +1,30 @@
+{
+  "baseNavigation": {
+    "navigation": {
+      "lists": [
+        {
+          "availableListViews": [
+            "list"
+          ],
+          "items": [
+          ]
+        }
+      ]
+    }
+  },
+
+  "stations": {
+    "swarmstation": [
+      {
+        "title": "Swarmstation space drone #1 (320k)",
+        "uri": "webrns/0",
+        "url": "https://swarmstation.radioca.st/stream"
+      },
+      {
+        "title": "Swarmstation space drone #2 (320k)",
+        "uri": "webrns/1",
+        "url": "http://stream.swarmstation.fm:8231/stream"
+      }
+    ]
+  }
+}

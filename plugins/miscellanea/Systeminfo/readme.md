@@ -1,4 +1,5 @@
-2020 January 17th
+
+2021 April 1st
 
 ###  About the plugin
 
@@ -22,6 +23,20 @@ volumio plugin install
 cd ..
 rm -Rf Systeminfo*
 ```
+
+April 1st 2021
+
+- new node systeminformation
+- correction for CPU freq
+- storage display in several raws
+
+October 21st 2020
+
+- close modals on all screen
+
+March 22th 2020
+
+- code cleaning
 
 January 17th 2020
 

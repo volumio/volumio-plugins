@@ -1,0 +1,25 @@
+{
+	"name": "status2mqtt",
+	"version": "1.0.1",
+	"description": "publish volumio status to an mqtt server",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "jit06",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Status2mqtt",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "user_interface"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"mqtt": "^4.2.6",
+		"bufferutil": "^4.0.1",
+		"utf-8-validate": "^5.0.2",
+		"socket.io-client": "^1.7.4",
+		"v-conf": "^1.4.2"
+	}
+}

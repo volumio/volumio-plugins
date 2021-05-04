@@ -64,7 +64,7 @@ RU standard keyboard layout
       </key>
       <key width="3000">
         <default display="&#9003;" action="backspace" />
-        <mod3    display="Entf" action="delete" />
+        <mod3    display="Del" action="delete" />
       </key>
       <space width="500" extended="true" />
       <key extended="true">
@@ -200,7 +200,7 @@ RU standard keyboard layout
         <default display="э" />
         <shifted display="Э" />
       </key>
-      <key width="3600"> <!-- width ok???? -->
+      <key width="3600">
         <default display="" action="" />
         <mod3    display="End" action="end" />
       </key>
