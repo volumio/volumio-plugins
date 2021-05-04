@@ -1,5 +1,5 @@
 /*--------------------
-Parameq plugin for volumio2. By balbuze Febuary  2021
+Parameq plugin for volumio2. By balbuze May  2021
 Up to 14 eq
 Based on CamillaDsp
 ----------------------
@@ -323,6 +323,7 @@ Parameq.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', value);
 
+
       var localEQfolder = '/data/INTERNAL/Parameq4Volumio'
       try {
         fs.readdir(localEQfolder, function (err, item) {
@@ -342,6 +343,21 @@ Parameq.prototype.getUIConfig = function () {
       } catch (err) {
         self.logger.info('failed to read local file' + err);
       }
+
+      value = self.config.get('localscope');
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[1].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[1].value.label', value);
+
+      let sitemsl = ('L,R,L+R').split(',');
+      for (let i in sitemsl) {
+        self.configManager.pushUIConfigParam(uiconf, 'sections[4].content[1].options', {
+          value: sitemsl[i],
+          label: sitemsl[i]
+        });
+      }
+
+      var addreplace = self.config.get('addreplace')
+      uiconf.sections[4].content[2].value = addreplace;
 
 
 
@@ -900,6 +916,9 @@ Parameq.prototype.importeq = function (data) {
   var name = nameh.split('  ').slice(1).toString();
   self.logger.info('name ' + typeof (name));
   var namepath = data['importeq'].value
+  self.config.set('addreplace', true);
+  self.config.set('nbreq', 1);
+
   // self.config.set('importeq', namepath)
   var toDownload = (path + namepath + '/' + name.replace(' ', '%20') + '%20ParametricEQ.txt\'')
   self.logger.info('wget \'' + toDownload)
@@ -924,12 +943,12 @@ Parameq.prototype.importlocal = function (data) {
   let file = data['importlocal'].value;
   if ((file == '') || (file == 'select a file')) {
     self.commandRouter.pushToastMessage('error', 'Choose a file')
-
     return;
   }
   self.config.set('eqfrom', data['importlocal'].value);
   //self.config.set('localfile', data[]);
-
+  self.config.set('localscope', data['localscope'].value);
+  self.config.set('addreplace', data['addreplace']);
   self.convertimportedeq();
   return defer.promise;
 };
@@ -938,8 +957,11 @@ Parameq.prototype.convertimportedeq = function () {
   const self = this;
   let defer = libQ.defer();
   var filepath;
+
   var EQfile;
   var EQfilef = self.config.get('eqfrom')
+  var addreplace = self.config.get('addreplace');
+
   if (EQfilef == 'autoeq') {
     filepath = ('/tmp/EQfile.txt');
 
@@ -949,45 +971,55 @@ Parameq.prototype.convertimportedeq = function () {
   }
   try {
     EQfile = fs.readFileSync(filepath, "utf8");
+    //let nbreq = 1;
+    var o = 0;
+    if (addreplace) {
+      var nbreq = 1;
+    } else {
+      var nbreq = self.config.get('nbreq') + 1;
+    }
 
-    var o = 1;
-    var nbreq = 0;
     var result = (EQfile.split('\n'));
-    for (o; o < result.length - 1; o++) {
-      if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && (result[o].indexOf("PK") != -1)) {
-        var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
-        self.logger.info('filter in line ' + o + lresult)
+    for (o; o < result.length; o++) {
+      if (nbreq < 15) {
+        if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && (result[o].indexOf("PK") != -1) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
+          var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
+          self.logger.info('filter in line ' + o + lresult)
+          var eqv = (lresult);
+          var param = eqv.split(',')
+          // console.log(param)
+          var eqs = (param[1] + ',' + param[2] + ',' + param[3])
+          var typec = 'type' + nbreq;
+          var scopec = 'scope' + nbreq;
+          var eqc = 'eq' + nbreq;
+          nbreq = nbreq + 1;
+          self.config.set(typec, 'Peaking');
+          self.config.set(scopec, self.config.get('localscope'));
+          self.config.set(eqc, eqs);
+          self.config.set("nbreq", nbreq - 1);
+          self.config.set('effect', true)
+          self.logger.info('number of eq  = : ' + nbreq + eqs);
+          self.config.set('usethispreset', 'no preset used');
+          setTimeout(function () {
+            self.refreshUI();
 
-        var eqv = (lresult);
-        var param = eqv.split(',')
-        // console.log(param)
-        var eqs = (param[1] + ',' + param[2] + ',' + param[3])
-        var typec = 'type' + nbreq;
-        var scopec = 'scope' + nbreq;
-        var eqc = 'eq' + nbreq;
-        nbreq = nbreq + 1;
-        self.config.set(typec, 'Peaking');
-        self.config.set(scopec, 'L+R');
-        self.config.set(eqc, eqs);
-        self.config.set("nbreq", nbreq);
-        self.config.set('effect', true)
-        self.logger.info('number of eq  = : ' + nbreq + eqs);
-        self.config.set('usethispreset', 'no preset used')
+            self.createCamilladspfile()
+            self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('EQ_LOADED_USED'))
 
+          }, 300);
+        } else {
+          //nothing to do...
+
+        }
       } else {
+        self.logger.info('Max eq reached')
+        self.commandRouter.pushToastMessage('error', 'Number max of Eq reached! Last coeff not used!');
         // self.logger.info('No usable filter')
       }
     }
   } catch (err) {
     self.logger.info('failed to read EQ file ' + err);
   }
-  setTimeout(function () {
-    self.refreshUI();
-
-    self.createCamilladspfile()
-    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('EQ_LOADED_USED'))
-
-  }, 300);
 
   return defer.promise;
 };

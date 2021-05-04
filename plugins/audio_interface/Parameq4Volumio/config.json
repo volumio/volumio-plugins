@@ -14,19 +14,15 @@
     "eqfrom": {
         "type": "string",
         "value": "local"
-      },
+    },
     "renpreset": {
         "type": "string",
         "value": "choose a name"
-      },
-      "importeq": {
+    },
+    "importeq": {
         "type": "string",
         "value": ""
-      },
-      "importlocal": {
-        "type": "string",
-        "value": ""
-      },
+    },
     "renpreset1": {
         "type": "string",
         "value": "mypreset1"
@@ -70,7 +66,7 @@
     "usethispreset": {
         "type": "string",
         "value": "nopreset",
-        "label":"no preset"
+        "label": "no preset"
     },
     "type1": {
         "type": "string",
@@ -743,5 +739,17 @@
     "p3eq14": {
         "p3type": "string",
         "value": "0,0,0"
+    },
+    "localscope": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "importlocal": {
+        "type": "string",
+        "value": ""
+    },
+    "addreplace": {
+        "type": "boolean",
+        "value": true
     }
 }

@@ -68,5 +68,7 @@
   "IMPORT_FROM_LOCAL":"Import a local EQ file",
   "IMPORT_LOCAL":"Choose a local file",
   "CHOOSE_LOCALEQ_DOC":"Choose txt file containing EQ settings. Files must be in /data/INTERNAL/Parameq4Volumio/",
-  "CHOOSE_LOCALEQ":"Select a file"
+  "CHOOSE_LOCALEQ":"Select a file",
+  "ADD_REPLACE":"REPLACE=On / ADD=Off",
+  "ADD_REPLACE_DOC":"Choose if local setting is aadded to current or replace it"
 }

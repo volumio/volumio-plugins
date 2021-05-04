@@ -932,7 +932,9 @@
       "saveButton": {
         "label": "TRANSLATE.IMPORT_LOCAL",
         "data": [
-          "importlocal"
+          "importlocal",
+          "localscope",
+          "addreplace"
         ]
       },
       "content": [
@@ -946,7 +948,26 @@
             "label": "local"
           },
           "options": []
-        }      ]
+        },
+        {
+          "id": "localscope",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE_DOC",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "addreplace",
+          "element": "switch",
+          "doc": "TRANSLATE.ADD_REPLACE_DOC",
+          "label": "TRANSLATE.ADD_REPLACE",
+          "value": true
+        }
+           ]
     }
   ]
 }
