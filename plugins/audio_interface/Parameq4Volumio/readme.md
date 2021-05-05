@@ -1,4 +1,4 @@
-May 4th 2021
+May 5th 2021
 
 
 ##  For Volumio >= 3.054
@@ -86,6 +86,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 5th 2021
+
+- miscellanea fixes for import
 
 May 4th 2021
 

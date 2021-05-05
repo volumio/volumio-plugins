@@ -1,4 +1,8 @@
 {
+    "mergedeq":{
+        "tpye":"number",
+        "value":""
+    },
     "nbreq": {
         "type": "number",
         "value": "1"

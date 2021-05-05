@@ -703,6 +703,8 @@ Parameq.prototype.saveparameq = function (data) {
   const self = this;
 
   let defer = libQ.defer();
+  let test = '';
+
   var nbreq = self.config.get('nbreq')
   for (var o = 1; o < (nbreq + 1); o++) {
     var typec = 'type' + o;
@@ -795,12 +797,14 @@ Parameq.prototype.saveparameq = function (data) {
     self.config.set(eqc, data[eqc]);
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
-
+    test += ('Eq ' + o + ' ' + data[typec].value + ' / ' + data[scopec].value + ' /[' + data[eqc] + '];');
+    self.config.set('mergedeq', test);
     self.config.set('usethispreset', 'no preset used')
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
   }
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
+  //self.logger.info(test)
 
   setTimeout(function () {
     self.refreshUI();
@@ -961,10 +965,9 @@ Parameq.prototype.convertimportedeq = function () {
   var EQfile;
   var EQfilef = self.config.get('eqfrom')
   var addreplace = self.config.get('addreplace');
-
+  let test = '';
   if (EQfilef == 'autoeq') {
     filepath = ('/tmp/EQfile.txt');
-
   } else {
     filepath = ('/data/INTERNAL/Parameq4Volumio/' + EQfilef);
 
@@ -984,7 +987,7 @@ Parameq.prototype.convertimportedeq = function () {
       if (nbreq < 15) {
         if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && (result[o].indexOf("PK") != -1) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
           var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
-          self.logger.info('filter in line ' + o + lresult)
+          //  self.logger.info('filter in line ' + o + lresult)
           var eqv = (lresult);
           var param = eqv.split(',')
           // console.log(param)
@@ -994,11 +997,17 @@ Parameq.prototype.convertimportedeq = function () {
           var eqc = 'eq' + nbreq;
           nbreq = nbreq + 1;
           self.config.set(typec, 'Peaking');
-          self.config.set(scopec, self.config.get('localscope'));
+          if (EQfilef == 'autoeq') {
+            self.config.set(scopec, 'L+R');
+          } else {
+            self.config.set(scopec, self.config.get('localscope'));
+
+          }
+
           self.config.set(eqc, eqs);
           self.config.set("nbreq", nbreq - 1);
           self.config.set('effect', true)
-          self.logger.info('number of eq  = : ' + nbreq + eqs);
+          // self.logger.info('number of eq  = : ' + nbreq + eqs);
           self.config.set('usethispreset', 'no preset used');
           setTimeout(function () {
             self.refreshUI();
@@ -1013,14 +1022,13 @@ Parameq.prototype.convertimportedeq = function () {
         }
       } else {
         self.logger.info('Max eq reached')
-        self.commandRouter.pushToastMessage('error', 'Number max of Eq reached! Last coeff not used!');
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MAX_EQ_REACHED'));
         // self.logger.info('No usable filter')
       }
     }
   } catch (err) {
     self.logger.info('failed to read EQ file ' + err);
   }
-
   return defer.promise;
 };
 
@@ -1050,6 +1058,7 @@ Parameq.prototype.updatelist = function (data) {
   return defer.promise;
 }
 /*
+test for future featuures...
 Parameq.prototype.displayfilters = function () {
   const self = this;
   const express = require('express');

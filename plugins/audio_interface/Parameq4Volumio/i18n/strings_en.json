@@ -70,5 +70,6 @@
   "CHOOSE_LOCALEQ_DOC":"Choose txt file containing EQ settings. Files must be in /data/INTERNAL/Parameq4Volumio/",
   "CHOOSE_LOCALEQ":"Select a file",
   "ADD_REPLACE":"REPLACE=On / ADD=Off",
-  "ADD_REPLACE_DOC":"Choose if local setting is aadded to current or replace it"
+  "ADD_REPLACE_DOC":"Choose if local setting is aadded to current or replace it",
+  "MAX-EQ-REACHED":"Max number of EQ reached! Last coefficient won't be used !"
 }
