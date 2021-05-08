@@ -1,6 +1,6 @@
 /*--------------------
 Parameq plugin for volumio2. By balbuze May  2021
-Up to 14 eq
+Up to 50 eq
 Based on CamillaDsp
 ----------------------
 */
@@ -19,7 +19,7 @@ const path = require('path');
 const WebSocket = require('ws')
 
 
-// Nbre total of Eq - if increased, config.json and UIconfig.json need to be modified
+// Nbre total of Eq
 const tnbreq = 50
 
 // Define the Parameq class
@@ -104,144 +104,7 @@ Parameq.prototype.getUIConfig = function () {
       let value;
       let ncontent = self.config.get('nbreq')
       var effect = self.config.get('effect')
-      /*
-            if (effect == true) {
-              uiconf.sections[nsections].content[1].hidden = true;
-             // uiconf.sections[nsections].content[(+ncontent * 3)].hidden = false;
-             self.logger.info('effect ' + effect)
-            }
-      
-            } else if (effect == false) {
-             // uiconf.sections[nsections].content[(+ncontent * 3)].hidden = true;
-             // uiconf.sections[nsections].content[(+ncontent * 3) + 1].hidden = false;
-             self.logger.info('effect ' + effect)
-      
-            }
-      */
-      /*
-            var showeq = self.config.get('showeq');
-            if (showeq == false) {
-              self.logger.info('display settings ' + showeq)
-      
-              for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
-                uiconf.sections[nsections].content[i].hidden = true;
-                uiconf.sections[nsections].content[i + 1].hidden = true;
-                uiconf.sections[nsections].content[i + 2].hidden = true;
-              }
-            } else {
-      */
-      /*
-       for (let i = ncontent * 3; i < ((3 * tnbreq) - 2); i++) {
-         uiconf.sections[nsections].content[i].hidden = true;
-         uiconf.sections[nsections].content[i + 1].hidden = true;
-         uiconf.sections[nsections].content[i + 2].hidden = true;
-       }
-       if (ncontent == 1) {
-         uiconf.sections[nsections].content[45].hidden = true;
-       }
-       if (ncontent > 13) {
-         uiconf.sections[nsections].content[44].hidden = true;
-       }
-       */
-      /*
-            var a
-      
-            for (a = 0; a < tnbreq; a++) {
-              let c = 3 * a
-              
-                      value = self.config.get('type' + (a + 1));
-                      self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 0) + '].value.value', value);
-                      self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content]' + (c + 0) + '].value.label', value);
-                     
-                      self.logger.info('setUIConfigParam(uiconf, sections[' + nsections + '].content[' + (c + 0) + '].value.value,' + value)
-              
-              value = self.config.get('scope' + (a + 1));
-              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.value', value);
-              self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].value.label', value);
-              // self.logger.info('setUIConfigParam(uiconf, sections[' + nsections + '].content[' + (c + 1) + '].value.value,' + value)
-      
-            }
-      
-            for (a = 0; a < tnbreq; a++) {
-              let c = 3 * a
-      
-              uiconf.sections[nsections].content[(c + 2)].value = self.config.get('eq' + (a + 1));
-      
-              let items = ('None,Peaking,Lowshelf,Highshelf,Notch,Highpass,Lowpass').split(',');
-              for (let x in items) {
-                self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + c + '].options', {
-                  value: items[x],
-                  label: items[x]
-                });
-              }
-      
-              let sitems = ('L,R,L+R').split(',');
-              for (let i in sitems) {
-                self.configManager.pushUIConfigParam(uiconf, 'sections[' + nsections + '].content[' + (c + 1) + '].options', {
-                  value: sitems[i],
-                  label: sitems[i]
-                });
-              }
-            }
-            value = self.config.get('type1');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[0].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[0].value.label', value);
-            value = self.config.get('type2');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[3].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[3].value.label', value);
-            value = self.config.get('type3');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[6].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[6].value.label', value);
-            value = self.config.get('type4');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[9].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[9].value.label', value);
-            value = self.config.get('type5');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[12].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[12].value.label', value);
-            value = self.config.get('type6');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[15].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[15].value.label', value);
-            value = self.config.get('type7');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[18].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[18].value.label', value);
-            value = self.config.get('type8');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[21].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[21].value.label', value);
-            value = self.config.get('type9');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[24].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[24].value.label', value);
-            value = self.config.get('type10');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[27].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[27].value.label', value);
-            value = self.config.get('type11');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[30].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[30].value.label', value);
-            value = self.config.get('type12');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[33].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[33].value.label', value);
-            value = self.config.get('type13');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[36].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[36].value.label', value);
-            value = self.config.get('type14');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[39].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[39].value.label', value);
-            value = self.config.get('scope14');
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[' + nsections + '].content[40].value.label', value);
-      
-      
-      
-            uiconf.sections[0].content[46].config.bars[0].value = self.config.get('leftlevel')
-      
-      
-            uiconf.sections[0].content[47].config.bars[0].value = self.config.get('rightlevel')
-      
-      */
-      /*
-            value = self.config.get('eqpresetsaved');
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', value);
-            self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[1].content[0].options'), value));
-      */
+
 
       value = self.config.get('eqpresetsaved');
 
@@ -618,21 +481,7 @@ Parameq.prototype.removeeq = function (data) {
     self.logger.info('Min eq reached!')
     return
   }
-  /*
-  let test = ''
-  let eqval = self.config.get('mergedeq')
-  let subtypex = eqval.toString().split('/')
-  subtypex.splice(-5, 5)
-  for (var o = 1; o < (n + 1); o++) {
-    var typec = 'type' + o;
-    var scopec = 'scope' + o;
-    var eqc = 'eq' + o;
-   // test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
 
-  }
-  self.config.set('mergedeq', test)
-  var typec = 'type' + (n + 1);
-  */
   self.config.set('effect', true)
   self.config.set('nbreq', n)
   self.logger.info('nbre eq ' + n)
@@ -719,7 +568,7 @@ Parameq.prototype.sendCommandToCamilla = function () {
 
 };
 
-//----------------------------------------------------------
+//------------Hrer we build CmaillaDsp config file----------------------------------------------
 
 Parameq.prototype.createCamilladspfile = function () {
   const self = this;
@@ -770,10 +619,6 @@ Parameq.prototype.createCamilladspfile = function () {
       }
 
 
-      // if (((self.config.get('type1') == 'None') && (self.config.get('type2') == 'None') && (self.config.get('type3') == 'None') && (self.config.get('type4') == 'None') && (self.config.get('type5') == 'None') && (self.config.get('type6') == 'None') && (self.config.get('type7') == 'None') && (self.config.get('type8') == 'None') && (self.config.get('type9') == 'None') && (self.config.get('type10') == 'None') && (self.config.get('type11') == 'None') && (self.config.get('type12') == 'None') && (self.config.get('type13') == 'None') && (self.config.get('type14') == 'None') && effect == false)) {
-
-      //}
-
       if (effect == false) {
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
@@ -798,7 +643,6 @@ Parameq.prototype.createCamilladspfile = function () {
           var gainmax;
           var pipelineL = '';
           var pipelineR = '';
-          //   self.logger.info('type ' + typec + 'scope ' + scopec + 'eq ' + eqc)
 
           typer = typec//self.config.get(typec);
           if (eqa == undefined) {
@@ -940,7 +784,7 @@ Parameq.prototype.createCamilladspfile = function () {
 };
 
 
-//here we save eqs config.json
+//----------------------here we save eqs config.json
 Parameq.prototype.saveparameq = function (data) {
   const self = this;
 
@@ -955,16 +799,8 @@ Parameq.prototype.saveparameq = function (data) {
     var eqc = 'eq' + o;
     var typer = (data[typec].value)
     var eqr = (data[eqc]).split(',')
-    // self.logger.info('type in ' + eqc + ' ' + self.config.get(typec) + ' ' + 'values ' + eqr)
-
     var veq = Number(eqr[0]);
-    /*
-    if ((typer == "undefined") || (typer == 'None')) {
-      self.logger.info('No type in ' + eqc)
-      self.commandRouter.pushToastMessage('error', 'Error, No type in ' + eqc)
-      return;
-    }
-*/
+
     if (typer != 'None') {
 
       if (Number.parseFloat(veq) && (veq > 0 && veq < 20001)) {
@@ -1040,10 +876,6 @@ Parameq.prototype.saveparameq = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-    //var reslteq =b
-    // self.config.set(typec, data[typec].value);
-    // self.config.set(scopec, data[scopec].value);
-    // self.config.set(eqc, data[eqc]);
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
     test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
@@ -1053,7 +885,6 @@ Parameq.prototype.saveparameq = function (data) {
   }
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
-  //self.logger.info(test)
 
   setTimeout(function () {
     self.refreshUI();
@@ -1098,26 +929,12 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     self.logger.info('renpreset ' + name)
   }
 
-  // }
-  let test = '';
   self.logger.info('spreset = ' + spreset)
-  /*for (var o = 1; o < (nbreq + 1); o++) {
-    var typec = 'type' + o;
-    var scopec = 'scope' + o;
-    var eqc = 'eq' + o;
-    //  self.logger.info('for ' + spreset + typec + ' scopec ' + preset + scopec + ' eqc ' + preset + eqc)
-    test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
-    self.config.set('mergedeq' + renpreset, test);
-    //  self.config.set(spreset + typec, self.config.get(typec));
-    // self.config.set(spreset + scopec, self.config.get(scopec));
-    // self.config.set(spreset + eqc, self.config.get(eqc));
-    */
-   self.config.set('mergedeq' + renprsetr, self.config.get('mergedeq'));
+  self.config.set('mergedeq' + renprsetr, self.config.get('mergedeq'));
 
-    self.config.set(spreset + 'nbreq', nbreq);
-    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spreset)
- // }
-  
+  self.config.set(spreset + 'nbreq', nbreq);
+  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spreset)
+
   self.refreshUI();
 
   return defer.promise;
@@ -1143,24 +960,9 @@ Parameq.prototype.usethispreset = function (data) {
       return;
 
   }
-  var nbreqc = self.config.get('p'+spreset + 'nbreq')
-  /*
-    for (var o = 1; o < (nbreqc + 1); o++) {
-      var typec = 'type' + o;
-      var scopec = 'scope' + o;
-      var eqc = 'eq' + o;
-  
-      self.config.set(typec, self.config.get(spreset + typec));
-      self.config.set(scopec, self.config.get(spreset + scopec));
-      self.config.set(eqc, self.config.get(spreset + eqc));
-      self.config.set("nbreq", nbreqc);
-      self.config.set("usethispreset", preset);
-  
-      self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
-    }
-    */
-   self.config.set("nbreq", nbreqc);
+  var nbreqc = self.config.get('p' + spreset + 'nbreq')
 
+  self.config.set("nbreq", nbreqc);
   self.config.set('mergedeq', self.config.get('mergedeq' + spreset));
   self.config.set("usethispreset", preset);
 
@@ -1185,8 +987,6 @@ Parameq.prototype.importeq = function (data) {
   var namepath = data['importeq'].value
   self.config.set('addreplace', true);
   self.config.set('nbreq', 1);
-
-  // self.config.set('importeq', namepath)
   var toDownload = (path + namepath + '/' + name.replace(' ', '%20') + '%20ParametricEQ.txt\'')
   self.logger.info('wget \'' + toDownload)
   try {
@@ -1221,6 +1021,7 @@ Parameq.prototype.importlocal = function (data) {
   return defer.promise;
 };
 
+//----------------here we convert imported file
 Parameq.prototype.convertimportedeq = function () {
   const self = this;
   let defer = libQ.defer();
@@ -1262,7 +1063,6 @@ Parameq.prototype.convertimportedeq = function () {
           var scopec = 'scope' + nbreq;
           var eqc = 'eq' + nbreq;
           nbreq = nbreq + 1;
-          // self.config.set(typec, 'Peaking');
           if (EQfilef == 'autoeq') {
             localscope = 'L+R';
           } else {
@@ -1270,10 +1070,8 @@ Parameq.prototype.convertimportedeq = function () {
           }
           test += ('Eq' + o + '/Peaking/' + localscope + '/' + eqs + '/');
 
-          //self.config.set(eqc, eqs);
           self.config.set("nbreq", nbreq - 1);
           self.config.set('effect', true)
-          // self.logger.info('number of eq  = : ' + nbreq + eqs);
           self.config.set('usethispreset', 'no preset used');
           setTimeout(function () {
             self.refreshUI();
@@ -1289,7 +1087,6 @@ Parameq.prototype.convertimportedeq = function () {
       } else {
         self.logger.info('Max eq reached')
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MAX_EQ_REACHED'));
-        // self.logger.info('No usable filter')
       }
     }
     self.logger.info('test bbbbbbbb' + test)
