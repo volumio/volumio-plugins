@@ -1,4 +1,4 @@
-May 5th 2021
+May 8th 2021
 
 
 ##  For Volumio >= 3.054
@@ -12,7 +12,7 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 ![Alt text](Parameq4VolumioAutoEq.png?raw=true "AutoEq selection")
 
 
-- Up to 14 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch)
+- Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch)
 - Auto gain
 - Toggle with/without effect
 - Scope for each band (L, R, L+R)
@@ -32,7 +32,7 @@ You can add or replace EQ while importing.
 
 Now EQ are loaded
 
-Data follow this format (max total 14 bands). Only PK (peaking) filters are imported. From REW, export 'filter settings as text' in Filter tasks tab.
+Data follow this format (max total 50 bands). Only PK (peaking) filters are imported. From REW, export 'filter settings as text' in Filter tasks tab.
 
 ```
 Filter 4: ON PK Fc 48.05 Hz Gain -0.70 dB Q 23.967
@@ -86,6 +86,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 8th 2021
+
+- complete UI rewrite with no Eq number limmit (but set to 50)
 
 May 5th 2021
 
