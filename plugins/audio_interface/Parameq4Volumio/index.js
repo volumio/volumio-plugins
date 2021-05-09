@@ -428,7 +428,7 @@ Parameq.prototype.getUIConfig = function () {
           "element": "switch",
           "doc": self.commandRouter.getI18nString('SHOW_SETTINGS_DOC'),
           "label": self.commandRouter.getI18nString('SHOW_SETTINGS'),
-          "value": true
+          "value": self.config.get('showeq')
         }
 
       )

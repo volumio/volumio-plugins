@@ -1,4 +1,4 @@
-May 8th 2021
+May 9th 2021
 
 
 ##  For Volumio >= 3.054
@@ -32,7 +32,7 @@ You can add or replace EQ while importing.
 
 Now EQ are loaded
 
-Data follow this format (max total 50 bands). Only PK (peaking) filters are imported. From REW, export 'filter settings as text' in Filter tasks tab.
+Datas follow format below (max total 50 bands). Only PK (peaking) filters are imported. From REW, export 'filter settings as text' in Filter tasks tab.
 
 ```
 Filter 4: ON PK Fc 48.05 Hz Gain -0.70 dB Q 23.967
@@ -86,6 +86,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 9th 2021
+
+- small correction for hide/show settings
 
 May 8th 2021
 
