@@ -177,6 +177,21 @@ minidlna.prototype.saveConf = function (data) {
 
   configItems.forEach(function (configItem) {
     switch (configItem) {
+      case 'media_dir_a':
+        self.checkPath(configItem, data[configItem], 'AUDIO_FOLDER');
+        break;
+      case 'media_dir_p':
+        self.checkPath(configItem, data[configItem], 'PICTURE_FOLDER');
+        break;
+      case 'media_dir_v':
+        self.checkPath(configItem, data[configItem], 'VIDEO_FOLDER');
+        break;
+      case 'db_dir':
+        self.checkPath(configItem, data[configItem], 'DB_DIR');
+        break;
+      case 'log_dir':
+        self.checkPath(configItem, data[configItem], 'LOG_DIR');
+        break;
       case 'root_container':
       case 'tivo_discovery':
       case 'loglevel_general':
@@ -199,17 +214,6 @@ minidlna.prototype.saveConf = function (data) {
       case 'max_connections':
         self.checkVal(configItem, 0, 21, data[configItem], 0, Number.MAX_SAFE_INTEGER);
         break;
-      case 'media_dir_a':
-      case 'media_dir_p':
-      case 'media_dir_v':
-        try {
-          if (!fs.statSync(data[configItem]).isDirectory()) {
-            throw new Error();
-          }
-        } catch (e) {
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), data[configItem] + self.commandRouter.getI18nString('MINIDLNA.MISSING'));
-        }
-        // fall through to default
       default:
         self.config.set(configItem, data[configItem]);
     }
@@ -230,6 +234,8 @@ minidlna.prototype.saveConf = function (data) {
   return defer.promise;
 };
 
+// Plugin Methods ------------------------------------------------------------------------------------
+
 minidlna.prototype.checkVal = function (item, sectionId, contentId, value, min, max) {
   const self = this;
 
@@ -246,7 +252,27 @@ minidlna.prototype.checkVal = function (item, sectionId, contentId, value, min, 
   }
 };
 
-// Plugin Methods ------------------------------------------------------------------------------------
+minidlna.prototype.checkPath = function (item, value, UIkeyname) {
+  const self = this;
+  const separator = item.startsWith('media_dir_') ? ' // ' : undefined;
+
+  value.split(separator).forEach(function (p) {
+    try {
+      if (!path.isAbsolute(p.trim()) || !fs.statSync(p.trim()).isDirectory()) {
+        throw new Error();
+      }
+    } catch (e) {
+      if (e.toString().includes('ENOENT')) {
+        self.logger.error(id + item + ' "' + p.trim() + '" does not exist');
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.' + UIkeyname) + ' "' + p.trim() + '" ' + self.commandRouter.getI18nString('MINIDLNA.MISSING'));
+      } else {
+        self.logger.error(id + item + ' "' + p.trim() + '" is not an absolute path specification');
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MINIDLNA.PLUGIN_NAME'), self.commandRouter.getI18nString('MINIDLNA.' + UIkeyname) + ' "' + p.trim() + '" ' + self.commandRouter.getI18nString('MINIDLNA.ERR_ABSOLUTE_PATH'));
+      }
+    }
+  });
+  self.config.set(item, value);
+};
 
 minidlna.prototype.initialConf = function () {
   const self = this;
@@ -295,6 +321,18 @@ minidlna.prototype.createMinidlnaConf = function () {
             value = self.config.get(configItem);
         }
         switch (configItem) {
+          case 'media_dir_a':
+          case 'media_dir_p':
+          case 'media_dir_v':
+            value.split('//').forEach(function (p, i) {
+              if (i === 0) {
+                value = p.trim();
+              } else {
+                value = value + '\nmedia_dir=' + configItem.substr(-1, 1).toUpperCase() + ',' + p.trim();
+              }
+            });
+            data = data.replace('${' + configItem + '}', value);
+            break;
           case 'merge_media_dirs':
           case 'tivo_discovery':
           case 'wide_links':
