@@ -695,7 +695,7 @@
 					"prettyName": "Randomizer",
 					"icon": "fa-lightbulb-o",
 					"name": "randomizer",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/randomizer/randomizer.zip",
 					"license": "ISC",
 					"description": "A random Track / Album Player",
@@ -707,7 +707,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "27-4-2021"
+					"updated": "10-5-2021"
 				}
 			]
 		},
