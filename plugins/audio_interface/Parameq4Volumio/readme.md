@@ -1,4 +1,4 @@
-May 9th 2021
+May 11th 2021
 
 
 ##  For Volumio >= 3.054
@@ -86,6 +86,11 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 11th 2021
+
+- CamillaDsp v0.5.0
+- Now a specific PEQ can be removed by setting its type to 'Remove'
 
 May 9th 2021
 

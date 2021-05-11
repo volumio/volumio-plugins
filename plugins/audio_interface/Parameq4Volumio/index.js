@@ -1,6 +1,6 @@
 /*--------------------
 Parameq plugin for volumio2. By balbuze May  2021
-Up to 50 eq
+Up to 50 Peq
 Based on CamillaDsp
 ----------------------
 */
@@ -258,7 +258,7 @@ Parameq.prototype.getUIConfig = function () {
             "label": "Type Eq" + n,
             "doc": self.commandRouter.getI18nString("TYPEEQ_DOC"),
             "value": { "value": typeinui, "label": typeinui },
-            "options": [{ "value": "None", "label": "None" }, { "value": "Peaking", "label": "Peaking" }, { "value": "Lowshelf", "label": "Lowshelf" }, { "value": "Highshelf", "label": "Highshelf" }, { "value": "Notch", "label": "Notch" }, { "value": "Highpass", "label": "Highpass" }, { "value": "Lowpass", "label": "Lowpass" }],
+            "options": [{ "value": "None", "label": "None" }, { "value": "Peaking", "label": "Peaking" }, { "value": "Lowshelf", "label": "Lowshelf" }, { "value": "Highshelf", "label": "Highshelf" }, { "value": "Notch", "label": "Notch" }, { "value": "Highpass", "label": "Highpass" }, { "value": "Lowpass", "label": "Lowpass" }, { "value": "Remove", "label": "Remove" }],
             "visibleIf": {
               "field": "showeq",
               "value": true
@@ -293,6 +293,7 @@ Parameq.prototype.getUIConfig = function () {
         uiconf.sections[0].saveButton.data.push(eqn);
         uiconf.sections[0].saveButton.data.push('type' + n);
         uiconf.sections[0].saveButton.data.push('scope' + n);
+        // uiconf.sections[0].removeeq.button.data.push(eqn);
 
 
 
@@ -435,6 +436,7 @@ Parameq.prototype.getUIConfig = function () {
       uiconf.sections[0].saveButton.data.push('showeq');
       uiconf.sections[0].saveButton.data.push('leftlevel');
       uiconf.sections[0].saveButton.data.push('rightlevel');
+      uiconf.sections[0].saveButton.data.push('filename');
 
       defer.resolve(uiconf);
     })
@@ -484,7 +486,6 @@ Parameq.prototype.removeeq = function (data) {
 
   self.config.set('effect', true)
   self.config.set('nbreq', n)
-  self.logger.info('nbre eq ' + n)
 
   setTimeout(function () {
     self.createCamilladspfile()
@@ -872,19 +873,31 @@ Parameq.prototype.saveparameq = function (data) {
       self.logger.info('nothing todo');
     }
   }
-  for (var o = 1; o < (nbreq + 1); o++) {
+  let skipeqn = 0;
+  for (var xo = 1; xo < (nbreq + 1); xo++) {
+    var o = xo
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-    self.config.set('leftlevel', data.leftlevel);
-    self.config.set('rightlevel', data.rightlevel);
-    test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
-    self.config.set('mergedeq', test);
-    self.config.set('usethispreset', 'no preset used')
-    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
+   // self.logger.info('nbreq set to ' + nbreq + ' and o is ' + o)
+
+    if ((data[typec].value) != 'Remove') {
+      test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
+
+      self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
+    } else {
+      skipeqn = skipeqn + 1
+      //  nbreq = nbreq - 1
+    }
   }
+  self.config.set('leftlevel', data.leftlevel);
+  self.config.set('rightlevel', data.rightlevel);
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
+ // self.logger.info('The filename is ' + data['filename']);
+  self.config.set('mergedeq', test);
+  self.config.set('usethispreset', 'no preset used');
+  self.config.set('nbreq', nbreq - skipeqn)
 
   setTimeout(function () {
     self.refreshUI();
@@ -904,7 +917,7 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     return;
   }
   var nbreq = self.config.get('nbreq')
-  self.logger.info('eqpresetsaved ' + preset)
+ // self.logger.info('eqpresetsaved ' + preset)
   var rpreset = (data['renpreset'])
   //if (rpreset != 'choose a name') {
   switch (preset) {
@@ -1089,7 +1102,7 @@ Parameq.prototype.convertimportedeq = function () {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MAX_EQ_REACHED'));
       }
     }
-    self.logger.info('test bbbbbbbb' + test)
+  //  self.logger.info('test bbbbbbbb' + test)
     self.config.set('mergedeq', test);
   } catch (err) {
     self.logger.info('failed to read EQ file ' + err);
