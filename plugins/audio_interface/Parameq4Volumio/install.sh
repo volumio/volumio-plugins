@@ -1,27 +1,27 @@
 #!/bin/bash
-LIB=/data/plugins/audio_interface/Parameq4Volumio
+LIB=/data/plugins/audio_interface/parameq4volumio
 TARGET = $libasound_module_pcm_cdsp
-mkdir /data/INTERNAL/Parameq4Volumio
-cp /data/plugins/audio_interface/Parameq4Volumio/*EQ.txt /data/INTERNAL/Parameq4Volumio/
-echo "Installing/Parameq4Volumio dependencies"
+mkdir /data/INTERNAL/parameq4volumio
+cp /data/plugins/audio_interface/parameq4volumio/*EQ.txt /data/INTERNAL/parameq4volumio/
+echo "Installing/parameq4volumio dependencies"
 
 echo "remove previous configuration"
-if [ ! -f "/data/configuration/audio_interface/Parameq4Volumio/config.json" ];
+if [ ! -f "/data/configuration/audio_interface/parameq4volumio/config.json" ];
 	then
 		echo "file doesn't exist, nothing to do"
 	else
 		echo "File exists removing it"
-		sudo rm -Rf /data/configuration/audio_interface/Parameq4Volumio
+		sudo rm -Rf /data/configuration/audio_interface/parameq4volumio
 fi
 
 
 echo "remove previous configuration"
-if [ ! -f "/data/configuration/audio_interface/Parameq4Volumio/config.json" ];
+if [ ! -f "/data/configuration/audio_interface/parameq4volumio/config.json" ];
 	then
 		echo "file doesn't exist, nothing to do"
 	else
 		echo "File exists removing it"
-		sudo rm -Rf /data/configuration/audio_interface/Parameq4Volumio
+		sudo rm -Rf /data/configuration/audio_interface/parameq4volumio
 fi
 
 		

@@ -163,7 +163,7 @@ Parameq.prototype.getUIConfig = function () {
 
 
       try {
-        let listf = fs.readFileSync('/data/plugins/audio_interface/Parameq4Volumio/downloadedlist.txt', "utf8");
+        let listf = fs.readFileSync('/data/plugins/audio_interface/parameq4volumio/downloadedlist.txt', "utf8");
         var result = (listf.split('\n'));
         let i;
 
@@ -191,7 +191,7 @@ Parameq.prototype.getUIConfig = function () {
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', value);
 
 
-      var localEQfolder = '/data/INTERNAL/Parameq4Volumio'
+      var localEQfolder = '/data/INTERNAL/parameq4volumio'
       try {
         fs.readdir(localEQfolder, function (err, item) {
 
@@ -310,7 +310,7 @@ Parameq.prototype.getUIConfig = function () {
             "description": self.commandRouter.getI18nString('DISABLE_EFFECT_DESC'),
             "onClick": {
               "type": "plugin",
-              "endpoint": "audio_interface/Parameq4Volumio",
+              "endpoint": "audio_interface/parameq4volumio",
               "method": "disableeffect",
               "data": []
             }
@@ -326,7 +326,7 @@ Parameq.prototype.getUIConfig = function () {
             "description": self.commandRouter.getI18nString('ENABLE_EFFECT_DESC'),
             "onClick": {
               "type": "plugin",
-              "endpoint": "audio_interface/Parameq4Volumio",
+              "endpoint": "audio_interface/parameq4volumio",
               "method": "enableeffect",
               "data": []
             }
@@ -342,7 +342,7 @@ Parameq.prototype.getUIConfig = function () {
             "description": self.commandRouter.getI18nString('ADD_EQ_DESC'),
             "onClick": {
               "type": "plugin",
-              "endpoint": "audio_interface/Parameq4Volumio",
+              "endpoint": "audio_interface/parameq4volumio",
               "method": "addeq",
               "data": []
             },
@@ -362,7 +362,7 @@ Parameq.prototype.getUIConfig = function () {
             "description": self.commandRouter.getI18nString('REMOVE_EQ_DESC'),
             "onClick": {
               "type": "plugin",
-              "endpoint": "audio_interface/Parameq4Volumio",
+              "endpoint": "audio_interface/parameq4volumio",
               "method": "removeeq",
               "data": []
             },
@@ -450,7 +450,7 @@ Parameq.prototype.refreshUI = function () {
   const self = this;
 
   setTimeout(function () {
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Parameq4Volumio', {});
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'parameq4volumio', {});
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
@@ -769,7 +769,7 @@ Parameq.prototype.createCamilladspfile = function () {
         .replace("${pipelineL}", pipelinelr)
         .replace("${pipelineR}", pipelinerr)
         ;
-      fs.writeFile("/data/configuration/audio_interface/Parameq4Volumio/camilladsp.yml", conf, 'utf8', function (err) {
+      fs.writeFile("/data/configuration/audio_interface/parameq4volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
           defer.reject(new Error(err));
         else defer.resolve();
@@ -1048,7 +1048,7 @@ Parameq.prototype.convertimportedeq = function () {
   if (EQfilef == 'autoeq') {
     filepath = ('/tmp/EQfile.txt');
   } else {
-    filepath = ('/data/INTERNAL/Parameq4Volumio/' + EQfilef);
+    filepath = ('/data/INTERNAL/parameq4volumio/' + EQfilef);
   }
   try {
     EQfile = fs.readFileSync(filepath, "utf8");
@@ -1115,7 +1115,7 @@ Parameq.prototype.updatelist = function (data) {
   let path = 'https://raw.githubusercontent.com/jaakkopasanen/AutoEq//master/results';
   let name = 'README.md';
   let defer = libQ.defer();
-  var destpath = ' \'/data/plugins/audio_interface/Parameq4Volumio';
+  var destpath = ' \'/data/plugins/audio_interface/parameq4volumio';
   // self.config.set('importeq', namepath)
   var toDownload = (path + '/' + name + '\'');
   self.logger.info('wget \'' + toDownload)
