@@ -1,4 +1,4 @@
-April 30th 2021
+May 12th 2021
 
 
 ##  For Volumio >3.054
@@ -67,6 +67,10 @@ nearly everythings
 ## What is not working :
 
 ### 4. Last changes
+
+May 12th 2021
+
+- CamillaDsp v0.5.0
 
 April 30th 2021
 
