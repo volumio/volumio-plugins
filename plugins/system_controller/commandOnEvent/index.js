@@ -28,7 +28,7 @@ commandOnEvent.prototype.onVolumioStart = function() {
     socket.on('pushState', function (state) {
         if (self.running) {
             self.logger.info("commandOnEvent: state = " + state.status + " / prevState = " + self.prevState);
-     
+
             if (state.status.localeCompare(self.prevState) != 0) {
                 self.logger.info("commandOnEvent: state changed launch assigned command if any");
                 self.prevState=state.status;
@@ -36,7 +36,7 @@ commandOnEvent.prototype.onVolumioStart = function() {
             }
         }
     });
-        
+
     return libQ.resolve();
 };
 
@@ -44,12 +44,10 @@ commandOnEvent.prototype.onVolumioStart = function() {
 commandOnEvent.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
-    
+
     self.load18nStrings();
-    
-    //var gpionum = self.config.get('gpionum');;
     self.running = true;
-    
+
     // Once the Plugin has successfull started resolve the promise
     defer.resolve();
 
@@ -59,9 +57,9 @@ commandOnEvent.prototype.onStart = function() {
 commandOnEvent.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
-    
+
     self.running = false;
-    
+
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -72,25 +70,25 @@ commandOnEvent.prototype.onStop = function() {
 commandOnEvent.prototype.launchCommand = function(state) {
     var self = this;
     var defer=libQ.defer();
-    
+
     var commandStr = self.config.get('command'+state);
-        
-    if (commandStr!="" && typeof commandStr != "undefined") {    
+
+    if (commandStr!="" && typeof commandStr != "undefined") {
         self.logger.info("commandOnEvent: found command for " + state + ": " + commandStr);
-        
+
         const { spawn } = require('child_process');
         var command = spawn(commandStr, [ state ]);
         command.stdout.on('data', (data) => {
             self.logger.info("commandOnEvent : " + data);
         });
-        
+
         command.stderr.on('data', (data) => {
             self.logger.error("commandOnEvent : " + data);
         });
     }
-    
+
     defer.resolve();
-    
+
     return libQ.resolve();
 };
 
@@ -109,12 +107,12 @@ commandOnEvent.prototype.saveSettings = function (data) {
     self.config.set('commandstop' , data['commandstop' ]);
     self.config.set('commandpause', data['commandpause']);
     self.config.set('commandplay' , data['commandplay']);
-    
+
     self.commandRouter.pushToastMessage('success', self.getI18nString("SUCCESS_TITLE"), self.getI18nString("SUCCESS_MESSAGE"));
-    
+
     defer.resolve();
-    
-    return defer.promise;    
+
+    return defer.promise;
 };
 
 
