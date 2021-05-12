@@ -750,10 +750,14 @@ Parameq.prototype.createCamilladspfile = function () {
           if (gainresult < 0) {
             gainclipfree = -2
           } else {
+            if (gainclipfree === undefined) {
+              gainclipfree = 0
+            }
             gainclipfree = ('-' + (parseInt(gainresult) + 2))
 
             //else
           }
+
           self.config.set('gainapplied', gainclipfree)
         }
       };
@@ -802,7 +806,8 @@ Parameq.prototype.saveparameq = function (data) {
     var eqr = (data[eqc]).split(',')
     var veq = Number(eqr[0]);
 
-    if (typer != 'None') {
+    if (typer !== 'None'&& typer !== 'Remove') {
+      self.logger.info('Type is ' + typer)
 
       if (Number.parseFloat(veq) && (veq > 0 && veq < 20001)) {
         self.logger.info('value ok ')
@@ -879,22 +884,21 @@ Parameq.prototype.saveparameq = function (data) {
     var typec = 'type' + o;
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
-   // self.logger.info('nbreq set to ' + nbreq + ' and o is ' + o)
-
-    if ((data[typec].value) != 'Remove') {
+    //--- skip PEQ if set to REMOVE
+    if (((data[typec].value) != 'Remove') && (nbreq != 1)) {
       test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
-
       self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
+    } else if (((data[typec].value) == 'Remove') && (nbreq == 1)) {
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CANT_REMOVE_LAST_PEQ'))
     } else {
       skipeqn = skipeqn + 1
-      //  nbreq = nbreq - 1
     }
   }
   self.config.set('leftlevel', data.leftlevel);
   self.config.set('rightlevel', data.rightlevel);
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
- // self.logger.info('The filename is ' + data['filename']);
+  // self.logger.info('The filename is ' + data['filename']);
   self.config.set('mergedeq', test);
   self.config.set('usethispreset', 'no preset used');
   self.config.set('nbreq', nbreq - skipeqn)
@@ -917,7 +921,7 @@ Parameq.prototype.saveequalizerpreset = function (data) {
     return;
   }
   var nbreq = self.config.get('nbreq')
- // self.logger.info('eqpresetsaved ' + preset)
+  // self.logger.info('eqpresetsaved ' + preset)
   var rpreset = (data['renpreset'])
   //if (rpreset != 'choose a name') {
   switch (preset) {
@@ -1102,7 +1106,7 @@ Parameq.prototype.convertimportedeq = function () {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('MAX_EQ_REACHED'));
       }
     }
-  //  self.logger.info('test bbbbbbbb' + test)
+    //  self.logger.info('test bbbbbbbb' + test)
     self.config.set('mergedeq', test);
   } catch (err) {
     self.logger.info('failed to read EQ file ' + err);

@@ -1,4 +1,4 @@
-May 11th 2021
+May 12th 2021
 
 
 ##  For Volumio >= 3.054
@@ -86,6 +86,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 12th 2021
+
+- fix to avoid remove last PEQ
 
 May 11th 2021
 

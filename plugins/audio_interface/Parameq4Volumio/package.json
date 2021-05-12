@@ -1,6 +1,6 @@
 {
   "name": "parameq4volumio",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Parametric Eq for Volumio2 with AutoEq Headphones profils and REW import",
   "main": "index.js",
   "scripts": {

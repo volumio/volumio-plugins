@@ -71,5 +71,6 @@
   "CHOOSE_LOCALEQ":"Select a file",
   "ADD_REPLACE":"REPLACE=On / ADD=Off",
   "ADD_REPLACE_DOC":"Choose if local setting is aadded to current or replace it",
-  "MAX-EQ-REACHED":"Max number of EQ reached! Last coefficient won't be used !"
+  "MAX-EQ-REACHED":"Max number of EQ reached! Last coefficient won't be used !",
+  "CANT_REMOVE_LAST_PEQ":"Can't remove last PEQ!"
 }
