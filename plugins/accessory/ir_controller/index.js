@@ -159,7 +159,7 @@ IrController.prototype.getUIConfig = function () {
   const dirs = fs.readdirSync(path.join(__dirname, 'configurations'));
 
   try {
-    fs.readdirSync('/data/ir_controller/configurations').forEach(function (customDir) {
+    fs.readdirSync('/data/INTERNAL/ir_controller/configurations').forEach(function (customDir) {
       if (dirs.every(function (dir) { return dir !== customDir; })) {
         dirs.push(customDir);
       }
@@ -253,8 +253,8 @@ IrController.prototype.saveIROptions = function (data) {
   if (self.config.get('ir_profile') !== data.ir_profile.value || data.notify === false) {
     self.config.set('ir_profile', data.ir_profile.value);
     try {
-      if (fs.readdirSync('/data/ir_controller/configurations').some(function (dir) { return dir === data.ir_profile.value; })) {
-        profilePathStub = '/data/ir_controller';
+      if (fs.readdirSync('/data/INTERNAL/ir_controller/configurations').some(function (dir) { return dir === data.ir_profile.value; })) {
+        profilePathStub = '/data/INTERNAL/ir_controller';
       }
     } catch (e) {
       self.logger.error(id + 'Custom profile folder not accessible: ' + e);
