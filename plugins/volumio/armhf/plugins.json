@@ -323,6 +323,24 @@
 					],
 					"updated": "25-1-2021",
 					"stable": true
+				},
+				{
+					"prettyName": "80s80s Radio",
+					"icon": "fa-lightbulb-o",
+					"name": "80s80s",
+					"version": "1.0.2",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/80s80s/80s80s.zip",
+					"license": "ISC",
+					"description": "80s80s Radio Plugin for Volumio2",
+					"details": "",
+					"author": "marco79cgn",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "15-5-2021"
 				}
 			]
 		},
