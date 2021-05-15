@@ -30,7 +30,7 @@
   "FREQUENCY_RANGE":"Frequence Hz doit être un nombre décimal [10-20000] dans ",
   "GAIN_RANGE":"Gain dB doit être un nombre décimal [-20-20] dans ",
   "Q_RANGE":"Coefficient Q doit être un nombre décimal [0.1-15] dans ",
-  "SLOPE_RANGE":"Slope doit être un nombre entier [1-15] dans ",
+  "SLOPE_RANGE":"Slope doit être un nombre entier [1-12] dans ",
   "NO_THIRDCOEFF":"Pas de troisième coefficient dans ",
   "LEFTLEVEL": "Gain canal gauche",
   "LEFTLEVEL_DESC": "Ajoute un gain spécifique pour ce canal",

@@ -861,7 +861,7 @@ Parameq.prototype.saveparameq = function (data) {
     if (typer == 'Highshelf' || typer == 'Lowshelf') {
 
       var s = Number(eqr[2]);
-      if ((Number.isInteger(s)) && (s > 0 && s < 16)) {
+      if ((Number.isInteger(s)) && (s > 0 && s < 13)) {
 
       } else {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('SLOPE_RANGE') + eqc)

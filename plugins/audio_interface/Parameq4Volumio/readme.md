@@ -89,6 +89,7 @@ nearly everythings
 
 May 15th 2021
 
+- Range for slope limited to 0-12
 - CamillaDsp v0.5.1
 - fix when only one PEQ
 

@@ -31,7 +31,7 @@
   "FREQUENCY_RANGE":"Frequency Hz must be a float [10-20000] in ",
   "GAIN_RANGE":"Gain must be a float [-20-20] in ",
   "Q_RANGE":"Coefficient Q must be a float [0.1-15] in ",
-  "SLOPE_RANGE":"Slope must be a integer [1-15] in ",
+  "SLOPE_RANGE":"Slope must be a integer [1-12] in ",
   "NO_THIRDCOEFF":"No need for a third coefficient in ",
   "LEFTLEVEL": "Left channel gain",
   "LEFTLEVEL_DESC": "Add a specific gain for this channel",
