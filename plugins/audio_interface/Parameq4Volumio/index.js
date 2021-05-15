@@ -743,6 +743,10 @@ Parameq.prototype.createCamilladspfile = function () {
           gainmaxused += gainmax
 
         };
+        gainmaxused += ',0'
+
+        // self.logger.info('gainmaxused' +gainmaxused)
+
         var gainclipfree
         if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
           gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
@@ -757,6 +761,7 @@ Parameq.prototype.createCamilladspfile = function () {
 
             //else
           }
+          // self.logger.info('gainclipfree' +gainclipfree)
 
           self.config.set('gainapplied', gainclipfree)
         }
@@ -806,7 +811,7 @@ Parameq.prototype.saveparameq = function (data) {
     var eqr = (data[eqc]).split(',')
     var veq = Number(eqr[0]);
 
-    if (typer !== 'None'&& typer !== 'Remove') {
+    if (typer !== 'None' && typer !== 'Remove') {
       self.logger.info('Type is ' + typer)
 
       if (Number.parseFloat(veq) && (veq > 0 && veq < 20001)) {
@@ -885,13 +890,16 @@ Parameq.prototype.saveparameq = function (data) {
     var scopec = 'scope' + o;
     var eqc = 'eq' + o;
     //--- skip PEQ if set to REMOVE
-    if (((data[typec].value) != 'Remove') && (nbreq != 1)) {
+    if (((data[typec].value) != 'Remove')) {
       test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
+      self.logger.info('test values '+ test)
       self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
     } else if (((data[typec].value) == 'Remove') && (nbreq == 1)) {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CANT_REMOVE_LAST_PEQ'))
-    } else {
+    } else if (((data[typec].value) == 'Remove') && (nbreq != 1)){
       skipeqn = skipeqn + 1
+      self.logger.info('skipeqn ' + skipeqn)
+
     }
   }
   self.config.set('leftlevel', data.leftlevel);

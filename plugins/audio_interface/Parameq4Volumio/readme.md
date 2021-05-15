@@ -90,6 +90,7 @@ nearly everythings
 May 15th 2021
 
 - CamillaDsp v0.5.1
+- fix when only one PEQ
 
 May 12th 2021
 
