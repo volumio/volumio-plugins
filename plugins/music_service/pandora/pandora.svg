@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="pandora.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:export-ydpi="55.643799"
+   inkscape:export-xdpi="55.643799"
+   inkscape:export-filename="C:\Users\Joe Stanley\Desktop\pandora.png"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 474.13332 474.13332"
+   height="1792"
+   width="1792">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     units="px"
+     fit-margin-bottom="0.2"
+     fit-margin-right="0.3"
+     fit-margin-top="0.3"
+     fit-margin-left="0.3"
+     inkscape:window-maximized="0"
+     inkscape:window-y="27"
+     inkscape:window-x="1462"
+     inkscape:window-height="860"
+     inkscape:window-width="1274"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="404.97556"
+     inkscape:cx="56.218928"
+     inkscape:zoom="0.175"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-91.557758,-193.15359)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       sodipodi:nodetypes="ccccsccscc"
+       id="path847"
+       d="M 291.35302,548.17763 H 228.65907 V 312.25609 h 118.61614 c 0,0 79.07744,0 81.26185,81.69877 2.18448,81.69876 -63.76424,92.62102 -63.76424,92.62102 0,0 -19.90055,5.57043 -61.18682,5.57043 -5e-5,19.66013 0,39.07452 0,48.38573 0,8.12715 -12.23304,7.64559 -12.23304,7.64559 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:3.269;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+</svg>
