@@ -1,4 +1,4 @@
-May 12th 2021
+May 15th 2021
 
 
 ##  For Volumio >= 3.054
@@ -86,6 +86,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 15th 2021
+
+- CamillaDsp v0.5.1
 
 May 12th 2021
 
