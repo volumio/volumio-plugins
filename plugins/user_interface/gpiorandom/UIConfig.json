@@ -3,12 +3,12 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
- {
-      "id": "section_settings",
+    {
+      "id": "section_main_settings",
       "element": "section",
-      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveSettings"},
+      "label": "TRANSLATE.PLUGIN_MAIN_SECTION_TITLE",
+      "icon": "fa-wrench",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveMainSettings"},
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
@@ -16,20 +16,7 @@
           "debounceTimeout",
           "activeLow",
           "edge",
-          "nbsongs",
-          "clicktimeout",
-          "singleclick",
-          "singleclickAction",
-          "singleuri",
-          "singleradio",
-          "doubleclick",
-          "doubleclickAction",
-          "doubleuri",
-          "doubleradio",
-          "tripleclick",
-          "tripleclickAction",
-          "tripleuri",
-          "tripleradio"
+          "clicktimeout"
         ]
       },
       "content": [
@@ -99,21 +86,48 @@
                       ]
         },
         {
-          "id": "nbsongs",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.NBSONGS_DOC",
-          "label": "TRANSLATE.NBSONGS_LBL",
-          "attributes": [ {"placeholder": "20"} ],
-          "value": ""
-        },
-        {
           "id": "clicktimeout",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.CLICKTIMEOUT_DOC",
           "label": "TRANSLATE.CLICKTIMEOUT_LBL",
           "attributes": [ {"placeholder": "800"} ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_action_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_ACTION_SECTION_TITLE",
+      "icon": "fa-toggle-on",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveActionSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "nbsongs",
+          "singleclick",
+          "singleclickAction",
+          "singleuri",
+          "singleradio",
+          "doubleclick",
+          "doubleclickAction",
+          "doubleuri",
+          "doubleradio",
+          "tripleclick",
+          "tripleclickAction",
+          "tripleuri",
+          "tripleradio"
+        ]
+      },
+      "content": [
+        {
+          "id": "nbsongs",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.NBSONGS_DOC",
+          "label": "TRANSLATE.NBSONGS_LBL",
+          "attributes": [ {"placeholder": "20"} ],
           "value": ""
         },
         {

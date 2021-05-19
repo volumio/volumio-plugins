@@ -1,6 +1,7 @@
 {
   "PLUGIN_CONFIGURATION":"GpioRandom configuration",
-  "PLUGIN_SECTION_TITLE":"GpioRandom  settings",
+  "PLUGIN_MAIN_SECTION_TITLE":"GPIO Button settings",
+  "PLUGIN_ACTION_SECTION_TITLE":"Click actions settings",
   "SAVE":"Save",
   "SUCCESS_TITLE":"Saved settings",
   "SUCCESS_MESSAGE":"Successfully saved settings",
@@ -8,7 +9,7 @@
   "GPIONUM_DOC":"Enter the GPIO number on which the button is wired (choose one with interrupt support)",
   "GPIONUM_LBL":"GPIO Number",
   "NBSONGS_DOC":"Enter the number of random songs to add to queue",
-  "NBSONGS_LBL":"Number of Songs",
+  "NBSONGS_LBL":"Number of Songs for random action",
   "DEBOUNCE_LBL": "Debounce timeout",
   "DEBOUNCE_DOC":"minimum number of miliseconds needed between two events (5 should be fine on all RPI, but you should try others value depending on your board)",
   "ACTIVELOW_LBL": "Active low",

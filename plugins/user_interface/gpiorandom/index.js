@@ -209,19 +209,18 @@ gpiorandom.prototype.onRestart = function() {
 };
 
 
-gpiorandom.prototype.saveSettings = function (data) {
+gpiorandom.prototype.saveMainSettings = function (data) {
     var self = this;
     var defer = libQ.defer();
     var error = false;
-
+    
     //self.logger.info("gpioRandom : save setting" + JSON.stringify(data));
     
     self.logger.info("gpioRandom : settings => check for NaN ");
     if(isNaN(data['gpionum']))          data['gpionum']         = -1; 
     if(isNaN(data['debounceTimeout']))  data['debounceTimeout'] = -1;
-    if(isNaN(data['nbsongs']))          data['nbsongs']         = -1;
     if(isNaN(data['clicktimeout']))     data['clicktimeout']    = -1;
-   
+    
     
     // do some quality check
     self.logger.info("gpioRandom : settings => check for validity ");
@@ -235,15 +234,45 @@ gpiorandom.prototype.saveSettings = function (data) {
         error = true;
     } 
     
-    if(data['nbsongs'] <= 0) {
-        self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NOT_A_NUMBER_TITLE"), self.getI18nString("ERROR_NOT_A_NUMBER_MESSAGE"));
-        error = true;
-    } 
-    
     if(data['clicktimeout'] <= 0) {
         self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NOT_A_NUMBER_TITLE"), self.getI18nString("ERROR_NOT_A_NUMBER_MESSAGE"));
         error = true;
     }
+    
+    self.logger.info("gpioRandom : settings => save values");
+    
+    // save numerical values from user input
+    self.config.set('gpionum'           , parseInt(data['gpionum']),10);
+    self.config.set('debounceTimeout'   , parseInt(data['debounceTimeout']),10);
+    self.config.set('clicktimeout'      , parseInt(data['clicktimeout']),10);
+    // save combobox
+    self.config.set('activeLow'    , data['activeLow'].value);
+    self.config.set('edge'         , data['edge'].value);
+        
+    if(!error) {
+        self.commandRouter.pushToastMessage('success', self.getI18nString("SUCCESS_TITLE"), self.getI18nString("SUCCESS_MESSAGE"));
+    }
+    
+    defer.resolve();
+    return defer.promise;
+};
+
+gpiorandom.prototype.saveActionSettings = function (data) {
+    var self = this;
+    var defer = libQ.defer();
+    var error = false;
+
+    //self.logger.info("gpioRandom : save setting" + JSON.stringify(data));
+    
+    self.logger.info("gpioRandom : settings => check for NaN ");
+    if(isNaN(data['nbsongs']))          data['nbsongs']         = -1;
+
+    
+    // do some quality check    
+    if(data['nbsongs'] <= 0) {
+        self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NOT_A_NUMBER_TITLE"), self.getI18nString("ERROR_NOT_A_NUMBER_MESSAGE"));
+        error = true;
+    } 
     
     if(data['singleclick'] == true && data['singleclickAction'].value == OPTION_PLAYURI && data['singleuri'] == "") {
         self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_EMPTY_URI_TITLE"), self.getI18nString("ERROR_EMPTY_URI_MESSAGE"));
@@ -263,20 +292,7 @@ gpiorandom.prototype.saveSettings = function (data) {
     self.logger.info("gpioRandom : settings => save values");
     
     // save numerical values from user input
-    self.config.set('gpionum'           , parseInt(data['gpionum']),10);
-    self.config.set('debounceTimeout'   , parseInt(data['debounceTimeout']),10);
     self.config.set('nbsongs'           , parseInt(data['nbsongs']),10);
-    self.config.set('clicktimeout'      , parseInt(data['clicktimeout']),10);
-    
-    // save combobox
-    self.config.set('activeLow'    , data['activeLow'].value);
-    //self.config.set('activeLowLabel'    , data['activeLow'].label);
-    self.config.set('edge'         , data['edge'].value);
-    //self.config.set('edgeLabel'         , data['edge'].label);
-    self.logger.info("gpioRandom : settings => activeLow value = "+data['activeLow'].value);
-    self.logger.info("gpioRandom : settings => activeLow label = "+data['activeLow'].label);
-    self.logger.info("gpioRandom : settings => edge value = "+data['edge'].value);
-    self.logger.info("gpioRandom : settings => edge label = "+data['edge'].label);    
     
     // save single click comboboxes values
     self.saveSettingsHelper('single', data);
@@ -410,22 +426,23 @@ gpiorandom.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {           
-            //self.logger.info("gpioRandom : load setting - uiconf = " + JSON.stringify(uiconf));
+            self.logger.info("gpioRandom : load setting - uiconf = " + JSON.stringify(uiconf));
             
-            // Load base settings
+            // Load base settings          
             self.logger.info("gpioRandom : load setting - base conf");
             uiconf.sections[0].content[0].value = self.config.get('gpionum');
             uiconf.sections[0].content[1].value = self.config.get('debounceTimeout');
             self.getUIConfigComboBox('activeLow'  , 2, uiconf);
             self.getUIConfigComboBox('edge'       , 3, uiconf);
-            uiconf.sections[0].content[4].value = self.config.get('nbsongs');
-            uiconf.sections[0].content[5].value = self.config.get('clicktimeout');
+            uiconf.sections[0].content[4].value = self.config.get('clicktimeout');
             
+                            
             // load click settings
-            self.getUIConfigHelper('single',  6, 7, 8, 9, uiconf);
-            self.getUIConfigHelper('double', 10,11,12,13, uiconf);
-            self.getUIConfigHelper('triple', 14,15,16,17, uiconf);
-            
+            uiconf.sections[1].content[0].value = self.config.get('nbsongs');
+            self.getUIConfigHelper('single', 1, 2, 3, 4, uiconf);
+            self.getUIConfigHelper('double', 5, 6, 7, 8, uiconf);
+            self.getUIConfigHelper('triple', 9,10,11,12, uiconf);
+
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -440,17 +457,17 @@ gpiorandom.prototype.getUIConfigHelper = function(type, index1, index2, index3, 
     var self = this
     
     self.logger.info("gpioRandom : load setting - "+type+" + click");
-    uiconf.sections[0].content[index1].value = self.config.get(type+'click') == 1 ? true:false;
+    uiconf.sections[1].content[index1].value = self.config.get(type+'click') == 1 ? true:false;
     if(typeof self.config.get(type+'clickAction') != 'undefined') {
-        uiconf.sections[0].content[index2].value.value = self.config.get(type+'clickAction');
-        uiconf.sections[0].content[index2].value.label = uiconf.sections[0].content[index2].options[self.config.get(type+'clickAction')].label;
+        uiconf.sections[1].content[index2].value.value = self.config.get(type+'clickAction');
+        uiconf.sections[1].content[index2].value.label = uiconf.sections[1].content[index2].options[self.config.get(type+'clickAction')].label;
     }
-    uiconf.sections[0].content[index3].value = self.config.get(type+'uri');
+    uiconf.sections[1].content[index3].value = self.config.get(type+'uri');
     
-    uiconf.sections[0].content[index4].options = self.favouritesRadios;
+    uiconf.sections[1].content[index4].options = self.favouritesRadios;
     if(typeof self.config.get(type+'radioValue') != 'undefined') {
-        uiconf.sections[0].content[index4].value.value = self.config.get(type+'radioValue');
-        uiconf.sections[0].content[index4].value.label = self.config.get(type+'radioLabel');
+        uiconf.sections[1].content[index4].value.value = self.config.get(type+'radioValue');
+        uiconf.sections[1].content[index4].value.label = self.config.get(type+'radioLabel');
     }
 }
 
