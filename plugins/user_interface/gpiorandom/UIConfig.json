@@ -13,6 +13,9 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "gpionum",
+          "debounceTimeout",
+          "activeLow",
+          "edge",
           "nbsongs",
           "clicktimeout",
           "singleclick",
@@ -38,6 +41,62 @@
           "label": "TRANSLATE.GPIONUM_LBL",
           "attributes": [ {"placeholder": "3"} ],
           "value": ""
+        },
+         {
+          "id": "debounceTimeout",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.DEBOUNCE_DOC",
+          "label": "TRANSLATE.DEBOUNCE_LBL",
+          "attributes": [ {"placeholder": "5"} ],
+          "value": ""
+        },
+        {
+          "id": "activeLow",
+          "element": "select",
+          "doc": "TRANSLATE.ACTIVELOW_DOC",
+          "label": "TRANSLATE.ACTIVELOW_LBL",
+          "value": {"value": 1,
+                    "label": "true"
+          },
+          
+           "options": [
+            { 
+              "value": 0,
+              "label": "false"
+            },
+            {
+              "value": 1,
+              "label": "true"
+            }
+                      ]
+        },
+        {
+          "id": "edge",
+          "element": "select",
+          "doc": "TRANSLATE.EDGE_DOC",
+          "label": "TRANSLATE.EDGE_LBL",
+          "value": {"value": 0,
+                    "label": "falling"
+          },
+           "options": [
+            { 
+              "value": 0,
+              "label": "falling"
+            },
+            { 
+              "value": 1,
+              "label": "rising"
+            },
+            { 
+              "value": 2,
+              "label": "both"
+            },
+            {
+              "value": 3,
+              "label": "none"
+            }
+                      ]
         },
         {
           "id": "nbsongs",

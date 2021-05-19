@@ -8,11 +8,14 @@ var io = require('socket.io-client');
 var socket = io.connect('http://localhost:3000');
 var Gpio = require('onoff').Gpio;
 
-var button = null;      // gpio mapped button
-var nbsongs = null;     // number of songs to randomly put in the queue
-var clicktimeout = null;// number of milisec to read for clicks before triggering actions
-var nbclick = 0;        // number of clicks that have been counted during clicktimeout
-var timeout = null;     // timeout handler used to match the number of click on the button
+var button = null;          // gpio mapped button
+var nbsongs = null;         // number of songs to randomly put in the queue
+var clicktimeout = null;    // number of milisec to read for clicks before triggering actions
+var nbclick = 0;            // number of clicks that have been counted during clicktimeout
+var timeout = null;         // timeout handler used to match the number of click on the button
+var debounceTimeout = null; // timeout used before accepting new interrupt on GPIO
+var activeLow = null;       // tell weither active GPIO state is low 
+var edge = null;            // set IRQ trigger event (none, falling, rising, both)
 
 var favouritesRadios = null;    // list of favourites radios, loaded when plugin is started
 
@@ -22,6 +25,13 @@ const OPTION_PLAYPAUSE  = 1;
 const OPTION_PLAYURI    = 2;
 const OPTION_PLAYRADIO  = 3;
 
+const OPTION_TRUE       = 1;
+const OPTION_FALSE      = 0;
+
+const OPTION_FALLING    = 0;
+const OPTION_RISING     = 1;
+const OPTION_BOTH       = 2;
+const OPTION_NONE       = 3;
 
 module.exports = gpiorandom;
 function gpiorandom(context) {
@@ -50,52 +60,68 @@ gpiorandom.prototype.onStart = function() {
     
     self.load18nStrings();
     
-    // init mandatory values
+    // init mandatory values but doi nothing if no gpio is set
     var gpionum = self.config.get('gpionum');
-    if (isNaN(gpionum)) gpionum = 3;
+    self.logger.info("gpioRandom : got gpio : " +gpionum);
+    if (isNaN(gpionum) || gpionum == 0) {
+        self.logger.info("gpioRandom : doing nothing until a gpio is set");
+    } else {
     
-    self.nbsongs = self.config.get('nbsongs');
-    if (isNaN(self.nbsongs)) self.nbsongs = 20;
-    
-    self.clicktimeout = self.config.get('clicktimeout');
-    if (isNaN(self.clicktimeout)) self.clicktimeout = 800;
-    
-    // init GPIO for button press detection (it should be IRQ backed, thus activeLow: true)
-    self.logger.info("gpioRandom : init GPIO");
-    self.button  = new Gpio(gpionum, 'in', 'falling', {debounceTimeout: 5, activeLow: true});
-    self.nbclick = 0;
-    self.timeout = null;
-    
-    // listen to pushed button and trigger the assigned action depending on number of detected clicks
-    self.button.watch((err, value) => {
-    
-        self.logger.info("gpioRandom : pressed button. nbclick = " + self.nbclick);
-        self.nbclick++;
-        clearTimeout(self.timeout);
+        self.nbsongs = self.config.get('nbsongs');
+        if (isNaN(self.nbsongs)) self.nbsongs = 20;
         
-        // click timeout has passed : it's time to check how many time the button has been pressed
-        self.timeout = setTimeout(function() {
-                switch (self.nbclick) {
-                    case 1 :
-                        self.logger.info("gpioRandom : single click");
-                        self.handleAction('single');
-                        break;
-                    case 2 :
-                        self.logger.info("gpioRandom : double click");
-                        self.handleAction('double');
-                        break;
-                    case 3 :
-                        self.logger.info("gpioRandom : tripple click");
-                        self.handleAction('triple');
-                        break;
-                }
-                self.nbclick = 0;            
-        },self.clicktimeout);
-              
-        if (err) {
-            self.logger.info("gpioRandom : error - " + err);
-        }
-    });
+        self.clicktimeout = self.config.get('clicktimeout');
+        if (isNaN(self.clicktimeout)) self.clicktimeout = 800;
+        
+        self.debounceTimeout = self.config.get('debounceTimeout');
+        if (isNaN(self.debounceTimeout)) self.debounceTimeout = 5;
+        
+        /*
+        var activeLowConfig = self.config.get('activeLow');
+        if (activeLowConfig == "true") 
+            self.activeLow = true;
+        else
+            self.activeLow = false;
+        */
+        
+        // init GPIO for button press detection (it should be IRQ backed, thus activeLow: true)
+        self.logger.info("gpioRandom : init GPIO");
+        self.button  = new Gpio(gpionum, 'in', 'falling', {debounceTimeout: 40, activeLow: false});
+        self.nbclick = 0;
+        self.timeout = null;
+        
+        // listen to pushed button and trigger the assigned action depending on number of detected clicks
+        self.button.watch((err, value) => {
+            if (value != 1) return;
+                
+            self.logger.info("gpioRandom : pressed button. nbclick = " + self.nbclick);
+            self.nbclick++;
+            clearTimeout(self.timeout);
+            
+            // click timeout has passed : it's time to check how many time the button has been pressed
+            self.timeout = setTimeout(function() {
+                    switch (self.nbclick) {
+                        case 1 :
+                            self.logger.info("gpioRandom : single click");
+                            self.handleAction('single');
+                            break;
+                        case 2 :
+                            self.logger.info("gpioRandom : double click");
+                            self.handleAction('double');
+                            break;
+                        case 3 :
+                            self.logger.info("gpioRandom : tripple click");
+                            self.handleAction('triple');
+                            break;
+                    }
+                    self.nbclick = 0;            
+            },self.clicktimeout);
+                
+            if (err) {
+                self.logger.info("gpioRandom : error - " + err);
+            }
+        });
+    }
     
     // load favourites radios to build the list for settings
     self.loadRadiosList();
@@ -191,14 +217,20 @@ gpiorandom.prototype.saveSettings = function (data) {
     //self.logger.info("gpioRandom : save setting" + JSON.stringify(data));
     
     self.logger.info("gpioRandom : settings => check for NaN ");
-    if(isNaN(data['gpionum']))      data['gpionum']     = -1; 
-    if(isNaN(data['nbsongs']))      data['nbsongs']     = -1;
-    if(isNaN(data['clicktimeout'])) data['clicktimeout']= -1;
-      
+    if(isNaN(data['gpionum']))          data['gpionum']         = -1; 
+    if(isNaN(data['debounceTimeout']))  data['debounceTimeout'] = -1;
+    if(isNaN(data['nbsongs']))          data['nbsongs']         = -1;
+    if(isNaN(data['clicktimeout']))     data['clicktimeout']    = -1;
+   
     
     // do some quality check
     self.logger.info("gpioRandom : settings => check for validity ");
     if(data['gpionum'] <= 0) {
+        self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NOT_A_NUMBER_TITLE"), self.getI18nString("ERROR_NOT_A_NUMBER_MESSAGE"));
+        error = true;
+    } 
+    
+    if(data['debounceTimeout'] <= 0) {
         self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NOT_A_NUMBER_TITLE"), self.getI18nString("ERROR_NOT_A_NUMBER_MESSAGE"));
         error = true;
     } 
@@ -228,13 +260,23 @@ gpiorandom.prototype.saveSettings = function (data) {
         error = true;
     }
     
-    
     self.logger.info("gpioRandom : settings => save values");
     
     // save numerical values from user input
-    self.config.set('gpionum'     , parseInt(data['gpionum']),10);
-    self.config.set('nbsongs'     , parseInt(data['nbsongs']),10);
-    self.config.set('clicktimeout', parseInt(data['clicktimeout']),10);
+    self.config.set('gpionum'           , parseInt(data['gpionum']),10);
+    self.config.set('debounceTimeout'   , parseInt(data['debounceTimeout']),10);
+    self.config.set('nbsongs'           , parseInt(data['nbsongs']),10);
+    self.config.set('clicktimeout'      , parseInt(data['clicktimeout']),10);
+    
+    // save combobox
+    self.config.set('activeLow'    , data['activeLow'].value);
+    //self.config.set('activeLowLabel'    , data['activeLow'].label);
+    self.config.set('edge'         , data['edge'].value);
+    //self.config.set('edgeLabel'         , data['edge'].label);
+    self.logger.info("gpioRandom : settings => activeLow value = "+data['activeLow'].value);
+    self.logger.info("gpioRandom : settings => activeLow label = "+data['activeLow'].label);
+    self.logger.info("gpioRandom : settings => edge value = "+data['edge'].value);
+    self.logger.info("gpioRandom : settings => edge label = "+data['edge'].label);    
     
     // save single click comboboxes values
     self.saveSettingsHelper('single', data);
@@ -266,6 +308,9 @@ gpiorandom.prototype.saveSettingsHelper = function (type, data) {
     }
     
     if(data[type+'clickAction'].value == OPTION_PLAYRADIO) {
+        self.logger.info("gpioRandom : "+type+" clickAction is PLAYRADIO");
+        self.logger.info("gpioRandom : "+type+" radioValue saved to " + data[type+'radio'].value);
+        self.logger.info("gpioRandom : "+type+" radioLabel saved to " + data[type+'radio'].label);
         self.config.set(type+'radioValue'  , data[type+'radio'].value);
         self.config.set(type+'radioLabel'  , data[type+'radio'].label);
     }
@@ -370,13 +415,16 @@ gpiorandom.prototype.getUIConfig = function() {
             // Load base settings
             self.logger.info("gpioRandom : load setting - base conf");
             uiconf.sections[0].content[0].value = self.config.get('gpionum');
-            uiconf.sections[0].content[1].value = self.config.get('nbsongs');
-            uiconf.sections[0].content[2].value = self.config.get('clicktimeout');
+            uiconf.sections[0].content[1].value = self.config.get('debounceTimeout');
+            self.getUIConfigComboBox('activeLow'  , 2, uiconf);
+            self.getUIConfigComboBox('edge'       , 3, uiconf);
+            uiconf.sections[0].content[4].value = self.config.get('nbsongs');
+            uiconf.sections[0].content[5].value = self.config.get('clicktimeout');
             
             // load click settings
-            self.getUIConfigHelper('single',  3, 4, 5, 6, uiconf);
-            self.getUIConfigHelper('double',  7, 8, 9,10, uiconf);
-            self.getUIConfigHelper('triple', 11,12,13,14, uiconf);
+            self.getUIConfigHelper('single',  6, 7, 8, 9, uiconf);
+            self.getUIConfigHelper('double', 10,11,12,13, uiconf);
+            self.getUIConfigHelper('triple', 14,15,16,17, uiconf);
             
             defer.resolve(uiconf);
         })
@@ -404,7 +452,19 @@ gpiorandom.prototype.getUIConfigHelper = function(type, index1, index2, index3, 
         uiconf.sections[0].content[index4].value.value = self.config.get(type+'radioValue');
         uiconf.sections[0].content[index4].value.label = self.config.get(type+'radioLabel');
     }
-}    
+}
+
+gpiorandom.prototype.getUIConfigComboBox = function(name, index, uiconf) {
+    var self = this
+    
+    self.logger.info("gpioRandom : load combobox setting - "+name + " / value = " +self.config.get(name) );
+    
+    if(typeof self.config.get(name) != 'undefined') {
+        uiconf.sections[0].content[index].value.value = self.config.get(name);
+        uiconf.sections[0].content[index].value.label = uiconf.sections[0].content[index].options[self.config.get(name)].label;
+    }
+}
+
 
 gpiorandom.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
