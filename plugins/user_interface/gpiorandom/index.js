@@ -14,7 +14,7 @@ var clicktimeout = null;    // number of milisec to read for clicks before trigg
 var nbclick = 0;            // number of clicks that have been counted during clicktimeout
 var timeout = null;         // timeout handler used to match the number of click on the button
 var debounceTimeout = null; // timeout used before accepting new interrupt on GPIO
-var activeLow = null;       // tell weither active GPIO state is low 
+var activeLow = null;       // tell weither active GPIO state is low
 var edge = null;            // set IRQ trigger event (none, falling, rising, both)
 
 var favouritesRadios = null;    // list of favourites radios, loaded when plugin is started
@@ -62,7 +62,6 @@ gpiorandom.prototype.onStart = function() {
 
     // init mandatory values but do nothing if no gpio is set
     var gpionum = self.config.get('gpionum');
-    self.logger.info("gpioRandom : got gpio : " +gpionum);
     if (isNaN(gpionum) || gpionum == 0) {
         self.logger.info("gpioRandom : doing nothing until a gpio is set");
     } else {
@@ -76,17 +75,18 @@ gpiorandom.prototype.onStart = function() {
         self.debounceTimeout = self.config.get('debounceTimeout');
         if (isNaN(self.debounceTimeout)) self.debounceTimeout = 5;
 
-        /*
         var activeLowConfig = self.config.get('activeLow');
         if (activeLowConfig == "true")
             self.activeLow = true;
         else
             self.activeLow = false;
-        */
+
+	self.edge = self.config.get('edge');
+        if (self.edge == "") self.edge = "falling";
 
         // init GPIO for button press detection (it should be IRQ backed, thus activeLow: true)
         self.logger.info("gpioRandom : init GPIO");
-        self.button  = new Gpio(gpionum, 'in', 'falling', {debounceTimeout: 40, activeLow: false});
+        self.button  = new Gpio(gpionum, 'in', self.edge, {debounceTimeout: self.debounceTimeout, activeLow: self.activeLow});
         self.nbclick = 0;
         self.timeout = null;
 
@@ -192,9 +192,14 @@ gpiorandom.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
+    self.logger.info("gpioRandom : stopping the plugin");
+
     // free up the GPIO
     self.logger.info("gpioRandom : free GPIO");
     if(typeof(self.button) == 'object') self.button.unexport();
+
+    self.logger.info("gpioRandom : clear timeout");
+    if(self.timeout != null) clearTimeout(self.timeout);
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
