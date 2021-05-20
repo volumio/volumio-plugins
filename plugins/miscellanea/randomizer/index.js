@@ -6,7 +6,7 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
-
+var tracks = null;
 module.exports = randomizer;
 function randomizer(context) {
 	var self = this;
@@ -27,21 +27,17 @@ randomizer.prototype.onVolumioStart = function()
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
-    //var playFromLastPosition = config.get('playFromLastPosition') || false;
-    //var lastPosition = config.get('lastPosition') || -1;
-    //var autostartDelay = config.get('autostartDelay') || 20000;
-
 
     return libQ.resolve();
 }
 
 randomizer.prototype.onStart = function() {
     var self = this;
-	var defer=libQ.defer();
+    var defer=libQ.defer();
+    self.load18nStrings();
 
-
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+    // Once the Plugin has successfull started resolve the promise
+    defer.resolve();
 
     return defer.promise;
 };
@@ -49,8 +45,12 @@ randomizer.prototype.onStart = function() {
 randomizer.prototype.randomTracks = function() {
     var self = this;
     var defer=libQ.defer();
-    exec('node /data/plugins/miscellanea/randomizer/randomTracks');
-    
+    self.tracks = self.config.get('tracks');
+    if (isNaN(self.tracks)) { 
+      exec('node /data/plugins/miscellanea/randomizer/randomTracks');
+    } else {
+      exec('node /data/plugins/miscellanea/randomizer/randomTracks '+ self.config.get('tracks') );
+    }
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -60,6 +60,7 @@ randomizer.prototype.randomTracks = function() {
 randomizer.prototype.trackToAlbum = function() {
     var self = this;
     var defer=libQ.defer();
+
     exec('node /data/plugins/miscellanea/randomizer/trackToAlbum');
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -70,6 +71,7 @@ randomizer.prototype.trackToAlbum = function() {
 randomizer.prototype.randomAlbum = function() {
     var self = this;
     var defer=libQ.defer();
+
     exec('node /data/plugins/miscellanea/randomizer/randomAlbum');
 
     // Once the Plugin has successfull stopped resolve the promise
@@ -77,8 +79,6 @@ randomizer.prototype.randomAlbum = function() {
 
     return libQ.resolve();
 }
-
-
 
 
 randomizer.prototype.onStop = function() {
@@ -97,7 +97,25 @@ randomizer.prototype.onRestart = function() {
 };
 
 
-// Configuration Methods -----------------------------------------------------------------------------
+randomizer.prototype.saveSettings = function (data) {
+    var self = this;
+    var defer = libQ.defer();
+      
+    defer.resolve();
+  
+    if(isNaN(data['tracks'])) data['tracks'] = -1;
+    
+    if(data['tracks'] <= 0) {
+        self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NUMBER_PLEASE_TITLE"), self.getI18nString("ERROR_NUMBER_PLEASE_MESSAGE"));
+      } else {
+        self.commandRouter.pushToastMessage('success', self.getI18nString("SUCCESS_TITLE"), self.getI18nString("SUCCESS_MESSAGE"));
+    }
+    self.config.set('tracks', parseInt(data['tracks']),10);
+
+    return defer.promise;
+    
+};
+
 
 randomizer.prototype.getUIConfig = function() {
     var defer = libQ.defer();
@@ -111,9 +129,7 @@ randomizer.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
 
-
-
-
+            uiconf.sections[0].content[0].value = self.config.get('tracks');
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -124,6 +140,36 @@ randomizer.prototype.getUIConfig = function() {
     return defer.promise;
 };
 
+
+
+
+randomizer.prototype.load18nStrings = function () {
+    var self = this;
+
+    try {
+        var language_code = this.commandRouter.sharedVars.get('language_code');
+        self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_' + language_code + ".json");
+    } catch (e) {
+        self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
+    }
+
+    self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
+};
+
+
+randomizer.prototype.getI18nString = function (key) {
+    var self = this;
+
+    if (self.i18nStrings[key] !== undefined)
+        return self.i18nStrings[key];
+    else
+        return self.i18nStringsDefaults[key];
+};
+
+
+// Configuration Methods -----------------------------------------------------------------------------
+
+
 randomizer.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
 }
@@ -131,15 +177,6 @@ randomizer.prototype.getConfigurationFiles = function() {
 randomizer.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your installation tasks here
-
-  var playFromLastPosition = data['playFromLastPosition'] || false;
-  var numberOfTracks = data['numberOfTracks'] || 20000;
-  config.set('playFromLastPosition', playFromLastPosition);
-  config.set('autostartDelay', numberOfTracks);
-  this.commandRouter.pushToastMessage('success', 'Randomizer', this.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE_DESCRIPTION"));
-//  this.commandRouter.pushToastMessage('success, numberOfTracks, this.commandRouter.getI18nString("COMMON.CONFIGURATION_UPDATE_DESCRIPTION"));
-
-
 
 };
 
