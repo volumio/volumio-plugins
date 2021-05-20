@@ -210,7 +210,8 @@ gpiorandom.prototype.onStop = function() {
 
 gpiorandom.prototype.onRestart = function() {
     var self = this;
-    // Optional, use if you need it
+    self.onStop();
+    self.onStart();
 };
 
 
@@ -431,7 +432,7 @@ gpiorandom.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-            self.logger.info("gpioRandom : load setting - uiconf = " + JSON.stringify(uiconf));
+            //self.logger.info("gpioRandom : load setting - uiconf = " + JSON.stringify(uiconf));
 
             // Load base settings
             self.logger.info("gpioRandom : load setting - base conf");
