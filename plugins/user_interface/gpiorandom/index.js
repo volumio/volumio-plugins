@@ -32,6 +32,8 @@ const OPTION_FALLING    = 0;
 const OPTION_RISING     = 1;
 const OPTION_BOTH       = 2;
 const OPTION_NONE       = 3;
+const EDGE_VALUES = ["falling", "rising", "both", "none"];
+
 
 module.exports = gpiorandom;
 function gpiorandom(context) {
@@ -81,20 +83,21 @@ gpiorandom.prototype.onStart = function() {
         else
             self.activeLow = false;
 
-	self.edge = self.config.get('edge');
-        if (self.edge == "") self.edge = "falling";
+	var edgePosition = self.config.get('edge');
+        if (isNaN(edgePosition)) self.edge = "falling";
+        else self.edge = EDGE_VALUES[edgePosition];
 
         // init GPIO for button press detection (it should be IRQ backed, thus activeLow: true)
-        self.logger.info("gpioRandom : init GPIO");
+        self.logger.info("gpioRandom : init GPIO, edge = " + self.edge +" debounceTimeout = " + self.debounceTimeout + " activeLow = " + self.activeLow);
         self.button  = new Gpio(gpionum, 'in', self.edge, {debounceTimeout: self.debounceTimeout, activeLow: self.activeLow});
         self.nbclick = 0;
         self.timeout = null;
 
         // listen to pushed button and trigger the assigned action depending on number of detected clicks
         self.button.watch((err, value) => {
-            if (value != 1) return;
+            if (value == 0 && self.activeLow == false) return;
 
-            self.logger.info("gpioRandom : pressed button. nbclick = " + self.nbclick);
+            self.logger.info("gpioRandom : pressed button nbclick = " + self.nbclick);
             self.nbclick++;
             clearTimeout(self.timeout);
 
@@ -132,9 +135,11 @@ gpiorandom.prototype.onStart = function() {
     return defer.promise;
 };
 
+
 gpiorandom.prototype.rand = function(max, min) {
     return Math.floor(Math.random() * (+max - +min)) + min;
 }
+
 
 gpiorandom.prototype.createPlaylist = function() {
     var self = this;
@@ -187,6 +192,7 @@ gpiorandom.prototype.createPlaylist = function() {
     defer.resolve();
     return libQ.resolve();
 }
+
 
 gpiorandom.prototype.onStop = function() {
     var self = this;
@@ -271,7 +277,7 @@ gpiorandom.prototype.saveActionSettings = function (data) {
     //self.logger.info("gpioRandom : save setting" + JSON.stringify(data));
 
     self.logger.info("gpioRandom : settings => check for NaN ");
-    if(isNaN(data['nbsongs']))          data['nbsongs']         = -1;
+    if(isNaN(data['nbsongs'])) data['nbsongs'] = -1;
 
 
     // do some quality check
@@ -298,7 +304,7 @@ gpiorandom.prototype.saveActionSettings = function (data) {
     self.logger.info("gpioRandom : settings => save values");
 
     // save numerical values from user input
-    self.config.set('nbsongs'           , parseInt(data['nbsongs']),10);
+    self.config.set('nbsongs', parseInt(data['nbsongs']),10);
 
     // save single click comboboxes values
     self.saveSettingsHelper('single', data);
