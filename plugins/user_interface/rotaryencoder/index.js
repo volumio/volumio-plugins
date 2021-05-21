@@ -40,11 +40,11 @@ rotaryencoder.prototype.onStart = function() {
 	if(self.config.get('enable_debug_logging'))
 		self.logger.info('[Rotary encoder] Loaded configuration: ' + JSON.stringify(self.config.data));
 	
-	if(self.config.get('first_encoder_CLK') !== undefined && self.config.get('first_encoder_SW') !== 0)
-		self.constructFirstEncoder(true);
+	if(self.config.get('first_encoder_CLK') !== undefined && self.config.get('first_encoder_CLK') !== 0 && self.config.get('first_encoder_DT') !== undefined && self.config.get('first_encoder_DT') !== 0)
+		self.constructFirstEncoder();
 	
-	if(self.config.get('second_encoder_CLK') !== undefined && self.config.get('second_encoder_SW') !== 0)
-		self.constructSecondEncoder(true);
+	if(self.config.get('second_encoder_CLK') !== undefined && self.config.get('second_encoder_CLK') !== 0 && self.config.get('second_encoder_DT') !== undefined && self.config.get('second_encoder_DT') !== 0)
+		self.constructSecondEncoder();
 	
 	// Once the Plugin has successfully started resolve the promise
 	defer.resolve();
@@ -630,6 +630,7 @@ rotaryencoder.prototype.updateSecondEncoder = function (data)
 		self.config.set('second_encoder_detentActionType', parseInt(data['second_encoder_detentActionType'].value));
 		self.config.set('second_encoder_buttonActionType', parseInt(data['second_encoder_buttonActionType'].value));
 		self.config.set('second_encoder_longPressActionType', parseInt(data['second_encoder_longPressActionType'].value));
+		defer.resolve(updateConf);
 	})
 	.then(function(rebuild)
 	{

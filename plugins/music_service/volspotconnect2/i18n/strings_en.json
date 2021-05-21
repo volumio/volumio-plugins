@@ -17,6 +17,10 @@
     "VOLUMECTRL_LINEAR": "Linear",
     "VOLUMECTRL_LOG": "Logarithmic",
     "VOLUMECTRL_FIXED": "Fixed",
-    "DESCPVOLUMECTRL": "Volume control (software) method"
+    "DESCPVOLUMECTRL": "Volume control (software) method",
+    "GAPLESS": "Gapless playback",
+    "DESCGAPLESS": "Enable/Disable gapless playback between tracks",
+    "AUTOPLAY": "Autoplay",
+    "DESCAUTOPLAY": "Autoplay similar songs when your music ends "
   }
 }

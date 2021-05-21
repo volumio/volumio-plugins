@@ -1,0 +1,25 @@
+
+//trkToAlbum
+
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+socket.emit('getState', '');
+socket.on('pushState', function (data) {
+        if (data.uri.length != 0) {
+                album = (data.uri.lastIndexOf('/'));
+                data.uri = data.uri.substring(0, album);
+                socket.emit('clearQueue');
+                socket.emit('addToQueue', {
+                        'uri': data.uri
+                })
+                socket.removeAllListeners('pushState');
+                socket.on('pushState', function () {
+                });
+        }
+});
+setTimeout(function () {
+        socket.emit("play",{"value":0});
+        socket.disconnect();
+}, 3000);
+
+

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keyboard>
+
+<!--
+RU standard keyboard layout
+-->
+
+  <options>
+  </options>
+
+  <layout id="default keyboard">
+    <row>
+      <space width="500" extended="true" />
+      <key>
+        <default display="&#203;" />
+      </key>
+      <key>
+        <default display="1" />
+        <shifted display="!" />
+      </key>
+      <key>
+        <default display="2" />
+        <shifted display='"' />
+      </key>
+      <key>
+        <default display="3" />
+        <shifted display="&#8470;" />
+      </key>
+      <key>
+        <default display="4" />
+        <shifted display=";" />
+      </key>
+      <key>
+        <default display="5" />
+        <shifted display="%" />
+      </key>
+      <key>
+        <default display="6" />
+        <shifted display=":" />
+      </key>
+      <key>
+        <default display="7" />
+        <shifted display="?" />
+      </key>
+      <key>
+        <default display="8" />
+        <shifted display="*" />
+      </key>
+      <key>
+        <default display="9" />
+        <shifted display="(" />
+      </key>
+      <key>
+        <default display="0" />
+        <shifted display=")" />
+      </key>
+      <key>
+        <default display="-" />
+        <shifted display="_" />
+      </key>
+      <key>
+        <default display="=" />
+        <shifted display="+" />
+      </key>
+      <key width="3000">
+        <default display="&#9003;" action="backspace" />
+        <mod3    display="Del" action="delete" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="Esc" action="escape" />
+      </key>
+      <key extended="true">
+        <default display="Home" action="home" />
+      </key>
+      <key extended="true">
+        <default display="PgUp" action="pageup" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2000">
+        <default display="" action="" />
+        <mod3    display="Esc" action="escape" />
+      </key>
+      <key obey-caps="true">
+        <default display="й" />
+        <shifted display="Й" />
+      </key>
+      <key obey-caps="true">
+        <default display="ц" />
+        <shifted display="Ц" />
+      </key>
+      <key obey-caps="true">
+        <default display="у" />
+        <shifted display="У" />
+      </key>
+      <key obey-caps="true">
+        <default display="к" />
+        <shifted display="К" />
+      </key>
+      <key obey-caps="true">
+        <default display="е" />
+        <shifted display="Е" />
+      </key>
+      <key obey-caps="true">
+        <default display="н" />
+        <shifted display="Н" />
+      </key>
+      <key obey-caps="true">
+        <default display="г" />
+        <shifted display="Г" />
+      </key>
+      <key obey-caps="true">
+        <default display="ш" />
+        <shifted display="Ш" />
+      </key>
+      <key obey-caps="true">
+        <default display="щ" />
+        <shifted display="Щ" />
+      </key>
+      <key obey-caps="true">
+        <default display="з" />
+        <shifted display="З" />
+      </key>
+      <key obey-caps="true">
+        <default display="х" />
+        <shifted display="Х" />
+      </key>
+      <key obey-caps="true">
+        <default display="ъ" />
+        <shifted display="Ъ" />
+      </key>
+      <key width="2000">
+        <default display="\" />
+        <shifted display="/" />
+        <mod3    display="Home" action="home" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="Del" action="delete" />
+      </key>
+      <key extended="true">
+        <default display="End" action="end" />
+      </key>
+      <key extended="true">
+        <default display="PgDn" action="pagedown" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2600">
+        <default display="Caps" action="modifier:caps" />
+      </key>
+      <key obey-caps="true">
+        <default display="ф" />
+        <shifted display="Ф" />
+      </key>
+      <key obey-caps="true">
+        <default display="ы" />
+        <shifted display="Ы" />
+      </key>
+      <key obey-caps="true">
+        <default display="в" />
+        <shifted display="В" />
+      </key>
+      <key obey-caps="true">
+        <default display="а" />
+        <shifted display="А" />
+      </key>
+      <key obey-caps="true">
+        <default display="п" />
+        <shifted display="П" />
+      </key>
+      <key obey-caps="true">
+        <default display="р" />
+        <shifted display="Р" />
+      </key>
+      <key obey-caps="true">
+        <default display="о" />
+        <shifted display="О" />
+      </key>
+      <key obey-caps="true">
+        <default display="л" />
+        <shifted display="Л" />
+      </key>
+      <key obey-caps="true">
+        <default display="д" />
+        <shifted display="Д" />
+      </key>
+      <key obey-caps="true">
+        <default display="ж" />
+        <shifted display="Ж" />
+      </key>
+      <key obey-caps="true">
+        <default display="э" />
+        <shifted display="Э" />
+      </key>
+      <key width="3600">
+        <default display="" action="" />
+        <mod3    display="End" action="end" />
+      </key>
+      <space width="500" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="1000" extended="true" />
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="1500">
+        <default display="Shift" action="modifier:shift" />
+      </key>
+      <key>
+        <default display="\" />
+        <shifted display="/" />
+      </key>
+      <key obey-caps="true">
+        <default display="я" />
+        <shifted display="Я" />
+      </key>
+      <key obey-caps="true">
+        <default display="ч" />
+        <shifted display="Ч" />
+      </key>
+      <key obey-caps="true">
+        <default display="с" />
+        <shifted display="С" />
+      </key>
+      <key obey-caps="true">
+        <default display="м" />
+        <shifted display="М" />
+      </key>
+      <key obey-caps="true">
+        <default display="и" />
+        <shifted display="И" />
+      </key>
+      <key obey-caps="true">
+        <default display="т" />
+        <shifted display="Т" />
+      </key>
+      <key obey-caps="true">
+        <default display="ь" />
+        <shifted display="Ь" />
+      </key>
+      <key obey-caps="true">
+        <default display="б" />
+        <shifted display="Б" />
+      </key>
+      <key obey-caps="true">
+        <default display="ю" />
+        <shifted display="Ю" />
+      </key>
+      <key>
+        <default display="." />
+        <shifted display="," />
+      </key>
+      <key width="4700">
+        <default display="Shift" action="modifier:shift" />
+        <mod3    display="&#8593;" action="up" />
+      </key>
+      <space width="500" extended="true" />
+      <space width="1000" extended="true" />
+      <key extended="true">
+        <default display="&#8593;" action="up" />
+      </key>
+      <space width="1000" extended="true" />
+      <space width="500" extended="true" />
+    </row>
+
+    <row>
+      <space width="500" extended="true" />
+      <key width="2000">
+        <default display="Ctrl" action="modifier:ctrl" />
+      </key>
+      <key>
+        <default display="&#9776;" action="modifier:mod3" />
+      </key>
+      <key width="2000">
+        <default display="Alt" action="modifier:alt" />
+      </key>
+      <key width="12400">
+        <default display=" " action="space" />
+      </key>
+      <key width="2000">
+        <default display="Alt" action="modifier:alt" />
+      </key>
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8592;" action="left" />
+      </key>
+      <key>
+        <default display="" action="" />
+        <mod3    display="&#8595;" action="down" />
+      </key>
+      <key width="2000">
+        <default display="Ctrl" action="modifier:ctrl" />
+        <mod3    display="&#8594;" action="right" />
+      </key>
+      <space width="500" extended="true" />
+      <key extended="true">
+        <default display="&#8592;" action="left" />
+      </key>
+      <key extended="true">
+        <default display="&#8595;" action="down" />
+      </key>
+      <key extended="true">
+        <default display="&#8594;" action="right" />
+      </key>
+      <space width="500" extended="true" />
+    </row>
+  </layout>
+</keyboard>

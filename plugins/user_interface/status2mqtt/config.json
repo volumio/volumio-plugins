@@ -1,0 +1,27 @@
+{
+  "enabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "username": {
+      "type": "string",
+      "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "server": {
+    "type": "string",
+    "value": "mqtt.loca.lan"
+  },
+  "topic": {
+    "type": "string",
+    "value": "volumio"
+  },
+  
+  "clientid": {
+    "type": "string",
+    "value": "volumio"
+  }
+}

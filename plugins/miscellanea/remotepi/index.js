@@ -4,9 +4,8 @@ const libQ = require('kew');
 const fs = require('fs-extra');
 const path = require('path');
 const os = require('os');
-const Gpio = require('onoff').Gpio;
-const sleep = require('sleep');
-const configTxtBanner = '#### RemotePi lirc setting below: do not alter ####' + os.EOL;
+const { Gpio } = require('onoff');
+const id = 'remotepi: ';
 var hwShutdown = false;
 var shutdownCtrl, initShutdown;
 
@@ -34,17 +33,17 @@ remotepi.prototype.onVolumioShutdown = function () {
   const self = this;
 
   if (!hwShutdown) {
-    self.logger.info('Shutdown initiated by UI');
+    self.logger.info(id + 'Shutdown initiated by UI');
     // Execute shutdown signal sequence on GPIO15
     initShutdown.write(1);
-    sleep.msleep(125);
+    self.msleep(125);
     initShutdown.write(0);
-    sleep.msleep(200);
+    self.msleep(200);
     initShutdown.write(1);
-    sleep.msleep(400);
+    self.msleep(400);
     initShutdown.write(0);
   } else {
-    self.logger.info('Shutdown initiated by hardware knob or IR remote control');
+    self.logger.info(id + 'Shutdown initiated by hardware knob or IR remote control');
   }
   // Reconfigure GPIO14 as output. Then set it to "high" to allow the RemotePi
   // to recognize when the shutdown process on the RasPi has been finished
@@ -52,7 +51,7 @@ remotepi.prototype.onVolumioShutdown = function () {
   shutdownCtrl.unexport();
   shutdownCtrl = new Gpio(14, 'out');
   shutdownCtrl.write(1);
-  sleep.sleep(4);
+  self.msleep(4000);
   return libQ.resolve();
 };
 
@@ -63,7 +62,7 @@ remotepi.prototype.onStart = function () {
   self.commandRouter.loadI18nStrings();
   self.dtctHwShutdown();
   initShutdown = new Gpio(15, 'out');
-  self.writeBootStr();
+  self.modBootConfig(self.config.get('enable_gpio17'));
   defer.resolve();
   return defer.promise;
 };
@@ -71,7 +70,7 @@ remotepi.prototype.onStart = function () {
 remotepi.prototype.onStop = function () {
   const self = this;
 
-  self.rmBootStr();
+  self.modBootConfig('');
   shutdownCtrl.unwatchAll();
   shutdownCtrl.unexport();
   initShutdown.unexport();
@@ -81,8 +80,8 @@ remotepi.prototype.onStop = function () {
 // Configuration Methods -----------------------------------------------------------------------------
 
 remotepi.prototype.getUIConfig = function () {
-  const defer = libQ.defer();
   const self = this;
+  const defer = libQ.defer();
   const langCode = self.commandRouter.sharedVars.get('language_code');
 
   self.commandRouter.i18nJson(path.join(__dirname, 'i18n', 'strings_' + langCode + '.json'),
@@ -92,7 +91,8 @@ remotepi.prototype.getUIConfig = function () {
       uiconf.sections[0].content[0].value = self.config.get('enable_gpio17');
       defer.resolve(uiconf);
     })
-    .fail(function () {
+    .fail(function (e) {
+      self.logger.error(id + 'Could not fetch UI configuration: ' + e);
       defer.reject(new Error());
     });
   return defer.promise;
@@ -130,28 +130,27 @@ remotepi.prototype.saveConf = function (data) {
       {
         name: self.commandRouter.getI18nString('COMMON.CONTINUE'),
         class: 'btn btn-info',
-        emit: 'callMethod',
-        payload: { 'endpoint': 'miscellanea/remotepi', 'method': 'closeModals' }
+        emit: 'closeModals',
+        payload: ''
       }
     ]
   };
 
   if (self.config.get('enable_gpio17') !== data.gpio17) {
     self.config.set('enable_gpio17', data.gpio17);
-    self.writeBootStr();
+    self.modBootConfig(data.gpio17);
     self.commandRouter.broadcastMessage('openModal', responseData);
   } else {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.NO_CHANGES'));
   }
 };
 
-remotepi.prototype.closeModals = function () {
-  const self = this;
-
-  self.commandRouter.closeModals();
-};
-
 // Plugin Methods ------------------------------------------------------------------------------------
+
+remotepi.prototype.msleep = function (n) {
+  /* global Atomics, SharedArrayBuffer */
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+};
 
 remotepi.prototype.dtctHwShutdown = function () {
   const self = this;
@@ -170,57 +169,64 @@ remotepi.prototype.dtctHwShutdown = function () {
   });
 };
 
-// The functions "writeBootStr" and "rmBootStr" are derived from "writeI2SDAC" and "disableI2SDAC" of
-// Volumio's i2s_dacs plugin; many thanks to its coders for the inspiration
-
-remotepi.prototype.writeBootStr = function () {
+remotepi.prototype.modBootConfig = function (gpio17) {
   const self = this;
-  const searchexp = new RegExp(configTxtBanner + 'dtoverlay=.*' + os.EOL);
-  const kernelMajor = os.release().slice(0, os.release().indexOf('.'));
-  const kernelMinor = os.release().slice(os.release().indexOf('.') + 1, os.release().indexOf('.', os.release().indexOf('.') + 1));
-  let bootstring = 'dtoverlay=gpio-ir,gpio_pin=18' + os.EOL;
+  const kernelVersion = os.release().match(/[0-9]+/g);
+  const configTxtBanner = '#### RemotePi lirc setting below: do not alter ####' + os.EOL;
+  const searchexp = configTxtBanner + 'dtoverlay=.*';
+  let bootstring = gpio17 ? 'dtoverlay=gpio-ir,gpio_pin=17' : 'dtoverlay=gpio-ir,gpio_pin=18';
+  let configFile = '/boot/userconfig.txt';
 
-  if (self.config.get('enable_gpio17')) {
-    bootstring = 'dtoverlay=gpio-ir,gpio_pin=17' + os.EOL;
-  }
-  if (kernelMajor < '4' || (kernelMajor === '4' && kernelMinor < '19')) {
+  if (Number(kernelVersion[0]) < 4 || (Number(kernelVersion[0]) === 4 && Number(kernelVersion[1]) < 19)) {
     bootstring = bootstring.replace('gpio-ir,gpio_pin', 'lirc-rpi,gpio_in_pin');
   }
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
-    if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_READ') + '/boot/config.txt: ' + err);
-    } else if (configTxt.search(configTxtBanner + bootstring) === -1) {
-      let newConfigTxt = configTxt.replace(searchexp, configTxtBanner + bootstring);
-      if (configTxt === newConfigTxt) {
-        newConfigTxt = configTxt + os.EOL + configTxtBanner + bootstring + os.EOL;
+  try {
+    if (fs.statSync(configFile).isFile()) {
+      // if /boot/userconfig.txt exists, remove rempotepi related banner and bootstring from /boot/config.txt
+      try {
+        const configTxt = fs.readFileSync('/boot/config.txt', 'utf8');
+        const newConfigTxt = configTxt.replace(new RegExp(os.EOL + searchexp + os.EOL + '*'), '');
+        if (newConfigTxt !== configTxt) {
+          try {
+            fs.writeFileSync('/boot/config.txt', newConfigTxt, 'utf8');
+          } catch (e) {
+            self.logger.error(id + 'Error writing ' + configFile + ': ' + e);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_WRITE') + configFile + ': ' + e);
+          }
+        }
+      } catch (e) {
+        self.logger.error(id + 'Error reading ' + configFile + ': ' + e);
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_READ') + configFile + ': ' + e);
       }
-      fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_WRITE') + '/boot/config.txt: ' + err);
-        }
-      });
-    }
-  });
-};
-
-remotepi.prototype.rmBootStr = function () {
-  const self = this;
-  const searchexp = new RegExp(os.EOL + os.EOL + '*' + configTxtBanner + 'dtoverlay=.*' + os.EOL + '*');
-
-  fs.readFile('/boot/config.txt', 'utf8', function (err, configTxt) {
-    if (err) {
-      self.logger.error('Error reading /boot/config.txt: ' + err);
-      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_READ') + '/boot/config.txt: ' + err);
     } else {
-      configTxt = configTxt.replace(searchexp, os.EOL);
-      fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
-        if (err) {
-          self.logger.error('Error writing /boot/config.txt: ' + err);
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_WRITE') + '/boot/config.txt: ' + err);
-        }
-      });
+      self.logger.info(id + 'Using /boot/config.txt instead of /boot/userconfig.txt. Reason: /boot/userconfig.txt is not a file.');
+      throw new Error();
     }
-  });
+  } catch (e) {
+    configFile = '/boot/config.txt';
+  } finally {
+    try {
+      const configTxt = fs.readFileSync(configFile, 'utf8');
+      let newConfigTxt = configTxt;
+      if (gpio17 === '') {
+        newConfigTxt = configTxt.replace(new RegExp(os.EOL + '*' + searchexp), '');
+      } else if (configTxt.search(bootstring) === -1) {
+        newConfigTxt = configTxt.replace(new RegExp(searchexp), configTxtBanner + bootstring);
+        if (newConfigTxt === configTxt) {
+          newConfigTxt = configTxt + os.EOL + os.EOL + configTxtBanner + bootstring;
+        }
+      }
+      if (newConfigTxt !== configTxt) {
+        try {
+          fs.writeFileSync(configFile, newConfigTxt, 'utf8');
+        } catch (e) {
+          self.logger.error(id + 'Error writing ' + configFile + ': ' + e);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_WRITE') + configFile + ': ' + e);
+        }
+      }
+    } catch (e) {
+      self.logger.error(id + 'Error reading ' + configFile + ': ' + e);
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('REMOTEPI.PLUGIN_NAME'), self.commandRouter.getI18nString('REMOTEPI.ERR_READ') + configFile + ': ' + e);
+    }
+  }
 };

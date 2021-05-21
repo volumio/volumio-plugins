@@ -8,8 +8,5 @@
   "LAST_FM_PASSWORD":"Last.fm wachtwoord",
   "SEARCH_SONGS_SECTION":"Spotify nummers",
   "SEARCH_ALBUMS_SECTION":"Spotity albums",
-  "SEARCH_ARTISTS_SECTION":"Spotify artiesten",
-  "SPOTIFY_CONFIGURATION":"Spotify configuratie",
-  "SPOTIFY_ACCOUNT":"Spotify account",
-  "SAVE":"Opslaan"
+  "SEARCH_ARTISTS_SECTION":"Spotify artiesten"
 }

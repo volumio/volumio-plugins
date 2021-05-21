@@ -1,0 +1,21 @@
+{
+	"name": "duo",
+	"version": "1.2.6",
+	"description": "Duo Unix with Pluggable Authentication Modules (PAM) support, provides a secure and customizable method for protecting Unix and Linux logins. Pre-compiled package for 32-bit ARM and x86 machines.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Saiyato",
+	"license": "GNUv2",
+	"volumio_info": {
+		"prettyName": "Cisco DUO",
+		"icon": "fa-shield",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

@@ -17,13 +17,13 @@ sudo apt-get update
 
 #START OF python devs
 sudo apt-get -y install i2c-tools python-smbus python-pip python-dev python-imaging python-rpi.gpio
-sudo -H pip install --upgrade pip
+sudo -H pip install --upgrade pip==20.3.4
 sudo -H pip install --upgrade python-mpd2 socketIO-client
 
 #extra for DAC2
 sudo apt-get -y install libfreetype6-dev libjpeg-dev build-essential
 sudo -H pip install --upgrade setuptools
-sudo -H pip install --upgrade luma.oled
+sudo -H pip install --upgrade luma.core==1.13.0 luma.oled==3.4.0
 
 #Install OLED service
 cd /tmp

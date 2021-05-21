@@ -1,7 +1,7 @@
 {
   "PLUGIN_CONFIGURATION":"Volusonic Plugin Configuration",
-  "PLUGIN_CRED_DESC": "Credentials", 
-  "PLUGIN_OPTS_DESC": "Options", 
+  "PLUGIN_CRED_DESC": "Credentials",
+  "PLUGIN_OPTS_DESC": "Options",
   "SAVE_CREDS":"Save & Test connection",
   "SAVE":"Save",
   "SERVER":"URL of the subsonic server",
@@ -14,7 +14,7 @@
   "TRANSCODE_DOC":"Desired bitrate",
   "RAW":"RAW (Disabled)",
   "320kbps":"MP3 320kbps",
-  "256kbps":"MP3 256kbps",                                                      
+  "256kbps":"MP3 256kbps",
   "128kbps":"MP3 128kbps",
   "64kbps":"MP3 64kbps",
   "LISTS":"Lists Size",
@@ -40,8 +40,14 @@
   "SIMILAR_ARTISTS":"Similar Artists",
   "ARTISTS":"Artists",
   "TRACKS":"Tracks",
-  "VOLUSONIC_OPTIONS":"Volusonic Options", 
+  "VOLUSONIC_OPTIONS":"Volusonic Options",
   "SAVED":"Saved",
   "POP_ERROR":"Error",
-  "ID3":"Use or not ID3 tags to get metadatas from your music libraries" 
+  "ID3":"Use or not ID3 tags to get metadatas from your music libraries",
+  "METAS":"Show biographies and albums infos from subsonic",
+  "INDEXS":"Index",
+  "PATH_DOC":"Memorize the Volusonic path for the next navigation",
+  "PATH":"Persistent path",
+  "SALT":"Salt + md5 encoded password",
+  "SALT_DOC":"Recommended. Some API implementations (ie:owncloud/nextcloud) does not support it"
 }

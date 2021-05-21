@@ -22,7 +22,9 @@
         "username",
         "password",
         "volume_ctrl",
-	"debug"
+        "gapless",
+        "autoplay",
+        "debug"
       ]
     },
     "content": [{
@@ -109,15 +111,15 @@
       },
       {
         "id": "volume_ctrl",
-	"type":"text",
+        "type": "text",
         "element": "select",
         "doc": "TRANSLATE.VOLSPOTCONNECT.DESCPVOLUMECTRL",
         "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL",
         "value": {
-            "value": "fixed",
-            "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
-          },
-        
+          "value": "fixed",
+          "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
+        },
+
         "options": [{
             "value": "linear",
             "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_LINEAR"
@@ -131,6 +133,20 @@
             "label": "TRANSLATE.VOLSPOTCONNECT.VOLUMECTRL_FIXED"
           }
         ]
+      },
+      {
+        "id": "gapless",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCGAPLESS",
+        "label": "TRANSLATE.VOLSPOTCONNECT.GAPLESS",
+        "value": true
+      },
+      {
+        "id": "autoplay",
+        "element": "switch",
+        "doc": "TRANSLATE.VOLSPOTCONNECT.DESCAUTOPLAY",
+        "label": "TRANSLATE.VOLSPOTCONNECT.AUTOPLAY",
+        "value": true
       },
       {
         "id": "debug",

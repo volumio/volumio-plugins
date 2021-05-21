@@ -1,0 +1,30 @@
+{
+  "baseNavigation": {
+    "navigation": {
+      "lists": [
+        {
+          "availableListViews": [
+            "list"
+          ],
+          "items": [
+          ]
+        }
+      ]
+    }
+  },
+
+  "stations": {
+    "nowyswiat": [
+      {
+        "title": "Radio Nowy Swiat (MP3 128k)",
+        "uri": "webrns/0",
+        "url": "http://stream.rcs.revma.com/ypqt40u0x1zuv"
+      },
+      {
+        "title": "Radio Nowy Swiat (MP3 256k)",
+        "uri": "webrns/1",
+        "url": "http://stream.rcs.revma.com/ypqt40u0x1zuv"
+      }
+    ]
+  }
+}

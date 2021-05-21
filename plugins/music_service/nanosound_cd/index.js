@@ -91,7 +91,10 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	}
 	self.config.set('extractformat', data['extractformat'].value);
 	self.config.set('prestart', data['prestart']);
+	self.config.set('savefolderformat', data['savefolderformat']);	
 	self.config.set('loadalbumart', data['loadalbumart'].value);
+	self.config.set('autoeject', data['autoeject'].value);
+
 
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
 
@@ -331,6 +334,19 @@ nanosoundCd.prototype.getUIConfig = function() {
 				self.config.set('loadalbumart',"1");
 				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', "No");
 			}
+
+			if(self.config.has('autoeject'))
+			{
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', self.config.get('autoeject'));
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label',  uiconf.sections[0].content[6].options[self.config.get('autoeject')-1].label);
+			}
+			else
+			{
+				self.config.set('autoeject',"2");
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', "Yes");
+			}
+
+			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value', self.config.get('savefolderformat'));
 			
             defer.resolve(uiconf);
         })
@@ -753,18 +769,7 @@ nanosoundCd.prototype.listCD=function()
 								"availableListViews": [
 									"list"
 								],
-								"items": [
-	
-									{
-										service: 'nanosound_cd',
-										type: 'song',
-										title: '[Whole CD]',
-										artist: cdmeta[0]['artist_name'],
-										album: cdmeta[0]['album_name'],
-										icon: 'fa fa-music',
-										uri: 'nanosound_cd/playall'
-									}
-								]
+								"items": []
 							}
 						]
 					}
@@ -1291,7 +1296,7 @@ nanosoundCd.prototype.search = function (query) {
 	var defer=libQ.defer();
 
 	// Mandatory, search. You can divide the search in sections using following functions
-
+	defer.resolve();
 	return defer.promise;
 };
 

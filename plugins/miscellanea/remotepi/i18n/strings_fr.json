@@ -1,0 +1,15 @@
+{
+  "REMOTEPI":{
+    "PLUGIN_NAME":"RemotePi",
+    "ERR_WRITE":"Erreur d'écriture ",
+    "ERR_READ":"Erreur de lecture ",
+    "REBOOT_MSG":"Un redémarrage est nécéssaire pour prendre en charge les nouveaux réglages",
+    "NO_CHANGES":"Aucune modification à enregistrer.",
+    "PLUGIN_CONFIGURATION":"Configuration de RemotePi",
+    "REMOTEPI_CONF":"Réglages du récepteur IR",
+    "REMOTEPI_DESC":"Pour utiliser le récepteur IR de la RemotePi au-delà de la fonction on/off, LIRC doit être configuré en plus. Le plugin \"IR Remote Controller\" fait cela et contient également des configurations pour différentes télécommandes. Puisque la mise sous/hors tension est contrôlée par la carte RemotePi elle-même, vous devez supprimer des fichiers lircd.conf fournis par le plugin \"IR Remote Controller\" toute clé existante pour le bouton à utiliser pour la mise hors tension, ou des fichiers lircrc une section relative à ce bouton.",
+    "GPIO17":"Utilisation du port GPIO 17 pour le récepteur IR",
+    "GPIO17_DOC":"Cette option doit être activée si la carte RemotePi a été modifiée pour que le récepteur IR utilise le port GPIO 17 au lieu du port GPIO 18.",
+    "SAVE":"Appliquer"
+  }
+}

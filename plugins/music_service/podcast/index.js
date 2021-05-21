@@ -2,16 +2,15 @@
 
 var libQ = require('kew');
 var fs = require('fs-extra');
-var config = require('v-conf');
 var unirest = require('unirest');
 var RssParser = require('rss-parser');
-var htmlToJson = require('html-to-json');
 var _ = require('lodash');
+var cheerio = require('cheerio');
 
 module.exports = ControllerPodcast;
 
 function ControllerPodcast(context) {
-	var self = this;
+  var self = this;
 
   self.context = context;
   self.commandRouter = this.context.coreCommand;
@@ -107,7 +106,7 @@ ControllerPodcast.prototype.getUIConfig = function() {
 };
 
 ControllerPodcast.prototype.updateUIConfig = function() {
-  var self=this;
+  var self = this;
 
   var lang_code = self.commandRouter.sharedVars.get('language_code');
   self.commandRouter.i18nJson(__dirname+'/i18n/strings_' + lang_code + '.json',
@@ -146,7 +145,7 @@ ControllerPodcast.prototype.setUIConfig = function(data)
 
 // Podcast Methods -----------------------------------------------------
 ControllerPodcast.prototype.addPodcast = function(data) {
-  var self=this;
+  var self = this;
   var defer = libQ.defer();
   var rssUrl = data['input_podcast'].trim();
   var message;
@@ -185,40 +184,40 @@ ControllerPodcast.prototype.addPodcast = function(data) {
   });
 
   rssParser.parseURL(rssUrl,
-    function (err, feed) {
-      var imageUrl, podcastItem;
+      function (err, feed) {
+        var imageUrl, podcastItem;
 
-      if (err) {
-        self.showDialogMessage(
-            self.getPodcastI18nString('PODCAST_URL_PARSING_PROBLEM'));
-        return;
-      }
+        if (err) {
+          self.showDialogMessage(
+              self.getPodcastI18nString('PODCAST_URL_PARSING_PROBLEM'));
+          return;
+        }
 
-      if ( (feed.image !== undefined) && (feed.image.url !== undefined) )
-        imageUrl = feed.image.url;
-      else if ( (feed.itunes !== undefined)  && (feed.itunes.image !== undefined) )
-        imageUrl = feed.itunes.image;
+        if ( (feed.image !== undefined) && (feed.image.url !== undefined) )
+          imageUrl = feed.image.url;
+        else if ( (feed.itunes !== undefined)  && (feed.itunes.image !== undefined) )
+          imageUrl = feed.itunes.image;
 
-      podcastItem = {
-        id: Math.random().toString(36).substring(2, 10) +
-            Math.random().toString(36).substring(2, 10),
-        title: feed.title,
-        url: rssUrl,
-        image: imageUrl
-      };
+        podcastItem = {
+          id: Math.random().toString(36).substring(2, 10) +
+              Math.random().toString(36).substring(2, 10),
+          title: feed.title,
+          url: rssUrl,
+          image: imageUrl
+        };
 
-      self.podcasts.items.push(podcastItem);
-      self.updateUIConfig();
+        self.podcasts.items.push(podcastItem);
+        self.updateUIConfig();
 
-      message = self.getPodcastI18nString('ADD_PODCAST_COMPLETION');
-      message = message.replace('{0}', feed.title);
-      self.commandRouter.pushToastMessage(
-          'success',
-          self.getPodcastI18nString('PLUGIN_NAME'),
-          message
-      );
-      defer.resolve({});
-  });
+        message = self.getPodcastI18nString('ADD_PODCAST_COMPLETION');
+        message = message.replace('{0}', feed.title);
+        self.commandRouter.pushToastMessage(
+            'success',
+            self.getPodcastI18nString('PLUGIN_NAME'),
+            message
+        );
+        defer.resolve({});
+      });
 
   return defer.promise;
 };
@@ -254,7 +253,7 @@ ControllerPodcast.prototype.deletePodcast = function(data) {
 };
 
 ControllerPodcast.prototype.deletePodcastConfirm = function(data) {
-  var self=this;
+  var self = this;
   var defer = libQ.defer();
 
   self.podcasts.items = _.remove(self.podcasts.items, function(item) {
@@ -273,7 +272,7 @@ ControllerPodcast.prototype.deletePodcastConfirm = function(data) {
 };
 
 ControllerPodcast.prototype.showDialogMessage = function(message) {
-  var self=this;
+  var self = this;
 
   var modalData = {
     title: self.getPodcastI18nString('PLUGIN_NAME'),
@@ -319,17 +318,23 @@ ControllerPodcast.prototype.handleBrowseUri = function (curUri) {
         response = self.getPodcastBBC(uriParts[2]);
       else if (uriParts.length === 4)
         response = self.getPodcastBBCEpisodes(uriParts[2], uriParts[3]);
+      else
+        response = libQ.reject();
     }
     else {
       response = self.getPodcastContent(curUri);
     }
   }
 
-  return response;
+  return response
+    .fail(function (e) {
+      self.logger.info('[' + Date.now() + '] ' + '[podcast] handleBrowseUri failed');
+      libQ.reject(new Error());
+    });
 };
 
 ControllerPodcast.prototype.getRootContent = function() {
-  var self=this;
+  var self = this;
   var response;
   var defer = libQ.defer();
 
@@ -412,28 +417,29 @@ ControllerPodcast.prototype.getPodcastContent = function(uri) {
     }
   });
   rssParser.parseURL(self.podcasts.items[uris[1]].url,
-    function (err, feed) {
-      response.navigation.lists[0].title = feed.title;
+      function (err, feed) {
+        response.navigation.lists[0].title = feed.title;
 
-      self.currentEpisodes = [];
-      feed.items.some(function (entry, index) {
-        var podcastItem = {
-          service: self.serviceName,
-          type: 'song',
-          title: entry.title,
-          icon: 'fa fa-podcast',
-          uri: 'podcast/' + uris[1] + '/' + index
-        };
-        self.currentEpisodes.push({
-          url: entry.enclosure.url,
-          title: entry.title
+        self.currentEpisodes = [];
+        feed.items.some(function (entry, index) {
+          if (entry.enclosure && entry.enclosure.url) {
+            var podcastItem = {
+              service: self.serviceName,
+              type: 'song',
+              title: entry.title,
+              icon: 'fa fa-podcast',
+              uri: 'podcast/' + uris[1] + '/' + index
+            };
+            self.currentEpisodes.push({
+              url: entry.enclosure.url,
+              title: entry.title
+            });
+            response.navigation.lists[0].items.push(podcastItem);
+          }
+          return (index >= 300);  // limits podcast episodes
         });
-        response.navigation.lists[0].items.push(podcastItem);
-
-        return (index >= 300);  // limits podcast episodes
+        defer.resolve(response);
       });
-      defer.resolve(response);
-    });
 
   return defer.promise;
 };
@@ -490,74 +496,64 @@ ControllerPodcast.prototype.getPodcastBBC = function(station) {
       waitMessage
   );
 
+  var responseResult = {
+    "navigation": {
+      "lists": [
+        {
+          title: self.getPodcastI18nString('TITLE_' + station.toUpperCase()),
+          icon: 'fa fa-podcast',
+          "availableListViews": [
+            "list", "grid"
+          ],
+          "items": [
+          ]
+        }
+      ],
+      "prev": {
+        "uri": "podcast/bbc"
+      }
+    }
+  };
+
   unirest
   .get(streamUrl)
   .end(function (response) {
+    var folderInfo
     if (response.status === 200) {
-      htmlToJson.parse(response.body, ['a[data-istats-package]',
-        {
-          'uri': function ($a) {
-            return $a.attr('href');
-          },
-          'title': function ($a) {
-            return $a.find('h3[class]').text().trim();
-          },
-          'img': function ($a) {
-            return $a.find('img[aria-hidden]').attr('src');
-          },
-          'badge': function ($a) {
-            var obj = $a.find('div[class]');
-            if ( (obj[2] !== undefined) && obj[2].attribs.class.startsWith('badge') ) {
-              return obj[2].children[0].data;
-            }
-            else
-              return null;
-          }
-        }
-      ])
-      .done(function (parseResult) {
-        var response = {
-          "navigation": {
-            "lists": [
-              {
-                icon: 'fa fa-podcast',
-                "availableListViews": [
-                  "list", "grid"
-                ],
-                "items": [
-                ]
-              }
-            ],
-            "prev": {
-              "uri": "podcast/bbc"
-            }
-          }
+      var $ = cheerio.load(response.body);
+      var podcastList = $('ul.podcast-list');
+      podcastList.find('li.grid__item').each(function (i, elem) {
+        var image = $(this).find('img').attr('src')
+        var title = $(this).find('h3').text().trim()
+        var badge = $(this).find('div.badge').text()
+        var link = $(this).find('a.rmp-card__body').attr('href');
+        var rssAddr = link.match(/programmes\/(.*)\/episodes/)[1];
+        var uri = ""
+
+        if (rssAddr)
+          uri = 'podcast/bbc/' + station + '/' + rssAddr
+        if (badge)
+          title = '[' +  badge + ']: ' + title;
+        folderInfo = {
+          service: self.serviceName,
+          type: 'folder',
+          title: title,
+          albumart: 'http:' + image,
+          uri: uri
         };
-
-        response.navigation.lists[0].title = self.getPodcastI18nString('TITLE_' + station.toUpperCase());
-        for (var item in parseResult) {
-          var title;
-
-          if (parseResult[item].badge !== null)
-            title = '[' +  parseResult[item].badge + ']: ' + parseResult[item].title;
-          else
-            title = parseResult[item].title;
-
-          var folderInfo = {
-            service: self.serviceName,
-            type: 'folder',
-            title: title,
-            albumart: 'http:' + parseResult[item].img,
-            uri: 'podcast/bbc/' + station + '/' + parseResult[item].uri.match(/programmes\/(.*)\/episodes/)[1]
-          };
-          response.navigation.lists[0].items.push(folderInfo);
-        }
-        defer.resolve(response);
+        responseResult.navigation.lists[0].items.push(folderInfo);
       });
-
-    } else {
-      defer.resolve(null);
     }
+    else {
+      folderInfo = {
+        service: self.serviceName,
+        type: 'folder',
+        title: "BBC server response error"
+      }
+      responseResult.navigation.lists[0].items.push(folderInfo);
+    }
+
+    defer.resolve(responseResult);
   });
 
   return defer.promise;
@@ -638,6 +634,11 @@ ControllerPodcast.prototype.explodeUri = function (uri) {
   switch (uris[1]) {
     case 'bbc':
       // podcast/bbc/station/channel/index
+      if (uris.length < 5) {
+        response = libQ.reject();
+        return response;
+      }
+
       episode = self.currentEpisodes[uris[4]];
       response = {
         service: self.serviceName,
@@ -652,6 +653,11 @@ ControllerPodcast.prototype.explodeUri = function (uri) {
 
     default:
       // podcast/channel/index
+      if (uris.length < 3) {
+        response = libQ.reject();
+        return response;
+      }
+
       episode = self.currentEpisodes[uris[2]];
       response = {
         service: self.serviceName,
@@ -673,33 +679,33 @@ ControllerPodcast.prototype.clearAddPlayTrack = function(track) {
   var defer = libQ.defer();
 
   return self.mpdPlugin.sendMpdCommand('stop', [])
-    .then(function() {
-        return self.mpdPlugin.sendMpdCommand('clear', []);
-    })
-    .then(function() {
-        return self.mpdPlugin.sendMpdCommand('add "'+track.uri+'"',[]);
-    })
-    .then(function () {
-      self.mpdPlugin.clientMpd.on('system', function (status) {
-        if (status !== 'playlist' && status !== undefined) {
-          self.getState().then(function (state) {
-            if (state.status === 'play') {
-              return self.pushState(state);
-            }
-          });
-        }
-      });
-
-      return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-        return self.getState().then(function (state) {
-          return self.pushState(state);
+  .then(function() {
+    return self.mpdPlugin.sendMpdCommand('clear', []);
+  })
+  .then(function() {
+    return self.mpdPlugin.sendMpdCommand('add "'+track.uri+'"',[]);
+  })
+  .then(function () {
+    self.mpdPlugin.clientMpd.on('system', function (status) {
+      if (status !== 'playlist' && status !== undefined) {
+        self.getState().then(function (state) {
+          if (state.status === 'play') {
+            return self.pushState(state);
+          }
         });
-      });
-
-    })
-    .fail(function (e) {
-      return defer.reject(new Error());
+      }
     });
+
+    return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
+      return self.getState().then(function (state) {
+        return self.pushState(state);
+      });
+    });
+
+  })
+  .fail(function (e) {
+    return defer.reject(new Error());
+  });
 };
 
 ControllerPodcast.prototype.getState = function () {
@@ -747,7 +753,7 @@ ControllerPodcast.prototype.seek = function (position) {
 };
 
 ControllerPodcast.prototype.stop = function() {
-	var self = this;
+  var self = this;
 
   self.commandRouter.pushToastMessage(
       'info',
@@ -785,7 +791,7 @@ ControllerPodcast.prototype.resume = function() {
 
 // resource functions for Podcast -----------------------------------
 ControllerPodcast.prototype.loadPodcastsResource = function() {
-  var self=this;
+  var self = this;
 
   self.podcasts = fs.readJsonSync(__dirname+'/podcasts_list.json');
 
@@ -800,7 +806,7 @@ ControllerPodcast.prototype.loadPodcastsResource = function() {
 };
 
 ControllerPodcast.prototype.loadPodcastI18nStrings = function () {
-  var self=this;
+  var self = this;
 
   try {
     var language_code = self.commandRouter.sharedVars.get('language_code');
@@ -813,7 +819,7 @@ ControllerPodcast.prototype.loadPodcastI18nStrings = function () {
 };
 
 ControllerPodcast.prototype.getPodcastI18nString = function (key) {
-  var self=this;
+  var self = this;
 
   if (self.i18nStrings[key] !== undefined)
     return self.i18nStrings[key];

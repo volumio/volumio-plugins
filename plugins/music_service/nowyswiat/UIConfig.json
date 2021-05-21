@@ -1,0 +1,42 @@
+{
+    "page": {
+      "label": "Radio Nowy Swiat Configuration"
+    },
+    "sections": [
+      {
+        "id": "delay",
+        "element": "section",
+        "label": "Configuration",
+        "icon": "fa-cogs",
+        "description": "The API delay for metadata (artist, title) in seconds.",
+        "onSave": {
+          "type": "controller",
+          "endpoint":"music_service/nowyswiat",
+          "method":"updateConfig"
+        },
+        "saveButton": {
+          "label": "Save",
+          "data": [
+            "apiDelay",
+		    "apiStream256"
+          ]
+        },
+        "content": [
+          {
+            "id": "apiDelay",
+            "type":"text",
+            "element": "input",
+            "label": "API Delay (in seconds)",
+            "value": 5
+          },
+          {
+            "id": "apiStream256",
+            "type":"text",
+            "element": "input",
+            "label": "Link for stream 256Kb: http://stream.rcs.revma.com/",
+            "value": "ypqt40u0x1zuv"
+          }
+        ]
+      }
+    ]
+}

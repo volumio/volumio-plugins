@@ -1,6 +1,6 @@
 {
 	"name": "tradfri",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Switch Tradfri devices on/off based on the Volumio player state.",
 	"main": "index.js",
 	"scripts": {

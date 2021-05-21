@@ -1,19 +1,14 @@
 'use strict';
 
-var spawn = require('child_process').spawn;
-var fs = require('fs');
+var fs = require('fs-extra');
 var ytdl = require('ytdl-core');
 var libQ = require('kew');
-var path = require('path');
-const {google} = require('googleapis');
+var gapis = require('googleapis');
 var dur = require("iso8601-duration");
-var querystring = require('querystring');
-var https = require('https');
+var OAuth2Client = gapis.auth.OAuth2;
+var superagent = require('superagent');
 
-var secrets = require('./auth.json');
-var token = require('./authToken.json');
-
-var ytapi_key = "AIzaSyAl1Xq9DwdE_KD4AtPaE4EJl3WZe2zCqg4";
+const { ROOT_NAV, BASE_STATUS, BROWSE_SOURCE } = require('./constants');
 
 module.exports = Youtube;
 
@@ -27,11 +22,6 @@ function Youtube(context) {
   self.addQueue = [];
   self.state = {};
   self.stateMachine = self.commandRouter.stateMachine;
-
-  self.yt = google.youtube({
-    version: 'v3',
-    auth: ytapi_key
-  });
 }
 
 Youtube.prototype.onVolumioStart = function () {
@@ -43,70 +33,69 @@ Youtube.prototype.onVolumioStart = function () {
   self.config = new (require('v-conf'))();
   self.config.loadFile(configFile);
   self.resultsLimit = self.config.get('results_limit');
-
-  self.getAccessToken();
-
-  if (self.isAccessGranted()) {
-    self.accessToken = token;
-    self.refreshAuthToken();
-    self.updateYtApiAccessToken();
-  }
+  this.loadI18n();
 
   return libQ.resolve();
 };
 
 Youtube.prototype.onStart = function () {
-  var self = this;
   //Getting the mdp plugin
-  self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
-  self.logger.info("Youtube::onStart Adding to browse sources");
-  self.addToBrowseSources();
+  this.mpdPlugin = this.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
+  this.initializeAuth();
+  this.logger.info("Youtube::onStart Adding to browse sources");
+
   return libQ.resolve();
 }
 
 Youtube.prototype.onStop = function () {
-  var self = this;
+  this.removeToBrowseSources();
   return libQ.resolve();
 };
 
 Youtube.prototype.onRestart = function () {
-  var self = this;
   return libQ.resolve();
 };
 
 Youtube.prototype.onInstall = function () {
-  var self = this;
   //Perform your installation tasks here
 };
 
 Youtube.prototype.onUninstall = function () {
-  var self = this;
   //Perform your deinstallation tasks here
 };
 
-Youtube.prototype.getUIConfig = function () {
-  var self = this;
-  var lang_code = self.commandRouter.sharedVars.get('language_code');
-  return self.commandRouter.i18nJson(path.join(__dirname, 'i18n', 'strings_' + lang_code + '.json'),
-    __dirname + '/i18n/strings_en.json',
-    __dirname + '/UIConfig.json')
-    .then(function (uiconf) {
-      if (self.isAccessGranted()) {
-        uiconf.sections[0].description = 'Volumio has access to your YouTube account. We will only use it to display videos related to your account!';
-        uiconf.sections[0].content = [];
-      } else {
-        self.pollPermissions();
-        uiconf.sections[0].description = uiconf.sections[0].description.replace('{0}', self.accessData.verification_url);
-        uiconf.sections[0].content[0].value = self.accessData.user_code;
-      }
+Youtube.prototype.detachQ = function (f, params = []) {
+  var deferred = libQ.defer();
+  this[f](...params).then((res) => {
+    deferred.resolve(res);
+  }).catch((e) => {
+    deferred.reject(e);
+  });
+  return deferred;
+}
 
-      uiconf.sections[1].content[0].value = self.config.get('results_limit');
-      return uiconf;
-    })
-    .fail(function () {
-      libQ.reject(new Error());
-    });
+Youtube.prototype.getUIConfig = function () {
+  return this.detachQ('getUIConfigAsync');
 };
+
+Youtube.prototype.getUIConfigAsync = async function () {
+  var lang_code = this.commandRouter.sharedVars.get('language_code');
+  const uiconf = await this.commandRouter.i18nJson(
+    `${__dirname}/i18n/strings_${lang_code}.json`,
+    `${__dirname}/i18n/strings_en.json`,
+    `${__dirname}/UIConfig.json`,
+  );
+  if (!uiconf) throw new Error('Youtube: Cannot find UI Configuration');
+  if (this.config.get('refresh_token')) {
+    uiconf.sections[0].content[0].hidden = true;
+    uiconf.sections[0].content[1].hidden = false;
+  } else {
+    uiconf.sections[0].content[0].hidden = false;
+    uiconf.sections[0].content[1].hidden = true;
+  }
+  uiconf.sections[1].content[0].value = this.config.get('results_limit');
+  return uiconf;
+}
 
 Youtube.prototype.setUIConfig = function (data) {
   var self = this;
@@ -128,10 +117,9 @@ Youtube.prototype.getConfigurationFiles = function () {
 }
 
 Youtube.prototype.pause = function () {
-  var self = this;
-  self.logger.info("Youtube::pause");
+  this.logger.info("Youtube::pause");
 
-  return self.commandRouter.volumioPause();
+  return this.commandRouter.volumioPause();
 };
 
 
@@ -145,7 +133,7 @@ Youtube.prototype.add = function (vuri) {
   } else {
     var regex = /https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*?[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['"][^<>]*>|<\/a>))[?=&+%\w.-]*/ig;
     var videoId = vuri.replace(regex, "$1");
-    self.commandRouter.pushConsoleMessage(vuri + " kkk " + videoId);
+    self.commandRouter.pushConsoleMessage(vuri + " - " + videoId);
     self.addVideo(videoId);
   }
 };
@@ -174,13 +162,12 @@ Youtube.prototype.addPlaylist = function (playlistId, pageToken) {
   if (pageToken != undefined)
     request.pageToken = pageToken;
 
-  self.yt.playlistItems.list(request, function (err, result) {
+  self.yt.playlistItems.list(request, function (err, res) {
     if (err) {
       //Holy crap, something went wrong :/
       self.logger.error(err.message + "\n" + err.stack);
       deferred.reject(err);
     } else {
-      var res = result.data;
       var videos = res.items;
       for (var i = 0; i < videos.length; i++) {
         var video = {
@@ -271,28 +258,20 @@ Youtube.prototype.explodeUri = function (uri) {
     self.yt.videos.list({
       part: "snippet,contentDetails",
       id: uri
-    }, function (err, result) {
+    }, function (err, res) {
       if (err) {
-        //Holy crap, something went wrong :/
         self.logger.error(err.message + "\n" + err.stack);
         deferred.reject(err);
-      } else if (result.data.items.length == 0) {
+      } else if (res.items.length == 0) {
         deferred.reject(new Error("Video is not valid"));
       } else {
-        var clip = result.data.items[0];
-        self.logger.info("Youtube -> " + JSON.stringify(clip));
         deferred.resolve({
+          ...BASE_STATUS,
           uri: uri,
-          service: 'youtube',
-          name: clip.snippet.title,
-          title: clip.snippet.title,
-          artist: "Youtube",
-          type: 'track',
-          albumart: clip.snippet.thumbnails.default.url,
-          duration: dur.toSeconds(dur.parse(clip.contentDetails.duration)),
-          trackType: "YouTube",
-          samplerate: '44 KHz',
-          bitdepth: '24 bit'
+          name: res.items[0].snippet.title,
+          title: res.items[0].snippet.title,
+          albumart: res.items[0].snippet.thumbnails.default.url,
+          duration: dur.toSeconds(dur.parse(res.items[0].contentDetails.duration)),
         });
       }
     });
@@ -335,7 +314,6 @@ Youtube.prototype.search = function (query) {
     searchValue = searchValue.split('/').pop();
   }
 
-  self.commandRouter.pushToastMessage('info', 'YouTube', 'Fetching data from YouTube. This may take some time.');
   return self.doSearch(searchValue);
 };
 
@@ -346,13 +324,12 @@ Youtube.prototype.getState = function () {
 
 Youtube.prototype.addToBrowseSources = function () {
   var self = this;
-  self.commandRouter.volumioAddToBrowseSources({
-    name: 'Youtube',
-    uri: 'youtube',
-    plugin_type: 'music_service',
-    plugin_name: 'youtube',
-    albumart: '/albumart?sourceicon=music_service/youtube/youtube.svg'
-  });
+  self.commandRouter.volumioAddToBrowseSources(BROWSE_SOURCE);
+};
+
+Youtube.prototype.removeToBrowseSources = function () {
+
+    this.commandRouter.volumioRemoveToBrowseSources(BROWSE_SOURCE.name);
 };
 
 Youtube.prototype.clearAddPlayTrack = function (track) {
@@ -364,7 +341,7 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
     filter: "audioonly"
   }, function (err, info) {
     if (err) {
-      console.log("Error opening Youtube stream, video is probably not valid.");
+      console.error("Error opening Youtube stream, video is probably not valid.", err);
     } else {
       self.mpdPlugin.sendMpdCommand('stop', [])
         .then(function () {
@@ -377,21 +354,16 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
           return self.mpdPlugin.sendMpdCommand('add "' + info["formats"][0]["url"] + '"', []);
         })
         .then(function () {
-          //self.commandRouter.stateMachine.setConsumeUpdateService('youtube', true);
-          //this.mpdPlugin.ignoreUpdate(true);
           self.mpdPlugin.clientMpd.on('system', function (status) {
-            var timeStart = Date.now();
             self.logger.info('Youtube Status Update: ' + status);
             self.mpdPlugin.getState().then(function (state) {
-              state.trackType = "Fucking Youtube!!!!";
+              state.trackType = "Youtube";
               return self.commandRouter.stateMachine.syncState(state, "youtube");
             });
           });
           return self.mpdPlugin.sendMpdCommand('play', []).then(function () {
-            self.commandRouter.pushConsoleMessage("Youtube::After Play");
             return self.mpdPlugin.getState().then(function (state) {
-              state.trackType = "Fucking Youtube!!!!";
-              self.commandRouter.pushConsoleMessage("Youtube: " + JSON.stringify(state));
+              state.trackType = "Youtube";
               return self.commandRouter.stateMachine.syncState(state, "youtube");
             });
           });
@@ -406,11 +378,9 @@ Youtube.prototype.clearAddPlayTrack = function (track) {
 Youtube.prototype.stop = function () {
   var self = this;
   self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::stop');
-
-  //self.commandRouter.stateMachine.setConsumeUpdateService('youtube');
   return self.mpdPlugin.stop().then(function () {
     return self.mpdPlugin.getState().then(function (state) {
-      state.trackType = "Fucking Youtube!!!!";
+      state.trackType = "Youtube";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
     });
   });
@@ -418,13 +388,12 @@ Youtube.prototype.stop = function () {
 
 Youtube.prototype.pause = function () {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::pause');
+  self.commandRouter.pushConsoleMessage('Youtube::pause');
 
   // TODO don't send 'toggle' if already paused
-  //self.commandRouter.stateMachine.setConsumeUpdateService('youtube');
   return self.mpdPlugin.pause().then(function () {
     return self.mpdPlugin.getState().then(function (state) {
-      state.trackType = "Fucking Youtube!!!!";
+      state.trackType = "Youtube";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
     });
   });
@@ -432,13 +401,12 @@ Youtube.prototype.pause = function () {
 
 Youtube.prototype.resume = function () {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::resume');
+  self.commandRouter.pushConsoleMessage('Youtube::resume');
 
   // TODO don't send 'toggle' if already playing
-  //self.commandRouter.stateMachine.setConsumeUpdateService('youtube');
   return self.mpdPlugin.resume().then(function () {
     return self.mpdPlugin.getState().then(function (state) {
-      state.trackType = "Fucking Youtube!!!!";
+      state.trackType = "Youtube";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
     });
   });
@@ -446,18 +414,16 @@ Youtube.prototype.resume = function () {
 
 Youtube.prototype.seek = function (position) {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::seek');
-
-  //self.commandRouter.stateMachine.setConsumeUpdateService('youtube', true);
+  self.commandRouter.pushConsoleMessage('Youtube::seek');
   return self.mpdPlugin.seek(position);
 };
 
 Youtube.prototype.next = function () {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::next');
+  self.commandRouter.pushConsoleMessage('Youtube::next');
   return self.mpdPlugin.sendMpdCommand('next', []).then(function () {
     return self.mpdPlugin.getState().then(function (state) {
-      state.trackType = "Fucking Youtube!!!!";
+      state.trackType = "Youtube";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
     });
   });;
@@ -465,10 +431,10 @@ Youtube.prototype.next = function () {
 
 Youtube.prototype.previous = function () {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::previous');
+  self.commandRouter.pushConsoleMessage('Youtube::previous');
   return self.mpdPlugin.sendMpdCommand('previous', []).then(function () {
     return self.mpdPlugin.getState().then(function (state) {
-      state.trackType = "Fucking Youtube!!!!";
+      state.trackType = "Youtube";
       return self.commandRouter.stateMachine.syncState(state, "youtube");
     });
   });;
@@ -476,7 +442,7 @@ Youtube.prototype.previous = function () {
 
 Youtube.prototype.prefetch = function (nextTrack) {
   var self = this;
-  self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'Youtube::prefetch');
+  self.commandRouter.pushConsoleMessage('Youtube::prefetch');
 
   ytdl.getInfo("https://youtube.com/watch?v=" + nextTrack.uri, {
     filter: "audioonly"
@@ -495,57 +461,12 @@ Youtube.prototype.prefetch = function (nextTrack) {
 Youtube.prototype.getRootContent = function () {
   var self = this;
 
-  if (!self.isAccessGranted()) {
+  if (!this.config.get('refresh_token')) {
     self.commandRouter.pushToastMessage('info', 'Volumio has no permissions', 'Grant Volumio access to your YouTube account to access your playlists.');
     return self.getTrend();
   }
 
-  return libQ.resolve(
-    {
-      navigation: {
-        prev: {
-          uri: '/'
-        },
-        lists:
-          [
-            {
-              title: 'My Youtube',
-              icon: 'fa fa-youtube',
-              availableListViews: ['list', 'grid'],
-              items: [
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: ' Activities',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/activities'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'Subscriptions',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/subscriptions'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'My Playlists',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/playlists'
-                },
-                {
-                  service: 'youtube',
-                  type: 'folder',
-                  title: 'Liked Videos',
-                  icon: 'fa fa-folder-open-o',
-                  uri: 'youtube/root/likedVideos'
-                }
-              ]
-            }
-          ]
-      }
-    });
+  return libQ.resolve(ROOT_NAV);
 }
 
 Youtube.prototype.getUserSubscriptions = function () {
@@ -559,7 +480,8 @@ Youtube.prototype.getUserSubscriptions = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.subscriptions.list(request); },
+    apiFunc: self.yt.subscriptions.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube subscriptions'
@@ -577,7 +499,8 @@ Youtube.prototype.getUserLikedVideos = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.videos.list(request); },
+    apiFunc: self.yt.videos.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Liked Videos',
@@ -595,7 +518,8 @@ Youtube.prototype.getUserPlaylists = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlists.list(request); },
+    apiFunc: self.yt.playlists.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'My Youtube playlists'
@@ -613,7 +537,8 @@ Youtube.prototype.getActivities = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.activities.list(request); },
+    apiFunc: self.yt.activities.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube activities',
@@ -630,13 +555,14 @@ Youtube.prototype.getChannelSections = function (channelId) {
 
   // always load all playlist items contained in channel sections response
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.channelSections.list(request); },
+    apiFunc: self.yt.channelSections.list,
+    apiRequest: request,
     loadAll: true,
     plainResult: true,
   }).then(function (result) {
     // 1. collect all playlist ids
     var playlistIds = [];
-    for (var i = 0; i < result.length; i++) {
+    for (var i = 0; i < 50; i++) {
       var item = result[i];
       // channel sections may do not contain any playlists -> we need to skip them
       if (item && item.kind === 'youtube#channelSection' &&
@@ -646,7 +572,7 @@ Youtube.prototype.getChannelSections = function (channelId) {
     }
 
     // 2. fetch the content details of the playlists
-    return self.getPlaylists(playlistIds).then(function (playlists) {
+    return self.getPlaylists(playlistIds.slice(0, 50)).then(function (playlists) {
       if (playlists.navigation.lists.length > 0) {
         var playlistItems = playlists.navigation.lists.pop().items;
 
@@ -687,7 +613,8 @@ Youtube.prototype.getTrend = function () {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.videos.list(request); },
+    apiFunc: self.yt.videos.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: '/',
     title: 'Youtube trendy videos'
@@ -706,7 +633,8 @@ Youtube.prototype.doSearch = function (query) {
   };
 
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.search.list(request); },
+    apiFunc: self.yt.search.list,
+    apiRequest: request,
     loadAll: true,
     title: 'Youtube Search Results',
   });
@@ -724,7 +652,8 @@ Youtube.prototype.getPlaylists = function (playlistIds) {
 
   // always load all playlists
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlists.list(request); },
+    apiFunc: self.yt.playlists.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube Playlists'
@@ -744,7 +673,8 @@ Youtube.prototype.getPlaylistItems = function (playlistId) {
 
   // always load all playlist items
   return self.youtubeRequest({
-    apiFunc: function() { return self.yt.playlistItems.list(request); },
+    apiFunc: self.yt.playlistItems.list,
+    apiRequest: request,
     loadAll: true,
     prevUri: 'youtube',
     title: 'Youtube Playlist'
@@ -766,11 +696,12 @@ Youtube.prototype.youtubeRequest = function (request, cacheList, pageToken, defe
     request.pageToken = pageToken;
   }
 
-  request.apiFunc().catch(function (err) {
+  request.apiFunc(request.apiRequest, function (err, res) {
+    if (err) {
       self.logger.error(err.message + "\n" + err.stack);
       deferred.reject(err);
-    }).then(function(result) {
-      var res = result.data;
+    } else {
+      console.log('Youtube API call: ', request, res);
       cacheList = cacheList.concat(request.plainResult
         ? res.items
         : self.processResponse(res.items, cacheList.length, request.loadAll));
@@ -802,6 +733,7 @@ Youtube.prototype.youtubeRequest = function (request, cacheList, pageToken, defe
           }
         }
       }
+    }
   });
 
   return deferred.promise;
@@ -840,13 +772,13 @@ Youtube.prototype.calcItemsLimit = function (numLoadedItems, numAvailableItems) 
 Youtube.prototype.parseResponseItemData = function (item) {
   var albumart, url, type;
 
-  if (item.snippet.thumbnails != null) {
+  if (item.snippet.thumbnails && typeof item.snippet.thumbnails === 'object') {
     //try to get highest quality image first
-    if (item.snippet.thumbnails.high !== null) {
+    if (item.snippet.thumbnails.high && typeof item.snippet.thumbnails.high === 'object') {
       albumart = item.snippet.thumbnails.high.url;
-    } else if (item.snippet.thumbnails.medium !== null) {
+    } else if (item.snippet.thumbnails.medium && typeof item.snippet.thumbnails.medium === 'object') {
       albumart = item.snippet.thumbnails.medium.url;
-    } else if (item.snippet.thumbnails.default !== null) {
+    } else if (item.snippet.thumbnails.default && typeof item.snippet.thumbnails.default === 'object') {
       albumart = item.snippet.thumbnails.default.url;
     }
   }
@@ -931,190 +863,98 @@ Youtube.prototype.updateSettings = function (data) {
   return libQ.resolve();
 };
 
-Youtube.prototype.getAccessToken = function () {
-  var self = this;
-  var deferred = libQ.defer();
-
-  var postData = querystring.stringify({
-    'client_id': secrets.volumio.client_id,
-    'scope': 'https://www.googleapis.com/auth/youtube.readonly'
-  });
-
-  var options = {
-    host: 'accounts.google.com',
-    path: '/o/oauth2/device/code',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData)
-    }
-  };
-
-  // Set up the request
-  var codeReq = https.request(options, function (res) {
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {
-      self.accessData = JSON.parse(chunk);
-      deferred.resolve(self.accessData);
-    });
-  });
-
-  codeReq.on('error', (e) => {
-    deferred.reject(e);
-  });
-
-  codeReq.write(postData);
-  codeReq.end();
-
-  return deferred.promise;
+Youtube.prototype.oauthLogin = function (data) {
+  if (data && data.refresh_token) {
+    this.logger.info('Saving Youtube Refresh Token');
+    this.config.set('refresh_token', data.refresh_token);
+    this.commandRouter.pushToastMessage('success', this.getI18n('LOGIN'), this.getI18n('LOGIN_SUCCESS'));
+    this.initializeAuth();
+  } else {
+    this.logger.error('Could not receive oauth data');
+  }
 }
 
-Youtube.prototype.pollPermissions = function () {
-  var self = this;
-  var deferred = libQ.defer();
-
-  var postData = querystring.stringify({
-    'client_id': secrets.volumio.client_id,
-    'client_secret': secrets.volumio.client_secret,
-    'code': self.accessData.device_code,
-    'grant_type': 'http://oauth.net/grant_type/device/1.0'
-  });
-
-  var options = {
-    host: 'www.googleapis.com',
-    path: '/oauth2/v4/token',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData)
-    }
-  };
-
-  // Set up the request
-  var codeReq = https.request(options, function (res) {
-    res.setEncoding('utf8');
-
-    res.on('data', function (chunk) {
-      var data = JSON.parse(chunk);
-
-      if (res.statusCode == '200') {
-        fs.writeFile(path.join(__dirname, 'authToken.json'), chunk, function (err) {
-          if (err) {
-            self.logger.error("Could not save the authentication token!");
-          }
-        });
-
-        self.accessToken = data;
-        self.commandRouter.pushToastMessage('success', 'Access granted', 'Volumio has now access to your YouTube account.');
-        self.updateYtApiAccessToken();
-
-        deferred.resolve(data);
-      } else if (res.statusCode == '400') {
-        //Authorization pending
-        self.logger.info('Authorization pending, polling again in ' + self.accessData.interval + ' seconds.');
-        // add one second to polling interval to avoid Polling too frequently error
-        setTimeout(self.pollPermissions.bind(self), self.accessData.interval * 1000 + 1000);
-      } else {
-        self.commandRouter.pushToastMessage('error', data.error, data.error_description);
-        deferred.reject(new Error(data.error + ': ' + data.error_description));
-      }
-    });
-  });
-
-  codeReq.on('error', (e) => {
-    deferred.reject(e);
-  });
-
-  codeReq.write(postData);
-  codeReq.end();
-
-  return deferred.promise;
+Youtube.prototype.logout = function () {
+  console.log('Youtube: ', 'LOGOUT');
+  this.config.delete('refresh_token');
+  this.config.delete('access_token');
+  this.removeToBrowseSources();
 }
 
-Youtube.prototype.refreshAuthToken = function () {
-  var self = this;
-  var deferred = libQ.defer();
-
-  var postData = querystring.stringify({
-    'client_id': secrets.volumio.client_id,
-    'client_secret': secrets.volumio.client_secret,
-    'refresh_token': self.accessToken.refresh_token,
-    'grant_type': 'refresh_token'
-  });
-
-  var options = {
-    host: 'www.googleapis.com',
-    path: '/oauth2/v4/token',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData)
+Youtube.prototype.initializeAuth = async function () {
+  const accessToken = this.config.get('access_token');
+  const refreshToken = this.config.get('refresh_token');
+  if (refreshToken) {
+    const accessTokenExpiry = this.config.get('access_token_expiry');
+    this.addToBrowseSources();
+    if (!accessToken || accessTokenExpiry <= Date.now()) {
+      await this.refreshAccessToken();
     }
-  };
-
-  // Set up the request
-  var codeReq = https.request(options, function (res) {
-    res.setEncoding('utf8');
-
-    res.on('data', function (chunk) {
-      var data = JSON.parse(chunk);
-
-      if (res.statusCode == '200') {
-        self.accessToken.expires_in = data.expires_in;
-        self.accessToken.access_token = data.access_token;
-
-        fs.writeFile(path.join(__dirname, 'authToken.json'), JSON.stringify(self.accessToken), function (err) {
-          if (err) {
-            self.logger.error('Could not write authToken file:' + err);
-          }
-        });
-
-        setTimeout(self.refreshAuthToken.bind(self), self.accessToken.expires_in * 1000);
-        self.updateYtApiAccessToken();
-
-        self.logger.info('refresh token again in seconds: ' + self.accessToken.expires_in);
-
-        deferred.resolve({});
-      } else {
-        self.logger.info('Clearing authentication file!');
-
-        self.commandRouter.pushToastMessage('error', data.error, data.error_description);
-        fs.writeFile(path.join(__dirname, 'authToken.json'), JSON.stringify({}), function (err) {
-          if (err) {
-            self.logger.error('Could not write authToken file:' + err);
-          }
-        });
-        deferred.reject(new Error(data.error + ': ' + data.error_description));
-      }
-    });
-  });
-
-  codeReq.on('error', (e) => {
-    deferred.reject(e);
-  });
-
-  codeReq.write(postData);
-  codeReq.end();
-
-  return deferred.promise;
+    this.updateYtApiAccessToken();
+  }
 }
+
+Youtube.prototype.refreshAccessToken = async function () {
+  var refreshToken = this.config.get('refresh_token', 'none');
+  if (refreshToken) {
+    let results = await superagent.post('https://oauth-performer.dfs.volumio.org/youtube/accessToken')
+      .send({ refreshToken: refreshToken });
+    if (results && results.body && results.body.accessToken) {
+      this.config.set('access_token', results.body.accessToken);
+      this.config.set('access_token_expiry', results.body.expiresInSeconds * 1000 + Date.now());
+      console.log('Got access token!');
+    } else {
+      console.error('No access token!!!!');
+    }
+  }
+};
 
 Youtube.prototype.updateYtApiAccessToken = function () {
   var self = this;
-  var oauth2Client = new google.auth.OAuth2(
-    secrets.volumio.client_id,
-    secrets.volumio.client_secret,
-    secrets.volumio.redirect_uris[0]
-  );
+  var oauth2Client = new OAuth2Client();
 
-  oauth2Client.setCredentials(self.accessToken);
+  oauth2Client.setCredentials({
+    refresh_token: this.config.get('refresh_token'),
+    access_token: this.config.get('access_token'),
+  });
 
-  self.yt = google.youtube({
+  self.yt = gapis.youtube({
     version: 'v3',
     auth: oauth2Client
   });
 }
 
-Youtube.prototype.isAccessGranted = function () {
-  return token && token.refresh_token && token.access_token;
-}
+Youtube.prototype.loadI18n = function () {
+  var self = this;
+
+  try {
+    var language_code = this.commandRouter.sharedVars.get('language_code');
+    self.i18n = fs.readJsonSync(__dirname + '/i18n/strings_' + language_code + ".json");
+  } catch (e) {
+    self.i18n = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
+  }
+
+  self.i18nDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
+};
+
+Youtube.prototype.getI18n = function (key) {
+  var self = this;
+
+  if (key.indexOf('.') > 0) {
+    var mainKey = key.split('.')[0];
+    var secKey = key.split('.')[1];
+    if (self.i18n[mainKey][secKey] !== undefined) {
+      return self.i18n[mainKey][secKey];
+    } else {
+      return self.i18nDefaults[mainKey][secKey];
+    }
+
+  } else {
+    if (self.i18n[key] !== undefined) {
+      return self.i18n[key];
+    } else {
+      return self.i18nDefaults[key];
+    }
+
+  }
+};

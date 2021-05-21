@@ -1,4 +1,4 @@
-03rd August 2018
+June 06th 2020
 #	VOLUMIO PARAMETRIC EQUALIZER
 
 This plugin is designed to provide a parametric equalizer to Volumio.
@@ -52,6 +52,10 @@ RPI0
 
 
 ## Last changes
+
+June 06th 2020
+
+- better resilience
 
 03rd August
 

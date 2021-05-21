@@ -1,0 +1,12 @@
+[Unit]
+Description=Copies the necessary files to their respective locations and fixes ownership to enable DUO authenatication
+
+[Service]
+User=root
+ExecStart=/bin/sh -c "cp /data/plugins/miscellanea/duo/templates/sshd /etc/pam.d/sshd && chown root:root /etc/pam.d/sshd && chmod 644 /etc/pam.d/sshd && cp /data/plugins/miscellanea/duo/templates/pam_duo.conf /etc/duo/pam_duo.conf && chown root:root /etc/duo/pam_duo.conf && chmod 600 /etc/duo/pam_duo.conf"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=duo-pam-activator
+
+[Install]
+WantedBy=multi-user.target

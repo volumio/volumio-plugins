@@ -1,0 +1,10 @@
+{
+	"apiDelay": {
+		"type": "number",
+		"value": 5
+	},
+	"apiStream256": {
+		"type": "string",
+		"value": "ypqt40u0x1zuv"
+	}
+}

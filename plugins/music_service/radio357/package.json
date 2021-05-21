@@ -1,0 +1,22 @@
+{
+	"name": "rad357pl",
+	"version": "1.0.1",
+	"description": "Radio 357",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "DJack",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "RADIO 357",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"nanotimer": "^0.3.15"
+	}
+}

@@ -28,7 +28,7 @@ function ControllerRadioParadise(context) {
 ControllerRadioParadise.prototype.onVolumioStart = function () {
     var self = this;
     self.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-	self.getConf(self.configFile);
+    self.getConf(self.configFile);
     self.apiDelay = self.config.get('apiDelay');
     self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] API delay: ' + self.apiDelay);
 
@@ -228,12 +228,17 @@ ControllerRadioParadise.prototype.clearAddPlayTrack = function (track) {
         // Advanced stream via API
         flacUri = track.uri;
 
+        channelMix = "Main";
+        metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=0";
         if (track.uri.includes("mellow")) {
             channelMix = "Mellow";
             metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=1";
-        } else {
-            channelMix = "Main";
-            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=0"
+        } else if (track.uri.includes("rock")) {
+            channelMix = "Rock";
+            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=2";
+        } else if (track.uri.includes("world")) {
+            channelMix = "World/Etc";
+            metadataUrl = "https://api.radioparadise.com/api/now_playing?chan=3";
         }
         
         var songs;
@@ -423,11 +428,11 @@ ControllerRadioParadise.prototype.getMetadata = function (url) {
     var defer = libQ.defer();    
     
     http.get(url, (resp) => {
-    	if (resp.statusCode < 200 || resp.statusCode > 299) {
-        	self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
-        	defer.resolve(null);
-        	self.errorToast(url, 'ERROR_STREAM_SERVER');
-		} else {
+        if (resp.statusCode < 200 || resp.statusCode > 299) {
+            self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Failed to query radio paradise api, status code: ' + resp.statusCode);
+            defer.resolve(null);
+            self.errorToast(url, 'ERROR_STREAM_SERVER');
+        } else {
         let data = '';
 
         // A chunk of data has been recieved.
@@ -441,11 +446,11 @@ ControllerRadioParadise.prototype.getMetadata = function (url) {
         });
         }
 
-	}).on("error", (err) => {
-		self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
-  		defer.resolve(null);
+    }).on("error", (err) => {
+        self.logger.info('[' + Date.now() + '] ' + '[RadioParadise] Error: ' + err.message);
+          defer.resolve(null);
         self.errorToast(url, 'ERROR_STREAM_SERVER');
-	});
+    });
     
     return defer.promise;
 };
@@ -483,14 +488,14 @@ ControllerRadioParadise.prototype.pushSongState = function (metadata) {
     var rpState = {
         status: 'play',
         service: self.serviceName,
-        type: 'track',
+        type: 'webradio',
         trackType: audioFormat,
         radioType: 'rparadise',
         albumart: metadata.cover,
         uri: flacUri,
-        name: metadata.artist + ' - ' + metadata.title,
+        name: metadata.title,
         title: metadata.title,
-        artist: 'Radio Paradise ' + channelMix,
+        artist: metadata.artist,
         album: metadata.album,
         streaming: true,
         disableUiControls: true,
@@ -507,16 +512,16 @@ ControllerRadioParadise.prototype.pushSongState = function (metadata) {
     var vState = self.commandRouter.stateMachine.getState();
     var queueItem = self.commandRouter.stateMachine.playQueue.arrayQueue[vState.position];
 
-    queueItem.name = metadata.artist + ' - ' + metadata.title;
-    queueItem.artist = 'Radio Paradise ' + channelMix;
+    queueItem.name =  metadata.title;
+    queueItem.artist =  metadata.artist;
     queueItem.album = metadata.album;
     queueItem.albumart = metadata.cover;
-    queueItem.trackType = audioFormat;
+    queueItem.trackType = 'Rparadise '+ channelMix;
     queueItem.duration = metadata.time;
     queueItem.samplerate = '44.1 KHz';
     queueItem.bitdepth = '16 bit';
     queueItem.channels = 2;
-
+    
     //reset volumio internal timer
     self.commandRouter.stateMachine.currentSeek = 0;
     self.commandRouter.stateMachine.playbackStart=Date.now();
