@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo rm /usr/bin/ambx_set_color
+sudo rm /usr/bin/ambx_control
 
 # Uninstall dependendencies
 sudo rm /etc/udev/rules.d/10-ambx.rules

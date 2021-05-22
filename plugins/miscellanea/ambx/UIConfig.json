@@ -4,7 +4,7 @@
   },
   "sections": [
     {
-      "id": "section_colorpicker",
+      "id": "sectionColorpicker",
       "element": "section",
       "label": "Color Picker",
       "icon": "fa-lightbulb",
@@ -82,6 +82,47 @@
           "label": "Color",
           "value": "#FFCC00",
           "visibleIf": {"field": "sync", "value": true}
+        }
+      ]
+    },
+    {
+      "id": "sectionFanspeed",
+      "element": "section",
+      "label": "Fan speed",
+      "icon": "fa-fan",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/ambx", "method":"setFanSpeed"},
+      "saveButton": {
+        "label": "Change fan speed",
+        "data": [
+          "fanSpeed"
+        ]
+      },
+      "content": [
+        {
+          "id": "fanSpeed",
+          "element": "equalizer",
+          "doc": "Adjust left and right fan speeds",
+          "config": {
+            "orientation": "vertical",
+            "bars": [
+              {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 0,
+                "ticksLabels": ["Left"],
+                "tooltip": "show"
+              },
+              {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 0,
+                "ticksLabels": ["Right"],
+                "tooltip": "show"
+              }
+            ]
+          }
         }
       ]
     }
