@@ -1,6 +1,7 @@
 {
   "PLUGIN_CONFIGURATION":"GpioRandom configuration",
-  "PLUGIN_SECTION_TITLE":"GpioRandom  settings",
+  "PLUGIN_MAIN_SECTION_TITLE":"GPIO Button settings",
+  "PLUGIN_ACTION_SECTION_TITLE":"Click actions settings",
   "SAVE":"Save",
   "SUCCESS_TITLE":"Saved settings",
   "SUCCESS_MESSAGE":"Successfully saved settings",
@@ -8,7 +9,13 @@
   "GPIONUM_DOC":"Enter the GPIO number on which the button is wired (choose one with interrupt support)",
   "GPIONUM_LBL":"GPIO Number",
   "NBSONGS_DOC":"Enter the number of random songs to add to queue",
-  "NBSONGS_LBL":"Number of Songs",
+  "NBSONGS_LBL":"Number of Songs for random action",
+  "DEBOUNCE_LBL": "Debounce timeout",
+  "DEBOUNCE_DOC":"minimum number of miliseconds needed between two events (5 should be fine on all RPI, but you should try others value depending on your board)",
+  "ACTIVELOW_LBL": "Active low",
+  "ACTIVELOW_DOC":"Set to true if a click change GPIO state from 1 to 0. Set to false if a click change GPIO state from 0 to 1 (RPI with IRQ backed GPIO should set it to true)",
+  "EDGE_LBL": "GPIO Edge",
+  "EDGE_DOC":"Set which state should generate a click. (Falling is ok on RPI with IRQ backed GPIO. some other boards need to set it to 'both'",
   
   "ERROR_NOT_A_NUMBER_TITLE":"Number values required !",
   "ERROR_NOT_A_NUMBER_MESSAGE":"All fields must be filled with a number greater than 0",

@@ -3,18 +3,109 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
- {
-      "id": "section_settings",
+    {
+      "id": "section_main_settings",
       "element": "section",
-      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
-      "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveSettings"},
+      "label": "TRANSLATE.PLUGIN_MAIN_SECTION_TITLE",
+      "icon": "fa-wrench",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveMainSettings"},
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
           "gpionum",
+          "debounceTimeout",
+          "activeLow",
+          "edge",
+          "clicktimeout"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpionum",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.GPIONUM_DOC",
+          "label": "TRANSLATE.GPIONUM_LBL",
+          "attributes": [ {"placeholder": "3"} ],
+          "value": ""
+        },
+         {
+          "id": "debounceTimeout",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.DEBOUNCE_DOC",
+          "label": "TRANSLATE.DEBOUNCE_LBL",
+          "attributes": [ {"placeholder": "5"} ],
+          "value": ""
+        },
+        {
+          "id": "activeLow",
+          "element": "select",
+          "doc": "TRANSLATE.ACTIVELOW_DOC",
+          "label": "TRANSLATE.ACTIVELOW_LBL",
+          "value": {"value": 1,
+                    "label": "true"
+          },
+          
+           "options": [
+            { 
+              "value": 0,
+              "label": "false"
+            },
+            {
+              "value": 1,
+              "label": "true"
+            }
+                      ]
+        },
+        {
+          "id": "edge",
+          "element": "select",
+          "doc": "TRANSLATE.EDGE_DOC",
+          "label": "TRANSLATE.EDGE_LBL",
+          "value": {"value": 0,
+                    "label": "falling"
+          },
+           "options": [
+            { 
+              "value": 0,
+              "label": "falling"
+            },
+            { 
+              "value": 1,
+              "label": "rising"
+            },
+            { 
+              "value": 2,
+              "label": "both"
+            },
+            {
+              "value": 3,
+              "label": "none"
+            }
+                      ]
+        },
+        {
+          "id": "clicktimeout",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.CLICKTIMEOUT_DOC",
+          "label": "TRANSLATE.CLICKTIMEOUT_LBL",
+          "attributes": [ {"placeholder": "800"} ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_action_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_ACTION_SECTION_TITLE",
+      "icon": "fa-toggle-on",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveActionSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
           "nbsongs",
-          "clicktimeout",
           "singleclick",
           "singleclickAction",
           "singleuri",
@@ -31,30 +122,12 @@
       },
       "content": [
         {
-          "id": "gpionum",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.GPIONUM_DOC",
-          "label": "TRANSLATE.GPIONUM_LBL",
-          "attributes": [ {"placeholder": "3"} ],
-          "value": ""
-        },
-        {
           "id": "nbsongs",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.NBSONGS_DOC",
           "label": "TRANSLATE.NBSONGS_LBL",
           "attributes": [ {"placeholder": "20"} ],
-          "value": ""
-        },
-        {
-          "id": "clicktimeout",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.CLICKTIMEOUT_DOC",
-          "label": "TRANSLATE.CLICKTIMEOUT_LBL",
-          "attributes": [ {"placeholder": "800"} ],
           "value": ""
         },
         {

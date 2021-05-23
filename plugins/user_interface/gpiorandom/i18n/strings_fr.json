@@ -1,6 +1,7 @@
 {
   "PLUGIN_CONFIGURATION":"configuration de GpioRandom",
-  "PLUGIN_SECTION_TITLE":"Paramètres de GpioRandom",
+  "PLUGIN_MAIN_SECTION_TITLE":"Reglages du bouton et du GPIO",
+  "PLUGIN_ACTION_SECTION_TITLE":"Reglages des actions",
   "SAVE":"Enregistrer",
   "SUCCESS_TITLE":"Paramètres enregistrés",
   "SUCCESS_MESSAGE":"Enregistrement réussi !",
@@ -8,7 +9,13 @@
   "GPIONUM_DOC":"Saisir le numréro de GPIO sur lequel le bouton est relié (choisir une pin qui supporte les interruptions)",
   "GPIONUM_LBL":"Numéro GPIO",
   "NBSONGS_DOC":"Saisir le nombre de chansons aléatoires à mettre dans la file d'attente",
-  "NBSONGS_LBL":"Nombre de chansons",
+  "NBSONGS_LBL":"Nombre de chansons pour l'action aléatoire",
+  "DEBOUNCE_LBL": "Delai anti-reclick",
+  "DEBOUNCE_DOC":"Nombre minimum de milisecondes pour prendre en charge un evenement. (5 devrait être bien pour un RPI, mais 0 peut-être necessaire pour d'autres SBC)",
+  "ACTIVELOW_LBL": "Actif si 'Low'",
+  "ACTIVELOW_DOC":"Mettre a 'true' si un click fait passer le status du GPIO de 1 à 0. Mettre à 'false' si un un click fait passer le status du GPIO de 0 à 1 (un RPI qui utilise une pin avec un IRQ devrait-être mis à 'true')",
+  "EDGE_LBL": "Détection GPIO",
+  "EDGE_DOC":"Selectionne quel état génère un click. ('Falling' est ok pour un RPI qui utilise un IRQ. D'autres SBC utilisent parfois 'both'"),
   
   "ERROR_NOT_A_NUMBER_MESSAGE":"Tous les champs numeriques doivent contenir un nombre supérieur à 0",
   "ERROR_NOT_A_NUMBER_TITLE":"Nombre obligatoire !",

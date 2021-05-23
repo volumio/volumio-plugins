@@ -1,0 +1,14 @@
+{
+  "PLUGIN_CONFIGURATION":"Command on event configuration",
+  "PLUGIN_SECTION_TITLE":"Command on event settings",
+  "SAVE":"Save",
+  "SUCCESS_TITLE":"Saved settings",
+  "SUCCESS_MESSAGE":"Successfully saved settings",
+  
+  "STOP_DOC":"Enter the full path to a command or shell script to be executed on STOP event. The command will receive the volumio status as parameter",
+  "STOP_LBL": "Stop event",
+  "PLAY_DOC":"Enter the full path to a command or shell script to be executed on STOP event. The command will receive the volumio status as parameter",
+  "PLAY_LBL": "Play event",
+  "PAUSE_DOC":"Enter the full path to a command or shell script to be executed on STOP event. The command will receive the volumio status as parameter",
+  "PAUSE_LBL": "Pause event"
+}
