@@ -726,6 +726,28 @@
 						}
 					],
 					"updated": "10-5-2021"
+				},
+				{
+					"prettyName": "Philips Hue Control",
+					"icon": "fa-lightbulb-o",
+					"name": "hue_control",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/hue_control/hue_control.zip",
+					"license": "GPL-3.0-only",
+					"description": "Connect with a Philips Hue bridge and control bulbs or smart power outlets based on the Volumio playback status.",
+					"details": "",
+					"author": {
+						"name": "André Iske",
+						"email": "andre.iske@mailbox.org",
+						"url": "https://github.com/a-i-ks"
+					},
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "23-5-2021"
 				}
 			]
 		},
