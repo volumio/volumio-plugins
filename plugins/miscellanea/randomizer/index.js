@@ -47,9 +47,9 @@ randomizer.prototype.randomTracks = function() {
     var defer=libQ.defer();
     self.tracks = self.config.get('tracks');
     if (isNaN(self.tracks)) { 
-      exec('node /data/plugins/miscellanea/randomizer/randomTracks');
+      exec('node /data/plugins/miscellanea/randomizer/random_Tracks');
     } else {
-      exec('node /data/plugins/miscellanea/randomizer/randomTracks '+ self.config.get('tracks') );
+      exec('node /data/plugins/miscellanea/randomizer/random_Tracks '+ self.config.get('tracks') );
     }
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
