@@ -31,6 +31,11 @@
         "type": "number",
         "value": "1"
     },
+    "crossfeed":{
+        "type": "text",
+        "value": "None",
+        "label":"None"
+    },
     "showeq": {
         "type": "boolean",
         "value": true

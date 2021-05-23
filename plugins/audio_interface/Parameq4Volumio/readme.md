@@ -1,4 +1,4 @@
-May 15th 2021
+May 23th 2021
 
 
 ##  For Volumio >= 3.054
@@ -19,6 +19,7 @@ This plugin is designed to apply a Parametric Eq based on [CamillaDsp](https://g
 - 3 preset
 - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
 - import for local EQ file (must be in /data/INTERNAM/Parameq4Volumio/)
+- 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
 
 You can add or replace EQ while importing.
 - Select the file for left channel
@@ -86,6 +87,14 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 23th 2021
+
+- Add 4 crossffeed for headphone
+
+May 16th 2021
+
+- link to CamillaDsp Gui
 
 May 15th 2021
 

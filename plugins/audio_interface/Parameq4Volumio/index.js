@@ -1,6 +1,6 @@
 /*--------------------
 Parameq plugin for volumio2. By balbuze May  2021
-Up to 50 Peq
+Up to 50 Peq + crossfeed
 Based on CamillaDsp
 ----------------------
 */
@@ -48,8 +48,20 @@ Parameq.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
+  /*-----------Experimental CamillaGui
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
 
+  try {
+    exec("/usr/bin/python3 /data/plugins/audio_interface/parameq4volumio/cgui/main.py", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('CamillaGui loaded');
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to load Camilla Gui' + err);
+  }
+*/
   setTimeout(function () {
     self.createCamilladspfile()
 
@@ -296,9 +308,64 @@ Parameq.prototype.getUIConfig = function () {
         // uiconf.sections[0].removeeq.button.data.push(eqn);
 
 
-
       }
 
+
+      var devicename = self.commandRouter.sharedVars.get('system.name');
+
+      var crossconfig = self.config.get('crossfeed')
+      switch (crossconfig) {
+        case ("None"):
+          var crosslabel = 'None'
+          break;
+        case ("bauer"):
+          var crosslabel = "Bauer 700Hz/4.5dB"
+          break;
+        case ("chumoy"):
+          var crosslabel = "Chu Moy 700Hz/6dB"
+          break;
+        case ("jameier"):
+          var crosslabel = "Jan Meier 650Hz/9.5dB"
+          break;
+        case ("linkwitz"):
+          var crosslabel = "Linkwitz 700Hz/2dB"
+          break;
+        default: "None"
+      }
+
+      uiconf.sections[0].content.push(
+        {
+          "id": "crossfeed",
+          "element": "select",
+          "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
+          "label": self.commandRouter.getI18nString('CROSSFEED'),
+          "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
+          "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        }
+        //------------experimental
+        /*
+        {
+          "id": "camillagui",
+          "element": "button",
+          "label": "CamillaGui (experimental)",
+          "doc": "CamillaGui",
+          "onClick": {
+            "type": "openUrl",
+            "url": "http://" + devicename + ".local:5011"
+          },
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          },
+        } 
+        */
+      //-----------------
+      )
+     
       self.logger.info('effect ' + effect)
 
       if (effect == true) {
@@ -434,6 +501,7 @@ Parameq.prototype.getUIConfig = function () {
 
       )
       uiconf.sections[0].saveButton.data.push('showeq');
+      uiconf.sections[0].saveButton.data.push('crossfeed');
       uiconf.sections[0].saveButton.data.push('leftlevel');
       uiconf.sections[0].saveButton.data.push('rightlevel');
       uiconf.sections[0].saveButton.data.push('filename');
@@ -592,17 +660,80 @@ Parameq.prototype.createCamilladspfile = function () {
       var leftlevel = self.config.get('leftlevel')
       var rightlevel = self.config.get('rightlevel')
 
-      var gainresult;
+      var gainresult, gainclipfree
       let eqval = self.config.get('mergedeq')
       let subtypex = eqval.toString().split('/')
       let resulttype = ''
+      let crossatt, crossfreq
+      //------crossfeed section
+      var crossconfig = self.config.get('crossfeed')
+      if ((crossconfig != 'None'))/* && (effect))*/ {
+        var composedeq = '';
+
+        self.logger.info('crossfeed  ' + (self.config.get('crossfeed')))
+        switch (crossconfig) {
+          case ("bauer"):
+            crossfreq = 700
+            crossatt = 4.5
+            break;
+          case ("chumoy"):
+            crossfreq = 700
+            crossatt = 6
+            break;
+          case ("jameier"):
+            crossfreq = 650
+            crossatt = 9.5
+            break;
+          case ("linkwitz"):
+            crossfreq = 700
+            crossatt = 2
+            break;
+          case ("None"):
+            crossatt = 0
+            //   composedeq += ''
+            break;
+          default: "None"
+
+        }
+
+        composedeq += '  highcross:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: Highshelf\n'
+        composedeq += '      freq: ' + crossfreq + '\n'
+        composedeq += '      slope: 6\n'
+        composedeq += '      gain: ' + crossatt + '\n'
+        composedeq += '\n'
+        composedeq += '  lpcross:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: LowpassFO\n'
+        composedeq += '      freq: ' + crossfreq + '\n'
+        composedeq += '\n'
+        composedeq += '  delay:\n'
+        composedeq += '    type: Delay\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      delay: 0.5\n'
+        composedeq += '      unit: ms\n'
+        composedeq += '      subsample: false\n'
+        composedeq += '      \n'
+        result += composedeq
+
+
+      } else {
+        crossatt = 0
+        composedeq += ''
+      }
+
+      //------end crossfeed section
+
       for (let o = 1; o < (nbreq + 1); o++) {
 
         typec = subtypex[((o - 1) * 4) + 1];
         resulttype += typec
       }
       if (resulttype.indexOf('None') == -1) {
-        self.logger.info('resultype dif from None ' + resulttype)
+        //self.logger.info('resultype dif from None ' + resulttype)
       } else {
         self.logger.info('Resultype only None ' + resulttype)
         var composedeq = '';
@@ -624,11 +755,11 @@ Parameq.prototype.createCamilladspfile = function () {
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
-        pipeliner = '      - nulleq';
-        result += composedeq
-        pipelinelr = pipeliner.slice(8)
-        pipelinerr = pipeliner.slice(8)
-
+        /* pipeliner = '      - nulleq';
+         result += composedeq
+         pipelinelr = pipeliner.slice(8)
+         pipelinerr = pipeliner.slice(8)
+ */
         self.logger.info('Effects disabled, Nulleq applied')
         gainresult = 0
         gainclipfree = self.config.get('gainapplied')
@@ -727,6 +858,8 @@ Parameq.prototype.createCamilladspfile = function () {
             gainmax = ',' + 0
 
           }
+
+
           var outlpipeline, outrpipeline;
           result += composedeq
           outlpipeline += pipelineL
@@ -743,40 +876,226 @@ Parameq.prototype.createCamilladspfile = function () {
           gainmaxused += gainmax
 
         };
-        gainmaxused += ',0'
 
-        // self.logger.info('gainmaxused' +gainmaxused)
-
-        var gainclipfree
-        if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
-          gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
-          self.logger.info('gainresult ' + gainresult)
-          if (gainresult < 0) {
-            gainclipfree = -2
-          } else {
-            if (gainclipfree === undefined) {
-              gainclipfree = 0
-            }
-            gainclipfree = ('-' + (parseInt(gainresult) + 2))
-
-            //else
-          }
-          // self.logger.info('gainclipfree' +gainclipfree)
-
-          self.config.set('gainapplied', gainclipfree)
-        }
       };
-      var leftgain = (+gainclipfree + +leftlevel)
-      var rightgain = (+gainclipfree + +rightlevel);
+
+      gainmaxused += ',0'
+
+      //-----gain calculation
+      self.logger.info('gainmaxused' + gainmaxused)
+      self.logger.info('crossatt ' + crossatt)
+      self.logger.info('pipelinerr ' + pipelinerr)
+
+      //if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
+      if (effect) {
+        gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
+        self.logger.info('gainresult ' + gainresult + ' ' + typeof (+gainresult))
+
+        //   self.config.set('gainapplied', gainclipfree)
+
+        if (+gainresult < 0) {
+          gainclipfree = -2
+          self.logger.info('else 1  ' + gainclipfree)
+        } else {
+
+          gainclipfree = ('-' + (parseInt(gainresult) + 2))
+        }
+        if (gainclipfree === undefined) {
+          gainclipfree = 0
+        }
+        self.config.set('gainapplied', gainclipfree)
+
+        //else
+      }
+      // self.logger.info('gainclipfree' +gainclipfree)
+      gainclipfree = self.config.get('gainapplied')
+
+      let leftgain = (+gainclipfree + +leftlevel - +crossatt)
+      let rightgain = (+gainclipfree + +rightlevel - +crossatt);
       self.logger.info(result)
+      self.logger.info('gain applied ' + leftgain)
+
+      ///----mixers and pipelines generation
+      var composedmixer = ''
+      var composedpipeline = ''
+
+      if ((crossconfig == 'None') && (effect)) {
+        composedmixer += 'mixers:\n'
+        composedmixer += '  stereo:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 2\n'
+        composedmixer += '      out: 2\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '\n'
+
+        composedpipeline += '\n'
+        composedpipeline += 'pipeline:\n'
+        composedpipeline += '  - type: Mixer\n'
+        composedpipeline += '    name: stereo\n'
+        composedpipeline += '  - type: Filter\n'
+        composedpipeline += '    channel: 0\n'
+        composedpipeline += '    names:\n'
+        composedpipeline += '      - ' + pipelinelr + '\n'
+        composedpipeline += '  - type: Filter\n'
+        composedpipeline += '    channel: 1\n'
+        composedpipeline += '    names:\n'
+        composedpipeline += '      - ' + pipelinerr + '\n'
+        composedpipeline += '\n'
+
+      } else if ((crossconfig != 'None') && (effect)) {
+        // -- if a crossfeed is used
+        composedmixer += 'mixers:\n'
+        composedmixer += '  2to4:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 2\n'
+        composedmixer += '      out: 4\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 2\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 3\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '  stereo:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 4\n'
+        composedmixer += '      out: 2\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '          - channel: 2\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '          - channel: 3\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+
+        composedpipeline += '\n'
+        composedpipeline += 'pipeline:\n'
+        composedpipeline += '   - type: Mixer\n'
+        composedpipeline += '     name: 2to4\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 0\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - highcross\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 1\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - lpcross\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 1\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - delay\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 2\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - lpcross\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 2\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - delay\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 3\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - highcross\n'
+        composedpipeline += '   - type: Mixer\n'
+        composedpipeline += '     name: stereo\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 0\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '      - ' + pipelinelr + '\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 1\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '      - ' + pipelinerr + '\n'
+
+
+      } else if (effect == false) {
+
+        self.logger.info('Effects disabled, Nulleq applied')
+        gainresult = 0
+        //   gainclipfree = self.config.get('gainapplied')
+
+        composedmixer += 'mixers:\n'
+        composedmixer += '  stereo:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 2\n'
+        composedmixer += '      out: 2\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '\n'
+
+        pipeliner = '      - nulleq2';
+        pipelinelr = pipeliner.slice(8)
+        pipelinerr = pipeliner.slice(8)
+
+
+
+        composedpipeline += '\n'
+        composedpipeline += 'pipeline:\n'
+        composedpipeline += '  - type: Mixer\n'
+        composedpipeline += '    name: stereo\n'
+        composedpipeline += '  - type: Filter\n'
+        composedpipeline += '    channel: 0\n'
+        composedpipeline += '    names:\n'
+        composedpipeline += '      - ' + pipelinelr + '\n'
+        composedpipeline += '  - type: Filter\n'
+        composedpipeline += '    channel: 1\n'
+        composedpipeline += '    names:\n'
+        composedpipeline += '      - ' + pipelinerr + '\n'
+        composedpipeline += '\n'
+      }
+
 
       self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
 
       let conf = data.replace("${resulteq}", result)
-        .replace("${gain}", leftgain)
-        .replace("${gain}", rightgain)
-        .replace("${pipelineL}", pipelinelr)
-        .replace("${pipelineR}", pipelinerr)
+        .replace("${mixers}", composedmixer)
+        //.replace("${gain}", leftgain)
+        //.replace("${gain}", rightgain)
+        .replace("${composedpipeline}", composedpipeline)
+        //  .replace("${pipelineR}", pipelinerr)
         ;
       fs.writeFile("/data/configuration/audio_interface/parameq4volumio/camilladsp.yml", conf, 'utf8', function (err) {
         if (err)
@@ -892,16 +1211,17 @@ Parameq.prototype.saveparameq = function (data) {
     //--- skip PEQ if set to REMOVE
     if (((data[typec].value) != 'Remove')) {
       test += ('Eq' + o + '/' + data[typec].value + '/' + data[scopec].value + '/' + data[eqc] + '/');
-      self.logger.info('test values '+ test)
+      //  self.logger.info('test values ' + test)
       self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
     } else if (((data[typec].value) == 'Remove') && (nbreq == 1)) {
       self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CANT_REMOVE_LAST_PEQ'))
-    } else if (((data[typec].value) == 'Remove') && (nbreq != 1)){
+    } else if (((data[typec].value) == 'Remove') && (nbreq != 1)) {
       skipeqn = skipeqn + 1
       self.logger.info('skipeqn ' + skipeqn)
 
     }
   }
+  self.config.set('crossfeed', data['crossfeed'].value);
   self.config.set('leftlevel', data.leftlevel);
   self.config.set('rightlevel', data.rightlevel);
   self.config.set('effect', true);

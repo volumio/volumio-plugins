@@ -71,5 +71,7 @@
   "ADD_REPLACE":"Remplacer=On / Ajouter=Off",
   "ADD_REPLACE_DOC":"Défini si le fichier local remplace les réglages, ou bien s'ajoute à ceux existants",
   "MAX-EQ-REACHED":"Nombre maximum d'EQ utilisé! Les derniers ne seront pas utilisés!",
-  "CANT_REMOVE_LAST_PEQ":"Impossible de suprimer le dernier PEQ!"
+  "CANT_REMOVE_LAST_PEQ":"Impossible de suprimer le dernier PEQ!",
+  "CROSSFEED_DOC":"Choisissez le profil ",
+  "CROSSFEED": "Utiliser un CrossFeed"
 }

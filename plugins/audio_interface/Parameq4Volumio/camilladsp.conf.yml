@@ -22,32 +22,8 @@ devices:
 filters:
   nulleq2:
     type: Conv
+    
 ${resulteq}
-mixers:
-  stereo:
-    channels:
-      in: 2
-      out: 2
-    mapping:
-      - dest: 0
-        sources:
-          - channel: 0
-            gain: ${gain}
-            inverted: false
-      - dest: 1
-        sources:
-          - channel: 1
-            gain: ${gain}
-            inverted: false
-
-pipeline:
-  - type: Mixer
-    name: stereo
-  - type: Filter
-    channel: 0
-    names:
-      - ${pipelineL}
-  - type: Filter
-    channel: 1
-    names:
-      - ${pipelineR}
+${mixers}
+${composedpipeline}
+  

@@ -72,5 +72,7 @@
   "ADD_REPLACE":"REPLACE=On / ADD=Off",
   "ADD_REPLACE_DOC":"Choose if local setting is aadded to current or replace it",
   "MAX-EQ-REACHED":"Max number of EQ reached! Last coefficient won't be used !",
-  "CANT_REMOVE_LAST_PEQ":"Can't remove last PEQ!"
+  "CANT_REMOVE_LAST_PEQ":"Can't remove last PEQ!",
+  "CROSSFEED_DOC":"Choose the crossfeed profil ",
+  "CROSSFEED": "Use CrossFeed"
 }
