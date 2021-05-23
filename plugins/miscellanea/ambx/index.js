@@ -85,12 +85,10 @@ ambx.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    if(self.updateColor()){
-        defer.resolve();
-    } else {
+    if(!self.updateColor()){
         self.logger.info('No control on AmbX');
-        defer.reject(new Error());
     }
+    defer.resolve();
 
     return defer.promise;
 };
