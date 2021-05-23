@@ -33,5 +33,15 @@
  {
    "type": "string",
    "value": "#FFCC00"
+ },
+ "fanLeft":
+ {
+   "type": "integer",
+   "value": 0
+ },
+ "fanRight":
+ {
+   "type": "integer",
+   "value": 0
  }
 }

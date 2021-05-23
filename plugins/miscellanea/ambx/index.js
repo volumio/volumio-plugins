@@ -33,7 +33,7 @@ ambx.prototype.updateColor = function() {
             var color = config.match(/[A-Za-z0-9]{2}/g).map(function(v) { return parseInt(v, 16) });
 
             try {
-                execSync("ambx_set_color -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
+                execSync("ambx_control led -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
             } catch (error) {
                 return false;
             }
@@ -51,10 +51,30 @@ ambx.prototype.updateColor = function() {
                 var color = configs[i].match(/[A-Za-z0-9]{2}/g).map(function(v) { return parseInt(v, 16) });
 
                 try {
-                    execSync("ambx_set_color -l " + (i+1) + " -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
+                    execSync("ambx_control led -l " + (i+1) + " -r " + color[0] + " -g " + color[1] + " -b " + color[2]);
                 } catch (error) {
                     return false;
                 }
+            }
+        }
+    }
+    return true;
+}
+
+ambx.prototype.updateFans = function() {
+    var self = this;
+    var configs = [self.config.get('fanLeft'),
+                   self.config.get('fanRight')];
+
+    self.logger.info("Updating fans");
+    for (var i = 0; i < 2; i++) {
+        if (typeof configs[i] !== 'undefined') {
+            var speed = configs[i];
+
+            try {
+                execSync("ambx_control fan -f " + (i+1) + " -s " + speed);
+            } catch (error) {
+                return false;
             }
         }
     }
@@ -79,12 +99,13 @@ ambx.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-    exec("ambx_set_color", function (error, stdout, stderr) {
-        if(error){
-            self.logger.info('No control on AmbX');
-        }
-        defer.resolve();
-    });
+    try {
+        execSync("ambx_control led");
+        execSync("ambx_control fan");
+    } catch (error) {
+        self.logger.info('No control on AmbX');
+    }
+    defer.resolve();
 
     return defer.promise;
 };
@@ -113,6 +134,8 @@ ambx.prototype.getUIConfig = function() {
             uiconf.sections[0].content[4].value = self.config.get('colorRightCenter');
             uiconf.sections[0].content[5].value = self.config.get('colorRight');
             uiconf.sections[0].content[6].value = self.config.get('colorMain');
+            uiconf.sections[1].content[0].config.bars[0].value = self.config.get('fanLeft');
+            uiconf.sections[1].content[0].config.bars[1].value = self.config.get('fanRight');
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -137,6 +160,26 @@ ambx.prototype.setColor = function(data) {
         defer.resolve({});
     } else {
         self.commandRouter.pushToastMessage('error', "Set Color", "No connection to AmbX");
+        defer.reject(new Error());
+    }
+
+    return defer.promise;
+}
+
+ambx.prototype.setFanSpeed = function(data) {
+    var self = this;
+
+    var defer = libQ.defer();
+
+    var speeds = data["fanSpeed"];
+    self.config.set("fanLeft", speeds[0]);
+    self.config.set("fanRight", speeds[1]);
+
+    if(self.updateFans()){
+        self.commandRouter.pushToastMessage('success', "Set Fan", "Set fan speed was successful");
+        defer.resolve({});
+    } else {
+        self.commandRouter.pushToastMessage('error', "Set Fan", "No connection to AmbX");
         defer.reject(new Error());
     }
 
