@@ -1,0 +1,105 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_hue_connection",
+      "element": "section",
+      "label": "TRANSLATE.HUE_CONNECTION_CONFIG",
+      "icon": "fa-link",
+      "description": "TRANSLATE.HUE_CONNECTION_CONFIG_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "pairBridge"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.HUE_PAIR_BTN",
+        "data": [
+          "hue_bridge_address"
+        ]
+      },
+      "content": [
+        {
+          "id": "hue_bridge_address",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.HUE_BRIDGE_ADDRESS_DOC",
+          "label": "TRANSLATE.HUE_BRIDGE_ADDRESS",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_hue_unpair",
+      "element": "section",
+      "label": "TRANSLATE.HUE_UNPAIR_CONFIG",
+      "icon": "fa-chain-broken",
+      "description": "TRANSLATE.HUE_UNPAIR_CONFIG_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "unpairBridge"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.HUE_UNPAIR_BTN"
+      },
+      "content": [
+        {
+          "id": "hue_bridge_address",
+          "type": "text",
+          "element": "input",
+          "attributes": [
+            {
+              "readonly": true
+            }
+          ],
+          "doc": "TRANSLATE.HUE_BRIDGE_ADDRESS_DOC",
+          "label": "TRANSLATE.HUE_BRIDGE_ADDRESS",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.HUE_SETTINGS",
+      "icon": "fa-cog",
+      "description": "TRANSLATE.HUE_SETTINGS_DESC",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/hue_control",
+        "method": "saveSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "switch_off_delay",
+          "hue_device"
+        ]
+      },
+      "content": [
+        {
+          "id": "switch_off_delay",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.HUE_SWITCH_OFF_DELAY_DOC",
+          "label": "TRANSLATE.HUE_SWITCH_OFF_DELAY",
+          "value": 60
+        },
+        {
+          "id": "hue_device",
+          "element": "select",
+          "doc": "TRANSLATE.HUE_DEVICE_DOC",
+          "label": "TRANSLATE.HUE_DEVICE",
+          "value": {
+            "value": -1,
+            "label": "Please select ..."
+          }
+        }
+
+      ]
+    }
+  ]
+}
