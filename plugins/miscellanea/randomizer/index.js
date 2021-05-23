@@ -110,8 +110,9 @@ randomizer.prototype.saveSettings = function (data) {
       } else {
         self.commandRouter.pushToastMessage('success', self.getI18nString("SUCCESS_TITLE"), self.getI18nString("SUCCESS_MESSAGE"));
     }
-    self.config.set('tracks', parseInt(data['tracks']),10);
-
+    if(data['tracks'] >= 1) {
+       self.config.set('tracks', parseInt(data['tracks']),10);
+    }
     return defer.promise;
     
 };
