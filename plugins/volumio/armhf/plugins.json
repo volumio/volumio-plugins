@@ -695,10 +695,10 @@
 					"prettyName": "Philips amBX",
 					"icon": "fa-lightbulb-o",
 					"name": "ambx",
-					"version": "1.0.1",
+					"version": "1.0.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/ambx/ambx.zip",
 					"license": "BSD-3-Clause",
-					"description": "A rudimentary controller for the LEDs of the Philips amBX sound system.",
+					"description": "A rudimentary controller for the Philips amBX sound system.",
 					"details": "",
 					"author": "Jan Siegmund",
 					"screenshots": [
@@ -707,7 +707,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-4-2021"
+					"updated": "24-5-2021"
 				},
 				{
 					"prettyName": "Randomizer",
