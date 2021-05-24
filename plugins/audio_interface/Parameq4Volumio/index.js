@@ -47,9 +47,10 @@ Parameq.prototype.onVolumioStart = function () {
 Parameq.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
-  self.commandRouter.loadI18nStrings();
-  /*-----------Experimental CamillaGui
+  self.commandRouter.loadI18nStrings();  
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
+
+  /*-----------Experimental CamillaGui
 
   try {
     exec("/usr/bin/python3 /data/plugins/audio_interface/parameq4volumio/cgui/main.py", {

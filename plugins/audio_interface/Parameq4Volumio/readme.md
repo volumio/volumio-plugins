@@ -1,4 +1,4 @@
-May 23th 2021
+May 24th 2021
 
 
 ##  For Volumio >= 3.054
@@ -87,6 +87,10 @@ nearly everythings
 - 
 
 ### 4. Last changes
+
+May 24th 2021
+
+- fix in index.js
 
 May 23th 2021
 
