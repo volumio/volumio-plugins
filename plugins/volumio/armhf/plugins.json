@@ -947,7 +947,7 @@
 					"prettyName": "Gpio Random",
 					"icon": "fa-lightbulb-o",
 					"name": "gpiorandom",
-					"version": "2.0.0",
+					"version": "2.1.0",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/gpiorandom/gpiorandom.zip",
 					"license": "ISC",
 					"description": "Play a randomized playlist, play a web radio or toggle play / pause uppon single, double and / or triple click on a GPIO wired button",
@@ -959,7 +959,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-4-2021"
+					"updated": "24-5-2021"
 				}
 			]
 		}
