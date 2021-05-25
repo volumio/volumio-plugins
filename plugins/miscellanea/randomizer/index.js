@@ -5,6 +5,9 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+
 
 var tracks = null;
 module.exports = randomizer;
@@ -42,6 +45,11 @@ randomizer.prototype.onStart = function() {
     return defer.promise;
 };
 
+randomizer.prototype.rand = function(max, min) {
+    return Math.floor(Math.random() * (+max - +min)) + min;
+}
+
+
 randomizer.prototype.randomTracks = function() {
     var self = this;
     var defer=libQ.defer();
@@ -68,18 +76,28 @@ randomizer.prototype.trackToAlbum = function() {
 
     return libQ.resolve();
 }
+
+
 randomizer.prototype.randomAlbum = function() {
     var self = this;
     var defer=libQ.defer();
-
-    exec('node /data/plugins/miscellanea/randomizer/randomAlbum');
-
-    // Once the Plugin has successfull stopped resolve the promise
+    socket.emit('clearQueue');
+    socket.emit('browseLibrary',{'uri':'albums://'});
+    socket.on('pushBrowseLibrary',function(data)
+    {
+      var list = data.navigation.lists[0].items;
+      var q = self.rand(list.length - 1, 0);
+      var select = list[q];
+      socket.emit('addToQueue', {'uri':select.uri})
+    });
+    socket.on('pushQueue', function(data) { if (data.length > 0) {
+      socket.off('pushBrowseLibrary');
+      socket.off('pushQueue');
+      socket.emit('play');
+    } } );
     defer.resolve();
-
     return libQ.resolve();
 }
-
 
 randomizer.prototype.onStop = function() {
     var self = this;
