@@ -91,7 +91,7 @@ PandoraHandler.prototype.setAccountOptions = function (email, password, isPandor
 
 PandoraHandler.prototype.getNewTracks = function () {
     const self = this;
-    return self.newTracks;
+    return libQ.resolve(self.newTracks);
 };
 
 PandoraHandler.prototype.getStationData = function () {
@@ -99,17 +99,20 @@ PandoraHandler.prototype.getStationData = function () {
     return libQ.resolve(self.stationData);
 };
 
+// Parses raw '%'-delimited string and sets bandFilter
 PandoraHandler.prototype.setBandFilter = function (bf) {
     const self = this;
-    self.bandFilter = bf;
-    const setbfTo = bf.length > 0 ? bf : 'bandfilter is empty';
+    self.bandFilter = bf.split('%');
+    const setbfTo = bf.length > 0 ? JSON.stringify(self.bandFilter) : 'bandfilter is empty';
     self.pUtil.logInfo('setBandFilter', setbfTo);
+    return libQ.resolve();
 };
 
 PandoraHandler.prototype.setMaxStationTracks = function (maxTracks) {
     const self = this;
     self.maxStationTracks = maxTracks;
     self.pUtil.logInfo('setMaxStationTracks', maxTracks);
+    return libQ.resolve();
 };
 
 PandoraHandler.prototype.setMQTTEnabled = function (mqttEnabled) {
@@ -265,7 +268,7 @@ PandoraHandler.prototype.fillStationData = function () {
 
 PandoraHandler.prototype.publishStationData = function () {
     const self = this;
-    const fnName = 'publisStationData';
+    const fnName = 'publishStationData';
     self.pUtil.announceFn(fnName);
 
     let stationDataNoRadio = Object.assign({}, self.stationData);
@@ -315,10 +318,10 @@ PandoraHandler.prototype.fetchTracks = function () {
                             track.additionalAudioUrl;
             const trackId = realUri.match(trackIdRE)[1];
             const uri = uriPrefix + currStationToken +
-                uriParts[2] + trackId;
+                uriParts.keys[2] + trackId;
             let fetchTime = Date.now();
 
-            if ( typeof(Q) !== 'undefined' ||
+            if ( typeof(Q) !== 'undefined' &&
                 (!Q.map(item => item.uri).includes(uri) &&
                 !self.bandFilter.includes(track.artistName)) ) {
                 self.newTracks.push({
