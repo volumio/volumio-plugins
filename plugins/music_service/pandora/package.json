@@ -1,6 +1,6 @@
 {
 	"name": "pandora",
-	"version": "2.9.0",
+	"version": "2.9.1",
 	"description": "A plugin to access Pandora Web Radio",
 	"main": "index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 	"author": "truckershitch",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "Pandora",
+		"prettyName": "pandora",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "music_service"
 	},

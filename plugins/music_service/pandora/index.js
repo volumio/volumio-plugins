@@ -127,11 +127,9 @@ ControllerPandora.prototype.initialSetup = function (email, password, isPandoraO
         .then(() => self.pandoraHandler.setMQTTEnabled(self.mqttEnabled))
         .then(() => {
             const maxStationTracks = self.config.get('maxStationTracks', '16');
-            self.pandoraHandler.setMaxStationTracks(maxStationTracks);
             const bandFilter = self.config.get('bandFilter', '');
-            self.pandoraHandler.setBandFilter(bandFilter);
-
-            return libQ.resolve();
+            return self.pandoraHandler.setMaxStationTracks(maxStationTracks)
+                .then(() => self.pandoraHandler.setBandFilter(bandFilter));
         })
         .then(() => self.pandoraHandler.setAccountOptions(email, password, isPandoraOne))
         .then(() => {
@@ -257,8 +255,9 @@ ControllerPandora.prototype.setPlaybackOptionsConf = function (playbackOptions) 
             self.config.set('maxStationTracks', maxStationTracks);
 
             if (typeof(self.pandoraHandler) !== 'undefined') {
-                self.pandoraHandler.setMaxStationTracks(maxStationTracks);
-                self.pandoraHandler.setBandFilter(playbackOptions.bandFilter.split('%'));
+                return self.pandoraHandler.setMaxStationTracks(maxStationTracks)
+                    .then(() => self.pandoraHandler.setBandFilter(
+                        playbackOptions.bandFilter));
             }
             return libQ.resolve();
         })
