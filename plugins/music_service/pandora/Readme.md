@@ -175,7 +175,9 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 ### Version 2.9.1
    #### Fixes
    * Fixed the band filter processing.
-   * `PandoraHandler::setBandFilter` and `PandoraHandler::setMaxStationTracks` now return a Promise.
+   * Cleaned up `moveStationTracks`.
+   * `PandoraHandler::setBandFilter`, `PandoraHandler::setMaxStationTracks`, and 
+     `PandoraHandler::getNewTracks` now return a Promise.
 
 ## Issues
 

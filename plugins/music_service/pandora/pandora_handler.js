@@ -91,7 +91,7 @@ PandoraHandler.prototype.setAccountOptions = function (email, password, isPandor
 
 PandoraHandler.prototype.getNewTracks = function () {
     const self = this;
-    return self.newTracks;
+    return libQ.resolve(self.newTracks);
 };
 
 PandoraHandler.prototype.getStationData = function () {
@@ -268,7 +268,7 @@ PandoraHandler.prototype.fillStationData = function () {
 
 PandoraHandler.prototype.publishStationData = function () {
     const self = this;
-    const fnName = 'publisStationData';
+    const fnName = 'publishStationData';
     self.pUtil.announceFn(fnName);
 
     let stationDataNoRadio = Object.assign({}, self.stationData);
