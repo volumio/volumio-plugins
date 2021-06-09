@@ -13,23 +13,18 @@ var tracks = null;
 module.exports = randomizer;
 function randomizer(context) {
 	var self = this;
-
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
-
 }
-
-
 
 randomizer.prototype.onVolumioStart = function()
 {
-	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
-
+    var self = this;
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
 
     return libQ.resolve();
 }
@@ -49,34 +44,86 @@ randomizer.prototype.rand = function(max, min) {
     return Math.floor(Math.random() * (+max - +min)) + min;
 }
 
-
 randomizer.prototype.randomTracks = function() {
     var self = this;
     var defer=libQ.defer();
+    var i = 0;
+    var queue = 0;
     self.tracks = self.config.get('tracks');
-    if (isNaN(self.tracks)) { 
-      exec('node /data/plugins/miscellanea/randomizer/random_Tracks');
-    } else {
-      exec('node /data/plugins/miscellanea/randomizer/random_Tracks '+ self.config.get('tracks') );
-    }
-    // Once the Plugin has successfull stopped resolve the promise
+    if (isNaN(self.tracks)) self.tracks = 25;
+    socket.emit('stop');
+    socket.emit('clearQueue');
+    socket.emit('browseLibrary', {'uri':'albums://'});
+    socket.on('pushBrowseLibrary',function(data) {
+        var item = data.navigation.lists[0].items[0];
+        if (item.type == 'song')
+        {
+          try {
+            while (item.type == 'song') {
+              item = data.navigation.lists[0].items[i];
+              i++;
+            }
+          }
+          catch(err) {
+            i-- ;
+            var track = self.rand(i, 0);
+            item = data.navigation.lists[0].items[track];
+            i = 0;
+          }
+          if (queue <= self.tracks-1)
+          {
+            socket.emit('addToQueue', {'uri':item.uri});
+            queue++ ;
+          }
+        } else {
+           var list = data.navigation.lists[0].items;
+           var random = self.rand(list.length - 1, 0);
+           var select = list[random];
+           socket.emit('browseLibrary', {'uri':select.uri});
+        }
+    });
+    socket.on('pushQueue', function(data) {
+        if (data && data.length == 1) {
+            socket.emit('play',{'value':0});
+        }
+        if (data.length >= self.tracks) {
+            socket.off('pushBrowseLibrary');
+            socket.off('pushQueue');
+        } else {
+            socket.emit('browseLibrary', {'uri':'albums://'});
+        }
+    });
+    // Once the Plugin has successfully started resolve the promise
     defer.resolve();
-
     return libQ.resolve();
 }
 
 randomizer.prototype.trackToAlbum = function() {
     var self = this;
     var defer=libQ.defer();
-
-    exec('node /data/plugins/miscellanea/randomizer/trackToAlbum');
+    socket.emit('getState', '');
+    socket.emit('clearQueue');
+    socket.on('pushState', function (data) {
+        if (data.uri.length != 0)
+        {
+           var album = (data.uri.lastIndexOf('/'));
+           data.uri = data.uri.substring(0, album);
+           socket.emit('addToQueue', {'uri': data.uri})
+        }
+    });
+    socket.on('pushQueue', function(data) {
+        if (data && data.length > 0) {
+            socket.emit('play',{'value':0});
+            socket.off('pushState');
+            socket.off('pushQueue');
+        }
+    });
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
     return libQ.resolve();
 }
-
 
 randomizer.prototype.randomAlbum = function() {
     var self = this;
@@ -114,15 +161,12 @@ randomizer.prototype.onRestart = function() {
     // Optional, use if you need it
 };
 
-
 randomizer.prototype.saveSettings = function (data) {
     var self = this;
     var defer = libQ.defer();
-      
     defer.resolve();
   
     if(isNaN(data['tracks'])) data['tracks'] = -1;
-    
     if(data['tracks'] <= 0) {
         self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_NUMBER_PLEASE_TITLE"), self.getI18nString("ERROR_NUMBER_PLEASE_MESSAGE"));
       } else {
@@ -131,23 +175,20 @@ randomizer.prototype.saveSettings = function (data) {
     if(data['tracks'] >= 1) {
        self.config.set('tracks', parseInt(data['tracks']),10);
     }
+
     return defer.promise;
-    
 };
 
 
 randomizer.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
-
     var lang_code = this.commandRouter.sharedVars.get('language_code');
-
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
             uiconf.sections[0].content[0].value = self.config.get('tracks');
             defer.resolve(uiconf);
         })
@@ -158,9 +199,6 @@ randomizer.prototype.getUIConfig = function() {
 
     return defer.promise;
 };
-
-
-
 
 randomizer.prototype.load18nStrings = function () {
     var self = this;
@@ -175,7 +213,6 @@ randomizer.prototype.load18nStrings = function () {
     self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };
 
-
 randomizer.prototype.getI18nString = function (key) {
     var self = this;
 
@@ -188,7 +225,6 @@ randomizer.prototype.getI18nString = function (key) {
 
 // Configuration Methods -----------------------------------------------------------------------------
 
-
 randomizer.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
 }
@@ -196,7 +232,6 @@ randomizer.prototype.getConfigurationFiles = function() {
 randomizer.prototype.setUIConfig = function(data) {
 	var self = this;
 	//Perform your installation tasks here
-
 };
 
 randomizer.prototype.getConf = function(varName) {
