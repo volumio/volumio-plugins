@@ -62,6 +62,20 @@
     "DUMPLOG":"Log Datei abspeichern",
     "LOGGING":"Log",
     "D_LOGGING":"Aktiviert das Schreiben von Log-Nachrichten. Fehlermeldungen werden immer geschrieben.",
-    "TOAST_START_SUCCESS":"Plugin erfolgreich gestartet."
+    "TOAST_START_SUCCESS":"Plugin erfolgreich gestartet.",
+    "TOAST_STOP_SUCCESS":"Plugin erfolgreich angehalten.",
+    "TOAST_START_FAIL":"Start des Plugins fehlgeschlagen.",
+    "TOAST_STOP_FAIL":"Anhalten des Plugins fehlgeschlagen.",
+    "TOAST_GPIO_BLOCKED":"GPIO Pin nicht frei",
+    "TOAST_MSG_OVERLAY_BLOCKING": "Blockiert durch weiteres Overlay.",
+    "TOAST_SAVE_SUCCESS":"Speichern erfolgreich",
+    "TOAST_MSG_SAVE":"Einstellungen für Drehgeber ",
+    "TOAST_DEBUG_SAVE":"Einstellungen für Fehlersuche",
+    "TOAST_SAVE_FAIL":"Speichern gescheitert",
+    "TOAST_WRONG_PARAMETER":"Fehler in Einstellungen",
+    "TOAST_NEEDS_INTEGER":"GPIO Pins müssen Ganzzahlen sein.",
+    "TOAST_PINS_DIFFERENT":"GPIO Pins für Anschlüsse A/B/Taster müssen verschieden sein.",
+    "TOAST_PINS_BLOCKED":"Pins werden in einem der anderen Drehgeber verwendet",
+    "TOAST_NO_TYPE":"Bitte 'Periode pro Schritt' angeben!"
   }
 }

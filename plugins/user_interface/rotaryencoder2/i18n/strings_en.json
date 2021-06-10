@@ -62,6 +62,20 @@
     "DUMPLOG":"Dump logfile",
     "LOGGING":"Logging",
     "D_LOGGING":"Switch the output of log messages on or off. Error messages are always logged.",
-    "TOAST_START_SUCCESS":"Plugin successfully started."
+    "TOAST_START_SUCCESS":"Plugin successfully started.",
+    "TOAST_STOP_SUCCESS":"Plugin successfully stopped.",
+    "TOAST_START_FAIL":"Plugins failed to start.",
+    "TOAST_STOP_FAIL":"Plugins failed to stop.",
+    "TOAST_GPIO_BLOCKED":"GPIO Pin unavailable",
+    "TOAST_MSG_OVERLAY_BLOCKING": "Blocked by another overlay.",
+    "TOAST_SAVE_SUCCESS":"Successfully saved",
+    "TOAST_MSG_SAVE":"Settings for Encoder ",
+    "TOAST_DEBUG_SAVE":"Debug Settings",
+    "TOAST_SAVE_FAIL":"Save failed",
+    "TOAST_WRONG_PARAMETER":"Error in parameters",
+    "TOAST_NEEDS_INTEGER":"GPIO Pins must be Integers.",
+    "TOAST_PINS_DIFFERENT":"GPIO Pins for A/B/Button must be different.",
+    "TOAST_PINS_BLOCKED":"Pins already used in another Encoder.",
+    "TOAST_NO_TYPE":"Please select 'Periods per tick'!"
   }
 }
