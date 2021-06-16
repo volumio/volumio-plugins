@@ -19,13 +19,14 @@ Provide
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAM/FusionDsp/peq/)
 - 3 preset
-- Or a convolution filters
+- Or a convolution filters (FIR)
 
 For all type
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
 - 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
+- High quality resampling
 
 For PEQ equalizer, while importing file 
 You can add or replace EQ while importing.
