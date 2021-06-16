@@ -1,0 +1,26 @@
+
+devices:
+  samplerate: ${capturesamplerate}
+  chunksize: 8192
+  silence_threshold: -60
+  silence_timeout: 3.0
+  queuelimit: 1
+  target_level: 1024
+  adjust_period: 3
+${resampling}
+  capture:
+    type: File
+    channels: 2
+    format: S32LE
+    filename: "/dev/stdin"
+    extra_samples: 4096
+${composeout}
+
+filters:
+  nulleq2:
+    type: Conv
+    
+${resulteq}
+${mixers}
+${composedpipeline}
+  

@@ -1,0 +1,382 @@
+{
+  "page": {
+    "label": "TRANSLATE.PAGE_LABEL"
+  },
+  "sections": [
+    {
+      "id": "choosedsp",
+      "element": "section",
+      "label": "TRANSLATE.DSPTYPE",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "choosedsp"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+          "selectedsp"
+        ]
+      },
+      "content": [
+        {
+          "id": "selectedsp",
+          "element": "select",
+          "doc": "TRANSLATE.CHOOSEDSPTYPE_DOC",
+          "label": "TRANSLATE.CHOOSEDSPTYPE",
+          "value": {
+            "value": "EQ15",
+            "label": "15 bands graphic EQ"
+          },
+          "options": [
+            {
+              "value": "EQ15",
+              "label": "15 bands graphic EQ"
+            },
+            {
+              "value": "2XEQ15",
+              "label": "2x15 bands graphic EQ"
+            },
+            {
+              "value": "PEQ",
+              "label": "Parametric EQ"
+            },
+            {
+              "value": "convfir",
+              "label": "FIR filters"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "element": "section",
+      "label": "TRANSLATE.SETTINGS",
+      "icon": "fa-sliders fa-rotate-90",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "saveparameq"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": []
+      },
+      "content": [
+        {
+          "id": "leftfilter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_LFILTER",
+          "label": "TRANSLATE.LEFT_FILTER",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        },
+        {
+          "id": "attenuationl",
+          "element": "select",
+          "label": "TRANSLATE.L_ATTENUATION",
+          "doc": "TRANSLATE.DOC_LATT",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        },
+        {
+          "id": "rightfilter",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_RFILTER",
+          "label": "TRANSLATE.RIGHT_FILTER",
+          "value": {
+            "value": "None",
+            "label": "None"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        },
+        {
+          "id": "attenuationr",
+          "element": "select",
+          "label": "TRANSLATE.R_ATTENUATION",
+          "doc": "TRANSLATE.DOC_LATT",
+          "description": "dB",
+          "value": {
+            "value": "0",
+            "label": "0"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        },
+        {
+          "id": "enableclipdetect",
+          "element": "switch",
+          "doc": "TRANSLATE.DOC_DETECT_CLIPPING",
+          "label": "TRANSLATE.DETECT_CLIPPING",
+          "value": false,
+          "visibleIf": {
+            "field": "showeq",
+            "value": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "TRANSLATE.USETHISPRESET",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "usethispreset"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.LOAD_AND_USE",
+        "data": [
+          "usethispreset"
+        ]
+      },
+      "content": [
+        {
+          "id": "usethispreset",
+          "element": "select",
+          "doc": "TRANSLATE.USETHISPRESET_DOC",
+          "label": "TRANSLATE.USETHISPRESET",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "TRANSLATE.SAVEPRESET",
+      "icon": "fa-download",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "saveequalizerpreset"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "eqpresetsaved",
+          "renpreset"
+        ]
+      },
+      "content": [
+        {
+          "id": "eqpresetsaved",
+          "element": "select",
+          "doc": "TRANSLATE.DOCSAVECURRENTEQ",
+          "label": "TRANSLATE.SAVECURRENTEQ",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": []
+        },
+        {
+          "id": "hideren",
+          "element": "switch",
+          "doc": "TRANSLATE.RENAME_PRESET_SW_DOC",
+          "label": "TRANSLATE.RENAME_PRESET_SW",
+          "value": false
+        },
+        {
+          "id": "renpreset",
+          "element": "input",
+          "label": "TRANSLATE.RENPRESET",
+          "doc": "TRANSLATE.RENPRESET_DOC",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "visibleIf": {
+            "field": "hideren",
+            "value": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "advanced2",
+      "element": "section",
+      "label": "TRANSLATE.IMPORT_FROM_AUTOEQ",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "importeq"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.IMPORT_LOAD",
+        "data": [
+          "importeq"
+        ]
+      },
+      "content": [
+        {
+          "id": "importeq",
+          "element": "select",
+          "doc": "TRANSLATE.CHOOSE_EQ_DOC",
+          "label": "TRANSLATE.CHOOSE_EQ",
+          "value": {
+            "value": "TRANSLATE.CHOOSE_HEADPHONE",
+            "label": "TRANSLATE.CHOOSE_HEADPHONE"
+          },
+          "attributes": [
+            {
+              "placeholder": "Choose your headphone profile"
+            },
+            {
+              "maxlength": 25
+            }
+          ],
+          "options": [
+            {
+              "value": "TRANSLATE.CHOOSE_HEADPHONE",
+              "label": "TRANSLATE.CHOOSE_HEADPHONE"
+            }
+          ]
+        },
+        {
+          "id": "updatelist",
+          "element": "button",
+          "label": "TRANSLATE.CLICK_TO_UPDATE_LIST",
+          "description": "TRANSLATE.CLICK_TO_UPDATE_LIST_DESC",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/fusiondsp",
+            "method": "updatelist",
+            "data": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "advanced3",
+      "element": "section",
+      "label": "TRANSLATE.IMPORT_FROM_LOCAL",
+      "icon": "fa-upload",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "importlocal"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.IMPORT_LOCAL",
+        "data": [
+          "importlocal",
+          "localscope",
+          "addreplace"
+        ]
+      },
+      "content": [
+        {
+          "id": "importlocal",
+          "element": "select",
+          "doc": "TRANSLATE.CHOOSE_LOCALEQ_DOC",
+          "label": "TRANSLATE.CHOOSE_LOCALEQ",
+          "value": {
+            "value": "",
+            "label": ""
+          },
+          "options": []
+        },
+        {
+          "id": "localscope",
+          "element": "select",
+          "doc": "TRANSLATE.EQSCOPE_DOC",
+          "label": "TRANSLATE.EQSCOPE",
+          "value": {
+            "value": "L+R",
+            "label": "L+R"
+          },
+          "options": []
+        },
+        {
+          "id": "addreplace",
+          "element": "switch",
+          "doc": "TRANSLATE.ADD_REPLACE_DOC",
+          "label": "TRANSLATE.ADD_REPLACE",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "resampling",
+      "element": "section",
+      "label": "TRANSLATE.RESAMPLING",
+      "icon": "fa-level-up",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "resampling"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.APPLY",
+        "data": [
+          "enableresampling",
+          "resamplingset",
+          "resamplingq"
+        ]
+      },
+      "content": [ 
+         {
+          "id": "enableresampling",
+          "element": "switch",
+          "doc": "TRANSLATE.ENABLE_RESAMPLING_DOC",
+          "label": "TRANSLATE.ENABLE_RESAMPLING",
+          "value": true
+        },
+               {
+          "id": "resamplingset",
+          "element": "select",
+          "doc": "TRANSLATE.RESAMPLING_RATE_DOC",
+          "label": "TRANSLATE.RESAMPLING_RATE",
+          "value": {
+            "value": "44100",
+            "label": "44100"
+          },
+          "options": []
+        },
+        {
+          "id": "resamplingq",
+          "element": "select",
+          "doc": "TRANSLATE.RESAMPLINGQ_DOC",
+          "label": "TRANSLATE.RESAMPLINGQ",
+          "value": {
+            "value": "Meduim",
+            "label": "Medium"
+          },
+          "options": []
+        }
+      
+      ]
+    }
+  ]
+}

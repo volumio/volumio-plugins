@@ -1,0 +1,284 @@
+{
+    "selectedsp": {
+        "type": "string",
+        "value": "EQ15"
+    },
+    "geq15": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq15": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "geq151": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "geq152": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "geq153": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq151": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq152": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq153": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "mergedeq": {
+        "type": "string",
+        "value": "Eq1|None|L+R|0,0,0"
+    },
+    "mergedeq1": {
+        "type": "string",
+        "value": ""
+    },
+    "mergedeq2": {
+        "type": "string",
+        "value": ""
+    },
+    "mergedeq3": {
+        "type": "string",
+        "value": ""
+    },
+    "mergedeq4": {
+        "type": "string",
+        "value": ""
+    },
+    "savednbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "savedmergedeq": {
+        "type": "string",
+        "value": "Eq1|None|L+R|0,0,0"
+    },
+    "savedmergedeqfir": {
+        "type": "string",
+        "value": "Eq1|None|L+R|0,0,0"
+    },
+    "savedmergedgeq15": {
+        "type": "string",
+        "value": "Eq0|Peaking|L+R|25,0,1.1|Eq1|Peaking|L+R|40,0,1.1|Eq2|Peaking|L+R|63,0,1.1|Eq3|Peaking|L+R|100,0,1.1|Eq4|Peaking|L+R|160,0,1.1|Eq5|Peaking|L+R|250,0,1.1|Eq6|Peaking|L+R|400,0,1.1|Eq7|Peaking|L+R|630,0,1.1|Eq8|Peaking|L+R|1000,0,1.1|Eq9|Peaking|L+R|1600,0,1.1|Eq10|Peaking|L+R|2500,0,1.1|Eq11|Peaking|L+R|4000,0,1.1|Eq12|Peaking|L+R|6300,0,1.1|Eq13|Peaking|L+R|10000,0,1.1|Eq14|Peaking|L+R|16000,0,1.1|"
+    },
+    "savedmergedeqx2geq15": {
+        "type": "string",
+        "value": "Eq0|Peaking|L|25,0,1.1|Eq1|Peaking|L|40,0,1.1|Eq2|Peaking|L|63,0,1.1|Eq3|Peaking|L|100,0,1.1|Eq4|Peaking|L|160,0,1.1|Eq5|Peaking|L|250,0,1.1|Eq6|Peaking|L|400,0,1.1|Eq7|Peaking|L|630,0,1.1|Eq8|Peaking|L|1000,0,1.1|Eq9|Peaking|L|1600,0,1.1|Eq10|Peaking|L|2500,0,1.1|Eq11|Peaking|L|4000,0,1.1|Eq12|Peaking|L|6300,0,1.1|Eq13|Peaking|L|10000,0,1.1|Eq14|Peaking|L|16000,0,1.1|undefinedEq0|Peaking|R|25,0,1.11|Eq1|Peaking|R|40,0,1.11|Eq2|Peaking|R|63,0,1.11|Eq3|Peaking|R|100,0,1.11|Eq4|Peaking|R|160,0,1.11|Eq5|Peaking|R|250,0,1.11|Eq6|Peaking|R|400,0,1.11|Eq7|Peaking|R|630,0,1.11|Eq8|Peaking|R|1000,0,1.11|Eq9|Peaking|R|1600,0,1.11|Eq10|Peaking|R|2500,0,1.11|Eq11|Peaking|R|4000,0,1.11|Eq12|Peaking|R|6300,0,1.11|Eq13|Peaking|R|10000,0,1.11|Eq14|Peaking|R|16000,0,1.11|"
+    },
+    "savedgeq15": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "savedx2geq15l": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "savedx2geq15r": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "nbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "p1nbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "p2nbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "p3nbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "p4nbreq": {
+        "type": "number",
+        "value": 1
+    },
+    "mypreset1": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "mypreset2": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "mypreset3": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "flat": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "loudness": {
+        "type": "string",
+        "value": "-4,-6,-8,-8,3,7,0,0,0,-8,0,-4,-9,5,0"
+    },
+    "rock": {
+        "type": "string",
+        "value": "-0.5,1,1.5,1,0.5,1.5,1,0.5,-0.5,-1,-1,1,2,2,1.5"
+    },
+    "classic": {
+        "type": "string",
+        "value": "0,-1,-2,-2,-2,0,1,2,0,-1,-1,-1,-1,1,2"
+    },
+    "bass": {
+        "type": "string",
+        "value": "2,3,3,1.5,1,0.5,1.5,1,0.5,-0.5,-1,-1,1,2,2,1.5"
+    },
+    "voice": {
+        "type": "string",
+        "value": "-6,-5,-4,-3.5,-2.5,-2,-0.5,1,2.5,4,5,5,4,1.5,-1"
+    },
+    "soundtrack": {
+        "type": "string",
+        "value": "3,4,3,3,5,4.5,2.5,0,1.5,1.5,3.5,4,4,2.5,3"
+    },
+    "availablefilters": {
+        "type": "text",
+        "value": ""
+    },
+    "crossfeed": {
+        "type": "text",
+        "value": "None",
+        "label": "None"
+    },
+    "showeq": {
+        "type": "boolean",
+        "value": true
+    },
+    "eqfrom": {
+        "type": "string",
+        "value": "local"
+    },
+    "renpreset": {
+        "type": "string",
+        "value": "choose a name"
+    },
+    "importeq": {
+        "type": "string",
+        "value": ""
+    },
+    "renpreset1": {
+        "type": "string",
+        "value": "mypreset1"
+    },
+    "renpreset2": {
+        "type": "string",
+        "value": "mypreset2"
+    },
+    "renpreset3": {
+        "type": "string",
+        "value": "mypreset3"
+    },
+    "leftlevel": {
+        "type": "number",
+        "value": "0"
+    },
+    "rightlevel": {
+        "type": "number",
+        "value": "0"
+    },
+    "effect": {
+        "type": "boolean",
+        "value": true
+    },
+    "gainapplied": {
+        "type": "number",
+        "value": 0
+    },
+    "eqpresetsaved": {
+        "type": "string",
+        "value": "Select a preset"
+    },
+    "usethispreset": {
+        "type": "string",
+        "value": "nopreset",
+        "label": "no preset"
+    },
+    "localscope": {
+        "p3type": "string",
+        "value": "L+R"
+    },
+    "importlocal": {
+        "type": "string",
+        "value": ""
+    },
+    "addreplace": {
+        "type": "boolean",
+        "value": true
+    },
+    "enableclipdetect": {
+        "type": "boolean",
+        "value": true
+    },
+    "testclipping": {
+        "type": "boolean",
+        "value": false
+    },
+    "attenuationl": {
+        "type": "string",
+        "value": "0"
+    },
+    "attenuationr": {
+        "type": "string",
+        "value": "0"
+    },
+    "leftfilter": {
+        "type": "string",
+        "value": "None"
+    },
+    "rightfilter": {
+        "type": "string",
+        "value": "None"
+    },
+    "leftfilterlabel": {
+        "type": "string",
+        "value": "None"
+    },
+    "filter_format": {
+        "type": "string",
+        "value": "FLOAT_LE"
+    },
+    "filter_size": {
+        "type": "string",
+        "value": ""
+    },
+    "skipvalue": {
+        "type": "string",
+        "value": ""
+    },
+    "wavetype": {
+        "type": "string",
+        "value": ""
+    },
+    "enableresampling": {
+        "type": "boolean",
+        "value": false
+    },
+    "resamplingq": {
+        "type": "string",
+        "value": "++"
+    },
+    "resamplingset": {
+        "type": "string",
+        "value": "44100"
+    },
+    "probesmplerate": {
+        "type": "string",
+        "value": ""
+    }
+}
