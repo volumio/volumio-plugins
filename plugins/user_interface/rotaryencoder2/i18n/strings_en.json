@@ -35,7 +35,7 @@
     "D_SOCKCMD":"Command to send via Websocket",
     "D_SOCKDATA":"Data to include with the Websocket Command",
     "PINPUSH":"Pushbutton GPIO",
-    "D_PINPUSH":"GPIO pin that is connected to the pushbutton pin of the rotary.",
+    "D_PINPUSH":"GPIO pin that is connected to the pushbutton pin of the rotary. 0 or empty to disable.",
     "PINPUSHDEBOUNCE":"Debounce-time (ms)",
     "D_PINPUSHDEBOUNCE":"Debounce time for the button. If the button has hardware-debouncing, set to 0.",
     "PUSHSTATE":"Button logic-level active low",

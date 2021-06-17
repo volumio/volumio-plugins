@@ -35,7 +35,7 @@
     "D_SOCKCMD":"Kommandos, die via Websocket gesendet werden sollen.",
     "D_SOCKDATA":"Daten, die zusammen mit dem Websocket Kommando gesendet werden.",
     "PINPUSH":"Taster GPIO",
-    "D_PINPUSH":"GPIO Ein-/Ausgang der mit dem Taster des Drehgebers verbunden ist.",
+    "D_PINPUSH":"GPIO Ein-/Ausgang der mit dem Taster des Drehgebers verbunden ist. 0 oder leer zum deaktivieren.",
     "PUSHACTION":"Funktion Tastendruck",
     "D_PUSHACTION":"Funktion, die durch das Drücken des Tasters ausgelöst wird.",
     "LONGPUSHACTION":"Funktion langer Tastendruck",

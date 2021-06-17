@@ -15,7 +15,6 @@
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
-		"input-event": "^1.2.6",
 		"kew": "^0.7.0",
 		"onoff": "^6.0.1",
 		"path": "^0.12.7",

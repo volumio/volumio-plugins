@@ -240,18 +240,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	
@@ -332,18 +320,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	
@@ -604,18 +580,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	
@@ -696,18 +660,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	
@@ -968,18 +920,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	
@@ -1060,18 +1000,6 @@
 				{
 					"value": 12,
 					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
-				},
-				{
-					"value": 13,
-					"label": "TRANSLATE.ROTARYENCODER2.RESTARTAPP"
-				},
-				{
-					"value": 14,
-					"label": "TRANSLATE.ROTARYENCODER2.DUMPLOG"
-				},
-				{
-					"value": 15,
-					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
 				}
 				]        
 			},	

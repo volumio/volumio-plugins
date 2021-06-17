@@ -3,16 +3,13 @@
 var libQ = require('kew');
 var fs=require('fs-extra');
 const path=require('path');
-var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
-var spawn = require("child_process").spawn
+var spawn = require('child_process').spawn
 
 const Gpio = require('onoff').Gpio;
-const inputEvent = require('input-event');
 const io = require('socket.io-client');
 const socket = io.connect('http://localhost:3000');
-const dtoverlayRegex = /^([0-9]+):\s+rotary-encoder\s+pin_a=([0-9]+) pin_b=([0-9]+).*$/gm
+const dtoverlayRegex = /^([0-9]+):\s+rotary-encoder\s+pin_a=([0-9\-]+) pin_b=([0-9\-]+).*$/gm
 
 const maxRotaries = 3;
 
@@ -101,7 +98,7 @@ rotaryencoder2.prototype.onStart = function() {
 
 	self.activateRotaries(activate)
 	.then(_=>{
-		self.activateButtons(activate)
+		return self.activateButtons(activate)
 	})
 	.then(_=> {
 		self.commandRouter.pushToastMessage('success',"Rotary Encoder II - successfully loaded")
@@ -293,9 +290,9 @@ rotaryencoder2.prototype.sanityCheckSettings = function(rotaryIndex, data){
 	var otherPins = [];
 	var allPins = [];
 
-	// First check if the settings make sense for themselves
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] sanityCheckSettings: Rotary'+(rotaryIndex + 1)+' for:' + JSON.stringify(data));
 
+	//Disabling rotaries is always allowed
 	if (data['enabled'+rotaryIndex] == false) {
 		if (self.config.get('enabled'+rotaryIndex) == true) {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] sanityCheckSettings: Disabling rotary ' + (rotaryIndex+1) +' is OK.' );
@@ -305,12 +302,20 @@ rotaryencoder2.prototype.sanityCheckSettings = function(rotaryIndex, data){
 			defer.resolve();	
 		} 
 	} else {
-		//check if integer
+		if (data['pinPush'+rotaryIndex] == '') {
+			data['pinPush'+rotaryIndex] = '0' //if pinPush is empty, set it to 0 (disabled)
+		}
+		//check if GPIO pins are integer
 		if (!Number.isInteger(parseInt(data['pinA'+rotaryIndex])) || !Number.isInteger(parseInt(data['pinB'+rotaryIndex])) || !Number.isInteger(parseInt(data['pinPush'+rotaryIndex]))) {
 			self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_WRONG_PARAMETER'), self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_NEEDS_INTEGER'));
+			if (self.debugLogging) self.logger.error('[ROTARYENCODER2] sanityCheckSettings: Pin values must be Integer ' );
 			defer.reject('Pin value must be integer.');
-		} else {
-			newPins = [parseInt(data['pinA'+rotaryIndex]),parseInt(data['pinB'+rotaryIndex]),parseInt(data['pinPush'+rotaryIndex])];
+		} else { 
+			newPins.push(parseInt(data['pinA'+rotaryIndex]));
+			newPins.push(parseInt(data['pinB'+rotaryIndex]));
+			if (data['pinPush'+rotaryIndex] > 0) {
+				newPins.push(parseInt(data['pinPush'+rotaryIndex]));
+			}
 			for (let i = 0; i < maxRotaries; i++) {
 				if ((!i==rotaryIndex) && (this.config.get('enabled'+i))) {
 					otherPins.push(parseInt(this.config.get('pinA'+i)));
@@ -332,11 +337,13 @@ rotaryencoder2.prototype.sanityCheckSettings = function(rotaryIndex, data){
 					defer.reject('One or more pins already used in other rotary.')
 				} else {
 					//check if Rotary Type is selected
-					if ([1,2,4].includes(data['rotaryType'+rotaryIndex].value)) {
+					if (![1,2,4].includes(data['rotaryType'+rotaryIndex].value)) {
 						self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_WRONG_PARAMETER'), self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_NO_TYPE'));
 						self.logger.error('[ROTARYENCODER2] sanityCheckSettings: Periods per tick not set.');
 						defer.reject('Must select periods per tick.')
 					} else {		
+						data['pinPushDebounce'+rotaryIndex] = Math.max(0,data['pinPushDebounce'+rotaryIndex]);
+						data['pinPushDebounce'+rotaryIndex] = Math.min(1000,data['pinPushDebounce'+rotaryIndex]);
 						defer.resolve('pass');	
 					}
 				}		
@@ -460,13 +467,12 @@ rotaryencoder2.prototype.activateButtons = function (rotaryIndexArray) {
 				self.buttons[rotaryIndex] = new Gpio(gpio, 'in', 'both', {debounceTimeout: debounce});
 				self.buttons[rotaryIndex].watch((err,value) => {
 					if (err) {
-						self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
-						break;
+						return self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
 					}
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
 					switch (value==self.config.get('pushState'+rotaryIndex)) {
 						case true: //(falling edge & active_high) or (rising edge and active low) = released
 							var pushTime = Date.now() - self.pushDownTime[rotaryIndex]
+							if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' released after '+pushTime+'ms.');
 							if (pushTime > 1500) {
 								self.emitPushCommand(true, rotaryIndex)
 							} else {
@@ -475,6 +481,7 @@ rotaryencoder2.prototype.activateButtons = function (rotaryIndexArray) {
 							break;
 					
 						case false: //(falling edge & active low) or (rising edge and active high) = pressed
+							if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
 							self.pushDownTime[rotaryIndex] = Date.now();						
 							break;
 					
@@ -482,9 +489,8 @@ rotaryencoder2.prototype.activateButtons = function (rotaryIndexArray) {
 							break;
 					}
 				})
-			})
-			.then(_=>{
-				defer.resolve();
+				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' now resolving.');
+				return defer.resolve();
 			})
 		} else {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: end of recursion.');
@@ -550,25 +556,23 @@ rotaryencoder2.prototype.addEventHandle = function (handle, rotaryIndex) {
 
 }
 
-rotaryencoder2.prototype.emitDialCommand = function(value,rotaryIndex){
+rotaryencoder2.prototype.emitDialCommand = function(val,rotaryIndex){
 	var self = this;
-	var cmd = '';
-	var data = '';
-	var action = self.config.get('dialAction'+rotaryIndex).value
-	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: '+action + ' with value ' + value + 'for Rotary: '+(rotaryIndex + 1))
+	var action = self.config.get('dialAction'+rotaryIndex)
+	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: '+action + ' with value ' + val + 'for Rotary: '+(rotaryIndex + 1))
 
-	switch (value) {
+	switch (val) {
 		case 1: //CW
 			switch (action) {
-				case 1: //volume
+				case dialActions.indexOf("VOLUME"): //1
 					socket.emit('volume','+');					
 					break;
 			
-				case 2: //skip
+				case dialActions.indexOf("SKIP"): //2
 					socket.emit('next');				
 					break;
 			
-				case 3: //seek
+				case dialActions.indexOf("SEEK"): //3
 					if (self.status.trackType != 'webradio' && self.status.status == 'play') {
 						let jumpTo = Math.min(Math.floor((Date.now() + self.lastTime)/1000 + 10),Math.floor(self.status.duration));
 						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] skip fwd to: ' + jumpTo);
@@ -576,7 +580,7 @@ rotaryencoder2.prototype.emitDialCommand = function(value,rotaryIndex){
 					}				
 					break;
 			
-				case 4: //emit
+				case dialActions.indexOf("EMIT"): //4
 					socket.emit(self.config.get('socketCmdCW'+rotaryIndex), self.config.get('socketDataCW'+rotaryIndex));				
 					break;
 			
@@ -586,15 +590,15 @@ rotaryencoder2.prototype.emitDialCommand = function(value,rotaryIndex){
 			break;
 		case -1: //CCW
 			switch (action) {
-				case 1: //volume
+				case dialActions.indexOf("VOLUME"): //1
 					socket.emit('volume','-');					
 					break;
 			
-				case 2: //skip
+				case dialActions.indexOf("SKIP"): //2
 					socket.emit('prev');				
 					break;
 			
-				case 3: //seek
+				case dialActions.indexOf("SEEK"): //3
 					if (self.status.trackType != 'webradio' && self.status.status == 'play') {
 						let jumpTo = Math.max(Math.floor((Date.now() + self.lastTime)/1000 - 10),0);
 						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] skip back to: ' + jumpTo);
@@ -602,7 +606,7 @@ rotaryencoder2.prototype.emitDialCommand = function(value,rotaryIndex){
 					}				
 					break;
 			
-				case 4: //emit
+				case dialActions.indexOf("EMIT"): //4
 					socket.emit(self.config.get('socketCmdCCW'+rotaryIndex), self.config.get('socketDataCCW'+rotaryIndex));				
 					break;
 			
@@ -620,13 +624,13 @@ rotaryencoder2.prototype.emitPushCommand = function(longPress,rotaryIndex){
 	var cmd = '';
 	var data = '';
 	if (longPress) {
-		var action = self.config.get('longPushAction'+rotaryIndex).value
+		var action = self.config.get('longPushAction'+rotaryIndex)
 		if (action == btnActions.indexOf("EMIT")) {
 			cmd = self.config.get('socketCmdLongPush' + rotaryIndex);
 			data = self.config.get('socketDataLongPush' + rotaryIndex);
 		} 
 	} else {
-		var action = self.config.get('pushAction'+rotaryIndex).value
+		var action = self.config.get('pushAction'+rotaryIndex)
 		if (action == btnActions.indexOf("EMIT")) {
 			cmd = self.config.get('socketCmdPush' + rotaryIndex);
 			data = self.config.get('socketDataPush' + rotaryIndex);
@@ -699,6 +703,7 @@ rotaryencoder2.prototype.addOverlay = function (pinA, pinB, stepsPerPeriod) {
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] addOverlay: ' + pinA + ' ' + pinB + ' ' + stepsPerPeriod);
 	exec('/usr/bin/sudo /usr/bin/dtoverlay ' + 'rotary-encoder pin_a='+pinA+' pin_b='+pinB+' relative_axis=true steps-per-period='+stepsPerPeriod+' &', {uid: 1000, gid: 1000}, function (err, stdout, stderr) {
 		if (err) {
+			self.logger.error('[ROTARYENCODER2] addOverlay: ' + stderr);
 			defer.reject(stderr);
 		} else {
 			defer.resolve(stdout);
