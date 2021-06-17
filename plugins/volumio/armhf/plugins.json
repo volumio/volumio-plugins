@@ -902,6 +902,24 @@
 						}
 					],
 					"updated": "5-4-2021"
+				},
+				{
+					"prettyName": "Rotary Encoder II",
+					"icon": "fa-lightbulb-o",
+					"name": "rotaryencoder2",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder2/rotaryencoder2.zip",
+					"license": "ISC",
+					"description": "Alternative implementation of Rotary Encoder controls using the Linux Kernel driver for Rotaries.",
+					"details": "Alternative rotary encoder driver using Linux DTOverlay driver. Documentation and tips for debouncing on the Documentation page.",
+					"author": "7h0mas-R",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "17-6-2021"
 				}
 			]
 		}
