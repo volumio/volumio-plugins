@@ -56,7 +56,12 @@ SET_LIGHT_COLOR = 0x03
 # 0xBB = Blue color
 SET_TIMED_COLOR_SEQUENCE = 0x72
 
-# -- Lights --
+# Set the fan rotation speed
+# Params:
+# Speed: 0x00-0xFF
+SET_FAN_SPEED = 0x01
+
+# Lights
 class Lights:
     # LEFT/RIGHT lights. Normally placed adjecent to your screen.
     LEFT = 0x0B
@@ -66,6 +71,11 @@ class Lights:
     WWLEFT = 0x2B
     WWCENTER = 0x3B
     WWRIGHT = 0x4B
+
+# Fans
+class Fans:
+    LEFT = 0x5B
+    RIGHT = 0x6B
 
 # Timeouts
 TIMEOUT_LIBUSBC = 2500
@@ -116,6 +126,10 @@ class AMBX(object):
 
     def set_sequence_float(self, light, millis, colors):
         self.set_sequence_rgb8(light, millis, [float_to_rgb8(color) for color in colors])
+
+    def set_fan_speed(self, fan, speed):
+        self.write(bytes([PKT_HEADER, fan, SET_FAN_SPEED, speed]))
+
 
 def devices_by_vendor_product(vendor, product):
     '''

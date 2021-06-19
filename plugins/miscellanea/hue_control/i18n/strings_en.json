@@ -1,0 +1,18 @@
+{
+ "HUE_PLUGIN_CONFIGURATION": "Hue Control Plugin Configuration",
+ "HUE_CONNECTION_CONFIG": "Hue Bridge Config",
+ "HUE_CONNECTION_CONFIG_DESC": "Enter the ip address or hostname of the Hue bridge, press the link button on the bridge and press >Connect< within 30 seconds.",
+ "HUE_UNPAIR_CONFIG": "Disconnect Hue Bridge",
+ "HUE_UNPAIR_CONFIG_DESC": "Press >Disconnect< button to disconnect Volumio from Hue bridge",
+ "HUE_PAIR_BTN":"Connect",
+ "HUE_UNPAIR_BTN":"Disconnect",
+ "HUE_BRIDGE_ADDRESS": "Hue Bridge Address",
+ "HUE_BRIDGE_ADDRESS_DOC": "The the ip address or hostname of the Hue bridge",
+ "HUE_SETTINGS": "Settings",
+ "HUE_SETTINGS_DESC": "The settings for the Hue Control plugin",
+ "HUE_SWITCH_OFF_DELAY_DOC": "The number of seconds to wait before switching off the Hue device(s) after the playback has stopped.",
+ "HUE_SWITCH_OFF_DELAY": "Switch Off Delay",
+ "HUE_DEVICE_DOC": "Hue bulb or smart power outlet to contol",
+ "HUE_DEVICE": "Device",
+ "SAVE":"Save"
+}

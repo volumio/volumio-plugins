@@ -1,6 +1,6 @@
 {
 	"name": "gpiorandom",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "Play a randomized playlist, play a web radio or toggle play / pause uppon single, double and / or triple click on a GPIO wired button",
 	"main": "index.js",
 	"scripts": {

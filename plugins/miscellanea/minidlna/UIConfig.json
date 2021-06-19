@@ -7,7 +7,7 @@
                 "id": "minidlna_conf",
                 "element": "section",
                 "label": "TRANSLATE.MINIDLNA.MINIDLNA_CONF",
-                "icon": "fa-plug",
+                "icon": "fa-cogs",
                 "onSave": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"saveConf"},
                 "saveButton": {
                               "label": "TRANSLATE.MINIDLNA.SAVE",
@@ -126,7 +126,7 @@
                              "doc": "TRANSLATE.MINIDLNA.ROOT_CONTAINER_DOC",
                              "label": "TRANSLATE.MINIDLNA.ROOT_CONTAINER",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "." ,"label": "TRANSLATE.MINIDLNA.STANDARD_CONTAINER"},
+                             "value": {"value": ".", "label": "TRANSLATE.MINIDLNA.STANDARD_CONTAINER"},
                              "options": [
                                           {
                                           "value": ".",
@@ -391,7 +391,7 @@
                              "doc": "TRANSLATE.MINIDLNA.TIVO_DISCOVERY_DOC",
                              "label": "TRANSLATE.MINIDLNA.TIVO_DISCOVERY",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "bonjour" ,"label": "TRANSLATE.MINIDLNA.BONJOUR"},
+                             "value": {"value": "bonjour", "label": "TRANSLATE.MINIDLNA.BONJOUR"},
                              "options": [
                                           {
                                           "value": "bonjour",
@@ -457,7 +457,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_GENERAL",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -491,7 +491,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_ARTWORK",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -525,7 +525,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_DATABASE",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -559,7 +559,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_INOTIFY",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -593,7 +593,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_SCANNER",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -627,7 +627,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_METADATA",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -661,7 +661,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_HTTP",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -695,7 +695,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_SSDP",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -729,7 +729,7 @@
                              "doc": "TRANSLATE.MINIDLNA.LOGLEVEL_DOC",
                              "label": "TRANSLATE.MINIDLNA.LOGLEVEL_TIVO",
                              "visibleIf": {"field": "show_more", "value": true},
-                             "value": {"value": "warn" ,"label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
+                             "value": {"value": "warn", "label": "TRANSLATE.MINIDLNA.LOGLEVEL_WARN"},
                              "options": [
                                           {
                                           "value": "off",
@@ -771,7 +771,7 @@
                 "id": "force_rescan",
                 "element": "section",
                 "label": "TRANSLATE.MINIDLNA.FORCE_RESCAN",
-                "icon": "fa-spinner",
+                "icon": "fa-refresh",
                 "content": [
                               {
                               "id": "rescan",
