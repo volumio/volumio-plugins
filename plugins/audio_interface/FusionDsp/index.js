@@ -26,7 +26,7 @@ const tnbreq = 50
 const filterfolder = "/data/INTERNAL/FusionDsp/filters/";
 const filtersource = "/data/INTERNAL/FusionDsp/filter-sources/";
 const tccurvepath = "/data/INTERNAL/FusionDsp/target-curves/";
-const toolspath = "/data/INTERNAL/FusionDsp/tools/";
+const toolspath = "INTERNAL/FusionDsp/tools/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
 const coefQ = 1.1 //Q for grapics EQ
 
@@ -206,6 +206,7 @@ FusionDsp.prototype.getUIConfig = function () {
         uiconf.sections[1].content[2].hidden = true;
         uiconf.sections[1].content[3].hidden = true;
         uiconf.sections[1].content[4].hidden = true;
+        uiconf.sections[7].hidden = true;
 
 
         let n = 1
@@ -339,6 +340,8 @@ FusionDsp.prototype.getUIConfig = function () {
 
         uiconf.sections[4].hidden = true;
         uiconf.sections[5].hidden = true;
+        uiconf.sections[7].hidden = true;
+
         let listeq
         let eqtext
         if (selectedsp == 'EQ15') {
@@ -533,17 +536,22 @@ FusionDsp.prototype.getUIConfig = function () {
         uiconf.sections[5].hidden = true;
         var value
         var valuestored
+        let valuestoredl
+        let valuestoredr
 
-        valuestored = self.config.get('leftfilter');
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', valuestored);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestored);
+        valuestoredl = self.config.get('leftfilter');
+        var valuestoredllabel = valuestoredl.replace("$samplerate$", "variable samplerate")
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', valuestoredl);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestoredllabel);
 
         value = self.config.get('attenuationl');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.label', value);
-        valuestored = self.config.get('rightfilter');
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.value', valuestored);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestored);
+
+        valuestoredr = self.config.get('rightfilter');
+        var valuestoredrlabel = valuestoredr.replace("$samplerate$", "variable samplerate")
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.value', valuestoredr);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestoredrlabel);
         value = self.config.get('attenuationr');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', value);
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', value);
@@ -583,6 +591,7 @@ FusionDsp.prototype.getUIConfig = function () {
         } catch (e) {
           self.logger.error('CAN not read file: ' + e)
         }
+        uiconf.sections[1].content[4].value = self.config.get('enableclipdetect');
 
         uiconf.sections[1].saveButton.data.push('leftfilter');
         uiconf.sections[1].saveButton.data.push('attenuationl');
@@ -969,6 +978,104 @@ FusionDsp.prototype.getUIConfig = function () {
         })
       }
       //-------------End section 6----------
+
+      //--------------section 7-------------
+
+
+      var filetoconvertl = self.config.get('filetoconvert');
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[0].value.value', filetoconvertl);
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[0].value.label', filetoconvertl);
+      try {
+        fs.readdir(filtersource, function (err, fitem) {
+          let fitems;
+          let filetoconvert = '' + fitem;
+          fitems = filetoconvert.split(',');
+          // console.log(fitems)
+          for (let i in fitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[7].content[0].options', {
+              value: fitems[i],
+              label: fitems[i]
+            });
+            self.logger.info('available impulses to convert :' + fitems[i]);
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
+
+      var value = self.config.get('drc_sample_rate');
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[1].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[1].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[7].content[1].options'), value));
+
+
+      var tc = self.config.get('tc');
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[2].value.value', tc);
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[2].value.label', tc);
+      try {
+        fs.readdir(tccurvepath, function (err, bitem) {
+          let bitems;
+          let filetoconvert = '' + bitem;
+          bitems = filetoconvert.split(',');
+          //console.log(bitems)
+          for (let i in bitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[7].content[2].options', {
+              value: bitems[i],
+              label: bitems[i]
+            });
+            self.logger.info('available target curve :' + bitems[i]);
+
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
+
+      var value = self.config.get('drcconfig');
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[3].value.value', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[7].content[3].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[7].content[3].options'), value));
+      uiconf.sections[7].content[4].value = self.config.get('outputfilename');
+      //-------------end section 7----------
+
+      //-------------section 8------------
+      let ttools = self.config.get('toolsinstalled');
+
+      let toolsfiletoplay = self.config.get('toolsfiletoplay');
+      self.configManager.setUIConfigParam(uiconf, 'sections[8].content[0].value.value', toolsfiletoplay);
+      self.configManager.setUIConfigParam(uiconf, 'sections[8].content[0].value.label', toolsfiletoplay);
+
+      try {
+        fs.readdir('/data/' + toolspath, function (err, bitem) {
+          let filetools = '' + bitem;
+
+          let bitems = filetools.split(',');
+
+          //console.log(bitems)
+          for (let i in bitems) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[8].content[0].options', {
+              value: bitems[i],
+              label: bitems[i]
+            });
+            self.logger.info('tools file to play :' + bitems[i]);
+
+          }
+        });
+      } catch (e) {
+        self.logger.error('Could not read file: ' + e)
+      }
+
+
+      if (ttools == false) {
+        uiconf.sections[8].content[0].hidden = true;
+
+        uiconf.sections[8].content[1].hidden = true;
+        uiconf.sections[8].content[2].hidden = false;
+
+      } else {
+        uiconf.sections[8].content[1].hidden = false;
+        uiconf.sections[8].content[2].hidden = true;
+
+      }
+      //--------------end section 8----------
       defer.resolve(uiconf);
     })
     .fail(function () {
@@ -1131,6 +1238,68 @@ FusionDsp.prototype.sendCommandToCamilla = function () {
 };
 
 //------------Fir features----------------
+
+//-----------here we define how to swap filters----------------------
+
+FusionDsp.prototype.areSampleswitch = function () {
+  const self = this;
+  let leftFilter1 = self.config.get('leftfilter');
+  let rightFilter1 = self.config.get('rightfilter');
+
+  // check if filter naming is ok with 44100 in name
+  const isFilterSwappable = (filterName, swapWord) => {
+    let threeLastChar = filterName.slice(-9, -4);
+    if (threeLastChar == swapWord) {
+      return true
+    }
+    else {
+      return false
+    }
+  };
+  let leftResult = isFilterSwappable(leftFilter1, '44100');
+  let rightResult = isFilterSwappable(rightFilter1, '44100');
+
+  console.log(leftResult + ' + ' + rightResult);
+
+  // check if secoond filter with 96000 in name
+  const isFileExist = (filterName, swapWord) => {
+    let fileExt = filterName.slice(-4);
+    let filterNameShort = filterName.slice(0, -9);
+    let filterNameForSwapc = filterNameShort + swapWord + fileExt;
+    let filterNameForSwap = filterNameShort + "$samplerate$" + fileExt;
+
+    if (fs.exists(filterfolder + filterNameForSwap)) {
+      return [true, filterNameForSwap]
+    } else {
+      return false
+    }
+  };
+  let leftResultExist = isFileExist(leftFilter1, '96000');
+  let toSaveLeftResult = leftResultExist[1];
+  let rightResultExist = isFileExist(rightFilter1, '96000');
+  let toSaveRightResult = rightResultExist[1];
+
+  // if conditions are true, switching possible
+  if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
+    console.log('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    self.config.set('leftfilter', toSaveLeftResult);
+    self.config.set('rightfilter', toSaveRightResult);
+    self.config.set('autoswitchsamplerate', true);
+  } else {
+    self.config.set('autoswitchsamplerate', false);
+
+
+  };
+  self.refreshUI()
+  /*
+  setTimeout(function () {
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('audio_interface', 'Dsp4Volumio', {});
+    respconfig.then(function (config) {
+      self.commandRouter.broadcastMessage('pushUiConfig', config);
+    }, 500);
+  */
+  //});
+};
 
 
 //------------Here we detect if clipping occurs while playing and gives a suggestion of setting...------
@@ -2134,6 +2303,10 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         }, 500);
 
       }
+      setTimeout(function () {
+
+        self.areSampleswitch();
+      }, 1500);
       let ltest, rtest, cleftfilter, crightfilter
 
       cleftfilter = filterfolder + leftfilter
@@ -2514,13 +2687,204 @@ FusionDsp.prototype.updatelist = function (data) {
 FusionDsp.prototype.resampling = function (data) {
   const self = this;
   let defer = libQ.defer();
+  let selectedsp = self.config.get('selectedsp')
+  if (selectedsp == "convfir") {
+    var responseData = {
+      title: self.commandRouter.getI18nString('SAMPLE_WARNING_TITLE'),
+      message: self.commandRouter.getI18nString('SAMPLE_WARNING_MESS'),
+      size: 'lg',
+      buttons: [
+        {
+          name: self.commandRouter.getI18nString('GET_IT'),
+          class: 'btn btn-cancel',
+          emit: 'closeModals',
+          payload: ''
+        },
+      ]
+    }
+    self.commandRouter.broadcastMessage("openModal", responseData);
+  }
+
   self.config.set('enableresampling', data['enableresampling'])
   self.config.set('resamplingset', data['resamplingset'].value)
   self.config.set('resamplingq', data['resamplingq'].value)
   self.createCamilladspfile()
 
   return defer.promise;
-}
+};
+//-----------DRC-FIR section----------------
+
+//here we save value for converted file
+FusionDsp.prototype.fileconvert = function (data) {
+  const self = this;
+  let defer = libQ.defer();
+  self.config.set('filetoconvert', data['filetoconvert'].value);
+  self.config.set('tc', data['tc'].value);
+  self.config.set('drcconfig', data['drcconfig'].value);
+  self.config.set('drc_sample_rate', data['drc_sample_rate'].value);
+  self.config.set('outputfilename', data['outputfilename']);
+  self.convert()
+  return defer.promise;
+};
+
+//here we convert file using sox and generate filter with DRC-FIR
+FusionDsp.prototype.convert = function (data) {
+  const self = this;
+  //let defer = libQ.defer();
+  let drcconfig = self.config.get('drcconfig');
+  let infile = self.config.get('filetoconvert');
+  let sr;
+  if (infile != 'choose a file') {
+
+    let outfile = self.config.get('outputfilename').replace(/ /g, '-');
+    if ((outfile == '') || (outfile == 'Empty=name-of-file-to-convert')) {
+      outfile = infile.replace(/ /g, '-').replace('.wav', '');
+    };
+    let targetcurve = '\ /usr/share/drc/config/'
+    let outsample = self.config.get('drc_sample_rate');
+    let tc = self.config.get('tc');
+    if (tc != 'choose a file') {
+      let tcsimplified = tc.replace('.txt', '');
+      let ftargetcurve
+      let curve
+      if ((outsample == 44100) || (outsample == 48000) || (outsample == 88200) || (outsample == 96000)) {
+        if (outsample == 44100) {
+          ftargetcurve = '44.1\\ kHz/';
+          curve = '44.1'
+          sr = '44100';
+        } else if (outsample == 48000) {
+          ftargetcurve = '48.0\\ kHz/';
+          curve = '48.0';
+          sr = '48000';
+        } else if (outsample == 88200) {
+          ftargetcurve = '88.2\\ kHz/';
+          curve = '88.2';
+          sr = '88200';
+        } else if (outsample == 96000) {
+          ftargetcurve = '96.0\\ kHz/';
+          curve = '96.0';
+          sr = '96000';
+        };
+
+        let destfile = (filterfolder + outfile + "-" + drcconfig + "-" + tcsimplified + "-" + sr + ".pcm");
+        self.commandRouter.loadI18nStrings();
+        try {
+          let cmdsox = ("/usr/bin/sox " + filtersource + infile + " -t f32 /tmp/tempofilter.pcm rate -v -s " + outsample);
+          execSync(cmdsox);
+          self.logger.info(cmdsox);
+        } catch (e) {
+          self.logger.info('input file does not exist ' + e);
+          self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
+        };
+        try {
+          let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile;
+          let mess = self.commandRouter.getI18nString('FILTER_GENE_MESS');
+          let modalData = {
+            title: title,
+            message: mess,
+            size: 'lg'
+          };
+          self.commandRouter.broadcastMessage("openModal", modalData);
+
+          //here we compose cmde for drc
+          //  let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PSNormType=E --PSNormFactor=1 --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+          let composedcmde = ("/usr/bin/drc --BCInFile=/tmp/tempofilter.pcm --PTType=N --PSPointsFile=" + tccurvepath + tc + " --PSOutFile=" + destfile + targetcurve + ftargetcurve + drcconfig + "-" + curve + ".drc");
+          //and execute it...
+          execSync(composedcmde, {
+            uid: 1000,
+            gid: 1000
+          });
+          self.logger.info(composedcmde);
+          self.commandRouter.pushToastMessage('success', 'Filter ' + destfile + ' generated, Refresh the page to see it');
+          self.refreshUI()
+          // return self.commandRouter.reloadUi();
+        } catch (e) {
+          self.logger.info('drc fails to create filter ' + e);
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL') + e);
+        };
+      } else {
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_RATE'));
+      };
+    } else {
+      self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_TC'));
+    };
+  } else {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL_FILE'));
+  };
+};
+
+//--------------Tools Section----------------
+
+//here we download and install tools
+FusionDsp.prototype.installtools = function (data) {
+  const self = this;
+
+  return new Promise(function (resolve, reject) {
+    try {
+      let modalData = {
+        title: self.commandRouter.getI18nString('TOOLS_INSTALL_TITLE'),
+        message: self.commandRouter.getI18nString('TOOLS_INSTALL_WAIT'),
+        size: 'lg'
+      };
+      //self.commandRouter.pushToastMessage('info', 'Please wait while installing ( up to 30 seconds)');
+      self.commandRouter.broadcastMessage("openModal", modalData);
+
+      // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
+      let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/master/plugins/audio_interface/brutefir3/tools/tools.tar.xz');
+      //  let cp4 = execSync('/bin/mkdir ' + toolspath);
+      let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/' + toolspath);
+      let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
+      self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
+      self.config.set('toolsinstalled', true);
+      self.refreshUI();
+
+      socket.emit('updateDb');
+
+
+    } catch (err) {
+      self.logger.info('An error occurs while downloading or installing tools');
+      self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
+    }
+
+    resolve();
+  });
+};
+
+//here we remove tools
+FusionDsp.prototype.removetools = function (data) {
+  const self = this;
+  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
+  return new Promise(function (resolve, reject) {
+
+    try {
+
+      let cp6 = execSync('/bin/rm /data/' + toolspath + "/*");
+    } catch (err) {
+      self.logger.info('An error occurs while removing tools');
+      self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
+    }
+    resolve();
+    /*
+    self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
+    */
+    self.config.set('toolsinstalled', false);
+    self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
+    self.refreshUI();
+    socket.emit('updateDb');
+
+    //   return self.commandRouter.reloadUi();
+  });
+};
+//------ actions tools------------
+
+FusionDsp.prototype.playToolsFile = function (data) {
+  const self = this;
+  self.config.set('toolsfiletoplay', data['toolsfiletoplay'].value);
+  let toolsfile = self.config.get("toolsfiletoplay");
+  let track = toolspath + toolsfile;
+  self.commandRouter.replaceAndPlay({ uri: track });
+  self.commandRouter.volumioClearQueue();
+};
 /*
 test for future featuures...
 FusionDsp.prototype.displayfilters = function () {

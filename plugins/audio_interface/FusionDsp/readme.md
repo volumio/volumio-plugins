@@ -1,4 +1,4 @@
-June 23th 2021
+June 19th 2021
 
 
 ##  For Volumio3
@@ -19,7 +19,8 @@ Provide
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAM/FusionDsp/peq/)
 - 3 preset
-- Or a convolution filters (FIR)
+- Or a convolution filters (FIR) with autoswitch samplerate for filters
+    - DRC-FIR to create filter with a impulse
 
 For all type
 - Auto gain
@@ -27,6 +28,7 @@ For all type
 - Separate volume level for left an right
 - 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
 - High quality resampling
+- tools to easily plays test files (pink noise, sweep) to help measurments 
 
 For PEQ equalizer, while importing file 
 You can add or replace EQ while importing.
@@ -89,6 +91,9 @@ Some screenshots
 
 ![Alt text](crossfeed.png?raw=true "crossfeed")
 
+![Alt text](tools.png?raw=true "tools")
+
+![Alt text](drc-fir).png?raw=true "drc-fir")
 
 
 ## INSTALLATION WARNING
@@ -131,6 +136,12 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+June 19th 2021
+
+- FIR autiiswitch filter with samplerate
+- DRC-fir création
+- Tools installation
 
 June 13th 2021
 

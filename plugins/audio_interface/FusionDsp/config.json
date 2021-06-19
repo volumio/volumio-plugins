@@ -280,5 +280,29 @@
     "probesmplerate": {
         "type": "string",
         "value": ""
+    },
+    "outputfilename": {
+        "type": "string",
+        "value": "Empty=name of file to convert"
+    },
+    "filetoconvert": {
+        "type": "string",
+        "value": "choose a file"
+    },
+    "tc": {
+        "type": "string",
+        "value": "choose a file"
+    },
+    "drcconfig": {
+        "type": "string",
+        "value": "normal"
+    },
+    "drc_sample_rate": {
+        "type": "string",
+        "value": "44100"
+    },
+    "toolsinstalled": {
+        "type": "boolean",
+        "value": false
     }
 }

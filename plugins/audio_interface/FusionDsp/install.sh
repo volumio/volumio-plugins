@@ -8,9 +8,11 @@ echo "creating filters folder and copying demo filters"
 mkdir -m 777 $opath
 #mkdir -m 777 $opath/tools
 mkdir -m 777 $opath/filters
-#mkdir -m 777 $opath/filter-sources
-#mkdir -m 777 $opath/target-curves
+mkdir -m 777 $opath/filter-sources
+mkdir -m 777 $opath/target-curves
 mkdir -m 777 $opath/peq
+mkdir -m 777 $opath/tools
+
 sudo chmod -R 777 $opath
 sudo chown -R volumio $opath
 sudo chgrp -R volumio $opath
@@ -19,11 +21,11 @@ cp $LIB/*EQ.txt $opath/peq/
 cp $LIB/mpdignore $opath/.mpdignore
 cp $LIB/readme.txt $opath/readme.txt
 cp $LIB/filters/* $opath/filters/
-#cp $LIB/target-curves/* $opath/target-curves/
-#cp $LIB/filter-sources/* $opath/filter-sources/
+cp $LIB/target-curves/* $opath/target-curves/
+cp $LIB/filter-sources/* $opath/filter-sources/
 rm -Rf $LIB/filters
-#rm -Rf $LIB/target-curves
-#rm -Rf $LIB/filters-sources
+rm -Rf $LIB/target-curves
+rm -Rf $LIB/filters-sources
 		
 echo "copying hw detection script"
 

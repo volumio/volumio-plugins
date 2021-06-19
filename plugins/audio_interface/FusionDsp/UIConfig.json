@@ -132,7 +132,7 @@
           "element": "switch",
           "doc": "TRANSLATE.DOC_DETECT_CLIPPING",
           "label": "TRANSLATE.DETECT_CLIPPING",
-          "value": false,
+          "value": "",
           "visibleIf": {
             "field": "showeq",
             "value": true
@@ -345,15 +345,15 @@
           "resamplingq"
         ]
       },
-      "content": [ 
-         {
+      "content": [
+        {
           "id": "enableresampling",
           "element": "switch",
           "doc": "TRANSLATE.ENABLE_RESAMPLING_DOC",
           "label": "TRANSLATE.ENABLE_RESAMPLING",
           "value": true
         },
-               {
+        {
           "id": "resamplingset",
           "element": "select",
           "doc": "TRANSLATE.RESAMPLING_RATE_DOC",
@@ -362,7 +362,11 @@
             "value": "44100",
             "label": "44100"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "enableresampling",
+            "value": true
+          }
         },
         {
           "id": "resamplingq",
@@ -373,9 +377,221 @@
             "value": "Meduim",
             "label": "Medium"
           },
-          "options": []
+          "options": [],
+          "visibleIf": {
+            "field": "enableresampling",
+            "value": true
+          }
         }
-      
+      ]
+    },
+    {
+      "id": "filtercreat",
+      "element": "section",
+      "label": "TRANSLATE.FILTER_CREATION",
+      "icon": "fa-filter",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "fileconvert"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.CREATE_FILTER",
+        "data": [
+          "filetoconvert",
+          "drc_sample_rate",
+          "tc",
+          "drcconfig",
+          "outputfilename"
+        ],
+        "visibleIf": {
+          "field": "drcsettings",
+          "value": true
+        }
+      },
+      "content": [
+        {
+          "id": "filetoconvert",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_FILE_TO_CONVERT",
+          "label": "TRANSLATE.FILE_TO_CONVERT",
+          "value": {
+            "value": "fitems",
+            "label": "TRANSLATE.CHOOSE_A_FILE"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "drc_sample_rate",
+          "element": "select",
+          "doc": "TRANSLATE.DRC_SAMPLE_RATE",
+          "label": "TRANSLATE.DRC_SAMPLE_RATE_DOC",
+          "value": {
+            "value": "",
+            "label": "TRANSLATE.CHOOSE_A_FILE"
+          },
+          "options": [
+            {
+              "value": "44100",
+              "label": "44100"
+            },
+            {
+              "value": "48000",
+              "label": "48000"
+            },
+            {
+              "value": "88200",
+              "label": "88200"
+            },
+            {
+              "value": "96000",
+              "label": "96000"
+            }
+          ],
+          "visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "tc",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_TARGET_CURVE",
+          "label": "TRANSLATE.TARGET_CURVE",
+          "value": {
+            "value": "",
+            "label": "TRANSLATE.CHOOSE_A_FILE"
+          },
+          "options": [],
+          "visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "drcconfig",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_DRCCONFIG",
+          "label": "TRANSLATE.DRCCONFIG",
+          "value": {
+            "value": "normal",
+            "label": "TRANSLATE.CHOOSE_A_FILE"
+          },
+          "options": [
+            {
+              "value": "minimal",
+              "label": "minimal"
+            },
+            {
+              "value": "soft",
+              "label": "soft"
+            },
+            {
+              "value": "normal",
+              "label": "normal"
+            },
+            {
+              "value": "strong",
+              "label": "strong"
+            },
+            {
+              "value": "extreme",
+              "label": "extreme"
+            },
+            {
+              "value": "erb",
+              "label": "erb"
+            },
+            {
+              "value": "insane",
+              "label": "insane"
+            }
+          ],
+          "visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "outputfilename",
+          "element": "input",
+          "doc": "TRANSLATE.DOC_OUTPUT_FILE_NAME",
+          "label": "TRANSLATE.OUTPUT_FILE_NAME",
+          "value": {
+            "value": "azerty",
+            "label": ""
+          },
+          "visibleIf": {
+            "field": "drcsettings",
+            "value": true
+          }
+        },
+        {
+          "id": "drcsettings",
+          "element": "switch",
+          "doc": "DRC-FIR settings",
+          "label": "DRC-FIR settings",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "element": "section",
+      "label": "Tools",
+      "icon": "fa-wrench",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "audio_interface/fusiondsp",
+        "method": "playToolsFile",
+        "data": []
+      },
+      "saveButton": {
+        "label": "TRANSLATE.PLAY_SELECTED_FILE",
+        "data": [
+          "toolsfiletoplay"
+        ]
+      },
+      "content": [
+        {
+          "id": "toolsfiletoplay",
+          "element": "select",
+          "doc": "TRANSLATE.DOC_TOOLS_FILE_TO_PLAY",
+          "label": "TRANSLATE.TOOLS_FILE_TO_PLAY",
+          "value": {
+            "value": "",
+            "label": "TRANSLATE.CHOOSE_TOOLS_FILE"
+          },
+          "options": []
+        },
+        {
+          "id": "removetools",
+          "element": "button",
+          "label": "TRANSLATE.REMOVE_TOOLS",
+          "description": "TRANSLATE.DESC_REMOVE_TOOLS",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/fusiondsp",
+            "method": "removetools",
+            "data": []
+          }
+        },
+        {
+          "id": "installtools",
+          "element": "button",
+          "label": "TRANSLATE.INSTALL_TOOLS",
+          "description": "TRANSLATE.DESC_INSTALL_TOOLS",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "audio_interface/fusiondsp",
+            "method": "installtools",
+            "data": []
+          }
+        }
       ]
     }
   ]
