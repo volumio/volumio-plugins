@@ -9,7 +9,7 @@ var spawn = require('child_process').spawn
 const Gpio = require('onoff').Gpio;
 const io = require('socket.io-client');
 const socket = io.connect('http://localhost:3000');
-const dtoverlayRegex = /^([0-9]+):\s+rotary-encoder\s+pin_a=([0-9\-]+) pin_b=([0-9\-]+).*$/gm
+const dtoverlayRegex = /^([0-9]+):\s+rotary-encoder\s+pin_a=([0-9]+) pin_b=([0-9]+).*$/gm
 
 const maxRotaries = 3;
 
@@ -44,8 +44,6 @@ const btnActions = new Array(
 	"TOGGLEMUTE",
 	"SHUTDOWN",
 	"REBOOT",
-	"RESTARTAPP",
-	"DUMPLOG",
 	"EMIT",
 );
 
@@ -239,6 +237,9 @@ rotaryencoder2.prototype.updateEncoder = function(data){
 	.then(_ => {
 		if (self.config.get('enabled'+rotaryIndex)){
 			return self.deactivateRotaries([rotaryIndex])
+			.then(_=>{
+				return self.deactivateButtons([rotaryIndex])
+			})
 		} else {
 			return defer.resolve;
 		}
@@ -265,6 +266,9 @@ rotaryencoder2.prototype.updateEncoder = function(data){
 			self.config.set('socketDataLongPush'+rotaryIndex, (data['socketDataLongPush'+rotaryIndex]));
 			self.config.set('enabled'+rotaryIndex, true);	
 			return self.activateRotaries([rotaryIndex])
+			.then(_=>{
+				return self.activateButtons([rotaryIndex])
+			})
 		} else {
 			self.config.set('enabled'+rotaryIndex, false);
 			return defer.resolve;	
@@ -430,7 +434,7 @@ rotaryencoder2.prototype.deactivateRotaries = function (rotaryIndexArray) {
 			self.deactivateRotaries(rotaryIndexArray.slice(1,rotaryIndexArray.length))
 			.then(_=> {return self.detachListener(self.handles[rotaryIndex])})
 			.then(_=>{ return self.checkOverlayExists(rotaryIndex)})
-			.then(idx=>{return self.removeOverlay(idx)})
+			.then(idx=>{if (idx > -1) return self.removeOverlay(idx)})
 			.then(_=>{
 				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateRotaries: deactivated rotary' + (rotaryIndex + 1));
 				defer.resolve();
@@ -459,38 +463,47 @@ rotaryencoder2.prototype.activateButtons = function (rotaryIndexArray) {
 			self.activateButtons(rotaryIndexArray.slice(0,rotaryIndexArray.length - 1))
 			.then(_=> {
 				var gpio = self.config.get('pinPush'+rotaryIndex);
-				var debounce = self.config.get('pinPushDebounce'+rotaryIndex)
-				if (!Number.isInteger(debounce)){
-					debounce = 0
-				} 
-				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: Now assign push button: ' + (rotaryIndex + 1));
-				self.buttons[rotaryIndex] = new Gpio(gpio, 'in', 'both', {debounceTimeout: debounce});
-				self.buttons[rotaryIndex].watch((err,value) => {
-					if (err) {
-						return self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
-					}
-					switch (value==self.config.get('pushState'+rotaryIndex)) {
-						case true: //(falling edge & active_high) or (rising edge and active low) = released
-							var pushTime = Date.now() - self.pushDownTime[rotaryIndex]
-							if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' released after '+pushTime+'ms.');
-							if (pushTime > 1500) {
-								self.emitPushCommand(true, rotaryIndex)
-							} else {
-								self.emitPushCommand(false, rotaryIndex)
-							}
-							break;
-					
-						case false: //(falling edge & active low) or (rising edge and active high) = pressed
-							if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
-							self.pushDownTime[rotaryIndex] = Date.now();						
-							break;
-					
-						default:
-							break;
-					}
-				})
-				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' now resolving.');
-				return defer.resolve();
+				//configure pushButton if not disabled
+				if (Number.isInteger(gpio) && (gpio > 0)) {
+					gpio = parseInt(gpio);
+					var debounce = self.config.get('pinPushDebounce'+rotaryIndex);
+					if (!Number.isInteger(debounce)){
+						debounce = 0
+					} else {
+						debounce = parseInt(debounce);
+					};
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: Now assign push button: ' + (rotaryIndex + 1));
+					self.buttons[rotaryIndex] = new Gpio(gpio, 'in', 'both', {debounceTimeout: debounce});
+					self.buttons[rotaryIndex].watch((err,value) => {
+						if (err) {
+							return self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
+						}
+						switch (value==self.config.get('pushState'+rotaryIndex)) {
+							case true: //(falling edge & active_high) or (rising edge and active low) = released
+								var pushTime = Date.now() - self.pushDownTime[rotaryIndex]
+								if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' released after '+pushTime+'ms.');
+								if (pushTime > 1500) {
+									self.emitPushCommand(true, rotaryIndex)
+								} else {
+									self.emitPushCommand(false, rotaryIndex)
+								}
+								break;
+						
+							case false: //(falling edge & active low) or (rising edge and active high) = pressed
+								if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
+								self.pushDownTime[rotaryIndex] = Date.now();						
+								break;
+						
+							default:
+								break;
+						}
+					})
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' now resolving.');
+					return defer.resolve();	
+				} else {
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' is disabled (no Gpio).');
+					return defer.resolve();	
+				}
 			})
 		} else {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: end of recursion.');
@@ -517,12 +530,16 @@ rotaryencoder2.prototype.deactivateButtons = function (rotaryIndexArray) {
 			rotaryIndex = rotaryIndexArray[0];
 			self.deactivateButtons(rotaryIndexArray.slice(1,rotaryIndexArray.length))
 			.then(_=>{
-				self.buttons[rotaryIndex].unwatchAll();
-				self.buttons[rotaryIndex].unexport();
-			})
-			.then(_=>{
-				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: deactivated button ' + (rotaryIndex + 1));
-				defer.resolve();
+				if (self.config.get('pinPush1'+rotaryIndex)>0) {
+					self.buttons[rotaryIndex].unwatchAll();
+					self.buttons[rotaryIndex].unexport();
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: deactivated button ' + (rotaryIndex + 1));
+					defer.resolve();	
+				} else {
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: button ' + (rotaryIndex + 1) + ' is disabled.');
+					defer.resolve();	
+				}
+
 			})
 		} else {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: end of recursion.');
@@ -639,22 +656,32 @@ rotaryencoder2.prototype.emitPushCommand = function(longPress,rotaryIndex){
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitPushCommand: '+action + 'for Rotary: '+(rotaryIndex + 1))
 
 	switch (action) {
-		case btnActions.indexOf("DOTS"):
+		case btnActions.indexOf("DOTS"): //0
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] buttonAction: button of rotary ' + (rotaryIndex + 1) + ' pressed but no action selected.');
 			break;
-		case btnActions.indexOf("PLAY"):
-			socket.emit('play','')
+		case btnActions.indexOf("PLAY"): //1
+			socket.emit('play')
 			break;
-		case btnActions.indexOf("PAUSE"):
-			socket.emit('pause','')
+		case btnActions.indexOf("PAUSE"): //2
+			socket.emit('pause')
 			break;
-		case btnActions.indexOf("PLAYPAUSE"):
-			socket.emit('toggle','')
+		case btnActions.indexOf("PLAYPAUSE"): //3
+			switch (self.status.status) {
+				case 'pause':
+				case 'stop':
+					socket.emit('play');				
+					break;
+				case 'play':
+					socket.emit('pause');
+					break;
+				default:
+					break;
+			}
 			break;
-		case btnActions.indexOf("STOP"):
-			socket.emit('stop','')
+		case btnActions.indexOf("STOP"): //4
+			socket.emit('stop')
 			break;
-		case btnActions.indexOf("REPEAT"):
+		case btnActions.indexOf("REPEAT"): //5
 			var newVal = !(self.status.repeat && self.status.repeatSingle);
 			var newSingle = !(self.status.repeat == self.status.repeatSingle);
 			socket.emit('setRepeat',{
@@ -662,32 +689,33 @@ rotaryencoder2.prototype.emitPushCommand = function(longPress,rotaryIndex){
 				'repeatSingle': newSingle
 			})
 			break;
-		case btnActions.indexOf("RANDOM"):
+		case btnActions.indexOf("RANDOM"): //6
 			socket.emit('setRandom',{'value':!self.status.random})
 			break;
-		case btnActions.indexOf("CLEARQUEUE"):
-			socket.emit('clearQueue','')
+		case btnActions.indexOf("CLEARQUEUE"): //7
+			socket.emit('clearQueue')
 			break;
-		case btnActions.indexOf("MUTE"):
-			socket.emit('mute','')
+		case btnActions.indexOf("MUTE"): //8
+			socket.emit('mute')
 			break;
-		case btnActions.indexOf("UNMUTE"):
-			socket.emit('unmute','')
+		case btnActions.indexOf("UNMUTE"): //9
+			socket.emit('unmute')
 			break;
-		case btnActions.indexOf("TOGGLEMUTE"):
+		case btnActions.indexOf("TOGGLEMUTE"): //10
 			if (self.status.mute) {
-				socket.emit('unmute','');
+				socket.emit('unmute');
 			} else {
-				socket.emit('mute','');
+				socket.emit('mute');
 			}
 			break;
-		case btnActions.indexOf("SHUTDOWN"):
-			socket.emit('shutdown','')
+		case btnActions.indexOf("SHUTDOWN"): //11
+			socket.emit('shutdown')
 			break;
-		case btnActions.indexOf("REBOOT"):
-			socket.emit('reboot','')
+		case btnActions.indexOf("REBOOT"): //12
+			socket.emit('reboot')
 			break;
-		case btnActions.indexOf("EMIT"):
+		case btnActions.indexOf("EMIT"): //13
+			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] buttonAction: button of rotary ' + (rotaryIndex + 1) + ' emit ' + cmd +';'+data);
 			socket.emit(cmd,data);
 			break;
 	
@@ -752,22 +780,31 @@ rotaryencoder2.prototype.removeOverlay = function(idx) {
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: Checking for existing overlays for Rotary: ' + (rotaryIndex + 1));
 	var pin_a = self.config.get('pinA' + rotaryIndex);
 	var pin_b = self.config.get('pinB'+rotaryIndex);
-    exec('/usr/bin/sudo /usr/bin/dtoverlay -l', {uid: 1000, gid: 1000}, function (err, stdout, stderr) {
-        if(err) {
-			self.logger.error('[ROTARYENCODER2] checkOverlayExists: Could not execute "dtoverlays -l": ' + stderr);
-			defer.reject();
-		}
-		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: check pinA=' + pin_a + 'pinB=' + pin_b + ' in ' + stdout);
-		dtoverlayRegex.lastIndex = 0;
-		while (match = dtoverlayRegex.exec(stdout)) {
-			if ((pin_a == match[2]) && (pin_b == match[3]))  {
-				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: rotary ' + (rotaryIndex + 1) + 'uses overlay ' + match[1]);
-				overlay = match[1];
+	if (self.config.get('enabled'+rotaryIndex)){
+		exec('/usr/bin/sudo /usr/bin/dtoverlay -l', {uid: 1000, gid: 1000}, function (err, stdout, stderr) {
+			if(err) {
+				self.logger.error('[ROTARYENCODER2] checkOverlayExists: Could not execute "dtoverlays -l": ' + stderr);
+				defer.reject();
+			}
+			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: check pinA=' + pin_a + 'pinB=' + pin_b + ' in ' + stdout);
+			dtoverlayRegex.lastIndex = 0;
+			while (match = dtoverlayRegex.exec(stdout)) {
+				if ((pin_a == match[2]) && (pin_b == match[3]))  {
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: rotary ' + (rotaryIndex + 1) + 'uses overlay ' + match[1]);
+					overlay = match[1];
+				}             
+			}
+			if (overlay > -1) {
 				defer.resolve(overlay);
-				break;
-			}             
-		}
-    });
+			} else {
+				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: rotary ' + (rotaryIndex + 1) + ' not using any overlay.');
+				defer.resolve(overlay);	
+			}
+		});
+	} else {
+		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] checkOverlayExists: rotary ' + (rotaryIndex + 1) + ' is not active.');
+		defer.resolve(-1);
+	}
 	return defer.promise;
 }
 
