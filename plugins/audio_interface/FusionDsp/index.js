@@ -636,6 +636,13 @@ FusionDsp.prototype.getUIConfig = function () {
             "field": "showeq",
             "value": true
           }
+        },
+        {
+          "id": "monooutput",
+          "element": "switch",
+          "doc": self.commandRouter.getI18nString('MONOOUTPUT_DOC'),
+          "label": self.commandRouter.getI18nString('MONOOUTPUT'),
+          "value": self.config.get('monooutput')
         }
         //------------experimental
         /*
@@ -758,6 +765,8 @@ FusionDsp.prototype.getUIConfig = function () {
       uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('leftlevel');
       uiconf.sections[1].saveButton.data.push('rightlevel');
+      uiconf.sections[1].saveButton.data.push('monooutput');
+
       self.logger.info(' Dsp mode set is ' + selectedsp)
 
 
@@ -1885,9 +1894,11 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       }
       // self.logger.info('gainclipfree' +gainclipfree)
       gainclipfree = self.config.get('gainapplied')
-
+      let monooutput = self.config.get('monooutput')
       let leftgain = (+gainclipfree + +leftlevel - +crossatt)
       let rightgain = (+gainclipfree + +rightlevel - +crossatt);
+      let leftgainmono = (+gainclipfree + +leftlevel - 6)
+      let rightgainmono = (+gainclipfree + +rightlevel - 6);
       self.logger.info(result)
       self.logger.info('gain applied ' + leftgain)
 
@@ -1896,38 +1907,77 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       var composedpipeline = ''
 
       if ((crossconfig == 'None') && (effect)) {
-        composedmixer += 'mixers:\n'
-        composedmixer += '  stereo:\n'
-        composedmixer += '    channels:\n'
-        composedmixer += '      in: 2\n'
-        composedmixer += '      out: 2\n'
-        composedmixer += '    mapping:\n'
-        composedmixer += '      - dest: 0\n'
-        composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 0\n'
-        composedmixer += '            gain: ' + leftgain + '\n'
-        composedmixer += '            inverted: false\n'
-        composedmixer += '      - dest: 1\n'
-        composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 1\n'
-        composedmixer += '            gain: ' + rightgain + '\n'
-        composedmixer += '            inverted: false\n'
-        composedmixer += '\n'
+        if (monooutput) {
+          composedmixer += 'mixers:\n'
+          composedmixer += '  mono:\n'
+          composedmixer += '    channels:\n'
+          composedmixer += '      in: 2\n'
+          composedmixer += '      out: 2\n'
+          composedmixer += '    mapping:\n'
+          composedmixer += '      - dest: 0\n'
+          composedmixer += '        sources:\n'
+          composedmixer += '          - channel: 0\n'
+          composedmixer += '            gain: ' + +leftgainmono + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '          - channel: 1\n'
+          composedmixer += '            gain: ' + +leftgainmono + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '      - dest: 1\n'
+          composedmixer += '        sources:\n'
+          composedmixer += '          - channel: 0\n'
+          composedmixer += '            gain: ' + +rightgainmono + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '          - channel: 1\n'
+          composedmixer += '            gain: ' + +rightgainmono + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '\n'
 
-        composedpipeline += '\n'
-        composedpipeline += 'pipeline:\n'
-        composedpipeline += '  - type: Mixer\n'
-        composedpipeline += '    name: stereo\n'
-        composedpipeline += '  - type: Filter\n'
-        composedpipeline += '    channel: 0\n'
-        composedpipeline += '    names:\n'
-        composedpipeline += '      - ' + pipelinelr + '\n'
-        composedpipeline += '  - type: Filter\n'
-        composedpipeline += '    channel: 1\n'
-        composedpipeline += '    names:\n'
-        composedpipeline += '      - ' + pipelinerr + '\n'
-        composedpipeline += '\n'
+          composedpipeline += '\n'
+          composedpipeline += 'pipeline:\n'
+          composedpipeline += '  - type: Mixer\n'
+          composedpipeline += '    name: mono\n'
+          composedpipeline += '  - type: Filter\n'
+          composedpipeline += '    channel: 0\n'
+          composedpipeline += '    names:\n'
+          composedpipeline += '      - ' + pipelinelr + '\n'
+          composedpipeline += '  - type: Filter\n'
+          composedpipeline += '    channel: 1\n'
+          composedpipeline += '    names:\n'
+          composedpipeline += '      - ' + pipelinerr + '\n'
+          composedpipeline += '\n'
+        } else {
+          composedmixer += 'mixers:\n'
+          composedmixer += '  stereo:\n'
+          composedmixer += '    channels:\n'
+          composedmixer += '      in: 2\n'
+          composedmixer += '      out: 2\n'
+          composedmixer += '    mapping:\n'
+          composedmixer += '      - dest: 0\n'
+          composedmixer += '        sources:\n'
+          composedmixer += '          - channel: 0\n'
+          composedmixer += '            gain: ' + leftgain + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '      - dest: 1\n'
+          composedmixer += '        sources:\n'
+          composedmixer += '          - channel: 1\n'
+          composedmixer += '            gain: ' + rightgain + '\n'
+          composedmixer += '            inverted: false\n'
+          composedmixer += '\n'
 
+          composedpipeline += '\n'
+          composedpipeline += 'pipeline:\n'
+          composedpipeline += '  - type: Mixer\n'
+          composedpipeline += '    name: stereo\n'
+          composedpipeline += '  - type: Filter\n'
+          composedpipeline += '    channel: 0\n'
+          composedpipeline += '    names:\n'
+          composedpipeline += '      - ' + pipelinelr + '\n'
+          composedpipeline += '  - type: Filter\n'
+          composedpipeline += '    channel: 1\n'
+          composedpipeline += '    names:\n'
+          composedpipeline += '      - ' + pipelinerr + '\n'
+          composedpipeline += '\n'
+        }
       } else if ((crossconfig != 'None') && (effect)) {
         // -- if a crossfeed is used
         composedmixer += 'mixers:\n'
@@ -2330,9 +2380,15 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
     }
   }
-  self.config.set('crossfeed', data['crossfeed'].value);
+  let monooutput = data["monooutput"]
+  if (monooutput) {
+    self.config.set('crossfeed', 'None');
+  } else {
+    self.config.set('crossfeed', data['crossfeed'].value)
+  }
   self.config.set('leftlevel', data.leftlevel);
   self.config.set('rightlevel', data.rightlevel);
+  self.config.set('monooutput', data["monooutput"]);
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
   self.config.set('usethispreset', 'no preset used');

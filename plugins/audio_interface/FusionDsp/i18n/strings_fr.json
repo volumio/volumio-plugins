@@ -39,6 +39,8 @@
   "LEFTLEVEL_DESC": "Ajoute un gain spécifique pour ce canal",
   "RIGHTLEVEL": "Gain canal droit",
   "RIGHTLEVEL_DESC": "Ajoute un gain spécifique pour ce canal",
+  "MONOOUTPUT":"ON=mono/OFF=Stereo",
+  "MONOOUTPUT_DOC":"Bascule entre mono ou stereo. Desactive crossfeed",
   "APPLY": "Appliquer",
   "VALUE_SAVED_APPLIED":"Valeurs sauvées et appliquées",
   "CHOOSE_PRESET":"Choisissez un preset",

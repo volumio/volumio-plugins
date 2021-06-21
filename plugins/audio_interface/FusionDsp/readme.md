@@ -1,4 +1,4 @@
-June 19th 2021
+June 21th 2021
 
 
 ##  For Volumio3
@@ -27,6 +27,7 @@ For all type
 - Toggle with/without effect
 - Separate volume level for left an right
 - 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
+- Mono / stereo toggle
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
 
@@ -112,7 +113,7 @@ To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/U
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/fusiondsp.zip
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/fusiondsp/fusiondsp.zip
 mkdir fusion
 miniunzip fusiondsp.zip -d ./fusion
 cd fusion
@@ -136,6 +137,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+June 21th 2021
+
+- Add mono/streo selector
 
 June 19th 2021
 

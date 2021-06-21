@@ -160,6 +160,10 @@
         "type": "boolean",
         "value": true
     },
+    "monooutput": {
+        "type": "boolean",
+        "value": false
+    },
     "eqfrom": {
         "type": "string",
         "value": "local"
