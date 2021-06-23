@@ -459,7 +459,7 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                         self.lastUri = null;
                         self.cameFromMenu = true;
 
-                        self.pandoraHandler.getNewTracks()
+                        return self.pandoraHandler.getNewTracks()
                             .then(newTracks => {
                                 if (newTracks.length > 0) {
                                     return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
@@ -469,13 +469,14 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
                                             return self.commandRouter.stateMachine.play(index);
                                         });
                                 }
+
+                                self.commandRouter.pushToastMessage('error', 'Pandora',
+                                'Failed to load tracks from ' + self.currStation.name);
+    
+                                return self.pUtil.generalReject(fnName, 'Failed to load tracks from ' +
+                                    self.currStation.name);
                             });
 
-                        self.commandRouter.pushToastMessage('error', 'Pandora',
-                            'Failed to load tracks from ' + self.currStation.name);
-
-                        return self.pUtil.generalReject(fnName, 'Failed to load tracks from ' +
-                            self.currStation.name);
                     });
             }
             else {
@@ -744,7 +745,7 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
             .then(diff1 => {
                 return getSQInfo()
                     .then(sQInfo1 => {
-                        self.pUtil.logInfo(fnName + 'diff1: ' + diff1 +
+                        self.pUtil.logInfo(fnName, 'diff1: ' + diff1 +
                             ' sQPos1: ' + sQInfo1.sQPos);
                         if (sQInfo1.sQPos != 0 || diff1 < 0) { // will fetch tracks
                             self.pUtil.logInfo(fnName, 'Fetching tracks');
@@ -762,7 +763,7 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
                                                 if (diff2 > 0) {
                                                     return getSQInfo()
                                                         .then(sQInfo2 => {
-                                                            self.pUtil.logInfo(fnName + 'diff2 > 0: ' + diff2 +
+                                                            self.pUtil.logInfo(fnName, 'diff2 > 0: ' + diff2 +
                                                                 ' sQPos2: ' + sQInfo2.sQPos);
                                                             return self.removeOldTrackBlock(sQInfo2.sQPos, diff2);
                                                         });

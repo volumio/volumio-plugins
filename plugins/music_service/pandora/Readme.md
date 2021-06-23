@@ -179,6 +179,11 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
    * `PandoraHandler::setBandFilter`, `PandoraHandler::setMaxStationTracks`, and 
      `PandoraHandler::getNewTracks` now return a Promise.
 
+### Version 2.9.2
+   #### Fixes
+   * Problem fetching tracks in `handleBrowseUri`.  Call to getNewTracks is now different due to returned Prommise.
+   * Small logging fix in `fetchAndAddTracks`.
+
 ## Issues
 
 * ~~Next track is not working properly.  Hopefully there will be a fix!~~<br/>
