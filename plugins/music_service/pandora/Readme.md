@@ -181,7 +181,7 @@ I can't think of any prerequistes other than SSH access to Volumio and a Pandora
 
 ### Version 2.9.2
    #### Fixes
-   * Problem fetching tracks in `handleBrowseUri`.  Call to getNewTracks is now different due to returned Prommise.
+   * Fixed problem fetching tracks in `handleBrowseUri`.  Call to getNewTracks is now different due to returned Promise.
    * Small logging fix in `fetchAndAddTracks`.
 
 ## Issues
