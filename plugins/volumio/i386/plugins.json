@@ -382,6 +382,24 @@
 						}
 					],
 					"updated": "5-10-2020"
+				},
+				{
+					"prettyName": "Music Services Shield",
+					"icon": "fa-lightbulb-o",
+					"name": "music_services_shield",
+					"version": "1.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/music_services_shield/music_services_shield.zip",
+					"license": "ISC",
+					"description": "Separates music processes from other processes, allocates them to their own CPU and assigns them real time priority.",
+					"details": "Uses the 'cset' package and the 'shield' feature to allocate music processes to a different CPU to other processes. Also sets the process priority to 'RT'. ",
+					"author": "Pete Callaghan",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "27-6-2021"
 				}
 			]
 		}
