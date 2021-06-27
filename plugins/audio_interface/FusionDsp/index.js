@@ -1298,6 +1298,16 @@ FusionDsp.prototype.enableeffect = function () {
 
 };
 
+FusionDsp.prototype.disableeffect = function () {
+  const self = this;
+  self.config.set('effect', false)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  self.refreshUI();
+
+};
+
 FusionDsp.prototype.getConfigurationFiles = function () {
   return ['config.json'];
 };
