@@ -30,6 +30,7 @@ const toolspath = "INTERNAL/FusionDsp/tools/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
 const coefQ = 1.1 //Q for grapics EQ
 
+
 // Define the Parameq class
 module.exports = FusionDsp;
 
@@ -58,6 +59,9 @@ FusionDsp.prototype.onStart = function () {
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
   self.hwinfo();
+  if (self.config.get('loudness')) {
+    self.sendvolumelevel()
+  }
   /*-----------Experimental CamillaGui
 
   try {
@@ -601,71 +605,153 @@ FusionDsp.prototype.getUIConfig = function () {
       }
 
       //----------------end of convfir section------------
+      //---------------more settings---------------------
+      var moresettings = self.config.get('moresettings')
+      if (moresettings == false) {
+        uiconf.sections[1].content.push(
+          {
+            "id": "moresettings",
+            "element": "button",
+            "label": self.commandRouter.getI18nString('MORE_SETTINGS'),
+            "description": self.commandRouter.getI18nString('MORE_SETTINGS_DOC'),
+            "onClick": {
+              "type": "plugin",
+              "endpoint": "audio_interface/fusiondsp",
+              "method": "moresettings",
+              "data": [],
 
-      //-----------------crossfeed -------------
-
-      var crossconfig = self.config.get('crossfeed')
-      switch (crossconfig) {
-        case ("None"):
-          var crosslabel = 'None'
-          break;
-        case ("bauer"):
-          var crosslabel = "Bauer 700Hz/4.5dB"
-          break;
-        case ("chumoy"):
-          var crosslabel = "Chu Moy 700Hz/6dB"
-          break;
-        case ("jameier"):
-          var crosslabel = "Jan Meier 650Hz/9.5dB"
-          break;
-        case ("linkwitz"):
-          var crosslabel = "Linkwitz 700Hz/2dB"
-          break;
-        default: "None"
-      }
-
-      uiconf.sections[1].content.push(
-        {
-          "id": "crossfeed",
-          "element": "select",
-          "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
-          "label": self.commandRouter.getI18nString('CROSSFEED'),
-          "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
-          "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }],
-          "visibleIf": {
-            "field": "showeq",
-            "value": true
+            },
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
           }
-        },
-        {
-          "id": "monooutput",
-          "element": "switch",
-          "doc": self.commandRouter.getI18nString('MONOOUTPUT_DOC'),
-          "label": self.commandRouter.getI18nString('MONOOUTPUT'),
-          "value": self.config.get('monooutput')
+        )
+        // uiconf.sections[nsections].content[(+ncontent * 3)].hidden = false;
+      } else if (moresettings) {
+        uiconf.sections[1].content.push(
+          {
+            "id": "lesssettings",
+            "element": "button",
+            "label": self.commandRouter.getI18nString('LESS_SETTINGS'),
+            "description": self.commandRouter.getI18nString('LESS_SETTINGS_DOC'),
+            "onClick": {
+              "type": "plugin",
+              "endpoint": "audio_interface/fusiondsp",
+              "method": "lesssettings",
+              "data": []
+            },
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
+          }
+        )
+      }
+      //-----------------crossfeed -------------
+      if (moresettings) {
+        var crossconfig = self.config.get('crossfeed')
+        switch (crossconfig) {
+          case ("None"):
+            var crosslabel = 'None'
+            break;
+          case ("bauer"):
+            var crosslabel = "Bauer 700Hz/4.5dB"
+            break;
+          case ("chumoy"):
+            var crosslabel = "Chu Moy 700Hz/6dB"
+            break;
+          case ("jameier"):
+            var crosslabel = "Jan Meier 650Hz/9.5dB"
+            break;
+          case ("linkwitz"):
+            var crosslabel = "Linkwitz 700Hz/2dB"
+            break;
+          default: "None"
         }
-        //------------experimental
-        /*
-       var devicename = self.commandRouter.sharedVars.get('system.name');
 
-        {
-          "id": "camillagui",
-          "element": "button",
-          "label": "CamillaGui (experimental)",
-          "doc": "CamillaGui",
-          "onClick": {
-            "type": "openUrl",
-            "url": "http://" + devicename + ".local:5011"
+        uiconf.sections[1].content.push(
+          {
+            "id": "crossfeed",
+            "element": "select",
+            "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
+            "label": self.commandRouter.getI18nString('CROSSFEED'),
+            "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
+            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }],
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
           },
-          "visibleIf": {
-            "field": "showeq",
-            "value": true
+          {
+            "id": "monooutput",
+            "element": "switch",
+            "doc": self.commandRouter.getI18nString('MONOOUTPUT_DOC'),
+            "label": self.commandRouter.getI18nString('MONOOUTPUT'),
+            "value": self.config.get('monooutput'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
           },
-        } 
-        */
-        //-----------------
-      )
-
+          {
+            "id": "loudness",
+            "element": "switch",
+            "doc": self.commandRouter.getI18nString('LOUDNESS_DOC'),
+            "label": self.commandRouter.getI18nString('LOUDNESS'),
+            "value": self.config.get('loudness'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
+          },
+          {
+            "id": "loudnessthreshold",
+            "element": "equalizer",
+            "label": self.commandRouter.getI18nString("LOUDNESS_THRESHOLD"),
+            "doc": self.commandRouter.getI18nString('LOUDNESS_THRESHOLD_DOC'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            },
+            "config": {
+              "orientation": "horizontal",
+              "bars": [
+                {
+                  "min": "10",
+                  "max": "100",
+                  "step": "1",
+                  "value": self.config.get('loudnessthreshold'),
+                  "ticksLabels": [
+                    "%"
+                  ],
+                  "tooltip": "always"
+                }
+              ]
+            }
+          },
+          //------------experimental
+          /*
+         var devicename = self.commandRouter.sharedVars.get('system.name');
+  
+          {
+            "id": "camillagui",
+            "element": "button",
+            "label": "CamillaGui (experimental)",
+            "doc": "CamillaGui",
+            "onClick": {
+              "type": "openUrl",
+              "url": "http://" + devicename + ".local:5011"
+            },
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            },
+          } 
+          */
+          //-----------------
+        )
+      }
       self.logger.info('effect ' + effect)
 
       if (effect == true) {
@@ -700,58 +786,64 @@ FusionDsp.prototype.getUIConfig = function () {
           }
         )
       }
+      if (moresettings) {
 
+        uiconf.sections[1].content.push(
+          {
+            "id": "leftlevel",
+            "element": "equalizer",
+            "label": self.commandRouter.getI18nString("LEFTLEVEL"),
+            "doc": self.commandRouter.getI18nString('LEFTLEVEL_DESC'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            },
+            "config": {
+              "orientation": "horizontal",
+              "bars": [
+                {
+                  "min": "-20",
+                  "max": "0",
+                  "step": "0.1",
+                  "value": self.config.get('leftlevel'),
+                  "ticksLabels": [
+                    "dB"
+                  ],
+                  "tooltip": "always"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rightlevel",
+            "element": "equalizer",
+            "label": self.commandRouter.getI18nString('RIGHTLEVEL'),
+            "doc": self.commandRouter.getI18nString("RIGHTLEVEL_DESC"),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            },
+            "config": {
+              "orientation": "horizontal",
+              "bars": [
+                {
+                  "min": "-20",
+                  "max": "0",
+                  "step": "0.1",
+                  "value": self.config.get('rightlevel'),
+                  "ticksLabels": [
+                    "dB"
+                  ],
+                  "tooltip": "always"
+                }
+              ]
+            }
+          }
+
+        )
+      }
       uiconf.sections[1].content.push(
-        {
-          "id": "leftlevel",
-          "element": "equalizer",
-          "label": self.commandRouter.getI18nString("LEFTLEVEL"),
-          "doc": self.commandRouter.getI18nString('LEFTLEVEL_DESC'),
-          "visibleIf": {
-            "field": "showeq",
-            "value": true
-          },
-          "config": {
-            "orientation": "horizontal",
-            "bars": [
-              {
-                "min": "-20",
-                "max": "0",
-                "step": "0.1",
-                "value": self.config.get('leftlevel'),
-                "ticksLabels": [
-                  "dB"
-                ],
-                "tooltip": "always"
-              }
-            ]
-          }
-        },
-        {
-          "id": "rightlevel",
-          "element": "equalizer",
-          "label": self.commandRouter.getI18nString('RIGHTLEVEL'),
-          "doc": self.commandRouter.getI18nString("RIGHTLEVEL_DESC"),
-          "visibleIf": {
-            "field": "showeq",
-            "value": true
-          },
-          "config": {
-            "orientation": "horizontal",
-            "bars": [
-              {
-                "min": "-20",
-                "max": "0",
-                "step": "0.1",
-                "value": self.config.get('rightlevel'),
-                "ticksLabels": [
-                  "dB"
-                ],
-                "tooltip": "always"
-              }
-            ]
-          }
-        },
+
         {
           "id": "showeq",
           "element": "switch",
@@ -766,6 +858,9 @@ FusionDsp.prototype.getUIConfig = function () {
       uiconf.sections[1].saveButton.data.push('leftlevel');
       uiconf.sections[1].saveButton.data.push('rightlevel');
       uiconf.sections[1].saveButton.data.push('monooutput');
+      uiconf.sections[1].saveButton.data.push('loudness');
+      uiconf.sections[1].saveButton.data.push('loudnessthreshold');
+      // uiconf.sections[1].saveButton.data.push('moresettings');
 
       self.logger.info(' Dsp mode set is ' + selectedsp)
 
@@ -1172,9 +1267,20 @@ FusionDsp.prototype.removeeq = function () {
   self.refreshUI();
 };
 
-FusionDsp.prototype.disableeffect = function () {
+
+FusionDsp.prototype.moresettings = function () {
   const self = this;
-  self.config.set('effect', false)
+  self.config.set('moresettings', true)
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  self.refreshUI();
+
+};
+
+FusionDsp.prototype.lesssettings = function () {
+  const self = this;
+  self.config.set('moresettings', false)
   setTimeout(function () {
     self.createCamilladspfile()
   }, 100);
@@ -1226,14 +1332,14 @@ FusionDsp.prototype.getAdditionalConf = function (type, controller, data) {
 // Plugin methods -----------------------------------------------------------------------------
 
 //------------Here we define a function to send a command to CamillaDsp through websocket---------------------
-FusionDsp.prototype.sendCommandToCamilla = function () {
+FusionDsp.prototype.sendCommandToCamilla = function (ccmd) {
   const self = this;
   const url = 'ws://localhost:9876'
-  const command = ('\"Reload\"');
+  //const command = ('\"Reload\"');
   const connection = new WebSocket(url)
 
   connection.onopen = () => {
-    connection.send(command)
+    connection.send(ccmd)
   }
 
   connection.onerror = (error) => {
@@ -1323,6 +1429,9 @@ FusionDsp.prototype.testclipping = function () {
   let arrreduced;
   let filelength = self.config.get('filter_size');
   setTimeout(function () {
+    self.config.set('loudness', false);
+    self.config.set('monooutput', false);
+    self.config.set('crossfeed', 'None');
     self.config.set('attenuationl', 0);
     self.config.set('attenuationr', 0);
     self.config.set('testclipping', true)
@@ -1575,6 +1684,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let subtypex = eqval.toString().split('|')
       let resulttype = ''
       let crossatt, crossfreq
+      let loudnessGain = self.config.get('loudnessGain')
 
       let enableresampling = self.config.get('enableresampling')
       let resamplingq = self.config.get('resamplingq')
@@ -1621,6 +1731,8 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       } else if (enableresampling == false) {
         composeddevice = '\n';
       }
+
+
       //------crossfeed section------
 
       var crossconfig = self.config.get('crossfeed')
@@ -1683,6 +1795,37 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       }
 
       //------end crossfeed section
+      //------volume loudness section---
+
+      let loudness = self.config.get('loudness')
+      if (loudness) {
+        self.logger.info('Loudness is ON ' + loudness)
+        var composedeq = '';
+        var pipelineL = '';
+        var pipelineR = '';
+        composedeq += '  highshelf:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: Highshelf\n'
+        composedeq += '      freq: 3600\n'
+        composedeq += '      slope: 12\n'
+        composedeq += '      gain: ' + loudnessGain + '\n'
+        composedeq += '\n'
+        composedeq += '  lowshelf:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: Lowshelf\n'
+        composedeq += '      freq: 70\n'
+        composedeq += '      slope: 12\n'
+        composedeq += '      gain: ' + loudnessGain + '\n'
+        result += composedeq
+        //-----loudness pipeline
+
+        // gainmaxused += loudnessGain
+      }
+      else {
+        loudnessGain = 0
+      }
 
       for (let o = 1; o < (nbreq + 1); o++) {
 
@@ -1743,6 +1886,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           eqv = eqa.split(',');
           var coef;
           var eqc = 'eq' + o;
+
           if ((typer == 'Highshelf' || typer == 'Lowshelf')) {
 
             composedeq += '  ' + eqc + ':\n';
@@ -1851,25 +1995,39 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           outrpipeline += pipelineR
           pipelinelr = outlpipeline.slice(17)
           pipelinerr = outrpipeline.slice(17)
-          if (pipelinelr == '') {
-            pipelinelr = 'nulleq2'
+          if (loudness == false) {
 
-          }
-          if (pipelinerr == '') {
-            pipelinerr = 'nulleq2'
+            if (pipelinelr == '') {
+              pipelinelr = 'nulleq2'
+            }
+
+            if (pipelinerr == '') {
+              pipelinerr = 'nulleq2'
+            }
           }
           gainmaxused += gainmax
+          if (self.config.get('loudness') && effect) {
+            pipelinelr += '      - highshelf\n';
+            pipelinelr += '      - lowshelf\n';
+            pipelinerr += '      - highshelf\n';
+            pipelinerr += '      - lowshelf\n';
+            self.logger.info('loudness pipeline set')
+          }
+
 
         };
 
+
       };
 
-      gainmaxused += ',0'
+      gainmaxused += ',0' + loudnessGain
 
       //-----gain calculation
       self.logger.info('gainmaxused' + gainmaxused)
       self.logger.info('crossatt ' + crossatt)
       self.logger.info('pipelinerr ' + pipelinerr)
+
+
 
       //if ((pipelinelr != 'nulleq2' || pipelinerr != 'nulleq2') || ((pipelinelr != '      - nulleq' && pipelinerr != '      - nulleq'))) {
       if (effect) {
@@ -2122,7 +2280,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         .replace("${mixers}", composedmixer)
         //.replace("${gain}", leftgain)
         //.replace("${gain}", rightgain)
-        .replace("${composedpipeline}", composedpipeline)
+        .replace("${composedpipeline}", composedpipeline.replace(/-       - /g, '- '))
         //  .replace("${pipelineR}", pipelinerr)
         ;
       fs.writeFile("/data/configuration/audio_interface/fusiondsp/camilladsp.yml", conf, 'utf8', function (err) {
@@ -2130,7 +2288,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           defer.reject(new Error(err));
         else defer.resolve();
       });
-      self.sendCommandToCamilla();
+      self.sendCommandToCamilla('\"Reload\"');
     });
 
   } catch (err) {
@@ -2386,9 +2544,17 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
   } else {
     self.config.set('crossfeed', data['crossfeed'].value)
   }
+  let loudness = data["loudness"]
+  if (loudness) {
+    self.sendvolumelevel()
+  } else {
+    socket.off()
+  }
   self.config.set('leftlevel', data.leftlevel);
   self.config.set('rightlevel', data.rightlevel);
   self.config.set('monooutput', data["monooutput"]);
+  self.config.set('loudness', loudness);
+  self.config.set('loudnessthreshold', data.loudnessthreshold);
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
   self.config.set('usethispreset', 'no preset used');
@@ -2941,6 +3107,29 @@ FusionDsp.prototype.playToolsFile = function (data) {
   self.commandRouter.replaceAndPlay({ uri: track });
   self.commandRouter.volumioClearQueue();
 };
+
+
+FusionDsp.prototype.sendvolumelevel = function () {
+  const self = this;
+  let loudnessVolumeThreshold = 50
+  let loudnessLowThreshold = 10
+  let loudnessRange = loudnessVolumeThreshold - loudnessLowThreshold
+  let ratio = 15 / loudnessRange
+  let loudnessGain
+  socket.on('pushState', function (data) {
+    if (5 < data.volume && data.volume < loudnessVolumeThreshold) {
+      loudnessGain = ratio * (loudnessVolumeThreshold - data.volume)
+    } else if (data.volume <= loudnessLowThreshold) {
+      loudnessGain = 20
+    } else if (data.volume >= loudnessLowThreshold) {
+      loudnessGain = 0
+    }
+
+    self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
+    self.config.set('loudnessGain', Number.parseFloat(loudnessGain).toFixed(2))
+    self.createCamilladspfile()
+  })
+}
 /*
 test for future featuures...
 FusionDsp.prototype.displayfilters = function () {

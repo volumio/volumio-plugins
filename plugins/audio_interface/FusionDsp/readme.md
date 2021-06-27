@@ -1,4 +1,4 @@
-June 21th 2021
+June 27th 2021
 
 
 ##  For Volumio3
@@ -20,9 +20,10 @@ Provide
     - import for local EQ file (must be in /data/INTERNAM/FusionDsp/peq/)
 - 3 preset
 - Or a convolution filters (FIR) with autoswitch samplerate for filters
-    - DRC-FIR to create filter with a impulse
+    - DRC-FIR to create filter with an impulse
 
-For all type
+For all 
+- Progressiv Loudness with threshold setting
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
@@ -137,6 +138,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+June 27th 2021
+
+- Progressiv Loudness
+- UI rework
 
 June 21th 2021
 

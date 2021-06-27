@@ -123,10 +123,6 @@
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
     },
-    "loudness": {
-        "type": "string",
-        "value": "-4,-6,-8,-8,3,7,0,0,0,-8,0,-4,-9,5,0"
-    },
     "rock": {
         "type": "string",
         "value": "-0.5,1,1.5,1,0.5,1.5,1,0.5,-0.5,-1,-1,1,2,2,1.5"
@@ -156,11 +152,23 @@
         "value": "None",
         "label": "None"
     },
+    "loudnessGain": {
+        "type": "number",
+        "value": 0
+    },
+    "loudnessthreshold": {
+        "type": "number",
+        "value": 50
+    },
     "showeq": {
         "type": "boolean",
         "value": true
     },
     "monooutput": {
+        "type": "boolean",
+        "value": false
+    },
+    "loudness": {
         "type": "boolean",
         "value": false
     },
@@ -306,6 +314,10 @@
         "value": "44100"
     },
     "toolsinstalled": {
+        "type": "boolean",
+        "value": false
+    },
+    "moresettings": {
         "type": "boolean",
         "value": false
     }
