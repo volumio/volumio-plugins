@@ -28,7 +28,7 @@ const filtersource = "/data/INTERNAL/FusionDsp/filter-sources/";
 const tccurvepath = "/data/INTERNAL/FusionDsp/target-curves/";
 const toolspath = "INTERNAL/FusionDsp/tools/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
-const coefQ = 1.1 //Q for grapics EQ
+const coefQ = 1.85//Q for grapics EQ
 
 
 // Define the Parameq class
@@ -580,7 +580,7 @@ FusionDsp.prototype.getUIConfig = function () {
             let litems = allfilter.split(',');
             for (let a in litems) {
 
-              self.logger.info('litems ' + litems[a])
+            //  self.logger.info('litems ' + litems[a])
 
               self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
                 value: litems[a],
@@ -910,7 +910,7 @@ FusionDsp.prototype.getUIConfig = function () {
       } else if ((selectedsp == 'EQ15') || (selectedsp == '2XEQ15')) {
         presetlist = ('mypreset1,mypreset2,mypreset3,flat,rock,voice,classic,bass,soundtrack')
       } else {
-        self.logger.info('No preset for FIR')
+   //     self.logger.info('No preset for FIR')
         presetlist = ('mypreset1,mypreset2,mypreset3')
 
       }
@@ -949,7 +949,7 @@ FusionDsp.prototype.getUIConfig = function () {
             break;
           default: plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
         }
-        self.logger.info('preset label' + plabel)
+     //   self.logger.info('preset label' + plabel)
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
           value: pitems[x],
           label: plabel
@@ -1100,7 +1100,7 @@ FusionDsp.prototype.getUIConfig = function () {
               value: fitems[i],
               label: fitems[i]
             });
-            self.logger.info('available impulses to convert :' + fitems[i]);
+          //  self.logger.info('available impulses to convert :' + fitems[i]);
           }
         });
       } catch (e) {
@@ -1126,7 +1126,7 @@ FusionDsp.prototype.getUIConfig = function () {
               value: bitems[i],
               label: bitems[i]
             });
-            self.logger.info('available target curve :' + bitems[i]);
+         //   self.logger.info('available target curve :' + bitems[i]);
 
           }
         });
@@ -1342,14 +1342,15 @@ FusionDsp.prototype.getAdditionalConf = function (type, controller, data) {
 // Plugin methods -----------------------------------------------------------------------------
 
 //------------Here we define a function to send a command to CamillaDsp through websocket---------------------
-FusionDsp.prototype.sendCommandToCamilla = function (ccmd) {
+FusionDsp.prototype.sendCommandToCamilla = function () {
   const self = this;
   const url = 'ws://localhost:9876'
-  //const command = ('\"Reload\"');
+  const ccmd = ('\"Reload\"');
   const connection = new WebSocket(url)
 
   connection.onopen = () => {
     connection.send(ccmd)
+  //  self.logger.info('---------------- CamillaDsp reloaded')
   }
 
   connection.onerror = (error) => {
@@ -2068,7 +2069,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let leftgainmono = (+gainclipfree + +leftlevel - 6)
       let rightgainmono = (+gainclipfree + +rightlevel - 6);
       self.logger.info(result)
-      self.logger.info('gain applied ' + leftgain)
+     // self.logger.info('gain applied ' + leftgain)
 
       ///----mixers and pipelines generation
       var composedmixer = ''
@@ -2280,7 +2281,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       }
 
 
-      self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
+      //self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
 
       let conf = data.replace("${resulteq}", result)
         .replace("${resampling}", (composeddevice))
@@ -2298,7 +2299,8 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           defer.reject(new Error(err));
         else defer.resolve();
       });
-      self.sendCommandToCamilla('\"Reload\"');
+      self.sendCommandToCamilla()
+
     });
 
   } catch (err) {
@@ -2743,6 +2745,7 @@ FusionDsp.prototype.usethispreset = function (data) {
   if ((selectedsp == 'EQ15') || (selectedsp == '2XEQ15')) {
     self.config.set('geq15', self.config.get(eqspreset))
     self.config.set('x2geq15', self.config.get(reqspreset))
+    self.config.set("usethispreset", preset);
 
   } else if (selectedsp == 'PEQ') {
     var nbreqc = self.config.get('p' + spreset + 'nbreq')
@@ -2750,15 +2753,13 @@ FusionDsp.prototype.usethispreset = function (data) {
     self.config.set('mergedeq', self.config.get('mergedeq' + spreset));
     self.config.set("usethispreset", preset);
 
-
   } else if (selectedsp == 'convfir') {
-    self.logger.info('aaaaaaaaaaaaaaaaaa')
+ //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
   self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
 
   setTimeout(function () {
     self.refreshUI();
-
     self.createCamilladspfile()
   }, 300);
   return defer.promise;
@@ -3135,13 +3136,13 @@ FusionDsp.prototype.sendvolumelevel = function () {
       loudnessGain = 0
     }
 
-    self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
+   // self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
     self.config.set('loudnessGain', Number.parseFloat(loudnessGain).toFixed(2))
     self.createCamilladspfile()
   })
 }
 /*
-test for future featuures...
+test for future features...
 FusionDsp.prototype.displayfilters = function () {
   const self = this;
   const express = require('express');

@@ -1,4 +1,4 @@
-June 27th 2021
+June 28th 2021
 
 
 ##  For Volumio3
@@ -138,6 +138,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+June 28th 2021
+
+- remove some log files
+- better Q value for graphic EQ 
 
 June 27th 2021
 
