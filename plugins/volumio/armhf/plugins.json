@@ -893,7 +893,7 @@
 					"prettyName": "Rotary Encoder",
 					"icon": "fa-circle-o-notch",
 					"name": "rotaryencoder",
-					"version": "1.2.2",
+					"version": "1.2.4",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder/rotaryencoder.zip",
 					"license": "MIT",
 					"description": "Provides a rotary encoder interface for use in Volumio 2.x",
@@ -905,7 +905,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "26-3-2019"
+					"updated": "28-6-2021"
 				},
 				{
 					"prettyName": "LedStatus",
