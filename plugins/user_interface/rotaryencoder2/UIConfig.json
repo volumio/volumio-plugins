@@ -1,0 +1,1078 @@
+{
+  "page": {
+    "label": "TRANSLATE.ROTARYENCODER2.CONFIG"
+  },
+  "sections": [
+	{
+		"id": "encoder0",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER2.ENCODER0",
+		"description": "TRANSLATE.ROTARYENCODER2.D_ENCODER0",
+		"icon": "fa-circle-notch",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder2",
+			"method": "updateEncoder"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER2.SAVE",
+			"data": [
+				"enabled0",
+				"rotaryType0",
+				"pinA0",
+				"pinB0",
+				"dialAction0",
+				"socketCmdCCW0",
+				"socketDataCCW0",
+				"socketCmdCW0",
+				"socketDataCW0",
+				"pinPush0",
+				"pinPushDebounce0",
+				"pushState0",
+				"pushAction0",
+				"socketCmdPush0",
+				"socketDataPush0",
+				"longPushAction0",
+				"socketCmdLongPush0",
+				"socketDataLongPush0"
+			]
+		},
+		"content": [
+			{
+				"id": "enabled0",
+				"element": "switch",
+				"label": "TRANSLATE.ROTARYENCODER2.ENABLE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_ENABLE",
+				"value": false
+			},
+			{
+				"id": "rotaryType0",
+				"element": "select",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.ROTARYTYPE",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_ROTARYTYPE",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "1/1"
+				},
+				{
+					"value": 2,
+					"label": "1/2"
+				},
+				{
+					"value": 4,
+					"label": "1/4"
+				}
+				]        
+			},
+			{
+			  "id":"pinA0",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled0", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINA",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINA",
+			  "value": ""
+			},
+			{
+			  "id":"pinB0",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled0", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINB",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINB",
+			  "value": ""
+			},
+			{
+				"id": "dialAction0",
+				"element": "select",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.DIALACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_DIALACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.VOLUME"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.SKIP"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.SEEK"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},
+			{
+			  "id":"socketCmdCCW0",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction0", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+			  "value": ""
+			},
+			{
+			  "id":"socketDataCCW0",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction0", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKDATACCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+			  "value": ""
+			},
+			{
+				"id":"socketCmdCW0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction0", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			  },
+			  {
+				"id":"socketDataCW0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction0", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATACW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			  },
+			  {
+			  "id":"pinPush0",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled0", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINPUSH",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSH",
+			  "value": ""
+			},
+			{
+				"id":"pinPushDebounce0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PINPUSHDEBOUNCE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSHDEBOUNCE",
+				"value": ""
+			},
+			{
+				"id": "pushState0",
+				"element": "switch",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHSTATE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHSTATE",
+				"value": false
+			},
+			{
+				"id": "pushAction0",
+				"element": "select",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdPush0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction0", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataPush0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction0", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			},
+			{
+				"id": "longPushAction0",
+				"element": "select",
+				"visibleIf": {"field": "enabled0", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.LONGPUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_LONGPUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdLongPush0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction0", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataLongPush0",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction0", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			}
+		  ]
+		},
+		{
+		"id": "encoder1",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER2.ENCODER1",
+		"description": "TRANSLATE.ROTARYENCODER2.D_ENCODER1",
+		"icon": "fa-circle-notch",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder2",
+			"method": "updateEncoder"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER2.SAVE",
+			"data": [
+				"enabled1",
+				"rotaryType1",
+				"pinA1",
+				"pinB1",
+				"dialAction1",
+				"socketCmdCCW1",
+				"socketDataCCW1",
+				"socketCmdCW1",
+				"socketDataCW1",
+				"pinPush1",
+				"pinPushDebounce1",
+				"pushState1",
+				"pushAction1",
+				"socketCmdPush1",
+				"socketDataPush1",
+				"longPushAction1",
+				"socketCmdLongPush1",
+				"socketDataLongPush1"
+			]
+		},
+		"content": [
+			{
+				"id": "enabled1",
+				"element": "switch",
+				"label": "TRANSLATE.ROTARYENCODER2.ENABLE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_ENABLE",
+				"value": false
+			},
+			{
+				"id": "rotaryType1",
+				"element": "select",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.ROTARYTYPE",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_ROTARYTYPE",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "1/1"
+				},
+				{
+					"value": 2,
+					"label": "1/2"
+				},
+				{
+					"value": 4,
+					"label": "1/4"
+				}
+				]        
+			},
+			{
+			  "id":"pinA1",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled1", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINA",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINA",
+			  "value": ""
+			},
+			{
+			  "id":"pinB1",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled1", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINB",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINB",
+			  "value": ""
+			},
+			{
+				"id": "dialAction1",
+				"element": "select",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.DIALACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_DIALACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.VOLUME"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.SKIP"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.SEEK"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},
+			{
+			  "id":"socketCmdCCW1",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction1", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+			  "value": ""
+			},
+			{
+			  "id":"socketDataCCW1",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction1", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKDATACCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+			  "value": ""
+			},
+			{
+				"id":"socketCmdCW1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction1", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			  },
+			  {
+				"id":"socketDataCW1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction1", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATACW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			  },
+			{
+			"id":"pinPush1",
+			"type":"text",
+			"element": "input",
+			"visibleIf": {"field": "enabled1", "value": true},
+			"label": "TRANSLATE.ROTARYENCODER2.PINPUSH",
+			"doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSH",
+			"value": ""
+			},
+			{
+				"id":"pinPushDebounce1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PINPUSHDEBOUNCE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSHDEBOUNCE",
+				"value": ""
+			},
+			{
+				"id": "pushState1",
+				"element": "switch",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHSTATE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHSTATE",
+				"value": false
+			},
+			{
+				"id": "pushAction1",
+				"element": "select",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdPush1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction1", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataPush1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction1", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			},
+			{
+				"id": "longPushAction1",
+				"element": "select",
+				"visibleIf": {"field": "enabled1", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.LONGPUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_LONGPUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdLongPush1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction1", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataLongPush1",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction1", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			}
+		]
+	},
+	{
+		"id": "encoder2",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER2.ENCODER2",
+		"description": "TRANSLATE.ROTARYENCODER2.D_ENCODER2",
+		"icon": "fa-circle-notch",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder2",
+			"method": "updateEncoder"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER2.SAVE",
+			"data": [
+				"enabled2",
+				"rotaryType2",
+				"pinA2",
+				"pinB2",
+				"dialAction2",
+				"socketCmdCCW2",
+				"socketDataCCW2",
+				"socketCmdCW2",
+				"socketDataCW2",
+				"pinPush2",
+				"pinPushDebounce2",
+				"pushState2",
+				"pushAction2",
+				"socketCmdPush2",
+				"socketDataPush2",
+				"longPushAction2",
+				"socketCmdLongPush2",
+				"socketDataLongPush2"
+			]
+		},
+		"content": [
+			{
+				"id": "enabled2",
+				"element": "switch",
+				"label": "TRANSLATE.ROTARYENCODER2.ENABLE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_ENABLE",
+				"value": false
+			},
+			{
+				"id": "rotaryType2",
+				"element": "select",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.ROTARYTYPE",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_ROTARYTYPE",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "1/1"
+				},
+				{
+					"value": 2,
+					"label": "1/2"
+				},
+				{
+					"value": 4,
+					"label": "1/4"
+				}
+				]        
+			},
+			{
+			  "id":"pinA2",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled2", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINA",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINA",
+			  "value": ""
+			},
+			{
+			  "id":"pinB2",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled2", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINB",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINB",
+			  "value": ""
+			},
+			{
+				"id": "dialAction2",
+				"element": "select",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.DIALACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_DIALACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.VOLUME"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.SKIP"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.SEEK"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},
+			{
+			  "id":"socketCmdCCW2",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction2", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+			  "value": ""
+			},
+			{
+			  "id":"socketDataCCW2",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "dialAction2", "value": 4},
+			  "label": "TRANSLATE.ROTARYENCODER2.SOCKDATACCW",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+			  "value": ""
+			},
+			{
+				"id":"socketCmdCW2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction2", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMDCW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			  },
+			  {
+				"id":"socketDataCW2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "dialAction2", "value": 4},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATACW",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			  },
+			{
+			  "id":"pinPush2",
+			  "type":"text",
+			  "element": "input",
+			  "visibleIf": {"field": "enabled2", "value": true},
+			  "label": "TRANSLATE.ROTARYENCODER2.PINPUSH",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSH",
+			  "value": ""
+			},
+			{
+				"id":"pinPushDebounce2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PINPUSHDEBOUNCE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PINPUSHDEBOUNCE",
+				"value": ""
+			},
+			{
+				"id": "pushState2",
+				"element": "switch",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHSTATE",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHSTATE",
+				"value": false
+			},
+			{
+				"id": "pushAction2",
+				"element": "select",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.PUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_PUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdPush2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction2", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataPush2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "pushAction2", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			},
+			{
+				"id": "longPushAction2",
+				"element": "select",
+				"visibleIf": {"field": "enabled2", "value": true},
+				"label": "TRANSLATE.ROTARYENCODER2.LONGPUSHACTION",
+					"doc": "TRANSLATE.ROTARYENCODER2.D_LONGPUSHACTION",
+				"value": {"value": 0 ,"label": "..."},
+				"options": [
+				{
+					"value": 0,
+					"label": "..."
+				},
+				{
+					"value": 1,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAY"
+				},
+				{
+					"value": 2,
+					"label": "TRANSLATE.ROTARYENCODER2.PAUSE"
+				},
+				{
+					"value": 3,
+					"label": "TRANSLATE.ROTARYENCODER2.PLAYPAUSE"
+				},
+				{
+					"value": 4,
+					"label": "TRANSLATE.ROTARYENCODER2.STOP"
+				},
+				{
+					"value": 5,
+					"label": "TRANSLATE.ROTARYENCODER2.REPEAT"
+				},
+				{
+					"value": 6,
+					"label": "TRANSLATE.ROTARYENCODER2.RANDOM"
+				},
+				{
+					"value": 7,
+					"label": "TRANSLATE.ROTARYENCODER2.CLEARQUEUE"
+				},
+				{
+					"value": 8,
+					"label": "TRANSLATE.ROTARYENCODER2.MUTE"
+				},
+				{
+					"value": 9,
+					"label": "TRANSLATE.ROTARYENCODER2.UNMUTE"
+				},
+				{
+					"value": 10,
+					"label": "TRANSLATE.ROTARYENCODER2.TOGGLEMUTE"
+				},
+				{
+					"value": 11,
+					"label": "TRANSLATE.ROTARYENCODER2.SHUTDOWN"
+				},
+				{
+					"value": 12,
+					"label": "TRANSLATE.ROTARYENCODER2.REBOOT"
+				},
+				{
+					"value": 13,
+					"label": "TRANSLATE.ROTARYENCODER2.EMIT"
+				}
+				]        
+			},	
+			{
+				"id":"socketCmdLongPush2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction2", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKCMD",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKCMD",
+				"value": ""
+			},
+			{
+				"id":"socketDataLongPush2",
+				"type":"text",
+				"element": "input",
+				"visibleIf": {"field": "longPushAction2", "value": 13},
+				"label": "TRANSLATE.ROTARYENCODER2.SOCKDATA",
+				"doc": "TRANSLATE.ROTARYENCODER2.D_SOCKDATA",
+				"value": ""
+			}
+		]
+	},
+  {
+		"id": "debug_settings",
+		"element": "section",
+		"label": "TRANSLATE.ROTARYENCODER2.SET_DEBUG",
+		"description": "TRANSLATE.ROTARYENCODER2.D_SET_DEBUG",
+		"icon": "fa-bug",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "user_interface/rotaryencoder2",
+			"method": "updateDebugSettings"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.ROTARYENCODER2.SAVE",
+			"data": [
+        "logging"
+			]
+		},
+		"content": [
+			{
+			  "id":"logging",
+			  "element":"switch",
+			  "label": "TRANSLATE.ROTARYENCODER2.LOGGING",
+			  "doc": "TRANSLATE.ROTARYENCODER2.D_LOGGING",
+			  "value": false
+			}
+    ]
+  }
+  ]
+}
