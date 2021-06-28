@@ -1,0 +1,223 @@
+{
+    "enabled0": {
+        "type": "boolean",
+        "value": false
+      },
+    "rotaryType0": {
+      "type": "number",
+      "value": 0
+    },
+    "pinA0": {
+      "type": "string",
+      "value": ""
+    },
+    "pinB0": {
+      "type": "string",
+      "value": ""
+    },
+    "dialAction0": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdCW0": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCW0": {
+      "type": "string",
+      "value": ""
+    },
+    "socketCmdCCW0": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCCW0": {
+      "type": "string",
+      "value": ""
+    },
+    "pinPush0": {
+      "type": "number",
+      "value": 0
+    },
+    "pinPushDebounce0": {
+      "type": "number",
+      "value": 0
+    },
+    "pushState0": {
+      "type": "boolean",
+      "value": false
+    },
+    "pushAction0": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdPush0": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataPush0": {
+      "type": "string",
+      "value": ""
+    },
+    "longPushAction0": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdLongPush0": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataLongPush0": {
+      "type": "string",
+      "value": ""
+    },
+    "enabled1": {
+        "type": "boolean",
+        "value": false
+      },
+    "rotaryType1": {
+      "type": "number",
+      "value": 0
+    },
+    "pinA1": {
+      "type": "string",
+      "value": ""
+    },
+    "pinB1": {
+      "type": "string",
+      "value": ""
+    },
+    "dialAction1": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdCW1": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCW1": {
+      "type": "string",
+      "value": ""
+    },
+    "socketCmdCCW1": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCCW1": {
+      "type": "string",
+      "value": ""
+    },
+    "pinPush1": {
+      "type": "number",
+      "value": 0
+    },
+    "pinPushDebounce1": {
+      "type": "number",
+      "value": 0
+    },
+    "pushState1": {
+      "type": "boolean",
+      "value": false
+    },
+    "pushAction1": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdPush1": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataPush1": {
+      "type": "string",
+      "value": ""
+    },
+    "longPushAction1": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdLongPush1": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataLongPush1": {
+      "type": "string",
+      "value": ""
+    },
+    "enabled2": {
+        "type": "boolean",
+        "value": false
+      },
+    "rotaryType2": {
+      "type": "number",
+      "value": 0
+    },
+    "pinA2": {
+      "type": "string",
+      "value": ""
+    },
+    "pinB2": {
+      "type": "string",
+      "value": ""
+    },
+    "dialAction2": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdCW2": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCW2": {
+      "type": "string",
+      "value": ""
+    },
+    "socketCmdCCW2": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataCCW2": {
+      "type": "string",
+      "value": ""
+    },
+    "pinPush2": {
+      "type": "number",
+      "value": 0
+    },
+    "pinPushDebounce2": {
+      "type": "number",
+      "value": 0
+    },
+    "pushState2": {
+      "type": "boolean",
+      "value": false
+    },
+    "pushAction2": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdPush2": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataPush2": {
+      "type": "string",
+      "value": ""
+    },
+    "longPushAction2": {
+      "type": "number",
+      "value": 0
+    },
+    "socketCmdLongPush2": {
+      "type": "string",
+      "value": ""
+    },
+    "socketDataLongPush2": {
+      "type": "string",
+      "value": ""
+    },
+    "logging": {
+      "type": "boolean",
+      "value": false
+    }
+}
+  

@@ -11,3 +11,4 @@ node_modules/
 .DS_Store
 **/.DS_Store
 plugins/music_service/.DS_Store
+**/.com.apple.timemachine*
