@@ -1,14 +1,24 @@
 //randomAlbum
 
-const io = require('socket.io-client');
-const socket = io.connect('http://localhost:3000');
-
-// Call the endpoint
-const endPoint = { 'type':'plugin', 'endpoint': 'miscellanea/randomizer', 'method': 'randomAlbum' };
-socket.emit('callMethod', endPoint);
-
-// Sleep and exit.
-setTimeout(() => process.exit(0), 250);
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+socket.emit('clearQueue');
+socket.emit('browseLibrary',{'uri':'albums://'});
+socket.on('pushBrowseLibrary',function(data)
+{
+  var list = data.navigation.lists[0].items;
+  q = (Math.random() * ((list.length-1 - 0) + 1)) + 0;
+  q = Math.round(q);
+  select = list[q];
+  select = list[q];
+  tidyuri = select.uri.replace(/%20/g, " ");
+  socket.emit('addToQueue', {'uri':tidyuri})
+  socket.emit('play');
+});
+socket.on('pushQueue', function(data) { if (data.length > 0) {
+  socket.emit('play');
+  socket.disconnect(); } } );
+setTimeout(function() { socket.disconnect(); }, 2000);
 
 
 
