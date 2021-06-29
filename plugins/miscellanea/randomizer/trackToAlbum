@@ -1,10 +1,25 @@
-// trackToAlbum
-const io = require('socket.io-client');
-const socket = io.connect('http://localhost:3000');
 
-// Call the endpoint
-const endPoint = { 'type':'plugin', 'endpoint': 'miscellanea/randomizer', 'method': 'trackToAlbum' };
-socket.emit('callMethod', endPoint);
+//trkToAlbum
 
-// Sleep and exit.
-setTimeout(() => process.exit(0), 250);
+var io = require('socket.io-client');
+var socket = io.connect('http://localhost:3000');
+socket.emit('getState', '');
+socket.on('pushState', function (data) {
+        if (data.uri.length != 0) {
+                album = (data.uri.lastIndexOf('/'));
+                data.uri = data.uri.substring(0, album);
+                socket.emit('clearQueue');
+                socket.emit('addToQueue', {
+                        'uri': data.uri
+                })
+                socket.removeAllListeners('pushState');
+                socket.on('pushState', function () {
+                });
+        }
+});
+setTimeout(function () {
+        socket.emit("play",{"value":0});
+        socket.disconnect();
+}, 3000);
+
+
