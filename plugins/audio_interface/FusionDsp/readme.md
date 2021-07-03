@@ -1,4 +1,4 @@
-June 28th 2021
+JULY 3rd 2021
 
 
 ##  For Volumio3
@@ -138,6 +138,12 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+July 3rd 2021
+
+- New PEQ according to CamillaDsp v 0;5.2
+- Fix for settings unsaved when lesssettings was activated
+- Updated screenshot
 
 June 28th 2021
 

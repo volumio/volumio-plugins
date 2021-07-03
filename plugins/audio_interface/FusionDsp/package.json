@@ -1,6 +1,6 @@
 {
   "name": "fusiondsp",
-  "version": "0.0.3-RC2",
+  "version": "0.0.3-RC3",
   "description": "A complete Dsp centre",
   "main": "index.js",
   "scripts": {

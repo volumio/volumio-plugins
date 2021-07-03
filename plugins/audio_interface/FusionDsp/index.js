@@ -141,7 +141,7 @@ FusionDsp.prototype.hwinfo = function () {
       samplerates = hwinfoJSON.samplerates.value;
       //  self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + nchannels + ' <-AAAAAAAAAAAAA');
       //   self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + formats + ' <-AAAAAAAAAAAAA');
-      self.logger.info('AAAAAAAAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.logger.info('AAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
       // self.config.set('nchannels', nchannels);
       // self.config.set('formats', formats);
       self.config.set('probesmplerate', samplerates);
@@ -222,9 +222,62 @@ FusionDsp.prototype.getUIConfig = function () {
 
 
           let typeinui = subtypex[((n - 1) * 4) + 1]
-          if (typeinui == undefined) {
-            typeinui = 'None'
+          let peqlabel
+          // if (typeinui == undefined) {
+          // typeinui = 'None'
+          switch (typeinui) {
+            case ("undefined"):
+              peqlabel = "None"
+              typeinui = 'None'
+              break;
+            case ("None"):
+              peqlabel = "None"
+              break;
+            case ("Peaking"):
+              peqlabel = "Peaking Hz,dB,Q"
+              break;
+            case ("Peaking2"):
+              peqlabel = "Peaking Hz,dB,Range"
+              break;
+            case ("Lowshelf"):
+              peqlabel = "Lowshelf Hz,dB,slope dB/Octave"
+              break;
+            case ("Lowshelf2"):
+              peqlabel = "Lowshelf Hz,dB,Q"
+              break;
+            case ("Highshelf"):
+              peqlabel = "Highshelf Hz,dB,slope dB/Octave"
+              break;
+            case ("Highshelf2"):
+              peqlabel = "Highshelf Hz,dB,Q"
+              break;
+            case ("Highpass"):
+              peqlabel = "Highpass Hz,Q"
+              break;
+            case ("Highpass2"):
+              peqlabel = "Highpass Hz,bandwidth Octave"
+              break;
+            case ("Lowpass"):
+              peqlabel = "Lowpass Hz,Q"
+              break;
+            case ("Highpass"):
+              peqlabel = "Highpass Hz,bandwidth Octave"
+              break;
+            case ("LowpassFO"):
+              peqlabel = "LowpassFO Hz"
+              break;
+            case ("HighpassFO"):
+              peqlabel = "HighpassFO Hz"
+              break;
+            case ("Notch"):
+              peqlabel = "Notch Hz,Q"
+              break;
+            case ("Notch2"):
+              peqlabel = "Notch Hz,bandwidth Octave"
+              break;
+            default: "None"
           }
+          //}
 
 
           let scopeinui = subtypex[((n - 1) * 4) + 2]
@@ -237,6 +290,23 @@ FusionDsp.prototype.getUIConfig = function () {
             eqinui = '0,0,0'
           }
 
+          let options = [{ "value": "None", "label": "None" },
+          { "value": "Peaking", "label": "Peaking Hz,dB,Q" },
+          { "value": "Peaking2", "label": "Peaking Hz,dB,Range" },
+          { "value": "Lowshelf", "label": "Lowshelf Hz,dB,slope dB/Octave" },
+          { "value": "Lowshelf2", "label": "Lowshelf Hz,dB,Q" },
+          { "value": "Highshelf", "label": "Highshelf Hz,dB,slope dB/Octave" },
+          { "value": "Highshelf2", "label": "Highshelf Hz,dB,Q" },
+          { "value": "Notch", "label": "Notch Hz,Q" },
+          { "value": "Notch2", "label": "Notch Hz,bandwidth Octave" },
+          { "value": "Highpass", "label": "Highpass Hz,Q" },
+          { "value": "Highpass2", "label": "Highpass Hz,bandwidth Octave" },
+          { "value": "Lowpass", "label": "Lowpass Hz,Q" },
+          { "value": "Lowpass2", "label": "Lowpass Hz,bandwidth Octave" },
+          { "value": "HighpassFO", "label": "HighpassFO Hz" },
+          { "value": "LowpassFO", "label": "LowpassFO Hz" },
+          { "value": "Remove", "label": "Remove" }]
+
           uiconf.sections[1].content.push(
 
             {
@@ -244,15 +314,14 @@ FusionDsp.prototype.getUIConfig = function () {
               "element": "select",
               "label": "Type Eq" + n,
               "doc": self.commandRouter.getI18nString("TYPEEQ_DOC"),
-              "value": { "value": typeinui, "label": typeinui },
-              "options": [{ "value": "None", "label": "None" }, { "value": "Peaking", "label": "Peaking" }, { "value": "Lowshelf", "label": "Lowshelf" }, { "value": "Highshelf", "label": "Highshelf" }, { "value": "Notch", "label": "Notch" }, { "value": "Highpass", "label": "Highpass" }, { "value": "Lowpass", "label": "Lowpass" }, { "value": "Remove", "label": "Remove" }],
+              "value": { "value": typeinui, "label": peqlabel },
+              "options": options,
               "visibleIf": {
                 "field": "showeq",
                 "value": true
               }
             }
           )
-
 
           uiconf.sections[1].content.push(
             {
@@ -580,7 +649,7 @@ FusionDsp.prototype.getUIConfig = function () {
             let litems = allfilter.split(',');
             for (let a in litems) {
 
-            //  self.logger.info('litems ' + litems[a])
+              //  self.logger.info('litems ' + litems[a])
 
               self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
                 value: litems[a],
@@ -648,8 +717,10 @@ FusionDsp.prototype.getUIConfig = function () {
           }
         )
       }
-      //-----------------crossfeed -------------
+
       if (moresettings) {
+
+        //-----------------crossfeed -------------
         var crossconfig = self.config.get('crossfeed')
         switch (crossconfig) {
           case ("None"):
@@ -669,6 +740,7 @@ FusionDsp.prototype.getUIConfig = function () {
             break;
           default: "None"
         }
+
 
         uiconf.sections[1].content.push(
           {
@@ -729,29 +801,31 @@ FusionDsp.prototype.getUIConfig = function () {
                 }
               ]
             }
-          },
-          //------------experimental
-          /*
-         var devicename = self.commandRouter.sharedVars.get('system.name');
-  
-          {
-            "id": "camillagui",
-            "element": "button",
-            "label": "CamillaGui (experimental)",
-            "doc": "CamillaGui",
-            "onClick": {
-              "type": "openUrl",
-              "url": "http://" + devicename + ".local:5011"
-            },
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
-            },
-          } 
-          */
-          //-----------------
+          }
         )
       }
+      //------------experimental
+      /*
+     var devicename = self.commandRouter.sharedVars.get('system.name');
+ 
+      {
+        "id": "camillagui",
+        "element": "button",
+        "label": "CamillaGui (experimental)",
+        "doc": "CamillaGui",
+        "onClick": {
+          "type": "openUrl",
+          "url": "http://" + devicename + ".local:5011"
+        },
+        "visibleIf": {
+          "field": "showeq",
+          "value": true
+        },
+      } 
+      */
+      //-----------------
+
+      // }
       self.logger.info('effect ' + effect)
 
       if (effect == true) {
@@ -842,8 +916,8 @@ FusionDsp.prototype.getUIConfig = function () {
 
         )
       }
-      uiconf.sections[1].content.push(
 
+      uiconf.sections[1].content.push(
         {
           "id": "showeq",
           "element": "switch",
@@ -851,15 +925,20 @@ FusionDsp.prototype.getUIConfig = function () {
           "label": self.commandRouter.getI18nString('SHOW_SETTINGS'),
           "value": self.config.get('showeq')
         }
-
       )
-      uiconf.sections[1].saveButton.data.push('showeq');
-      uiconf.sections[1].saveButton.data.push('crossfeed');
+
+      // if (moresettings) {
       uiconf.sections[1].saveButton.data.push('leftlevel');
       uiconf.sections[1].saveButton.data.push('rightlevel');
+      //}
+      uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('monooutput');
       uiconf.sections[1].saveButton.data.push('loudness');
       uiconf.sections[1].saveButton.data.push('loudnessthreshold');
+
+      // }
+      uiconf.sections[1].saveButton.data.push('showeq');
+
       // uiconf.sections[1].saveButton.data.push('moresettings');
 
       self.logger.info(' Dsp mode set is ' + selectedsp)
@@ -910,7 +989,7 @@ FusionDsp.prototype.getUIConfig = function () {
       } else if ((selectedsp == 'EQ15') || (selectedsp == '2XEQ15')) {
         presetlist = ('mypreset1,mypreset2,mypreset3,flat,rock,voice,classic,bass,soundtrack')
       } else {
-   //     self.logger.info('No preset for FIR')
+        //     self.logger.info('No preset for FIR')
         presetlist = ('mypreset1,mypreset2,mypreset3')
 
       }
@@ -949,7 +1028,7 @@ FusionDsp.prototype.getUIConfig = function () {
             break;
           default: plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
         }
-     //   self.logger.info('preset label' + plabel)
+        //   self.logger.info('preset label' + plabel)
         self.configManager.pushUIConfigParam(uiconf, 'sections[2].content[0].options', {
           value: pitems[x],
           label: plabel
@@ -1100,7 +1179,7 @@ FusionDsp.prototype.getUIConfig = function () {
               value: fitems[i],
               label: fitems[i]
             });
-          //  self.logger.info('available impulses to convert :' + fitems[i]);
+            //  self.logger.info('available impulses to convert :' + fitems[i]);
           }
         });
       } catch (e) {
@@ -1126,7 +1205,7 @@ FusionDsp.prototype.getUIConfig = function () {
               value: bitems[i],
               label: bitems[i]
             });
-         //   self.logger.info('available target curve :' + bitems[i]);
+            //   self.logger.info('available target curve :' + bitems[i]);
 
           }
         });
@@ -1350,7 +1429,7 @@ FusionDsp.prototype.sendCommandToCamilla = function () {
 
   connection.onopen = () => {
     connection.send(ccmd)
-  //  self.logger.info('---------------- CamillaDsp reloaded')
+    //  self.logger.info('---------------- CamillaDsp reloaded')
   }
 
   connection.onerror = (error) => {
@@ -1919,7 +1998,28 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
               pipelineL = '      - ' + eqc + '\n';
               pipelineR = '      - ' + eqc + '\n';
             }
+          }
+          if ((typer == 'Highshelf2' || typer == 'Lowshelf2')) {
 
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer.slice(0, -1) + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      q: ' + eqv[2] + '\n';
+            composedeq += '      gain: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + eqv[1];
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+            }
           } else if (typer == 'Peaking') {
 
             composedeq += '  ' + eqc + ':\n';
@@ -1941,6 +2041,29 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
               pipelineL = '      - ' + eqc + '\n';
               pipelineR = '      - ' + eqc + '\n';
             }
+
+          } else if (typer == 'Peaking2') {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer.slice(0, -1) + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      bandwidth: ' + eqv[2] + '\n';
+            composedeq += '      gain: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + eqv[1];
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+            }
+
           } else if (typer == 'Conv') {
             filterr = eval('filter' + o)
 
@@ -1976,6 +2099,48 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             composedeq += '      type: ' + typer + '\n';
             composedeq += '      freq: ' + eqv[0] + '\n';
             composedeq += '      q: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + 0
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+
+            }
+
+          } else if ((typer == 'Lowpass2' || typer == 'Highpass2' || typer == 'Notch2')) {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer.slice(0, -1) + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      bandwidth: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + 0
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+
+            }
+          } else if ((typer == 'LowpassFO' || typer == 'HighpassFO')) {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
             composedeq += '' + '\n';
             gainmax = ',' + 0
             if (scoper == 'L') {
@@ -2069,7 +2234,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let leftgainmono = (+gainclipfree + +leftlevel - 6)
       let rightgainmono = (+gainclipfree + +rightlevel - 6);
       self.logger.info(result)
-     // self.logger.info('gain applied ' + leftgain)
+      // self.logger.info('gain applied ' + leftgain)
 
       ///----mixers and pipelines generation
       var composedmixer = ''
@@ -2352,6 +2517,19 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         }
 
       }
+
+      if (typer == 'Peaking2') {
+
+        var q = Number(eqr[2]);
+        if ((Number.parseFloat(q)) && (q > 0 && q < 8)) {
+
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_RANGE') + eqc)
+          return;
+        }
+
+      }
+
       if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
 
         var q = Number(eqr[1]);
@@ -2363,7 +2541,17 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         }
 
       }
+      if (typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2') {
 
+        var q = Number(eqr[1]);
+        if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
+
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_RANGE') + eqc)
+          return;
+        }
+
+      }
       if (typer == 'Peaking' || typer == 'Highshelf' || typer == 'Lowshelf') {
 
         var g = Number(eqr[1]);
@@ -2385,7 +2573,19 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
           return;
         }
       }
-      if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
+
+      if (typer == 'Highshelf2' || typer == 'Lowshelf2') {
+
+        var s = Number(eqr[2]);
+        if ((Number.isInteger(s)) && (s > 0 && s < 13)) {
+
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_SLOPE_RANGE') + eqc)
+          return;
+        }
+      }
+
+      if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch' || typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2') {
 
         var q = eqr[2];
         self.logger.info('last value ' + q)
@@ -2395,7 +2595,18 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         } else {
           //do nthing
         }
+      }
 
+      if (typer == 'HighpassFO' || typer == 'LowpassFO') {
+
+        var q = eqr[1];
+        self.logger.info('last value ' + q)
+        if (q != undefined) {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('ONLY_FREQ') + eqc)
+          return;
+        } else {
+          //do nthing
+        }
       } else {
         self.logger.info('nothing todo');
       }
@@ -2409,7 +2620,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       //--- skip PEQ if set to REMOVE
       if (((data[typec].value) != 'Remove')) {
         test += ('Eq' + o + '|' + data[typec].value + '|' + data[scopec].value + '|' + data[eqc] + '|');
-        //  self.logger.info('test values ' + test)
+        //  self.logger.info('test values ' + test)0,0,0
         self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
       } else if (((data[typec].value) == 'Remove') && (nbreq == 1)) {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CANT_REMOVE_LAST_PEQ'))
@@ -2550,23 +2761,27 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
     }
   }
-  let monooutput = data["monooutput"]
-  if (monooutput) {
-    self.config.set('crossfeed', 'None');
-  } else {
-    self.config.set('crossfeed', data['crossfeed'].value)
+  if (self.config.get('moresettings')) {
+
+    let monooutput = data["monooutput"]
+    if (monooutput) {
+      self.config.set('crossfeed', 'None');
+    } else {
+      self.config.set('crossfeed', data['crossfeed'].value)
+    }
+    let loudness = data["loudness"]
+    if (loudness) {
+      self.sendvolumelevel()
+    } else {
+      socket.off()
+    }
+    self.config.set('leftlevel', data.leftlevel);
+    self.config.set('rightlevel', data.rightlevel);
+    self.config.set('monooutput', data["monooutput"]);
+    self.config.set('loudness', loudness);
+    self.config.set('loudnessthreshold', data.loudnessthreshold);
   }
-  let loudness = data["loudness"]
-  if (loudness) {
-    self.sendvolumelevel()
-  } else {
-    socket.off()
-  }
-  self.config.set('leftlevel', data.leftlevel);
-  self.config.set('rightlevel', data.rightlevel);
-  self.config.set('monooutput', data["monooutput"]);
-  self.config.set('loudness', loudness);
-  self.config.set('loudnessthreshold', data.loudnessthreshold);
+
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);
   self.config.set('usethispreset', 'no preset used');
@@ -2754,7 +2969,7 @@ FusionDsp.prototype.usethispreset = function (data) {
     self.config.set("usethispreset", preset);
 
   } else if (selectedsp == 'convfir') {
- //   self.logger.info('aaaaaaaaaaaaaaaaaa')
+    //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
   self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
 
@@ -3136,7 +3351,7 @@ FusionDsp.prototype.sendvolumelevel = function () {
       loudnessGain = 0
     }
 
-   // self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
+    // self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
     self.config.set('loudnessGain', Number.parseFloat(loudnessGain).toFixed(2))
     self.createCamilladspfile()
   })
