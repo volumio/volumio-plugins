@@ -96,7 +96,7 @@ Some screenshots
 
 ![Alt text](tools.png?raw=true "tools")
 
-![Alt text](drc-fir).png?raw=true "drc-fir")
+![Alt text](drc-fir.png?raw=true "drc-fir")
 
 
 ## INSTALLATION WARNING
