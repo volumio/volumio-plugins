@@ -74,6 +74,7 @@ FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
 
 Some screenshots
 
+![Alt text](select-dsp.png?raw=true "Select Dsp")
 
 ![Alt text](15.png?raw=true "15 bands graphic")
 
