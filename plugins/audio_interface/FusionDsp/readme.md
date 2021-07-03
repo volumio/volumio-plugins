@@ -63,11 +63,7 @@ For FIR, supported filters format
 
 ```
 text- 32/64 bits floats line (.txt) in rephase
-S16_LE- 16 bits LPCM mono (.wav) in rePhase
-S24_LE- 24 bits LPCM mono (.wav) in rePhase
-S24_LE- 32 bits LPCM mono (.wav) in rePhase
 FLOAT_LE- 32 bits floating point (.pcm)
-FLOAT64_LE- 64 bits mono (.wav) from Acourate
 FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
 
 ```
