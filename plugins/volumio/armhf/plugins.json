@@ -753,7 +753,7 @@
 					"prettyName": "Music Services Shield",
 					"icon": "fa-lightbulb-o",
 					"name": "music_services_shield",
-					"version": "1.0.0",
+					"version": "1.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/music_services_shield/music_services_shield.zip",
 					"license": "ISC",
 					"description": "Separates music processes from other processes, allocates them to their own CPU and assigns them real time priority.",
@@ -765,7 +765,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "30-6-2021"
+					"updated": "4-7-2021"
 				}
 			]
 		},
