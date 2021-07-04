@@ -26,6 +26,25 @@ musicServicesShield.prototype.onVolumioStart = function()
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
+	try {
+		exec('/bin/echo volumio | /usr/bin/sudo -S /data/plugins/miscellanea/music_services_shield/moveallprocesses.sh', {
+		   uid: 1000,
+		   gid: 1000
+		}, function (error, stdout, stderr) {
+			if (error) {
+				self.logger.info('failed ' + error);
+			} else if (stdout) {
+				self.logger.info('succeeded ' + stdout);
+			} else if (stderr) {
+				self.logger.info('failed ' + stderr);
+			} else {
+				self.logger.info('succeeded ' + stdout);
+			}
+		})
+	 } catch (e) {
+		self.logger.info('Error moving processes to user CPU set', e);
+	 }
+
     return libQ.resolve();
 }
 
