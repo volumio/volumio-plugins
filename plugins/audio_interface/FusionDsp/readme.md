@@ -1,4 +1,4 @@
-JULY 3rd 2021
+JULY 4th 2021
 
 
 ##  For Volumio3
@@ -135,6 +135,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+July 4th 2021
+
+- Fix for Loudness not correctly applied
 
 July 3rd 2021
 

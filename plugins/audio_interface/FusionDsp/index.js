@@ -2187,7 +2187,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             pipelinelr += '      - lowshelf\n';
             pipelinerr += '      - highshelf\n';
             pipelinerr += '      - lowshelf\n';
-            self.logger.info('loudness pipeline set')
+        //    self.logger.info('loudness pipeline set')
           }
 
 
@@ -3337,21 +3337,22 @@ FusionDsp.prototype.playToolsFile = function (data) {
 
 FusionDsp.prototype.sendvolumelevel = function () {
   const self = this;
-  let loudnessVolumeThreshold = 50
+  let loudnessMaxGain = 15
+  let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
   let loudnessLowThreshold = 10
   let loudnessRange = loudnessVolumeThreshold - loudnessLowThreshold
-  let ratio = 15 / loudnessRange
+  let ratio = loudnessMaxGain / loudnessRange
   let loudnessGain
   socket.on('pushState', function (data) {
-    if (5 < data.volume && data.volume < loudnessVolumeThreshold) {
+    if (data.volume > loudnessLowThreshold && data.volume < loudnessVolumeThreshold) {
       loudnessGain = ratio * (loudnessVolumeThreshold - data.volume)
     } else if (data.volume <= loudnessLowThreshold) {
-      loudnessGain = 20
-    } else if (data.volume >= loudnessLowThreshold) {
+      loudnessGain = loudnessMaxGain
+    } else if (data.volume >= loudnessVolumeThreshold) {
       loudnessGain = 0
     }
 
-    // self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
+    self.logger.info('volume level for loudness ' + data.volume + ' gain applied ' + Number.parseFloat(loudnessGain).toFixed(2))
     self.config.set('loudnessGain', Number.parseFloat(loudnessGain).toFixed(2))
     self.createCamilladspfile()
   })
