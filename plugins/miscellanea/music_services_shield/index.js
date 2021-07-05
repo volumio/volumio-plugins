@@ -38,7 +38,7 @@ musicServicesShield.prototype.onVolumioStart = function()
 			} else if (stderr) {
 				self.logger.info('failed ' + stderr);
 			} else {
-				self.logger.info('succeeded ' + stdout);
+				self.logger.info('succeeded');
 			}
 		})
 	 } catch (e) {
@@ -97,6 +97,51 @@ musicServicesShield.prototype.onStop = function() {
 musicServicesShield.prototype.onRestart = function() {
     var self = this;
     // Optional, use if you need it
+};
+
+
+musicServicesShield.prototype.listUserTasks = function() {
+    var self = this;
+	var tasks;
+	tasks = '<p>not found</p>';
+	var outputFile;
+	outputFile = '/data/plugins/miscellanea/music_services_shield/out.txt';
+	try {
+		exec('/data/plugins/miscellanea/music_services_shield/usertaskstable.sh ' + outputFile, {
+			uid: 1000,
+			gid: 1000
+		 }, function (error, stdout, stderr) {
+			 if (error) {
+				 self.logger.info('failed ' + error);
+				 self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', error);
+				} else if (stderr) {
+					self.logger.info('failed ' + stderr);
+					self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', stderr);
+				} else {
+ 					fs.readFile(outputFile, 'utf8', function (err, tasks) {
+					if (err) {
+					   self.logger.info('Error reading tasks', err);
+					} else {
+						self.logger.info('user tasks ' + stdout);
+						var modalData = {
+						   title: 'User Tasks',
+						   message: tasks,
+						   size: 'lg',
+						   buttons: [{
+							  name: 'Close',
+							  class: 'btn btn-warning',
+							  emit: 'closeModals',
+							  payload: ''
+						   },]
+						}
+						self.commandRouter.broadcastMessage("openModal", modalData);
+					}
+				 });	 
+			}
+		 })
+	 } catch (e) {
+		self.logger.error('Could not establish connection with Push Updates Facility: ' + e);
+	 }
 };
 
 
