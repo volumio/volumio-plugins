@@ -6,6 +6,10 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
+/**
+ * Note: this module relies on 'music_service/input'. It makes use of the
+ * 'alsavolume()' function provided by that plugin.
+ */
 
 module.exports = msSurfaceDial;
 function msSurfaceDial(context) {
@@ -19,7 +23,7 @@ function msSurfaceDial(context) {
 	this.loggerLabel = 'msSurfaceDial';
 	this.eventStream = null;
 	this.dialPressed = false;
-	this.dialValue = 0; 
+	this.dialValue = 0; // debug purpose only
 }
 
 
@@ -233,8 +237,10 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
                     break;
                 case 1:
                     keyActionStr = " Pressed"
-                    if (evCode == 0x100)
+                    if (evCode == 0x100) {
                         this.dialPressed = true;
+                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'toggleDeviceMute');
+                    }
                     break;
             }
             evMsgStr = `${evKeyStr} ${keyActionStr}`
@@ -246,13 +252,18 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
             switch (evValue) {
                 case -1:
                     dialActionStr = "CounterClockWise Turn"
-                    if (evCode == 7)
+                    if (evCode == 7) {
                         this.dialValue -= 1;
+                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
+                    }
+                        
                     break;
                 case 1:
                     dialActionStr = "ClockWise Turn"
-                    if (evCode == 7)
+                    if (evCode == 7) {
                         this.dialValue += 1;
+                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
+                    }
                     break;
             }
             evMsgStr = `${evDialStr} ${dialActionStr}`
@@ -263,9 +274,9 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
             evMsgStr = `${evMscStr} ${evValue}`;
             break;
        }
-       this.logger.info(`${this.loggerLabel} ${evDate.toLocaleString('en-US', {timeZone: 'Asia/Hong_Kong'})}: ${evTypeStr} ${evMsgStr}`);
+       this.logger.debug(`${this.loggerLabel} ${evDate.toLocaleString('en-US', {timeZone: 'Asia/Hong_Kong'})}: ${evTypeStr} ${evMsgStr}`);
        if (evType == 1 || evType == 2) {
-		this.logger.info(`${this.loggerLabel} Dial-Value: ${this.dialValue}`);
+		this.logger.debug(`${this.loggerLabel} Dial-Value: ${this.dialValue}`);
        }
    }
 }
