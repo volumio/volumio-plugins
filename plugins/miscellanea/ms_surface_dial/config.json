@@ -1,3 +1,9 @@
 {
- 
+    "default": {
+            "inputEventPath": {
+                "type": "string",
+                "value": "/dev/input/event1"
+            }
+        }
+    
 }

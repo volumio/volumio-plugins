@@ -16,6 +16,10 @@ function msSurfaceDial(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 
+	this.loggerLabel = 'msSurfaceDial';
+	this.eventStream = null;
+	this.dialPressed = false;
+	this.dialValue = 0; 
 }
 
 
@@ -34,9 +38,29 @@ msSurfaceDial.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 
+    /** TBD: Failed Attempt to override the transport level so that debug() will appear
+     *  in journalctl output.
+     
+    this.logger.info(`${this.loggerLabel} Transports: ${this.logger.transports}`);
+    if (! Array.isArray(this.logger.transports)){
+        this.logger.info(`${this.loggerLabel} more than one-transport - not overriding the logger level.`);
+    }
+    else {
+        this.logger.info(`${this.loggerLabel} overriding the logger level to 'debug`);
+        this.logger.transports.level = "debug";
+    }
+    */
 
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+	// Start handling input-events from connected Surface-Dial
+	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
+		this.logger.info(`${this.loggerLabel} Started Successfully.`);
+		// Once the Plugin has successfull started resolve the promise
+		defer.resolve();
+	}
+	else {
+		this.logger.error(`${this.loggerLabel} Start failed.`);
+		defer.reject(new Error(`${this.loggerLabel} Failed to start`));
+	}
 
     return defer.promise;
 };
@@ -45,6 +69,11 @@ msSurfaceDial.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
+	if (this.eventStream) {
+		this.eventStream.destroy();
+		this.eventStream = null;
+	}
+	this.logger.info(`${this.loggerLabel} Stopped.`);
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -101,7 +130,145 @@ msSurfaceDial.prototype.setConf = function(varName, varValue) {
 	//Perform your installation tasks here
 };
 
+// Input Event Handling
+msSurfaceDial.prototype.openEventStream = function(eventDevPath) {
+	
+	const rdStreamOpts = {
+		flags: 'r',
+		encoding: null,
+	};
+	this.logger.info(`${this.loggerLabel} opening ${eventDevPath}`);
+	this.eventStream = fs.createReadStream(eventDevPath, rdStreamOpts);
+	if (this.eventStream) {
+		this.eventStream.on('data', (chunk) => {
+			this.logger.debug(`${this.loggerLabel} ${chunk.length} bytes read`);
+			this.handleInputEvent(chunk);
+		});
+		
+		this.eventStream.on('close', () => {
+			this.logger.info(`${this.loggerLabel} event stream is closed`);
+			// Is this voluntary close?
+		})
+		this.eventStream.on('end', () => {
+			this.logger.debug(`${this.loggerLabel} There will be no more data`);
+		});
+		
+		this.eventStream.on('error', (err) => {
+			this.logger.error(`${this.loggerLabel} Error received. ${err}`);
+			// TBD: assuming the stream is closed. Do we attempt to open it periodically as long as the plugin is enabled?
+		});
+		
+		this.eventStream.on('pause', () => {
+			this.logger.debug(`${this.loggerLabel} Pause is called`);
+		});
+		/*
+		rs.on('readable', () => {
+			console.log('Readable event received');
+		});
+		*/
+		this.eventStream.on('resume', () => {
+			this.logger.debug(`${this.loggerLabel} Resume is called`);
+		});
+	}
+	else {
+		this.logger.error(`${this.loggerLabel} fs.createReadStream() returns null`);
+	}
 
+	return (this.eventStream != null);
+}
+
+msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
+    // 16-byte Structure
+    /*  
+        struct input_event {
+            struct timeval time;
+            unsigned short type;
+            unsigned short code;
+            unsigned int value;
+        };
+    */
+   if ((streamBuf.length % 16) != 0) {
+	   this.logger.error(`${this.loggerLabel} Unexpected buffer length: ${streamBuf.length}`);
+       return;
+   }
+   let rdPos = 0;
+   while ((streamBuf.length - rdPos) > 1) {
+       const secsSinceEpoch = streamBuf.readUInt32LE(rdPos);
+       rdPos += 8; // skip the micro-secs
+       const evType = streamBuf.readUInt16LE(rdPos);
+       rdPos += 2;
+       const evCode = streamBuf.readUInt16LE(rdPos);
+       rdPos += 2;
+       const evValue = streamBuf.readInt32LE(rdPos);
+       rdPos += 4;
+       const evDate = new Date(secsSinceEpoch * 1000);// accepts milli-secs
+       let evTypeStr = "UnknownType"
+       let evMsgStr = "";
+       switch (evType) {
+        case 0:
+            evTypeStr = "SYN";
+            if (evCode != 0 || evValue != 0)
+                evMsgStr = "Error: unexpected Code and Value";
+            break;
+        case 1:
+            evTypeStr = "KEY";
+            let evKeyStr = "";
+            switch (evCode) {
+                case 0x100:
+                    evKeyStr = "BTN_0";
+                    break;
+                case 0x14a: 
+                    evKeyStr = "BTN_TOUCH";
+                    break;
+                default:
+                    "Unexpected Key";
+                    break;
+            }
+            let keyActionStr = "Unexpected Action";
+            switch (evValue) {
+                case 0:
+                    keyActionStr = " Released"
+                    if (evCode == 0x100)
+                        this.dialPressed = false;
+                    break;
+                case 1:
+                    keyActionStr = " Pressed"
+                    if (evCode == 0x100)
+                        this.dialPressed = true;
+                    break;
+            }
+            evMsgStr = `${evKeyStr} ${keyActionStr}`
+            break;
+        case 2:
+            evTypeStr = "REL";
+            let evDialStr = (evCode == 7)? "Dial" : "Unexpected Relative-Events";
+            let dialActionStr = "Unexpected Relative-Value";
+            switch (evValue) {
+                case -1:
+                    dialActionStr = "CounterClockWise Turn"
+                    if (evCode == 7)
+                        this.dialValue -= 1;
+                    break;
+                case 1:
+                    dialActionStr = "ClockWise Turn"
+                    if (evCode == 7)
+                        this.dialValue += 1;
+                    break;
+            }
+            evMsgStr = `${evDialStr} ${dialActionStr}`
+            break;
+        case 4:
+            evTypeStr = "MSC";
+            let evMscStr = (evCode == 4)? "SCAN" : "Unexpected MSC Code";
+            evMsgStr = `${evMscStr} ${evValue}`;
+            break;
+       }
+       this.logger.info(`${this.loggerLabel} ${evDate.toLocaleString('en-US', {timeZone: 'Asia/Hong_Kong'})}: ${evTypeStr} ${evMsgStr}`);
+       if (evType == 1 || evType == 2) {
+		this.logger.info(`${this.loggerLabel} Dial-Value: ${this.dialValue}`);
+       }
+   }
+}
 
 // Playback Controls ---------------------------------------------------------------------------------------
 // If your plugin is not a music_sevice don't use this part and delete it
