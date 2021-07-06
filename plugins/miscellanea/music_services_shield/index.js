@@ -144,6 +144,17 @@ musicServicesShield.prototype.listUserTasks = function() {
 	 }
 };
 
+musicServicesShield.prototype.saveConfig = function(data) {
+    var defer = libQ.defer();
+    var self = this;
+
+    self.config.set('userCpuSpec', data.userCpuSpec.value);
+    self.config.save();
+
+    self.commandRouter.pushToastMessage('success', 'Changes saved', data.userCpuSpec.value);
+
+    return defer.promise;
+};
 
 // Configuration Methods -----------------------------------------------------------------------------
 
@@ -158,7 +169,16 @@ musicServicesShield.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+self.commandRouter.pushToastMessage('info', 'Config',  ''); //this.config.get('userCpuSpec'));
 
+            var findOption = function (optionVal, options) {
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].value === optionVal)
+                        return options[i];
+                }
+            };
+
+            uiconf.sections[0].content[1].value = findOption(self.config.get('userCpuSpec'), uiconf.sections[0].content[1].options);
 
             defer.resolve(uiconf);
         })
@@ -179,14 +199,20 @@ musicServicesShield.prototype.setUIConfig = function(data) {
 	//Perform your installation tasks here
 };
 
-musicServicesShield.prototype.getConf = function(varName) {
+musicServicesShield.prototype.getConf = function(configFile) {
 	var self = this;
 	//Perform your installation tasks here
+
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 };
 
 musicServicesShield.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
+
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 };
 
 

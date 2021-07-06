@@ -1,26 +1,58 @@
 {
-  "page": {
-    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
-  },
-  "sections": [
-    {
-       "id": "music_services_shield",
-       "element": "section",
-       "label": "Music Services Shield",
-       "icon": "fa-info",
- 
-       "content": [
-         {
-                 "id": "listUserTasks",
-                 "element": "button",
-                 "label": "List User Tasks",
-                 "onClick": {
-                   "type": "plugin",
-                   "endpoint": "miscellanea/music_services_shield",
-                   "method": "listUserTasks"
-                 }
-           }
-       ]
-    }
-   ]
- }
+	"page": {
+			"label": "TRANSLATE.PLUGIN_CONFIGURATION"
+		},
+	"sections": [
+	{
+		"id": "music_services_shield",
+		"element": "section",
+		"label": "Music Services Shield",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/music_services_shield",
+			"method": "saveConfig"
+		},
+		"saveButton": {
+			"label": "Save",
+			"data": [
+				"userCpuSpec"
+			]
+		},
+		"content": [
+		{
+			"id": "listUserTasks",
+			"element": "button",
+			"doc": "Lists the tasks already running under the User group",
+			"label": "List User Tasks",
+			"onClick": {
+				"type": "plugin",
+				"endpoint": "miscellanea/music_services_shield",
+				"method": "listUserTasks"
+			}
+		},
+		{
+			"id": "userCpuSpec",
+			"element":"select",
+			"doc":"Choose the CPUs that will be allocated to the 'user' group for music processes",
+			"label":"User Group CPUs",
+			"value": {
+				"value":"0-0",
+				"label":"CPU 0 to 0"
+			},
+			"options":[
+{"value":"0-0","label":"CPU 0 to 0"}
+,{"value":"0-1","label":"CPU 0 to 1"}
+,{"value":"0-2","label":"CPU 0 to 2"}
+,{"value":"0-3","label":"CPU 0 to 3"}
+,{"value":"1-1","label":"CPU 1 to 1"}
+,{"value":"1-2","label":"CPU 1 to 2"}
+,{"value":"1-3","label":"CPU 1 to 3"}
+,{"value":"2-2","label":"CPU 2 to 2"}
+,{"value":"2-3","label":"CPU 2 to 3"}
+,{"value":"3-3","label":"CPU 3 to 3"}
+
+]
+		}]
+	}]
+}
