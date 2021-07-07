@@ -11,6 +11,11 @@ const buildShieldScript = 'moveallprocesses.sh';
 
 // Config parameters
 const userCpuSpec = 'userCpuSpec';
+const userMpd = 'userMpd';
+const userSpotify = 'userSpotify';
+const rtMpd = 'rtMpd';
+const rtSpotify = 'rtSpotify';
+const rtPriority = 'rtPriority';
 
 
 module.exports = musicServicesShield;
@@ -173,13 +178,18 @@ musicServicesShield.prototype.writeConfigParameter = function(name)
 {
 	// Writes the parameter value from the current local config into the corresponding config file
     var self = this;
-	execSync(pluginPath + 'setconfigparameter.sh ' + name + ' ' + self.config.get(name))
+	execSync(pluginPath + 'setconfigparameter.sh ' + name + ' ' + self.config.get(name));
 }
 
 musicServicesShield.prototype.writeAllConfigParameters = function()
 {
     var self = this;
 	self.writeConfigParameter(userCpuSpec);
+	self.writeConfigParameter(userMpd);
+	self.writeConfigParameter(userSpotify);
+	self.writeConfigParameter(rtMpd);
+	self.writeConfigParameter(rtSpotify);
+	self.writeConfigParameter(rtPriority);
 }
 
 musicServicesShield.prototype.saveConfig = function(data) {
@@ -187,6 +197,11 @@ musicServicesShield.prototype.saveConfig = function(data) {
     var self = this;
 
     self.config.set(userCpuSpec, data.userCpuSpec.value);
+    self.config.set(userMpd, data.userMpd);
+    self.config.set(userSpotify, data.userSpotify);
+    self.config.set(rtMpd, data.rtMpd);
+    self.config.set(rtSpotify, data.rtSpotify);
+    self.config.set(rtPriority, data.rtPriority.value);
     self.config.save();
 
 	self.writeAllConfigParameters();
@@ -221,9 +236,14 @@ musicServicesShield.prototype.getUIConfig = function() {
                 }
             };
 
-            uiconf.sections[0].content[1].value = findOption(self.config.get('userCpuSpec'), uiconf.sections[0].content[1].options);
+            uiconf.sections[0].content[1].value = findOption(self.config.get(userCpuSpec), uiconf.sections[0].content[1].options);
+			uiconf.sections[0].content[2].value = self.config.get(userMpd);
+			uiconf.sections[0].content[3].value = self.config.get(userSpotify);
+			uiconf.sections[0].content[4].value = self.config.get(rtMpd);
+			uiconf.sections[0].content[5].value = self.config.get(rtSpotify);
+            uiconf.sections[0].content[6].value = findOption(self.config.get(rtPriority), uiconf.sections[0].content[6].options);
 
-            defer.resolve(uiconf);
+			defer.resolve(uiconf);
         })
         .fail(function()
         {
@@ -257,4 +277,5 @@ musicServicesShield.prototype.setConf = function(varName, varValue) {
 	self.config = new (require('v-conf'))();
 	self.config.loadFile(configFile);
 };
+
 

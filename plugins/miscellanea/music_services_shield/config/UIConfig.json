@@ -16,7 +16,12 @@
 		"saveButton": {
 			"label": "Save",
 			"data": [
-				"userCpuSpec"
+				"userCpuSpec",
+				"userMpd",
+				"userSpotify",
+				"rtMpd",
+				"rtSpotify",
+				"rtPriority"
 			]
 		},
 		"content": [
@@ -42,7 +47,83 @@
 			},
 			"options":[
 OPTIONS
-]
-		}]
-	}]
+]},
+		{
+			"id": "userMpd",
+			"element": "switch",
+			"doc": "Include Music Player Daemon (MPD) in the User group",
+			"label": "Include MPD in User",
+			"value": true
+		},
+		{
+			"id": "userSpotify",
+			"element": "switch",
+			"doc": "Include Spotify Connect in the User group",
+			"label": "Include Spotify Connect in User",
+			"value": true
+		},
+		{
+			"id": "rtMpd",
+			"element": "switch",
+			"doc": "Assign Music Player Daemon (MPD)  Real Time Priority",
+			"label": "MPD RT Priority",
+			"value": true
+		},
+		{
+			"id": "rtSpotify",
+			"element": "switch",
+			"doc": "Assign Spotify Connect Real Time Priority",
+			"label": "Spotify Connect RT Priority",
+			"value": true
+		},
+		{
+			"id": "rtPriority",
+			"element": "select",
+			"doc": "The priority value for real time priority processes. Max is 99",
+			"label": "Real Time Priority",
+			"value": {
+			  "value": "99",
+			  "label": "99"
+			},
+			"options": [{
+				"value": "99",
+				"label": "99"
+			  },
+			  {
+				"value": "80",
+				"label": "80"
+			  },
+			  {
+				"value": "70",
+				"label": "70"
+			  },
+			  {
+				"value": "60",
+				"label": "60"
+			  },
+			  {
+				"value": "50",
+				"label": "50"
+			  },
+			  {
+				"value": "40",
+				"label": "40"
+			  },
+			  {
+				"value": "30",
+				"label": "30"
+			  },
+			  {
+				"value": "20",
+				"label": "20"
+			  },
+			  {
+				"value": "10",
+				"label": "10"
+			  }
+			]
+		  }
+		]
+  }]
 }
+
