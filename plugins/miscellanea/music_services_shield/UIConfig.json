@@ -1,12 +1,12 @@
 {
 	"page": {
-			"label": "TRANSLATE.PLUGIN_CONFIGURATION"
+			"label": "TRANSLATE.MSS_CONFIGURATION"
 		},
 	"sections": [
 	{
 		"id": "music_services_shield",
 		"element": "section",
-		"label": "Music Services Shield",
+		"label": "TRANSLATE.MSS_TITLE",
 		"icon": "fa-cog",
 		"onSave": {
 			"type": "controller",
@@ -14,7 +14,7 @@
 			"method": "saveConfig"
 		},
 		"saveButton": {
-			"label": "Save",
+			"label": "TRANSLATE.MSS_SAVE",
 			"data": [
 				"userCpuSpec",
 				"userMpd",
@@ -28,8 +28,8 @@
 		{
 			"id": "listUserTasks",
 			"element": "button",
-			"doc": "Lists the tasks already running under the User group",
-			"label": "List User Tasks",
+			"doc": "TRANSLATE.MSS_LISTTASKS",
+			"label": "TRANSLATE.MSS_LISTTASKS_LABEL",
 			"onClick": {
 				"type": "plugin",
 				"endpoint": "miscellanea/music_services_shield",
@@ -39,8 +39,8 @@
 		{
 			"id": "userCpuSpec",
 			"element":"select",
-			"doc":"Choose the CPUs that will be allocated to the 'user' group for music processes",
-			"label":"User Group CPUs",
+			"doc":"TRANSLATE.MSS_USERCPUSPEC",
+			"label":"TRANSLATE.MSS_USERCPUSPEC_LABEL",
 			"value": {
 				"value":"0-0",
 				"label":"CPU 0 to 0"
@@ -60,36 +60,36 @@
 		{
 			"id": "userMpd",
 			"element": "switch",
-			"doc": "Include Music Player Daemon (MPD) in the User group",
-			"label": "Include MPD in User",
+			"doc": "TRANSLATE.MSS_USERINCLUDEMPD",
+			"label": "TRANSLATE.MSS_USERINCLUDEMPD_LABEL",
 			"value": true
 		},
 		{
 			"id": "userSpotify",
 			"element": "switch",
-			"doc": "Include Spotify Connect in the User group",
-			"label": "Include Spotify Connect in User",
+			"doc": "TRANSLATE.MSS_USERINCLUDESPOTIFY",
+			"label": "TRANSLATE.MSS_USERINCLUDESPOTIFY_LABEL",
 			"value": true
 		},
 		{
 			"id": "rtMpd",
 			"element": "switch",
-			"doc": "Assign Music Player Daemon (MPD)  Real Time Priority",
-			"label": "MPD RT Priority",
+			"doc": "TRANSLATE.MSS_RTINCLUDEMPD",
+			"label": "TRANSLATE.MSS_RTINCLUDEMPD_LABEL",
 			"value": true
 		},
 		{
 			"id": "rtSpotify",
 			"element": "switch",
-			"doc": "Assign Spotify Connect Real Time Priority",
-			"label": "Spotify Connect RT Priority",
+			"doc": "TRANSLATE.MSS_RTINCLUDESPOTIFY",
+			"label": "TRANSLATE.MSS_RTINCLUDESPOTIFY_LABEL",
 			"value": true
 		},
 		{
 			"id": "rtPriority",
 			"element": "select",
-			"doc": "The priority value for real time priority processes. Max is 99",
-			"label": "Real Time Priority",
+			"doc": "TRANSLATE.MSS_RTPRIORITY",
+			"label": "TRANSLATE.MSS_RTPRIORITY_LABEL",
 			"value": {
 			  "value": "99",
 			  "label": "99"
