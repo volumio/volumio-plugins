@@ -5,7 +5,13 @@ HERE="$(dirname "$FULL_PATH_TO_SCRIPT")"
 CPUSPARAMETERFILE="${HERE}/config/userCpuSpec.config"
 CPUCONFIG=$(cat $CPUSPARAMETERFILE)
 
-cset shield -c $CPUCONFIG
-/data/plugins/miscellanea/music_services_shield/moveprocess.sh mpd
-/data/plugins/miscellanea/music_services_shield/moveprocess.sh vollibrespot
+cset shield -c $CPUCONFIG > /dev/null
+
+/data/plugins/miscellanea/music_services_shield/moveprocess.sh mpd > /dev/null
+/data/plugins/miscellanea/music_services_shield/moveprocess.sh vollibrespot  > /dev/null
+cset shield
+
+/data/plugins/miscellanea/music_services_shield/setrtpriority.sh mpd
+/data/plugins/miscellanea/music_services_shield/setrtpriority.sh vollibrespot
+
 

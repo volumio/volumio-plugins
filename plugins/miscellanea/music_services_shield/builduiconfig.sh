@@ -3,7 +3,7 @@
 FULL_PATH_TO_SCRIPT="$(realpath "$0")"
 HERE="$(dirname "$FULL_PATH_TO_SCRIPT")"
 CPUS="${HERE}/config/cpus.txt"
-UICONFIGTEMPLATE="${HERE}/config/UIconfig.template"
+UICONFIGTEMPLATE="${HERE}/config/UIConfig.json"
 UICONFIG="${HERE}/UIConfig.json"
 
 #Discover the number of CPUs

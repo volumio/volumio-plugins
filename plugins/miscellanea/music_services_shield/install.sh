@@ -13,6 +13,7 @@ sudo chmod +x /data/plugins/miscellanea/music_services_shield/moveallprocesses.s
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/usertaskstable.sh
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/builduiconfig.sh
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/setconfigparameter.sh
+sudo chmod +x /data/plugins/miscellanea/music_services_shield/setrtpriority.sh
 /data/plugins/miscellanea/music_services_shield/builduiconfig.sh
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
@@ -23,6 +24,7 @@ sudo chmod +x /data/plugins/miscellanea/music_services_shield/moveallprocesses.s
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/usertaskstable.sh
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/builduiconfig.sh
 sudo chmod +x /data/plugins/miscellanea/music_services_shield/setconfigparameter.sh
+sudo chmod +x /data/plugins/miscellanea/music_services_shield/setrtpriority.sh
 /data/plugins/miscellanea/music_services_shield/builduiconfig.sh
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
