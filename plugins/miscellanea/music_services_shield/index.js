@@ -5,29 +5,35 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+const pluginPath = '/data/plugins/miscellanea/music_services_shield/';
+const sudoCommand = '/bin/echo volumio | /usr/bin/sudo -S ';
+const buildShieldScript = 'moveallprocesses.sh';
+
+// Config parameters
+const userCpuSpec = 'userCpuSpec';
+const userMpd = 'userMpd';
+const userSpotify = 'userSpotify';
+const rtMpd = 'rtMpd';
+const rtSpotify = 'rtSpotify';
+const rtPriority = 'rtPriority';
 
 
 module.exports = musicServicesShield;
 function musicServicesShield(context) {
 	var self = this;
 
-	this.context = context;
-	this.commandRouter = this.context.coreCommand;
-	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;
+	self.context = context;
+	self.commandRouter = self.context.coreCommand;
+	self.logger = self.context.logger;
+	self.configManager = self.context.configManager;
 }
 
-
-
-musicServicesShield.prototype.onVolumioStart = function()
+musicServicesShield.prototype.executeScript = function(prefix, script)
 {
 	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
-
+	var defer=libQ.defer();
 	try {
-		exec('/bin/echo volumio | /usr/bin/sudo -S /data/plugins/miscellanea/music_services_shield/moveallprocesses.sh', {
+		exec(prefix + script, {
 		   uid: 1000,
 		   gid: 1000
 		}, function (error, stdout, stderr) {
@@ -38,14 +44,39 @@ musicServicesShield.prototype.onVolumioStart = function()
 			} else if (stderr) {
 				self.logger.info('failed ' + stderr);
 			} else {
-				self.logger.info('succeeded ' + stdout);
+				self.logger.info('succeeded', script);
 			}
+			defer.resolve();
 		})
 	 } catch (e) {
-		self.logger.info('Error moving processes to user CPU set', e);
+		self.logger.info('Error executing script', e);
+		defer.resolve();
 	 }
 
-    return libQ.resolve();
+	 return defer.promise;
+}
+
+musicServicesShield.prototype.executeScriptAsSudo = function(script)
+{
+	var self = this;
+	return self.executeScript(sudoCommand, pluginPath + script);
+}
+
+musicServicesShield.prototype.onVolumioStart = function()
+{
+	var self = this;
+	var defer=libQ.defer();
+	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
+
+	self.writeAllConfigParameters();
+
+	self.executeScriptAsSudo(buildShieldScript).then(function(){
+		defer.resolve();
+	});
+
+    return defer.promise;
 }
 
 musicServicesShield.prototype.onStart = function() {
@@ -55,7 +86,7 @@ musicServicesShield.prototype.onStart = function() {
 	try {
 		self.commandRouter.pushToastMessage('info', 'Attempting to move processes to user CPU set', 'Please wait');
 
-		exec('/bin/echo volumio | /usr/bin/sudo -S /data/plugins/miscellanea/music_services_shield/moveallprocesses.sh', {
+		exec(sudoCommand + pluginPath + buildShieldScript, {
 		   uid: 1000,
 		   gid: 1000
 		}, function (error, stdout, stderr) {
@@ -72,14 +103,13 @@ musicServicesShield.prototype.onStart = function() {
 				self.logger.info('succeeded ' + stdout);
 				self.commandRouter.pushToastMessage('success', 'Moved processes to user CPU set', '');
 			}
+			defer.resolve();
 		})
 	 } catch (e) {
 		self.logger.info('Error moving processes to user CPU set', e);
 		self.commandRouter.pushToastMessage('error', 'Error moving processes to user CPU set', e);
-	 }
-
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+		defer.resolve();
+	}
 
     return defer.promise;
 };
@@ -100,6 +130,92 @@ musicServicesShield.prototype.onRestart = function() {
 };
 
 
+musicServicesShield.prototype.listUserTasks = function() {
+    var self = this;
+	var tasks;
+	tasks = '<p>not found</p>';
+	var outputFile;
+	outputFile = pluginPath + 'config/out.txt';
+	try {
+		exec(pluginPath + 'usertaskstable.sh ' + outputFile, {
+			uid: 1000,
+			gid: 1000
+		 }, function (error, stdout, stderr) {
+			 if (error) {
+				 self.logger.info('failed ' + error);
+				 self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', error);
+				} else if (stderr) {
+					self.logger.info('failed ' + stderr);
+					self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', stderr);
+				} else {
+ 					fs.readFile(outputFile, 'utf8', function (err, tasks) {
+					if (err) {
+					   self.logger.info('Error reading tasks', err);
+					} else {
+						self.logger.info('user tasks ' + stdout);
+						var modalData = {
+						   title: 'User Tasks',
+						   message: tasks,
+						   size: 'lg',
+						   buttons: [{
+							  name: 'Close',
+							  class: 'btn btn-warning',
+							  emit: 'closeModals',
+							  payload: ''
+						   },]
+						}
+						self.commandRouter.broadcastMessage("openModal", modalData);
+					}
+				 });	 
+			}
+		 })
+	 } catch (e) {
+		self.logger.error('Could list user tasks: ' + e);
+	 }
+};
+
+musicServicesShield.prototype.writeConfigParameter = function(name)
+{
+	// Writes the parameter value from the current local config into the corresponding config file
+    var self = this;
+	execSync(pluginPath + 'setconfigparameter.sh ' + name + ' ' + self.config.get(name));
+}
+
+musicServicesShield.prototype.writeAllConfigParameters = function()
+{
+    var self = this;
+	self.writeConfigParameter(userCpuSpec);
+	self.writeConfigParameter(userMpd);
+	self.writeConfigParameter(userSpotify);
+	self.writeConfigParameter(rtMpd);
+	self.writeConfigParameter(rtSpotify);
+	self.writeConfigParameter(rtPriority);
+}
+
+musicServicesShield.prototype.saveConfig = function(data) {
+    var defer = libQ.defer();
+    var self = this;
+
+    self.config.set(userCpuSpec, data.userCpuSpec.value);
+    self.config.set(userMpd, data.userMpd);
+    self.config.set(userSpotify, data.userSpotify);
+    self.config.set(rtMpd, data.rtMpd);
+    self.config.set(rtSpotify, data.rtSpotify);
+    self.config.set(rtPriority, data.rtPriority.value);
+    self.config.save();
+
+	self.writeAllConfigParameters();
+
+	self.executeScriptAsSudo(buildShieldScript).then(function(){
+		self.commandRouter.pushToastMessage('success', 'Music Services Shield', 'Changes saved');
+		defer.resolve();
+	});
+
+	defer.resolve();
+
+    return defer.promise;
+};
+
 // Configuration Methods -----------------------------------------------------------------------------
 
 musicServicesShield.prototype.getUIConfig = function() {
@@ -113,9 +229,21 @@ musicServicesShield.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
+            var findOption = function (optionVal, options) {
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].value === optionVal)
+                        return options[i];
+                }
+            };
 
+            uiconf.sections[0].content[1].value = findOption(self.config.get(userCpuSpec), uiconf.sections[0].content[1].options);
+			uiconf.sections[0].content[2].value = self.config.get(userMpd);
+			uiconf.sections[0].content[3].value = self.config.get(userSpotify);
+			uiconf.sections[0].content[4].value = self.config.get(rtMpd);
+			uiconf.sections[0].content[5].value = self.config.get(rtSpotify);
+            uiconf.sections[0].content[6].value = findOption(self.config.get(rtPriority), uiconf.sections[0].content[6].options);
 
-            defer.resolve(uiconf);
+			defer.resolve(uiconf);
         })
         .fail(function()
         {
@@ -134,177 +262,20 @@ musicServicesShield.prototype.setUIConfig = function(data) {
 	//Perform your installation tasks here
 };
 
-musicServicesShield.prototype.getConf = function(varName) {
+musicServicesShield.prototype.getConf = function(configFile) {
 	var self = this;
 	//Perform your installation tasks here
+
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 };
 
 musicServicesShield.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
+
+	self.config = new (require('v-conf'))();
+	self.config.loadFile(configFile);
 };
 
 
-
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
-
-
-musicServicesShield.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
-};
-
-musicServicesShield.prototype.handleBrowseUri = function (curUri) {
-    var self = this;
-
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
-};
-
-
-
-// Define a method to clear, add, and play an array of tracks
-musicServicesShield.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-musicServicesShield.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-musicServicesShield.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::stop');
-
-
-};
-
-// Spop pause
-musicServicesShield.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::pause');
-
-
-};
-
-// Get state
-musicServicesShield.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::getState');
-
-
-};
-
-//Parse state
-musicServicesShield.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-musicServicesShield.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'musicServicesShield::pushState');
-
-	return self.commandRouter.servicePushState(state, self.servicename);
-};
-
-
-musicServicesShield.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-musicServicesShield.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-musicServicesShield.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-musicServicesShield.prototype._searchArtists = function (results) {
-
-};
-
-musicServicesShield.prototype._searchAlbums = function (results) {
-
-};
-
-musicServicesShield.prototype._searchPlaylists = function (results) {
-
-
-};
-
-musicServicesShield.prototype._searchTracks = function (results) {
-
-};
-
-musicServicesShield.prototype.goto=function(data){
-    var self=this
-    var defer=libQ.defer()
-
-// Handle go to artist and go to album function
-
-     return defer.promise;
-};
