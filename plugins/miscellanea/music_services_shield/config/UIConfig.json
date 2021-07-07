@@ -67,14 +67,14 @@ OPTIONS
 			"element": "switch",
 			"doc": "Assign Music Player Daemon (MPD)  Real Time Priority",
 			"label": "MPD RT Priority",
-			"value": true
+			"value": false
 		},
 		{
 			"id": "rtSpotify",
 			"element": "switch",
 			"doc": "Assign Spotify Connect Real Time Priority",
 			"label": "Spotify Connect RT Priority",
-			"value": true
+			"value": false
 		},
 		{
 			"id": "rtPriority",
