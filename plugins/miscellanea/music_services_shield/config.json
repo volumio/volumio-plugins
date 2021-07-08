@@ -13,11 +13,11 @@
     },
     "rtMpd": {
       "type": "boolean",
-      "value": true
+      "value": false
     },
     "rtSpotify": {
       "type": "boolean",
-      "value": true
+      "value": false
     },
     "rtPriority": {
       "type": "string",

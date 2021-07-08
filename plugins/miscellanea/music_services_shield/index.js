@@ -39,10 +39,6 @@ musicServicesShield.prototype.executeScript = function(prefix, script)
 		}, function (error, stdout, stderr) {
 			if (error) {
 				self.logger.info('failed ' + error);
-			} else if (stdout) {
-				self.logger.info('succeeded ' + stdout);
-			} else if (stderr) {
-				self.logger.info('failed ' + stderr);
 			} else {
 				self.logger.info('succeeded', script);
 			}
@@ -86,6 +82,8 @@ musicServicesShield.prototype.onStart = function() {
 	try {
 		self.commandRouter.pushToastMessage('info', 'Attempting to move processes to user CPU set', 'Please wait');
 
+    	self.writeAllConfigParameters();
+
 		exec(sudoCommand + pluginPath + buildShieldScript, {
 		   uid: 1000,
 		   gid: 1000
@@ -93,22 +91,17 @@ musicServicesShield.prototype.onStart = function() {
 			if (error) {
 				self.logger.info('failed ' + error);
 				self.commandRouter.pushToastMessage('error', 'Could not move processes to user CPU set!', error);
-			} else if (stdout) {
-				self.logger.info('succeeded ' + stdout);
-				self.commandRouter.pushToastMessage('success', 'Moved processes to user CPU set', stdout);
-			} else if (stderr) {
-				self.logger.info('failed ' + stderr);
-				self.commandRouter.pushToastMessage('error', 'Could not move processes to user CPU set!', stderr);
 			} else {
-				self.logger.info('succeeded ' + stdout);
-				self.commandRouter.pushToastMessage('success', 'Moved processes to user CPU set', '');
-			}
-			defer.resolve();
-		})
-	 } catch (e) {
-		self.logger.info('Error moving processes to user CPU set', e);
-		self.commandRouter.pushToastMessage('error', 'Error moving processes to user CPU set', e);
-		defer.resolve();
+                self.commandRouter.pushToastMessage('success', 'Moved processes to user CPU set', stdout);
+            }
+
+            defer.resolve();
+        });
+    } catch (e) {
+        self.logger.info('Error moving processes to user CPU set', e);
+        self.commandRouter.pushToastMessage('error', 'Error moving processes to user CPU set', e);
+
+        defer.resolve();
 	}
 
     return defer.promise;
@@ -118,7 +111,15 @@ musicServicesShield.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
-    // Once the Plugin has successfull stopped resolve the promise
+	try {
+	    // Remove all the services from the shield and recreate the shield without them
+        self.disableShieldViaConfig();
+        self.executeScriptAsSudo(buildShieldScript);
+    } catch (e) {
+        self.logger.info('Error moving processes to user CPU set', e);
+        self.commandRouter.pushToastMessage('error', 'Error moving processes to user CPU set', e);
+    }
+
     defer.resolve();
 
     return libQ.resolve();
@@ -131,47 +132,49 @@ musicServicesShield.prototype.onRestart = function() {
 
 
 musicServicesShield.prototype.listUserTasks = function() {
+    var defer = libQ.defer();
     var self = this;
 	var tasks;
 	tasks = '<p>not found</p>';
 	var outputFile;
 	outputFile = pluginPath + 'config/out.txt';
 	try {
-		exec(pluginPath + 'usertaskstable.sh ' + outputFile, {
-			uid: 1000,
-			gid: 1000
-		 }, function (error, stdout, stderr) {
-			 if (error) {
-				 self.logger.info('failed ' + error);
-				 self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', error);
-				} else if (stderr) {
-					self.logger.info('failed ' + stderr);
-					self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', stderr);
-				} else {
- 					fs.readFile(outputFile, 'utf8', function (err, tasks) {
-					if (err) {
-					   self.logger.info('Error reading tasks', err);
-					} else {
-						self.logger.info('user tasks ' + stdout);
-						var modalData = {
-						   title: 'User Tasks',
-						   message: tasks,
-						   size: 'lg',
-						   buttons: [{
-							  name: 'Close',
-							  class: 'btn btn-warning',
-							  emit: 'closeModals',
-							  payload: ''
-						   },]
-						}
-						self.commandRouter.broadcastMessage("openModal", modalData);
-					}
-				 });	 
-			}
-		 })
-	 } catch (e) {
-		self.logger.error('Could list user tasks: ' + e);
-	 }
+        exec(pluginPath + 'usertaskstable.sh ' + outputFile, {
+            uid: 1000,
+            gid: 1000
+        }, function (error, stdout, stderr) {
+            if (error) {
+                self.logger.info('failed ' + error);
+                self.commandRouter.pushToastMessage('error', 'Could not list user tasks!', error);
+            } else {
+                fs.readFile(outputFile, 'utf8', function (err, tasks) {
+                    if (err) {
+                        self.logger.info('Error reading tasks', err);
+                    } else {
+                        self.logger.info('user tasks ' + stdout);
+                        var modalData = {
+                            title: 'User Tasks',
+                            message: tasks,
+                            size: 'lg',
+                            buttons: [{
+                                name: 'Close',
+                                class: 'btn btn-warning',
+                                emit: 'closeModals',
+                                payload: ''
+                            },]
+                        }
+                        self.commandRouter.broadcastMessage("openModal", modalData);
+                    }
+                });
+            }
+        });
+    } catch (e) {
+        self.logger.error('Could list user tasks: ' + e);
+    }
+
+    defer.resolve();
+
+    return defer.promise;
 };
 
 musicServicesShield.prototype.writeConfigParameter = function(name)
@@ -179,6 +182,21 @@ musicServicesShield.prototype.writeConfigParameter = function(name)
 	// Writes the parameter value from the current local config into the corresponding config file
     var self = this;
 	execSync(pluginPath + 'setconfigparameter.sh ' + name + ' ' + self.config.get(name));
+}
+
+musicServicesShield.prototype.disableConfigParameter = function(name)
+{
+    var self = this;
+	execSync(pluginPath + 'setconfigparameter.sh ' + name + ' false');
+}
+
+musicServicesShield.prototype.disableShieldViaConfig = function()
+{
+    var self = this;
+	self.disableConfigParameter(userMpd);
+	self.disableConfigParameter(userSpotify);
+	self.disableConfigParameter(rtMpd);
+	self.disableConfigParameter(rtSpotify);
 }
 
 musicServicesShield.prototype.writeAllConfigParameters = function()
@@ -210,8 +228,6 @@ musicServicesShield.prototype.saveConfig = function(data) {
 		self.commandRouter.pushToastMessage('success', 'Music Services Shield', 'Changes saved');
 		defer.resolve();
 	});
-
-	defer.resolve();
 
     return defer.promise;
 };
@@ -277,5 +293,6 @@ musicServicesShield.prototype.setConf = function(varName, varValue) {
 	self.config = new (require('v-conf'))();
 	self.config.loadFile(configFile);
 };
+
 
 
