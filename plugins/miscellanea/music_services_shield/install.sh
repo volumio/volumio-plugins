@@ -23,7 +23,10 @@ sudo chmod +x ${libpath}/usertaskstable.sh
 sudo chmod +x ${libpath}/builduiconfig.sh
 sudo chmod +x ${libpath}/setconfigparameter.sh
 sudo chmod +x ${libpath}/setrtpriority.sh
+sudo chmod +x ${libpath}/addservice.sh
+sudo chmod +x ${libpath}/removeservice.sh
 ${libpath}/builduiconfig.sh
+sudo ${libpath}/addservice.sh
 elif [ $cpu = "x86_64" ] || [ $cpu = "i686" ]
 then
 sudo apt-get update
@@ -34,7 +37,10 @@ sudo chmod +x ${libpath}/usertaskstable.sh
 sudo chmod +x ${libpath}/builduiconfig.sh
 sudo chmod +x ${libpath}/setconfigparameter.sh
 sudo chmod +x ${libpath}/setrtpriority.sh
+sudo chmod +x ${libpath}/addservice.sh
+sudo chmod +x ${libpath}/removeservice.sh
 ${libpath}/builduiconfig.sh
+sudo ${libpath}/addservice.sh
 else
         echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
