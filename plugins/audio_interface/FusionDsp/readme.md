@@ -1,4 +1,4 @@
-JULY 7th 2021
+JULY 8th 2021
 
 
 ##  For Volumio3
@@ -65,7 +65,7 @@ For FIR, supported filters format
 text- 32/64 bits floats line (.txt) in rephase
 FLOAT_LE- 32 bits floating point (.pcm)
 FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
-Wav Files are automatically converted in RAW format
+Wav Files are automatically converted in RAW format to be used
 ```
 
 Some screenshots
@@ -135,6 +135,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+July 8th 2021
+
+- Loudness curve adjustement
+- Fir help
 
 July 7th 2021
 
