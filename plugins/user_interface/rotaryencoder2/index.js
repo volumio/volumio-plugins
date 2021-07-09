@@ -583,6 +583,7 @@ rotaryencoder2.prototype.emitDialCommand = function(val,rotaryIndex){
 			switch (action) {
 				case dialActions.indexOf("VOLUME"): //1
 					socket.emit('volume','+');					
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: VOLUME UP')
 					break;
 			
 				case dialActions.indexOf("SKIP"): //2
@@ -609,6 +610,7 @@ rotaryencoder2.prototype.emitDialCommand = function(val,rotaryIndex){
 			switch (action) {
 				case dialActions.indexOf("VOLUME"): //1
 					socket.emit('volume','-');					
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: VOLUME DOWN')
 					break;
 			
 				case dialActions.indexOf("SKIP"): //2
