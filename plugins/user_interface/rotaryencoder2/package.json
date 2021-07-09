@@ -1,6 +1,6 @@
 {
 	"name": "rotaryencoder2",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Alternative implementation of Rotary Encoder controls using the Linux Kernel driver for Rotaries.",
 	"main": "index.js",
 	"scripts": {
