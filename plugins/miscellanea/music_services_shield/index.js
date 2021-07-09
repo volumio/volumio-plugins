@@ -259,6 +259,19 @@ musicServicesShield.prototype.getUIConfig = function() {
 			uiconf.sections[0].content[5].value = self.config.get(rtSpotify);
             uiconf.sections[0].content[6].value = findOption(self.config.get(rtPriority), uiconf.sections[0].content[6].options);
 
+            try{
+                // Hide the spotify options if the plugin is not active
+                var spotifyPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'volspotconnect2');
+                if (!spotifyPlugin){
+                    uiconf.sections[0].content[3].value = false;
+                    uiconf.sections[0].content[3].hidden = true;
+                    uiconf.sections[0].content[5].value = false;
+                    uiconf.sections[0].content[5].hidden = true;
+                }
+            } catch(e){
+                self.logger.error('Could not get spotify plugin' + e);
+            }
+
 			defer.resolve(uiconf);
         })
         .fail(function()
@@ -293,6 +306,7 @@ musicServicesShield.prototype.setConf = function(varName, varValue) {
 	self.config = new (require('v-conf'))();
 	self.config.loadFile(configFile);
 };
+
 
 
 
