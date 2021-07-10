@@ -8,10 +8,7 @@ volumio-plugins.iml
 # Ignore all node_modules in all sub dirs
 node_modules/
 # Ignore all .DS_Store
-*.DS_Store
+.DS_Store
 **/.DS_Store
 plugins/music_service/.DS_Store
 **/.com.apple.timemachine*
-**.zip
-*.zip
-plugins/user_interface/rotaryencoder2/rotaryencoder2.zip
