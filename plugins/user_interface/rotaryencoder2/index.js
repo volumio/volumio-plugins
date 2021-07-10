@@ -66,11 +66,6 @@ rotaryencoder2.prototype.onVolumioStart = function()
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
-	self.debugLogging = (self.config.get('logging')==true);
-	self.handles=[].fill(null,0,maxRotaries);
-	self.buttons=[].fill(null,0,maxRotaries);
-	self.pushDownTime=[].fill(0,0,maxRotaries);
-	self.status=null;
     return libQ.resolve();
 }
 
@@ -78,6 +73,12 @@ rotaryencoder2.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
 	var activate = [];
+
+	self.debugLogging = (self.config.get('logging')==true);
+	self.handles=[].fill(null,0,maxRotaries);
+	self.buttons=[].fill(null,0,maxRotaries);
+	self.pushDownTime=[].fill(0,0,maxRotaries);
+	self.status=null;
 
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onStart: Config loaded: ' + JSON.stringify(self.config));
 	for (let i = 0; i < maxRotaries; i++) {
