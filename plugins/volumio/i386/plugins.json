@@ -400,6 +400,24 @@
 						}
 					],
 					"updated": "12-7-2021"
+				},
+				{
+					"prettyName": "Randomizer",
+					"icon": "fa-lightbulb-o",
+					"name": "randomizer",
+					"version": "2.0.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/randomizer/randomizer.zip",
+					"license": "ISC",
+					"description": "A random Track / Album Player",
+					"details": "",
+					"author": "Redlawd",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "12-7-2021"
 				}
 			]
 		}
