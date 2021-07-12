@@ -111,7 +111,7 @@ To do that, have a look here : [ssh in volumio](https://volumio.github.io/docs/U
 Type the following commands to download and install plugin:
 
 ```
-wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/fusiondsp/fusiondsp.zip
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/fusiondsp.zip
 mkdir fusion
 miniunzip fusiondsp.zip -d ./fusion
 cd fusion
