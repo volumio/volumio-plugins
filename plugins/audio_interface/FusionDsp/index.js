@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze June  2021
+FusionDsp plugin for volumio3. By balbuze July 2021
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -1911,15 +1911,39 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      type: Highshelf\n'
         composedeq += '      freq: 3600\n'
         composedeq += '      slope: 12\n'
-        composedeq += '      gain: ' + loudnessGain*0.7 + '\n'
+        composedeq += '      gain: ' + loudnessGain * 0.65 + '\n'
         composedeq += '\n'
-        composedeq += '  lowshelf:\n'
-        composedeq += '    type: Biquad\n'
-        composedeq += '    parameters:\n'
-        composedeq += '      type: Lowshelf\n'
-        composedeq += '      freq: 70\n'
-        composedeq += '      slope: 12\n'
-        composedeq += '      gain: ' + loudnessGain + '\n'
+        // composedeq += '  lowshelf:\n'
+        // composedeq += '    type: Biquad\n'
+        // composedeq += '    parameters:\n'
+        // composedeq += '      type: Lowshelf\n'
+        // composedeq += '      freq: 70\n'
+        // composedeq += '      slope: 12\n'
+        // composedeq += '      gain: ' + loudnessGain + '\n'
+        // composedeq += '\n'
+        composedeq += '  lowshelf:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: LowshelfFO\n';
+        composedeq += '      freq: 35\n';
+        composedeq += '      gain: ' + loudnessGain + '\n';
+        composedeq += '' + '\n';
+        composedeq += '  peakloudness:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 1000\n';
+        composedeq += '      q: 0.9\n';
+        composedeq += '      gain: ' + loudnessGain * 0.18 + '\n';
+        composedeq += '' + '\n';
+        composedeq += '  peakloudness2:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 13000\n';
+        composedeq += '      q: 0.7\n';
+        composedeq += '      gain: ' + loudnessGain * 0.08 + '\n';
+        composedeq += '' + '\n';
         result += composedeq
         //-----loudness pipeline
 
@@ -2196,8 +2220,12 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           gainmaxused += gainmax
           if (self.config.get('loudness') && effect) {
             pipelinelr += '      - highshelf\n';
+            pipelinelr += '      - peakloudness\n';
+            pipelinelr += '      - peakloudness2\n';
             pipelinelr += '      - lowshelf\n';
             pipelinerr += '      - highshelf\n';
+            pipelinerr += '      - peakloudness\n';
+            pipelinerr += '      - peakloudness2\n';
             pipelinerr += '      - lowshelf\n';
             //    self.logger.info('loudness pipeline set')
           }
@@ -2702,7 +2730,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       return;
 
     } else {
- 
+
       if (filext == "wav") {
         let listf = ('leftfilter,rightfilter')
         let list = listf.split(',')
@@ -2721,7 +2749,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
             self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
           };
           self.config.set(list[i], filtername.slice(0, -3) + "raw");
-          self.config.set('leftfilterlabel',filtername.slice(0, -3) + "raw");
+          self.config.set('leftfilterlabel', filtername.slice(0, -3) + "raw");
 
           // self.config.set(list[i] + ',' + filtername.slice(0, -3) + "raw")
           self.logger.info('filter saved ' + list[i] + ',' + filtername.slice(0, -3) + "raw")
@@ -2731,8 +2759,8 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         self.config.set('leftfilterlabel', leftfilter);
         self.config.set('leftfilter', leftfilter);
         self.config.set('rightfilter', rightfilter);
-      } 
-            self.dfiltertype(data);
+      }
+      self.dfiltertype(data);
 
       let val = self.dfiltertype(obj);
       let valfound = val.valfound

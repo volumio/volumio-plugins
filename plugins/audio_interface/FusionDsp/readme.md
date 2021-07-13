@@ -1,4 +1,4 @@
-JULY 8th 2021
+JULY 13th 2021
 
 
 ##  For Volumio3
@@ -23,7 +23,7 @@ Provide
     - DRC-FIR to create filter with an impulse
 
 For all 
-- Progressiv Loudness with threshold setting
+- Progressiv Loudness with threshold setting - sort of equal loudness curve
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
@@ -94,6 +94,8 @@ Some screenshots
 
 ![Alt text](drc-fir.png?raw=true "drc-fir")
 
+![Alt text](loudnesscurve.png?raw=true "Loudness curve")
+
 
 ## INSTALLATION WARNING
 
@@ -135,6 +137,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+July 13th 2021
+
+- Loudnesss curve almost like equal loudness curve
 
 July 8th 2021
 
