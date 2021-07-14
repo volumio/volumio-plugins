@@ -1,4 +1,4 @@
-JULY 13th 2021
+JULY 14th 2021
 
 
 ##  For Volumio3
@@ -137,6 +137,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+July 14th 2021
+
+- update for x86_64 version (not fully tested)
 
 July 13th 2021
 
