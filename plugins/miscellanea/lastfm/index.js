@@ -779,10 +779,15 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
 	{	
 		try
 		{
-			var info = state.title.split('-');
-			self.scrobbleData.artist = info[0].trim();
-			self.scrobbleData.title = info[1].trim();
-			self.scrobbleData.album = '';
+            var info = state.title.split('-');
+            // For the webradio I am listening to the title is the first part of string, artist the second:
+			//self.scrobbleData.artist = info[0].trim();
+			//self.scrobbleData.title = info[1].trim();
+            self.scrobbleData.artist = info[1].trim();
+            self.scrobbleData.title = info[0].trim();
+            self.scrobbleData.album = '';
+            self.logger.info('[LastFM] Split composite title into artist: ' + self.scrobbleData.artist + ' and title: ' + self.scrobbleData.title);
+
 		}
 		catch (ex)
 		{
