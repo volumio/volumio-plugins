@@ -8,7 +8,6 @@ var spawn = require('child_process').spawn
 
 const Gpio = require('onoff').Gpio;
 const io = require('socket.io-client');
-const socket = io.connect('http://localhost:3000');
 const dtoverlayRegex = /^([0-9]+):\s+rotary-encoder\s+pin_a=([0-9]+) pin_b=([0-9]+).*$/gm
 
 const maxRotaries = 3;
@@ -67,11 +66,6 @@ rotaryencoder2.prototype.onVolumioStart = function()
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
 
-	self.debugLogging = (self.config.get('logging')==true);
-	self.handles=[].fill(null,0,maxRotaries);
-	self.buttons=[].fill(null,0,maxRotaries);
-	self.pushDownTime=[].fill(0,0,maxRotaries);
-	self.status=null;
     return libQ.resolve();
 }
 
@@ -80,6 +74,12 @@ rotaryencoder2.prototype.onStart = function() {
 	var defer=libQ.defer();
 	var activate = [];
 
+	self.debugLogging = (self.config.get('logging')==true);
+	self.handles=[].fill(null,0,maxRotaries);
+	self.buttons=[].fill(null,0,maxRotaries);
+	self.pushDownTime=[].fill(0,0,maxRotaries);
+	self.status=null;
+
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onStart: Config loaded: ' + JSON.stringify(self.config));
 	for (let i = 0; i < maxRotaries; i++) {
 		if (self.config.get('enabled'+i)) {
@@ -87,8 +87,9 @@ rotaryencoder2.prototype.onStart = function() {
 		}	
 	}
 
-	socket.emit('getState');
-	socket.on('pushState',function(data){
+	self.socket = io.connect('http://localhost:3000');
+	self.socket.emit('getState');
+	self.socket.on('pushState',function(data){
 		self.status = data;
 		self.lastTime = data.seek - Date.now();
 		// if (self.debugLogging) self.logger.info('[ROTARYENCODER2] received Websock Status: ' + JSON.stringify(self.status));
@@ -129,7 +130,8 @@ rotaryencoder2.prototype.onStop = function() {
 		return self.deactivateButtons(deactivate)
 	})
 	.then(_=> {
-		socket.disconnect();
+		self.socket.off('pushState');
+		self.socket.disconnect();
 	})
 	.then(_=>{
 		self.commandRouter.pushToastMessage('success',"Rotary Encoder II", self.commandRouter.getI18nString('ROTARYENCODER2.TOAST_STOP_SUCCESS'))
@@ -582,23 +584,24 @@ rotaryencoder2.prototype.emitDialCommand = function(val,rotaryIndex){
 		case 1: //CW
 			switch (action) {
 				case dialActions.indexOf("VOLUME"): //1
-					socket.emit('volume','+');					
+					self.socket.emit('volume','+');					
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: VOLUME UP')
 					break;
 			
 				case dialActions.indexOf("SKIP"): //2
-					socket.emit('next');				
+					self.socket.emit('next');				
 					break;
 			
 				case dialActions.indexOf("SEEK"): //3
 					if (self.status.trackType != 'webradio' && self.status.status == 'play') {
 						let jumpTo = Math.min(Math.floor((Date.now() + self.lastTime)/1000 + 10),Math.floor(self.status.duration));
 						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] skip fwd to: ' + jumpTo);
-						socket.emit('seek', jumpTo);
+						self.socket.emit('seek', jumpTo);
 					}				
 					break;
 			
 				case dialActions.indexOf("EMIT"): //4
-					socket.emit(self.config.get('socketCmdCW'+rotaryIndex), self.config.get('socketDataCW'+rotaryIndex));				
+					self.socket.emit(self.config.get('socketCmdCW'+rotaryIndex), self.config.get('socketDataCW'+rotaryIndex));				
 					break;
 			
 				default:
@@ -608,23 +611,24 @@ rotaryencoder2.prototype.emitDialCommand = function(val,rotaryIndex){
 		case -1: //CCW
 			switch (action) {
 				case dialActions.indexOf("VOLUME"): //1
-					socket.emit('volume','-');					
+					self.socket.emit('volume','-');					
+					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] emitDialCommand: VOLUME DOWN')
 					break;
 			
 				case dialActions.indexOf("SKIP"): //2
-					socket.emit('prev');				
+					self.socket.emit('prev');				
 					break;
 			
 				case dialActions.indexOf("SEEK"): //3
 					if (self.status.trackType != 'webradio' && self.status.status == 'play') {
 						let jumpTo = Math.max(Math.floor((Date.now() + self.lastTime)/1000 - 10),0);
 						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] skip back to: ' + jumpTo);
-						socket.emit('seek', jumpTo);
+						self.socket.emit('seek', jumpTo);
 					}				
 					break;
 			
 				case dialActions.indexOf("EMIT"): //4
-					socket.emit(self.config.get('socketCmdCCW'+rotaryIndex), self.config.get('socketDataCCW'+rotaryIndex));				
+					self.socket.emit(self.config.get('socketCmdCCW'+rotaryIndex), self.config.get('socketDataCCW'+rotaryIndex));				
 					break;
 			
 				default:
@@ -660,63 +664,63 @@ rotaryencoder2.prototype.emitPushCommand = function(longPress,rotaryIndex){
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] buttonAction: button of rotary ' + (rotaryIndex + 1) + ' pressed but no action selected.');
 			break;
 		case btnActions.indexOf("PLAY"): //1
-			socket.emit('play')
+			self.socket.emit('play')
 			break;
 		case btnActions.indexOf("PAUSE"): //2
-			socket.emit('pause')
+			self.socket.emit('pause')
 			break;
 		case btnActions.indexOf("PLAYPAUSE"): //3
 			switch (self.status.status) {
 				case 'pause':
 				case 'stop':
-					socket.emit('play');				
+					self.socket.emit('play');				
 					break;
 				case 'play':
-					socket.emit('pause');
+					self.socket.emit('pause');
 					break;
 				default:
 					break;
 			}
 			break;
 		case btnActions.indexOf("STOP"): //4
-			socket.emit('stop')
+			self.socket.emit('stop')
 			break;
 		case btnActions.indexOf("REPEAT"): //5
 			var newVal = !(self.status.repeat && self.status.repeatSingle);
 			var newSingle = !(self.status.repeat == self.status.repeatSingle);
-			socket.emit('setRepeat',{
+			self.socket.emit('setRepeat',{
 				'value': newVal,
 				'repeatSingle': newSingle
 			})
 			break;
 		case btnActions.indexOf("RANDOM"): //6
-			socket.emit('setRandom',{'value':!self.status.random})
+			self.socket.emit('setRandom',{'value':!self.status.random})
 			break;
 		case btnActions.indexOf("CLEARQUEUE"): //7
-			socket.emit('clearQueue')
+			self.socket.emit('clearQueue')
 			break;
 		case btnActions.indexOf("MUTE"): //8
-			socket.emit('mute')
+			self.socket.emit('mute')
 			break;
 		case btnActions.indexOf("UNMUTE"): //9
-			socket.emit('unmute')
+			self.socket.emit('unmute')
 			break;
 		case btnActions.indexOf("TOGGLEMUTE"): //10
 			if (self.status.mute) {
-				socket.emit('unmute');
+				self.socket.emit('unmute');
 			} else {
-				socket.emit('mute');
+				self.socket.emit('mute');
 			}
 			break;
 		case btnActions.indexOf("SHUTDOWN"): //11
-			socket.emit('shutdown')
+			self.socket.emit('shutdown')
 			break;
 		case btnActions.indexOf("REBOOT"): //12
-			socket.emit('reboot')
+			self.socket.emit('reboot')
 			break;
 		case btnActions.indexOf("EMIT"): //13
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] buttonAction: button of rotary ' + (rotaryIndex + 1) + ' emit ' + cmd +';'+data);
-			socket.emit(cmd,data);
+			self.socket.emit(cmd,data);
 			break;
 	
 		default:
