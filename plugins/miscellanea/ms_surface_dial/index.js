@@ -115,7 +115,7 @@ msSurfaceDial.prototype.getUIConfig = function() {
                     defer.reject(err)
                 }
                 else {
-                    /**  Paired, Not connected
+                    /*  Paired, Not connected
                     uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.UNCONNECTED;
                     // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
                     // does not support 'AND' or 'OR' conditions
@@ -123,22 +123,22 @@ msSurfaceDial.prototype.getUIConfig = function() {
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = true; // paired_not_connected
                     */
-                    /**  Paired, Connected
+                    /**  Paired, Connected */
                     uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.CONNECTED_IN_USE;
                     // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
                     // does not support 'AND' or 'OR' conditions
                     uiconf.sections[0].content[contentIdx.Paired].value = true; // paired
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = true; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
-                    */
-                    /**  Not Paired */
+                    
+                    /**  Not Paired
                      uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.NOT_CONFIGURED;
                     // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
                     // does not support 'AND' or 'OR' conditions
                     uiconf.sections[0].content[contentIdx.Paired].value = false; // paired
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
-                    
+                    */
                     defer.resolve(uiconf);
                 }
             });
@@ -169,6 +169,27 @@ msSurfaceDial.prototype.setConf = function(varName, varValue) {
 	var self = this;
 	//Perform your installation tasks here
 };
+
+// Configuration UI Event Handling
+msSurfaceDial.prototype.onRequestConnect = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Connect Button.`)
+}
+
+msSurfaceDial.prototype.onRequestDisconnect = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Disconnect Button.`)
+}
+
+msSurfaceDial.prototype.onRequestPair = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Pair Button.`)
+}
+
+msSurfaceDial.prototype.onRequestUnpair = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Un-Pair Button.`)
+}
 
 // Input Event Handling
 msSurfaceDial.prototype.openEventStream = function(eventDevPath) {

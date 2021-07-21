@@ -35,28 +35,58 @@
           "label": "TRANSLATE.SDIAL_ACTION.PAIR",
           "description": "Search and Configure Surface Dial",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired", "value": false}
+          "visibleIf": {"field": "sdial_paired", "value": false},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestPair"
+          }
         },
         {
           "id": "sdial_remove",
           "label": "TRANSLATE.SDIAL_ACTION.UNPAIR",
           "description": "Remove from Surface Dial (Paired)",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired", "value": true}
+          "visibleIf": {"field": "sdial_paired", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestUnpair",
+            "askForConfirm": {
+              "title": "Confirmation",
+              "message": "Are you sure to remove Surface Dial?"
+            }
+          }
         },
         {
           "id": "sdial_connect",
           "label": "TRANSLATE.SDIAL_ACTION.CONNECT",
           "description": "Connect to Surface Dial (Paired)",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired_not_connected", "value": true}
+          "visibleIf": {"field": "sdial_paired_not_connected", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestConnect"
+          }
         },
         {
           "id": "sdial_disconnect",
           "label": "TRANSLATE.SDIAL_ACTION.DISCONNECT",
           "description": "Disconnect from Surface Dial (Paired)",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired_connected", "value": true}
+          "visibleIf": {"field": "sdial_paired_connected", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestDisconnect"
+          }
+        },
+        {
+          "id": "sdial_remind_pairing_mode",
+          "label": "Please make sure Surface Dial is in pairing-mode when Pairing button is clicked.",
+          "value": "",
+          "visibleIf": {"field": "sdial_paired", "value": false}
         }
       ]
     }
