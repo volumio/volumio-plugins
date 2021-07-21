@@ -720,7 +720,7 @@ ControllerLastFM.prototype.updateCredentials = function (data)
 	self.config.set('API_KEY', data['API_KEY']);
 	self.config.set('API_SECRET', data['API_SECRET']);
 	self.config.set('username', data['username']);
-	if(data['storePassword'] && data['passowrd'] != undefined && data['passowrd'] != '' && data['passowrd'] != '******')
+	if(data['storePassword'] && data['password'] != undefined && data['password'] != '' && data['password'] != '******')
 		self.config.set('password', data['password']);
 	self.config.set('authToken', md5(data['username'] + md5(data['password'])));
 	defer.resolve();
