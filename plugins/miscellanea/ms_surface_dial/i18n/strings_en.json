@@ -1,4 +1,18 @@
 {
   "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
-  "SAVE":"Save"
+  "SAVE":"Save",
+  "SDIAL_CONFIGURATION":"Surface Dial Configuration",
+  "SDIAL":"Surface Dial",
+  "SDIAL_STATUS": {
+    "NOT_CONFIGURED":"Not Configured",
+    "UNCONNECTED":"Unconnected",
+    "CONNECTED_IN_USE":"Connected (In Use)"
+  },
+  "SDIAL_ACTION": {
+    "PAIR": "Start Pairing",
+    "UNPAIR": "Forget (Un-pair)",
+    "CONNECT": "Connect",
+    "DISCONNECT": "Disconnect"
+  }
 }
+
