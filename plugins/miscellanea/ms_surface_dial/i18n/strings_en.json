@@ -3,6 +3,12 @@
   "SAVE":"Save",
   "SDIAL_CONFIGURATION":"Surface Dial Configuration",
   "SDIAL":"Surface Dial",
+  "BLUETOOTH":"Bluetooth",
+  "BT_STATUS": {
+    "NO_ADAPTER": "No Bluetooth Adapter",
+    "POWERED_OFF": "Bluetooth Off",
+    "POWERED_ON": "Bluetooth On"
+  },
   "SDIAL_STATUS": {
     "NOT_CONFIGURED":"Not Configured",
     "UNCONNECTED":"Unconnected",
@@ -12,7 +18,9 @@
     "PAIR": "Start Pairing",
     "UNPAIR": "Forget (Un-pair)",
     "CONNECT": "Connect",
-    "DISCONNECT": "Disconnect"
+    "DISCONNECT": "Disconnect",
+    "BT_POWERON": "Power On Bluetooth",
+    "BT_POWEROFF": "Power Off Bluetooth"
   }
 }
 

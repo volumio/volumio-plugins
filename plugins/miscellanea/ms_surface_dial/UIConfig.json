@@ -6,6 +6,13 @@
     {
       "content": [
         {
+          "id": "bt_status",
+          "label": "TRANSLATE.BLUETOOTH",
+          "type": "text",
+          "element": "input",
+          "value": "Unknown"
+        },
+        {
           "id": "sdial_status",
           "label": "TRANSLATE.SDIAL",
           "type": "text",
@@ -13,7 +20,25 @@
           "value": "Unknown"
         },
         {
-          "id": "sdial_paired",
+          "id": "bluetooth_avail_on",
+          "label": "dummy",
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id": "bluetooth_avail_off",
+          "label": "dummy",
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id": "sdial_bton_paired",
+          "label": "dummy",
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id": "sdial_bton_not_paired",
           "label": "dummy",
           "value": true,
           "hidden": true
@@ -31,11 +56,39 @@
           "hidden": true
         },
         {
+          "id": "bt_on",
+          "label": "TRANSLATE.SDIAL_ACTION.BT_POWERON",
+          "description": "Turn on Bluetooth (Adapter Present)",
+          "element": "button",
+          "visibleIf": {"field": "bluetooth_avail_off", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestTurnOnBT"
+          }
+        },
+        {
+          "id": "bt_off",
+          "label": "TRANSLATE.SDIAL_ACTION.BT_POWEROFF",
+          "description": "Turn off Bluetooth (Adapter Present)",
+          "element": "button",
+          "visibleIf": {"field": "bluetooth_avail_on", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestTurnOffBT",
+            "askForConfirm": {
+              "title": "Confirmation",
+              "message": "Are you sure to turn OFF Bluetooth?"
+            }
+          }
+        },
+        {
           "id": "sdial_pair",
           "label": "TRANSLATE.SDIAL_ACTION.PAIR",
           "description": "Search and Configure Surface Dial",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired", "value": false},
+          "visibleIf": {"field": "sdial_bton_not_paired", "value": true},
           "onClick": {
             "type": "controller",
             "endpoint": "miscellanea/ms_surface_dial",
@@ -47,7 +100,7 @@
           "label": "TRANSLATE.SDIAL_ACTION.UNPAIR",
           "description": "Remove from Surface Dial (Paired)",
           "element": "button",
-          "visibleIf": {"field": "sdial_paired", "value": true},
+          "visibleIf": {"field": "sdial_bton_paired", "value": true},
           "onClick": {
             "type": "controller",
             "endpoint": "miscellanea/ms_surface_dial",
@@ -86,7 +139,7 @@
           "id": "sdial_remind_pairing_mode",
           "label": "Please make sure Surface Dial is in pairing-mode when Pairing button is clicked.",
           "value": "",
-          "visibleIf": {"field": "sdial_paired", "value": false}
+          "visibleIf": {"field": "sdial_bton_not_paired", "value": true}
         }
       ]
     }

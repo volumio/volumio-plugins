@@ -99,10 +99,14 @@ msSurfaceDial.prototype.getUIConfig = function() {
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
     const contentIdx = {
-        Status: 0,
-        Paired: 1,
-        PairedConnected: 2,
-        PairedNotConnected: 3
+        BTStatus: 0,
+        SDialStatus: 1,
+        BTAvailOn: 2,
+        BTAvailOff: 3,
+        BTOnPaired: 4,
+        BTOnNotPaired: 5,
+        PairedConnected: 6,
+        PairedNotConnected: 7
     };
 
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -115,30 +119,60 @@ msSurfaceDial.prototype.getUIConfig = function() {
                     defer.reject(err)
                 }
                 else {
+                    /* Adapter Not Available 
+                    uiconf.sections[0].content[contentIdx.BTStatus].value = stringsLangObj.BT_STATUS.NO_ADAPTER;
+                    uiconf.sections[0].content[contentIdx.SDialStatus].value = stringsLangObj.SDIAL_STATUS.UNCONNECTED;
+                    uiconf.sections[0].content[contentIdx.BTAvailOn].value = false; // BT Avail and On
+                    uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
+                    uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
+                    uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
+                    uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
+                    uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
+                    */
+
+                    /* Adapter Available, BT Off 
+                    uiconf.sections[0].content[contentIdx.BTStatus].value = stringsLangObj.BT_STATUS.POWERED_OFF;
+                    uiconf.sections[0].content[contentIdx.SDialStatus].value = stringsLangObj.SDIAL_STATUS.UNCONNECTED;
+                    uiconf.sections[0].content[contentIdx.BTAvailOn].value = false; // BT Avail and On
+                    uiconf.sections[0].content[contentIdx.BTAvailOff].value = true; // BT Avail and Off
+                    uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
+                    uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
+                    uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
+                    uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
+                    */
+
                     /*  Paired, Not connected
-                    uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.UNCONNECTED;
-                    // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
-                    // does not support 'AND' or 'OR' conditions
-                    uiconf.sections[0].content[contentIdx.Paired].value = true; // paired
+                    uiconf.sections[0].content[contentIdx.BTStatus].value = stringsLangObj.BT_STATUS.POWERED_ON;
+                    uiconf.sections[0].content[contentIdx.SDialStatus].value = stringsLangObj.SDIAL_STATUS.UNCONNECTED;
+                    uiconf.sections[0].content[contentIdx.BTAvailOn].value = true; // BT Avail and On
+                    uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
+                    uiconf.sections[0].content[contentIdx.BTOnPaired].value = true; // BT On and Paired
+                    uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = true; // paired_not_connected
                     */
-                    /**  Paired, Connected */
-                    uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.CONNECTED_IN_USE;
-                    // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
-                    // does not support 'AND' or 'OR' conditions
-                    uiconf.sections[0].content[contentIdx.Paired].value = true; // paired
+
+                    /**  Paired, Connected
+                    uiconf.sections[0].content[contentIdx.BTStatus].value = stringsLangObj.BT_STATUS.POWERED_ON;
+                    uiconf.sections[0].content[contentIdx.SDialStatus].value = stringsLangObj.SDIAL_STATUS.CONNECTED_IN_USE;
+                    uiconf.sections[0].content[contentIdx.BTAvailOn].value = true; // BT Avail and On
+                    uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
+                    uiconf.sections[0].content[contentIdx.BTOnPaired].value = true; // BT On and Paired
+                    uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = true; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
-                    
-                    /**  Not Paired
-                     uiconf.sections[0].content[contentIdx.Status].value = stringsLangObj.SDIAL_STATUS.NOT_CONFIGURED;
-                    // We need these separate variables because 'visibleIf' attribute in the UIConfig.json
-                    // does not support 'AND' or 'OR' conditions
-                    uiconf.sections[0].content[contentIdx.Paired].value = false; // paired
+                    */
+
+                    /**  Not Paired */
+                    uiconf.sections[0].content[contentIdx.BTStatus].value = stringsLangObj.BT_STATUS.POWERED_ON;
+                    uiconf.sections[0].content[contentIdx.SDialStatus].value = stringsLangObj.SDIAL_STATUS.NOT_CONFIGURED;
+                    uiconf.sections[0].content[contentIdx.BTAvailOn].value = true; // BT Avail and On
+                    uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
+                    uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
+                    uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = true; // BT On and Not-Paired
                     uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
                     uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
-                    */
+                    
                     defer.resolve(uiconf);
                 }
             });
@@ -190,6 +224,17 @@ msSurfaceDial.prototype.onRequestUnpair = function() {
     var self = this;
     self.logger.info(`User clicked on the Un-Pair Button.`)
 }
+
+msSurfaceDial.prototype.onRequestTurnOnBT = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Turn-On-Bluetooth Button.`)
+}
+
+msSurfaceDial.prototype.onRequestTurnOffBT = function() {
+    var self = this;
+    self.logger.info(`User clicked on the Turn-Off-Bluetooth Button.`)
+}
+
 
 // Input Event Handling
 msSurfaceDial.prototype.openEventStream = function(eventDevPath) {
@@ -500,3 +545,4 @@ msSurfaceDial.prototype.goto=function(data){
 
      return defer.promise;
 };
+
