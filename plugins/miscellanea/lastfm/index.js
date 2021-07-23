@@ -38,7 +38,9 @@ function ControllerLastFM(context)
 		artist: '',
 		title: '',
 		album: ''
-	};
+        };
+
+    self.scrobblableTrack = false;
 	
 	this.context = context;
 	this.commandRouter = this.context.coreCommand;
@@ -103,7 +105,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 				self.logger.info('=================> [timer] is active: ' + self.currentTimer.isActive + ' | can continue: ' + self.currentTimer.canContinue + ' | timer started at: ' + self.currentTimer.timerStarted);
 		}
 		
-		self.formatScrobbleData(state);
+		//self.formatScrobbleData(state); // does not really do anything here
 		
 		// Scrobble from all services, or at least try to -> improves forward compatibility
 		if(state.status == 'play')
@@ -125,7 +127,7 @@ ControllerLastFM.prototype.onVolumioStart = function()
 			)
 			{
 				if(self.config.get('enable_debug_logging'))
-					self.logger.info('[LastFM] Continuing playback or different song.');
+                    self.logger.info('[LastFM] Different song or continuing playback of a stopped/paused song.');
 								
 				// Song service, since duration is > 0
 				if(state.duration > 0)
@@ -769,34 +771,41 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
 ControllerLastFM.prototype.formatScrobbleData = function (state)
 {
 	var self = this;
-	var defer = libQ.defer();
+    var defer = libQ.defer();
+    var success = true;
 	
-	self.scrobbleData.artist = state.artist;
-	self.scrobbleData.title = state.title
-	self.scrobbleData.album = state.album == null ? '' : state.album
-	
-	if(((self.scrobbleData.title != undefined && !self.scrobbleData.artist) || supportedStreamingServices.indexOf(state.service) != -1) && self.scrobbleData.title.indexOf('-') > -1 )
-	{	
-		try
-		{
-            var info = state.title.split('-');
-            // For the webradio I am listening to the title is the first part of string, artist the second:
-			//self.scrobbleData.artist = info[0].trim();
-			//self.scrobbleData.title = info[1].trim();
-            self.scrobbleData.artist = info[1].trim();
-            self.scrobbleData.title = info[0].trim();
-            self.scrobbleData.album = '';
-            self.logger.info('[LastFM] Split composite title into artist: ' + self.scrobbleData.artist + ' and title: ' + self.scrobbleData.title);
+    var artist = state.artist;
+    var title = state.title;
+    var album = state.album == null ? '' : state.album
 
-		}
-		catch (ex)
-		{
-			self.logger.error('[LastFM] An error occurred during parse; ' + ex);
-			self.logger.info('[LastFM] STATE; ' + JSON.stringify(state));
-		}
-	}
-	defer.resolve();
+    if (!state.artist) {  // Artist field empty (often the case for web radio streams). 
+        if (state.title.indexOf(' - ') > -1) { // Check if the title can be split into artist and actual title:
+            try {
+                var info = state.title.split(' - ');
+                // For the webradio I am listening to the title is the first part of string, artist the second:
+                //self.scrobbleData.artist = info[0].trim();
+                //self.scrobbleData.title = info[1].trim();
+                artist = info[1].trim();
+                title = info[0].trim();
+                self.logger.info('[LastFM] Split composite title into artist: ' + artist + ' and title: ' + title);
 
+            }
+            catch (ex) {
+                success = false;
+                self.logger.error('[LastFM] An error occurred during parse; ' + ex);
+                self.logger.info('[LastFM] STATE; ' + JSON.stringify(state));
+            }
+        }
+        else { success = false; }
+    }
+    if (success) { // update scrobbleData variable (otherwise leave it unchanged)
+        self.scrobbleData.artist = artist;
+        self.scrobbleData.title = title;
+        self.scrobbleData.album = album;
+    }
+    self.scrobblableTrack = success;
+    self.logger.info('[LastFM] Current track has sufficient metadata: ' + self.scrobblableTrack + ' with artist ' + self.scrobbleData.artist);
+   
 	return defer.promise;
 };
 
