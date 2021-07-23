@@ -5,6 +5,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+const { BluetoothSurfaceDial } = require('./btSurfaceDial.js');
 
 /**
  * Note: this module relies on 'music_service/input'. It makes use of the
@@ -24,6 +25,8 @@ function msSurfaceDial(context) {
 	this.eventStream = null;
 	this.dialPressed = false;
 	this.dialValue = 0; // debug purpose only
+
+    this.btSurfaceDial = new BluetoothSurfaceDial(this.logger, this.loggerLabel);
 }
 
 
@@ -54,6 +57,8 @@ msSurfaceDial.prototype.onStart = function() {
         this.logger.transports.level = "debug";
     }
     */
+
+    this.btSurfaceDial.init();
 
 	// Start handling input-events from connected Surface-Dial
 	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
