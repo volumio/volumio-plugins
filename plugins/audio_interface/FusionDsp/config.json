@@ -143,6 +143,18 @@
         "type": "string",
         "value": "3,4,3,3,5,4.5,2.5,0,1.5,1.5,3.5,4,4,2.5,3"
     },
+    "state4preset1": {
+        "type": "text",
+        "value": "None,false,false,50,0,0"
+    },
+    "state4preset2": {
+        "type": "text",
+        "value": "None,false,false,50,0,0"
+    },
+    "state4preset3": {
+        "type": "text",
+        "value": "None,false,false,50,0,0"
+    },
     "availablefilters": {
         "type": "text",
         "value": ""

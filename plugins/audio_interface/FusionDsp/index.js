@@ -18,11 +18,9 @@ const Journalctl = require('journalctl');
 const path = require('path');
 const WebSocket = require('ws')
 
-// Nbre total of Eq
-const tnbreq = 50
 
-
-//---global Variables
+//---global Eq Variables
+const tnbreq = 50// Nbre total of Eq
 const filterfolder = "/data/INTERNAL/FusionDsp/filters/";
 const filtersource = "/data/INTERNAL/FusionDsp/filter-sources/";
 const tccurvepath = "/data/INTERNAL/FusionDsp/target-curves/";
@@ -2867,6 +2865,14 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   const self = this;
   let defer = libQ.defer();
   let selectedsp = self.config.get('selectedsp')
+  let state4preset = [
+    self.config.get('crossfeed'),
+    self.config.get('monooutput'),
+    self.config.get('loudness'),
+    self.config.get('loudnessthreshold'),
+    self.config.get('leftlevel'),
+    self.config.get('rightlevel')
+  ]
 
   let preset = (data['eqpresetsaved'].value);
   if (preset == 'Select a preset') {
@@ -2880,43 +2886,44 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   switch (preset) {
     case ("mypreset1"):
       var spreset = 'p1'
-      var renprsetr = '1'
+      var renprestr = '1'
       break;
     case ("mypreset2"):
       var spreset = 'p2'
-      var renprsetr = '2'
+      var renprestr = '2'
       break;
     case ("mypreset3"):
       var spreset = 'p3'
-      var renprsetr = '3'
+      var renprestr = '3'
       break;
   }
   if (rpreset == 'choose a name') {
     self.logger.info('No change in name !')
   } else {
-    self.config.set("renpreset" + renprsetr, (data['renpreset']));
-    let name = (self.config.get('renpreset' + renprsetr));
+    self.config.set("renpreset" + renprestr, (data['renpreset']));
+    let name = (self.config.get('renpreset' + renprestr));
 
   }
   if (selectedsp == 'PEQ') {
     self.config.set(spreset + 'nbreq', nbreq);
-    self.config.set('mergedeq' + renprsetr, self.config.get('mergedeq'));
+    self.config.set('mergedeq' + renprestr, self.config.get('mergedeq'));
 
   } else if (selectedsp == 'EQ15') {
-    self.config.set("geq15" + renprsetr, self.config.get('geq15'));
-    self.config.set("x2geq15" + renprsetr, self.config.get('geq15'));
+    self.config.set("geq15" + renprestr, self.config.get('geq15'));
+    self.config.set("x2geq15" + renprestr, self.config.get('geq15'));
     self.logger.info('geq151 = ' + self.config.get('geq15'))
 
   } else if (selectedsp == '2XEQ15') {
-    self.config.set("x2geq15" + renprsetr, self.config.get('x2geq15'));
-    self.config.set("geq15" + renprsetr, self.config.get('eq15'));
+    self.config.set("x2geq15" + renprestr, self.config.get('x2geq15'));
+    self.config.set("geq15" + renprestr, self.config.get('eq15'));
 
 
   } else if (selectedsp == 'convfir') {
 
     self.logger.info('aaaaaaaaaaaaaaaaaa nothing to do!')
   }
-
+  self.config.set('state4preset' + renprestr, state4preset)
+  self.logger.info('State for preset' + renprestr + ' = ' + state4preset)
   self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spreset)
 
   self.refreshUI();
@@ -3038,6 +3045,16 @@ FusionDsp.prototype.usethispreset = function (data) {
   } else if (selectedsp == 'convfir') {
     //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
+
+  let state4preset = self.config.get('state4preset' + spreset)
+  self.config.set('crossfeed', state4preset[0])
+  self.config.set('monooutput', state4preset[1])
+  self.config.set('loudness', state4preset[2])
+  self.config.set('loudnessthreshold', state4preset[3])
+  self.config.set('leftlevel', state4preset[4])
+  self.config.set('rightlevel', state4preset[5])
+
+
   self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
 
   setTimeout(function () {

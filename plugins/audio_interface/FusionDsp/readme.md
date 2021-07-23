@@ -1,13 +1,10 @@
-JULY 14th 2021
+JULY 22th 2021
 
 
 ##  For Volumio3
 
 
-
-
 This plugin is designed to apply different type of Dsp on Volumio using [CamillaDsp](https://github.com/HEnquist/camilladsp)
-
 
 
 Provide
@@ -138,9 +135,9 @@ nearly everythings ;-)
 
 ### 4. Last changes
 
-July 14th 2021
+July 23th 2021
 
-- update for x86_64 version (not fully tested)
+- More values saved in preset
 
 July 13th 2021
 
