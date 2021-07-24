@@ -168,6 +168,13 @@ ControllerLastFM.prototype.onVolumioStart = function()
 
                         self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
                     }
+                    else {
+                        if (self.currentTimer.isActive) {
+                            self.currentTimer.stop();
+                            if (self.config.get('enable_debug_logging'))
+                                self.logger.info('[LastFM] Stopped active timer, as there is not enough metadata for what is currently playing...');
+                        }
+                    }
 				}
 				
 				if(initialize)
