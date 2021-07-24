@@ -778,6 +778,7 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
     var title = state.title;
     var album = state.album == null ? '' : state.album
 
+    // assumes that title is always defined! This is probably true
     if (!state.artist) {  // Artist field empty (often the case for web radio streams). 
         if (state.title.indexOf(' - ') > -1) { // Check if the title can be split into artist and actual title:
             try {
@@ -788,15 +789,25 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
                 artist = info[1].trim();
                 title = info[0].trim();
                 self.logger.info('[LastFM] Split composite title into artist: ' + artist + ' and title: ' + title);
-
+                if (!artist) {
+                    success = false;
+                    self.logger.info('[LastFM] Current track does not have sufficient metadata: Missing artist. Failed to split composite title ' + state.title);
+                }
             }
             catch (ex) {
                 success = false;
+                self.logger.info('[LastFM] Current track does not have sufficient metadata: Missing artist. Failed to split composite title ' + state.title);
                 self.logger.error('[LastFM] An error occurred during parse; ' + ex);
                 self.logger.info('[LastFM] STATE; ' + JSON.stringify(state));
             }
         }
-        else { success = false; }
+        else {
+            success = false;
+            self.logger.info('[LastFM] Current track does not have sufficient metadata: Missing artist. Not a composite title!' + state.title);
+        }
+    }
+    else {
+        self.logger.info('[LastFM] Current track has sufficient metadata: title (' + self.scrobblableTrack + ') and artist (' + self.scrobbleData.artist + ') passed on explicitly');
     }
     if (success) { // update scrobbleData variable (otherwise leave it unchanged)
         self.scrobbleData.artist = artist;
@@ -804,7 +815,7 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         self.scrobbleData.album = album;
     }
     self.scrobblableTrack = success;
-    self.logger.info('[LastFM] Current track has sufficient metadata: ' + self.scrobblableTrack + ' with artist ' + self.scrobbleData.artist);
+//    self.logger.info('[LastFM] Current track has sufficient metadata: ' + self.scrobblableTrack + ' with artist ' + self.scrobbleData.artist);
    
 	return defer.promise;
 };
@@ -825,9 +836,7 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 		(self.config.get('API_SECRET') != '') &&
 		(self.config.get('username') != '') &&
 		(self.config.get('authToken') != '') &&
-		self.scrobbleData.artist != undefined &&
-		self.scrobbleData.title != undefined &&
-		self.scrobbleData.album != undefined
+        self.scrobblableTrack // eventually this should not be needed any more
 	)
 	{
 		if(self.config.get('enable_debug_logging'))
@@ -928,9 +937,7 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 		(self.config.get('API_SECRET') != '') &&
 		(self.config.get('username') != '') &&
 		(self.config.get('authToken') != '') &&
-		self.scrobbleData.artist != undefined &&
-		self.scrobbleData.title != undefined &&
-		self.scrobbleData.album != undefined	
+        self.scrobblableTrack // eventually this should not be needed any more
 	)
 	{
 		if(self.config.get('enable_debug_logging'))
