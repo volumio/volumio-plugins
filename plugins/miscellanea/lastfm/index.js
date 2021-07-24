@@ -1004,7 +1004,7 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 		
 		self.previousScrobble.artist = self.scrobbleData.artist;
 		self.previousScrobble.title = self.scrobbleData.title;
-		self.clearScrobbleMemory((state.duration * 1000) - scrobbleThresholdInMilliseconds);
+		//self.clearScrobbleMemory((state.duration * 1000) - scrobbleThresholdInMilliseconds);
 	}
 	else
 	{
