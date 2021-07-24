@@ -162,10 +162,12 @@ ControllerLastFM.prototype.onVolumioStart = function()
 				}
 				else if (state.duration == 0 && state.service == 'webradio')
 				{
-					if(self.config.get('enable_debug_logging'))
-						self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [webradio: ' + state.title + '].');
-					
-					self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                    if (self.scrobblableTrack) {
+                        if (self.config.get('enable_debug_logging'))
+                            self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [webradio: ' + state.title + '].');
+
+                        self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                    }
 				}
 				
 				if(initialize)
@@ -803,7 +805,7 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         }
         else {
             success = false;
-            self.logger.info('[LastFM] Current track does not have sufficient metadata: Missing artist. Not a composite title!' + state.title);
+            self.logger.info('[LastFM] Current track does not have sufficient metadata: Missing artist. Not a composite title! ' + state.title);
         }
     }
     else {
