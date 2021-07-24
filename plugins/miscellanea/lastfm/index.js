@@ -983,16 +983,22 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 					track: self.scrobbleData.title,
 					album: self.scrobbleData.album,
 					callback: function(result) {
-						if(!result.success)
-							console.log("in callback, finished: ", result);
-						
-						if(self.scrobbleData.album == undefined || self.scrobbleData.album == '')
-							self.scrobbleData.album = '[unknown album]';
-						
-						if(self.config.get('pushToastOnScrobble'))
-							self.commandRouter.pushToastMessage('success', 'Scrobble succesful', 'Scrobbled: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
-						if(self.config.get('enable_debug_logging'))
-							self.logger.info('[LastFM] Scrobble successful for: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
+                        if (result.success) {
+                            if (self.scrobbleData.album == undefined || self.scrobbleData.album == '')
+                                self.scrobbleData.album = '[unknown album]';
+
+                            if (self.config.get('pushToastOnScrobble'))
+                                self.commandRouter.pushToastMessage('success', 'Scrobble succesful', 'Scrobbled: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
+                            if (self.config.get('enable_debug_logging'))
+                                self.logger.info('[LastFM] Scrobble successful for: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
+                        }
+                        else {
+                            console.log("in callback, finished: ", result);
+                            if (self.config.get('pushToastOnScrobble'))
+                                self.commandRouter.pushToastMessage('error', 'Scrobble failed', 'Tried to scrobbled: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
+                            if (self.config.get('enable_debug_logging'))
+                                self.logger.info('[LastFM] Scrobble failed for: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
+                        }
 					}
 				});	
 			}
