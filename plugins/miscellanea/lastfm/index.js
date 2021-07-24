@@ -887,6 +887,19 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 							self.logger.info('[LastFM] request failed with error: ' + result.error);
 					}
 				})
+                // try getting track info
+                lfm.getTrackInfo({
+                    artist: self.scrobbleData.artist,
+                    track: self.scrobbleData.title,
+                    callback: function (result) {
+                        if (result.success) {
+                            // Display results to start with
+                            self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
+                        }
+                        else
+                            self.logger.info('[LastFM] track info request failed with error: ' + result.error);
+                    }
+				})
 
 				// Used to notify Last.fm that a user has started listening to a track. Parameter names are case sensitive.
 				lfm.scrobbleNowPlayingTrack({
