@@ -863,38 +863,40 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 				if(self.config.get('enable_debug_logging'))
 					self.logger.info('[LastFM] authenticated successfully!');
 				// Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track
-				lfm.getCorrection({
-					artist: self.scrobbleData.artist,
-					track: self.scrobbleData.title,
-					callback: function(result) {
-						if(result.success)
-						{
-							// Try to correct the artist
-							if(result.correction.artist.name != undefined && result.correction.artist.name != '' && self.scrobbleData.artist != result.correction.artist.name)
-							{	
-								self.logger.info('[LastFM] corrected artist from: ' + self.scrobbleData.artist + ' to: ' + result.correction.artist.name);
-								self.scrobbleData.artist = result.correction.artist.name;
-							}
+				//lfm.getCorrection({
+				//	artist: self.scrobbleData.artist,
+				//	track: self.scrobbleData.title,
+				//	callback: function(result) {
+				//		if(result.success)
+				//		{
+				//			// Try to correct the artist
+				//			if(result.correction.artist.name != undefined && result.correction.artist.name != '' && self.scrobbleData.artist != result.correction.artist.name)
+				//			{	
+				//				self.logger.info('[LastFM] corrected artist from: ' + self.scrobbleData.artist + ' to: ' + result.correction.artist.name);
+				//				self.scrobbleData.artist = result.correction.artist.name;
+				//			}
 							
-							// Try to correct the track title
-							if(result.correction.name != undefined && result.correction.name != '' && self.scrobbleData.title != result.correction.name)
-							{	
-								self.logger.info('[LastFM] corrected track title from: ' + self.scrobbleData.title + ' to: ' + result.correction.name);
-								self.scrobbleData.title = result.correction.name;
-							}
-						}
-						else
-							self.logger.info('[LastFM] request failed with error: ' + result.error);
-					}
-				})
+				//			// Try to correct the track title
+				//			if(result.correction.name != undefined && result.correction.name != '' && self.scrobbleData.title != result.correction.name)
+				//			{	
+				//				self.logger.info('[LastFM] corrected track title from: ' + self.scrobbleData.title + ' to: ' + result.correction.name);
+				//				self.scrobbleData.title = result.correction.name;
+				//			}
+				//		}
+				//		else
+				//			self.logger.info('[LastFM] request failed with error: ' + result.error);
+				//	}
+				//})
                 // try getting track info
                 lfm.getTrackInfo({
                     artist: self.scrobbleData.artist,
                     track: self.scrobbleData.title,
+                    autocorrect : 1,
                     callback: function (result) {
                         if (result.success) {
                             // Display results to start with
                             self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
+                            if (result.trackInfo.duration != undefined) { self.logger.info('[LastFM] track duration: ' + result.trackInfo.duration);}
                         }
                         else
                             self.logger.info('[LastFM] track info request failed with error: ' + result.error);
