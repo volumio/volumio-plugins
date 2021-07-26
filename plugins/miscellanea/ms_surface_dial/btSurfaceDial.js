@@ -28,7 +28,7 @@ class BluetoothSurfaceDial extends EventEmitter {
         this.systemBus = dbus.systemBus(); // create only once
         this.hciObjPath = null;
         this.hciObj = null;
-        this.sdialObjPath = null; // only set if it is paired
+        this.sdialObjPath = null; // set even if it's not paired.
         this.sdialObj = null;
         this.logger = logger;
         this.logLabel = logLabel;
@@ -75,7 +75,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                     this.logger.info(`[${this.logLabel} init()] added Adapter ${objPath}`);
                 }
                 // find the first Surface Dial
-                if ((this.sdialNotRegistered()) && this.isPairedSurfaceDial(obj)) {
+                if ((this.sdialNotRegistered()) && this.isSurfaceDial(obj)) {
                     await this.addSurfaceDial(objPath, obj);
                     this.logger.info(`[${this.logLabel} init()] added SurfaceDial ${objPath}`);
                 }
@@ -101,7 +101,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                     await this.addAdapter(objPath, ifacesAndProps);
                     this.logger.info(`[${this.logLabel} init()] added Adapter ${objPath}`);
                 }
-                else if ((this.sdialNotRegistered()) && this.isPairedSurfaceDial(ifacesAndProps)) {
+                else if ((this.sdialNotRegistered()) && this.isSurfaceDial(ifacesAndProps)) {
                     await this.addSurfaceDial(objPath, ifacesAndProps);
                     this.logger.info(`[${this.logLabel} init()] added SurfaceDial ${objPath}`);
                 }
@@ -194,12 +194,11 @@ class BluetoothSurfaceDial extends EventEmitter {
         return busObj.hasOwnProperty(BluetoothSurfaceDial.ADAPTER_IFACE_NAME);
     }
   
-    // see if the device is a Surface-Dial and it's paired
+    // see if the device is a Surface-Dial
     // busObj: Dictionary <Interface:string, Dictionary<Property:string, Variant>> >
     // return true if it is.
-    isPairedSurfaceDial(busObj) {
+    isSurfaceDial(busObj) {
         let isSdial = false;
-        let isPaired = false;
         // Look for the Device Interface
         if (busObj.hasOwnProperty(BluetoothSurfaceDial.DEVICE_IFACE_NAME)) {
             let deviceObj = busObj[BluetoothSurfaceDial.DEVICE_IFACE_NAME];
@@ -210,12 +209,8 @@ class BluetoothSurfaceDial extends EventEmitter {
             else if (deviceObj.hasOwnProperty('Alias')) {
                 isSdial = (BluetoothSurfaceDial.SDIAL_NAME == deviceObj['Alias'].value);
             }
-            // Look for Paired property
-            if (isSdial && deviceObj.hasOwnProperty('Paired')) {
-                isPaired = deviceObj['Paired'].value;
-            }
         }
-        return (isSdial && isPaired);
+        return isSdial;
     }
 
     sdialNotRegistered() {
