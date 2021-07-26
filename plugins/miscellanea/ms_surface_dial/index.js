@@ -78,6 +78,8 @@ msSurfaceDial.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
+    this.btSurfaceDial.deInit();
+
 	if (this.eventStream) {
 		this.eventStream.destroy();
 		this.eventStream = null;

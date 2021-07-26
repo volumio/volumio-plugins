@@ -14,7 +14,7 @@
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
-		"dbus-native": "^0.4.0",
+		"dbus-next": "^0.9.2",
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
 		"v-conf": "^1.4.0"
