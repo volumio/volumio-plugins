@@ -23,6 +23,8 @@ var compositeTitleSeparator = " - ";
 var compositeTitleIndexOfArtist = 1;
 var compositeTitleIndexOfTitle = 0;
 
+var trackStartTime = 0;
+
 // Define the ControllerLastFM class
 module.exports = ControllerLastFM;
 
@@ -705,15 +707,18 @@ ControllerLastFM.prototype.stopAndStartTimer = function(timerLength, state, scro
 	var defer = libQ.defer();
 	
 	try
-	{
-		self.currentTimer.stop();
+    {
+        trackStartTime = Math.floor(Date.now() / 1000); // time stamp is seconds
+        self.currentTimer.stop();
 		self.currentTimer.start(timerLength, function(scrobbler){
 			if(self.config.get('enable_debug_logging'))
 				self.logger.info('[LastFM] scrobbling from restarted timer.');
-			self.scrobble(state, self.config.get('scrobbleThreshold'), scrobbleThresholdInMilliseconds);
+            self.scrobble(state, self.currentTimer.timerStarted, scrobbleThresholdInMilliseconds);
 			self.currentTimer.stop();
 			self.timeToPlay = 0;
 		});		
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] Timer started with time stamp '+ trackStartTime);
 		defer.resolve();
 	}
 	catch (ex)
@@ -947,12 +952,12 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 	return defer.promise;
 };
 
-ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobbleThresholdInMilliseconds)
+ControllerLastFM.prototype.scrobble = function (state, timeStampInMilliSeconds, scrobbleThresholdInMilliseconds)
 {
 	var self = this;
 	var defer = libQ.defer();
 	
-	var now = new Date().getTime();
+	//var now = new Date().getTime();
 	self.formatScrobbleData(state);
 	
 	if(self.config.get('enable_debug_logging'))
@@ -976,7 +981,8 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 			api_key: self.config.get('API_KEY'),
 			api_secret: self.config.get('API_SECRET'),
 			username: self.config.get('username'),
-			authToken: self.config.get('authToken')
+            authToken: self.config.get('authToken'),
+            debug: true
 		});
 		
 		lfm.getSessionKey(function(result) {
@@ -988,7 +994,7 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 				// Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track
 				lfm.getCorrection({
 					artist: self.scrobbleData.artist,
-					track: self.scrobbleData.title,
+                    track: self.scrobbleData.title,
 					callback: function(result) {
 						if(result.success)
 						{							
@@ -1018,6 +1024,7 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 					artist: self.scrobbleData.artist,
 					track: self.scrobbleData.title,
 					album: self.scrobbleData.album,
+                    timestamp: trackStartTime,
 					callback: function(result) {
                         if (result.success) {
                             if (self.scrobbleData.album == undefined || self.scrobbleData.album == '')
@@ -1045,7 +1052,8 @@ ControllerLastFM.prototype.scrobble = function (state, scrobbleThreshold, scrobb
 		});
 		
 		self.previousScrobble.artist = self.scrobbleData.artist;
-		self.previousScrobble.title = self.scrobbleData.title;
+        self.previousScrobble.title = self.scrobbleData.title;
+        self.previousScrobble.scrobbleTime = trackStartTime;
 		//self.clearScrobbleMemory((state.duration * 1000) - scrobbleThresholdInMilliseconds);
 	}
 	else
