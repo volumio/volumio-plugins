@@ -32,6 +32,30 @@ class BluetoothSurfaceDial extends EventEmitter {
         this.sdialObj = null;
         this.logger = logger;
         this.logLabel = logLabel;
+
+        this._mostRecentStatus = {
+            btAdapterPresent: false,
+            btAdapterOn: false,
+            sDialPaired: false,
+            sDialConnected: false
+        };
+
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#this_in_classes
+        this.onHciAdapterPropertiesChanged = this.onHciAdapterPropertiesChanged.bind(this);
+        this.onSDialPropertiesChanged = this.onSDialPropertiesChanged.bind(this);
+    }
+
+    get btAdapterAvailable() {
+        return this._mostRecentStatus.btAdapterPresent;
+    }
+    get btAdapterTurnedOn() {
+        return this._mostRecentStatus.btAdapterOn;
+    }
+    get surfaceDialPaired() {
+        return this._mostRecentStatus.sDialPaired;
+    }
+    get surfaceDialConnected() {
+        return this._mostRecentStatus.sDialConnected;
     }
 
     // Connect to D-Bus and register for event changes
@@ -47,12 +71,12 @@ class BluetoothSurfaceDial extends EventEmitter {
                 this.logger.info(`[${this.logLabel} init()] check ${objPath}`);
                 // find the first controller
                 if ((this.adapterNotRegistered()) && this.isBtController(obj)) {
-                    await this.addAdapter(objPath);
+                    await this.addAdapter(objPath, obj);
                     this.logger.info(`[${this.logLabel} init()] added Adapter ${objPath}`);
                 }
                 // find the first Surface Dial
                 if ((this.sdialNotRegistered()) && this.isPairedSurfaceDial(obj)) {
-                    await this.addSurfaceDial(objPath);
+                    await this.addSurfaceDial(objPath, obj);
                     this.logger.info(`[${this.logLabel} init()] added SurfaceDial ${objPath}`);
                 }
             }
@@ -70,12 +94,27 @@ class BluetoothSurfaceDial extends EventEmitter {
 
             // Monitor changes to Bluetooth Controllers and Paired-Surface-Dial
             // Object added or Interfaces Added to an existing Object
-            objMgr.on('InterfacesAdded', (objPath, ifacesAndProps) => {
+            objMgr.on('InterfacesAdded', async(objPath, ifacesAndProps) => {
                 this.logger.info(`${this.logLabel} Interfaces Added @ ${objPath}: ${JSON.stringify(ifacesAndProps)} `);
+                // Ignore if we already have a Bluetooth Adapter registered
+                if (this.adapterNotRegistered() && this.isBtController(ifacesAndProps)) {
+                    await this.addAdapter(objPath, ifacesAndProps);
+                    this.logger.info(`[${this.logLabel} init()] added Adapter ${objPath}`);
+                }
+                else if ((this.sdialNotRegistered()) && this.isPairedSurfaceDial(ifacesAndProps)) {
+                    await this.addSurfaceDial(objPath, ifacesAndProps);
+                    this.logger.info(`[${this.logLabel} init()] added SurfaceDial ${objPath}`);
+                }
             });
             // Object removed or Interfaces Removed from an existing Object
             objMgr.on('InterfacesRemoved', (objPath, ifaces) => {
                 this.logger.info(`${this.logLabel} Interfaces Removed @ ${objPath}: ${ifaces} `);
+                if (objPath == this.hciObjPath) {
+                    this.removeAdapter(objPath);
+                }
+                else if (objPath == this.sdialObjPath) {
+                    this.removeSurfaceDial(objPath);
+                }
             });
         }
         catch(err) {
@@ -92,7 +131,30 @@ class BluetoothSurfaceDial extends EventEmitter {
         return (!this.hciObjPath);
     }
 
-    async addAdapter(objPath) {
+    onHciAdapterPropertiesChanged(iface, changed, invalidated) {
+        let self = this;
+        try {
+            this.logger.info(`${this.logLabel} ${iface} PropertiesChanged.`);
+            for (const prop in changed) {
+                this.logger.info(`${this.logLabel} ${this.hciObjPath} property ${prop} changed to ${changed[prop].value}`);
+            }
+            for (const prop in invalidated) {
+                this.logger.info(`${this.logLabel} ${this.hciObjPath} property ${prop} changed to ${invalidated[prop].value}`);
+            }
+            // Interface: Adapter1
+            //  Powered (Boolean)
+                // emit signal if it is turned on or off
+            if ('Powered' in changed) {
+                this._mostRecentStatus.btAdapterOn = changed['Powered'].value;
+            }
+            //  Discovering (Boolean)
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} ${this.hciObjPath} PropertiesChanged error: ${err}`);
+        }
+    }
+
+    async addAdapter(objPath, ifaces) {
         if (! this.hciObjPath) {
             // Update instance property
             this.hciObjPath = objPath;
@@ -100,31 +162,15 @@ class BluetoothSurfaceDial extends EventEmitter {
             try {
                 this.hciObj = await this.systemBus.getProxyObject(BluetoothSurfaceDial.BLUEZ_SERVICE, this.hciObjPath);
                 const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
-                properties.on('PropertiesChanged', (iface, changed, invalidated) => {
-                    try {
-                        this.logger.info(`${this.logLabel} ${iface} PropertiesChanged.`);
-                        for (const prop in changed) {
-                            this.logger.info(`${this.logLabel} ${this.hciObjPath} property ${prop} changed to ${changed[prop].value}`);
-                        }
-                        for (const prop in invalidated) {
-                            this.logger.info(`${this.logLabel} ${this.hciObjPath} property ${prop} changed to ${invalidated[prop].value}`);
-                        }
-                        // Interface: Adapter1
-                        //  Powered (Boolean)
-                            // emit signal if it is turned on or off
-                        //  Discovering (Boolean)
-                    }
-                    catch (err) {
-                        this.logger.error(`${this.logLabel} ${this.hciObjPath} PropertiesChanged error: ${err}`);
-
-                    }
-                });
+                // Add event-listener
+                properties.on('PropertiesChanged', this.onHciAdapterPropertiesChanged);
+                // Update State variables
+                this._mostRecentStatus.btAdapterPresent = true;
+                this._mostRecentStatus.btAdapterOn = ifaces[BluetoothSurfaceDial.ADAPTER_IFACE_NAME]['Powered'].value;
             }
             catch (err) {
                 this.logger.error(`${this.logLabel} ${this.hciObjPath} setup error. ${err}`);
             }
-            // emit signal - found new BT adapter
-            this.emit('bt_adapter_available');
         }
     }
 
@@ -132,8 +178,12 @@ class BluetoothSurfaceDial extends EventEmitter {
         // Update instance property
         if (objPath == this.hciObjPath) {
             this.hciObjPath = null;
-            // emit signal - BT adapter removed
-            this.emit('bt_adapter_removed');
+            // Remove event-listener
+            const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+            properties.removeListener('PropertiesChanged', this.onHciAdapterPropertiesChanged);
+            this.hciObj = null;
+            // Update State variables
+            this._mostRecentStatus.btAdapterPresent = false;
         }
     }
 
@@ -172,34 +222,47 @@ class BluetoothSurfaceDial extends EventEmitter {
         return (!this.sdialObjPath);
     }
 
+    onSDialPropertiesChanged(iface, changed, invalidated) {
+        try {
+            this.logger.info(`${this.logLabel} ${iface} PropertiesChanged.`);
+            for (const prop in changed) {
+                this.logger.info(`${this.logLabel} ${this.sdialObjPath} property ${prop} changed to ${changed[prop].value}`);
+            }
+            for (const prop in invalidated) {
+                this.logger.info(`${this.logLabel} ${this.sdialObjPath} property ${prop} changed to ${invalidated[prop].value}`);
+            }
+            // Interface: Device1
+            //  Paired (Boolean)
+                // emit signal if it is paired or unpaired
+            if ('Paired' in changed) {
+                this._mostRecentStatus.sDialPaired = changed['Paired'].value;
+            }
+            //  Connected (Boolean)
+                // emit signal if it is connected or disconnected
+            if ('Connected' in changed) {
+                this._mostRecentStatus.sDialConnected = changed['Connected'].value;
+            }
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} ${this.sdialObjPath} PropertiesChanged error: ${err}`);
+        }
+    }
+
     // add surface dial to class instance
-    async addSurfaceDial(objPath) {
+    async addSurfaceDial(objPath, ifacesObj) {
         if (!this.sdialObjPath) {
             // Update instance properties
             this.sdialObjPath = objPath;
             // Set up monitor
             try {
                 this.sdialObj = await this.systemBus.getProxyObject(BluetoothSurfaceDial.BLUEZ_SERVICE, this.sdialObjPath);
+                if (BluetoothSurfaceDial.DEVICE_IFACE_NAME) {
+                    let deviceIface = ifacesObj[BluetoothSurfaceDial.DEVICE_IFACE_NAME];
+                    this._mostRecentStatus.sDialPaired = deviceIface['Paired'].value;
+                    this._mostRecentStatus.sDialConnected = deviceIface['Connected'].value;
+                } 
                 let properties = this.sdialObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
-                properties.on('PropertiesChanged', (iface, changed, invalidated) => {
-                    try {
-                        this.logger.info(`${this.logLabel} ${iface} PropertiesChanged.`);
-                        for (const prop in changed) {
-                            this.logger.info(`${this.logLabel} ${this.sdialObjPath} property ${prop} changed to ${changed[prop].value}`);
-                        }
-                        for (const prop in invalidated) {
-                            this.logger.info(`${this.logLabel} ${this.sdialObjPath} property ${prop} changed to ${invalidated[prop].value}`);
-                        }
-                        // Interface: Device1
-                        //  Paired (Boolean)
-                            // emit signal if it is paired or unpaired
-                        //  Connected (Boolean)
-                            // emit signal if it is connected or disconnected
-                    }
-                    catch (err) {
-                        this.logger.error(`${this.logLabel} ${this.sdialObjPath} PropertiesChanged error: ${err}`);
-                    }
-                });
+                properties.on('PropertiesChanged', this.onSDialPropertiesChanged);
             }
             catch (err) {
                 this.logger.error(`${this.logLabel} ${this.sdialObjPath} setup error. ${err}`);
@@ -211,10 +274,13 @@ class BluetoothSurfaceDial extends EventEmitter {
     removeSurfaceDial(objPath) {
         if (this.sdialObjPath == objPath) {
             // Update instance properties
+            let properties = this.sdialObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+            properties.removeListener('PropertiesChanged', this.onSDialPropertiesChanged);
             this.sdialObjPath = null;
-            // Remove Monitor
+            this.sdialObj = null;
+            // Remove Event-Listeners
             // emit channel
-            this.emit('sdial_removed');
+            this._mostRecentStatus.sDialPaired = false;
         }
     }
 
