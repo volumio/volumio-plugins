@@ -59,6 +59,7 @@ msSurfaceDial.prototype.onStart = function() {
     */
 
     this.btSurfaceDial.init();
+    this.setupBtSurfaceDialEventListeners();
 
 	// Start handling input-events from connected Surface-Dial
 	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
@@ -220,12 +221,14 @@ msSurfaceDial.prototype.setConf = function(varName, varValue) {
 // Configuration UI Event Handling
 msSurfaceDial.prototype.onRequestConnect = function() {
     var self = this;
-    self.logger.info(`User clicked on the Connect Button.`)
+    self.logger.info(`User clicked on the Connect Button.`);
+    self.btSurfaceDial.connectSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestDisconnect = function() {
     var self = this;
-    self.logger.info(`User clicked on the Disconnect Button.`)
+    self.logger.info(`User clicked on the Disconnect Button.`);
+    self.btSurfaceDial.disconnectSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestPair = function() {
@@ -240,12 +243,37 @@ msSurfaceDial.prototype.onRequestUnpair = function() {
 
 msSurfaceDial.prototype.onRequestTurnOnBT = function() {
     var self = this;
-    self.logger.info(`User clicked on the Turn-On-Bluetooth Button.`)
+    self.logger.info(`User clicked on the Turn-On-Bluetooth Button.`);
+    self.btSurfaceDial.turnOnBluetooth();
 }
 
 msSurfaceDial.prototype.onRequestTurnOffBT = function() {
     var self = this;
-    self.logger.info(`User clicked on the Turn-Off-Bluetooth Button.`)
+    self.logger.info(`User clicked on the Turn-Off-Bluetooth Button.`);
+    self.btSurfaceDial.turnOffBluetooth();
+}
+
+msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
+    var self = this;
+
+    this.btSurfaceDial.on('sdial_connected', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('sdial_disconnected', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('bt_adapter_on', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('bt_adapter_off', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('bt_adapter_available', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('bt_adapter_removed', () => {
+        self.commandRouter.reloadUi();
+    });
 }
 
 

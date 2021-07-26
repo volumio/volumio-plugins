@@ -1,6 +1,7 @@
 const EventEmitter = require("events");
 const dbus = require('dbus-next');
 dbus.setBigIntCompat(true); // BigInt requires Node 10.8.0 or above
+let Variant = dbus.Variant;
 
 //
 // [ Events ]
@@ -146,6 +147,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // emit signal if it is turned on or off
             if ('Powered' in changed) {
                 this._mostRecentStatus.btAdapterOn = changed['Powered'].value;
+                this.emit(this._mostRecentStatus.btAdapterOn? 'bt_adapter_on':'bt_adapter_off');
             }
             //  Discovering (Boolean)
         }
@@ -167,6 +169,8 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // Update State variables
                 this._mostRecentStatus.btAdapterPresent = true;
                 this._mostRecentStatus.btAdapterOn = ifaces[BluetoothSurfaceDial.ADAPTER_IFACE_NAME]['Powered'].value;
+                // notify
+                this.emit('bt_adapter_available');
             }
             catch (err) {
                 this.logger.error(`${this.logLabel} ${this.hciObjPath} setup error. ${err}`);
@@ -184,6 +188,8 @@ class BluetoothSurfaceDial extends EventEmitter {
             this.hciObj = null;
             // Update State variables
             this._mostRecentStatus.btAdapterPresent = false;
+            // notify
+            this.emit('bt_adapter_removed');
         }
     }
 
@@ -236,6 +242,12 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // emit signal if it is connected or disconnected
             if ('Connected' in changed) {
                 this._mostRecentStatus.sDialConnected = changed['Connected'].value;
+                if (this._mostRecentStatus.sDialConnected) {
+                    this.emit('sdial_connected');
+                }
+                else {
+                    this.emit('sdial_disconnected');
+                }
             }
         }
         catch (err) {
@@ -301,6 +313,60 @@ class BluetoothSurfaceDial extends EventEmitter {
                 resolve(false);
             }
         });
+    }
+
+    async connectSurfaceDial() {
+        // Check conditions before setting 
+        if (this.sdialObj != null) {
+            try {
+                let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
+                await deviceIface.Connect(); // asynchronous
+                this.logger.info(`${this.logLabel} SurfaceDial Device1.Connect() returns.`);
+            }
+            catch (err) {
+                this.logger.error(`${this.logLabel} Error Connecting to Surface Dial. ${err}`);
+            }
+        }
+    }
+
+    async disconnectSurfaceDial() {
+        // Check conditions before setting 
+        if (this.sdialObj != null) {
+            try {
+                let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
+                await deviceIface.Disconnect(); // asynchronous
+                this.logger.info(`${this.logLabel} SurfaceDial Device1.Disconnect() returns.`);
+            }
+            catch (err) {
+                this.logger.error(`${this.logLabel} Error Disconnecting from Surface Dial. ${err}`);
+            }
+        }
+    }
+
+    async turnOffBluetooth() {
+        if (this.hciObj != null) {
+            try {
+                const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+                await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', false));
+                this.logger.info(`${this.logLabel} Set Adapter1.Powered to false returns.`);
+            }
+            catch (err) {
+                this.logger.error(`${this.logLabel} Error Powering off Bluetooth Adapter. ${err}`);
+            }
+        }
+    }
+
+    async turnOnBluetooth() {
+        if (this.hciObj != null) {
+            try {
+                const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+                await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', true));
+                this.logger.info(`${this.logLabel} Set Adapter1.Powered to true returns.`);
+            }
+            catch (err) {
+                this.logger.error(`${this.logLabel} Error Powering on Bluetooth Adapter. ${err}`);
+            }
+        }
     }
 }
 
