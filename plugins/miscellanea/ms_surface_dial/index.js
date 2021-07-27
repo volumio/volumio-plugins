@@ -241,7 +241,8 @@ msSurfaceDial.prototype.onRequestPair = function() {
 
 msSurfaceDial.prototype.onRequestUnpair = function() {
     var self = this;
-    self.logger.info(`${this.loggerLabel} User clicked on the Un-Pair Button.`)
+    self.logger.info(`${this.loggerLabel} User clicked on the Un-Pair Button.`);
+    self.btSurfaceDial.unpairSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestTurnOnBT = function() {

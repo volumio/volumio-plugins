@@ -332,6 +332,20 @@ class BluetoothSurfaceDial extends EventEmitter {
         });
     }
 
+    async unpairSurfaceDial() {
+        // Remove Surface-Dial from Adapter's Device-Records
+        if (this.sdialObj != null) {
+            try {
+                let adapterIface = this.hciObj.getInterface(BluetoothSurfaceDial.ADAPTER_IFACE_NAME);
+                await adapterIface.RemoveDevice(this.sdialObjPath);
+                this.logger.info(`${this.logLabel} Adapter1.RemoveDevice() returns`);
+            }
+            catch (err) {
+                this.logger.error(`${this.logLabel} Error Removing Surface Dial from Adapter records. ${err}`);
+            }
+        }
+    }
+    
     async connectSurfaceDial() {
         // Check conditions before setting 
         if (this.sdialObj != null) {
