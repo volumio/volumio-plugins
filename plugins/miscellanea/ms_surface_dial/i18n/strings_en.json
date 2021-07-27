@@ -17,6 +17,7 @@
   "SDIAL_ACTION": {
     "PAIR": "Start Pairing",
     "UNPAIR": "Forget (Un-pair)",
+    "STOP_PAIR": "Cancel Pairing",
     "CONNECT": "Connect",
     "DISCONNECT": "Disconnect",
     "BT_POWERON": "Power On Bluetooth",

@@ -3,6 +3,20 @@ const dbus = require('dbus-next');
 dbus.setBigIntCompat(true); // BigInt requires Node 10.8.0 or above
 let Variant = dbus.Variant;
 
+const PairingState = {
+    Idle: 0,
+    RemovingSurfaceDial: 1,
+    SurfaceDialRemoved: 2, 
+    ScanRequested: 3,
+    Scanning: 4,
+    SurfaceDialFound: 5,
+    ScanStopped: 6,
+    PairRequested: 7,
+    Paired: 8,
+    TrustRequested: 9,
+    Trusted: 10
+};
+
 //
 // [ Events ]
 // ready: init() finished
@@ -15,6 +29,9 @@ let Variant = dbus.Variant;
 // sdial_unpaired: goes from paired to unpaired
 // sdial_removed: sdial removed from device list of bt_adapter
 // sdial_paired: goes from unpaired to paired
+// sdial_pair_failed: pairing failed.
+// sdial_cancel_pair_failed: cancel-pairing failed.
+// sdial_cancel_pair_completed: cancel-pairing completed
 //
 class BluetoothSurfaceDial extends EventEmitter {
     static get SDIAL_NAME() { return 'Surface Dial'; }
@@ -34,6 +51,8 @@ class BluetoothSurfaceDial extends EventEmitter {
         this.sdialObj = null;
         this.logger = logger;
         this.logLabel = logLabel;
+        this.pairingState = PairingState.Idle;
+        this.stopPairingRequested = false;
 
         this._mostRecentStatus = {
             btAdapterPresent: false,
@@ -96,6 +115,9 @@ class BluetoothSurfaceDial extends EventEmitter {
                 else if ((this.sdialNotRegistered()) && this.isSurfaceDial(ifacesAndProps)) {
                     await this.addSurfaceDial(objPath, ifacesAndProps);
                     this.logger.info(`[${this.logLabel} init()] added SurfaceDial ${objPath}`);
+                    if (this.pairingState == PairingState.Scanning) {
+                        this.pairingStateMachine(PairingState.SurfaceDialFound);
+                    }
                 }
             });
             // Object removed or Interfaces Removed from an existing Object
@@ -106,6 +128,9 @@ class BluetoothSurfaceDial extends EventEmitter {
                 }
                 else if (objPath == this.sdialObjPath) {
                     this.removeSurfaceDial(objPath);
+                    if (this.pairingState == PairingState.RemovingSurfaceDial) {
+                        this.pairingStateMachine(PairingState.SurfaceDialRemoved);
+                    }
                 }
             });
             // Check if SurfaceDial (if registered) is managed by our primary Bluetooth Adapter
@@ -163,6 +188,15 @@ class BluetoothSurfaceDial extends EventEmitter {
                 this.emit(this._mostRecentStatus.btAdapterOn? 'bt_adapter_on':'bt_adapter_off');
             }
             //  Discovering (Boolean)
+            if ('Discovering' in changed) {
+                this.logger.info(`[${this.logLabel} Pairing] Scan ${changed['Discovering'].value? 'Started': 'Stopped'}`);
+                if (changed['Discovering'].value) {
+                    this.pairingStateMachine(PairingState.Scanning);
+                }
+                else {
+                    this.pairingStateMachine(PairingState.ScanStopped);
+                }
+            }
         }
         catch (err) {
             this.logger.error(`${this.logLabel} ${this.hciObjPath} PropertiesChanged error: ${err}`);
@@ -250,6 +284,8 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // emit signal if it is paired or unpaired
             if ('Paired' in changed) {
                 this._mostRecentStatus.sDialPaired = changed['Paired'].value;
+                if (this.pairingState == PairingState.PairRequested)
+                    this.pairingStateMachine(PairingState.Paired);
                 this.emit(this._mostRecentStatus.sDialPaired? 'sdial_paired' : 'sdial_unpaired');
             }
             //  Connected (Boolean)
@@ -262,6 +298,11 @@ class BluetoothSurfaceDial extends EventEmitter {
                 else {
                     this.emit('sdial_disconnected');
                 }
+            }
+            // Trusted (Boolean)
+            if ('Trusted' in changed && changed['Trusted'].value) {
+                if (this.pairingState == PairingState.TrustRequested)
+                    this.pairingStateMachine(PairingState.Trusted);
             }
         }
         catch (err) {
@@ -332,6 +373,7 @@ class BluetoothSurfaceDial extends EventEmitter {
         });
     }
 
+
     async unpairSurfaceDial() {
         // Remove Surface-Dial from Adapter's Device-Records
         if (this.sdialObj != null) {
@@ -345,7 +387,218 @@ class BluetoothSurfaceDial extends EventEmitter {
             }
         }
     }
-    
+
+    async cancelPairSurfaceDial() {
+        try {
+            switch (this.pairingState) {
+                case PairingState.Idle:
+                    //do nothing
+                    throw new Error('No pairing in progress');
+                    break;
+                case PairingState.Scanning:
+                    this.stopPairingRequested = true;
+                    if (!await this.stopBtScan())
+                        throw new Error('stopBtScan() returns error');
+                    break;
+                case PairingState.PairRequested:
+                    this.stopPairingRequested = true;
+                    if (!await this.stopPairing())
+                        throw new Error('stopPairing() returns error');
+                    break;
+                default:
+                    this.stopPairingRequested = true;
+                    // handle this in the state-machine
+                    break;
+            }
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Error beginning Cancel-Pairing Surface Dial. ${err}`);
+            this.emit(`sdial_cancel_pair_failed`, err);
+        }
+    }
+
+    async scanAndPairSurfaceDial() {
+        try {
+            // remove surface-dial if here.
+            if (this.pairingState != PairingState.Idle) {
+                throw new Error('Pairing State is not Idle');
+            }
+            else {
+                this.pairingState = PairingState.RemovingSurfaceDial;
+                if (this.sdialNotRegistered()) {
+                    this.pairingStateMachine(PairingState.SurfaceDialRemoved);
+                }
+                else {
+                    this.unpairSurfaceDial();
+                }
+            }
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Error beginning Scan-and-Pair Surface Dial. ${err}`);
+            this.emit(`sdial_pair_failed`, err);
+        }
+    }
+
+    // return Boolean indicates scan successfully start or not
+    async startBtScan() {
+        try {
+            let adapterIface = this.hciObj.getInterface(BluetoothSurfaceDial.ADAPTER_IFACE_NAME);
+            await adapterIface.StartDiscovery();
+            return true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Adapter1.StartDiscovery error. ${err}`);
+            return false;
+        }
+        return false; // should not reach this code
+    }
+
+    async stopBtScan() {
+        try {
+            let adapterIface = this.hciObj.getInterface(BluetoothSurfaceDial.ADAPTER_IFACE_NAME);
+            await adapterIface.StopDiscovery();
+            return true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Adapter1.StopDiscovery error. ${err}`);
+            return false;
+        }
+        return false; // should not reach this code
+    }
+
+    async startPairing() {
+        try {
+            let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
+            await deviceIface.Pair();
+            this.logger.info(`${this.logLabel} Device1.Pair() returns.`);
+            return true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Device1.Pair() error. ${err}`);
+            return false;
+        }
+        return false; // should not reach this code
+    }
+
+    async stopPairing() {
+        try {
+            let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
+            await deviceIface.CancelPairing();
+            this.logger.info(`${this.logLabel} Device1.CancelPairing() returns.`);
+            return true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Device1.CancelPairing() error. ${err}`);
+            return false;
+        }
+        return false; // should not reach this code
+    }
+
+    async trustSurfaceDial() {
+        try {
+            let properties = this.sdialObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+            await properties.Set(BluetoothSurfaceDial.DEVICE_IFACE_NAME, 'Trusted', new Variant('b', true));
+            this.logger.info(`${this.logLabel} Device1 Set 'Trust' returns.`);
+            return true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Device1 Set 'Trust' error. ${err}`);
+            return false;
+        }
+        return false; // should not reach this code
+    }
+
+    async pairingStateMachine(input) {
+        if (this.stopPairingRequested) {
+            let eventName = 'Unknown';
+            switch (input) {
+                case PairingState.SurfaceDialRemoved: eventName = 'SurfaceDialRemoved'; break;
+                case PairingState.SurfaceDialFound: eventName = 'SurfaceDialFound'; break;
+                case PairingState.Scanning: eventName = 'Scanning'; break;
+                case PairingState.ScanStopped: eventName = 'ScanStopped'; break;
+                case PairingState.Paired: eventName = 'Paired'; break;
+                    break;
+                default:
+                    break;
+
+            }
+            this.logger.info(`[${this.logLabel} Pairing] ${eventName} occurred while stop-pairing requested.`);
+            // Stop going next step and set it back to idle
+            this.stopPairingRequested = false;
+            this.pairingState = PairingState.Idle;
+            this.emit('sdial_cancel_pair_completed');
+        }
+        else {
+            switch (input) {
+                case PairingState.SurfaceDialRemoved:
+                    this.logger.info(`[${this.logLabel} Pairing] Existing Surface-Dial Removed`);
+                    if (this.pairingState != PairingState.RemovingSurfaceDial)
+                        this.logger.warn(`${this.logLabel} PairingState -> SurfaceDialRemoved while not RemovingSurfaceDial.`);    
+                    // Start Scanning
+                    this.pairingState = PairingState.ScanRequested;
+                    if (!await this.startBtScan()) {
+                        this.emit('sdial_pair_failed', new Error('Unable to start Bluetooth Scan'));
+                        this.pairingState = PairingState.Idle;
+                    }
+                    break;
+                case PairingState.Scanning:
+                    if (this.pairingState != PairingState.ScanRequested)
+                        this.logger.warn(`${this.logLabel} PairingState -> Scanning while not ScanRequested.`);    
+                    this.pairingState = PairingState.Scanning;
+                    break;
+                case PairingState.ScanStopped:
+                    if (this.pairingState != PairingState.SurfaceDialFound && this.pairingState != PairingState.Scanning) {
+                        this.logger.warn(`${this.logLabel} PairingState -> ScanStopped while neither SurfaceDialFound nor Scanning.`);
+                    }
+                    if (this.pairingState == PairingState.SurfaceDialFound) {
+                        this.pairingState = PairingState.ScanStopped;    
+                        // Start Pairing
+                        // Note: we are not registering ourselves as default-agent.
+                        if (this.startPairing()) {
+                            this.pairingState = PairingState.PairRequested;
+                        }
+                    }
+                    else if (this.pairingState != PairingState.Idle) {
+                        this.pairingState = PairingState.ScanStopped;
+                    }
+                    break;
+                case PairingState.SurfaceDialFound:
+                    this.logger.info(`[${this.logLabel} Pairing] Surface-Dial Discovered`);
+                    if (this.pairingState != PairingState.Scanning)
+                        this.logger.warn(`${this.logLabel} PairingState -> SurfaceDialFound while not Scanning.`);
+                    this.pairingState = PairingState.SurfaceDialFound;
+                    // Stop Scanning
+                    if (!await this.stopBtScan()) {
+                        this.emit('sdial_pair_failed', new Error('Unable to Stop Bluetooth Scan'));
+                        this.pairingState = PairingState.Idle;
+                    }
+                    break;
+                case PairingState.Paired:
+                    this.logger.info(`[${this.logLabel} Pairing] Surface-Dial Paired`);
+                    if (this.pairingState != PairingState.PairRequested)
+                        this.logger.warn(`${this.logLabel} PairingState -> Paired while not PairRequested.`);
+                    // Trust the device - auto re-connect
+                        this.pairingState = PairingState.TrustRequested;
+                    if (!await this.trustSurfaceDial()) {
+                        this.emit('sdial_pair_failed', new Error('Unable to Set Surface-Dial to Auto-Connect'));
+                        this.pairingState = PairingState.Idle; // change to idle regardless of success or not
+                    }
+                    break;
+                case PairingState.Trusted:
+                    this.logger.info(`[${this.logLabel} Pairing] Surface-Dial Trusted`);
+                    if (this.pairingState != PairingState.TrustRequested)
+                        this.logger.warn(`${this.logLabel} PairingState -> Trusted while not TrustRequested.`);
+                    this.pairingState = PairingState.Idle;
+                    // Completed
+                    this.emit('sdial_pair_completed');
+                    break;
+                default:
+                    this.logger.warn(`[${this.logLabel} Pairing] Unexpected Event ${input}`);
+                    break;
+            }
+        }
+    }
+
     async connectSurfaceDial() {
         // Check conditions before setting 
         if (this.sdialObj != null) {

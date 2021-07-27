@@ -236,7 +236,14 @@ msSurfaceDial.prototype.onRequestDisconnect = function() {
 
 msSurfaceDial.prototype.onRequestPair = function() {
     var self = this;
-    self.logger.info(`${this.loggerLabel} User clicked on the Pair Button.`)
+    self.logger.info(`${this.loggerLabel} User clicked on the Pair Button.`);
+    self.btSurfaceDial.scanAndPairSurfaceDial();
+}
+
+msSurfaceDial.prototype.onRequestStopPair = function() {
+    var self = this;
+    self.logger.info(`${this.loggerLabel} User clicked on the Cancel-Pairing Button.`);
+    self.btSurfaceDial.cancelPairSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestUnpair = function() {
@@ -263,6 +270,18 @@ msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
     this.btSurfaceDial.on('ready', () => {
         self.logger.info(`${this.loggerLabel} BluetoothSurfaceDial init() - ready!`);
         self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('sdial_pair_failed', (err) => {
+        self.commandRouter.pushToastMessage('error', 'Pairing', err.message);
+    });
+    this.btSurfaceDial.on('sdial_pair_completed', () => {
+        self.commandRouter.pushToastMessage('success', 'Pairing', 'Surface Dial paired and trusted.');
+    });
+    this.btSurfaceDial.on('sdial_cancel_pair_failed', (err) => {
+        self.commandRouter.pushToastMessage('error', 'Stop-Pairing', err.message);
+    });
+    this.btSurfaceDial.on('sdial_cancel_pair_completed', () => {
+        self.commandRouter.pushToastMessage('success', 'Stop-Pairing', 'Scanning/Pairing stopped successfully.');
     });
     this.btSurfaceDial.on('sdial_paired', () => {
         self.commandRouter.reloadUi();

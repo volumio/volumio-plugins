@@ -96,6 +96,18 @@
           }
         },
         {
+          "id": "sdial_cancel_pair",
+          "label": "TRANSLATE.SDIAL_ACTION.STOP_PAIR",
+          "description": "Search and Configure Surface Dial",
+          "element": "button",
+          "visibleIf": {"field": "sdial_bton_not_paired", "value": true},
+          "onClick": {
+            "type": "controller",
+            "endpoint": "miscellanea/ms_surface_dial",
+            "method": "onRequestStopPair"
+          }
+        },
+        {
           "id": "sdial_remove",
           "label": "TRANSLATE.SDIAL_ACTION.UNPAIR",
           "description": "Remove from Surface Dial (Paired)",
