@@ -58,8 +58,9 @@ msSurfaceDial.prototype.onStart = function() {
     }
     */
 
-    this.btSurfaceDial.init();
     this.setupBtSurfaceDialEventListeners();
+    this.btSurfaceDial.init();
+    
 
 	// Start handling input-events from connected Surface-Dial
 	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
@@ -104,6 +105,8 @@ msSurfaceDial.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
 
+    self.logger.info(`${this.loggerLabel} Loading SurfaceDial UI...`);
+    
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
     const contentIdx = {
@@ -221,41 +224,54 @@ msSurfaceDial.prototype.setConf = function(varName, varValue) {
 // Configuration UI Event Handling
 msSurfaceDial.prototype.onRequestConnect = function() {
     var self = this;
-    self.logger.info(`User clicked on the Connect Button.`);
+    self.logger.info(`${this.loggerLabel} User clicked on the Connect Button.`);
     self.btSurfaceDial.connectSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestDisconnect = function() {
     var self = this;
-    self.logger.info(`User clicked on the Disconnect Button.`);
+    self.logger.info(`${this.loggerLabel} User clicked on the Disconnect Button.`);
     self.btSurfaceDial.disconnectSurfaceDial();
 }
 
 msSurfaceDial.prototype.onRequestPair = function() {
     var self = this;
-    self.logger.info(`User clicked on the Pair Button.`)
+    self.logger.info(`${this.loggerLabel} User clicked on the Pair Button.`)
 }
 
 msSurfaceDial.prototype.onRequestUnpair = function() {
     var self = this;
-    self.logger.info(`User clicked on the Un-Pair Button.`)
+    self.logger.info(`${this.loggerLabel} User clicked on the Un-Pair Button.`)
 }
 
 msSurfaceDial.prototype.onRequestTurnOnBT = function() {
     var self = this;
-    self.logger.info(`User clicked on the Turn-On-Bluetooth Button.`);
+    self.logger.info(`${this.loggerLabel} User clicked on the Turn-On-Bluetooth Button.`);
     self.btSurfaceDial.turnOnBluetooth();
 }
 
 msSurfaceDial.prototype.onRequestTurnOffBT = function() {
     var self = this;
-    self.logger.info(`User clicked on the Turn-Off-Bluetooth Button.`);
+    self.logger.info(`${this.loggerLabel} User clicked on the Turn-Off-Bluetooth Button.`);
     self.btSurfaceDial.turnOffBluetooth();
 }
 
 msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
     var self = this;
 
+    this.btSurfaceDial.on('ready', () => {
+        self.logger.info(`${this.loggerLabel} BluetoothSurfaceDial init() - ready!`);
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('sdial_paired', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('sdial_unpaired', () => {
+        self.commandRouter.reloadUi();
+    });
+    this.btSurfaceDial.on('sdial_removed', () => {
+        self.commandRouter.reloadUi();
+    });
     this.btSurfaceDial.on('sdial_connected', () => {
         self.commandRouter.reloadUi();
     });

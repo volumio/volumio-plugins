@@ -5,6 +5,7 @@ let Variant = dbus.Variant;
 
 //
 // [ Events ]
+// ready: init() finished
 // bt_adapter_available: goes from zero to available
 // bt_adapter_removed: goes from available to zero
 // bt_adapter_on: goes from off to on
@@ -83,16 +84,6 @@ class BluetoothSurfaceDial extends EventEmitter {
             }
             // Handle case where Surface Dial is binded to the first Adapter
             this.logger.info(`[${this.logLabel} init()] Adapter: ${this.hciObjPath}; SurfaceDial: ${this.sdialObjPath}`);
-            this.isSurfaceDialAssociatedWithAdapter()
-            .then((isAssociated) => {
-                if (!isAssociated) {
-                    this.logger.error(`${this.logLabel} ${this.sdialObjPath} does not belong to ${this.hciObjPath}`);
-                }
-                else {
-                    this.logger.info(`${this.logLabel} Good! ${this.sdialObjPath} belongs to ${this.hciObjPath}`);
-                }
-            });
-
             // Monitor changes to Bluetooth Controllers and Paired-Surface-Dial
             // Object added or Interfaces Added to an existing Object
             objMgr.on('InterfacesAdded', async(objPath, ifacesAndProps) => {
@@ -117,9 +108,31 @@ class BluetoothSurfaceDial extends EventEmitter {
                     this.removeSurfaceDial(objPath);
                 }
             });
+            // Check if SurfaceDial (if registered) is managed by our primary Bluetooth Adapter
+            if (!this.sdialNotRegistered()) {
+                this.isSurfaceDialAssociatedWithAdapter()
+                .then((isAssociated) => {
+                    if (!isAssociated) {
+                        this.logger.error(`${this.logLabel} ${this.sdialObjPath} does not belong to ${this.hciObjPath}`);
+                    }
+                    else {
+                        this.logger.info(`${this.logLabel} Good! ${this.sdialObjPath} belongs to ${this.hciObjPath}`);
+                    }
+                    this.emit('ready');
+                })
+                .catch((err) => {
+                    this.logger.error(`${this.logLabel} error from isSurfaceDialAssociatedWithAdapter(). ${err}`);
+                    this.emit('ready');
+                });
+            }
+            else {
+                // Surface Dial not registered. No need to check to which HCI adapter it belongs.
+                this.emit('ready');
+            }
         }
         catch(err) {
             this.logger.error(`${this.logLabel} Exception caught in BluetoothSurfaceDial.init() ${err}`);
+            this.emit('ready');
         }   
     }
 
@@ -237,6 +250,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // emit signal if it is paired or unpaired
             if ('Paired' in changed) {
                 this._mostRecentStatus.sDialPaired = changed['Paired'].value;
+                this.emit(this._mostRecentStatus.sDialPaired? 'sdial_paired' : 'sdial_unpaired');
             }
             //  Connected (Boolean)
                 // emit signal if it is connected or disconnected
@@ -280,14 +294,17 @@ class BluetoothSurfaceDial extends EventEmitter {
     // remove surface dial from class instance
     removeSurfaceDial(objPath) {
         if (this.sdialObjPath == objPath) {
-            // Update instance properties
+            
+            // Remove Event-Listeners
             let properties = this.sdialObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
             properties.removeListener('PropertiesChanged', this.onSDialPropertiesChanged);
+            // Update instance properties
             this.sdialObjPath = null;
             this.sdialObj = null;
-            // Remove Event-Listeners
-            // emit channel
             this._mostRecentStatus.sDialPaired = false;
+            // notify
+            this.emit('sdial_removed');
+            
         }
     }
 
