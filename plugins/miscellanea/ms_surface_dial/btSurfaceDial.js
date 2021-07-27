@@ -471,13 +471,13 @@ class BluetoothSurfaceDial extends EventEmitter {
             let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
             await deviceIface.Pair();
             this.logger.info(`${this.logLabel} Device1.Pair() returns.`);
-            return true;
+            return [true, null];
         }
         catch (err) {
             this.logger.error(`${this.logLabel} Device1.Pair() error. ${err}`);
-            return false;
+            return [false, err];
         }
-        return false; // should not reach this code
+        return [false, new Error('Should not reach this code')]; // should not reach this code
     }
 
     async stopPairing() {
@@ -554,8 +554,11 @@ class BluetoothSurfaceDial extends EventEmitter {
                         this.pairingState = PairingState.ScanStopped;    
                         // Start Pairing
                         // Note: we are not registering ourselves as default-agent.
-                        if (this.startPairing()) {
-                            this.pairingState = PairingState.PairRequested;
+                        this.pairingState = PairingState.PairRequested;
+                        let [ succ, err ] = await this.startPairing();
+                        if (err) {
+                            this.emit('sdial_pair_failed', err);
+                            this.pairingState = PairingState.Idle;
                         }
                     }
                     else if (this.pairingState != PairingState.Idle) {
