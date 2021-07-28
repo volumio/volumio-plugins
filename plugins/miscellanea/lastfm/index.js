@@ -34,7 +34,8 @@ function ControllerLastFM(context)
 	self.previousState = null;
 	self.updatingNowPlaying = false;
 	self.timeToPlay = 0;
-	self.apiResponse = null;
+    self.apiResponse = null;
+    self.lfm = null;
 	self.previousScrobble = 
 		{	artist: '',
 			title: '',
@@ -768,6 +769,64 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
 
 // Scrobble Methods -------------------------------------------------------------------------------------
 
+ControllerLastFM.prototype.checkStateUpdate = function (data) {
+    var self = this;
+
+    // Create the timer object if it does not exist yet
+    if (!self.currentTimer) {
+        self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] created new timer object');
+    }
+    else {
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] using existing timer');
+    }
+
+    var scrobbleThresholdInMilliseconds = 0;
+    if (supportedSongServices.indexOf(state.service) != -1)
+        scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
+    if (supportedStreamingServices.indexOf(state.service) != -1)
+        scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
+
+    // Set initial previousState object
+    var init = '';
+    if (self.previousState == null) {
+        self.previousState = state;
+        initialize = true;
+        init = ' | Initializing: true';
+    }
+
+    if (self.config.get('enable_debug_logging')) {
+        self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + self.previousState.title + init);
+        if (self.currentTimer)
+            self.logger.info('=================> [timer] is active: ' + self.currentTimer.isActive + ' | can continue: ' + self.currentTimer.canContinue + ' | timer started at: ' + self.currentTimer.timerStarted);
+    }
+
+
+    // Scrobble from all services, or at least try to -> improves forward compatibility
+    if (state.status == 'play') {
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('Playback detected, evaluating parameters for scrobbling...');
+
+        if (self.previousState.artist == state.artist && self.previousState.title == state.title) {
+            // same track as in previous state
+            // only need updating srobble settings if
+            // 1. restarted song
+            // 2. ?
+        }
+        else {
+           // track has changed, so definitely need to do something!
+
+        }
+        // Always (try to) update 'now playing'
+        self.updateNowPlaying(state);
+    };
+
+    self.previousState = state;
+//    return defer.promise;
+};
+
 ControllerLastFM.prototype.formatScrobbleData = function (state)
 {
 	var self = this;
@@ -819,6 +878,26 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
    
 	return defer.promise;
 };
+
+//ControllerLastFM.prototype.initLastFMSession = function () {
+//    if (self.config.get('enable_debug_logging'))
+//        self.logger.info('[LastFM] trying to authenticate...');
+
+//    self.lfm = new lastfm({
+//        api_key: self.config.get('API_KEY'),
+//        api_secret: self.config.get('API_SECRET'),
+//        username: self.config.get('username'),
+//        authToken: self.config.get('authToken')
+//    });
+
+//    self.lfm.getSessionKey(function (result) {
+//        if (result.success) {
+//            if (self.config.get('enable_debug_logging'))
+//                self.logger.info('[LastFM] authenticated successfully!');
+//        }
+//    });
+//};
+
 
 ControllerLastFM.prototype.updateNowPlaying = function (state)
 {
