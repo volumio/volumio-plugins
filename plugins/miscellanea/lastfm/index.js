@@ -807,7 +807,7 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         }
     }
     else {
-        self.logger.info('[LastFM] Current track has sufficient metadata: title (' + self.scrobblableTrack + ') and artist (' + self.scrobbleData.artist + ') passed on explicitly');
+        self.logger.info('[LastFM] Current track has sufficient metadata: title (' + title + ') and artist (' + artist + ') passed on explicitly');
     }
     if (success) { // update scrobbleData variable (otherwise leave it unchanged)
         self.scrobbleData.artist = artist;
