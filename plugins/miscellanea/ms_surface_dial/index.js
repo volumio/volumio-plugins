@@ -61,7 +61,9 @@ msSurfaceDial.prototype.onStart = function() {
     this.setupBtSurfaceDialEventListeners();
     this.btSurfaceDial.init();
     
+    defer.resolve();
 
+    /** 
 	// Start handling input-events from connected Surface-Dial
 	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
 		this.logger.info(`${this.loggerLabel} Started Successfully.`);
@@ -72,6 +74,8 @@ msSurfaceDial.prototype.onStart = function() {
 		this.logger.error(`${this.loggerLabel} Start failed.`);
 		defer.reject(new Error(`${this.loggerLabel} Failed to start`));
 	}
+
+    */
 
     return defer.promise;
 };
@@ -267,97 +271,163 @@ msSurfaceDial.prototype.onRequestTurnOffBT = function() {
 msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
     var self = this;
 
-    this.btSurfaceDial.on('ready', () => {
+    self.btSurfaceDial.on('ready', () => {
         self.logger.info(`${this.loggerLabel} BluetoothSurfaceDial init() - ready!`);
         self.commandRouter.reloadUi();
+        if (self.btSurfaceDial.surfaceDialConnected) {
+            self.scheduleOpenEventStream();
+        }   
     });
-    this.btSurfaceDial.on('sdial_pair_failed', (err) => {
+    self.btSurfaceDial.on('sdial_pair_failed', (err) => {
         self.commandRouter.pushToastMessage('error', 'Pairing', err.message);
     });
-    this.btSurfaceDial.on('sdial_pair_completed', () => {
+    self.btSurfaceDial.on('sdial_pair_completed', () => {
         self.commandRouter.pushToastMessage('success', 'Pairing', 'Surface Dial paired and trusted.');
     });
-    this.btSurfaceDial.on('sdial_cancel_pair_failed', (err) => {
+    self.btSurfaceDial.on('sdial_cancel_pair_failed', (err) => {
         self.commandRouter.pushToastMessage('error', 'Stop-Pairing', err.message);
     });
-    this.btSurfaceDial.on('sdial_cancel_pair_completed', () => {
+    self.btSurfaceDial.on('sdial_cancel_pair_completed', () => {
         self.commandRouter.pushToastMessage('success', 'Stop-Pairing', 'Scanning/Pairing stopped successfully.');
     });
-    this.btSurfaceDial.on('sdial_paired', () => {
+    self.btSurfaceDial.on('sdial_paired', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('sdial_unpaired', () => {
+    self.btSurfaceDial.on('sdial_unpaired', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('sdial_removed', () => {
+    self.btSurfaceDial.on('sdial_removed', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('sdial_connected', () => {
+    self.btSurfaceDial.on('sdial_connected', () => {
+        self.commandRouter.reloadUi();
+        self.scheduleOpenEventStream();
+    });
+    self.btSurfaceDial.on('sdial_disconnected', () => {
+        self.commandRouter.reloadUi();
+        if (self.retryOpenEventTimer) {
+            clearInterval(self.retryOpenEventTimer);
+            self.retryOpenEventTimer = null;
+        }
+        self.closeEventStream();
+    });
+    self.btSurfaceDial.on('bt_adapter_on', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('sdial_disconnected', () => {
+    self.btSurfaceDial.on('bt_adapter_off', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('bt_adapter_on', () => {
+    self.btSurfaceDial.on('bt_adapter_available', () => {
         self.commandRouter.reloadUi();
     });
-    this.btSurfaceDial.on('bt_adapter_off', () => {
-        self.commandRouter.reloadUi();
-    });
-    this.btSurfaceDial.on('bt_adapter_available', () => {
-        self.commandRouter.reloadUi();
-    });
-    this.btSurfaceDial.on('bt_adapter_removed', () => {
+    self.btSurfaceDial.on('bt_adapter_removed', () => {
         self.commandRouter.reloadUi();
     });
 }
 
 
 // Input Event Handling
-msSurfaceDial.prototype.openEventStream = function(eventDevPath) {
-	
+
+//
+// The availability of the event stream could lag the 
+// surface-dial 'connected' event by something between
+// 10 to 20 seconds. This always happens when it is 
+// is successfully-paired the first-time.
+//
+msSurfaceDial.prototype.scheduleOpenEventStream = function() {
+    var self = this;
+    const eventDevPath = this.config.get('default.inputEventPath');
+    if (self.retryOpenEventTimer == null)
+        self.retryOpenEventTimer = setInterval(self.openEventStream, 1000, self, eventDevPath);
+    else
+        self.logger.warn(`${self.loggerLabel} not calling interval timer to open stream - it's already running.`);
+}
+
+
+msSurfaceDial.prototype.openEventStream = function(obj, eventDevPath) {
+    var self = obj;
+
 	const rdStreamOpts = {
 		flags: 'r',
 		encoding: null,
 	};
-	this.logger.info(`${this.loggerLabel} opening ${eventDevPath}`);
-	this.eventStream = fs.createReadStream(eventDevPath, rdStreamOpts);
-	if (this.eventStream) {
-		this.eventStream.on('data', (chunk) => {
-			this.logger.debug(`${this.loggerLabel} ${chunk.length} bytes read`);
-			this.handleInputEvent(chunk);
+	self.logger.info(`${self.loggerLabel} opening ${eventDevPath}`);
+	self.eventStream = fs.createReadStream(eventDevPath, rdStreamOpts);
+	if (self.eventStream) {
+        if (self.retryOpenEventTimer) {
+            clearInterval(self.retryOpenEventTimer);
+            self.retryOpenEventTimer = null;
+        }
+		self.eventStream.on('data', (chunk) => {
+			self.logger.debug(`${self.loggerLabel} ${chunk.length} bytes read`);
+			self.handleInputEvent(chunk);
 		});
 		
-		this.eventStream.on('close', () => {
-			this.logger.info(`${this.loggerLabel} event stream is closed`);
+		self.eventStream.on('close', () => {
+			self.logger.info(`${self.loggerLabel} event stream is closed`);
 			// Is this voluntary close?
 		})
-		this.eventStream.on('end', () => {
-			this.logger.debug(`${this.loggerLabel} There will be no more data`);
+		self.eventStream.on('end', () => {
+			self.logger.debug(`${self.loggerLabel} There will be no more data`);
 		});
 		
-		this.eventStream.on('error', (err) => {
-			this.logger.error(`${this.loggerLabel} Error received. ${err}`);
+        //
+        // 'error' could occur when
+        // 1. the stream is called destroyed()
+        // 2. [ENOENT] when the input-event is first opened after connection. Case-in-point: pairing
+        // 3. [ENODEV] the /dev/input/event nodes are removed by system because the corresponding
+        //    surface dial is unpaired. (while it is still 'connected' according to BluetoothSurfaceDial)
+        // 4. [EACCESS] when the input-event is first opened after connection. This error should be momentary.
+        // Pay Attention to the difference in errno in #2 and #3.
+        //
+		self.eventStream.on('error', (err) => {
+			self.logger.error(`${self.loggerLabel} Error received. ${err}`);
 			// TBD: assuming the stream is closed. Do we attempt to open it periodically as long as the plugin is enabled?
+            self.eventStream = null;
+            // Case #2
+            if (self.btSurfaceDial.surfaceDialConnected) {
+                // try open again
+                if ('errno' in err) {
+                    self.logger.error(`${self.loggerLabel} Actual error code is: ${err.errno}`);
+                    if (err.errno == -2 || err.errno == -13) // ENOENT or EACCESS
+                        self.scheduleOpenEventStream();
+                    else
+                        self.logger.warn(`${self.loggerLabel} The 'errno' is not ENOENT`);
+                }
+                else {
+                    self.logger.warn(`${self.loggerLabel} The 'errno' field not available in Error`);
+                }
+                
+            }
 		});
 		
-		this.eventStream.on('pause', () => {
-			this.logger.debug(`${this.loggerLabel} Pause is called`);
+		self.eventStream.on('pause', () => {
+			self.logger.debug(`${self.loggerLabel} Pause is called`);
 		});
 		/*
 		rs.on('readable', () => {
 			console.log('Readable event received');
 		});
 		*/
-		this.eventStream.on('resume', () => {
-			this.logger.debug(`${this.loggerLabel} Resume is called`);
+		self.eventStream.on('resume', () => {
+			self.logger.debug(`${self.loggerLabel} Resume is called`);
 		});
 	}
 	else {
-		this.logger.error(`${this.loggerLabel} fs.createReadStream() returns null`);
+		self.logger.error(`${self.loggerLabel} fs.createReadStream() returns null`);
 	}
 
-	return (this.eventStream != null);
+	return (self.eventStream != null);
+}
+
+msSurfaceDial.prototype.closeEventStream = function() {
+    if (this.eventStream) {
+        this.logger.info(`${this.loggerLabel} Closing event stream`);
+        this.eventStream.destroy();
+    }
+    else {
+        this.logger.info(`${this.loggerLabel} Cannot close event stream - it is null`);
+    }
 }
 
 msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
