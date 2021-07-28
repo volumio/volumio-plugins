@@ -63,20 +63,6 @@ msSurfaceDial.prototype.onStart = function() {
     
     defer.resolve();
 
-    /** 
-	// Start handling input-events from connected Surface-Dial
-	if (this.openEventStream(this.config.get('default.inputEventPath'))) {
-		this.logger.info(`${this.loggerLabel} Started Successfully.`);
-		// Once the Plugin has successfull started resolve the promise
-		defer.resolve();
-	}
-	else {
-		this.logger.error(`${this.loggerLabel} Start failed.`);
-		defer.reject(new Error(`${this.loggerLabel} Failed to start`));
-	}
-
-    */
-
     return defer.promise;
 };
 
@@ -336,88 +322,99 @@ msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
 //
 msSurfaceDial.prototype.scheduleOpenEventStream = function() {
     var self = this;
-    const eventDevPath = this.config.get('default.inputEventPath');
+   
     if (self.retryOpenEventTimer == null)
-        self.retryOpenEventTimer = setInterval(self.openEventStream, 1000, self, eventDevPath);
+        self.retryOpenEventTimer = setInterval(self.openEventStream, 1000, self);
     else
         self.logger.warn(`${self.loggerLabel} not calling interval timer to open stream - it's already running.`);
 }
 
 
-msSurfaceDial.prototype.openEventStream = function(obj, eventDevPath) {
+msSurfaceDial.prototype.openEventStream = function(obj) {
     var self = obj;
-
-	const rdStreamOpts = {
-		flags: 'r',
-		encoding: null,
-	};
-	self.logger.info(`${self.loggerLabel} opening ${eventDevPath}`);
-	self.eventStream = fs.createReadStream(eventDevPath, rdStreamOpts);
-	if (self.eventStream) {
-        if (self.retryOpenEventTimer) {
-            clearInterval(self.retryOpenEventTimer);
-            self.retryOpenEventTimer = null;
-        }
-		self.eventStream.on('data', (chunk) => {
-			self.logger.debug(`${self.loggerLabel} ${chunk.length} bytes read`);
-			self.handleInputEvent(chunk);
-		});
-		
-		self.eventStream.on('close', () => {
-			self.logger.info(`${self.loggerLabel} event stream is closed`);
-			// Is this voluntary close?
-		})
-		self.eventStream.on('end', () => {
-			self.logger.debug(`${self.loggerLabel} There will be no more data`);
-		});
-		
-        //
-        // 'error' could occur when
-        // 1. the stream is called destroyed()
-        // 2. [ENOENT] when the input-event is first opened after connection. Case-in-point: pairing
-        // 3. [ENODEV] the /dev/input/event nodes are removed by system because the corresponding
-        //    surface dial is unpaired. (while it is still 'connected' according to BluetoothSurfaceDial)
-        // 4. [EACCESS] when the input-event is first opened after connection. This error should be momentary.
-        // Pay Attention to the difference in errno in #2 and #3.
-        //
-		self.eventStream.on('error', (err) => {
-			self.logger.error(`${self.loggerLabel} Error received. ${err}`);
-			// TBD: assuming the stream is closed. Do we attempt to open it periodically as long as the plugin is enabled?
-            self.eventStream = null;
-            // Case #2
-            if (self.btSurfaceDial.surfaceDialConnected) {
-                // try open again
-                if ('errno' in err) {
-                    self.logger.error(`${self.loggerLabel} Actual error code is: ${err.errno}`);
-                    if (err.errno == -2 || err.errno == -13) // ENOENT or EACCESS
-                        self.scheduleOpenEventStream();
-                    else
-                        self.logger.warn(`${self.loggerLabel} The 'errno' is not ENOENT`);
+    self.logger.info(`${self.loggerLabel} calling findSurfaceDialInputEventPath()`);
+    self.findSurfaceDialInputEventPath()
+    .then((eventName) => {
+        if (eventName) {
+            const eventDevPath = `/dev/input/${eventName}`;
+            const rdStreamOpts = {
+                flags: 'r',
+                encoding: null,
+            };
+            self.logger.info(`${self.loggerLabel} opening ${eventDevPath}`);
+            self.eventStream = fs.createReadStream(eventDevPath, rdStreamOpts);
+            if (self.eventStream) {
+                if (self.retryOpenEventTimer) {
+                    clearInterval(self.retryOpenEventTimer);
+                    self.retryOpenEventTimer = null;
                 }
-                else {
-                    self.logger.warn(`${self.loggerLabel} The 'errno' field not available in Error`);
-                }
+                self.eventStream.on('data', (chunk) => {
+                    self.logger.debug(`${self.loggerLabel} ${chunk.length} bytes read`);
+                    self.handleInputEvent(chunk);
+                });
                 
+                self.eventStream.on('close', () => {
+                    self.logger.info(`${self.loggerLabel} event stream is closed`);
+                    // Is this voluntary close?
+                })
+                self.eventStream.on('end', () => {
+                    self.logger.debug(`${self.loggerLabel} There will be no more data`);
+                });
+                
+                //
+                // 'error' could occur when
+                // 1. the stream is called destroyed()
+                // 2. [ENOENT] when the input-event is first opened after connection. Case-in-point: pairing
+                // 3. [ENODEV] the /dev/input/event nodes are removed by system because the corresponding
+                //    surface dial is unpaired. (while it is still 'connected' according to BluetoothSurfaceDial)
+                // 4. [EACCESS] when the input-event is first opened after connection. This error should be momentary.
+                // Pay Attention to the difference in errno in #2 and #3.
+                //
+                self.eventStream.on('error', (err) => {
+                    self.logger.error(`${self.loggerLabel} Error received. ${err}`);
+                    // TBD: assuming the stream is closed. Do we attempt to open it periodically as long as the plugin is enabled?
+                    self.eventStream = null;
+                    // Case #2
+                    if (self.btSurfaceDial.surfaceDialConnected) {
+                        // try open again
+                        if ('errno' in err) {
+                            self.logger.error(`${self.loggerLabel} Actual error code is: ${err.errno}`);
+                            if (err.errno == -2 || err.errno == -13) // ENOENT or EACCESS
+                                self.scheduleOpenEventStream();
+                            else
+                                self.logger.warn(`${self.loggerLabel} The 'errno' is not ENOENT`);
+                        }
+                        else {
+                            self.logger.warn(`${self.loggerLabel} The 'errno' field not available in Error`);
+                        }
+                        
+                    }
+                });
+                
+                self.eventStream.on('pause', () => {
+                    self.logger.debug(`${self.loggerLabel} Pause is called`);
+                });
+                /*
+                rs.on('readable', () => {
+                    console.log('Readable event received');
+                });
+                */
+                self.eventStream.on('resume', () => {
+                    self.logger.debug(`${self.loggerLabel} Resume is called`);
+                });
             }
-		});
-		
-		self.eventStream.on('pause', () => {
-			self.logger.debug(`${self.loggerLabel} Pause is called`);
-		});
-		/*
-		rs.on('readable', () => {
-			console.log('Readable event received');
-		});
-		*/
-		self.eventStream.on('resume', () => {
-			self.logger.debug(`${self.loggerLabel} Resume is called`);
-		});
-	}
-	else {
-		self.logger.error(`${self.loggerLabel} fs.createReadStream() returns null`);
-	}
-
-	return (self.eventStream != null);
+            else {
+                self.logger.error(`${self.loggerLabel} fs.createReadStream() returns null`);
+            }
+        }
+        else {
+            self.logger.warn(`${self.loggerLabel} Cannot find Surface-Dial input-event-path`);
+        }
+    })
+    .catch((err) => {
+        self.commandRouter.pushToastMessage('error', 'Input Event', err.message);
+        this.logger.error(`${self.loggerLabel} Error looking up input-event-path. ${err}`);
+    });
 }
 
 msSurfaceDial.prototype.closeEventStream = function() {
@@ -530,166 +527,130 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
    }
 }
 
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
+//
+// Look for the /dev/input/eventX path
+// Method
+// open /proc/bus/input/devices to read
+//
+// Identify Surface Dial by Look for I: with Vendor=045e and Product=091b
+//  e.g. I: Bus=0005 Vendor=045e Product=091b Version=0108
+// Identify the endpoint with Key and Rel events
+//   B: line with KEY and non-zero on the right side
+//  e.g. B: KEY=400 0 1 0 0 0 0 0 0 0 0
+//   B: line with REL and non-zero value on the right side
+//  .e.g B: REL=80
+// Each section is delimited by empty line
+//   
+// the eventX is specified in the H row
+//   e.g. H: Handlers=event1
+// the right-hand side can have multiple values, delimited by 'space'
+//
 
-
-msSurfaceDial.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
-};
-
-msSurfaceDial.prototype.handleBrowseUri = function (curUri) {
-    var self = this;
-
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
-};
-
-
-
-// Define a method to clear, add, and play an array of tracks
-msSurfaceDial.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-msSurfaceDial.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-msSurfaceDial.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::stop');
-
-
-};
-
-// Spop pause
-msSurfaceDial.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::pause');
-
-
-};
-
-// Get state
-msSurfaceDial.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::getState');
-
-
-};
-
-//Parse state
-msSurfaceDial.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-msSurfaceDial.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'msSurfaceDial::pushState');
-
-	return self.commandRouter.servicePushState(state, self.servicename);
-};
-
-
-msSurfaceDial.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-msSurfaceDial.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-msSurfaceDial.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-msSurfaceDial.prototype._searchArtists = function (results) {
-
-};
-
-msSurfaceDial.prototype._searchAlbums = function (results) {
-
-};
-
-msSurfaceDial.prototype._searchPlaylists = function (results) {
-
-
-};
-
-msSurfaceDial.prototype._searchTracks = function (results) {
-
-};
-
-msSurfaceDial.prototype.goto=function(data){
-    var self=this
-    var defer=libQ.defer()
-
-// Handle go to artist and go to album function
-
-     return defer.promise;
-};
-
+msSurfaceDial.prototype.findSurfaceDialInputEventPath = function() {
+    const procPath = '/proc/bus/input/devices';
+    return new Promise((resolve, reject) => {
+        fs.readFile(procPath, {encoding: 'latin1'}, (err, data) => {
+            if (err) {
+                this.logger.error(`${this.loggerLabel} Error reading ${procPath}. ${err}`);
+                reject(err);
+            }
+            else {
+                let isSDial = false;
+                let inSection = false;
+                let supportKeyEvt = false;
+                let supportRelEvt = false;
+                let handler = null; // string of 'eventX'
+                // process line-by-line
+                const lines = data.split("\n");
+                for (const l of lines) {
+                    if (inSection) {
+                        if (l.length == 0) {
+                            this.logger.debug(`${this.loggerLabel} Empty Line`);
+                            // decide whether this is Surface Dial input event we are looking for
+                            if (isSDial) {
+                                this.logger.debug(`${this.loggerLabel} Previous section is Surface Dial`);
+                                if (supportKeyEvt && supportRelEvt && handler != null) {
+                                    this.logger.debug(`${this.loggerLabel} Support both Key and Rel events. Handler not null.`);
+                                    resolve(handler);
+                                    return;
+                                }
+                            }
+                            inSection = false;
+                        }
+                        else if (isSDial) {
+                            if (l.startsWith('H:')) {
+                                this.logger.debug(`${this.loggerLabel} Looking for 'Handlers' ${l}.`);
+                                let attrs = l.slice(2).trim().split('=');
+                                if ((attrs.length == 2) && (attrs[0]).toLowerCase() == 'handlers') {
+                                    let handlers=attrs[1].split(' ');
+                                    // look for the first one that starts with 'eventX''
+                                    for (const h of handlers)
+                                        if (h.startsWith('event'))
+                                            handler = h.trim();
+                                }
+                            }
+                            else if (l.startsWith('B:')) {
+                                this.logger.debug(`${this.loggerLabel} Looking for 'Key or Rel' ${l}.`);
+                                let attrs = l.slice(2).trim().split('=');
+                                if ((attrs.length == 2) && (attrs[0]).toLowerCase() == 'key') {
+                                    let keyEvtProps=attrs[1].split(' ');
+                                    if (keyEvtProps.length > 0) {
+                                        this.logger.debug(`${this.loggerLabel} Key event support found.`);
+                                        supportKeyEvt = true;
+                                    }
+                                }
+                                else if ((attrs.length == 2) && (attrs[0]).toLowerCase() == 'rel') {
+                                    let relEvtProps=attrs[1].split(' ');
+                                    if (relEvtProps.length > 0) {
+                                        this.logger.debug(`${this.loggerLabel} Rel event support found.`);
+                                        supportRelEvt = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        if (l.startsWith('I:')) {
+                            this.logger.debug(`${this.loggerLabel} Looking for Vendor and Product in ${l}`);
+                            inSection = true;
+                            isSDial = false;
+                            supportKeyEvt = false;
+                            supportRelEvt = false;
+                            handler = null;
+                            let attrs = l.slice(2).trim().split(' ');
+                            let VID = null;
+                            let PID = null;
+                            attrs.forEach(a => {
+                                const kv = a.split('=');
+                                if (kv.length == 2) {
+                                    if (kv[0].toLowerCase() == 'vendor') {
+                                        this.logger.debug(`${this.loggerLabel} Vender field found.`);
+                                        VID = kv[1].toLowerCase();
+                                    }
+                                    else if (kv[0].toLowerCase() == 'product') {
+                                        this.logger.debug(`${this.loggerLabel} Product field found.`);
+                                        PID = kv[1].toLowerCase();
+                                    }
+                                }
+                            });
+                            if (VID === '045e' && PID === '091b') {
+                                this.logger.debug(`${this.loggerLabel} Found Surface Dial UID and PID`);
+                                isSDial = true;
+                            }
+                        }
+                    }
+                }
+                // no trailing empty line
+                if (inSection) {
+                    if (isSDial) {
+                        if (supportKeyEvt && supportRelEvt && handler != null) {
+                            resolve(handler);
+                            return;
+                        }
+                    }
+                }
+                resolve(handler);
+            }
+        });
+    });
+}
