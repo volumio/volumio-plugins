@@ -45,7 +45,8 @@ function ControllerLastFM(context)
 	{
 		artist: '',
 		title: '',
-		album: ''
+        album: '',
+        duration: 0
         };
 
     self.scrobblableTrack = false;
@@ -683,11 +684,12 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
             // track has changed, so definitely need to do something!
             if (scrobbleThresholdInMilliseconds > 0) {
                 // should be the case if scrobbling from the active service has been enabled
-                self.updateNowPlaying(state);
-
-                if (self.config.get('enable_debug_logging'))
-                    self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
-                self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                if (self.formatScrobbleData(state)) { // enough metadata to be able to scrobble the track
+                    self.updateNowPlaying();
+                    if (self.config.get('enable_debug_logging'))
+                        self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
+                    self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                }
 
             }
         }
@@ -761,11 +763,12 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         self.scrobbleData.artist = artist;
         self.scrobbleData.title = title;
         self.scrobbleData.album = album;
+        self.scrobbleData.duration = state.duration;
     }
     self.scrobblableTrack = success;
 //    self.logger.info('[LastFM] Current track has sufficient metadata: ' + self.scrobblableTrack + ' with artist ' + self.scrobbleData.artist);
    
-	return defer.promise;
+	return success;
 };
 
 //ControllerLastFM.prototype.initLastFMSession = function () {
@@ -796,9 +799,7 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 	
 	if(self.config.get('enable_debug_logging'))
 		self.logger.info('[LastFM] Updating now playing');
-	
-	self.formatScrobbleData(state);
-	
+		
 	if (
 		(self.config.get('API_KEY') != '') &&
 		(self.config.get('API_SECRET') != '') &&
@@ -821,31 +822,7 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 			if(result.success) {
 				if(self.config.get('enable_debug_logging'))
 					self.logger.info('[LastFM] authenticated successfully!');
-				// Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track
-				//lfm.getCorrection({
-				//	artist: self.scrobbleData.artist,
-				//	track: self.scrobbleData.title,
-				//	callback: function(result) {
-				//		if(result.success)
-				//		{
-				//			// Try to correct the artist
-				//			if(result.correction.artist.name != undefined && result.correction.artist.name != '' && self.scrobbleData.artist != result.correction.artist.name)
-				//			{	
-				//				self.logger.info('[LastFM] corrected artist from: ' + self.scrobbleData.artist + ' to: ' + result.correction.artist.name);
-				//				self.scrobbleData.artist = result.correction.artist.name;
-				//			}
-							
-				//			// Try to correct the track title
-				//			if(result.correction.name != undefined && result.correction.name != '' && self.scrobbleData.title != result.correction.name)
-				//			{	
-				//				self.logger.info('[LastFM] corrected track title from: ' + self.scrobbleData.title + ' to: ' + result.correction.name);
-				//				self.scrobbleData.title = result.correction.name;
-				//			}
-				//		}
-				//		else
-				//			self.logger.info('[LastFM] request failed with error: ' + result.error);
-				//	}
-				//})
+
                 // try getting track info
                 lfm.getTrackInfo({
                     artist: self.scrobbleData.artist,
@@ -855,7 +832,17 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
                         if (result.success) {
                             // Display results to start with
                             self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
-                            if (result.trackInfo.duration != undefined) { self.logger.info('[LastFM] track duration: ' + result.trackInfo.duration);}
+                            if (result.trackInfo.duration != undefined) {
+                                if (self.scrobbleData.duration == 0)
+                                {
+                                    self.scrobbleData.duration = result.trackInfo.duration;
+                                    self.logger.info('[LastFM] Updated missing track duration: ' + result.trackInfo.duration);
+                                }
+                            }
+                            if (!self.scrobbleData.album && result.trackInfo.album.title != undefined) {
+                                self.scrobbleData.album = result.trackInfo.album.title;
+                                self.logger.info('[LastFM] Updated missing track album: ' + self.scrobbleData.album);
+                            }
                         }
                         else
                             self.logger.info('[LastFM] track info request failed with error: ' + result.error);
@@ -867,7 +854,7 @@ ControllerLastFM.prototype.updateNowPlaying = function (state)
 					artist: self.scrobbleData.artist,
 					track: self.scrobbleData.title,
 					album: self.scrobbleData.album,
-					duration: state.duration,
+                    duration: self.scrobbleData.duration,
 					callback: function(result) {
 						if(!result.success)
 							console.log("in callback, finished: ", result);
