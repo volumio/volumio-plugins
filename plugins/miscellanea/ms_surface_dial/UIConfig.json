@@ -152,6 +152,12 @@
           "label": "Please make sure Surface Dial is in pairing-mode when Pairing button is clicked.",
           "value": "",
           "visibleIf": {"field": "sdial_bton_not_paired", "value": true}
+        },
+        {
+          "id": "sdial_remind_use_dial_to_reconnect",
+          "label": "Please click/turn Surface-Dial after tapping the Connect button.",
+          "value": "",
+          "visibleIf": {"field": "sdial_paired_not_connected", "value": true}
         }
       ]
     }
