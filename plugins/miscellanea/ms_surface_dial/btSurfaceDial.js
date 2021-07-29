@@ -24,7 +24,10 @@ const PairingState = {
 // bt_adapter_removed: goes from available to zero
 // bt_adapter_on: goes from off to on
 // bt_adapter_off: goes from on to off
+// sdial_connect_begun: connection request made
 // sdial_connected: goes from disconnected to connected
+// sdial_connect_failed: connect to sdial failed
+// sdial_disconnect_begun: disconnect request made
 // sdial_disconnected: goes from disconnected to connected
 // sdial_unpaired: goes from paired to unpaired
 // sdial_removed: sdial removed from device list of bt_adapter
@@ -605,21 +608,41 @@ class BluetoothSurfaceDial extends EventEmitter {
     async connectSurfaceDial() {
         // Check conditions before setting 
         if (this.sdialObj != null) {
-            try {
-                let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
-                await deviceIface.Connect(); // asynchronous
-                this.logger.info(`${this.logLabel} SurfaceDial Device1.Connect() returns.`);
-            }
-            catch (err) {
-                this.logger.error(`${this.logLabel} Error Connecting to Surface Dial. ${err}`);
+            const connectBeginTime = Date.now();
+            let connectOK = await this._autoRetryConnectOnce();
+            if (!connectOK) {
+                const connectFailTime = Date.now();
+                if ((connectFailTime - connectBeginTime) <= 1000){
+                    this.logger.warn(`${this.logLabel} Connect failed too soon. Retry One Time.`);
+                    connectOK = await this._autoRetryConnectOnce();
+                    this.logger.info(`${this.logLabel} Second time connect is ${connectOK? 'OK': 'Failed again.'}`);
+                }
             }
         }
+    }
+
+    async _autoRetryConnectOnce() {
+        let succ = false;
+        try {
+            this.emit('sdial_connect_begun');
+            let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
+            await deviceIface.Connect(); // asynchronous
+            this.logger.info(`${this.logLabel} SurfaceDial Device1.Connect() returns.`);
+            succ = true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Error Connecting to Surface Dial. ${err}`);
+            this.emit('sdial_connect_failed', err);
+            succ = false;
+        }
+        return succ;
     }
 
     async disconnectSurfaceDial() {
         // Check conditions before setting 
         if (this.sdialObj != null) {
             try {
+                this.emit('sdial_disconnect_begun');
                 let deviceIface = this.sdialObj.getInterface(BluetoothSurfaceDial.DEVICE_IFACE_NAME);
                 await deviceIface.Disconnect(); // asynchronous
                 this.logger.info(`${this.logLabel} SurfaceDial Device1.Disconnect() returns.`);

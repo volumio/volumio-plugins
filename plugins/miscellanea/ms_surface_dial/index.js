@@ -296,6 +296,15 @@ msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
         self.commandRouter.reloadUi();
         self.scheduleOpenEventStream();
     });
+    self.btSurfaceDial.on('sdial_connect_begun', () => {
+        self.commandRouter.pushToastMessage('info', 'Connect', 'Connecting to Surface Dial...');
+    });
+    self.btSurfaceDial.on('sdial_connect_failed', (err) => {
+        self.commandRouter.pushToastMessage('error', 'Connect', err.message);
+    });
+    self.btSurfaceDial.on('sdial_disconnect_begun', () => {
+        self.commandRouter.pushToastMessage('info', 'Disconnect', 'Disconnecting from Surface Dial...');
+    });
     self.btSurfaceDial.on('sdial_disconnected', () => {
         self.commandRouter.reloadUi();
         if (self.retryOpenEventTimer) {
