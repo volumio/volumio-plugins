@@ -26,6 +26,9 @@ function msSurfaceDial(context) {
 	this.dialPressed = false;
 	this.dialValue = 0; // debug purpose only
 
+    this.volChangeRequested = false;
+    this.volChanged = false;
+
     this.btSurfaceDial = new BluetoothSurfaceDial(this.logger, this.loggerLabel);
 }
 
@@ -58,6 +61,10 @@ msSurfaceDial.prototype.onStart = function() {
     }
     */
 
+    this.commandRouter.addCallback('volumioupdatevolume', (updatedVolObj) => {
+        this.logger.info(`${this.loggerLabel} volumioupdatevolume callback: ${JSON.stringify(updatedVolObj)}`);
+        this.volChanged = true;
+    });
     this.setupBtSurfaceDialEventListeners();
     this.btSurfaceDial.init();
     
@@ -500,15 +507,37 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
                     dialActionStr = "CounterClockWise Turn"
                     if (evCode == 7) {
                         this.dialValue -= 1;
-                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
+                        if (this.volChangeRequested) {
+                            if (this.volChanged) {
+                                this.volChanged = false;
+                                this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
+                            }
+                            else
+                                this.logger.error(`${this.loggerLabel} Do not request decreaseDeviceVolume - waiting for last request to complete.`);
+                        }
+                        else {
+                            this.volChanged = false;
+                            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
+                            
+                        }
                     }
-                        
                     break;
                 case 1:
                     dialActionStr = "ClockWise Turn"
                     if (evCode == 7) {
                         this.dialValue += 1;
-                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
+                        if (this.volChangeRequested) {
+                            if (this.volChanged) {
+                                this.volChanged = false;
+                                this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
+                            }
+                            else
+                                this.logger.error(`${this.loggerLabel} Do not request increaseDeviceVolume - waiting for last request to complete.`);
+                        }
+                        else {
+                            this.volChanged = false;
+                            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
+                        }
                     }
                     break;
             }
