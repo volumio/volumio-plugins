@@ -365,9 +365,11 @@ msSurfaceDial.prototype.scheduleOpenEventStream = function() {
 msSurfaceDial.prototype.openEventStream = function(obj) {
     var self = obj;
     self.logger.info(`${self.loggerLabel} calling findSurfaceDialInputEventPath()`);
+    self.commandRouter.pushToastMessage('info', 'Final Setup', 'Getting Ready. Please be patient...');
     self.findSurfaceDialInputEventPath()
     .then((eventName) => {
         if (eventName) {
+            self.commandRouter.pushToastMessage('success', 'Final Setup', 'Great! Surface Dial now Ready to Use');
             const eventDevPath = `/dev/input/${eventName}`;
             const rdStreamOpts = {
                 flags: 'r',
