@@ -11,10 +11,17 @@ const PairingState = {
     Scanning: 4,
     SurfaceDialFound: 5,
     ScanStopped: 6,
-    PairRequested: 7,
-    Paired: 8,
-    TrustRequested: 9,
-    Trusted: 10
+    // This Power-Cycle is a work-around for the Realtek 8821CU.
+    // This is something Frankie discovered by-chance, not an
+    // official work-around.
+    PowerOffRequested: 7,
+    PoweredOff:8,
+    PowerOnRequested: 9,
+    PoweredOn:10,
+    PairRequested: 11,
+    Paired: 12,
+    TrustRequested: 13,
+    Trusted: 14
 };
 
 //
@@ -189,16 +196,14 @@ class BluetoothSurfaceDial extends EventEmitter {
             if ('Powered' in changed) {
                 this._mostRecentStatus.btAdapterOn = changed['Powered'].value;
                 this.emit(this._mostRecentStatus.btAdapterOn? 'bt_adapter_on':'bt_adapter_off');
+                if (this.pairingState != PairingState.Idle)
+                    this.pairingStateMachine(changed['Powered'].value? PairingState.PoweredOn: PairingState.PoweredOff);
             }
             //  Discovering (Boolean)
             if ('Discovering' in changed) {
                 this.logger.info(`[${this.logLabel} Pairing] Scan ${changed['Discovering'].value? 'Started': 'Stopped'}`);
-                if (changed['Discovering'].value) {
-                    this.pairingStateMachine(PairingState.Scanning);
-                }
-                else {
-                    this.pairingStateMachine(PairingState.ScanStopped);
-                }
+                if (this.pairingState != PairingState.Idle)
+                    this.pairingStateMachine(changed['Discovering'].value? PairingState.Scanning:PairingState.ScanStopped);
             }
         }
         catch (err) {
@@ -287,7 +292,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                 // emit signal if it is paired or unpaired
             if ('Paired' in changed) {
                 this._mostRecentStatus.sDialPaired = changed['Paired'].value;
-                if (this.pairingState == PairingState.PairRequested)
+                if (this.pairingState != PairingState.Idle)
                     this.pairingStateMachine(PairingState.Paired);
                 this.emit(this._mostRecentStatus.sDialPaired? 'sdial_paired' : 'sdial_unpaired');
             }
@@ -304,7 +309,7 @@ class BluetoothSurfaceDial extends EventEmitter {
             }
             // Trusted (Boolean)
             if ('Trusted' in changed && changed['Trusted'].value) {
-                if (this.pairingState == PairingState.TrustRequested)
+                if (this.pairingState != PairingState.Idle)
                     this.pairingStateMachine(PairingState.Trusted);
             }
         }
@@ -520,6 +525,8 @@ class BluetoothSurfaceDial extends EventEmitter {
                 case PairingState.Scanning: eventName = 'Scanning'; break;
                 case PairingState.ScanStopped: eventName = 'ScanStopped'; break;
                 case PairingState.Paired: eventName = 'Paired'; break;
+                case PairingState.PoweredOff: eventName = 'PoweredOff'; break;
+                case PairingState.PoweredOn: eventName = 'PoweredOn'; break;
                     break;
                 default:
                     break;
@@ -550,22 +557,54 @@ class BluetoothSurfaceDial extends EventEmitter {
                     this.pairingState = PairingState.Scanning;
                     break;
                 case PairingState.ScanStopped:
-                    if (this.pairingState != PairingState.SurfaceDialFound && this.pairingState != PairingState.Scanning) {
-                        this.logger.warn(`${this.logLabel} PairingState -> ScanStopped while neither SurfaceDialFound nor Scanning.`);
+                    // 'Discovering' would be notified as a 'change' to false when 'Powered' set to 'false',
+                    // even it is already 'false'
+                    if (this.pairingState != PairingState.SurfaceDialFound 
+                        && this.pairingState != PairingState.Scanning 
+                        && this.pairingState != PairingState.PowerOffRequested) {
+                        this.logger.warn(`${this.logLabel} PairingState -> ScanStopped while neither SurfaceDialFound nor Scanning nor PowerOffRequested.`);
                     }
                     if (this.pairingState == PairingState.SurfaceDialFound) {
-                        this.pairingState = PairingState.ScanStopped;    
-                        // Start Pairing
-                        // Note: we are not registering ourselves as default-agent.
+                        // Power Cycle the Adapter
+                        this.pairingState = PairingState.PowerOffRequested;
+                        if (!await this._turnOffBluetooth()) {
+                            this.emit('sdial_pair_failed', new Error('Unable to Turn off Bluetooth'));
+                            this.pairingState = PairingState.Idle;
+                        }
+                    }
+                    break;
+                case PairingState.PoweredOff:
+                    // Turn it back on
+                    if (this.pairingState != PairingState.PowerOffRequested) {
+                        this.logger.warn(`${this.logLabel} PairingState -> PoweredOff but not during PowerOffRequested.`);
+                        this.logger.error('Abort: Coding Error.');
+                        this.emit('sdial_pair_failed', new Error('Unexpected pairing-state when Bluetooth is turned off.'));
+                        this.pairingState = PairingState.Idle;
+                    }
+                    else {
+                        this.pairingState = PairingState.PowerOnRequested;
+                        if (!await this._turnOnBluetooth()) {
+                            this.emit('sdial_pair_failed', new Error('Unable to Turn On Bluetooth'));
+                            this.pairingState = PairingState.Idle;
+                        }
+                    }
+                    break;
+                case PairingState.PoweredOn:
+                    // Start Pairing
+                    // Note: we are not registering ourselves as default-agent.
+                    if (this.pairingState != PairingState.PowerOnRequested) {
+                        this.logger.warn(`${this.logLabel} PairingState -> PoweredOn but not during PowerOnRequested.`);
+                        this.logger.error('Abort: Coding Error.');
+                        this.emit('sdial_pair_failed', new Error('Unexpected pairing-state when Bluetooth is turned on.'));
+                        this.pairingState = PairingState.Idle;
+                    }
+                    else {
                         this.pairingState = PairingState.PairRequested;
                         let [ succ, err ] = await this.startPairing();
                         if (err) {
                             this.emit('sdial_pair_failed', err);
                             this.pairingState = PairingState.Idle;
                         }
-                    }
-                    else if (this.pairingState != PairingState.Idle) {
-                        this.pairingState = PairingState.ScanStopped;
                     }
                     break;
                 case PairingState.SurfaceDialFound:
@@ -654,29 +693,46 @@ class BluetoothSurfaceDial extends EventEmitter {
     }
 
     async turnOffBluetooth() {
-        if (this.hciObj != null) {
-            try {
-                const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
-                await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', false));
-                this.logger.info(`${this.logLabel} Set Adapter1.Powered to false returns.`);
-            }
-            catch (err) {
-                this.logger.error(`${this.logLabel} Error Powering off Bluetooth Adapter. ${err}`);
-            }
-        }
+        return await this._turnOffBluetooth();
     }
 
-    async turnOnBluetooth() {
-        if (this.hciObj != null) {
-            try {
-                const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
-                await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', true));
-                this.logger.info(`${this.logLabel} Set Adapter1.Powered to true returns.`);
-            }
-            catch (err) {
-                this.logger.error(`${this.logLabel} Error Powering on Bluetooth Adapter. ${err}`);
-            }
+    async _turnOffBluetooth() {
+        let succ = false;
+        let errObj = null;
+        try {
+            const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+            await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', false));
+            this.logger.info(`${this.logLabel} Set Adapter1.Powered to false returns.`);
+            succ = true;
         }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Error Powering off Bluetooth Adapter. ${err}`);
+            succ = false; 
+            errObj = err;
+        }
+        return [ succ, errObj ];
+    }
+
+
+    async turnOnBluetooth() {
+        return await this._turnOnBluetooth();
+    }
+
+    async _turnOnBluetooth() {
+        let succ = false;
+        let errObj = null;
+        try {
+            const properties = this.hciObj.getInterface(BluetoothSurfaceDial.PROPERTIES_IFACE_NAME);
+            await properties.Set(BluetoothSurfaceDial.ADAPTER_IFACE_NAME, 'Powered', new Variant('b', true));
+            this.logger.info(`${this.logLabel} Set Adapter1.Powered to true returns.`);
+            succ = true;
+        }
+        catch (err) {
+            this.logger.error(`${this.logLabel} Error Powering on Bluetooth Adapter. ${err}`);
+            succ = false; 
+            errObj = err;
+        }
+        return [ succ, errObj ];
     }
 }
 
