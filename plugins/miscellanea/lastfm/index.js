@@ -31,7 +31,8 @@ module.exports = ControllerLastFM;
 function ControllerLastFM(context) 
 {
 	var self = this;
-	self.previousState = null;
+//	self.previousState = null;
+    self.previousState = { title: '| Initialising...' };
 	self.updatingNowPlaying = false;
 	self.timeToPlay = 0;
     self.apiResponse = null;
@@ -91,7 +92,6 @@ ControllerLastFM.prototype.stop = function() {
 
 ControllerLastFM.prototype.onStart = function() {
     var self = this;
-    var initialize = false;
 	//self.logger.info("Performing onStart action");
     self.addToBrowseSources();
 
@@ -634,6 +634,7 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
 
 ControllerLastFM.prototype.checkStateUpdate = function (state) {
     var self = this;
+    var defer = libQ.defer(); 
 
     // Create the timer object if it does not exist yet
     if (!self.currentTimer) {
@@ -653,15 +654,15 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
         scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
 
     // Set initial previousState object
-    var init = '';
-    if (self.previousState == null) {
-        self.previousState = state;
-        //initialize = true;
-        init = ' | Initializing: true';
-    }
+    //var init = '';
+    //if (self.previousState == null) {
+    //    self.previousState = state;
+    //    //initialize = true;
+    //    init = ' | Initializing: true';
+    //}
 
     if (self.config.get('enable_debug_logging')) {
-        self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + self.previousState.title + init);
+        self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + self.previousState.title);
         if (self.currentTimer)
             self.logger.info('=================> [timer] is active: ' + self.currentTimer.isActive + ' | can continue: ' + self.currentTimer.canContinue + ' | timer started at: ' + self.currentTimer.timerStarted);
     }
@@ -678,7 +679,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
             // 1. restarted song
             // 2. ?
             if (self.config.get('enable_debug_logging'))
-                self.logger.info('[LastFM] Same state as the one previously pused. No need to do anything...');
+                self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');
         }
         else {
             // track has changed, so definitely need to do something!
@@ -693,8 +694,6 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
             }
         }
-        // Always (try to) update 'now playing'
-        //self.updateNowPlaying(state);
     }
     else if (state.status == 'pause') {
         if (self.config.get('enable_debug_logging'))
@@ -704,10 +703,9 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
         }
     }
     else if (state.status == 'stop') {
-        if (self.config.get('enable_debug_logging'))
-            self.logger.info('[LastFM] stopping timer, song has ended.');
-
         if (self.currentTimer.isActive) {
+            if (self.config.get('enable_debug_logging'))
+                self.logger.info('[LastFM] stopping timer, splayback has ended.');
             self.currentTimer.stop();
         }
         self.timeToPlay = 0;
@@ -715,7 +713,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
     // set state as the new previous state
     self.previousState = state;
-//    return defer.promise;
+    return defer.promise;
 };
 
 ControllerLastFM.prototype.formatScrobbleData = function (state)
@@ -766,8 +764,6 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         self.scrobbleData.duration = state.duration;
     }
     self.scrobblableTrack = success;
-//    self.logger.info('[LastFM] Current track has sufficient metadata: ' + self.scrobblableTrack + ' with artist ' + self.scrobbleData.artist);
-   
 	return success;
 };
 
@@ -791,7 +787,7 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
 //};
 
 
-ControllerLastFM.prototype.updateNowPlaying = function (state)
+ControllerLastFM.prototype.updateNowPlaying = function ()
 {
 	var self = this;
 	var defer = libQ.defer();
@@ -894,7 +890,7 @@ ControllerLastFM.prototype.scrobble = function (state, timeStampInMilliSeconds, 
 	var defer = libQ.defer();
 	
 	//var now = new Date().getTime();
-	self.formatScrobbleData(state);
+	//self.formatScrobbleData(state);
 	
 	if(self.config.get('enable_debug_logging'))
 	{
