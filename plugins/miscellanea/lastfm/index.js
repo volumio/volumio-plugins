@@ -107,6 +107,9 @@ ControllerLastFM.prototype.onStart = function() {
     self.logger.info('[LastFM] try scrobble stream/radio plays: ' + self.config.get('scrobbleFromStream'));
     self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
 
+    self.initLastFMSession();
+
+    // start monitoring the Volumio state to check what song is playing and scrobble it:
     socket.on('pushState', function (state) { self.checkStateUpdate(state) });
 	
 	return libQ.resolve();
@@ -767,120 +770,104 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
 	return success;
 };
 
-//ControllerLastFM.prototype.initLastFMSession = function () {
-//    if (self.config.get('enable_debug_logging'))
-//        self.logger.info('[LastFM] trying to authenticate...');
+ControllerLastFM.prototype.initLastFMSession = function () {
+    var self = this;
 
-//    self.lfm = new lastfm({
-//        api_key: self.config.get('API_KEY'),
-//        api_secret: self.config.get('API_SECRET'),
-//        username: self.config.get('username'),
-//        authToken: self.config.get('authToken')
-//    });
+    if (
+        (self.config.get('API_KEY') != '') &&
+        (self.config.get('API_SECRET') != '') &&
+        (self.config.get('username') != '') &&
+        (self.config.get('authToken') != '')
+    ) {
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] trying to authenticate...');
 
-//    self.lfm.getSessionKey(function (result) {
-//        if (result.success) {
-//            if (self.config.get('enable_debug_logging'))
-//                self.logger.info('[LastFM] authenticated successfully!');
-//        }
-//    });
-//};
+        self.lfm = new lastfm({
+            api_key: self.config.get('API_KEY'),
+            api_secret: self.config.get('API_SECRET'),
+            username: self.config.get('username'),
+            authToken: self.config.get('authToken')
+        });
+
+        self.lfm.getSessionKey(function (result) {
+            if (result.success) {
+                if (self.config.get('enable_debug_logging'))
+                    self.logger.info('[LastFM] authenticated successfully!');
+            }
+            else self.logger.info('[LastFM] Error: ' + result.error);
+        });
+    }
+    else {
+        // Configuration errors
+        if (self.config.get('API_KEY') == '')
+            self.logger.info('[LastFM] configuration error; "API_KEY" is not set.');
+        if (self.config.get('API_SECRET') == '')
+            self.logger.info('[LastFM] configuration error; "API_SECRET" is not set.');
+        if (self.config.get('username') == '')
+            self.logger.info('[LastFM] configuration error; "username" is not set.');
+        if (self.config.get('authToken') == '')
+            self.logger.info('[LastFM] configuration error; "authToken" is not set.');
+    }
+};
 
 
 ControllerLastFM.prototype.updateNowPlaying = function ()
 {
 	var self = this;
 	var defer = libQ.defer();
-	self.updatingNowPlaying = true;
 	
 	if(self.config.get('enable_debug_logging'))
 		self.logger.info('[LastFM] Updating now playing');
 		
-	if (
-		(self.config.get('API_KEY') != '') &&
-		(self.config.get('API_SECRET') != '') &&
-		(self.config.get('username') != '') &&
-		(self.config.get('authToken') != '') &&
+    if (
         self.scrobblableTrack // eventually this should not be needed any more
-	)
-	{
-		if(self.config.get('enable_debug_logging'))
-			self.logger.info('[LastFM] trying to authenticate...');
-				
-		var lfm = new lastfm({
-			api_key: self.config.get('API_KEY'),
-			api_secret: self.config.get('API_SECRET'),
-			username: self.config.get('username'),
-			authToken: self.config.get('authToken')
-		});
-		
-		lfm.getSessionKey(function(result) {
-			if(result.success) {
-				if(self.config.get('enable_debug_logging'))
-					self.logger.info('[LastFM] authenticated successfully!');
+    ) {
+        self.updatingNowPlaying = true;
+        if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] authenticated successfully!');
 
-                // try getting track info
-                lfm.getTrackInfo({
-                    artist: self.scrobbleData.artist,
-                    track: self.scrobbleData.title,
-                    autocorrect : 1,
-                    callback: function (result) {
-                        if (result.success) {
-                            // Display results to start with
-                            self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
-                            if (result.trackInfo.duration != undefined) {
-                                if (self.scrobbleData.duration == 0)
-                                {
-                                    self.scrobbleData.duration = result.trackInfo.duration;
-                                    self.logger.info('[LastFM] Updated missing track duration: ' + result.trackInfo.duration);
-                                }
-                            }
-                            if (!self.scrobbleData.album && result.trackInfo.album.title != undefined) {
-                                self.scrobbleData.album = result.trackInfo.album.title;
-                                self.logger.info('[LastFM] Updated missing track album: ' + self.scrobbleData.album);
-                            }
+        // try getting track info
+        self.lfm.getTrackInfo({
+            artist: self.scrobbleData.artist,
+            track: self.scrobbleData.title,
+            autocorrect: 1,
+            callback: function (result) {
+                if (result.success) {
+                    // Display results to start with
+                    self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
+                    if (result.trackInfo.duration != undefined) {
+                        if (self.scrobbleData.duration == 0) {
+                            self.scrobbleData.duration = result.trackInfo.duration;
+                            self.logger.info('[LastFM] Updated missing track duration: ' + result.trackInfo.duration);
                         }
-                        else
-                            self.logger.info('[LastFM] track info request failed with error: ' + result.error);
                     }
-				})
+                    if (!self.scrobbleData.album && result.trackInfo.album.title != undefined) {
+                        self.scrobbleData.album = result.trackInfo.album.title;
+                        self.logger.info('[LastFM] Updated missing track album: ' + self.scrobbleData.album);
+                    }
+                }
+                else
+                    self.logger.info('[LastFM] track info request failed with error: ' + result.error);
+            }
+        });
 
-				// Used to notify Last.fm that a user has started listening to a track. Parameter names are case sensitive.
-				lfm.scrobbleNowPlayingTrack({
-					artist: self.scrobbleData.artist,
-					track: self.scrobbleData.title,
-					album: self.scrobbleData.album,
-                    duration: self.scrobbleData.duration,
-					callback: function(result) {
-						if(!result.success)
-							console.log("in callback, finished: ", result);
-						else
-						{
-							if(self.config.get('enable_debug_logging'))
-								self.logger.info('[LastFM] updated "now playing" | artist: ' + self.scrobbleData.artist + ' | title: ' + self.scrobbleData.title);
-						}
-					}
-				});
-			} else {
-				self.logger.info("[LastFM] Error: " + result.error);
-			}
-		});
-	}
-	else
-	{
-		// Configuration errors
-		if(self.config.get('API_KEY') == '')
-			self.logger.info('[LastFM] configuration error; "API_KEY" is not set.');
-		if(self.config.get('API_SECRET') == '')
-			self.logger.info('[LastFM] configuration error; "API_SECRET" is not set.');
-		if(self.config.get('username') == '')
-			self.logger.info('[LastFM] configuration error; "username" is not set.');
-		if(self.config.get('authToken') == '')
-			self.logger.info('[LastFM] configuration error; "authToken" is not set.');
-	}
-
-	//self.currentTimer = null;
-	self.updatingNowPlaying = false;
+        // Used to notify Last.fm that a user has started listening to a track. Parameter names are case sensitive.
+        self.lfm.scrobbleNowPlayingTrack({
+            artist: self.scrobbleData.artist,
+            track: self.scrobbleData.title,
+            album: self.scrobbleData.album,
+            duration: self.scrobbleData.duration,
+            callback: function (result) {
+                if (!result.success)
+                    console.log("in callback, finished: ", result);
+                else {
+                    if (self.config.get('enable_debug_logging'))
+                        self.logger.info('[LastFM] updated "now playing" | artist: ' + self.scrobbleData.artist + ' | title: ' + self.scrobbleData.title);
+                }
+            }
+        });
+        self.updatingNowPlaying = false;
+    }
 	return defer.promise;
 };
 
