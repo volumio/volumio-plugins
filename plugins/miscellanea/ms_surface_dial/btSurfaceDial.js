@@ -36,13 +36,20 @@ const PairingState = {
 // sdial_connect_failed: connect to sdial failed
 // sdial_disconnect_begun: disconnect request made
 // sdial_disconnected: goes from disconnected to connected
+// sdial_search_and_pair_begun: begin the scan and pair process
 // sdial_unpaired: goes from paired to unpaired
 // sdial_removed: sdial removed from device list of bt_adapter
 // sdial_paired: goes from unpaired to paired
 // sdial_pair_failed: pairing failed.
 // sdial_cancel_pair_failed: cancel-pairing failed.
 // sdial_cancel_pair_completed: cancel-pairing completed
+// [ Pairing Process Details ]
+// sdial_search_begins
+// sdial_search_found
+// sdial_power_cycling
+// sdial_pair_command_sent
 //
+
 class BluetoothSurfaceDial extends EventEmitter {
     static get SDIAL_NAME() { return 'Surface Dial'; }
     static get BLUEZ_SERVICE() { return 'org.bluez'; }
@@ -427,6 +434,7 @@ class BluetoothSurfaceDial extends EventEmitter {
 
     async scanAndPairSurfaceDial() {
         try {
+            
             // remove surface-dial if here.
             if (this.pairingState != PairingState.Idle) {
                 throw new Error('Pairing State is not Idle');
@@ -440,6 +448,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                     this.unpairSurfaceDial();
                 }
             }
+            this.emit('sdial_search_and_pair_begun');
         }
         catch (err) {
             this.logger.error(`${this.logLabel} Error beginning Scan-and-Pair Surface Dial. ${err}`);
@@ -550,6 +559,9 @@ class BluetoothSurfaceDial extends EventEmitter {
                         this.emit('sdial_pair_failed', new Error('Unable to start Bluetooth Scan'));
                         this.pairingState = PairingState.Idle;
                     }
+                    else {
+                        this.emit('sdial_search_begins');
+                    }
                     break;
                 case PairingState.Scanning:
                     if (this.pairingState != PairingState.ScanRequested)
@@ -582,6 +594,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                         this.pairingState = PairingState.Idle;
                     }
                     else {
+                        this.emit('sdial_power_cycling');
                         this.pairingState = PairingState.PowerOnRequested;
                         if (!await this._turnOnBluetooth()) {
                             this.emit('sdial_pair_failed', new Error('Unable to Turn On Bluetooth'));
@@ -600,6 +613,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                     }
                     else {
                         this.pairingState = PairingState.PairRequested;
+                        this.emit('sdial_pair_command_sent');
                         let [ succ, err ] = await this.startPairing();
                         if (err) {
                             this.emit('sdial_pair_failed', err);
@@ -612,6 +626,7 @@ class BluetoothSurfaceDial extends EventEmitter {
                     if (this.pairingState != PairingState.Scanning)
                         this.logger.warn(`${this.logLabel} PairingState -> SurfaceDialFound while not Scanning.`);
                     this.pairingState = PairingState.SurfaceDialFound;
+                    this.emit('sdial_search_found');
                     // Stop Scanning
                     if (!await this.stopBtScan()) {
                         this.emit('sdial_pair_failed', new Error('Unable to Stop Bluetooth Scan'));

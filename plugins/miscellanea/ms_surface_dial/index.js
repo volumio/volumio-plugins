@@ -271,6 +271,9 @@ msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
             self.scheduleOpenEventStream();
         }   
     });
+    self.btSurfaceDial.on('sdial_search_and_pair_begun', () => {
+        self.commandRouter.pushToastMessage('info', 'Pairing', 'Begin Searching and Pairing Surface Dial...');
+    });
     self.btSurfaceDial.on('sdial_pair_failed', (err) => {
         self.commandRouter.pushToastMessage('error', 'Pairing', err.message);
     });
@@ -324,6 +327,19 @@ msSurfaceDial.prototype.setupBtSurfaceDialEventListeners = function() {
     });
     self.btSurfaceDial.on('bt_adapter_removed', () => {
         self.commandRouter.reloadUi();
+    });
+    // Details of Pairing Steps
+    self.btSurfaceDial.on('sdial_search_begins', () => {
+        self.commandRouter.pushToastMessage('info', 'Pairing', 'Searching for Surface Dial...');
+    });
+    self.btSurfaceDial.on('sdial_search_found', () => {
+        self.commandRouter.pushToastMessage('success', 'Pairing', 'Surface Dial Found.');
+    });
+    self.btSurfaceDial.on('sdial_power_cycling', () => {
+        self.commandRouter.pushToastMessage('info', 'Pairing', 'Power Cycling Bluetooth Adapter...');
+    });
+    self.btSurfaceDial.on('sdial_pair_command_sent', () => {
+        self.commandRouter.pushToastMessage('info', 'Pairing', 'Issuing BT-Pairing command...');
     });
 }
 
