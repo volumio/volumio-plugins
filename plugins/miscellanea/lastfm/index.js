@@ -852,7 +852,7 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
                             self.logger.info('[LastFM] Updated missing track duration: ' + result.trackInfo.duration);
                         }
                     }
-                    if (!self.scrobbleData.album && result.trackInfo.album.title != undefined) {
+                    if (!self.scrobbleData.album && (result.trackInfo.album != undefined) && (result.trackInfo.album.title != undefined)) {
                         self.scrobbleData.album = result.trackInfo.album.title;
                         self.logger.info('[LastFM] Updated missing track album: ' + self.scrobbleData.album);
                     }
