@@ -685,9 +685,18 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
             // only need updating srobble settings if
             // 1. restarted song
             // 2. ?
-            if (self.config.get('enable_debug_logging'))
-                self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');
-        }
+            if(self.currentTimer.canContinue && self.timeToPlay > 0)
+            {
+                if(self.config.get('enable_debug_logging'))
+                    self.logger.info('[LastFM] Continuing scrobbling of paused song, starting new timer for the remainder of ' + self.timeToPlay + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
+                self.stopAndStartTimer(self.timeToPlay, state, scrobbleThresholdInMilliseconds);
+            }					
+            else
+            {               
+                if (self.config.get('enable_debug_logging'))
+                    self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');                    
+            }
+       }
         else {
             // track has changed, so definitely need to do something!
             if (scrobbleThresholdInMilliseconds > 0) {
