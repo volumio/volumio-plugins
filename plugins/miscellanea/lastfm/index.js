@@ -23,6 +23,13 @@ var compositeTitleSeparator = " - ";
 var compositeTitleIndexOfArtist = 1;
 var compositeTitleIndexOfTitle = 0;
 
+var compositeTitle =
+        {
+            separator: " - ",
+            indexOfArtist: 1,
+            indexOfTitle: 0
+        }
+
 var trackStartTime = 0;
 
 // Define the ControllerLastFM class
@@ -744,14 +751,14 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
 
     // assumes that title is always defined! This is probably true
     if (!state.artist) {  // Artist field empty (often the case for web radio streams). 
-        if (state.title.indexOf(compositeTitleSeparator) > -1) { // Check if the title can be split into artist and actual title:
+        if (state.title.indexOf(compositeTitle.separator) > -1) { // Check if the title can be split into artist and actual title:
             try {
-                var info = state.title.split(compositeTitleSeparator);
+                var info = state.title.split(compositeTitle.separator);
                 // For the webradio I am listening to the title is the first part of string, artist the second:
                 //self.scrobbleData.artist = info[0].trim();
                 //self.scrobbleData.title = info[1].trim();
-                artist = info[compositeTitleIndexOfArtist].trim();
-                title = info[compositeTitleIndexOfTitle].trim();
+                artist = info[compositeTitle.indexOfArtist].trim();
+                title = info[compositeTitle.indexOfTitle].trim();
                 self.logger.info('[LastFM] Split composite title into artist: ' + artist + ' and title: ' + title);
                 if (!artist) {
                     success = false;
