@@ -180,6 +180,8 @@ ControllerLastFM.prototype.getUIConfig = function() {
 		uiconf.sections[1].content[3].value = self.config.get('scrobbleFromStream');
 		uiconf.sections[1].content[4].value = self.config.get('supportedStreamingServices');
 		uiconf.sections[1].content[5].value = self.config.get('streamScrobbleThreshold');
+		uiconf.sections[1].content[6].value = self.config.get('titleSeparator');
+		uiconf.sections[1].content[7].value = self.config.get('artistFirst');
 		self.logger.info("2/3 settings loaded");
 		
 		uiconf.sections[2].content[0].value = self.config.get('enable_debug_logging');
@@ -684,8 +686,14 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     }
 
     var scrobbleThresholdInMilliseconds = 0;
-    if (supportedSongServices.indexOf(state.service) != -1)
-        scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
+    if (supportedSongServices.indexOf(state.service) != -1){
+        if (state.duration == null) { // just to make sure it is always defined!
+            state.duration = self.config.get('streamScrobbleThreshold');         
+            if (self.config.get('enable_debug_logging'))
+                self.logger.info('[LastFM] Fixed undefined track duration: ' + state.duration);
+        }
+         scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
+    }
     if (supportedStreamingServices.indexOf(state.service) != -1)
         scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
 
@@ -720,10 +728,32 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                     self.logger.info('[LastFM] Continuing scrobbling of paused song, starting new timer for the remainder of ' + self.timeToPlay + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
                 self.stopAndStartTimer(self.timeToPlay, state, scrobbleThresholdInMilliseconds);
             }					
-            else
-            {               
+            else if (state.duration != self.previousState.duration)
+            {   // Duration has changed. Needed for example for airplay:
+                // Airplay fix, the duration is propagated at a later point in time
+                if (self.currentTimer.isActive){            
+                    var addition = (state.duration - self.previousState.duration) * (self.config.get('scrobbleThreshold') / 100) * 1000;
+                    self.logger.info('[LastFM] updating timer, previous duration is obsolete; adding ' + addition + ' milliseconds.');
+                    self.currentTimer.addMilliseconds(addition, function(scrobbler){							
+                            self.scrobble(state, self.config.get('scrobbleThreshold'), scrobbleThresholdInMilliseconds);
+                            self.currentTimer.stop();
+                            self.timeToPlay = 0;
+                        });	
+                } else {
+                    if (scrobbleThresholdInMilliseconds > 0) {
+                        // should be the case if scrobbling from the active service has been enabled
+                        if (self.formatScrobbleData(state)) { // enough metadata to be able to scrobble the track
+                            self.updateNowPlaying();
+                            if (self.config.get('enable_debug_logging'))
+                                self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
+                            self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                        }
+                    }	
+                } 
+            }
+            else{
                 if (self.config.get('enable_debug_logging'))
-                    self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');                    
+                    self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');                                    
             }
        }
         else {
