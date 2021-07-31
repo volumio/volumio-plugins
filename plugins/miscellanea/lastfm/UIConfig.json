@@ -87,7 +87,9 @@
 				"pushToastOnScrobble",
 				"scrobbleFromStream",
 				"supportedStreamingServices",
-				"streamScrobbleThreshold"
+				"streamScrobbleThreshold",
+				"titleSeparator",
+				"artistFirst"
 			]
 		},
 		"content": [
@@ -158,6 +160,29 @@
 				"visibleIf": {
 					"field": "scrobbleFromStream",
 					"value": true
+				}
+			},
+			{
+			  "id":"titleSeparator",
+			  "element": "input",
+			  "label": "TRANSLATE.LASTFM.COMPOSITE_TITLE_SEPARATOR",
+			  "doc": "TRANSLATE.LASTFM.D_COMPOSITE_TITLE_SEPARATOR",
+			  "description": "TRANSLATE.LASTFM.DD_COMPOSITE_TITLE_SEPARATOR",
+			  "value": " - ",
+			  "visibleIf": {
+					"field": "scrobbleFromStream",
+					"value": true
+			  }
+			},
+			{
+			  "id":"artistFirst",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.COMPOSITE_TITLE_ARTISTFIRST",
+			  "doc": "TRANSLATE.LASTFM.D_COMPOSITE_TITLE_ARTISTFIRST",
+			  "value": false,
+			  "visibleIf": {
+				"field": "scrobbleFromStream",
+				"value": true
 				}
 			}
 		]

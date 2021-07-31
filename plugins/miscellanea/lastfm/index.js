@@ -19,10 +19,6 @@ var supportedSongServices; // = ["mpd", "airplay", "volspotconnect", "volspotcon
 var supportedStreamingServices; // = ["webradio"];
 
 // Settings for splitting composite titles (as used for many webradio streams)
-var compositeTitleSeparator = " - ";
-var compositeTitleIndexOfArtist = 1;
-var compositeTitleIndexOfTitle = 0;
-
 var compositeTitle =
         {
             separator: " - ",
@@ -621,11 +617,14 @@ ControllerLastFM.prototype.updateScrobbleSettings = function (data)
 	self.config.set('scrobbleFromStream', data['scrobbleFromStream']);
 	self.config.set('supportedStreamingServices', data['supportedStreamingServices']);
 	self.config.set('streamScrobbleThreshold', data['streamScrobbleThreshold']);
+	self.config.set('titleSeparator', data['titleSeparator']);
+	self.config.set('artistFirst', data['artistFirst']);
 	defer.resolve();
 	
 	this.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
 	self.getConf(this.configFile);
 	
+    self.updateCompositeTitleSettings(data['titleSeparator'], data['artistFirst']);
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved scrobble settings.");
 
 	return defer.promise;
@@ -642,6 +641,29 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved debug settings.");
 
 	return defer.promise;
+};
+
+ControllerLastFM.prototype.updateCompositeTitleSettings = function (titleSeparator, artistFirst)
+{
+	var self = this;
+
+    if (artistFirst) {
+        compositeTitle = {
+            separator: titleSeparator,
+            indexOfArtist: 0,
+            indexOfTitle: 1
+        }
+    } else {
+        compositeTitle = {
+            separator: titleSeparator,
+            indexOfArtist: 1,
+            indexOfTitle: 0
+        }
+    }
+	if (self.config.get('enable_debug_logging'))
+            self.logger.info('[LastFM] Updated composite title settings to: ' + JSON.stringify(compositeTitle));
+
+	return libQ.resolve();
 };
 
 // Scrobble Methods -------------------------------------------------------------------------------------
