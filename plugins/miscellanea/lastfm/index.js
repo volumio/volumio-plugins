@@ -592,7 +592,11 @@ ControllerLastFM.prototype.updateCredentials = function (data)
 	if(data['storePassword'] && data['password'] != undefined && data['password'] != '' && data['password'] != '******')
 		self.config.set('password', data['password']);
 	self.config.set('authToken', md5(data['username'] + md5(data['password'])));
-	defer.resolve();
+	
+    // Should init new LastFM session after credentials were updated.
+    self.initLastFMSession();
+    // To-Do: check that session has started properly...
+    defer.resolve();
 	
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved authentication settings.");
 
