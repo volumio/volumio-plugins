@@ -1,4 +1,4 @@
-JULY 22th 2021
+August 02nd 2021
 
 
 ##  For Volumio3
@@ -134,6 +134,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+August 2nd 2021
+
+- Fix for UI not loading...
+- fiix preset
 
 July 23th 2021
 

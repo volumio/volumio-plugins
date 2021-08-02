@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze July 2021
+FusionDsp plugin for volumio3. By balbuze August 2021
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -419,16 +419,22 @@ FusionDsp.prototype.getUIConfig = function () {
         if (selectedsp == 'EQ15') {
           listeq = ['geq15']
           eqtext = self.commandRouter.getI18nString('LANDRCHAN')
+          //   self.logger.info('listeq ' + self.config.get('geq15'))
+
           // i = 1
         } if (selectedsp == '2XEQ15') {
           listeq = ['geq15', 'x2geq15']
           eqtext = (self.commandRouter.getI18nString('LEFTCHAN') + ',' + self.commandRouter.getI18nString('RIGHTCHAN'))
           //i = 2
+          //     self.logger.info('listeq ' + self.config.get('x2geq15') + self.config.get('geq15'))
+
 
         }
-        //let neq = eqtext.split(',')
-        for (i in listeq) {
+
+        for (var i in listeq) {
           let neq = eqtext.split(',')[i]
+          //self.logger.info('listeq ' + i)
+
           let geq15 = self.config.get(listeq[i])
           uiconf.sections[1].content.push(
             {
@@ -2234,7 +2240,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
 
       };
 
-      gainmaxused += ',0' + loudnessGain
+      gainmaxused += ',0,' + loudnessGain
 
       //-----gain calculation
       self.logger.info('gainmaxused' + gainmaxused)
@@ -3045,22 +3051,24 @@ FusionDsp.prototype.usethispreset = function (data) {
   } else if (selectedsp == 'convfir') {
     //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
+  if (preset == "mypreset1" ||preset == "mypreset2" || preset == "mypreset3") {
+    let state4preset = self.config.get('state4preset' + spreset)
 
-  let state4preset = self.config.get('state4preset' + spreset)
-  self.config.set('crossfeed', state4preset[0])
-  self.config.set('monooutput', state4preset[1])
-  self.config.set('loudness', state4preset[2])
-  self.config.set('loudnessthreshold', state4preset[3])
-  self.config.set('leftlevel', state4preset[4])
-  self.config.set('rightlevel', state4preset[5])
-
+    self.logger.info('state4preset ' + state4preset)
+    self.config.set('crossfeed', state4preset[0])
+    self.config.set('monooutput', state4preset[1])
+    self.config.set('loudness', state4preset[2])
+    self.config.set('loudnessthreshold', state4preset[3])
+    self.config.set('leftlevel', state4preset[4])
+    self.config.set('rightlevel', state4preset[5])
+  }
 
   self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
 
   setTimeout(function () {
     self.refreshUI();
     self.createCamilladspfile()
-  }, 300);
+  }, 500);
   return defer.promise;
 
 };
