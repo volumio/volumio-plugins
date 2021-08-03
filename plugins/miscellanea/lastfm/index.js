@@ -17,7 +17,7 @@ var os = require('os');
 
 var supportedSongServices; // = ["mpd", "airplay", "volspotconnect", "volspotconnect2", "spop", "radio_paradise", "80s80s"];
 var supportedStreamingServices; // = ["webradio"];
-var scrobbleThresholdSong = 0.5;  // as fraction of the song duration
+var scrobbleThresholdSong = 50;  // as fraction of the song duration
 var scrobbleThresholdStream = 60000; // in milliseconds, so this default is 60s
 
 // Settings for splitting composite titles (as used for many webradio streams)
@@ -100,12 +100,6 @@ ControllerLastFM.prototype.onStart = function() {
 	//self.logger.info("Performing onStart action");
     self.addToBrowseSources();
 
-    supportedSongServices = self.config.get('supportedSongServices').split(',');
-    supportedStreamingServices = self.config.get('supportedStreamingServices').split(',');
-    if (self.config.get('enable_debug_logging')) {
-        self.logger.info('[LastFM] supported song services: ' + JSON.stringify(supportedSongServices));
-        self.logger.info('[LastFM] supported streaming services: ' + JSON.stringify(supportedStreamingServices));
-    }
     self.logger.info('[LastFM] scrobbler initiated!');
     self.logger.info('[LastFM] extended logging: ' + self.config.get('enable_debug_logging'));
     self.logger.info('[LastFM] try scrobble stream/radio plays: ' + self.config.get('scrobbleFromStream'));
@@ -716,15 +710,16 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
     var scrobbleThresholdInMilliseconds = 0;
     if (supportedSongServices.indexOf(state.service) != -1){
-        if (state.duration == null) { // just to make sure it is always defined!
-            state.duration = self.config.get('streamScrobbleThreshold');         
+        if ((state.duration != null) && (state.duration > 30)){ // just to make sure it is always defined!
+            scrobbleThresholdInMilliseconds = state.duration * scrobbleThresholdSong;
+        } else
+        {
             if (self.config.get('enable_debug_logging'))
-                self.logger.info('[LastFM] Fixed undefined track duration: ' + state.duration);
+                self.logger.info('[LastFM] Undefined track duration or too short for scrobbling: ' + state.duration + ', ' + scrobbleThresholdInMilliseconds);
         }
-         scrobbleThresholdInMilliseconds = state.duration * (self.config.get('scrobbleThreshold') / 100) * 1000;
     }
-    if (supportedStreamingServices.indexOf(state.service) != -1)
-        scrobbleThresholdInMilliseconds = self.config.get('streamScrobbleThreshold') * 1000;
+    else if (supportedStreamingServices.indexOf(state.service) != -1)
+        scrobbleThresholdInMilliseconds = scrobbleThresholdStream;
 
     // Set initial previousState object
     //var init = '';
