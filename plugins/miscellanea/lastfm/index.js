@@ -17,6 +17,8 @@ var os = require('os');
 
 var supportedSongServices; // = ["mpd", "airplay", "volspotconnect", "volspotconnect2", "spop", "radio_paradise", "80s80s"];
 var supportedStreamingServices; // = ["webradio"];
+var scrobbleThresholdSong = 0.5;  // as fraction of the song duration
+var scrobbleThresholdStream = 60000; // in milliseconds, so this default is 60s
 
 // Settings for splitting composite titles (as used for many webradio streams)
 var compositeTitle =
@@ -41,17 +43,17 @@ function ControllerLastFM(context)
     self.apiResponse = null;
     self.lfm = null;
 	self.previousScrobble = 
-		{	artist: '',
-			title: '',
-			scrobbleTime: 0
-		};
-	self.scrobbleData =
+    {	artist: '',
+        title: '',
+        scrobbleTime: 0
+    };
+    self.scrobbleData =
 	{
 		artist: '',
 		title: '',
         album: '',
         duration: 0
-        };
+    };
 
     self.scrobblableTrack = false;
 	
@@ -104,12 +106,12 @@ ControllerLastFM.prototype.onStart = function() {
         self.logger.info('[LastFM] supported song services: ' + JSON.stringify(supportedSongServices));
         self.logger.info('[LastFM] supported streaming services: ' + JSON.stringify(supportedStreamingServices));
     }
-
     self.logger.info('[LastFM] scrobbler initiated!');
     self.logger.info('[LastFM] extended logging: ' + self.config.get('enable_debug_logging'));
     self.logger.info('[LastFM] try scrobble stream/radio plays: ' + self.config.get('scrobbleFromStream'));
     self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
 
+    self.updateServicesSettings();
     self.initLastFMSession();
 
     // start monitoring the Volumio state to check what song is playing and scrobble it:
@@ -627,7 +629,8 @@ ControllerLastFM.prototype.updateScrobbleSettings = function (data)
 	self.getConf(this.configFile);
 	
     self.updateCompositeTitleSettings(data['titleSeparator'], data['artistFirst']);
-	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved scrobble settings.");
+    self.updateServicesSettings();
+	self.commandRouter.pushToastMessage('success', "Saved settings", "Applied and saved new scrobble settings.");
 
 	return defer.promise;
 };
@@ -665,6 +668,32 @@ ControllerLastFM.prototype.updateCompositeTitleSettings = function (titleSeparat
 	if (self.config.get('enable_debug_logging'))
             self.logger.info('[LastFM] Updated composite title settings to: ' + JSON.stringify(compositeTitle));
 
+	return libQ.resolve();
+};
+
+ControllerLastFM.prototype.updateServicesSettings = function ()
+{
+	var self = this;
+    
+	// self.config.get('pushToastOnScrobble');
+	// ;
+
+    supportedSongServices = self.config.get('supportedSongServices').split(',');
+    supportedSongServices = supportedSongServices.map(function(value) { return value.trim(); }); // trim white spaces
+    if (self.config.get('scrobbleFromStream')) {
+        supportedStreamingServices = self.config.get('supportedStreamingServices').split(',');
+        supportedStreamingServices = supportedStreamingServices.map(function(value) { return value.trim(); }); // trim white spaces
+    }
+    else supportedStreamingServices = ['none'];
+            
+    scrobbleThresholdSong = self.config.get('scrobbleThreshold')*10;  // multiplier for song duration that also performs conversion from s to ms
+    scrobbleThresholdStream = self.config.get('streamScrobbleThreshold') * 1000;  // convert from s to ms
+    
+    if (self.config.get('enable_debug_logging')) {
+        self.logger.info('[LastFM] supported song services: ' + JSON.stringify(supportedSongServices));
+        self.logger.info('[LastFM] supported streaming services: ' + JSON.stringify(supportedStreamingServices));
+        self.logger.info('[LastFM] Threshold values. Song: ' + scrobbleThresholdSong + ', stream: ' + scrobbleThresholdStream);
+   }
 	return libQ.resolve();
 };
 
