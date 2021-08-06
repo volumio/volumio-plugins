@@ -24,7 +24,7 @@ function msSurfaceDial(context) {
 	this.loggerLabel = 'msSurfaceDial';
 	this.eventStream = null;
 	this.dialPressed = false;
-	this.dialValue = 0; // debug purpose only
+	this.dialValue = 0; // accumulate turn clicks for fast turning.
 
     this.volChangeRequested = false;
     this.volChanged = false;
@@ -381,6 +381,7 @@ msSurfaceDial.prototype.openEventStream = function(obj) {
                 if (self.retryOpenEventTimer) {
                     clearInterval(self.retryOpenEventTimer);
                     self.retryOpenEventTimer = null;
+                    self.dialValue = 0;
                 }
                 self.eventStream.on('data', (chunk) => {
                     self.logger.debug(`${self.loggerLabel} ${chunk.length} bytes read`);
@@ -461,6 +462,15 @@ msSurfaceDial.prototype.closeEventStream = function() {
     }
 }
 
+msSurfaceDial.prototype.changeVol = function() {
+    this.volChanged = false;
+    if (this.dialValue > 0)
+        this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume', this.dialValue);
+    else
+        this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume', Math.abs(this.dialValue));
+    this.dialValue = 0; // reset
+}
+
 msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
     // 16-byte Structure
     /*  
@@ -533,37 +543,34 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
                 case -1:
                     dialActionStr = "CounterClockWise Turn"
                     if (evCode == 7) {
+                        if (this.dialValue > 0)
+                            this.dialValue = 0; // changing direction
                         this.dialValue -= 1;
                         if (this.volChangeRequested) {
-                            if (this.volChanged) {
-                                this.volChanged = false;
-                                this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
-                            }
+                            if (this.volChanged)
+                                this.changeVol();
                             else
-                                this.logger.error(`${this.loggerLabel} Do not request decreaseDeviceVolume - waiting for last request to complete.`);
+                                this.logger.warn(`${this.loggerLabel} Do not request decreaseDeviceVolume ${this.dialValue} - waiting for last request to complete.`); 
                         }
                         else {
-                            this.volChanged = false;
-                            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume');
-                            
+                            this.changeVol();
                         }
                     }
                     break;
                 case 1:
                     dialActionStr = "ClockWise Turn"
                     if (evCode == 7) {
+                        if (this.dialValue < 0)
+                            this.dialValue = 0; // changing direction
                         this.dialValue += 1;
                         if (this.volChangeRequested) {
-                            if (this.volChanged) {
-                                this.volChanged = false;
-                                this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
-                            }
+                            if (this.volChanged)
+                                this.changeVol();
                             else
-                                this.logger.error(`${this.loggerLabel} Do not request increaseDeviceVolume - waiting for last request to complete.`);
+                                this.logger.warn(`${this.loggerLabel} Do not request increaseDeviceVolume ${this.dialValue} - waiting for last request to complete.`);
                         }
                         else {
-                            this.volChanged = false;
-                            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume');
+                            this.changeVol();
                         }
                     }
                     break;
@@ -577,9 +584,6 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
             break;
        }
        this.logger.debug(`${this.loggerLabel} ${evDate.toLocaleString('en-US', {timeZone: 'Asia/Hong_Kong'})}: ${evTypeStr} ${evMsgStr}`);
-       if (evType == 1 || evType == 2) {
-		this.logger.debug(`${this.loggerLabel} Dial-Value: ${this.dialValue}`);
-       }
    }
 }
 
