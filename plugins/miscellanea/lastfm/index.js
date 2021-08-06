@@ -17,7 +17,7 @@ var os = require('os');
 
 var supportedSongServices; // = ["mpd", "airplay", "volspotconnect", "volspotconnect2", "spop", "radio_paradise", "80s80s"];
 var supportedStreamingServices; // = ["webradio"];
-var scrobbleThresholdSong = 50;  // as fraction of the song duration
+var scrobbleThresholdSong = 500;  // as fraction of the song duration
 var scrobbleThresholdStream = 60000; // in milliseconds, so this default is 60s
 
 // Settings for splitting composite titles (as used for many webradio streams)
@@ -109,7 +109,7 @@ ControllerLastFM.prototype.onStart = function() {
     self.initLastFMSession();
 
     // start monitoring the Volumio state to check what song is playing and scrobble it:
-    socket.on('pushState', function (state) { self.checkStateUpdate(state) });
+    socket.on('pushState', function (state) { self.checkStateUpdate(state); });
 	
 	return libQ.resolve();
 };
@@ -550,7 +550,7 @@ ControllerLastFM.prototype.fetchArtwork = function(mbid)
 	return defer.promise;
 };
 
-ControllerLastFM.prototype.stopAndStartTimer = function(timerLength, state, scrobbleThresholdInMilliseconds)
+ControllerLastFM.prototype.startScrobbleTimer = function(timerLength, state)
 {
 	var self = this;
 	var defer = libQ.defer();
@@ -744,22 +744,22 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
         if (self.previousState.artist == state.artist && self.previousState.title == state.title) {
             // same track as in previous state
             // only need updating srobble settings if
-            // 1. restarted song
-            // 2. ?
+            // 1. restarted song a paused song
+            // 2. updated duration
             if(self.currentTimer.canContinue && self.timeToPlay > 0)
             {
                 if(self.config.get('enable_debug_logging'))
                     self.logger.info('[LastFM] Continuing scrobbling of paused song, starting new timer for the remainder of ' + self.timeToPlay + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
-                self.stopAndStartTimer(self.timeToPlay, state, scrobbleThresholdInMilliseconds);
+                self.startScrobbleTimer(self.timeToPlay, state);
             }					
             else if (state.duration != self.previousState.duration)
             {   // Duration has changed. Needed for example for airplay:
                 // Airplay fix, the duration is propagated at a later point in time
                 if (self.currentTimer.isActive){            
-                    var addition = (state.duration - self.previousState.duration) * (self.config.get('scrobbleThreshold') / 100) * 1000;
+                    var addition = (state.duration - self.previousState.duration) * scrobbleThresholdSong;
                     self.logger.info('[LastFM] updating timer, previous duration is obsolete; adding ' + addition + ' milliseconds.');
                     self.currentTimer.addMilliseconds(addition, function(scrobbler){							
-                            self.scrobble(state, self.config.get('scrobbleThreshold'), scrobbleThresholdInMilliseconds);
+                            self.scrobble();
                             self.currentTimer.stop();
                             self.timeToPlay = 0;
                         });	
@@ -770,7 +770,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                             self.updateNowPlaying();
                             if (self.config.get('enable_debug_logging'))
                                 self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
-                            self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                            self.startScrobbleTimer(scrobbleThresholdInMilliseconds, state);
                         }
                     }	
                 } 
@@ -788,7 +788,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                     self.updateNowPlaying();
                     if (self.config.get('enable_debug_logging'))
                         self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
-                    self.stopAndStartTimer(scrobbleThresholdInMilliseconds, state, scrobbleThresholdInMilliseconds);
+                    self.startScrobbleTimer(scrobbleThresholdInMilliseconds, state);
                 }
 
             }
@@ -830,9 +830,6 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
         if (state.title.indexOf(compositeTitle.separator) > -1) { // Check if the title can be split into artist and actual title:
             try {
                 var info = state.title.split(compositeTitle.separator);
-                // For the webradio I am listening to the title is the first part of string, artist the second:
-                //self.scrobbleData.artist = info[0].trim();
-                //self.scrobbleData.title = info[1].trim();
                 artist = info[compositeTitle.indexOfArtist].trim();
                 title = info[compositeTitle.indexOfTitle].trim();
                 self.logger.info('[LastFM] Split composite title into artist: ' + artist + ' and title: ' + title);
@@ -977,33 +974,7 @@ ControllerLastFM.prototype.scrobble = function ()
 	}
 		
 	if ( self.scrobblableTrack)
-	{	
-		//// Use the last.fm corrections data to check whether the supplied track has a correction to a canonical track
-		//self.lfm.getCorrection({
-		//	artist: self.scrobbleData.artist,
-  //          track: self.scrobbleData.title,
-		//	callback: function(result) {
-		//		if(result.success)
-		//		{							
-		//			// Try to correct the artist
-		//			if(result.correction.artist.name != undefined && result.correction.artist.name != '' && self.scrobbleData.artist != result.correction.artist.name)
-		//			{	
-		//				self.logger.info('[LastFM] corrected artist from: ' + self.scrobbleData.artist + ' to: ' + result.correction.artist.name);
-		//				self.scrobbleData.artist = result.correction.artist.name;
-		//			}
-							
-		//			// Try to correct the track title
-		//			if(result.correction.name != undefined && result.correction.name != '' && self.scrobbleData.title != result.correction.name)
-		//			{	
-		//				self.logger.info('[LastFM] corrected track title from: ' + self.scrobbleData.title + ' to: ' + result.correction.name);
-		//				self.scrobbleData.title = result.correction.name;
-		//			}
-		//		}
-		//		else
-		//			self.logger.info('[LastFM] request failed with error: ' + result.error);
-		//	}
-		//});
-				
+	{					
 		if(self.config.get('enable_debug_logging'))
 			self.logger.info('[LastFM] preparing to scrobble...');
 
