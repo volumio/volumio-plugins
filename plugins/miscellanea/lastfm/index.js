@@ -20,6 +20,8 @@ var supportedStreamingServices; // = ["webradio"];
 var scrobbleThresholdSong = 500;  // as fraction of the song duration
 var scrobbleThresholdStream = 60000; // in milliseconds, so this default is 60s
 
+var debugEnabled = false;
+
 // Settings for splitting composite titles (as used for many webradio streams)
 var compositeTitle =
         {
@@ -100,10 +102,11 @@ ControllerLastFM.prototype.onStart = function() {
 	//self.logger.info("Performing onStart action");
     self.addToBrowseSources();
 
+    debugEnabled = self.config.get('enable_debug_logging');
     self.logger.info('[LastFM] scrobbler initiated!');
-    self.logger.info('[LastFM] extended logging: ' + self.config.get('enable_debug_logging'));
+    self.logger.info('[LastFM] extended logging: ' + debugEnabled);
     self.logger.info('[LastFM] try scrobble stream/radio plays: ' + self.config.get('scrobbleFromStream'));
-    self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
+    self.currentTimer = new pTimer(self.context, debugEnabled);
 
     self.updateServicesSettings();
     self.initLastFMSession();
@@ -139,7 +142,7 @@ ControllerLastFM.prototype.getUIConfig = function() {
 	self.getConf(this.configFile);
 	self.logger.info("Loaded the previous config.");
 	
-	var thresholds = fs.readJsonSync((__dirname + '/options/thresholds.json'),  'utf8', {throws: false});
+	//var thresholds = fs.readJsonSync((__dirname + '/options/thresholds.json'),  'utf8', {throws: false});
 	
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_' + lang_code + '.json',
 		__dirname + '/i18n/strings_en.json',
@@ -188,7 +191,7 @@ ControllerLastFM.prototype.getUIConfig = function() {
 		uiconf.sections[1].content[7].value = self.config.get('artistFirst');
 		self.logger.info("2/3 settings loaded");
 		
-		uiconf.sections[2].content[0].value = self.config.get('enable_debug_logging');
+		uiconf.sections[2].content[0].value = debugEnabled;
 		self.logger.info("3/3 settings loaded");
 		
 		self.logger.info("Populated config screen.");
@@ -214,8 +217,8 @@ ControllerLastFM.prototype.setUIConfig = function(data) {
 
 ControllerLastFM.prototype.getConf = function(configFile) {
 	var self = this;
-	this.config = new (require('v-conf'))()
-	this.config.loadFile(configFile)
+	this.config = new (require('v-conf'))();
+	this.config.loadFile(configFile);
 	
 	return libQ.resolve();
 };
@@ -339,7 +342,7 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 					var call = self.fetchArtwork(jsonResp.similarartists.artist[art].mbid);
 					call.then(function(fanartData)
 					{
-						if(self.config.get('enable_debug_logging'))
+						if(debugEnabled)
 							self.logger.info('[LastFM] Artwork response: ' + JSON.stringify(fanartData));
 						if(fanartData.artistthumb[0].url != undefined || fanartData.artistthumb[0].url != '')
 							defer.resolve(fanartData.artistthumb[0].url);
@@ -467,7 +470,7 @@ ControllerLastFM.prototype.apiCall = function (method, predicate)
 				
 				self.logger.info('Method: ' + method + ' | query: ' + query);
 				
-				if(self.config.get('enable_debug_logging'))
+				if(debugEnabled)
 					self.logger.info('[LastFM] Trying to call api with method ' + method + ' and predicate: ' + JSON.stringify(predicate));
 				
 				http.get({
@@ -507,7 +510,7 @@ ControllerLastFM.prototype.checkURL = function(url)
 	{
 		var options = {method: 'HEAD', host: url, port: 80, path: '/'};
 		var req = http.request(options, function(r) {
-			if(self.config.get('enable_debug_logging'))
+			if(debugEnabled)
 				self.logger.info('[LastFM] URL check (' + url + ') returned code ' + r.statusCode);
 			defer.resolve(true);
 		});
@@ -568,13 +571,13 @@ ControllerLastFM.prototype.startScrobbleTimer = function(timerLength, state)
         trackStartTime = Math.floor(Date.now() / 1000); // time stamp is seconds
         self.currentTimer.stop();
 		self.currentTimer.start(timerLength, function(scrobbler){
-			if(self.config.get('enable_debug_logging'))
+			if(debugEnabled)
 				self.logger.info('[LastFM] scrobbling from restarted timer.');
             self.scrobble();
 			self.currentTimer.stop();
 			self.timeToPlay = 0;
 		});		
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] Timer started with time stamp '+ trackStartTime);
 		defer.resolve();
 	}
@@ -642,7 +645,8 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
 	var self = this;
 	var defer=libQ.defer();
 
-	self.config.set('enable_debug_logging', data['enable_debug_logging']);
+    debugEnabled = data['enable_debug_logging'];
+	self.config.set('enable_debug_logging', debugEnabled);
 	defer.resolve();
 	
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved debug settings.");
@@ -667,7 +671,7 @@ ControllerLastFM.prototype.updateCompositeTitleSettings = function (titleSeparat
             indexOfTitle: 0
         }
     }
-	if (self.config.get('enable_debug_logging'))
+	if (debugEnabled)
             self.logger.info('[LastFM] Updated composite title settings to: ' + JSON.stringify(compositeTitle));
 
 	return libQ.resolve();
@@ -691,7 +695,7 @@ ControllerLastFM.prototype.updateServicesSettings = function ()
     scrobbleThresholdSong = self.config.get('scrobbleThreshold')*10;  // multiplier for song duration that also performs conversion from s to ms
     scrobbleThresholdStream = self.config.get('streamScrobbleThreshold') * 1000;  // convert from s to ms
     
-    if (self.config.get('enable_debug_logging')) {
+    if (debugEnabled) {
         self.logger.info('[LastFM] supported song services: ' + JSON.stringify(supportedSongServices));
         self.logger.info('[LastFM] supported streaming services: ' + JSON.stringify(supportedStreamingServices));
         self.logger.info('[LastFM] Threshold values. Song: ' + scrobbleThresholdSong + ', stream: ' + scrobbleThresholdStream);
@@ -707,12 +711,12 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
     // Create the timer object if it does not exist yet
     if (!self.currentTimer) {
-        self.currentTimer = new pTimer(self.context, self.config.get('enable_debug_logging'));
-        if (self.config.get('enable_debug_logging'))
+        self.currentTimer = new pTimer(self.context, debugEnabled);
+        if (debugEnabled)
             self.logger.info('[LastFM] created new timer object');
     }
     else {
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] using existing timer');
     }
 
@@ -722,7 +726,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
             scrobbleThresholdInMilliseconds = state.duration * scrobbleThresholdSong;
         } else
         {
-            if (self.config.get('enable_debug_logging'))
+            if (debugEnabled)
                 self.logger.info('[LastFM] Undefined track duration or too short for scrobbling: ' + state.duration + ', ' + scrobbleThresholdInMilliseconds);
         }
     }
@@ -737,7 +741,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     //    init = ' | Initializing: true';
     //}
 
-    if (self.config.get('enable_debug_logging')) {
+    if (debugEnabled) {
         self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + self.previousState.title);
         if (self.currentTimer)
             self.logger.info('=================> [timer] is active: ' + self.currentTimer.isActive + ' | can continue: ' + self.currentTimer.canContinue + ' | timer started at: ' + self.currentTimer.timerStarted);
@@ -746,7 +750,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
     // Scrobble from all services, or at least try to -> improves forward compatibility
     if (state.status == 'play') {
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] Playback detected, evaluating parameters for scrobbling...');
 
         if (self.previousState.artist == state.artist && self.previousState.title == state.title) {
@@ -756,7 +760,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
             // 2. updated duration
             if(self.currentTimer.canContinue && self.timeToPlay > 0)
             {
-                if(self.config.get('enable_debug_logging'))
+                if(debugEnabled)
                     self.logger.info('[LastFM] Continuing scrobbling of paused song, starting new timer for the remainder of ' + self.timeToPlay + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
                 self.startScrobbleTimer(self.timeToPlay, state);
             }					
@@ -776,7 +780,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                         // should be the case if scrobbling from the active service has been enabled
                         if (self.formatScrobbleData(state)) { // enough metadata to be able to scrobble the track
                             self.updateNowPlaying();
-                            if (self.config.get('enable_debug_logging'))
+                            if (debugEnabled)
                                 self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
                             self.startScrobbleTimer(scrobbleThresholdInMilliseconds, state);
                         }
@@ -784,7 +788,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                 } 
             }
             else{
-                if (self.config.get('enable_debug_logging'))
+                if (debugEnabled)
                     self.logger.info('[LastFM] Same state as the one previously pushed. No need to do anything...');                                    
             }
        }
@@ -794,7 +798,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
                 // should be the case if scrobbling from the active service has been enabled
                 if (self.formatScrobbleData(state)) { // enough metadata to be able to scrobble the track
                     self.updateNowPlaying();
-                    if (self.config.get('enable_debug_logging'))
+                    if (debugEnabled)
                         self.logger.info('[LastFM] starting new timer for ' + scrobbleThresholdInMilliseconds + ' milliseconds [' + state.artist + ' - ' + state.title + '].');
                     self.startScrobbleTimer(scrobbleThresholdInMilliseconds, state);
                 }
@@ -803,7 +807,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
         }
     }
     else if (state.status == 'pause') {
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] Song has been pause, so also pausing timer.');
         if (self.currentTimer.isActive) {
             self.timeToPlay = self.currentTimer.pause();
@@ -811,7 +815,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     }
     else if (state.status == 'stop') {
         if (self.currentTimer.isActive) {
-            if (self.config.get('enable_debug_logging'))
+            if (debugEnabled)
                 self.logger.info('[LastFM] stopping timer, splayback has ended.');
             self.currentTimer.stop();
         }
@@ -880,7 +884,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
         (self.config.get('username') != '') &&
         (self.config.get('authToken') != '')
     ) {
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] trying to authenticate...');
 
         self.lfm = new lastfm({
@@ -892,7 +896,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
 
         self.lfm.getSessionKey(function (result) {
             if (result.success) {
-                if (self.config.get('enable_debug_logging'))
+                if (debugEnabled)
                     self.logger.info('[LastFM] authenticated successfully!');
             }
             else self.logger.info('[LastFM] Error: ' + result.error);
@@ -917,12 +921,12 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
 	var self = this;
 	var defer = libQ.defer();
 	
-	if(self.config.get('enable_debug_logging'))
+	if(debugEnabled)
 		self.logger.info('[LastFM] Updating now playing');
 		
     if (self.scrobblableTrack) { 
         self.updatingNowPlaying = true;
-        if (self.config.get('enable_debug_logging'))
+        if (debugEnabled)
             self.logger.info('[LastFM] authenticated successfully!');
 
         // try getting track info
@@ -960,7 +964,7 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
                 if (!result.success)
                     console.log("in callback, finished: ", result);
                 else {
-                    if (self.config.get('enable_debug_logging'))
+                    if (debugEnabled)
                         self.logger.info('[LastFM] updated "now playing" | artist: ' + self.scrobbleData.artist + ' | title: ' + self.scrobbleData.title);
                 }
                 self.updatingNowPlaying = false;
@@ -975,7 +979,7 @@ ControllerLastFM.prototype.scrobble = function ()
 	var self = this;
 	var defer = libQ.defer();
 	
-	if(self.config.get('enable_debug_logging'))
+	if(debugEnabled)
 	{
 		self.logger.info('[LastFM] checking previously scrobbled song...');
 		self.logger.info('[LastFM] previous scrobble: ' + JSON.stringify(self.previousScrobble));
@@ -983,7 +987,7 @@ ControllerLastFM.prototype.scrobble = function ()
 		
 	if ( self.scrobblableTrack)
 	{					
-		if(self.config.get('enable_debug_logging'))
+		if(debugEnabled)
 			self.logger.info('[LastFM] preparing to scrobble...');
 
 		self.lfm.scrobbleTrack({
@@ -998,14 +1002,14 @@ ControllerLastFM.prototype.scrobble = function ()
 
                     if (self.config.get('pushToastOnScrobble'))
                         self.commandRouter.pushToastMessage('success', 'Scrobble succesful', 'Scrobbled: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
-                    if (self.config.get('enable_debug_logging'))
+                    if (debugEnabled)
                         self.logger.info('[LastFM] Scrobble successful for: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
                 }
                 else {
                     console.log("in callback, finished: ", result);
                     if (self.config.get('pushToastOnScrobble'))
                         self.commandRouter.pushToastMessage('error', 'Scrobble failed', 'Tried to scrobbled: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
-                    if (self.config.get('enable_debug_logging'))
+                    if (debugEnabled)
                         self.logger.info('[LastFM] Scrobble failed for: ' + self.scrobbleData.artist + ' - ' + self.scrobbleData.title + ' (' + self.scrobbleData.album + ').');
                 }
 			}
