@@ -160,18 +160,26 @@ ControllerLastFM.prototype.getUIConfig = function() {
 		
 		// Scrobble settings
 		uiconf.sections[1].content[0].value = self.config.get('supportedSongServices');
-		for (var n = 0; n < thresholds.percentages.length; n++){
-			self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
-				value: thresholds.percentages[n].perc,
-				label: thresholds.percentages[n].desc
-			});
-			
-			if(thresholds.percentages[n].perc == parseInt(self.config.get('scrobbleThreshold')))
+//		for (var n = 0; n < thresholds.percentages.length; n++){
+//			self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
+//				value: thresholds.percentages[n].perc,
+//				label: thresholds.percentages[n].desc
+//			});
+//			
+//			if(thresholds.percentages[n].perc == parseInt(self.config.get('scrobbleThreshold')))
+//			{
+//				uiconf.sections[1].content[1].value.value = thresholds.percentages[n].perc;
+//				uiconf.sections[1].content[1].value.label = thresholds.percentages[n].desc;
+//			}
+//		}
+		for (var n = 0; n < uiconf.sections[1].content[1].options.length; n++){			
+			if(uiconf.sections[1].content[1].options[n].value == parseInt(self.config.get('scrobbleThreshold')))
 			{
-				uiconf.sections[1].content[1].value.value = thresholds.percentages[n].perc;
-				uiconf.sections[1].content[1].value.label = thresholds.percentages[n].desc;
+				uiconf.sections[1].content[1].value.value = uiconf.sections[1].content[1].options[n].value;
+				uiconf.sections[1].content[1].value.label = uiconf.sections[1].content[1].options[n].label;
 			}
 		}
+        //uiconf.sections[1].content[1].value.value = parseInt(self.config.get('scrobbleThreshold'));
 		uiconf.sections[1].content[2].value = self.config.get('pushToastOnScrobble');
 		uiconf.sections[1].content[3].value = self.config.get('scrobbleFromStream');
 		uiconf.sections[1].content[4].value = self.config.get('supportedStreamingServices');
