@@ -108,13 +108,14 @@ ControllerLastFM.prototype.onStart = function() {
     self.logger.info('[LastFM] try scrobble stream/radio plays: ' + self.config.get('scrobbleFromStream'));
     self.currentTimer = new pTimer(self.context, debugEnabled);
 
-    self.updateServicesSettings();
-    self.initLastFMSession();
-
+    self.initScrobbleSettings();
+    self.initLastFMSession().then(result => self.logger.info('[LastFM] finished init: ' + result), error => self.logger.info('[LastFM] finished init with error: ' + error) );
+    self.logger.info('[LastFM] Left init routine');
+ 
 	self.logger.info('[LastFM] Socket already connected: ' + socket.connected);
      // start monitoring the Volumio state to check what song is playing and scrobble it:
     socket.on('pushState', function (state) { self.checkStateUpdate(state); });
-	self.logger.info('[LastFM] Now it should be: ' + socket.connected);
+	// self.logger.info('[LastFM] Now it should be: ' + socket.connected); // It's not! Takes a while...
     
 	return libQ.resolve();
 };
@@ -611,9 +612,7 @@ ControllerLastFM.prototype.updateCredentials = function (data)
     self.initLastFMSession();
     // To-Do: check that session has started properly...
     defer.resolve();
-	
-	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved authentication settings.");
-
+		
 	return defer.promise;
 };
 
@@ -632,12 +631,11 @@ ControllerLastFM.prototype.updateScrobbleSettings = function (data)
 	self.config.set('artistFirst', data['artistFirst']);
 	defer.resolve();
 	
-	this.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-	self.getConf(this.configFile);
+	//this.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
+	//self.getConf(this.configFile);
 	
+    self.updateServicesSettings(data);
     self.updateCompositeTitleSettings(data['titleSeparator'], data['artistFirst']);
-    self.updateServicesSettings();
-	//self.commandRouter.pushToastMessage('success', "Saved settings", "Applied and saved new scrobble settings.");
 
 	return defer.promise;
 };
@@ -681,23 +679,23 @@ ControllerLastFM.prototype.updateCompositeTitleSettings = function (titleSeparat
 	return libQ.resolve();
 };
 
-ControllerLastFM.prototype.updateServicesSettings = function ()
+ControllerLastFM.prototype.updateServicesSettings = function (data)
 {
 	var self = this;
     
-	// self.config.get('pushToastOnScrobble');
-	// ;
-
-    supportedSongServices = self.config.get('supportedSongServices').split(',');
+	// data['pushToastOnScrobble']);
+    //self.logger.info('[LastFM] Updating service settings: ' + JSON.stringify(data));
+    
+    supportedSongServices = data['supportedSongServices'].split(',');
     supportedSongServices = supportedSongServices.map(function(value) { return value.trim(); }); // trim white spaces
-    if (self.config.get('scrobbleFromStream')) {
-        supportedStreamingServices = self.config.get('supportedStreamingServices').split(',');
+    if (data['scrobbleFromStream']) {
+        supportedStreamingServices = data['supportedStreamingServices'].split(',');
         supportedStreamingServices = supportedStreamingServices.map(function(value) { return value.trim(); }); // trim white spaces
     }
     else supportedStreamingServices = ['none'];
-            
-    scrobbleThresholdSong = self.config.get('scrobbleThreshold')*10;  // multiplier for song duration that also performs conversion from s to ms
-    scrobbleThresholdStream = self.config.get('streamScrobbleThreshold') * 1000;  // convert from s to ms
+
+    scrobbleThresholdSong = data['scrobbleThreshold'].value*10;  // multiplier for song duration that also performs conversion from s to ms
+    scrobbleThresholdStream = data['streamScrobbleThreshold'] * 1000;  // convert from s to ms
     
     if (debugEnabled) {
         self.logger.info('[LastFM] supported song services: ' + JSON.stringify(supportedSongServices));
@@ -705,6 +703,22 @@ ControllerLastFM.prototype.updateServicesSettings = function ()
         self.logger.info('[LastFM] Threshold values. Song: ' + scrobbleThresholdSong + ', stream: ' + scrobbleThresholdStream);
    }
 	return libQ.resolve();
+};
+
+ControllerLastFM.prototype.initScrobbleSettings = function ()
+{
+	var self = this;
+
+    // get the config settings in a suitable format:
+    const data = {
+        'supportedSongServices' : self.config.get('supportedSongServices'),
+        'scrobbleThreshold' : { 'value' : self.config.get('scrobbleThreshold') },
+        'pushToastOnScrobble' : self.config.get('pushToastOnScrobble'),
+        'scrobbleFromStream' :	self.config.get('scrobbleFromStream'),
+        'supportedStreamingServices' : self.config.get('supportedStreamingServices'),
+        'streamScrobbleThreshold' : self.config.get('streamScrobbleThreshold')
+    };
+    return self.updateServicesSettings(data);
 };
 
 // Scrobble Methods -------------------------------------------------------------------------------------
@@ -736,14 +750,6 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     }
     else if (supportedStreamingServices.indexOf(state.service) != -1)
         scrobbleThresholdInMilliseconds = scrobbleThresholdStream;
-
-    // Set initial previousState object
-    //var init = '';
-    //if (self.previousState == null) {
-    //    self.previousState = state;
-    //    //initialize = true;
-    //    init = ' | Initializing: true';
-    //}
 
     if (debugEnabled) {
         self.logger.info('--------------------------------------------------------------------// [LastFM] new state has been pushed; status: ' + state.status + ' | service: ' + state.service + ' | duration: ' + state.duration + ' | title: ' + state.title + ' | previous title: ' + self.previousState.title);
@@ -883,7 +889,6 @@ ControllerLastFM.prototype.initLastFMSession = function () {
     var self = this;
 	var defer = libQ.defer();
     
-    var authenticated = false;
     var msg = '';
     
     if (
@@ -904,17 +909,16 @@ ControllerLastFM.prototype.initLastFMSession = function () {
 
         self.lfm.getSessionKey(function (result) {
             if (result.success) {
-                authenticated = true;
-                defer.resolve();
                 self.commandRouter.pushToastMessage('success', 'LastFM connection', 'Authenticated successfully with LastFM.');
                 if (debugEnabled)
                     self.logger.info('[LastFM] authenticated successfully!');
+                defer.resolve('Authenticated successfully!');
             }
             else {
                 msg = 'Error: ' + result.error;
                 self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
                 self.logger.info('[LastFM] ' + msg); 
-                defer.reject();
+                defer.reject(msg);
             }
         });
     }
@@ -931,7 +935,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
             msg += '  "authToken"';
         self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
         self.logger.info('[LastFM] ' + msg); 
-        defer.reject();
+        defer.reject(msg);
     }
     return defer.promise;
 };
@@ -947,8 +951,6 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
 		
     if (self.scrobblableTrack) { 
         self.updatingNowPlaying = true;
-        if (debugEnabled)
-            self.logger.info('[LastFM] authenticated successfully!');
 
         // try getting track info
         self.lfm.getTrackInfo({
