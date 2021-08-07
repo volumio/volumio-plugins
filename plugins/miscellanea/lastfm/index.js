@@ -113,7 +113,8 @@ ControllerLastFM.prototype.onStart = function() {
 
     // start monitoring the Volumio state to check what song is playing and scrobble it:
     socket.on('pushState', function (state) { self.checkStateUpdate(state); });
-	
+	//self.logger.info('[LastFM] listening to events: ' + socket.eventNames());
+    
 	return libQ.resolve();
 };
 
@@ -877,7 +878,11 @@ ControllerLastFM.prototype.formatScrobbleData = function (state)
 
 ControllerLastFM.prototype.initLastFMSession = function () {
     var self = this;
-
+	var defer = libQ.defer();
+    
+    var authenticated = false;
+    var msg = '';
+    
     if (
         (self.config.get('API_KEY') != '') &&
         (self.config.get('API_SECRET') != '') &&
@@ -896,23 +901,33 @@ ControllerLastFM.prototype.initLastFMSession = function () {
 
         self.lfm.getSessionKey(function (result) {
             if (result.success) {
+                authenticated = true;
+                self.commandRouter.pushToastMessage('success', 'LastFM connection', 'Authenticated successfully with LastFM.');
                 if (debugEnabled)
                     self.logger.info('[LastFM] authenticated successfully!');
             }
-            else self.logger.info('[LastFM] Error: ' + result.error);
+            else {
+                msg = 'Error: ' + result.error;
+                self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
+                self.logger.info('[LastFM] ' + msg); 
+            }
         });
     }
     else {
         // Configuration errors
+        msg = 'Configuration parameters missing:';
         if (self.config.get('API_KEY') == '')
-            self.logger.info('[LastFM] configuration error; "API_KEY" is not set.');
+            msg += '  "API_KEY"';
         if (self.config.get('API_SECRET') == '')
-            self.logger.info('[LastFM] configuration error; "API_SECRET" is not set.');
+            msg += '  "API_SECRET"';
         if (self.config.get('username') == '')
-            self.logger.info('[LastFM] configuration error; "username" is not set.');
+            msg += '  "username"';
         if (self.config.get('authToken') == '')
-            self.logger.info('[LastFM] configuration error; "authToken" is not set.');
+            msg += '  "authToken"';
+        self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
+        self.logger.info('[LastFM] ' + msg); 
     }
+    return defer.promise;
 };
 
 
