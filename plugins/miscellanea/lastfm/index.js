@@ -111,9 +111,10 @@ ControllerLastFM.prototype.onStart = function() {
     self.updateServicesSettings();
     self.initLastFMSession();
 
-    // start monitoring the Volumio state to check what song is playing and scrobble it:
+	self.logger.info('[LastFM] Socket already connected: ' + socket.connected);
+     // start monitoring the Volumio state to check what song is playing and scrobble it:
     socket.on('pushState', function (state) { self.checkStateUpdate(state); });
-	//self.logger.info('[LastFM] listening to events: ' + socket.eventNames());
+	self.logger.info('[LastFM] Now it should be: ' + socket.connected);
     
 	return libQ.resolve();
 };
@@ -636,7 +637,7 @@ ControllerLastFM.prototype.updateScrobbleSettings = function (data)
 	
     self.updateCompositeTitleSettings(data['titleSeparator'], data['artistFirst']);
     self.updateServicesSettings();
-	self.commandRouter.pushToastMessage('success', "Saved settings", "Applied and saved new scrobble settings.");
+	//self.commandRouter.pushToastMessage('success', "Saved settings", "Applied and saved new scrobble settings.");
 
 	return defer.promise;
 };
@@ -649,7 +650,9 @@ ControllerLastFM.prototype.updateDebugSettings = function (data)
     debugEnabled = data['enable_debug_logging'];
 	self.config.set('enable_debug_logging', debugEnabled);
 	defer.resolve();
-	
+	// for debugging
+    self.logger.info('[LastFM] Socket connected? ' + socket.connected);
+
 	self.commandRouter.pushToastMessage('success', "Saved settings", "Successfully saved debug settings.");
 
 	return defer.promise;
@@ -902,6 +905,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
         self.lfm.getSessionKey(function (result) {
             if (result.success) {
                 authenticated = true;
+                defer.resolve();
                 self.commandRouter.pushToastMessage('success', 'LastFM connection', 'Authenticated successfully with LastFM.');
                 if (debugEnabled)
                     self.logger.info('[LastFM] authenticated successfully!');
@@ -910,6 +914,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
                 msg = 'Error: ' + result.error;
                 self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
                 self.logger.info('[LastFM] ' + msg); 
+                defer.reject();
             }
         });
     }
@@ -926,6 +931,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
             msg += '  "authToken"';
         self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
         self.logger.info('[LastFM] ' + msg); 
+        defer.reject();
     }
     return defer.promise;
 };
