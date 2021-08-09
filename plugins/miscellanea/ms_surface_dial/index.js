@@ -113,8 +113,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
         BTAvailOff: 3,
         BTOnPaired: 4,
         BTOnNotPaired: 5,
-        PairedConnected: 6,
-        PairedNotConnected: 7
     };
 
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -134,8 +132,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
                         uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
                         uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
                         uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
-                        uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
-                        uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
                     }
                     else {
                         if (!self.btSurfaceDial.btAdapterTurnedOn) {
@@ -146,8 +142,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
                             uiconf.sections[0].content[contentIdx.BTAvailOff].value = true; // BT Avail and Off
                             uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
                             uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
-                            uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
-                            uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
                         }
                         else {
                             if (self.btSurfaceDial.surfaceDialPaired) {
@@ -159,8 +153,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
                                     uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
                                     uiconf.sections[0].content[contentIdx.BTOnPaired].value = true; // BT On and Paired
                                     uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
-                                    uiconf.sections[0].content[contentIdx.PairedConnected].value = true; // paired_connected
-                                    uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
                                 }
                                 else {
                                     /*  Paired, Not connected */
@@ -170,8 +162,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
                                     uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
                                     uiconf.sections[0].content[contentIdx.BTOnPaired].value = true; // BT On and Paired
                                     uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = false; // BT On and Not-Paired
-                                    uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
-                                    uiconf.sections[0].content[contentIdx.PairedNotConnected].value = true; // paired_not_connected
                                 }
                             }
                             else {
@@ -182,8 +172,6 @@ msSurfaceDial.prototype.getUIConfig = function() {
                                     uiconf.sections[0].content[contentIdx.BTAvailOff].value = false; // BT Avail and Off
                                     uiconf.sections[0].content[contentIdx.BTOnPaired].value = false; // BT On and Paired
                                     uiconf.sections[0].content[contentIdx.BTOnNotPaired].value = true; // BT On and Not-Paired
-                                    uiconf.sections[0].content[contentIdx.PairedConnected].value = false; // paired_connected
-                                    uiconf.sections[0].content[contentIdx.PairedNotConnected].value = false; // paired_not_connected
                             }       
                         }
                     }  

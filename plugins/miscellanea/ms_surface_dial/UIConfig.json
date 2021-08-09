@@ -44,18 +44,6 @@
           "hidden": true
         },
         {
-          "id": "sdial_paired_connected",
-          "label": "dummy",
-          "value": true,
-          "hidden": true
-        },
-        {
-          "id": "sdial_paired_not_connected",
-          "label": "dummy",
-          "value": true,
-          "hidden": true
-        },
-        {
           "id": "bt_on",
           "label": "TRANSLATE.SDIAL_ACTION.BT_POWERON",
           "description": "Turn on Bluetooth (Adapter Present)",
@@ -124,40 +112,10 @@
           }
         },
         {
-          "id": "sdial_connect",
-          "label": "TRANSLATE.SDIAL_ACTION.CONNECT",
-          "description": "Connect to Surface Dial (Paired)",
-          "element": "button",
-          "visibleIf": {"field": "sdial_paired_not_connected", "value": true},
-          "onClick": {
-            "type": "controller",
-            "endpoint": "miscellanea/ms_surface_dial",
-            "method": "onRequestConnect"
-          }
-        },
-        {
-          "id": "sdial_disconnect",
-          "label": "TRANSLATE.SDIAL_ACTION.DISCONNECT",
-          "description": "Disconnect from Surface Dial (Paired)",
-          "element": "button",
-          "visibleIf": {"field": "sdial_paired_connected", "value": true},
-          "onClick": {
-            "type": "controller",
-            "endpoint": "miscellanea/ms_surface_dial",
-            "method": "onRequestDisconnect"
-          }
-        },
-        {
           "id": "sdial_remind_pairing_mode",
           "label": "Please make sure Surface Dial is in pairing-mode when Pairing button is clicked.",
           "value": "",
           "visibleIf": {"field": "sdial_bton_not_paired", "value": true}
-        },
-        {
-          "id": "sdial_remind_use_dial_to_reconnect",
-          "label": "Please click/turn Surface-Dial after tapping the Connect button.",
-          "value": "",
-          "visibleIf": {"field": "sdial_paired_not_connected", "value": true}
         }
       ]
     }
