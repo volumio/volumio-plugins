@@ -24,15 +24,25 @@ function msSurfaceDial(context) {
 	this.loggerLabel = 'msSurfaceDial';
 	this.eventStream = null;
 	this.dialPressed = false;
-	this.dialValue = 0; // accumulate turn clicks for fast turning.
-
-    this.volChangeRequested = false;
-    this.volChanged = false;
+    
+    // handle the situation where there is quick succession of
+    // dial events, and our implementation now is to defer
+    // sending commands to SHD until the last change is reflected
+    // by the volumioupdatevolume event
+    // accumulate the turn events in dialValuePending as a +/-N step value
+    // accumulate the press events in dialPressedPending as false vs true value
+    //  - for example, consecutive click negates each other.
+    this.resetVolumeActionValues();
 
     this.btSurfaceDial = new BluetoothSurfaceDial(this.logger, this.loggerLabel);
 }
 
-
+msSurfaceDial.prototype.resetVolumeActionValues = function() {
+    this.volChangeRequested = false;
+    this.volChanged = false;
+    this.dialPressedPending = false; // accumulate the number of pressed
+	this.dialValuePending = 0; // accumulate turn clicks for fast turning.
+}
 
 msSurfaceDial.prototype.onVolumioStart = function()
 {
@@ -40,7 +50,6 @@ msSurfaceDial.prototype.onVolumioStart = function()
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
-
     return libQ.resolve();
 }
 
@@ -60,10 +69,16 @@ msSurfaceDial.prototype.onStart = function() {
         this.logger.transports.level = "debug";
     }
     */
-
+    this.resetVolumeActionValues();
     this.commandRouter.addCallback('volumioupdatevolume', (updatedVolObj) => {
         this.logger.info(`${this.loggerLabel} volumioupdatevolume callback: ${JSON.stringify(updatedVolObj)}`);
-        this.volChanged = true;
+        this.volChangeRequested = false;
+        if (this.dialValuePending) {
+            this.changeVol();
+        }
+        else if (this.dialPressedPending) {
+            this.toggleMute();
+        }
     });
     this.setupBtSurfaceDialEventListeners();
     this.btSurfaceDial.init();
@@ -369,7 +384,7 @@ msSurfaceDial.prototype.openEventStream = function(obj) {
                 if (self.retryOpenEventTimer) {
                     clearInterval(self.retryOpenEventTimer);
                     self.retryOpenEventTimer = null;
-                    self.dialValue = 0;
+                    self.resetVolumeActionValues();
                 }
                 self.eventStream.on('data', (chunk) => {
                     self.logger.debug(`${self.loggerLabel} ${chunk.length} bytes read`);
@@ -436,7 +451,7 @@ msSurfaceDial.prototype.openEventStream = function(obj) {
     })
     .catch((err) => {
         self.commandRouter.pushToastMessage('error', 'Input Event', err.message);
-        this.logger.error(`${self.loggerLabel} Error looking up input-event-path. ${err}`);
+        self.logger.error(`${self.loggerLabel} Error looking up input-event-path. ${err}`);
     });
 }
 
@@ -451,12 +466,30 @@ msSurfaceDial.prototype.closeEventStream = function() {
 }
 
 msSurfaceDial.prototype.changeVol = function() {
-    this.volChanged = false;
-    if (this.dialValue > 0)
-        this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume', this.dialValue);
-    else
-        this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume', Math.abs(this.dialValue));
-    this.dialValue = 0; // reset
+    if (this.volChangeRequested) {
+        this.logger.warn(`${this.loggerLabel} changeVol requested while volChangeRequested is true; No action taken`);
+    }
+    else {
+        if (this.dialValuePending > 0)
+           this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'increaseDeviceVolume', this.dialValuePending);
+        else if (this.dialValuePending < 0)
+            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'decreaseDeviceVolume', Math.abs(this.dialValuePending));
+        if (this.volChangeRequested)
+            this.dialValuePending = 0; // reset pending value
+    }
+}
+
+msSurfaceDial.prototype.toggleMute = function() {
+    if (this.volChangeRequested) {
+        this.logger.warn(`msSurfaceDial.toggleMute requested whie volChangeRequested is true; No action taken`);
+    }
+    else {
+        if (this.dialPressedPending) {
+            this.volChangeRequested = this.commandRouter.executeOnPlugin('music_service', 'inputs', 'toggleDeviceMute');
+            if (this.volChangeRequested)
+                this.dialPressedPending = false;
+        }
+    }
 }
 
 msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
@@ -517,7 +550,16 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
                     keyActionStr = " Pressed"
                     if (evCode == 0x100) {
                         this.dialPressed = true;
-                        this.commandRouter.executeOnPlugin('music_service', 'inputs', 'toggleDeviceMute');
+                        this.dialPressedPending = !this.dialPressedPending;
+                        if (!this.dialPressedPending) {
+                            this.logger.warn(`${this.loggerLabel} Mute-action has been negated by consecutive pressed event`);
+                        }
+                        else {
+                            if (this.volChangeRequested)
+                                this.logger.warn(`${this.loggerLabel} Mute-action has been deferred because SHD is busy`);
+                            else
+                                this.toggleMute();
+                        }
                     }
                     break;
             }
@@ -531,35 +573,25 @@ msSurfaceDial.prototype.handleInputEvent = function(streamBuf) {
                 case -1:
                     dialActionStr = "CounterClockWise Turn"
                     if (evCode == 7) {
-                        if (this.dialValue > 0)
-                            this.dialValue = 0; // changing direction
-                        this.dialValue -= 1;
-                        if (this.volChangeRequested) {
-                            if (this.volChanged)
-                                this.changeVol();
-                            else
-                                this.logger.warn(`${this.loggerLabel} Do not request decreaseDeviceVolume ${this.dialValue} - waiting for last request to complete.`); 
-                        }
-                        else {
+                        if (this.dialValuePending > 0)
+                            this.dialValuePending = 0; // changing direction
+                        this.dialValuePending -= 1;
+                        if (this.volChangeRequested)
+                            this.logger.warn(`${this.loggerLabel} Do not request decreaseDeviceVolume ${this.dialValuePending} - waiting for last request to complete.`); 
+                        else
                             this.changeVol();
-                        }
                     }
                     break;
                 case 1:
                     dialActionStr = "ClockWise Turn"
                     if (evCode == 7) {
-                        if (this.dialValue < 0)
-                            this.dialValue = 0; // changing direction
-                        this.dialValue += 1;
-                        if (this.volChangeRequested) {
-                            if (this.volChanged)
-                                this.changeVol();
-                            else
-                                this.logger.warn(`${this.loggerLabel} Do not request increaseDeviceVolume ${this.dialValue} - waiting for last request to complete.`);
-                        }
-                        else {
+                        if (this.dialValuePending < 0)
+                            this.dialValuePending = 0; // changing direction
+                        this.dialValuePending += 1;
+                        if (this.volChangeRequested)
+                            this.logger.warn(`${this.loggerLabel} Do not request increaseDeviceVolume ${this.dialValuePending} - waiting for last request to complete.`);
+                        else
                             this.changeVol();
-                        }
                     }
                     break;
             }
