@@ -7,20 +7,20 @@ August 21th 2021
 This plugin is designed to apply different type of Dsp on Volumio using [CamillaDsp](https://github.com/HEnquist/camilladsp)
 
 
-Provide
+Provides
 - A 15 bands graphic equalizer
 - Or a 2x15 bands graphic equalizer
-- Or a Parametric eequalizer with :
+- Or a Parametric equalizer with :
     - Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch)
-    - Scope for each band (L, R, L+R)
+    - Equalizer scope for each band (L, R, L+R)
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
-    - import for local EQ file (must be in /data/INTERNAM/FusionDsp/peq/)
+    - import for local EQ file (must be in /data/INTERNAL/FusionDsp/peq/)
 - 3 preset
 - Or a convolution filters (FIR) with autoswitch samplerate for filters
     - DRC-FIR to create filter with an impulse
 
 For all 
-- Progressiv Loudness with threshold setting - sort of equal loudness curve
+- Progressive Loudness effect with threshold setting - sort of equal loudness curve
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
@@ -29,8 +29,7 @@ For all
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
 
-For PEQ equalizer, while importing file 
-You can add or replace EQ while importing.
+For PEQ equalizer, while importing file, you can add or replace values to EQ the setting.
 - Select the file for left channel
 - choose the scope L
 - Choose the mode REPLACE
