@@ -2,7 +2,6 @@
 
 var config = new (require('v-conf'))();
 var crypto = require('crypto');
-var currentMac = '';
 var exec = require('child_process').exec;
 var fs = require('fs-extra');
 var http = require('http');
@@ -10,7 +9,6 @@ var io = require('socket.io-client');
 var pTimer = require('./pausableTimer');
 var socket = io.connect('http://localhost:3000');
 var lastfm = require("simple-lastfm");
-var libNet = require('net');
 var libQ = require('kew');
 var net = require('net');
 var os = require('os');
@@ -166,18 +164,7 @@ ControllerLastFM.prototype.getUIConfig = function() {
 		
 		// Scrobble settings
 		uiconf.sections[1].content[0].value = self.config.get('supportedSongServices');
-//		for (var n = 0; n < thresholds.percentages.length; n++){
-//			self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
-//				value: thresholds.percentages[n].perc,
-//				label: thresholds.percentages[n].desc
-//			});
-//			
-//			if(thresholds.percentages[n].perc == parseInt(self.config.get('scrobbleThreshold')))
-//			{
-//				uiconf.sections[1].content[1].value.value = thresholds.percentages[n].perc;
-//				uiconf.sections[1].content[1].value.label = thresholds.percentages[n].desc;
-//			}
-//		}
+
 		for (var n = 0; n < uiconf.sections[1].content[1].options.length; n++){			
 			if(uiconf.sections[1].content[1].options[n].value == parseInt(self.config.get('scrobbleThreshold')))
 			{
