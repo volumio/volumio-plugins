@@ -1,0 +1,152 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_power",
+      "element": "section",
+      "label": "TRANSLATE.SECTION_POWER_LABEL",
+      "description": "TRANSLATE.SECTION_POWER_DESC",
+      "icon": "fa-power-off",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/ir_blaster",
+        "method": "powerToggle"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.POWER_LABEL",
+        "data": [
+        ]
+      },
+      "content": [
+
+      ]
+    },
+    {
+      "id": "section_remoteSettings",
+      "element": "section",
+      "label": "TRANSLATE.SECTION_REMOTE_LABEL",
+      "description": "TRANSLATE.SECTION_REMOTE_DESC",
+      "icon": "fa-cog",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/ir_blaster",
+        "method": "updateRemoteSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "gpio_pin",
+          "remotename",
+		  "useScript"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpio_pin",
+          "type": "text",
+          "element": "input",
+          "label": "GPIO_PIN",
+          "doc": "TRANSLATE.GPIO_PIN_DOC",
+          "value": "12"
+        },
+        {
+          "id": "remotename",
+          "element": "select",
+          "label": "TRANSLATE.REMOTENAME_LABEL",
+          "doc": "TRANSLATE.REMOTENAME_DOC",
+          "value": {},
+          "options": []
+        },
+        {
+          "id": "useScript",
+          "element": "switch",
+          "label": "TRANSLATE.USESCRIPT_LABEL",
+          "doc": "TRANSLATE.USESCRIPT_DOC",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "section_volumeSettings",
+      "element": "section",
+      "label": "TRANSLATE.SECTION_VOLUME_LABEL",
+      "description": "TRANSLATE.SECTION_VOLUME_DESC",
+      "icon": "fa-volume-up",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/ir_blaster",
+        "method": "updateVolumeSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "vol_min",
+          "vol_max",
+          "vol_cur",
+          "map_to_100"
+        ]
+      },
+      "content": [
+        {
+          "id": "vol_min",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.VOL_MIN_LABEL",
+          "doc": "TRANSLATE.VOL_MIN_DOC",
+          "value": "0"
+        },
+        {
+          "id": "vol_max",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.VOL_MAX_LABEL",
+          "doc": "TRANSLATE.VOL_MAX_DOC",
+          "value": "20"
+        },
+        {
+          "id": "vol_cur",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.VOL_CUR_LABEL",
+          "doc": "TRANSLATE.VOL_CUR_DOC",
+          "value": "10"
+        },
+        {
+          "id": "map_to_100",
+          "element": "switch",
+          "label": "TRANSLATE.VOL_MAP_LABEL",
+          "doc": "TRANSLATE.VOL_MAP_DOC",
+          "value": false
+        }
+      ]
+    },
+	{
+      "id": "section_import",
+      "element": "section",
+      "label": "TRANSLATE.SECTION_IMPORT_LABEL",
+      "description": "TRANSLATE.SECTION_IMPORT_DESC",
+      "icon": "fa-cog",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/ir_blaster",
+        "method": "importRemoteDefinitions"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.IMPORT_LABEL",
+        "data": [
+        ]
+      },
+      "content": [
+		{
+		  "id":"remotelink",
+		  "element": "button",
+		  "label": "TRANSLATE.LIRC_LABEL",
+		  "doc": "TRANSLATE.LIRC_DOC",
+		  "onClick": {"type":"openUrl", "url":"http://lirc-remotes.sourceforge.net/remotes-table.html"}  
+		}				  
+      ]
+    }
+  ]
+}

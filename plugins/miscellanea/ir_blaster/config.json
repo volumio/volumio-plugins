@@ -1,0 +1,26 @@
+{
+  "gpio_pin": {
+    "type": "string",
+    "value": 12
+  },
+	"remotename": {
+		"type": "string",
+		"value": "CamAudioOne"
+		},
+  "vol_max": {
+    "type": "string",
+    "value": 20
+  },
+  "vol_min": {
+    "type": "string",
+    "value": 0
+  },
+  "vol_cur": {
+    "type": "string",
+    "value": 8
+  },
+	"map_to_100": {
+		"type": "boolean",
+		"value": false
+		}
+}

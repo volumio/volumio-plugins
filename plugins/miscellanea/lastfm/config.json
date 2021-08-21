@@ -21,7 +21,7 @@
   },
   "supportedSongServices": {
     "type": "string",
-    "value": "mpd,airplay,volspotconnect,volspotconnect2,spop"
+    "value": "mpd,airplay_emulation,volspotconnect,volspotconnect2,spop"
   },  
   "scrobbleThreshold": {
     "type": "int",
@@ -42,6 +42,14 @@
   "streamScrobbleThreshold": {
     "type": "string",
     "value": "120"
+  },
+  "titleSeparator": {
+    "type": "string",
+    "value": " - "
+  },
+  "artistFirst": {
+    "type": "boolean",
+    "value": true
   },
   "enable_debug_logging": {
     "type": "boolean",
