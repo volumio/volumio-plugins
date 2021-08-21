@@ -1,4 +1,4 @@
-August 02nd 2021
+August 21th 2021
 
 
 ##  For Volumio3
@@ -134,6 +134,13 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+August 21th 2021
+
+- remove toast message when volume level changes
+- fix config at first start for EQ15
+- alsa contrib - copy plugin -> empty plugin
+- Camilla config   chunksize: 8192->  chunksize: 4096
 
 August 2nd 2021
 

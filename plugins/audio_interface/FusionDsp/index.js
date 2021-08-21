@@ -58,9 +58,7 @@ FusionDsp.prototype.onStart = function () {
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
   self.hwinfo();
-  if (self.config.get('loudness')) {
-    self.sendvolumelevel()
-  }
+
   /*-----------Experimental CamillaGui
 
   try {
@@ -76,7 +74,9 @@ FusionDsp.prototype.onStart = function () {
 */
   setTimeout(function () {
     self.createCamilladspfile()
-
+    if (self.config.get('loudness')) {
+      self.sendvolumelevel()
+    }
   }, 2000);
   defer.resolve();
   return defer.promise;
@@ -1443,7 +1443,7 @@ FusionDsp.prototype.sendCommandToCamilla = function () {
 
   connection.onmessage = (e) => {
     console.log(e.data)
-    self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
+    // self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
   }
 };
 
@@ -3051,7 +3051,7 @@ FusionDsp.prototype.usethispreset = function (data) {
   } else if (selectedsp == 'convfir') {
     //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
-  if (preset == "mypreset1" ||preset == "mypreset2" || preset == "mypreset3") {
+  if (preset == "mypreset1" || preset == "mypreset2" || preset == "mypreset3") {
     let state4preset = self.config.get('state4preset' + spreset)
 
     self.logger.info('state4preset ' + state4preset)
