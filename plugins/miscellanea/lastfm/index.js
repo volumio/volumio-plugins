@@ -815,7 +815,7 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     else if (state.status == 'stop') {
         if (self.currentTimer.isActive) {
             if (debugEnabled)
-                self.logger.info('[LastFM] stopping timer, splayback has ended.');
+                self.logger.info('[LastFM] stopping timer, playback has ended.');
             self.currentTimer.stop();
         }
         self.timeToPlay = 0;
@@ -907,7 +907,7 @@ ControllerLastFM.prototype.initLastFMSession = function () {
             else {
                 msg = 'Error: ' + result.error;
                 self.commandRouter.pushToastMessage('error', 'LastFM connection failed', msg);                    
-                self.logger.info('[LastFM] ' + msg); 
+                self.logger.error('[LastFM] ' + msg); 
                 defer.reject(msg);
             }
         });
@@ -963,7 +963,7 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
                     }
                 }
                 else
-                    self.logger.info('[LastFM] track info request failed with error: ' + result.error);
+                    self.logger.error('[LastFM] track info request failed with error: ' + result.error);
             }
         });
 
@@ -975,7 +975,7 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
             duration: self.scrobbleData.duration,
             callback: function (result) {
                 if (!result.success)
-                    console.log("in callback, finished: ", result);
+                    console.log('[LastFM] updated "now playing" failed: ', result);
                 else {
                     if (debugEnabled)
                         self.logger.info('[LastFM] updated "now playing" | artist: ' + self.scrobbleData.artist + ' | title: ' + self.scrobbleData.title);
