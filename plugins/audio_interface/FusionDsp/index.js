@@ -87,7 +87,7 @@ FusionDsp.prototype.onStop = function () {
   let defer = libQ.defer();
   self.logger.info("Stopping camilladsp service");
   defer.resolve();
-  return libQ.resolve();
+  return defer.promise;
 };
 
 FusionDsp.prototype.onRestart = function () {
@@ -1915,7 +1915,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      type: Highshelf\n'
         composedeq += '      freq: 3600\n'
         composedeq += '      slope: 12\n'
-        composedeq += '      gain: ' + loudnessGain * 0.65 + '\n'
+        composedeq += '      gain: ' + (loudnessGain * 0.65).toFixed(2) + '\n'
         composedeq += '\n'
         // composedeq += '  lowshelf:\n'
         // composedeq += '    type: Biquad\n'
@@ -1938,7 +1938,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      type: Peaking\n';
         composedeq += '      freq: 1000\n';
         composedeq += '      q: 0.9\n';
-        composedeq += '      gain: ' + loudnessGain * 0.18 + '\n';
+        composedeq += '      gain: ' + (loudnessGain * 0.18).toFixed(2) + '\n';
         composedeq += '' + '\n';
         composedeq += '  peakloudness2:\n';
         composedeq += '    type: Biquad' + '\n';
@@ -1946,7 +1946,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      type: Peaking\n';
         composedeq += '      freq: 13000\n';
         composedeq += '      q: 0.7\n';
-        composedeq += '      gain: ' + loudnessGain * 0.08 + '\n';
+        composedeq += '      gain: ' + (loudnessGain * 0.08).toFixed(2) + '\n';
         composedeq += '' + '\n';
         result += composedeq
         //-----loudness pipeline

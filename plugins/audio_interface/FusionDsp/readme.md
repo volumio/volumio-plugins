@@ -1,4 +1,4 @@
-August 21th 2021
+August 22th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+August 22th 2021
+
+- rounded values in loudness
+- fix config first start
 
 August 21th 2021
 

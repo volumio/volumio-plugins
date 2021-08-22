@@ -89,7 +89,7 @@
     },
     "nbreq": {
         "type": "number",
-        "value": 1
+        "value": 15
     },
     "p1nbreq": {
         "type": "number",
