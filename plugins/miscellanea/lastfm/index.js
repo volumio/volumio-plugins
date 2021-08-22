@@ -802,6 +802,8 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
 
             }
         }
+        // set state as the new previous state
+        self.previousState = state;
     }
     else if (state.status == 'pause') {
         if (debugEnabled)
@@ -820,7 +822,8 @@ ControllerLastFM.prototype.checkStateUpdate = function (state) {
     }
 
     // set state as the new previous state
-    self.previousState = state;
+    // DON'T do this here any more: only update when song is actually playing (because sometimes songs first appear as stopped before then starting...
+    //self.previousState = state;
     return defer.promise;
 };
 
