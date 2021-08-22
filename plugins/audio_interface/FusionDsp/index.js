@@ -85,6 +85,7 @@ FusionDsp.prototype.onStart = function () {
 FusionDsp.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
+  socket.off()
   self.logger.info("Stopping camilladsp service");
   defer.resolve();
   return defer.promise;

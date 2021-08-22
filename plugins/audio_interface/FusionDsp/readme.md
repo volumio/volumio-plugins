@@ -138,6 +138,7 @@ August 22th 2021
 
 - rounded values in loudness
 - fix config first start
+- socket off when disabling the plugin
 
 August 21th 2021
 
