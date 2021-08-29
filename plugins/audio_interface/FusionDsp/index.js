@@ -1069,8 +1069,9 @@ FusionDsp.prototype.getUIConfig = function () {
 
       //-----------section 4---------
       value = self.config.get('importeq');
+      var label=self.commandRouter.getI18nString('CHOOSE_HEADPHONE')
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', label);
 
 
       try {
@@ -1098,8 +1099,10 @@ FusionDsp.prototype.getUIConfig = function () {
 
       //----------section 5------------
       value = self.config.get('importlocal');
+      var label=self.commandRouter.getI18nString('CHOOSE_LOCALEQ')
+
       self.configManager.setUIConfigParam(uiconf, 'sections[5].content[0].value.value', value);
-      self.configManager.setUIConfigParam(uiconf, 'sections[5].content[0].value.label', value);
+      self.configManager.setUIConfigParam(uiconf, 'sections[5].content[0].value.label', label);
 
 
       var localEQfolder = '/data/INTERNAL/FusionDsp/peq'

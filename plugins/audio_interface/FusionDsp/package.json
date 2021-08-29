@@ -1,7 +1,7 @@
 {
   "name": "fusiondsp",
-  "version": "0.0.3-RC12",
-  "description": "A complete Dsp centre",
+  "version": "0.0.3-RC13",
+  "description": "A complete Dsp centre for Volumio3",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

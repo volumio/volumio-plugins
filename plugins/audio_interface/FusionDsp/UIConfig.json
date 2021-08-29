@@ -244,24 +244,12 @@
           "element": "select",
           "doc": "TRANSLATE.CHOOSE_EQ_DOC",
           "label": "TRANSLATE.CHOOSE_EQ",
-          "value": {
-            "value": "TRANSLATE.CHOOSE_HEADPHONE",
-            "label": "TRANSLATE.CHOOSE_HEADPHONE"
-          },
-          "attributes": [
-            {
-              "placeholder": "Choose your headphone profile"
-            },
-            {
-              "maxlength": 25
-            }
-          ],
-          "options": [
-            {
-              "value": "TRANSLATE.CHOOSE_HEADPHONE",
-              "label": "TRANSLATE.CHOOSE_HEADPHONE"
-            }
-          ]
+         
+        "value":{
+          "value": "",
+          "label":""
+        },
+          "options": []
         },
         {
           "id": "updatelist",

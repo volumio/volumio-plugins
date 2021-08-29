@@ -117,7 +117,7 @@
   "TOASTSUCCESSAPPLY": "Nouveau égaliseur appliqué avec succès",
   "TOOLS_CHOOSE_FILE": "Selectionnez un fichier",
   "USETHISPRESET_DOC": "Utiliser un preset",
-  "CHOOSE_LOCALEQ_DOC": "Choisissez un fichier texte qui contient les paramètres d'EQ. Les fichiers doivent être dans /data/INTERNAL/Parameq4Volumio/",
+  "CHOOSE_LOCALEQ_DOC": "Choisissez un fichier texte qui contient les paramètres d'EQ. Les fichiers doivent être dans /data/INTERNAL/FusionDsp/peq",
   "DESC_INSTALL_TOOLS": "Installer les outils pour faciliter les mesures.Merci d'attendre jusqu'a ce que cette page soit rafraîchie.",
   "ENABLE_EFFECT_DESC": "Activations des effets",
   "FILTER_FORMAT_MESS": "<h4>Filtre</h4><br>Choisir un fichier dans /INTERNAL/FusionDsp/filters<br>Formats supportés:<br><ul><li>text- 32/64 bits floats line (.txt) in rephase</li><li>S16_LE- 16 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 24 bits LPCM mono (.wav) in rePhase</li><li>S24_LE- 32 bits LPCM mono (.wav) in rePhase</li><li>FLOAT_LE- 32 bits floating point (.pcm)</li><li>FLOAT64_LE- 64 bits mono (.wav) from Acourate</li><li>FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase</li></ul><br>",
