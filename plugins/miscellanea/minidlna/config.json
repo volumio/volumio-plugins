@@ -134,5 +134,9 @@
   "wide_links": {
     "type": "boolean",
     "value": false
+  },
+  "enable_subtitles": {
+    "type": "boolean",
+    "value": true
   }
 }

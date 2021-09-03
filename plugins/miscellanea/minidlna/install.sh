@@ -12,17 +12,23 @@ minidlnad=$(whereis -b minidlnad | cut -d ' ' -f2)
 echo "Creating systemd unit /etc/systemd/system/minidlna.service"
 sudo echo "[Unit]
 Description=MiniDLNA lightweight DLNA/UPnP-AV server
-After=nss-lookup.target network.target remote-fs.target local-fs.target
+Documentation=man:minidlnad(1) man:minidlna.conf(5)
+After=local-fs.target remote-fs.target nss-lookup.target network.target
 
 [Service]
-Type=forking
+User=volumio
+Group=volumio
+
+Environment=CONFIGFILE=/data/minidlna.conf
+Environment=DAEMON_OPTS=
+EnvironmentFile=-/etc/default/minidlna
+
 RuntimeDirectory=minidlna
-PIDFile=/run/minidlna/minidlnad.pid
-ExecStart=$minidlnad -P /run/minidlna/minidlnad.pid -f /data/minidlna.conf
+PIDFile=/run/minidlna/minidlna.pid
+ExecStart=$minidlnad -f \$CONFIGFILE -P /run/minidlna/minidlna.pid \$DAEMON_OPTS
 
 [Install]
-WantedBy=multi-user.target
-" > /etc/systemd/system/minidlna.service
+WantedBy=multi-user.target" > /etc/systemd/system/minidlna.service
 sudo systemctl daemon-reload
 
 echo "Setting values for \"network_interface\" and \"model_number\" in /data/plugins/miscellanea/minidlna/config.json"
