@@ -218,6 +218,10 @@ ControllerLastFM.prototype.setConf = function(conf) {
 	return libQ.resolve();
 };
 
+//-------------------------------------------------------------------------
+// 'Music service' related functions
+//
+// required to add to add lastFM to browser
 ControllerLastFM.prototype.addToBrowseSources = function () {
     var data = { 
 		name: 'LastFM', 
@@ -230,6 +234,7 @@ ControllerLastFM.prototype.addToBrowseSources = function () {
     this.commandRouter.volumioAddToBrowseSources(data);
 };
 
+// required to handle lastFM browser events
 ControllerLastFM.prototype.handleBrowseUri = function (curUri) {
     var self = this;
     var response;
@@ -251,6 +256,7 @@ ControllerLastFM.prototype.handleBrowseUri = function (curUri) {
         });
 };
 
+// used to handle lastFM browser events
 ControllerLastFM.prototype.browseRoot = function(uri) {
   var self = this;
   self.fTree = [ 
@@ -294,13 +300,42 @@ ControllerLastFM.prototype.browseRoot = function(uri) {
   return defer.promise;
 };
 
-// Handle browse events----------------------------------------------------------------------------------
+ControllerLastFM.prototype.getAlbumArt = function (data, path, icon) {
+  if (this.albumArtPlugin == undefined) {
+    // initialization, skipped from second call
+    this.albumArtPlugin = this.commandRouter.pluginManager.getPlugin('miscellanea', 'albumart');
+  }
 
+  if (this.albumArtPlugin) { return this.albumArtPlugin.getAlbumArt(data, path, icon); } else {
+    return '/albumart';
+  }
+};
+
+// Handle browse events----------------------------------------------------------------------------------
+// 
+// Handle getting similar artist
 ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 	var self = this;
 	var defer = libQ.defer();
 	var artworkURL = 'https://lastfm-img2.akamaized.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
-  
+
+// This is on the git repository, but does not seem to be in the latest version that I can fetch by "npm update" right now
+// 
+//    self.lfm.getSimilarArtists({
+//        artist: self.scrobbleData.artist,
+//        limit: 10,
+//        callback: function (result) {
+//            if (result.success) {
+//                // Display results to start with
+//                self.logger.info('[LastFM] track info: ' + JSON.stringify(result));
+//            }
+//            else
+//                self.logger.error('[LastFM] track info request failed with error: ' + result.error);
+//        }
+//    });
+
+    var artworkSearchedArtist = self.getAlbumArt({artist: self.scrobbleData.artist}, undefined, 'users');
+
 	var call = self.apiCall('artist.getsimilar', self.scrobbleData);
 	call.then(function(response){
 		
@@ -346,7 +381,7 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 							artist: jsonResp.similarartists.artist[art].name,
 							mbid: jsonResp.similarartists.artist[art].mbid,
 							albumart: jsonResp.similarartists.artist[art].image[3]['#text'],
-							uri: "search/any/" + jsonResp.similarartists.artist[art].name,
+							uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
 						});
 					});
 				}
@@ -358,8 +393,8 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 						title: '',
 						artist: jsonResp.similarartists.artist[art].name,
 						mbid: jsonResp.similarartists.artist[art].mbid,
-						albumart: artworkURL,
-						uri: "search/any/" + jsonResp.similarartists.artist[art].name,
+						albumart: self.getAlbumArt({artist: jsonResp.similarartists.artist[art].name}, undefined, 'users'),
+						uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
 					});
 				}
 			}
@@ -378,6 +413,7 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 	return defer.promise;
 };
 
+// Handle getting similar track info
 ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 	var self = this;
 	var defer = libQ.defer();
@@ -386,7 +422,9 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 	call.then(function(response){
 		
 		var jsonResp = JSON.parse(response);
-		
+
+        //self.logger.info('[LastFM] items: ' + response);
+
 		var rootTree = 
 		{
 			navigation: {
@@ -406,15 +444,18 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 		if(jsonResp.similartracks.track.length < 1)
 			self.commandRouter.pushToastMessage('info', "No results", "The query yielded no results, no similar track could be found for " + self.scrobbleData.artist + ' - ' + self.scrobbleData.title);
 		
+        var artwork = '';
+        
 		for (var trk in jsonResp.similartracks.track)
 		{	
+            artwork = "/albumart?web="+encodeURIComponent(jsonResp.similartracks.track[trk].artist.name).trim() + "/" + encodeURIComponent(jsonResp.similartracks.track[trk].name).trim() +"/large&path=";
 			rootTree.navigation.lists[0].items.push({
 				service: 'lastfm',
 				type: 'track',
 				title: jsonResp.similartracks.track[trk].name,
 				artist: jsonResp.similartracks.track[trk].artist.name,
 				mbid: jsonResp.similartracks.track[trk].artist.mbid,
-				albumart: jsonResp.similartracks.track[trk].image[3]['#text'],
+				albumart: artwork,
 				uri: "search/any/" + jsonResp.similartracks.track[trk].name,
 			});
 		}
