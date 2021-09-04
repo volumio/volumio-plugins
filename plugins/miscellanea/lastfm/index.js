@@ -317,9 +317,33 @@ ControllerLastFM.prototype.getAlbumArt = function (data, path, icon) {
 ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 	var self = this;
 	var defer = libQ.defer();
-	var artworkURL = 'https://lastfm-img2.akamaized.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 
-// This is on the git repository, but does not seem to be in the latest version that I can fetch by "npm update" right now
+    var artworkSearchedArtist = self.getAlbumArt({artist: self.scrobbleData.artist}, undefined, 'users');
+
+    var rootTree = 
+    {
+        navigation: {
+            lists: [
+            {
+                availableListViews: [
+                    'grid', 'list'
+                ],
+                items: []
+            }],
+            prev: {
+                uri: 'lastfm'
+            },                 
+            info: { 
+                uri: "search/artist/" + self.scrobbleData.artist, 
+                title: 'Similar artists to ' + self.scrobbleData.artist, 
+                service: 'lastfm', 
+                type: 'artist', 
+                albumart: artworkSearchedArtist 
+            } 
+        }
+    };
+
+    // This is on the git repository, but does not seem to be in the latest version that I can fetch by "npm update" right now
 // 
 //    self.lfm.getSimilarArtists({
 //        artist: self.scrobbleData.artist,
@@ -334,82 +358,29 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
 //        }
 //    });
 
-    var artworkSearchedArtist = self.getAlbumArt({artist: self.scrobbleData.artist}, undefined, 'users');
-
 	var call = self.apiCall('artist.getsimilar', self.scrobbleData);
 	call.then(function(response){
 		
 		var jsonResp = JSON.parse(response);
-		var rootTree = 
-		{
-			navigation: {
-				lists: [
-				{
-					availableListViews: [
-						'grid', 'list',
-					],
-					items: [],
-				}],
-				prev: {
-					uri: 'lastfm',
-				},
-			},
-		};
-		
-		self.checkURL('donotenable')
-		.then(function(artworkProviderOnline)
-		{
-			for (var art in jsonResp.similarartists.artist)
-			{
-				if(artworkProviderOnline)
-				{
-					// This part is not working correctly just yet, might need some rework					
-					var call = self.fetchArtwork(jsonResp.similarartists.artist[art].mbid);
-					call.then(function(fanartData)
-					{
-						if(debugEnabled)
-							self.logger.info('[LastFM] Artwork response: ' + JSON.stringify(fanartData));
-						if(fanartData.artistthumb[0].url != undefined || fanartData.artistthumb[0].url != '')
-							defer.resolve(fanartData.artistthumb[0].url);
-					})
-					.then(function(applyArtwork)
-					{
-						rootTree.navigation.lists[0].items.push({
-							service: 'lastfm',
-							type: 'artistinfo',
-							title: '',
-							artist: jsonResp.similarartists.artist[art].name,
-							mbid: jsonResp.similarartists.artist[art].mbid,
-							albumart: jsonResp.similarartists.artist[art].image[3]['#text'],
-							uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
-						});
-					});
-				}
-				else
-				{
-					rootTree.navigation.lists[0].items.push({
-						service: 'lastfm',
-						type: 'artistinfo',
-						title: '',
-						artist: jsonResp.similarartists.artist[art].name,
-						mbid: jsonResp.similarartists.artist[art].mbid,
-						albumart: self.getAlbumArt({artist: jsonResp.similarartists.artist[art].name}, undefined, 'users'),
-						uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
-					});
-				}
-			}
-		})
-		.then(function(resolveInfo)
-		{
-			self.logger.info('[LastFM] items: ' + JSON.stringify(rootTree.navigation.lists[0].items));
-			defer.resolve(rootTree);
-		});
-	})
+        for (var art in jsonResp.similarartists.artist)
+        {            
+            rootTree.navigation.lists[0].items.push({
+                service: 'lastfm',
+                type: 'artistinfo',
+                title: '',
+                artist: jsonResp.similarartists.artist[art].name,
+                mbid: jsonResp.similarartists.artist[art].mbid,
+                albumart: self.getAlbumArt({artist: jsonResp.similarartists.artist[art].name}, undefined, 'users'),
+                uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
+            });            
+        }		
+        //self.logger.info('[LastFM] items: ' + JSON.stringify(rootTree.navigation.lists[0].items));
+        defer.resolve(rootTree);
+    })
 	.fail(function()
 	{
 		defer.reject(new Error('An error occurred while listing similar artists'));
-	});
-	
+	});	
 	return defer.promise;
 };
 
@@ -431,14 +402,14 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 				lists: [
 				{
 					availableListViews: [
-						'grid', 'list',
+						'grid', 'list'
 					],
-					items: [],
+					items: []
 				}],
 				prev: {
-					uri: 'lastfm',
-				},
-			},
+					uri: 'lastfm'
+				}
+			}
 		};
 		
 		if(jsonResp.similartracks.track.length < 1)
