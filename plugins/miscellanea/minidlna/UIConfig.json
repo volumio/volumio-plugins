@@ -45,7 +45,8 @@
                                       "loglevel_http",
                                       "loglevel_ssdp",
                                       "loglevel_tivo",
-                                      "wide_links"
+                                      "wide_links",
+                                      "enable_subtitles"
                                       ]
                                },
                 "content": [
@@ -764,6 +765,14 @@
                              "label": "TRANSLATE.MINIDLNA.ENABLE_WIDE_LINKS",
                              "visibleIf": {"field": "show_more", "value": true},
                              "value": false
+                             },
+                             {
+                             "id": "enable_subtitles",
+                             "element": "switch",
+                             "doc": "TRANSLATE.MINIDLNA.ENABLE_SUBTITLES_DOC",
+                             "label": "TRANSLATE.MINIDLNA.ENABLE_SUBTITLES",
+                             "visibleIf": {"field": "show_more", "value": true},
+                             "value": true
                              }
                            ]
                 },
@@ -773,13 +782,22 @@
                 "label": "TRANSLATE.MINIDLNA.FORCE_RESCAN",
                 "icon": "fa-refresh",
                 "content": [
-                              {
-                              "id": "rescan",
-                              "element": "button",
-                              "doc": "TRANSLATE.MINIDLNA.RESCAN_DOC",
-                              "label": "TRANSLATE.MINIDLNA.RESCAN",
-                              "onClick": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"forceRescan"}
-                              }
+                             {
+                               "id": "recreateDB",
+                               "element": "button",
+                               "doc": "TRANSLATE.MINIDLNA.RECREATE_DB_DOC",
+                               "label": "TRANSLATE.MINIDLNA.RECREATE_DB",
+                               "button_label": "TRANSLATE.MINIDLNA.START_BTN",
+                               "onClick": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"forceRescan", "data":"R"}
+                             },
+                             {
+                               "id": "updateDB",
+                               "element": "button",
+                               "doc": "TRANSLATE.MINIDLNA.UPDATE_DB_DOC",
+                               "label": "TRANSLATE.MINIDLNA.UPDATE_DB",
+                               "button_label": "TRANSLATE.MINIDLNA.START_BTN",
+                               "onClick": {"type":"controller", "endpoint":"miscellanea/minidlna", "method":"forceRescan", "data":"r"}
+                             }
                            ]
                 }
               ]
