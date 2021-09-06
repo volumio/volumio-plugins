@@ -366,9 +366,9 @@ ControllerLastFM.prototype.getSimilarArtists = function(uri) {
         {            
             rootTree.navigation.lists[0].items.push({
                 service: 'lastfm',
-                type: 'artistinfo',
-                title: '',
-                artist: jsonResp.similarartists.artist[art].name,
+                type: 'item-no-menu',
+                title: jsonResp.similarartists.artist[art].name,
+                artist: '',
                 mbid: jsonResp.similarartists.artist[art].mbid,
                 albumart: self.getAlbumArt({artist: jsonResp.similarartists.artist[art].name}, undefined, 'users'),
                 uri: "search/artist/" + jsonResp.similarartists.artist[art].name,
@@ -396,6 +396,8 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 
         //self.logger.info('[LastFM] items: ' + response);
 
+        var artworkSearchedTrack = self.getAlbumArt(self.scrobbleData, undefined, 'fa fa-music');
+
 		var rootTree = 
 		{
 			navigation: {
@@ -408,7 +410,14 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 				}],
 				prev: {
 					uri: 'lastfm'
-				}
+				},
+                info: { 
+                    uri: "search/any/" + self.scrobbleData.title, 
+                    title: 'Similar tracks to ' + self.scrobbleData.title + ' by ' + self.scrobbleData.artist, 
+                    service: 'lastfm', 
+                    type: 'album', 
+                    albumart: artworkSearchedTrack 
+                } 
 			}
 		};
 		
@@ -419,7 +428,8 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
         
 		for (var trk in jsonResp.similartracks.track)
 		{	
-            artwork = "/albumart?web="+encodeURIComponent(jsonResp.similartracks.track[trk].artist.name).trim() + "/" + encodeURIComponent(jsonResp.similartracks.track[trk].name).trim() +"/large&path=";
+//  Hmm, similarTracks does NOT return an album field; so this does not work so well:
+            artwork = self.getAlbumArt({artist: jsonResp.similartracks.track[trk].artist.name, album: jsonResp.similartracks.track[trk].album}, undefined, 'fa fa-music');
 			rootTree.navigation.lists[0].items.push({
 				service: 'lastfm',
 				type: 'track',
@@ -427,7 +437,7 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 				artist: jsonResp.similartracks.track[trk].artist.name,
 				mbid: jsonResp.similartracks.track[trk].artist.mbid,
 				albumart: artwork,
-				uri: "search/any/" + jsonResp.similartracks.track[trk].name,
+				uri: "search/any/" + jsonResp.similartracks.track[trk].name
 			});
 		}
 		
