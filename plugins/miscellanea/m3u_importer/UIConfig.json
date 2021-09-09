@@ -3,5 +3,57 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
+ {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
+      "icon": "fa-download",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "miscellanea/m3u_importer",
+        "method": "doImport",
+        "data": [
+          "m3u_dir",
+          "overwrite_existing"
+        ]
+      },
+      "saveButton": {
+        "label": "TRANSLATE.IMPORT",
+        "data": [
+          "m3u_dir",
+          "which"
+        ]
+      },
+      "content": [
+        {
+          "id": "m3u_dir",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.M3U_DIR_DOC",
+          "label": "TRANSLATE.M3U_DIR_LBL",
+          "attributes": [ {"placeholder": "/MNT/USB/Playlists"} ],
+          "value": ""
+        },
+        {
+          "id": "which",
+          "element": "select",
+          "value": {"value": "new", "label": "TRANSLATE.NEW"},
+	  "options": [
+	    {   
+	      "value": "new",
+	      "label": "TRANSLATE.NEW"
+	    },  
+	    {   
+	      "value": "all",
+	      "label": "TRANSLATE.ALL"
+	    },  
+	    {   
+	      "value": "ask",
+	      "label": "TRANSLATE.ASK"
+	    }
+	  ]   
+        }
+      ]
+    }
   ]
 }

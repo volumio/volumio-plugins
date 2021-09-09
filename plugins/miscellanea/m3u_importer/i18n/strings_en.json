@@ -1,4 +1,12 @@
 {
-  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
-  "SAVE":"Save"
+  "PLUGIN_CONFIGURATION":"Import M3U playlist",
+  "IMPORT":"Import",
+  "SAVE":"Save",
+  "OVERWRITE":"Overwrite existing playlists",
+  "M3U_DIR_DOC":"Full path to folder containing m3u playlists to import",
+  "M3U_DIR_LBL":"Playlist folder",
+  "NEW":"New playlists",
+  "ALL":"All playlists (overwriting existing)",
+  "ASK":"Ask for each playlist",
+  "WHICH":"Playlists to import"
 }
