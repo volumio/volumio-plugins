@@ -7,6 +7,7 @@
     "ERR_REMOVE_OVERLAY":"Error removing IR overlay: ",
     "ERR_GPIO_OCCUPIED":"The selected GPIO input is already in use.",
     "GENERIC_FAILED":"Failed: ",
+    "PLUGIN_CONFIGURATION":"IR Controller Configuration",
     "IR_CONFIGURATION":"IR Remote Configuration",
     "PROFILE_SELECTOR":"Select profile",
     "PROFILE_SELECTOR_DOC":"Select the appropriate configuration for your remote from the available profiles.<br /><br />User-specific configurations for remote controls can be stored in the \"/data/INTERNAL/ir_controller/configurations\" folder. For this purpose, a subfolder must be created in the aforementioned directory for each remote control, in which the LIRC files \"lircrc\" and \"lirc.conf\" are stored for the remote control. The name of the subfolder appears in the list of selectable remote controls. If this name is also used for one of the remote control configurations already supplied, the user's own configuration with the same name takes precedence.<br /><br />NOTE: Updating the plugin does not affect the user-defined configurations. However, when the plugin is uninstalled, the \"/data/INTERNAL/ir_controller\" directory is deleted along with all the subfolders and files it contains.",

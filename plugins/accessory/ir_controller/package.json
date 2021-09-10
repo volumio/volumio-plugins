@@ -1,6 +1,6 @@
 {
 	"name": "ir_controller",
-	"version": "1.4.2",
+	"version": "1.4.3",
 	"description": "Volumio IR Remote plugin",
 	"main": "index.js",
 	"scripts": {
