@@ -1,0 +1,39 @@
+{
+	"categories": [
+		{
+			"prettyName": "Music Services",
+			"name": "music_service",
+			"id": "cat1",
+			"description": "Plugins for Adding Music Sources to Volumio",
+			"plugins": []
+		},
+		{
+			"prettyName": "Miscellanea",
+			"name": "miscellanea",
+			"id": "cat2",
+			"description": "Things that cannot go in other categories",
+			"plugins": []
+		},
+		{
+			"prettyName": "System Tools",
+			"name": "system_controller",
+			"id": "cat3",
+			"description": "Volumio System Tools",
+			"plugins": []
+		},
+		{
+			"prettyName": "Accessories",
+			"name": "accessory",
+			"id": "cat3",
+			"description": "Plugins for Volumio Accessories",
+			"plugins": []
+		},
+		{
+			"prettyName": "user interface",
+			"name": "user_interface",
+			"id": "cat6",
+			"description": "",
+			"plugins": []
+		}
+	]
+}
