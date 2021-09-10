@@ -1,6 +1,6 @@
 {
   "name": "fusiondsp",
-  "version": "0.0.3-RC13",
+  "version": "0.0.3-RC14",
   "description": "A complete Dsp centre for Volumio3",
   "main": "index.js",
   "scripts": {
