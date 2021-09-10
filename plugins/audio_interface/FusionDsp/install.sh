@@ -74,7 +74,7 @@ echo "Detected cpu architecture as $cpu"
 if [ $cpu = "armv7l" ] #|| [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
 then
 cd /tmp
-wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.2/camilladsp-linux-armv7.tar.gz
+wget https://github.com/HEnquist/camilladsp/releases/download/v0.6.3/camilladsp-linux-armv7.tar.gz
 #wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
 sudo chown volumio camilladsp
@@ -90,7 +90,6 @@ then
 cd /tmp
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-amd64.tar.gz
 #wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.2/camilladsp-linux-amd64.tar.gz
-#wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
 sudo chown volumio camilladsp
 sudo chgrp volumio camilladsp
