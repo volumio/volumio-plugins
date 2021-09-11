@@ -14,7 +14,7 @@
         "method": "doImport",
         "data": [
           "m3u_dir",
-          "overwrite_existing"
+          "which"
         ]
       },
       "saveButton": {
@@ -38,20 +38,20 @@
           "id": "which",
           "element": "select",
           "value": {"value": "new", "label": "TRANSLATE.NEW"},
-	  "options": [
-	    {   
-	      "value": "new",
-	      "label": "TRANSLATE.NEW"
-	    },  
-	    {   
-	      "value": "all",
-	      "label": "TRANSLATE.ALL"
-	    },  
-	    {   
-	      "value": "ask",
-	      "label": "TRANSLATE.ASK"
-	    }
-	  ]   
+          "options": [
+            {   
+              "value": "new",
+              "label": "TRANSLATE.NEW"
+            },  
+            {   
+              "value": "all",
+              "label": "TRANSLATE.ALL"
+            },  
+            {   
+              "value": "ask",
+              "label": "TRANSLATE.ASK"
+            }
+          ]   
         }
       ]
     }
