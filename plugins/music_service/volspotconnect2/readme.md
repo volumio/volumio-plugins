@@ -1,4 +1,4 @@
-April 15th 2021
+September 14th 2021
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
 This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
@@ -60,6 +60,11 @@ A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+September 14th 2021
+
+- x86_64 for buster
+- volumio3 buster
 
 April 15th 2021
 
