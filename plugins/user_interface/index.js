@@ -57,7 +57,7 @@ remote_previous.prototype.truePrevious = function() {
        });
        socket.emit("play",{"value":data.position - 1});
      } else {
-     socket.emit("play",{"value":0});
+       socket.emit("play",{"value":0});
      }
      socket.off('pushState');
   });
