@@ -66,7 +66,7 @@
 		"wrappy": "^1.0.2",
 		"xml2js": "^0.4.19",
 		"xmlbuilder": "^9.0.4",
-		"xmlhttprequest-ssl": "^1.5.1",
+		"xmlhttprequest-ssl": "^1.6.2",
 		"yeast": "^0.1.2",
 		"ms": "^2.0.0",
 		"object-component": "^0.0.3",
