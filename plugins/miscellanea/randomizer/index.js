@@ -146,7 +146,7 @@ randomizer.prototype.randomAlbum = function() {
     socket.on('pushQueue', function(data) { if (data.length > 0) {
       socket.off('pushBrowseLibrary');
       socket.off('pushQueue');
-      socket.emit('play',{'value':0});
+      socket.emit('play');
     } } );
     defer.resolve();
     return libQ.resolve();
