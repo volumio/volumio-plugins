@@ -7,6 +7,7 @@
     "ERR_REMOVE_OVERLAY":"Fehler beim Entfernen des IR-Overlays: ",
     "ERR_GPIO_OCCUPIED":"Der ausgewählte GPIO-Eingang wird bereits benutzt.",
     "GENERIC_FAILED":"Fehlgeschlagen: ",
+    "PLUGIN_CONFIGURATION":"IR Controller Konfiguration",
     "IR_CONFIGURATION":"IR Remote Konfiguration",
     "PROFILE_SELECTOR":"Profil auswählen",
     "PROFILE_SELECTOR_DOC":"Wähle die geeignete Konfiguration für Deine Fernbedienung aus den vorhandenen Profilen aus.<br /><br />In dem Ordner \"/data/INTERNAL/ir_controller/configurations\" können benutzereigene Konfigurationen für Fernbedienungen hinterlegt werden. Hierzu ist im vorgenannten Verzeichnis für jede Fernbedienung ein Unterordner anzulegen, in dem die LIRC-Dateien \"lircrc\" und \"lirc.conf\" für die Fernbedenung gespeichert werden. Der Name des Unterordners erscheint dann in der Liste der auswählbaren Fernbedienungen. Wird dieser Name auch für eine der bereits mitgelieferten Fernbedienungskonfiguration verwendet, erhält die benutzereigene gleichnamige Konfiguration den Vorzug.<br /><br />HINWEIS: Ein Update des Plugins lässt die benutzereigenen Konfigurationen unberührt. Bei der Deinstallation des Plugins wird das Verzeichnis \"/data/INTERNAL/ir_controller\" jedoch mit allen darin enthaltenen Unterordnern und Dateien gelöscht.",
