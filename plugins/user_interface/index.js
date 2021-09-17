@@ -57,7 +57,7 @@ remote_previous.prototype.truePrevious = function() {
        });
        socket.emit("play",{"value":data.position - 1});
      } else {
-        self.commandRouter.pushToastMessage('error', self.getI18nString("ERROR_START_OF_QUEUE_TITLE"), self.getI18nString("ERROR_START_OF_QUEUE_MESSAGE"));
+     socket.emit("play",{"value":0});
      }
      socket.off('pushState');
   });
