@@ -1,0 +1,382 @@
+<div class="installResult success" style="display: none;">
+  <i class="fa fa-check-circle-o"></i>
+  <div>
+    <div class="title">
+    <% if (installAction == 'install') { %>
+      <%= i18n('ZIPI_APP_PLUGIN_INSTALL_SUCCESS') %>
+    <% } else { %>
+      <%= i18n('ZIPI_APP_PLUGIN_UPDATE_SUCCESS') %>
+    <% } %>
+    </div>
+    <div class="message"><%= i18n('ZIPI_APP_CLOSE_OR_INSTALL_ANOTHER') %></div>
+  </div>
+</div>
+
+<div class="installResult fail" style="display: none;">
+  <i class="fa fa-times-circle-o"></i>
+  <div>
+    <div class="title">
+    <% if (installAction == 'install') { %>
+      <%= i18n('ZIPI_APP_PLUGIN_INSTALL_FAILED') %>
+    <% } else { %>
+      <%= i18n('ZIPI_APP_PLUGIN_UPDATE_FAILED') %>
+    <% } %>
+    </div>
+    <div class="message"><%= i18n('ZIPI_APP_CHECK_LOGS_OR_RETRY') %></div>
+  </div>
+</div>
+
+<div id="installProgress">
+  <div class="message"></div>
+  <div class="progressbar"></div>
+</div>
+
+<div id="installLogWrapper">
+  <div class="clipboard"><i class="fa fa-clipboard"></i></div>
+  <div class="toast"><span></span></div>
+  <div id="installLog">
+    <div class="preVolumioInstall"></div>
+    <div class="volumioInstall"></div>
+    <div class="postVolumioInstall"></div>
+  </div>
+</div>
+
+<% if (installAction == 'install') { %>
+<div id="enablePluginDialog">
+  <h2><%= i18n('ZIPI_APP_PLUGIN_INSTALLED') %></h2>
+  <p><%= i18n('ZIPI_APP_PROMPT_ENABLE_PLUGIN', pluginInfo.prettyName) %></p>
+</div>
+<% } %>
+
+<div id="enablePluginFailedDialog">
+  <h2><%= i18n('ZIPI_APP_PLUGIN_START_FAILED') %></h2>
+  <p><%= i18n('ZIPI_APP_PLUGIN_START_FAILED_MSG', pluginInfo.prettyName) %></p>
+</div>
+
+<script>
+<% if (installAction == 'install') { %>
+  $('#enablePluginDialog').dialog({
+    dialogClass: 'enablePlugin',
+    autoOpen: false,
+    resizable: false,
+    height: "auto",
+    width: '600px',
+    modal: true,
+    buttons: [
+      {
+        text: '<%= i18n('ZIPI_APP_NO') %>',
+        click: function() {
+          $(this).dialog('close');
+          postInstallSuccess();
+        }
+      },
+      {
+        text: '<%= i18n('ZIPI_APP_YES') %>',
+        class: 'positive',
+        click: function() {
+          $(this).dialog('close');
+          postInstallSuccess({ enablePlugin: true });
+        }
+      }
+    ]
+  });
+<% } %>
+
+  $('#installLogWrapper .clipboard').on('click', () => {
+    // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
+    let copyClipboardByExec = (text) => {
+      return new Promise( (resolve, reject) => {
+        textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top="-100px";
+        textArea.style.left="-100px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            let success = document.execCommand('copy');
+            if (success) {
+              resolve();
+            }
+            else {
+              reject();
+            }
+        } catch (err) {
+            reject(err);
+        }
+        document.body.removeChild(textArea)
+      });
+    }
+
+    // Crude html to text
+    let html = $('#installLog').html();
+    let wip = html.replace(/<br\s*\/?>/mg, '\n'); // <br> to newline
+    let tmpEl = $('<div>').html(wip);
+    let wipText = tmpEl.prop('textContent');
+    let text = wipText.split('\n').map( t => t.trim() ).filter( t => t.length > 0 ).join('\n');
+    
+    copyClipboardByExec(text).then( () => {
+      $('#installLogWrapper .toast > span').html('<%= i18n('ZIPI_APP_COPIED_CLIPBOARD') %>');
+    })
+    .catch( err => {
+      $('#installLogWrapper .toast > span').html('<%= i18n('ZIPI_APP_COPY_CLIPBOARD_FAILED') %>');
+    })
+    .finally( () => {
+      $('#installLogWrapper .toast').fadeIn(100, () => {
+        setTimeout(() => {
+          $('#installLogWrapper .toast').fadeOut(400);
+        }, 1500);
+      })
+    });
+  });
+
+  $('#enablePluginFailedDialog').dialog({
+    dialogClass: 'enablePluginFailed',
+    autoOpen: false,
+    resizable: false,
+    height: "auto",
+    width: '600px',
+    modal: true,
+    buttons: [
+      {
+        text: '<%= i18n('ZIPI_APP_OK') %>',
+        class: 'positive',
+        click: function() {
+          $(this).dialog('close');
+        }
+      }
+    ]
+  });
+
+  $('#installProgress .progressbar').progressbar({ value: 0 });
+
+  // Send websocket to Volumio to install plugin
+  var socket = io.connect('<%- wsHost %>', { autoConnect: false });
+  var installStarted = false;
+
+  socket.on('connect', () => {
+    if (!installStarted) {
+      installStarted = true;
+      // Begin install
+      doInstall();
+    }
+  });
+
+  // Monitor Volumio plugin installation status through listening to
+  // websocket
+  socket.on('installPluginStatus', data => {
+    let { progress, message, advancedLog } = data;
+    if (progress > 0) {
+      $('#installProgress .progressbar').progressbar({ value: progress });
+    }
+    if (progress == 100) {
+      $('#installProgress .message').html('<%= i18n('ZIPI_APP_PLUGIN_INSTALL_SUCCESS') %>');
+    }
+    else {
+      $('#installProgress .message').html(message);
+    }
+    if (advancedLog) {
+      showInstallLogMessage(advancedLog, 'volumioInstall');
+    }
+  });
+
+  socket.on('zipiInstallPluginStatus', data => {
+    showInstallLogMessage(data.message, data.section, data.status);
+    if (data.status == 'error' && data.terminate) {
+      installFailed();
+      socket.disconnect();
+    }
+    else if (data.status == 'success') {
+      installSuccess();
+      socket.disconnect();
+    }
+  });
+
+  // Connect socket, which will begin installation.
+  socket.connect();
+
+  function doInstall() {
+  <% if (installAction == 'install') { %>
+    setStatusText('<%= i18n('ZIPI_APP_INSTALLING') %>', 'fa fa-spinner fa-spin fa-3x fa-fw');
+  <% } else { %>
+    setStatusText('<%= i18n('ZIPI_APP_UPDATING') %>', 'fa fa-spinner fa-spin fa-3x fa-fw');
+  <% } %>
+    $('#installProgress .message').html('<%= i18n('ZIPI_APP_PREPARE_INSTALL_FILE') %>');
+    $.ajax({
+      url: '/install/<%- sessionId %>/do',
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'get'
+    });
+  }
+
+  function installSuccess() {
+    setStatusText('');
+    setStepsBarActiveStep(4);
+    
+  <% if (installAction == 'install') { %>
+    openDialog('enablePluginDialog');
+  <% } else { %>
+    postInstallSuccess({ enablePlugin: <%- autoEnablePlugin %> });
+  <% } %>
+  }
+
+  function installFailed() {
+    setStatusText('');
+    $('#installProgress').addClass('fail');
+    $('.installResult.fail').show();
+    configureNavButton('primary', {
+      text: '<%= i18n('ZIPI_APP_RETRY') %>',
+      onClick: () => {
+        retryInstall();
+      }
+    });
+    configureNavButton('secondary', {
+      text: '<%= i18n('ZIPI_APP_START_OVER') %>',
+      onClick: () => {
+        $.ajax({
+          url: '/begin',
+          cache: false,
+          contentType: false,
+          processData: false,
+          type: 'get',
+          success: res => {
+            setView(res)
+          }
+        });
+      }
+    });
+  }
+
+  function retryInstall() {
+    $('#installProgress').removeClass('fail');
+    $('.installResult.fail').hide();
+    $('#nav .primary').prop('disabled', true);
+    $('#nav .secondary').prop('disabled', true);
+    socket.connect();
+    doInstall();
+  }
+
+  function postInstallSuccess(options = {}) {
+    let action;
+    if (options.enablePlugin) {
+      action = enablePlugin();
+    }
+    else {
+      action = Promise.resolve();
+    }
+
+    action.then( () => {
+      $('#installProgress').hide();
+      $('.installResult.success').show();
+
+      configureNavButton('primary', {
+        text: '<%= i18n('ZIPI_APP_INSTALL_ANOTHER') %>',
+        onClick: () => {
+          $.ajax({
+            url: '/begin',
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'get',
+            success: res => {
+              setView(res)
+            }
+          });
+        }
+      });
+
+      configureNavButton('secondary', { hidden: true });
+
+      endSession();
+    })
+  }
+
+  function enablePlugin() {
+    return new Promise( (resolve, reject) => {
+      setStatusText('');
+      showInstallLogMessage('[zipi] Enabling and starting plugin...', 'postVolumioInstall');
+      $.ajax({
+        url: '/install/<%- sessionId %>/enablePlugin',
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'get',
+        success: res => {
+          if (res.enabled) {
+            showInstallLogMessage('[zipi] Plugin enabled', 'postVolumioInstall', 'success');
+          }
+          else {
+            showInstallLogMessage('[zipi] Failed to enable plugin', 'postVolumioInstall', 'warn');
+          }
+          if (res.started) {
+            showInstallLogMessage('[zipi] Plugin started', 'postVolumioInstall', 'success');
+          }
+          else if (res.enabled) {
+            showInstallLogMessage('[zipi] Failed to start plugin. Please check Volumio logs for errors.', 'postVolumioInstall', 'warn');
+          }
+          if (!res.enabled || !res.started) {
+            $('#enablePluginFailedDialog').on('dialogclose', (event, ui) => {
+              resolve();
+            });
+            openDialog('enablePluginFailedDialog');
+          }
+          else {
+            resolve();
+          }
+        }
+      });
+    })
+  }
+
+  function endSession() {
+    destroyDialogs();
+    $.ajax({
+      url: '/finish/<%- sessionId %>',
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'get'
+    });
+  }
+
+  function showInstallLogMessage(message, section, className) {
+    if (!message) {
+      return;
+    }
+    
+    // If not already scrolled to end, then do not autoscroll after
+    // message added
+    let scrollHeight = $('#installLog').prop('scrollHeight');
+    let clientHeight = $('#installLog').prop('clientHeight');
+    let scrollTop = $('#installLog').prop('scrollTop');
+    let autoscroll = scrollTop >= scrollHeight - clientHeight;
+
+    if (section == 'volumioInstall') {
+      $('#installLog .volumioInstall').html(message);
+    }
+    else {
+      let sectionEl = $(`#installLog .${ section }`);
+      let html = sectionEl.html();
+      if (className) {
+        message = `<span class="${ className }">${ message }</span>`;
+      }
+      sectionEl.html(html + (html ? '<br>' : '') + message);
+    }
+
+    if (autoscroll) {
+      scrollHeight = $('#installLog').prop('scrollHeight');
+      $('#installLog').prop('scrollTop', scrollHeight - clientHeight);
+    }
+  }
+
+  function destroyDialogs() {
+  <% if (installAction == 'install') { %>
+    $('#enablePluginDialog').dialog('destroy').remove();
+  <% } %>
+    $('#enablePluginFailedDialog').dialog('destroy').remove();
+  }
+
+</script>

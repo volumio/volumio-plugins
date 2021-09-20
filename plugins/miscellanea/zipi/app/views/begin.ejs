@@ -1,0 +1,57 @@
+<p><%= i18n('ZIPI_APP_CHOOSE_FILE_TO_INSTALL') %></p>
+<button id="uploadButton"><%= i18n('ZIPI_APP_CHOOSE_FILE') %></button>
+<label for="pluginFile" class="uploadLabel">
+  <%= i18n('ZIPI_APP_NO_FILE_CHOSEN') %>
+</label>
+<input id="pluginFile" type="file" />
+
+<script>
+  $('#pluginFile').on('change', function () {
+    let filename = $(this).prop('files')[0].name;
+    $('label[for="pluginFile"]').html(filename);
+  });
+  $('#uploadButton').on('click', function () {
+    $('#pluginFile').trigger('click');
+  });
+
+  configureNavButton('secondary', { disabled: true });
+
+  configureNavButton('primary', {
+    onClick: () => {
+      clearAlerts();
+      let fileData = $('#pluginFile').prop('files')[0];
+      if (fileData == undefined) {
+        addAlert('<%= i18n('ZIPI_APP_ERR_NO_FILE_CHOSEN') %>', 'error');
+        return;
+      }
+
+      $('#uploadButton').prop('disabled', true);
+      $('#pluginFile').prop('disabled', true);
+      $('#nav .primary').prop('disabled', true);
+      setStatusText('<%= i18n('ZIPI_APP_UPLOADING') %>', 'fa fa-spinner fa-spin fa-3x fa-fw');
+
+      let formData = new FormData();
+      formData.append('pluginFile', fileData);
+      $.ajax({
+        url: '/upload/<%- sessionId %>',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        type: 'post',
+        success: res => {
+          if (res.error) {
+            addAlert(res.error, 'error');
+            $('#uploadButton').prop('disabled', false);
+            $('#pluginFile').prop('disabled', false);
+            $('#nav .primary').prop('disabled', false);
+            setStatusText('');
+          }
+          else {
+            setView(res);
+          }
+        }
+      });
+    }
+  });
+</script>

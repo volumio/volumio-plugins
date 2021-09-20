@@ -1,0 +1,131 @@
+<h3><%= i18n('ZIPI_APP_UPLOADED_FILE') %></h3>
+
+<table>
+  <tr>
+      <td><%= i18n('ZIPI_APP_FILE_NAME') %></td>
+      <td><%= pluginFile.name %></td>
+  </tr>
+  <tr>
+      <td><%= i18n('ZIPI_APP_FILE_SIZE') %></td>
+      <td><%= pluginFile.size %> bytes</td>
+  </tr>
+  <tr>
+      <td><%= i18n('ZIPI_APP_FILE_MD5') %></td>
+      <td><%= pluginFile.md5 %></td>
+  </tr>
+</table>
+
+<h3><%= i18n('ZIPI_APP_PLUGIN_INFO') %></h3>
+
+<table>
+  <tr>
+      <td><%= i18n('ZIPI_APP_PLUGIN_NAME') %></td>
+      <td><%= pluginInfo.name %></td>
+  </tr>
+  <tr>
+    <td><%= i18n('ZIPI_APP_PLUGIN_VERSION') %></td>
+    <td>
+      <%= pluginInfo.version %>
+    </td>
+  </tr>
+  <tr>
+      <td><%= i18n('ZIPI_APP_PLUGIN_DESC') %></td>
+      <td><%= pluginInfo.description %></td>
+  </tr>
+  <tr>
+      <td><%= i18n('ZIPI_APP_PLUGIN_AUTHOR') %></td>
+      <td><%= pluginInfo.author %></td>
+  </tr>
+  <tr>
+    <td><%= i18n('ZIPI_APP_PLUGIN_INSTALLABLE_STATUS') %></td>
+    <td><div class="installableStatus <%- installable.status %>">
+      <span><%- installable.message %></span>
+    </div></td>
+  </tr>
+</table>
+
+<% if (installable.status !== 'fail') { %>
+<p><%= i18n('ZIPI_APP_VERIFY_PLUGIN_INFO') %></p>
+<% } %>
+
+<% if (installable.status !== 'fail') { %>
+<div id="installWarningDialog">
+  <h2><%= i18n('ZIPI_APP_INSTALL_WARNING') %></h2>
+  <p><%= i18n('ZIPI_APP_INSTALL_WARNING_MSG_1') %></p>
+  <p><%= i18n('ZIPI_APP_INSTALL_WARNING_MSG_2') %></p>
+</div>
+<% } %>
+
+<script>
+<% if (installable.status !== 'fail') { %>
+  $('#installWarningDialog').dialog({
+    dialogClass: 'installWarning',
+    autoOpen: false,
+    resizable: false,
+    height: "auto",
+    width: '600px',
+    modal: true,
+    buttons: [
+      {
+        text: '<%= i18n('ZIPI_APP_LET_ME_THINK') %>',
+        click: function() {
+          $(this).dialog('close');
+        }
+      },
+      {
+        text: '<%= i18n('ZIPI_APP_PROCEED') %>',
+        class: 'positive',
+        click: function() {
+          $(this).dialog('close');
+          proceedInstall();
+        }
+      }
+    ]
+  });
+<% } %>
+  
+  configureNavButton('secondary', {
+    onClick: () => {
+      $.ajax('/begin/<%- sessionId %>')
+      .done( res => {
+        setView(res);
+      })
+    }
+  });
+
+<% if (installable.status == 'fail') { %>
+  addAlert('<%= i18n('ZIPI_APP_ERR_CHECK_INSTALLABLE_STATUS') %>', 'error');
+  configureNavButton('primary', { disabled: true });
+<% } else { %>
+  configureNavButton('primary', {
+    onClick: () => {
+      openDialog('installWarningDialog');
+    }
+  });
+
+  function proceedInstall() {
+    $('#nav .primary').prop('disabled', true);
+    $('#nav .secondary').prop('disabled', true);
+    $('#installWarningDialog').dialog('destroy').remove();
+
+    $.ajax({
+      url: '/install/<%- sessionId %>',
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'get',
+      success: res => {
+        if (res.error) {
+          addAlert(res.error, 'error');
+          $('#nav .primary').prop('disabled', false);
+          $('#nav .secondary').prop('disabled', false);
+          setStatusText('');
+        }
+        else {
+          setView(res);
+        }
+      }
+    });
+  }
+<% } %>
+</script>

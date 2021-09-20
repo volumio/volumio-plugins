@@ -1,0 +1,103 @@
+<html>
+
+<head>
+  <title>Zipi - Plugin Zip File Installer for Volumio</title>
+  <link rel="shortcut icon" type="image/png" href="/images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Noto+Sans&family=Roboto:wght@100;300&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/javascript/jquery-ui-1.12.1/jquery-ui.min.css">
+  <script src="/javascript/jquery-3.6.0.min.js"></script>
+  <script src="/javascript/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="/javascript/socket.io.min.js"></script>
+  <script src="/javascript/zipi.js"></script>
+  <link rel="stylesheet" href="/stylesheets/zipi.css">
+</head>
+<style>
+  <% if (background.type === 'image') { %>
+  body {
+    background: url('<%- background.path %>') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  <% } else if (background.type === 'color') { %>
+  body {
+    background: <%- background.color %>
+  }
+  <% } %>
+</style>
+
+<body>
+  <div id="container">
+    <div class="title">
+      <div class="title">
+        <div class="primary">Zipi</div>
+        <div class="secondary">Plugin Zip File Installer for Volumio</div>
+      </div>
+    </div>
+    <div class="stepsbar">
+      <div class="stepsbar-progress">
+          <div class="stepsbar-progress-line"></div>
+      </div>
+      <div class="stepsbar-step active">
+          <div class="stepsbar-step-icon"><i class="fa fa-upload"></i></div>
+          <p><%= i18n('ZIPI_APP_STEP_UPLOAD') %></p>
+      </div>
+      <div class="stepsbar-step">
+          <div class="stepsbar-step-icon"><i class="fa fa-list"></i></div>
+          <p><%= i18n('ZIPI_APP_STEP_REVIEW') %></p>
+      </div>
+      <div class="stepsbar-step">
+          <div class="stepsbar-step-icon"><i class="fa fa-archive"></i></div>
+          <p><%= i18n('ZIPI_APP_STEP_INSTALL') %></p>
+      </div>
+      <div class="stepsbar-step">
+          <div class="stepsbar-step-icon"><i class="fa fa-check"></i></div>
+          <p><%= i18n('ZIPI_APP_STEP_FINISH') %></p>
+      </div>
+    </div>
+    <div id="alerts"></div>
+    <div id="contents"></div>
+    <div id="navContainer">
+      <div id="status"></div>
+      <div id="nav">
+        <button class="secondary"></button>
+        <button class="primary"></button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  $(document).ready(() => {
+    setNavButtonDefaults({
+      primary: {
+        text: '<%= i18n('ZIPI_APP_NEXT') %>',
+        disabled: false,
+        hidden: false
+      },
+      secondary: {
+        text: '<%= i18n('ZIPI_APP_PREVIOUS') %>',
+        disabled: false,
+        hidden: false
+      }
+    });
+
+    $.ajax({
+        url: '/begin',
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'get',
+        success: res => {
+          setView(res);
+        }
+      });
+  })
+</script>

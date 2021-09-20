@@ -1,0 +1,49 @@
+{
+  "page": {
+    "label": "TRANSLATE.ZIPI_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_daemon",
+      "element": "section",
+      "label": "TRANSLATE.ZIPI_DAEMON",
+      "icon": "fa-server",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/zipi",
+        "method": "configSaveDaemon"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.ZIPI_SAVE",
+        "data": [
+          "port"
+        ]
+      },
+      "content": [
+        {
+          "id": "port",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.ZIPI_PORT",
+          "doc": "TRANSLATE.ZIPI_PORT_DESC",
+          "value": "7000"
+        },
+        {
+          "id": "url",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.ZIPI_URL",
+          "doc": "TRANSLATE.ZIPI_URL_DESC"
+        },
+        {
+          "id": "openUrl",
+          "element": "button",
+          "label": "TRANSLATE.ZIPI_OPEN_URL",
+          "onClick": {
+              "type": "openUrl"
+          }
+        }
+      ]
+    }
+  ]
+}

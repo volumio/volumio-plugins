@@ -1,0 +1,38 @@
+{
+  "name": "zipi",
+  "version": "0.1.0",
+  "description": "Install plugins by uploading ZIP files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickkfkan/volumio-zipi.git"
+  },
+  "author": "Patrick Kan",
+  "license": "MIT",
+  "volumio_info": {
+    "prettyName": "Zipi - Plugin Zip File Installer",
+    "plugin_type": "miscellanea",
+    "icon": "fa-cube",
+    "boot_priority": 10
+  },
+  "dependencies": {
+    "archiver": "^4.0.2",
+    "compare-versions": "^3.6.0",
+    "decompress": "^4.2.1",
+    "del": "^5.1.0",
+    "ejs": "^3.1.6",
+    "escape-html": "^1.0.3",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "jsonfile": "^6.1.0",
+    "kew": "^0.7.0",
+    "md5": "^2.3.0",
+    "short-uuid": "^4.2.0",
+    "string-format": "^2.0.0",
+    "tmp": "0.0.33",
+    "v-conf": "^1.4.2"
+  }
+}

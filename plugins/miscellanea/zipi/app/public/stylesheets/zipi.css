@@ -1,0 +1,468 @@
+body {
+  display: flex;
+  justify-content: center;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: fit-content;
+  min-height: 600px;
+  max-width: 800px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  margin-top: 150px;
+  margin-bottom: 150px;
+  color: #ccc;
+  border-radius: 10px;
+  padding: 30px;
+}
+
+#contents {
+  flex-grow: 1;
+}
+
+#navContainer {
+  display: flex;
+  padding: 30px 5px 0px 5px;
+  border-top: 1px solid rgba(128, 128, 128, 0.5);
+  align-items: center;
+}
+
+#status {
+  color: #ccc;
+  font-size: small;
+}
+
+#status > i {
+  margin-right: 8px;
+  font-size: small;
+}
+
+#nav {
+  flex-grow: 1;
+  text-align: right;
+}
+
+#nav > button {
+  margin-right: 8px;
+  min-width: 90px;
+}
+
+#nav > button.primary {
+  background: #30a06e;
+  color: #fff;
+  border-color: #30a06e;
+}
+
+#nav > button:last-of-type {
+  margin-right: 0px;
+}
+
+#container > .title {
+  text-align: center;
+  padding: 10px 0px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+}
+
+#container > .title .primary {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+#container > .title .secondary {
+  font-size: 14px;
+  margin: 8px 0px;
+}
+
+p {
+  padding-bottom: 10px;
+}
+
+button,
+.ui-dialog .ui-button {
+  background: none;
+  color: #ccc;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:enabled:hover,
+.ui-dialog .ui-button:hover {
+  box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+}
+
+button:disabled {
+  opacity: 0.3;
+  cursor: inherit;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.uploadLabel {
+  margin-left: 10px;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.alert.error {
+  background: #883333;
+}
+
+.alert.error:before {
+  font-family: "FontAwesome";
+  margin-right: 8px;
+  content: "\f071";
+}
+
+table {
+  width: 100%;
+  border: 1px #707070 solid;
+  border-collapse: collapse;
+  margin-bottom: 38px;
+}
+
+table td {
+  color: #ccc;
+  border: 1px #707070 solid;
+  padding: 8px;
+  font-size: 14px;
+}
+
+table td:first-child {
+  width: 30%;
+}
+
+.installableStatus {
+  display: flex;
+  align-items: center;
+}
+
+.installableStatus.ok {
+  color: #30a06e;
+}
+
+.installableStatus.fail {
+  color: #ca5050;
+}
+
+.installableStatus.warn {
+  color: #f0ad4e;
+}
+
+.installableStatus:before {
+  font-family: "FontAwesome";
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.installableStatus.ok:before {
+  content: "\f058";
+}
+
+.installableStatus.fail:before {
+  content: "\f057";
+}
+
+.installableStatus.warn:before {
+  content: "\f06a";
+}
+
+.installableStatus .version {
+  color: #ccc;
+}
+
+/* Step bar */
+.stepsbar {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.stepsbar-progress {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #808080;
+}
+.stepsbar-progress-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  background: #30a06e;
+}
+
+.stepsbar-step {
+  position: relative;
+  float: left;
+  width: 25%;
+  text-align: center;
+}
+
+.stepsbar-step-icon {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  background: #808080;
+  color: #ddd;
+  line-height: 40px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepsbar-step.activated .stepsbar-step-icon {
+  background: #101010;
+  border: 1px solid #30a06e;
+  color: #30a06e;
+  line-height: 38px;
+}
+
+.stepsbar-step.active .stepsbar-step-icon {
+  width: 48px;
+  height: 48px;
+  margin-top: 0;
+  background: #30a06e;
+  font-size: 22px;
+  line-height: 48px;
+}
+
+.stepsbar-step-icon > i {
+  font-size: 14px;
+}
+
+.stepsbar-step p {
+  color: #ccc;
+  font-size: small;
+  padding: 0px;
+}
+
+.stepsbar-step.activated p {
+  color: #30a06e;
+  font-size: small;
+}
+
+.stepsbar-step.active p {
+  color: #30a06e;
+}
+
+/* Dialog */
+.ui-dialog .ui-widget-content,
+.ui-dialog.ui-widget-content {
+  color: #ccc;
+  border: none;
+  background: #303030;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  display: none;
+}
+
+.ui-dialog.ui-widget.ui-widget-content {
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.2),
+    0 16px 32px rgba(0, 0, 0, 0.2), 0 32px 64px rgba(0, 0, 0, 0.2);
+}
+
+.ui-dialog .ui-button {
+  color: #c0c0c0;
+  border: 1px solid #c0c0c0;
+  min-width: 90px;
+}
+
+.ui-dialog .ui-button.positive {
+  background: #30a06e;
+  color: #fff;
+  border-color: #30a06e;
+  margin-left: 8px;
+}
+
+.ui-dialog h2 {
+  margin-bottom: 25px;
+}
+
+.ui-dialog.installWarning h2:before {
+  font-family: "FontAwesome";
+  color: #f0ad4e;
+  margin-right: 10px;
+  content: "\f071";
+}
+
+.ui-dialog.enablePlugin h2:before {
+  font-family: "FontAwesome";
+  color: #30a06e;
+  margin-right: 10px;
+  content: "\f058";
+}
+
+.ui-dialog.enablePluginFailed h2:before {
+  font-family: "FontAwesome";
+  color: #f0ad4e;
+  margin-right: 10px;
+  content: "\f071";
+}
+
+.ui-widget-overlay {
+  background: #000;
+  opacity: 0.5;
+}
+
+/* Install log */
+#installLog {
+  background: rgba(0, 0, 0, 0.5);
+  height: 300px;
+  margin-bottom: 20px;
+  border: 1px solid #303030;
+  padding: 5px 10px;
+  overflow: auto;
+  font-family: monospace;
+  font-size: 13px;
+  position: relative;
+}
+
+#installLog .error {
+  color: #ca5050;
+}
+
+#installLog .warn {
+  color: #f0ad4e;
+}
+
+#installLog .success {
+  color: #30a06e;
+}
+
+#installLogWrapper {
+    position: relative;
+}
+
+#installLogWrapper .clipboard {
+    display: inline-block;
+    position: absolute;
+    bottom: 10px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background: #303030;
+    color: #808080;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    z-index: 100;
+}
+
+#installLogWrapper .clipboard > i {
+    line-height: 40px;
+}
+
+#installLogWrapper .clipboard:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+}
+
+#installLogWrapper .toast {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display: none;
+}
+
+#installLogWrapper .toast > span {
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 12px;
+    background: #303030;
+}
+
+/* Install progress */
+#installProgress {
+  margin-bottom: 20px;
+}
+
+#installProgress .ui-progressbar {
+  height: 10px;
+  margin-top: 10px;
+}
+
+#installProgress .ui-progressbar .ui-progressbar-value {
+  background: #30a06e;
+  border: none;
+}
+
+#installProgress.fail .ui-progressbar .ui-progressbar-value {
+  background: #ca5050;
+}
+
+#installProgress .ui-widget-content {
+  background: none;
+  border: 1px solid #303030;
+}
+
+/* Install result */
+.installResult {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.installResult i {
+  font-size: 48px;
+  margin-right: 12px;
+}
+
+.installResult .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.installResult.success i,
+.installResult.success .title {
+  color: #30a06e;
+}
+
+.installResult.fail i,
+.installResult.fail .title {
+  color: #ca5050;
+}
+
+.installResult .message {
+  font-size: small;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #303030;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #505050;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #585858;
+}
