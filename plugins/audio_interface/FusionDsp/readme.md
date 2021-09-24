@@ -1,4 +1,4 @@
-September 10th 2021
+September 24th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+September 24th 201
+
+- package.json conform for volumio3
 
 September 10th 2021
 
