@@ -983,7 +983,7 @@
 					"prettyName": "Rotary Encoder II",
 					"icon": "fa-lightbulb-o",
 					"name": "rotaryencoder2",
-					"version": "1.0.6",
+					"version": "1.0.7",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder2/rotaryencoder2.zip",
 					"license": "ISC",
 					"description": "Alternative implementation of Rotary Encoder controls using the Linux Kernel driver for Rotaries.",
@@ -995,7 +995,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "5-9-2021"
+					"updated": "29-9-2021"
 				}
 			]
 		}
