@@ -1,6 +1,6 @@
 {
 	"name": "randomizer",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "A random Track / Album Player",
 	"main": "index.js",
 	"scripts": {
