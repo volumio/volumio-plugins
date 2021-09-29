@@ -713,7 +713,7 @@
 					"prettyName": "Randomizer",
 					"icon": "fa-lightbulb-o",
 					"name": "randomizer",
-					"version": "2.0.0",
+					"version": "2.0.1",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/randomizer/randomizer.zip",
 					"license": "ISC",
 					"description": "A random Track / Album Player",
@@ -725,7 +725,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "4-7-2021"
+					"updated": "29-9-2021"
 				},
 				{
 					"prettyName": "Philips Hue Control",
