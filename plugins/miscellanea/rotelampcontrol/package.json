@@ -1,0 +1,21 @@
+{
+	"name": "rotelampcontrol",
+	"version": "1.0.0",
+	"description": "Control functions of Rotel Axx Amplifiers",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "7h0mas-R",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "RotelAmpControl",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
