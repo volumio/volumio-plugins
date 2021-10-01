@@ -987,7 +987,7 @@
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/user_interface/rotaryencoder2/rotaryencoder2.zip",
 					"license": "ISC",
 					"description": "Alternative implementation of Rotary Encoder controls using the Linux Kernel driver for Rotaries.",
-					"details": "Use up to 3 rotary encoders connected to the GPIOs of a Volumio system. Uses Linux kernel level drivers based on 'dtoverlay'. Also provides a function to send commands via Websock.",
+					"details": "Use up to 3 rotary encoders connected to the GPIOs of a Volumio system. Uses Linux kernel level drivers based on 'dtoverlay'.<br>Also provides a function to send commands via Websock.<br>Help and hardware tipps in the <a href=\"https://volumio.github.io/docs/Plugins_User_Manuals/rotaryencoder2/Rotary_Encoder_II.html\">Documentation</a>",
 					"author": "7h0mas-R",
 					"screenshots": [
 						{
