@@ -32,61 +32,12 @@ rotelampcontrol.prototype.onVolumioStart = function()
     return libQ.resolve();
 }
 
-// JSON.saveStringify = function(obj, indent = 2) {
-//   let cache = [];
-//   const retVal = JSON.stringify(
-//     obj,
-//     (key, value) =>
-//       typeof value === "object" && value !== null
-//         ? cache.includes(value)
-//           ? undefined // Duplicate reference found, discard key
-//           : cache.push(value) && value // Store value in our collection
-//         : value,
-//     indent
-//   );
-//   cache = null;
-//   return retVal;
-// };
-
-// Example:
-//console.log('options', JSON.safeStringify(options))
 
 rotelampcontrol.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
     self.commandRouter.logger.info('onStart function got additional conf: ' + JSON.stringify(device));
-//	fs.writeFile("/data/INTERNAL/context.json", JSON.saveStringify(self.context), 'utf8', function (err) {
-//	    if (err) {
-//	        self.commandRouter.logger.info("An error occured while writing JSON Object to File.");
-//	        defer.reject();
-//	    }
- 
-//	    self.commandRouter.logger.info("JSON file has been saved.");
-//	});
-//        fs.writeFile("/data/INTERNAL/commandRouter.json", JSON.saveStringify(self.commandRouter), 'utf8', function (err) {
-//            if (err) {
-//                self.commandRouter.logger.info("An error occured while writing JSON Object to File.");
-//                defer.reject();
-//            }
-
-//            self.commandRouter.logger.info("JSON file has been saved.");
-//        });
-
-// todo: insert configuration of USB2Serial communication via stty
-
-        // var myVs = {
-        //         enabled: true,
-        //         setvolumescript: '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/setvolume.sh /dev/ttyUSB0 ',
-        //         getvolumescript: '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/getvolume.sh /dev/ttyUSB0',
-        //         mapTo100: true,
-        //         maxVol: 50,
-        //         minVol: 0,
-        //         getMuteScript: '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/getmute.sh /dev/ttyUSB0',
-        //         setMuteScript: '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/setmute.sh /dev/ttyUSB0 '
-        // };
-        // self.commandRouter.updateVolumeScripts(myVs);
-	// Once the Plugin has successfull started resolve the promise
 	
 	setTimeout(function() {
 		self.configSerialInterface();
@@ -186,9 +137,33 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
 	var mapTo100 = true;
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.logger.info('Adding Rotal Axx parameters: '+ JSON.stringify(data))
+    self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
     self.commandRouter.updateVolumeScripts(data);
-	self.commandRouter.setStartupVolume();
+    self.logger.info("Rotel amp: outputdevice: " + JSON.stringify(self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice')));
+    self.logger.info("Rotel amp: cards: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')));
+    self.logger.info("Rotel amp: mixerdev: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer')));
+    self.logger.info("Rotel amp: maxvolume: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax')));
+    self.logger.info("Rotel amp: volumecurve: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode')));
+    self.logger.info("Rotel amp: mixertype: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer_type')));
+    //Prepare the data for updating the Volume Settings
+    var device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
+    var name = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[device].name;
+    var mixer = 'ROTEL A12';
+    var maxVolume = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax');
+    var volumeCurve = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
+    var volumeSteps = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumesteps');
+    var mixerType = 'Other';
+    var volSettingsData = {
+        'device': device,
+        'name': name,
+        'mixer': mixer,
+        'maxvolume': maxVolume,
+        'volumecurve': '', //volumeCurve,
+        'volumesteps': volumeSteps,
+        'mixertype': mixerType
+    };
+    self.logger.info("ROTEL amp: Volume Settings: " + JSON.stringify(volSettingsData))
+//	self.commandRouter.setStartupVolume();
 };
 
 // rotelampcontrol.prototype.addVolumeSettings = function() {
