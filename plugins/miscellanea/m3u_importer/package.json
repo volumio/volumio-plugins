@@ -9,7 +9,7 @@
         "author": "Skip Hansen",
         "license": "ISC",
         "volumio_info": {
-                "prettyName": "Import M3U Playlist",
+                "prettyName": "Import M3U Playlists",
                 "icon": "fa-download",
                 "plugin_type": "miscellanea"
         },

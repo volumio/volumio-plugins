@@ -13,25 +13,25 @@
         "endpoint": "miscellanea/m3u_importer",
         "method": "doImport",
         "data": [
-          "m3u_dir",
+          "fileOrDir",
           "which"
         ]
       },
       "saveButton": {
         "label": "TRANSLATE.M3U_IMPORT.IMPORT",
         "data": [
-          "m3u_dir",
+          "fileOrDir",
           "which"
         ]
       },
       "content": [
         {
-          "id": "m3u_dir",
+          "id": "fileOrDir",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.M3U_IMPORT.M3U_DIR_DOC",
           "label": "TRANSLATE.M3U_IMPORT.M3U_DIR_LBL",
-          "attributes": [ {"placeholder": "/MNT/USB/Playlists"} ],
+          "attributes": [ {"placeholder": "/mnt/USB/Playlists"} ],
           "value": ""
         },
         {
