@@ -27,7 +27,7 @@ const tccurvepath = "/data/INTERNAL/FusionDsp/target-curves/";
 const toolspath = "INTERNAL/FusionDsp/tools/";
 const wavfolder = "/data/INTERNAL/FusionDsp/wavfiles/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
-const coefQ = 1.85//Q for grapics EQ
+const coefQ = 1.85//Q for graphic EQ
 
 
 // Define the Parameq class
@@ -72,6 +72,22 @@ FusionDsp.prototype.onStart = function () {
     self.logger.info('failed to load Camilla Gui' + err);
   }
 */
+
+  // if mixer set to none, do not show loudness settings
+  //this.commandRouter.sharedVars.registerCallback('alsa.mixertype',  this.refreshUI.bind(this));
+
+  var mixt = this.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
+
+  self.logger.info('mixtype--------------------- ' + mixt)
+  if (mixt == 'None') {
+    self.config.set('loudness', false)
+    self.config.set('showloudness', false)
+
+  } else {
+    self.config.set('showloudness', true)
+  }
+  //
+
   setTimeout(function () {
     self.createCamilladspfile()
     if (self.config.get('loudness')) {
@@ -771,44 +787,49 @@ FusionDsp.prototype.getUIConfig = function () {
               "field": "showeq",
               "value": true
             }
-          },
-          {
-            "id": "loudness",
-            "element": "switch",
-            "doc": self.commandRouter.getI18nString('LOUDNESS_DOC'),
-            "label": self.commandRouter.getI18nString('LOUDNESS'),
-            "value": self.config.get('loudness'),
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
-            }
-          },
-          {
-            "id": "loudnessthreshold",
-            "element": "equalizer",
-            "label": self.commandRouter.getI18nString("LOUDNESS_THRESHOLD"),
-            "doc": self.commandRouter.getI18nString('LOUDNESS_THRESHOLD_DOC'),
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
-            },
-            "config": {
-              "orientation": "horizontal",
-              "bars": [
-                {
-                  "min": "10",
-                  "max": "100",
-                  "step": "1",
-                  "value": self.config.get('loudnessthreshold'),
-                  "ticksLabels": [
-                    "%"
-                  ],
-                  "tooltip": "always"
-                }
-              ]
-            }
           }
         )
+        if (self.config.get('showloudness')) {
+          uiconf.sections[1].content.push(
+
+            {
+              "id": "loudness",
+              "element": "switch",
+              "doc": self.commandRouter.getI18nString('LOUDNESS_DOC'),
+              "label": self.commandRouter.getI18nString('LOUDNESS'),
+              "value": self.config.get('loudness'),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            },
+            {
+              "id": "loudnessthreshold",
+              "element": "equalizer",
+              "label": self.commandRouter.getI18nString("LOUDNESS_THRESHOLD"),
+              "doc": self.commandRouter.getI18nString('LOUDNESS_THRESHOLD_DOC'),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              },
+              "config": {
+                "orientation": "horizontal",
+                "bars": [
+                  {
+                    "min": "10",
+                    "max": "100",
+                    "step": "1",
+                    "value": self.config.get('loudnessthreshold'),
+                    "ticksLabels": [
+                      "%"
+                    ],
+                    "tooltip": "always"
+                  }
+                ]
+              }
+            }
+          )
+        }
       }
       //------------experimental
       /*
@@ -939,9 +960,10 @@ FusionDsp.prototype.getUIConfig = function () {
       //}
       uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('monooutput');
-      uiconf.sections[1].saveButton.data.push('loudness');
-      uiconf.sections[1].saveButton.data.push('loudnessthreshold');
-
+      if (self.config.get('showloudness')) {
+        uiconf.sections[1].saveButton.data.push('loudness');
+        uiconf.sections[1].saveButton.data.push('loudnessthreshold');
+      }
       // }
       uiconf.sections[1].saveButton.data.push('showeq');
 
@@ -1069,7 +1091,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
       //-----------section 4---------
       value = self.config.get('importeq');
-      var label=self.commandRouter.getI18nString('CHOOSE_HEADPHONE')
+      var label = self.commandRouter.getI18nString('CHOOSE_HEADPHONE')
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[4].content[0].value.label', label);
 
@@ -1099,7 +1121,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
       //----------section 5------------
       value = self.config.get('importlocal');
-      var label=self.commandRouter.getI18nString('CHOOSE_LOCALEQ')
+      var label = self.commandRouter.getI18nString('CHOOSE_LOCALEQ')
 
       self.configManager.setUIConfigParam(uiconf, 'sections[5].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[5].content[0].value.label', label);
@@ -2853,8 +2875,11 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
     self.config.set('monooutput', data["monooutput"]);
-    self.config.set('loudness', loudness);
-    self.config.set('loudnessthreshold', data.loudnessthreshold);
+    if (self.config.get('showloudness')) {
+
+      self.config.set('loudness', loudness);
+      self.config.set('loudnessthreshold', data.loudnessthreshold)
+    }
   }
 
   self.config.set('effect', true);

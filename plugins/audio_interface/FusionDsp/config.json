@@ -184,6 +184,10 @@
         "type": "boolean",
         "value": false
     },
+    "showloudness": {
+        "type": "boolean",
+        "value": true
+    },
     "eqfrom": {
         "type": "string",
         "value": "local"

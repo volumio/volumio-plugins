@@ -1,4 +1,4 @@
-September 24th 2021
+October 2nd 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+October 2nd 2021
+
+- Do not show Loudness settings if mixer type is None
 
 September 24th 201
 
