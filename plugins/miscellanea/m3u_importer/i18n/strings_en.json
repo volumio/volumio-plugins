@@ -1,0 +1,19 @@
+{
+  "M3U_IMPORT":{
+    "PLUGIN_CONFIGURATION":"Import M3U playlists",
+    "IMPORT":"Import",
+    "SAVE":"Save",
+    "OVERWRITE":"Overwrite existing playlists",
+    "OK_2_OVERWRITE":"Ok to overwrite ",
+    "M3U_DIR_DOC":"Full path playlist folder or playlist file to import",
+    "M3U_DIR_LBL":"Playlist or playlist folder",
+    "NEW":"Only new playlists",
+    "ALL":"All playlists (overwriting existing)",
+    "ASK":"Ask before overwriting",
+    "WHICH":"Playlists to import",
+    "NO":"No",
+    "YES":"Yes",
+    "CANCEL":"Cancel",
+    "GO":"Go"
+  }
+}

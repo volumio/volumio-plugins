@@ -1,0 +1,59 @@
+{
+  "page": {
+    "label": "TRANSLATE.M3U_IMPORT.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+ {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.M3U_IMPORT.PLUGIN_SECTION_TITLE",
+      "icon": "fa-download",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "miscellanea/m3u_importer",
+        "method": "doImport",
+        "data": [
+          "fileOrDir",
+          "which"
+        ]
+      },
+      "saveButton": {
+        "label": "TRANSLATE.M3U_IMPORT.IMPORT",
+        "data": [
+          "fileOrDir",
+          "which"
+        ]
+      },
+      "content": [
+        {
+          "id": "fileOrDir",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.M3U_IMPORT.M3U_DIR_DOC",
+          "label": "TRANSLATE.M3U_IMPORT.M3U_DIR_LBL",
+          "attributes": [ {"placeholder": "/mnt/USB/Playlists"} ],
+          "value": ""
+        },
+        {
+          "id": "which",
+          "element": "select",
+          "value": {"value": "new", "label": "TRANSLATE.M3U_IMPORT.NEW"},
+          "options": [
+            {   
+              "value": "new",
+              "label": "TRANSLATE.M3U_IMPORT.NEW"
+            },  
+            {   
+              "value": "all",
+              "label": "TRANSLATE.M3U_IMPORT.ALL"
+            },  
+            {   
+              "value": "ask",
+              "label": "TRANSLATE.M3U_IMPORT.ASK"
+            }
+          ]   
+        }
+      ]
+    }
+  ]
+}
