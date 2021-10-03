@@ -230,7 +230,7 @@ m3uImporter.prototype.import_m3u = function (file) {
     else {
         var m3u_path = self.dir + '/' + file;
     }
-    var playlist_out = fs.openSync(self.playlist_path,'w')
+    self.playlist_out = fs.openSync(self.playlist_path,'w')
     self.logMsg('  processing '+ m3u_path)
     var fileData = fs.readFileSync(m3u_path).toString('utf8');
     self.playlistsImported++;
@@ -252,81 +252,92 @@ m3uImporter.prototype.import_m3u = function (file) {
 
     if(lines[0].startsWith('#EXTM3U')) {
         self.logMsg('  calling importExtendedM3u');
-        self.importExtendedM3u(lines,playlist_out);
+        self.importExtendedM3u(lines);
     }
     else {
         self.logMsg('  calling importSimpleM3u');
-        self.importSimpleM3u(lines,playlist_out);
+        self.importSimpleM3u(lines);
     }
     self.logMsg('-----');
-    fs.closeSync(playlist_out);
+    fs.closeSync(self.playlist_out);
 }
 
-m3uImporter.prototype.importExtendedM3u = function(lines,playlist_out) {
+m3uImporter.prototype.importExtendedM3u = function(lines) {
     var self = this;
-    var extInfLine = 0;
     this.first = true;
+    var artist;
+    var title;
+    var split_index;
+    var comma_index;
+    var extinf;
+    var parseErr = false;
+    var haveExtInf = false;
+    var errMsg = '';
 
     for (let i = 1; i < lines.length; i++) {
-        if(lines[i].trim().length == 0) {
+        var line = lines[i].trim();
+        if(line.length == 0) {
         // ignore blank lines
             continue;
         }
-        var line = lines[i];
-        if(extInfLine != 0) {
-        // uri expected
+        if(haveExtInf) {
+            haveExtInf = false;
             if(line.startsWith('http://') || line.startsWith('https://')) {
-                this.webRadioUri(line,lines[extInfLine],playlist_out);
+                this.webRadioUri(line,title);
             }
             else {
-                this.fileUri(line,lines[extInfLine],playlist_out);
-            }
-            extInfLine = 0;
-        }
-        else if(lines[i].startsWith('#EXTINF:')) {
-            extInfLine = i;
-        }
-        else if(lines[i].startsWith('#')) {
-            if(extInfLine != 0) {
-                msg = 'parsing error, expected url: ' + lines[i];
-                self.reportErr(msg);
+                var uri = line.replace(/\\/g,'/');
+                this.fileUri(uri,artist,title);
             }
         }
-        else if(lines[i].trim().length != 0) {
-            var msg = 'parsing error: ' + lines[i];
+        else if(line.startsWith('#EXTINF:')) {
+        // get artist and title from #EXTINF line
+            if((comma_index = line.indexOf(',')) > 0) {
+                haveExtInf = true;
+                extinf = line.replace(/"/g,"\\\"");
+                self.logMsg('  extinf: ' + extinf);
+                if((split_index = line.indexOf(' - ')) > 0) {
+                    artist = extinf.substring(comma_index + 1,split_index).trim();
+                    title = extinf.substring(split_index + 3).trim();
+                }
+                else {
+                    artist = '';
+                    title = extinf.substring(comma_index + 1).trim();
+                }
+            }
+            else {
+                parseErr = true;
+            }
+        }
+        else if(line.startsWith('#')) {
+            if(haveExtInf) {
+                parseErr = true;
+                errMsg = ', expected url';
+            }
+        }
+        else if(line.length != 0) {
+            parseErr = true;
+        }
+
+        if(parseErr) {
+            parseErr = false;
+            var msg = 'parsing error' + errMsg + ' : ' + line;
             self.reportErr(msg);
+            errMsg = '';
         }
     }
 
     if(!this.first) {
-        fs.writeSync(playlist_out,']');
+        fs.writeSync(self.playlist_out,']');
     }
 }
 
-m3uImporter.prototype.fileUri = function(line,inf,playlist_out) 
+m3uImporter.prototype.fileUri = function(uri,artist,title) 
 {
     var self = this;
-    var split_index = 0;
-    var comma_index = 0;
-    var extinf = '';
 
-    if((split_index = inf.indexOf(' - ')) > 0 && 
-       (comma_index = inf.indexOf(',')) > 0)
-    {
-        extinf = inf.replace(/"/g,"\\\"");
-        self.logMsg('  extinf: ' + extinf);
-        var artist = extinf.substring(comma_index + 1,split_index).trim();
-        var title = extinf.substring(split_index + 3).trim();
-    }
-    else {
-        var msg = 'parsing error: ' + line;
-        self.reportErr(msg);
-        var artist = 'unknown';
-        var title = 'unknown';
-    }
     self.logMsg('  artist: "' + artist + '"');
     self.logMsg('  title: "' + title + '"');
-    var uri = line.trim().replace(/\\/g,'/')
     self.logMsg('  uri line: "' + uri + '"');
     var uri_path = path.normalize(self.dir + '/' + uri);
 
@@ -335,17 +346,21 @@ m3uImporter.prototype.fileUri = function(line,inf,playlist_out)
         self.logMsg('  uri exists: ' + uri_path);
         if(this.first) {
             this.first = false;
-            fs.writeSync(playlist_out,'[');
+            fs.writeSync(self.playlist_out,'[');
         }
         else {
-            fs.writeSync(playlist_out,',\n');
+            fs.writeSync(self.playlist_out,',\n');
         }
 
         var entry = '{"service":"mpd",' +
                     '"uri":"' + uri_path.substring(1) + 
-                    '","title":"' + title + 
-                    '","artist":"' + artist + '"}'
-        fs.writeSync(playlist_out,entry);
+                    '","title":"' + title + '"';
+
+        if(artist != '') {
+            entry += ',"artist":"' + artist + '"'
+        }
+        entry += '}'
+        fs.writeSync(self.playlist_out,entry);
     }
     else {
         var msg = "Couldn't find " + '"' + path.basename(uri_path) + '"';
@@ -354,49 +369,64 @@ m3uImporter.prototype.fileUri = function(line,inf,playlist_out)
     }
 }
 
-m3uImporter.prototype.webRadioUri = function(line,inf,playlist_out) {
+m3uImporter.prototype.webRadioUri = function(line,title) {
     var self = this;
-    var index = 0;
-    var extinf = '';
 
-    if((index = inf.indexOf(',')) > 0) {
-        self.stationsReferenced++;
-        extinf = inf.replace(/"/g,"\\\"");
-        self.logMsg('  extinf: ' + extinf);
-        var title = extinf.substring(index + 1).trim();
-        if((index = title.indexOf('.mp3?')) > 0 || 
-           (index = title.indexOf('.acc?')) > 0) 
-        {   // title is probably a part of a url, strip the crap
-            title = title.substring(0,index);
-        }
-        self.logMsg('  title: "' + title + '"');
+    self.stationsReferenced++;
+    self.logMsg('  title: "' + title + '"');
+    var entry = '{"service":"webradio",' +
+                '"uri":"' + line + 
+                '","title":"' + title + 
+                '","icon":"fa-microphone"}'
 
-        var entry = '{"service":"webradio",' +
-                    '"uri":"' + line + 
-                    '","title":"' + title + 
-                    '","icon":"fa-microphone"}'
-
-        if(this.first) {
-            this.first = false;
-            fs.writeSync(playlist_out,'[');
-        }
-        else {
-            fs.writeSync(playlist_out,',\n');
-        }
-        fs.writeSync(playlist_out,entry);
+    if(this.first) {
+        this.first = false;
+        fs.writeSync(self.playlist_out,'[');
     }
     else {
-        var msg = 'parsing error: ' + line;
-        self.reportErr(msg);
+        fs.writeSync(self.playlist_out,',\n');
     }
+    fs.writeSync(self.playlist_out,entry);
 }
 
-m3uImporter.prototype.importSimpleM3u = function(lines,playlist_out) 
+m3uImporter.prototype.importSimpleM3u = function(lines) 
 {
     var self = this;
+    var artist = '';
+    var title = '';
+    var split_index;
+
+    this.first = true;
+
+    for (let i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if(line.length == 0 || line.startsWith('#')) {
+        // ignore blank lines and comments
+            continue;
+        }
+    // Simple M3U, get title from filename
+        var uri = line.replace(/\\/g,'/');
+        var ext = path.extname(uri);
+        var basename = path.basename(uri,ext);
+        if((split_index = basename.indexOf(' - ')) > 0) {
+            artist = basename.substring(0,split_index).trim();
+            title = basename.substring(split_index + 3).trim();
+        }
+        else {
+            artist = 'unknown';
+            title = basename;
+        }
+
+        if(line.startsWith('http://') || line.startsWith('https://')) {
+            this.webRadioUri(uri,title);
+        }
+        else {
+            this.fileUri(uri,artist,title);
+        }
+    }
 
     if(!this.first) {
-        fs.writeSync(playlist_out,']');
+        fs.writeSync(self.playlist_out,']');
     }
 }
 
