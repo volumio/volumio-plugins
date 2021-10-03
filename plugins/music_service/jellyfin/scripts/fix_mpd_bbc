@@ -1,0 +1,54 @@
+#!/bin/bash
+echo -e "This script will modify /volumio/app/plugins/music_service/mpd/index.js as follows:\n"
+echo "Search:"
+echo -e "if (objTrackInfo.file.indexOf('bbc') >= 0) {\n"
+echo "Replace with:"
+echo -e "if (objTrackInfo.file.indexOf('bbc') >= 0 && objTrackInfo.Name) {\n"
+
+while true
+do
+    read -p "Proceed [Y/n]? " input
+    input=${input:-Y}
+    case ${input} in
+        [yY][eE][sS]|[yY])
+            break;
+            ;;
+        [nN][oO]|[nN])
+            echo -e "\nOperation cancelled"
+            exit 0
+            ;;
+        *)
+            echo "Enter 'y' or 'n'"
+            ;;
+    esac
+done
+
+SEARCH="if \(objTrackInfo\.file\.indexOf\('bbc'\) >= 0\) \{"
+REPLACE="if (objTrackInfo.file.indexOf('bbc') >= 0 \&\& objTrackInfo.Name) {"
+FILE="/volumio/app/plugins/music_service/mpd/index.js"
+
+sed -r -i "s;${SEARCH};${REPLACE};g" ${FILE}
+
+echo -e "\nOperation completed.\n"
+
+while true
+do
+    read -p "You need to restart Volumio for changes to be applied. Would you like to do that now [Y/n]? " input
+    input=${input:-Y}
+    case ${input} in
+        [yY][eE][sS]|[yY])
+            break;
+            ;;
+        [nN][oO]|[nN])
+            echo -e "\nYou can restart Volumio by executing the following command:"
+            echo "volumio vrestart"
+            exit 0
+            ;;
+        *)
+            echo "Enter 'y' or 'n'"
+            ;;
+    esac
+done
+
+volumio vrestart
+echo -e "\nVolumio restarted"
