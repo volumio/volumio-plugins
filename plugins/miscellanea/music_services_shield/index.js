@@ -68,10 +68,6 @@ musicServicesShield.prototype.onVolumioStart = function()
 
  		self.config = new (require('v-conf'))();
 		self.config.loadFile(configFile);
-
-		self.writeAllConfigParameters();
-
-		self.executeScriptAsSudo(buildShieldScript);
 	} catch (e) {
 		self.logger.info('Error executing script', e);
 	}
@@ -88,7 +84,7 @@ musicServicesShield.prototype.onStart = function() {
 	try {
 		self.commandRouter.pushToastMessage('info', 'Attempting to move processes to user CPU set', 'Please wait');
 
-    	self.writeAllConfigParameters();
+		self.writeAllConfigParameters();
 
 		exec(sudoCommand + pluginPath + buildShieldScript, {
 		   uid: 1000,
