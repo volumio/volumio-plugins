@@ -7,6 +7,7 @@
     "ERR_REMOVE_OVERLAY":"Erreur en supprimant IR overlay: ",
     "ERR_GPIO_OCCUPIED":"Le GPIO est déjà utilisé.",
     "GENERIC_FAILED":"Échec: ",
+    "PLUGIN_CONFIGURATION":"Configuration de IR Controller",
     "IR_CONFIGURATION":"Configuration télécommande IR",
     "PROFILE_SELECTOR": "Choisir un modèle",
     "PROFILE_SELECTOR_DOC": "Choisissez le modèle de télécommande que vous voulez utiliser.<br /><br />Les configurations spécifiques à l'utilisateur pour les télécommandes peuvent être stockés dans le dossier \"/data/INTERNAL/ir_controller/configurations\". Pour ce faire, il faut créer dans le répertoire susmentionné un sous-dossier pour chaque télécommande, dans lequel sont stockés les fichiers LIRC \"lircrc\" et \"lirc.conf\" pour la télécommande. Le nom du sous-dossier apparaît dans la liste des télécommandes sélectionnables. Si ce nom est également utilisé pour l'une des configurations de télécommande déjà fournies, la configuration de l'utilisateur portant le même nom est prioritaire.<br /><br />NOTE : Une mise à jour du plug-in n'affecte pas les configurations définies par l'utilisateur. Cependant, lors de la désinstallation du plug-in, le répertoire \"/data/INTERNAL/ir_controller\" est supprimé avec tous les sous-dossiers et fichiers qu'il contient.",

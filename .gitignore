@@ -12,3 +12,4 @@ node_modules/
 **/.DS_Store
 plugins/music_service/.DS_Store
 **/.com.apple.timemachine*
+plugins/user_interface/rotaryencoder2/._.DS_Store

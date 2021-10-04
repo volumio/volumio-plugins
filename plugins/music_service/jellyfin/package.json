@@ -1,0 +1,28 @@
+{
+	"name": "jellyfin",
+	"version": "0.1.2-a",
+	"description": "Jellyfin plugin for Volumio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/patrickkfkan/volumio-jellyfin"
+	},
+	"author": "Patrick Kan",
+	"license": "GPLv3",
+	"volumio_info": {
+		"prettyName": "Jellyfin",
+		"plugin_type": "music_service",
+		"icon": "fa-music",
+		"boot_priority": 10
+	},
+	"dependencies": {
+		"kew": "^0.7.0",
+		"node-fetch": "^2.6.1",
+		"node-localstorage": "^2.1.6",
+		"string-format": "^2.0.0",
+		"v-conf": "^1.4.2"
+	}
+}
