@@ -63,16 +63,22 @@ musicServicesShield.prototype.onVolumioStart = function()
 	var self = this;
 	var defer=libQ.defer();
 	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-	self.config = new (require('v-conf'))();
-	self.config.loadFile(configFile);
 
-	self.writeAllConfigParameters();
+	try {
+ 		self.config = new (require('v-conf'))();
+		self.config.loadFile(configFile);
 
-	self.executeScriptAsSudo(buildShieldScript).then(function(){
+		self.writeAllConfigParameters();
+
+		self.executeScriptAsSudo(buildShieldScript).then(function(){
+			defer.resolve();
+			});
+	} catch (e) {
+		self.logger.info('Error executing script', e);
 		defer.resolve();
-	});
+	}
 
-    return defer.promise;
+	return defer.promise;
 }
 
 musicServicesShield.prototype.onStart = function() {
