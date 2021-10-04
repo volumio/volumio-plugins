@@ -14,6 +14,8 @@
     "NO":"No",
     "YES":"Yes",
     "CANCEL":"Cancel",
-    "GO":"Go"
+    "GO":"Go",
+    "CONTINUE":"Continue",
+    "IGNORE_ERRS":"Ignore Errors"
   }
 }

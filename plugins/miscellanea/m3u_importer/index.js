@@ -105,65 +105,40 @@ m3uImporter.prototype.importDone = function() {
     var self = this;
 
     if(self.errMsg != '') {
-        self.commandRouter.pushToastMessage('error',self.errMsg);
         self.errMsg = '';
     }
 
     self.logMsg('importDone:');
-    if (self.errMsg != '') {
-        var modalData = {
-           title: 'Error',
-           message: self.errMsg,
-           size: 'lg',
-           buttons: [{
-              name: 'Close',
-              class: 'btn btn-warning',
-              emit: 'closeModals',
-              payload: ''
-           },]
-        }
-        self.commandRouter.broadcastMessage("openModal", modalData);
-    }
-    else {
-        var msg = '';
-        if(self.playlistsImported > 0) {
-            msg = 'Successfully imported ' + self.playlistsImported + 
-                ' playlists';
+	var msg = '';
+	if(self.playlistsImported > 0) {
+		msg = 'Successfully imported ' + self.playlistsImported + 
+			' playlists';
 
-            if(self.tracksReferenced > 0) {
-                msg += ' which referenced ' + self.tracksReferenced + ' tracks';
-            }
-            if(self.stationsReferenced > 0) {
-                if(self.tracksReferenced > 0) {
-                    msg += ' and ';
-                }
-                else {
-                    msg += ' which referenced ';
-                }
-                msg += self.stationsReferenced + ' web radio stations';
-            }
-            msg += '.';
-        }
-        else if(self.playlistsSkipped > 0) {
-            msg += self.playlistsSkipped + ' playlists were skipped.';
-        }
-        else {
-            msg = 'No M3U playlists were found.';
-        }
-        var modalData = {
-           title: 'Results',
-           message: msg,
-           size: 'lg',
-           buttons: [{
-              name: 'Close',
-              class: 'btn btn-info',
-              emit: 'closeModals',
-              payload: ''
-           },]
-        }
-        self.commandRouter.broadcastMessage("openModal", modalData);
-    }
+		if(self.tracksReferenced > 0) {
+			msg += ' referencing ' + self.tracksReferenced + ' tracks';
+		}
+		if(self.stationsReferenced > 0) {
+			if(self.tracksReferenced > 0) {
+				msg += ' and ';
+			}
+			else {
+				msg += ' referencing ';
+			}
+			msg += self.stationsReferenced + ' web radio stations';
+		}
+		msg += '.';
 
+		if(self.tracksNotfound > 0) {
+			msg += ' ' + self.tracksNotfound + ' entries were ignored.';
+		}
+	}
+	else if(self.playlistsSkipped > 0) {
+		msg += self.playlistsSkipped + ' existing playlists were skipped.';
+	}
+	else {
+		msg = 'No M3U playlists were imported.';
+	}
+	self.commandRouter.pushToastMessage('success',msg);
     fs.close(self.logFile);
 }
 
@@ -183,6 +158,7 @@ m3uImporter.prototype.doImport = function(args) {
     self.files = [];
     self.modalResult = '';
     self.ignoreErrs = false;
+	self.haveExtInf = false;
     var fileOrDir = args['fileOrDir'];
 
     self.logMsg('doImport: which="' + self.which + '", fileOrDir="' + 
@@ -199,6 +175,7 @@ m3uImporter.prototype.doImport = function(args) {
             self.files = [fileOrDir];
         }
         self.importPlaylists();
+		var self = this;
     }
     else {
         self.errMsg = '"' + fileOrDir + ' does not exist';
@@ -218,8 +195,12 @@ m3uImporter.prototype.getI18nFile = function (langCode) {
   return path.join(__dirname, 'i18n', 'strings_en.json');
 };
 
-m3uImporter.prototype.import_m3u = function (file) {
+m3uImporter.prototype.import_m3u = function () 
+{
     var self = this;
+	var file = self.currentPlaylist;
+	var askingUser = false;
+
     self.logMsg('import_m3u: file "' + file + '"');
     self.logMsg('  modalResult: "' + self.modalResult + '"');
 
@@ -230,6 +211,7 @@ m3uImporter.prototype.import_m3u = function (file) {
     else {
         var m3u_path = self.dir + '/' + file;
     }
+    this.first = true;
     self.playlist_out = fs.openSync(self.playlist_path,'w')
     self.logMsg('  processing '+ m3u_path)
     var fileData = fs.readFileSync(m3u_path).toString('utf8');
@@ -248,98 +230,157 @@ m3uImporter.prototype.import_m3u = function (file) {
     else { 
         self.logMsg('  file is empty ??? ');
     }
-    var lines = fileData.split('\n');
+    self.m3uLines = fileData.split('\n');
+    self.m3uLine = 0;
+    self.extendedM3u = false;
 
-    if(lines[0].startsWith('#EXTM3U')) {
-        self.logMsg('  calling importExtendedM3u');
-        self.importExtendedM3u(lines);
+    if(self.m3uLines[0].startsWith('#EXTM3U')) {
+        self.extendedM3u = true;
+		self.m3uLine++;
     }
-    else {
-        self.logMsg('  calling importSimpleM3u');
-        self.importSimpleM3u(lines);
-    }
-    self.logMsg('-----');
-    fs.closeSync(self.playlist_out);
+	return self.import_m3uLines();
 }
 
-m3uImporter.prototype.importExtendedM3u = function(lines) {
+m3uImporter.prototype.import_m3uLines = function () 
+{
     var self = this;
-    this.first = true;
+	var askingUser = false;
+
+    while(self.m3uLine < self.m3uLines.length) {
+		self.logMsg('m3uLine: ' + self.m3uLine);
+        var line = self.m3uLines[self.m3uLine].trim();
+        if(line.length == 0 || (!self.extendedM3u && line.startsWith('#'))) {
+        // ignore blank lines and comments in simple files
+			self.logMsg('ignoring blank line: ' + line);
+        }
+        else if(self.extendedM3u) {
+			if((askingUser = self.importExtendedM3u())) {
+			// asking user for feedback
+				self.logMsg('importExtendedM3u returned true');
+				break;
+			}
+        }
+        else {
+			if((askingUser = self.importSimpleM3u())) {
+			// asking user for feedback
+				self.logMsg('importSimpleM3u returned true');
+				break;
+			}
+        }
+		self.m3uLine++;
+    }
+
+    if(self.m3uLine >= self.m3uLines.length) {
+		if(!this.first) {
+			fs.writeSync(self.playlist_out,']');
+		}
+        self.logMsg('-----');
+        fs.closeSync(self.playlist_out);
+		self.fileNdx++;
+		self.importPlaylists();
+    }
+	return askingUser;
+}
+
+m3uImporter.prototype.importExtendedM3u = function() 
+{
+    var self = this;
     var artist;
     var title;
     var split_index;
     var comma_index;
-    var extinf;
     var parseErr = false;
-    var haveExtInf = false;
     var errMsg = '';
+    var askingUser = false;
+	var line = self.m3uLines[self.m3uLine].trim();
 
-    for (let i = 1; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if(line.length == 0) {
-        // ignore blank lines
-            continue;
-        }
-        if(haveExtInf) {
-            haveExtInf = false;
-            if(line.startsWith('http://') || line.startsWith('https://')) {
-                this.webRadioUri(line,title);
-            }
-            else {
-                var uri = line.replace(/\\/g,'/');
-                this.fileUri(uri,artist,title);
-            }
-        }
-        else if(line.startsWith('#EXTINF:')) {
-        // get artist and title from #EXTINF line
-            if((comma_index = line.indexOf(',')) > 0) {
-                haveExtInf = true;
-                extinf = line.replace(/"/g,"\\\"");
-                self.logMsg('  extinf: ' + extinf);
-                if((split_index = line.indexOf(' - ')) > 0) {
-                    artist = extinf.substring(comma_index + 1,split_index).trim();
-                    title = extinf.substring(split_index + 3).trim();
-                }
-                else {
-                    artist = '';
-                    title = extinf.substring(comma_index + 1).trim();
-                }
-            }
-            else {
-                parseErr = true;
-            }
-        }
-        else if(line.startsWith('#')) {
-            if(haveExtInf) {
-                parseErr = true;
-                errMsg = ', expected url';
-            }
-        }
-        else if(line.length != 0) {
-            parseErr = true;
-        }
+	self.logMsg('importExtendedM3u line:');
+	self.logMsg('  ' + line);
 
-        if(parseErr) {
-            parseErr = false;
-            var msg = 'parsing error' + errMsg + ' : ' + line;
-            self.reportErr(msg);
-            errMsg = '';
-        }
-    }
+	if(self.haveExtInf) {
+		if(line.startsWith('http://') || line.startsWith('https://')) {
+			self.haveExtInf = false;
+			self.uri = line;
+			this.webRadioUri();
+		}
+		else {
+			self.uri = line.replace(/\\/g,'/');
+			if(!(askingUser = this.fileUri())) {
+				self.haveExtInf = false;
+			}
+		}
+	}
+	else if(line.startsWith('#EXTINF:')) {
+	// get artist and title from #EXTINF line
+		var extinf = line.replace(/"/g,"\\\"");
+		if((comma_index = extinf.indexOf(',')) > 0) {
+			self.haveExtInf = true;
+			self.logMsg('  extinf: ' + extinf);
+			if((split_index = extinf.indexOf(' - ')) > 0) {
+				self.artist = extinf.substring(comma_index + 1,split_index).trim();
+				self.title = extinf.substring(split_index + 3).trim();
+			}
+			else {
+				self.artist = '';
+				self.title = extinf.substring(comma_index + 1).trim();
+			}
+		}
+		else {
+			errMsg = ', no comma';
+			parseErr = true;
+		}
+	}
+	else if(line.startsWith('#')) {
+		if(self.haveExtInf) {
+			parseErr = true;
+			errMsg = ', expected uri';
+		}
+	}
+	else {
+		parseErr = true;
+	}
 
-    if(!this.first) {
-        fs.writeSync(self.playlist_out,']');
-    }
+	if(parseErr) {
+		parseErr = false;
+		var msg = 'parsing error' + errMsg + ': ' + line;
+		self.logMsg('  ' + msg);
+	}
+    return askingUser;
 }
 
-m3uImporter.prototype.fileUri = function(uri,artist,title) 
+m3uImporter.prototype.fileUri = function() 
 {
     var self = this;
 
-    self.logMsg('  artist: "' + artist + '"');
-    self.logMsg('  title: "' + title + '"');
-    self.logMsg('  uri line: "' + uri + '"');
-    var uri_path = path.normalize(self.dir + '/' + uri);
+    self.logMsg('  artist: "' + self.artist + '"');
+    self.logMsg('  title: "' + self.title + '"');
+    self.logMsg('  uri line: "' + self.uri + '"');
+    self.logMsg('  modalResult: "' + self.modalResult+ '"');
+    var uri_path = path.normalize(self.dir + '/' + self.uri);
+    var askingUser = false;
+
+	if(self.modalResult != '') {
+	// handle the user's answer
+		var modalResult = self.modalResult;
+		self.modalResult = '';
+		switch(modalResult) {
+			case 'continue':
+				self.tracksNotfound++;
+				self.m3uLine++;
+				self.haveExtInf = false;
+				self.import_m3uLines();
+				return true;
+
+			case 'ignore_errs':
+				self.ignoreErrs = true;
+				break;
+
+			case 'cancel':
+				self.fileNdx = self.files.length;
+				self.importPlaylists();
+				return true;
+		}
+	}
 
     if(fs.existsSync(uri_path)) {
         self.tracksReferenced++;
@@ -354,19 +395,31 @@ m3uImporter.prototype.fileUri = function(uri,artist,title)
 
         var entry = '{"service":"mpd",' +
                     '"uri":"' + uri_path.substring(1) + 
-                    '","title":"' + title + '"';
+                    '","title":"' + self.title + '"';
 
-        if(artist != '') {
-            entry += ',"artist":"' + artist + '"'
+        if(self.artist != '') {
+            entry += ',"artist":"' + self.artist + '"'
         }
         entry += '}'
         fs.writeSync(self.playlist_out,entry);
     }
-    else {
-        var msg = "Couldn't find " + '"' + path.basename(uri_path) + '"';
-        self.reportErr(msg);
-        self.tracksNotfound++;
+    else if(!self.ignoreErrs){
+		askingUser = true;
+		var msg = 'While processing '+ self.currentPlaylist +
+			" couldn't find " + '"' + path.basename(uri_path) + '"';
+		self.logMsg(msg);
+		self.modalCallback = self.fileUri;
+		self.displayErr(msg);
     }
+	else {
+		self.tracksNotfound++;
+		self.m3uLine++;
+		self.haveExtInf = false;
+		self.import_m3uLines();
+		return true;
+	}
+
+    return askingUser;
 }
 
 m3uImporter.prototype.webRadioUri = function(line,title) {
@@ -389,71 +442,53 @@ m3uImporter.prototype.webRadioUri = function(line,title) {
     fs.writeSync(self.playlist_out,entry);
 }
 
-m3uImporter.prototype.importSimpleM3u = function(lines) 
+m3uImporter.prototype.importSimpleM3u = function() 
 {
     var self = this;
     var artist = '';
     var title = '';
     var split_index;
-
+    var askingUser = false;
     this.first = true;
+	var line = self.m3uLines[self.m3uLine].trim();
 
-    for (let i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if(line.length == 0 || line.startsWith('#')) {
-        // ignore blank lines and comments
-            continue;
-        }
-    // Simple M3U, get title from filename
-        var uri = line.replace(/\\/g,'/');
-        var ext = path.extname(uri);
-        var basename = path.basename(uri,ext);
-        if((split_index = basename.indexOf(' - ')) > 0) {
-            artist = basename.substring(0,split_index).trim();
-            title = basename.substring(split_index + 3).trim();
-        }
-        else {
-            artist = 'unknown';
-            title = basename;
-        }
+// Simple M3U, get title from filename
+	var uri = line.replace(/\\/g,'/');
+	var ext = path.extname(uri);
+	var basename = path.basename(uri,ext);
+	if((split_index = basename.indexOf(' - ')) > 0) {
+		artist = basename.substring(0,split_index).trim();
+		title = basename.substring(split_index + 3).trim();
+	}
+	else {
+		artist = 'unknown';
+		title = basename;
+	}
 
-        if(line.startsWith('http://') || line.startsWith('https://')) {
-            this.webRadioUri(uri,title);
-        }
-        else {
-            this.fileUri(uri,artist,title);
-        }
-    }
+	if(line.startsWith('http://') || line.startsWith('https://')) {
+		this.webRadioUri(uri,title);
+	}
+	else {
+		askingUser = this.fileUri(uri,artist,title);
+	}
 
-    if(!this.first) {
-        fs.writeSync(self.playlist_out,']');
-    }
+    return askingUser;
 }
-
-m3uImporter.prototype.reportErr = function (msg) {
-    var self = this;
-    if(self.errMsg == '') {
-        self.errMsg += 'While processing ' + self.currentPlaylist + '<br>';
-    }
-    self.errMsg += msg + '\n';
-    self.logMsg('  ' + msg);
-}
-
 
 m3uImporter.prototype.importPlaylists = function () {
     var self = this;
-    var convert_playlist = false;
     var askingUser = false;
 
-    self.logMsg('importPlaylists: file ' + (self.fileNdx + 1) + ' of ' + 
-                self.files.length + ' modalResult "' + self.modalResult + '"');
-
     while(self.fileNdx < self.files.length) {
+		self.logMsg('importPlaylists: file ' + (self.fileNdx + 1) + ' of ' + 
+					self.files.length + ' modalResult "' + 
+					self.modalResult + '"');
         var file = self.files[self.fileNdx];
         var plist_ext = path.extname(file);
         var basename = path.basename(file,plist_ext);
         self.playlist_path = playlistdir + basename;
         var playlist_exists = false;
+		var convert_playlist = false;
 
         try {
             var stats = fs.lstatSync(self.playlist_path)
@@ -516,19 +551,28 @@ m3uImporter.prototype.importPlaylists = function () {
             break;
         }
 
+		let importer;
         if(convert_playlist) {
             switch (plist_ext.toLowerCase()) {
                 case '.m3u':
                 case '.m3u8':
-                    self.import_m3u(file);
+                    importer = self.import_m3u();
                     break;
 
                 default:
-                    self.logMsg('File "' + file + '" ignored');
                     break;
             }
         }
-        self.fileNdx++;
+
+		if(importer === undefined) {
+			self.logMsg('  File "' + file + '" ignored');
+			self.fileNdx++;
+		}
+		else {
+			self.logMsg('calling importer');
+			self.importer();
+			break;
+		}
     }
 
     if(self.fileNdx >= self.files.length) {
@@ -600,9 +644,8 @@ m3uImporter.prototype.ask2Import = function(playlist) {
 }
 
 // Display error message, continue/ignore errors/cancel
-m3uImporter.prototype.displayErr = function() {
+m3uImporter.prototype.displayErr = function(message) {
   var self = this;
-  var message = self.errMsg;
   self.logMsg('   message: "' + message + '"');
 
   var modalData = {
@@ -611,23 +654,23 @@ m3uImporter.prototype.displayErr = function() {
     size: 'lg',
     buttons: [
       {
-        name: self.commandRouter.getI18nString('M3U_IMPORT.YES'),
+        name: self.commandRouter.getI18nString('M3U_IMPORT.CONTINUE'),
         class: 'btn btn-info',
         emit: 'callMethod',
         payload: { 
             endpoint: 'miscellanea/m3u_importer',
             method: 'dialog_result',
-            data: 'yes'
+            data: 'continue'
         }
       },
       {
-        name: self.commandRouter.getI18nString('M3U_IMPORT.NO'),
+        name: self.commandRouter.getI18nString('M3U_IMPORT.IGNORE_ERRS'),
         class: 'btn btn-default',
         emit: 'callMethod',
         payload: {
           endpoint: 'miscellanea/m3u_importer',
           method: 'dialog_result',
-          data: 'no'
+          data: 'ignore_errs'
         }
       },
       {
