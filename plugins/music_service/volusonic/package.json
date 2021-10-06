@@ -1,6 +1,6 @@
 {
 	"name": "volusonic",
-	"version": "1.2.3",
+	"version": "2.0.1",
 	"description": "Subsonic plugin for Volumio. Allows any subsonic API (1.10.2 minimum, full features >=1.14.0) capable server (subsonic / airsonic / ampache / owncloud / nextcloud / etc..) to be used as a backend for Volumio",
 	"main": "index.js",
 	"scripts": {
