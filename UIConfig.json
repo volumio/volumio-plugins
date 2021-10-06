@@ -1,0 +1,28 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+     {
+      "id": "trueprevious",
+      "element": "section",
+      "label": "Remote Previous",
+      "icon": "fa-step-backward",
+
+      "content": [
+          {
+          "id": "trueprevious",
+          "element": "button",
+          "doc": "TRANSLATE.TRUEPREVIOUS_DOC",
+          "label": "TRANSLATE.TRUEPREVIOUS_LBL",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "user_interface/remote_previous",
+            "method": "truePrevious"
+            }
+          }
+      ]
+   }
+  ]
+}
+
