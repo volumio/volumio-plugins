@@ -456,14 +456,14 @@ m3uImporter.prototype.fileUri = function()
     return askingUser;
 }
 
-m3uImporter.prototype.webRadioUri = function(line,title) {
+m3uImporter.prototype.webRadioUri = function() {
     var self = this;
 
     self.stationsReferenced++;
-    self.logMsg('  title: "' + title + '"');
+    self.logMsg('  title: "' + self.title + '"');
     var entry = '{"service":"webradio",' +
-                '"uri":"' + line + 
-                '","title":"' + title + 
+                '"uri":"' + self.uri + 
+                '","title":"' + self.title + 
                 '","icon":"fa-microphone"}'
 
     if(self.first) {
