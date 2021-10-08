@@ -31,7 +31,6 @@
           "element": "input",
           "doc": "TRANSLATE.M3U_IMPORT.M3U_DIR_DOC",
           "label": "TRANSLATE.M3U_IMPORT.M3U_DIR_LBL",
-          "attributes": [ {"placeholder": "/mnt/USB/Playlists"} ],
           "value": ""
         },
         {

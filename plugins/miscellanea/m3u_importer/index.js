@@ -1,12 +1,26 @@
+/*  Copyright (C) 2021  Skip Hansen
+ * 
+ *  This program is free software; you can redistribute it and/or modify it
+ *  under the terms and conditions of the GNU General Public License,
+ *  version 2, as published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope it will be useful, but WITHOUT
+ *  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ *  more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 'use strict';
 
 var libQ = require('kew');
 var fs=require('fs-extra');
 var config = new (require('v-conf'))();
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
-const util = require('util');
 const path = require('path');
+// const util = require('util');
 
 const playlistdir = '/data/playlist/'
 
@@ -51,8 +65,6 @@ m3uImporter.prototype.onStop = function() {
 };
 
 m3uImporter.prototype.onRestart = function() {
-    var self = this;
-    // Optional, use if you need it
 };
 
 
@@ -61,6 +73,21 @@ m3uImporter.prototype.onRestart = function() {
 m3uImporter.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
+    var mountPoints = ['USB','NAS','INTERNAL'];
+    var files = fs.readdirSync('/mnt/USB');
+    var defaultPath = '';
+
+    for( let i = 0; i < mountPoints.length; i++) {
+        files = fs.readdirSync('/mnt/' + mountPoints[i]);
+        if(files.length > 0) {
+            defaultPath = mountPoints[i] + '/';
+            if(mountPoints[i] != 'INTERNAL') {
+            // USB or NAS, include unique identifier or server name
+                defaultPath += files[0] + '/';
+            }
+            break;
+        }
+    }
 
     var lang_code = self.commandRouter.sharedVars.get('language_code');
 
@@ -69,8 +96,7 @@ m3uImporter.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
-
+            uiconf.sections[0].content[0].value = defaultPath;
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -86,20 +112,13 @@ m3uImporter.prototype.getConfigurationFiles = function() {
 }
 
 m3uImporter.prototype.setUIConfig = function(data) {
-    var self = this;
-    //Perform your installation tasks here
 };
 
 m3uImporter.prototype.getConf = function(varName) {
-    var self = this;
-    //Perform your installation tasks here
 };
 
 m3uImporter.prototype.setConf = function(varName, varValue) {
-    var self = this;
-    //Perform your installation tasks here
 };
-
 
 m3uImporter.prototype.importDone = function() {
     var self = this;
@@ -164,7 +183,7 @@ m3uImporter.prototype.doImport = function(args) {
     self.modalResult = '';
     self.ignoreErrs = false;
     self.haveExtInf = false;
-    var fileOrDir = args['fileOrDir'];
+    var fileOrDir = '/mnt/' + args['fileOrDir'];
 
     self.logMsg('doImport: which="' + self.which + '", fileOrDir="' + 
                 fileOrDir + '"');
