@@ -81,6 +81,15 @@ be found and an error message will be displayed.
 | Ignore Errors | Ignore file and continue processing playlist, ignore further errors |
 | Cancel | Stop importing playlists |
 
+## Compatibility
+
+I have only tested this plugin on a Rpi4, but since it's 100% Javascript and has no hardware
+dependencies I would expect it to run on other platforms without a problem.
+
+Plugins are not but offically supported on on 3.x yet. but I was able to get it to work after
+mounting my USB flash drive manually.  I expect this plugin it to as compatible with 3.x as 
+other 2.x plugins.
+
 ## Support
 
 Please feel free to create a new [issue](https://github.com/skiphansen/volumio-plugins/issues)
