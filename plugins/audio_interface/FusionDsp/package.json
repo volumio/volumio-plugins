@@ -13,17 +13,15 @@
 		"prettyName": "FusionDsp",
 		"icon": "fa-sliders fa-rotate-90",
 		"plugin_type": "audio_interface",
-		"variant": "volumio",
-		"channel": "beta",
-		"architectures": [
-			"armhf",
-			"amd64"
-		],
 		"os": [
 			"buster"
 		],
 		"changelog": "first uploadable version",
 		"details": "Multimode Dsp, with graphic equalizer, parametric equalizer, FIR filters, Loudness, AutoEq profile for headphone and more",
+		"architectures": [
+			"armhf",
+			"amd64"
+		],
 		"has_alsa_contribution": true
 	},
 	"dependencies": {
