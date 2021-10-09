@@ -3,5 +3,135 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
+    {
+      "id": "serial_interface",
+      "element": "section",
+      "label": "TRANSLATE.SERIAL_INTERFACE",
+      "icon": "fa-plug",
+      "onSave": {"type":"", "endpoint":"", "method":""},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+        ]
+      },
+      "content":[
+        {
+          "id": "serial_interface_dev",
+          "element": "select",
+          "label": "TRANSLATE.SERIAL_INTERFACE_DEVICE",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            },
+            {
+              "value": 1,
+              "label": "DUMMY 1"
+            },
+            {
+              "value": 2,
+              "label": "Dummy 2"
+            }
+          ]          
+        }
+      ]
+    },
+    {
+      "id": "amp_settings",
+      "element": "section",
+      "label": "TRANSLATE.AMP_SETTINGS",
+      "icon": "fa-volume-up",
+      "onSave": {"type":"", "endpoint":"", "method":""},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+        ]
+      },
+      "content":[
+        {
+          "id": "amp_type",
+          "element": "select",
+          "label": "TRANSLATE.AMP_TYPE",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            },
+            {
+              "value": 1,
+              "label": "ROTEL A11"
+            },
+            {
+              "value": 2,
+              "label": "ROTEL A12"
+            },
+            {
+              "value": 3,
+              "label": "ROTEL A14"
+            }
+          ]          
+        },
+        {
+          "id": "volumio_input",
+          "element": "select",
+          "label": "TRANSLATE.VOLUMIO_INPUT",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            },
+            {
+              "value": 1,
+              "label": "Optical 1"
+            },
+            {
+              "value": 2,
+              "label": "Aux 1"
+            },
+            {
+              "value": 3,
+              "label": "Tape 1"
+            }
+          ]          
+        },
+        {
+          "id":"pause_when_muted",
+          "element":"switch",
+          "label": "TRANSLATE.PAUSE_WHEN_MUTED",
+          "doc": "TRANSLATE.D_PAUSE_WHEN_MUTED",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "debug_settings",
+      "element": "section",
+      "label": "TRANSLATE.SET_DEBUG",
+      "description": "TRANSLATE.D_SET_DEBUG",
+      "icon": "fa-bug",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateDebugSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "logging"
+        ]
+      },
+      "content": [
+        {
+          "id":"logging",
+          "element":"switch",
+          "label": "TRANSLATE.LOGGING",
+          "doc": "TRANSLATE.D_LOGGING",
+          "value": false
+        }
+      ]
+    }    
   ]
 }

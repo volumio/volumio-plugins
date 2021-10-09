@@ -1,4 +1,15 @@
 {
-  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
-  "SAVE":"Save"
+  "PLUGIN_CONFIGURATION":"ROTEL Amplifier Control Configuration",
+  "SAVE":"Save",
+  "SERIAL_INTERFACE":"Serial Interface",
+  "SERIAL_INTERFACE_DEVICE":"Device",
+  "SET_DEBUG":"Debug Settings",
+  "D_SET_DEBUG":"Settings for functional debugging.",
+  "LOGGING":"Logging",
+  "D_LOGGING":"Switch the output of log messages on or off. Error messages are always logged.",
+  "AMP_SETTINGS":"Amplifier Settings",
+  "AMP_TYPE":"Brand/Type",
+  "VOLUMIO_INPUT":"Volumio's Input",
+  "PAUSE_WHEN_MUTED":"Pause when Muted",
+  "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted."
 }

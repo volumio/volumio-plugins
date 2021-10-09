@@ -37,8 +37,22 @@ rotelampcontrol.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
+    var ampDefinitionFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
+
     self.commandRouter.logger.info('onStart function got additional conf: ' + JSON.stringify(device));
 	
+    //get available devices for UI
+    self.listSerialDevices()
+    .then(function(list) {
+        self.logger.info('[ROTELAMPCONTROL] onStart: found ' + list.length + ' devices: ' + list);
+    });
+    //configure interface if amp selected
+    //update volume settings
+    //install listener to catch info from amp
+    
+    this.config.loadFile(ampDefinitionFile);
+    self.commandRouter.logger.info('onStart function loaded ampDefinitionFile with config for ' + JSON.stringify(this.config));
+
 	setTimeout(function() {
 		self.configSerialInterface();
 		defer.resolve();
@@ -48,7 +62,7 @@ rotelampcontrol.prototype.onStart = function() {
 };
 
 rotelampcontrol.prototype.getConfigurationFiles = function() {
-	return ['config.json'];
+	return ['config.json','ampCommands.json'];
 }
 
 rotelampcontrol.prototype.onStop = function() {
@@ -122,6 +136,37 @@ rotelampcontrol.prototype.configSerialInterface = function (){
 
 };
 
+rotelampcontrol.prototype.listSerialDevices = function() {
+    //read and return devices connected to RPi
+    var self = this;
+    var defer = libQ.defer();
+
+    self.commandRouter.logger.info('[ROTELAMPCONTROL] listSerialDevices');
+	exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+        if (error !== null) {
+            self.logger.error('[ROTELAMPCONTROL] listSerialDevices: Cannot list serial devices - ' + error)
+            defer.reject();
+        } else {
+            self.logger.info('[ROTELAMPCONTROL] listSerialDevices: ' + stdout);
+            let devArray = stdout.split(/[\r\n|\n|\r]/).filter(String);
+            defer.resolve(devArray);
+        }
+    });
+
+    return defer.promise;
+}
+
+rotelampcontrol.prototype.activateListener = function() {
+    //connect a listener to the port to read data from amp
+}
+
+rotelampcontrol.prototype.sendCommand  = function() {
+    //send a command to the amp
+}
+
+rotelampcontrol.prototype.parseResponse = function() {
+    //interpret and react on messages from amp
+}
 
 rotelampcontrol.prototype.addVolumeScripts = function() {
     var self = this;
@@ -134,7 +179,7 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
     var minVol = 0;
     var maxVol = 50;
 //    var mapTo100 = self.config.get('map_to_100', false);
-	var mapTo100 = true;
+	var mapTo100 = false;
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
@@ -149,10 +194,12 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
     var device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
     var name = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[device].name;
     var mixer = 'ROTEL A12';
-    var maxVolume = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax');
+    // var maxVolume = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax');
+    var maxVolume = "50";
     var volumeCurve = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
-    var volumeSteps = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumesteps');
-    var mixerType = 'Other';
+    // var volumeSteps = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumesteps');
+    var volumeSteps = "1";
+    var mixerType = 'Software';
     var volSettingsData = {
         'device': device,
         'name': name,
@@ -163,10 +210,12 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
         'mixertype': mixerType
     };
     self.logger.info("ROTEL amp: Volume Settings: " + JSON.stringify(volSettingsData))
+    self.commandRouter.volumioUpdateVolumeSettings(volSettingsData);
 //	self.commandRouter.setStartupVolume();
 };
 
-// rotelampcontrol.prototype.addVolumeSettings = function() {
+rotelampcontrol.prototype.updateVolumeSettings = function() {
+//update the volumio Volume Settings, mainly make this an Override plugin
 // 	var self = this;
 
 // 	var data = {
@@ -185,9 +234,10 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
 // 		overridePluginType = 'miscellanea',
 // 		overridePluginName = 'rotelampcontrol'
 // 	}
-// };
+};
 
-// rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
+rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
+    //override the alsavolume function to send volume commands to the amp
 // 	var self = this;
   
 // 	//   var defer = libQ.defer();
@@ -335,9 +385,10 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
 // 	// 	}
 // 	//   }
 // 	  return defer.promise;
-// };
+};
   
-// rotelampcontrol.prototype.retrievevolume = function () {
+rotelampcontrol.prototype.retrievevolume = function () {
+    //override the retrievevolume function to read the volume from the amp
 // 	var self = this;
   
 // 	  var defer = libQ.defer();
@@ -368,7 +419,7 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
 // 	// 	  });
 // 	// 	});
 // 	  return defer.promise;
-//   };
+};
   
 rotelampcontrol.prototype.removeVolumeScripts = function() {
     var self = this;
@@ -386,15 +437,20 @@ rotelampcontrol.prototype.removeVolumeScripts = function() {
     self.commandRouter.updateVolumeScripts(data);
 };
 
-
-
-
-
-
-
 rotelampcontrol.prototype.getAdditionalConf = function (type, controller, data) {
     var self = this;
     var confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
     return confs;
 };
 
+//Gets called when user changes and saves debug settings
+rotelampcontrol.prototype.updateDebugSettings = function (data) {
+	var self = this;
+	var defer = libQ.defer();
+	if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateDebugSettings: Saving Debug Settings:' + JSON.stringify(data));
+	self.config.set('logging', (data['logging']))
+	self.debugLogging = data['logging'];
+	defer.resolve();
+//	self.commandRouter.pushToastMessage('success', self.getI18nString('ROTARYENCODER2.TOAST_SAVE_SUCCESS'), self.getI18nString('ROTARYENCODER2.TOAST_DEBUG_SAVE'));
+	return defer.promise;
+};

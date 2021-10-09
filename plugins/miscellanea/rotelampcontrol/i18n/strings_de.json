@@ -1,0 +1,15 @@
+{
+  "PLUGIN_CONFIGURATION":"ROTEL Verstärker Steuerung - Konfiguration",
+  "SAVE":"Speichern",
+  "SERIAL_INTERFACE":"Serielle Schnittstelle",
+  "SERIAL_INTERFACE_DEVICE":"Gerät",
+  "SET_DEBUG":"Fehlersuche",
+  "D_SET_DEBUG":"Einstellungen für die funktionale Fehlersuche.",
+  "LOGGING":"Protokoll ausgeben",
+  "D_LOGGING":"Schaltet die Ausgabe eines Ablaufprotokolls ein. Fehlermeldungen werden immer ausgegeben.",
+  "AMP_SETTINGS":"Verstärker Einstellungen",
+  "AMP_TYPE":"Hersteller/Typ",
+  "VOLUMIO_INPUT":"Volumio Eingang",
+  "PAUSE_WHEN_MUTED":"Pausieren bei 'Stumm'",
+  "D_PAUSE_WHEN_MUTED": "Pausiert die Wiedergabe in Volumio, wenn der Verstärker 'Stumm' geschaltet wird."
+}
