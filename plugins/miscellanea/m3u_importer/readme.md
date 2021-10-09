@@ -18,7 +18,7 @@ for more information.
 
 3. Download and install the plugin by running the following commands:
 ```
-wget https://github.com/skiphansen/volumio-plugins/tree/m3u_importer/plugins/miscellanea/m3u_importer/m3u_importer.zip
+wget https://github.com/skiphansen/volumio-plugins/raw/master/plugins/miscellanea/m3u_importer/m3u_importer.zip
 mkdir m3u_importer
 cd m3u_importer
 miniunzip ../m3u_importer.zip
@@ -78,7 +78,7 @@ be found and an error message will be displayed.
 | Response | Action |
 |-|-|
 | Continue | Ignore file and continue processing playlist |
-| Ignore Errors | Ignore file and continue processing playlist, ignore further errors |
+| Ignore Errors | Ignore file and continue processing playlist, ignoring further errors |
 | Cancel | Stop importing playlists |
 
 ## Compatibility
@@ -97,4 +97,4 @@ if you run into problems.  The paint is very wet on this plugin and feedback is
 welcome.
 
 The plug creates a verbose log file in /tmp/m3u_importer.log, please download the
-log and attach to new issues.
+log and attach it to new issues.
