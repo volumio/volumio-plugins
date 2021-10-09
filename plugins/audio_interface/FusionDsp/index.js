@@ -3256,29 +3256,37 @@ FusionDsp.prototype.updatelist = function (data) {
 FusionDsp.prototype.resampling = function (data) {
   const self = this;
   let defer = libQ.defer();
-  let selectedsp = self.config.get('selectedsp')
-  if (selectedsp == "convfir") {
-    var responseData = {
-      title: self.commandRouter.getI18nString('SAMPLE_WARNING_TITLE'),
-      message: self.commandRouter.getI18nString('SAMPLE_WARNING_MESS'),
-      size: 'lg',
-      buttons: [
-        {
-          name: self.commandRouter.getI18nString('GET_IT'),
-          class: 'btn btn-cancel',
-          emit: 'closeModals',
-          payload: ''
-        },
-      ]
+  var mpdresample = this.getAdditionalConf('audio_interface', 'alsa_controller', 'resampling');
+  if (mpdresample) {
+    self.logger.error('Resampling must be disabled in playback settings in order to enable this feature');
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('RESAMPLING_WARN'));
+    self.refreshUI();
+
+    return
+  } else {
+    let selectedsp = self.config.get('selectedsp')
+    if (selectedsp == "convfir") {
+      var responseData = {
+        title: self.commandRouter.getI18nString('SAMPLE_WARNING_TITLE'),
+        message: self.commandRouter.getI18nString('SAMPLE_WARNING_MESS'),
+        size: 'lg',
+        buttons: [
+          {
+            name: self.commandRouter.getI18nString('GET_IT'),
+            class: 'btn btn-cancel',
+            emit: 'closeModals',
+            payload: ''
+          },
+        ]
+      }
+      self.commandRouter.broadcastMessage("openModal", responseData);
     }
-    self.commandRouter.broadcastMessage("openModal", responseData);
+
+    self.config.set('enableresampling', data['enableresampling'])
+    self.config.set('resamplingset', data['resamplingset'].value)
+    self.config.set('resamplingq', data['resamplingq'].value)
+    self.createCamilladspfile()
   }
-
-  self.config.set('enableresampling', data['enableresampling'])
-  self.config.set('resamplingset', data['resamplingset'].value)
-  self.config.set('resamplingq', data['resamplingq'].value)
-  self.createCamilladspfile()
-
   return defer.promise;
 };
 //-----------DRC-FIR section----------------

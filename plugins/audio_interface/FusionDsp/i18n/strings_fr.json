@@ -32,6 +32,7 @@
   "MONOOUTPUT": "ON=mono/OFF=Stereo",
   "PAGE_LABEL": "FusionDsp avec CamillaDsp",
   "RESAMPLING": "Rééchantillionnage",
+  "RESAMPLING_WARN":"Le rééchantillonage doit être désactivé dans les réglages de lecture pour utiliser cette fonction",
   "RIGHTLEVEL": "Gain canal droit",
   "SAVEPRESET": "Sauver les réglages courants",
   "TYPEEQ_DOC": "Choisissez le type d'égaliseur. Possible: PEAKING, LOWSHELF, HIGHSHELF, HIGHPASS, LOWPASS, NOTCH",

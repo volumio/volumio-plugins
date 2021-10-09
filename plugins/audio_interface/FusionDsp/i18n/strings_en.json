@@ -116,6 +116,7 @@
   "CLIPPING_DETECT_TEST": "Test",
   "FILTER_LENGTH": "Filter length is :",
   "RESAMPLING": "Resampling",
+  "RESAMPLING_WARN":"Resampling must be disabled in playback settings in order to enable this feature",
   "ENABLE_RESAMPLING": "Enable resampling",
   "ENABLE_RESAMPLING_DOC": "Enable gerneral resampling in Volumio",
   "RESAMPLING_RATE": "Resampling rate",

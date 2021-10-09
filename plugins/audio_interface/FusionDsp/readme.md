@@ -1,4 +1,4 @@
-October 2nd 2021
+October 9th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+October 9th 2021
+
+- resampling only if disabled in playback settings
+- publish for amd64
 
 October 2nd 2021
 
