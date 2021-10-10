@@ -19,5 +19,9 @@
   "PAUSE_WHEN_INPUT_CHANGED":"Pausieren bei Wechsel des Eingangs",
   "D_PAUSE_WHEN_INPUT_CHANGED":"Pausiert die Wiedergabe in Volumio, wenn am Verstärker der Audio-Eingang gewechselt wird.",
   "STARTUP_VOLUME":"Start-Lautstärke",
-  "D_STARTUP_VOLUME":"Anfangslautstärke beim Start von Volumio und bei der Rückkehr des Verstärkers aus dem Ruhemodus."
+  "D_STARTUP_VOLUME":"Anfangslautstärke beim Start von Volumio und bei der Rückkehr des Verstärkers aus dem Ruhemodus.",
+  "TOAST_SAVE_SUCCESS":"Speichern erfolgreich",
+  "TOAST_DEBUG_SAVE":"Fehlerprotokoll Einstellungen",
+  "TOAST_SERIAL_SAVE":"Einstellungen Serielle Schnittstelle",
+  "TOAST_AMP_SAVE":"Einstellungen Verstärker"
 }

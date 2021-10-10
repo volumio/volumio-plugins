@@ -41,6 +41,9 @@ rotelampcontrol.prototype.onStart = function() {
     self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions));
     self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
 
+	self.debugLogging = (self.config.get('logging')==true);
+	self.loadI18nStrings();
+
     //get available devices for UI
     self.listSerialDevices()
     .then(function(list) {
@@ -84,6 +87,8 @@ rotelampcontrol.prototype.onRestart = function() {
 rotelampcontrol.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
+    var selected = 0;
+    var lbl = "";
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
@@ -93,29 +98,50 @@ rotelampcontrol.prototype.getUIConfig = function() {
         .then(function(uiconf)
         {
             //serial_interface section
-            uiconf.sections[0].content[0].value = (self.config.get('enabled' + i)==true)
+            var serialFromConfig = self.config.get('serialInterfaceDev')
+            selected = 0;
             for (var n = 0; n < self.serialDevices.length; n++)
             {
                 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
                     value: n+1,
                     label: self.serialDevices[n]
                 });
+                if (self.serialDevices[n] == serialFromConfig) {
+                    selected = n+1;
+                }
             };
+            if (selected > 0) {
+                uiconf.sections[0].content[0].value.value = selected;
+                uiconf.sections[0].content[0].value.label = serialFromConfig;                
+            }
+
             // amp_settings section
+            var ampFromConfig = self.config.get('ampType');
+            selected = 0;
             for (var n = 0; n < self.ampDefinitions.data.amps.length; n++)
             {
+                lbl = self.ampDefinitions.data.amps[n].vendor + ' - ' + self.ampDefinitions.data.amps[n].model;
                 self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
                     value: n+1,
-                    label: self.ampDefinitions.data.amps[n].vendor + ' - ' + self.ampDefinitions.data.amps[n].model
+                    label: lbl
                 });
+                if (lbl == ampFromConfig) {
+                    selected = n+1
+                }
             };
-            for (var n = 0; n < self.ampDefinitions.data.amps[0].sources.length; n++)
-            {
-                self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
-                    value: n+1,
-                    label: self.ampDefinitions.data.amps[0].sources[n]
-                });
-            };
+            if (selected > 0) {
+                uiconf.sections[1].content[0].value.value = selected;
+                uiconf.sections[1].content[0].value.label = ampFromConfig;                
+            }
+            if (ampFromConfig != "...") {
+                for (var n = 0; n < self.ampDefinitions.data.amps[0].sources.length; n++)
+                {
+                    self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
+                        value: n+1,
+                        label: self.ampDefinitions.data.amps[0].sources[n]
+                    });
+                };                
+            }
             // debug_settings section
             defer.resolve(uiconf);
         })
@@ -473,9 +499,39 @@ rotelampcontrol.prototype.updateDebugSettings = function (data) {
     self.config.set('logging', (data['logging']))
     self.debugLogging = data['logging'];
     defer.resolve();
-    self.commandRouter.pushToastMessage('success', self.getI18nString('ROTARYENCODER2.TOAST_SAVE_SUCCESS'), self.getI18nString('ROTARYENCODER2.TOAST_DEBUG_SAVE'));
+    self.commandRouter.pushToastMessage('success', self.getI18nString('TOAST_SAVE_SUCCESS'), self.getI18nString('TOAST_DEBUG_SAVE'));
     return defer.promise;
 };
+
+//Gets called when user changes and saves SerialDevice Settings
+rotelampcontrol.prototype.updateSerialSettings = function (data) {
+    var self = this;
+    var defer = libQ.defer();
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateSerialSettings: Saving Serial Settings:' + JSON.stringify(data));
+    self.config.set('serialInterfaceDev', (data['serial_interface_dev'].label))
+    defer.resolve();
+    self.commandRouter.pushToastMessage('success', self.getI18nString('TOAST_SAVE_SUCCESS'), self.getI18nString('TOAST_SERIAL_SAVE'));
+    return defer.promise;
+};
+
+//Gets called when user changes and saves AmpSettings
+rotelampcontrol.prototype.updateAmpSettings = function (data) {
+    var self = this;
+    var defer = libQ.defer();
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateAmpSettings: Saving Amplifier Settings:' + JSON.stringify(data));
+    self.config.set('ampType', data['amp_type'].label);
+    self.config.set('volumioInput', data['volumio_input'].label);
+    self.config.set('maxVolume', parseInt(data['max_volume']));
+    self.config.set('startupVolume',  parseInt(data['startup_volume']));
+    self.config.set('volumeSteps', parseInt(data['volume_steps']));
+    self.config.set('pauseWhenMuted', (data['pause_when_muted']));
+    self.config.set('pauseWhenInputChanged', (data['pause_when_input_changed']));
+    defer.resolve();
+    self.commandRouter.pushToastMessage('success', self.getI18nString('TOAST_SAVE_SUCCESS'), self.getI18nString('TOAST_AMP_SAVE'));
+    return defer.promise;
+};
+
+
 
 // Retrieve a string
 rotelampcontrol.prototype.getI18nString = function (key) {

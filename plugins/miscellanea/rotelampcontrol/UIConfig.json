@@ -8,11 +8,14 @@
       "element": "section",
       "label": "TRANSLATE.SERIAL_INTERFACE",
       "icon": "fa-plug",
-      "onSave": {"type":"", "endpoint":"", "method":""},
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateSerialSettings"
+      },
       "saveButton": {
         "label": "TRANSLATE.SAVE",
-        "data": [
-        ]
+        "data": ["serial_interface_dev"]
       },
       "content":[
         {
@@ -34,10 +37,21 @@
       "element": "section",
       "label": "TRANSLATE.AMP_SETTINGS",
       "icon": "fa-volume-up",
-      "onSave": {"type":"", "endpoint":"", "method":""},
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateAmpSettings"
+      },
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
+          "amp_type",
+          "volumio_input",
+          "max_volume",
+          "startup_volume",
+          "volume_steps",
+          "pause_when_muted",
+          "pause_when_input_changed"
         ]
       },
       "content":[
@@ -67,7 +81,7 @@
         },
         {
           "id": "max_volume",
-          "type":"text",
+          "type":"number",
           "element": "input",
           "doc": "TRANSLATE.D_MAX_VOLUME",
           "label": "TRANSLATE.MAX_VOLUME",
@@ -75,7 +89,7 @@
         },
         {
           "id": "startup_volume",
-          "type":"text",
+          "type":"number",
           "element": "input",
           "doc": "TRANSLATE.D_STARTUP_VOLUME",
           "label": "TRANSLATE.STARTUP_VOLUME",
@@ -83,7 +97,7 @@
         },
         {
           "id": "volume_steps",
-          "type":"text",
+          "type":"number",
           "element": "input",
           "doc": "TRANSLATE.D_VOLUME_STEPS",
           "label": "TRANSLATE.VOLUME_STEPS",

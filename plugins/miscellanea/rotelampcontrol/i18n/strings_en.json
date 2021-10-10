@@ -19,5 +19,9 @@
   "PAUSE_WHEN_INPUT_CHANGED":"Pause when Input changed",
   "D_PAUSE_WHEN_INPUT_CHANGED":"Pauses Volumio Playback when Audio-Input of Amplifier is changed.",
   "STARTUP_VOLUME":"Startup Volume",
-  "D_STARTUP_VOLUME":"Volume setting at start of volumio or when Amplifier returns from Standby."
+  "D_STARTUP_VOLUME":"Volume setting at start of volumio or when Amplifier returns from Standby.",
+  "TOAST_SAVE_SUCCESS":"Successfully saved",
+  "TOAST_DEBUG_SAVE":"Debug Settings",
+  "TOAST_SERIAL_SAVE":"Serial Interface Settings",
+  "TOAST_AMP_SAVE":"Amplifier Settings"
 }
