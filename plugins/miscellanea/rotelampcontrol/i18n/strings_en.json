@@ -11,5 +11,13 @@
   "AMP_TYPE":"Brand/Type",
   "VOLUMIO_INPUT":"Volumio's Input",
   "PAUSE_WHEN_MUTED":"Pause when Muted",
-  "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted."
+  "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted.",
+  "MAX_VOLUME":"Maximum Volume",
+  "D_MAX_VOLUME":"The maximum Volume of the Amplifier that can be set from Volumio. You can always override this with the controls of the Amp directly.",
+  "VOLUME_STEPS":"Volume Steps per Click",
+  "D_VOLUME_STEPS":"The number of steps the volume gets incremented/decremented by if you press the +/- Volume buttons in Volumio.",
+  "PAUSE_WHEN_INPUT_CHANGED":"Pause when Input changed",
+  "D_PAUSE_WHEN_INPUT_CHANGED":"Pauses Volumio Playback when Audio-Input of Amplifier is changed.",
+  "STARTUP_VOLUME":"Startup Volume",
+  "D_STARTUP_VOLUME":"Volume setting at start of volumio or when Amplifier returns from Standby."
 }

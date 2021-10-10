@@ -6,63 +6,60 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
-
 module.exports = rotelampcontrol;
 function rotelampcontrol(context) {
-	var self = this;
+    var self = this;
 
-	this.context = context;
-	this.commandRouter = this.context.coreCommand;
-	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;
+    this.context = context;
+    this.commandRouter = this.context.coreCommand;
+    this.logger = this.context.logger;
+    this.configManager = this.context.configManager;
 //        this.volumeControl = this.context.volumeControl;
 
 }
 
-
-
 rotelampcontrol.prototype.onVolumioStart = function()
 {
-	var self = this;
+    var self = this;
 
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
 
     return libQ.resolve();
 }
 
-
 rotelampcontrol.prototype.onStart = function() {
     var self = this;
-	var defer=libQ.defer();
+    var defer=libQ.defer();
     var device = self.getAdditionalConf("system_controller", "system", "device");
-    var ampDefinitionFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
+    var ampDefinitionFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
+    this.ampDefinitions = new(require('v-conf'))();
+    this.ampDefinitions.loadFile(ampDefinitionFile);
 
     self.commandRouter.logger.info('onStart function got additional conf: ' + JSON.stringify(device));
-	
+    self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions));
+    self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
+
     //get available devices for UI
     self.listSerialDevices()
     .then(function(list) {
         self.logger.info('[ROTELAMPCONTROL] onStart: found ' + list.length + ' devices: ' + list);
+        self.serialDevices = list;
+        setTimeout(function() {
+            self.configSerialInterface();
+            defer.resolve();
+        },2000)
     });
     //configure interface if amp selected
     //update volume settings
     //install listener to catch info from amp
     
-    this.config.loadFile(ampDefinitionFile);
-    self.commandRouter.logger.info('onStart function loaded ampDefinitionFile with config for ' + JSON.stringify(this.config));
-
-	setTimeout(function() {
-		self.configSerialInterface();
-		defer.resolve();
-	},2000)
-
     return defer.promise;
 };
 
 rotelampcontrol.prototype.getConfigurationFiles = function() {
-	return ['config.json','ampCommands.json'];
+    return ['config.json','ampCommands.json'];
 }
 
 rotelampcontrol.prototype.onStop = function() {
@@ -70,7 +67,7 @@ rotelampcontrol.prototype.onStop = function() {
     var defer=libQ.defer();
 
     // Once the Plugin has successfull stopped resolve the promise
-	self.removeVolumeScripts();
+    self.removeVolumeScripts();
     defer.resolve();
 
     return libQ.resolve();
@@ -95,8 +92,31 @@ rotelampcontrol.prototype.getUIConfig = function() {
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
-
-
+            //serial_interface section
+            uiconf.sections[0].content[0].value = (self.config.get('enabled' + i)==true)
+            for (var n = 0; n < self.serialDevices.length; n++)
+            {
+                self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+                    value: n+1,
+                    label: self.serialDevices[n]
+                });
+            };
+            // amp_settings section
+            for (var n = 0; n < self.ampDefinitions.data.amps.length; n++)
+            {
+                self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
+                    value: n+1,
+                    label: self.ampDefinitions.data.amps[n].vendor + ' - ' + self.ampDefinitions.data.amps[n].model
+                });
+            };
+            for (var n = 0; n < self.ampDefinitions.data.amps[0].sources.length; n++)
+            {
+                self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
+                    value: n+1,
+                    label: self.ampDefinitions.data.amps[0].sources[n]
+                });
+            };
+            // debug_settings section
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -108,32 +128,34 @@ rotelampcontrol.prototype.getUIConfig = function() {
 };
 
 rotelampcontrol.prototype.setUIConfig = function(data) {
-	var self = this;
-	//Perform your installation tasks here
+    var self = this;
+    //Perform your installation tasks here
 };
 
 rotelampcontrol.prototype.getConf = function(varName) {
-	var self = this;
-	//Perform your installation tasks here
+    var self = this;
+    //Perform your installation tasks here
 };
 
 rotelampcontrol.prototype.setConf = function(varName, varValue) {
-	var self = this;
-	//Perform your installation tasks here
+    var self = this;
+    //Perform your installation tasks here
 };
 
 rotelampcontrol.prototype.configSerialInterface = function (){
-	var self = this;
+    var self = this;
+    var defer = libQ.defer();
 
-	exec("/bin/stty -F /dev/ttyUSB0 115200 raw -echo -echoe -echok -echoctl -echoke", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+    exec("/bin/stty -F /dev/ttyUSB0 115200 raw -echo -echoe -echok -echoctl -echoke", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
         if (error !== null) {
-            self.logger.info('Error, cannot configure serial interface '+error)
+            self.logger.error('[ROTELAMPCONTROL] configSerialInterface: Error, cannot configure serial interface '+error)
         } else {
-            self.logger.info('Serial interface configured')
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] configSerialInterface: Serial Interface configured.');
+            //ACHTUNG: Promise handling ist hiernoch nicht clean
             self.addVolumeScripts();
         }
     });
-
+    return defer.promise;
 };
 
 rotelampcontrol.prototype.listSerialDevices = function() {
@@ -142,7 +164,7 @@ rotelampcontrol.prototype.listSerialDevices = function() {
     var defer = libQ.defer();
 
     self.commandRouter.logger.info('[ROTELAMPCONTROL] listSerialDevices');
-	exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+    exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
         if (error !== null) {
             self.logger.error('[ROTELAMPCONTROL] listSerialDevices: Cannot list serial devices - ' + error)
             defer.reject();
@@ -179,7 +201,7 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
     var minVol = 0;
     var maxVol = 50;
 //    var mapTo100 = self.config.get('map_to_100', false);
-	var mapTo100 = false;
+    var mapTo100 = false;
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
     self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
@@ -445,12 +467,42 @@ rotelampcontrol.prototype.getAdditionalConf = function (type, controller, data) 
 
 //Gets called when user changes and saves debug settings
 rotelampcontrol.prototype.updateDebugSettings = function (data) {
-	var self = this;
-	var defer = libQ.defer();
-	if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateDebugSettings: Saving Debug Settings:' + JSON.stringify(data));
-	self.config.set('logging', (data['logging']))
-	self.debugLogging = data['logging'];
-	defer.resolve();
-//	self.commandRouter.pushToastMessage('success', self.getI18nString('ROTARYENCODER2.TOAST_SAVE_SUCCESS'), self.getI18nString('ROTARYENCODER2.TOAST_DEBUG_SAVE'));
-	return defer.promise;
+    var self = this;
+    var defer = libQ.defer();
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateDebugSettings: Saving Debug Settings:' + JSON.stringify(data));
+    self.config.set('logging', (data['logging']))
+    self.debugLogging = data['logging'];
+    defer.resolve();
+    self.commandRouter.pushToastMessage('success', self.getI18nString('ROTARYENCODER2.TOAST_SAVE_SUCCESS'), self.getI18nString('ROTARYENCODER2.TOAST_DEBUG_SAVE'));
+    return defer.promise;
+};
+
+// Retrieve a string
+rotelampcontrol.prototype.getI18nString = function (key) {
+    var self = this;
+
+    if (self.i18nStrings[key] !== undefined) {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] getI18nString("'+key+'"):'+ self.i18nStrings[key]);
+        return self.i18nStrings[key];
+    } else {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] getI18nString("'+key+'")'+ self.i18nStringsDefaults[key]);
+        return self.i18nStringsDefaults['ROTELAMPCONTROL'][key];
+    };
+}
+// A method to get some language strings used by the plugin
+rotelampcontrol.prototype.loadI18nStrings = function() {
+    var self = this;
+
+    try {
+        var language_code = this.commandRouter.sharedVars.get('language_code');
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] loadI18nStrings: '+__dirname + '/i18n/strings_' + language_code + ".json");
+        self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_' + language_code + ".json");
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] loadI18nStrings: loaded: '+JSON.stringify(self.i18nStrings));
+    }
+    catch (e) {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] loadI18nStrings: ' + language_code + ' not found. Fallback to en');
+        self.i18nStrings = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
+    }
+
+    self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };

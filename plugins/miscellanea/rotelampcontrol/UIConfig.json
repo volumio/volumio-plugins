@@ -24,14 +24,6 @@
             {
               "value": 0,
               "label": "..."
-            },
-            {
-              "value": 1,
-              "label": "DUMMY 1"
-            },
-            {
-              "value": 2,
-              "label": "Dummy 2"
             }
           ]          
         }
@@ -58,18 +50,6 @@
             {
               "value": 0,
               "label": "..."
-            },
-            {
-              "value": 1,
-              "label": "ROTEL A11"
-            },
-            {
-              "value": 2,
-              "label": "ROTEL A12"
-            },
-            {
-              "value": 3,
-              "label": "ROTEL A14"
             }
           ]          
         },
@@ -82,26 +62,45 @@
             {
               "value": 0,
               "label": "..."
-            },
-            {
-              "value": 1,
-              "label": "Optical 1"
-            },
-            {
-              "value": 2,
-              "label": "Aux 1"
-            },
-            {
-              "value": 3,
-              "label": "Tape 1"
             }
           ]          
+        },
+        {
+          "id": "max_volume",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.D_MAX_VOLUME",
+          "label": "TRANSLATE.MAX_VOLUME",
+          "value": "30"
+        },
+        {
+          "id": "startup_volume",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.D_STARTUP_VOLUME",
+          "label": "TRANSLATE.STARTUP_VOLUME",
+          "value": "1"
+        },
+        {
+          "id": "volume_steps",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.D_VOLUME_STEPS",
+          "label": "TRANSLATE.VOLUME_STEPS",
+          "value": "1"
         },
         {
           "id":"pause_when_muted",
           "element":"switch",
           "label": "TRANSLATE.PAUSE_WHEN_MUTED",
           "doc": "TRANSLATE.D_PAUSE_WHEN_MUTED",
+          "value": false
+        },
+        {
+          "id":"pause_when_input_changed",
+          "element":"switch",
+          "label": "TRANSLATE.PAUSE_WHEN_INPUT_CHANGED",
+          "doc": "TRANSLATE.D_PAUSE_WHEN_INPUT_CHANGED",
           "value": false
         }
       ]

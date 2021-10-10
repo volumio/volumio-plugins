@@ -11,5 +11,13 @@
   "AMP_TYPE":"Hersteller/Typ",
   "VOLUMIO_INPUT":"Volumio Eingang",
   "PAUSE_WHEN_MUTED":"Pausieren bei 'Stumm'",
-  "D_PAUSE_WHEN_MUTED": "Pausiert die Wiedergabe in Volumio, wenn der Verstärker 'Stumm' geschaltet wird."
+  "D_PAUSE_WHEN_MUTED": "Pausiert die Wiedergabe in Volumio, wenn der Verstärker 'Stumm' geschaltet wird.",
+  "MAX_VOLUME":"Maximale Lautstärke",
+  "D_MAX_VOLUME":"Die maximale Lautstärke die von Volumio aus eingestellt werden kann. Über die Bedienelemente des Verstärkers läßt sich weiterhin eine höhere Lautstärke einstellen.",
+  "VOLUME_STEPS":"Lautstärke-Schritte pro Klick",
+  "D_VOLUME_STEPS":"Die Anzah der Schritte, um die die Lautstärke beim Betätigen der +/- Tasten in Volumio erhöht/vermindert wird.",
+  "PAUSE_WHEN_INPUT_CHANGED":"Pausieren bei Wechsel des Eingangs",
+  "D_PAUSE_WHEN_INPUT_CHANGED":"Pausiert die Wiedergabe in Volumio, wenn am Verstärker der Audio-Eingang gewechselt wird.",
+  "STARTUP_VOLUME":"Start-Lautstärke",
+  "D_STARTUP_VOLUME":"Anfangslautstärke beim Start von Volumio und bei der Rückkehr des Verstärkers aus dem Ruhemodus."
 }
