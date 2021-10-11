@@ -5,6 +5,7 @@ var fs=require('fs-extra');
 var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
+var spawn = require('child_process').spawn;
 
 module.exports = rotelampcontrol;
 function rotelampcontrol(context) {
@@ -42,6 +43,8 @@ rotelampcontrol.prototype.onStart = function() {
     self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
 
 	self.debugLogging = (self.config.get('logging')==true);
+    self.currentVolume = self.config.get('startupVolume');
+    self.currentMute = false;
 	self.loadI18nStrings();
 
     //get available devices for UI
@@ -55,6 +58,7 @@ rotelampcontrol.prototype.onStart = function() {
         },2000)
     });
     //configure interface if amp selected
+    self.attachListener();
     //update volume settings
     //install listener to catch info from amp
     
@@ -70,6 +74,7 @@ rotelampcontrol.prototype.onStop = function() {
     var defer=libQ.defer();
 
     // Once the Plugin has successfull stopped resolve the promise
+    self.detachListener();
     self.removeVolumeScripts();
     defer.resolve();
 
@@ -436,37 +441,42 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
 };
   
 rotelampcontrol.prototype.retrievevolume = function () {
-    //override the retrievevolume function to read the volume from the amp
-// 	var self = this;
-  
-// 	  var defer = libQ.defer();
-// 		// 	this.getVolume(function (err, vol) {
-// 	// 	  if (err) {
-// 	// 		self.logger.error('Cannot get ALSA Volume: ' + err);
-// 	// 	  }
-// 	// 	  self.getMuted(function (err, mute) {
-// 	// 		if (err) {
-// 	// 		  mute = false;
-// 	// 		}
-// 	// 		// Log volume control
-// 	// 		self.logger.info('VolumeController:: Volume=' + vol + ' Mute =' + mute);
-// 	// 		if (!vol) {
-// 	// 		  vol = currentvolume;
-// 	// 		  mute = currentmute;
-// 	// 		} else {
-// 	// 		  currentvolume = vol;
-// 	// 		}
-// 	// 		Volume.vol = vol;
-// 	// 		Volume.mute = mute;
-// 	// 		Volume.disableVolumeControl = false;
-// 	// 		return libQ.resolve(Volume)
-// 	// 		  .then(function (Volume) {
-// 	// 			defer.resolve(Volume);
-// 	// 			self.commandRouter.volumioupdatevolume(Volume);
-// 	// 		  });
-// 	// 	  });
-// 	// 	});
-// 	  return defer.promise;
+    // //override the retrievevolume function to read the volume from the amp
+    // var self = this;
+    // var defer = libQ.defer();
+    // //original gibt getVolume fehler oder volume integer an die Cb-funktion zurück
+    // //to do:
+    // //mute abfragen ggf. mute setzten, bei fehler mute= false
+    // //vol abfragen
+
+
+    // this.getVolume(function (err, vol) {
+    //     if (err) {
+    //     self.logger.error('Cannot get ALSA Volume: ' + err);
+    //     }
+    //     self.getMuted(function (err, mute) {
+    //     if (err) {
+    //         mute = false;
+    //     }
+    //     // Log volume control
+    //     self.logger.info('VolumeController:: Volume=' + vol + ' Mute =' + mute);
+    //     if (!vol) {
+    //         vol = currentvolume;
+    //         mute = currentmute;
+    //     } else {
+    //         currentvolume = vol;
+    //     }
+    //     Volume.vol = vol;
+    //     Volume.mute = mute;
+    //     Volume.disableVolumeControl = false;
+    //     return libQ.resolve(Volume)
+    //         .then(function (Volume) {
+    //         defer.resolve(Volume);
+    //         self.commandRouter.volumioupdatevolume(Volume);
+    //         });
+    //     });
+    // });
+    // return defer.promise;
 };
   
 rotelampcontrol.prototype.removeVolumeScripts = function() {
@@ -562,3 +572,55 @@ rotelampcontrol.prototype.loadI18nStrings = function() {
 
     self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };
+
+rotelampcontrol.prototype.attachListener = function(){
+	var self = this;
+	var defer = libQ.defer();
+    var devPath = "/dev/serial/by-id/" + self.config.get('serialInterfaceDev');
+
+	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + devPath);
+    if (self.config.get('serialInterfaceDev') != "...") {
+        try {
+            self.handle = spawn("/bin/cat", [devPath]);
+            this.ampResponses = "";
+            self.handle.stdout.on('data', function(data){
+                this.ampResponses += data.toString();
+                var responses = this.ampResponses.split('$');
+                for (let i = 0; i < responses.length - 1; i++) {
+                    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + responses[i]);
+                }
+                this.ampResponses = responses[responses.length - 1];                
+            });
+            self.handle.stdout.on('end', function(){
+                    self.logger.error('[ROTELAMPCONTROL] attachListener: Stream from Serial Interface ended.');
+            })
+
+            self.handle.stderr.on('data', (data) => {
+                self.logger.info('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
+            });
+
+            self.handle.on('close', (code) => {
+                self.logger.info('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
+            });
+//             self.handle.stdout.on("data", function (chunk) {
+//                 self.logger.info('[ROTELAMPCONTROL] attachListener: ' + chunk);
+// //                        self.emitDialCommand(value,rotaryIndex)
+//             });                
+        	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: attached and listening');
+        	defer.resolve();
+        } catch (error) {
+            self.logger.error('[ROTELAMPCONTROL] attachListener: could not connect to device');
+            defer.reject();
+        }
+    }
+	return defer.promise;
+}
+
+rotelampcontrol.prototype.detachListener = function (){
+	var self = this;
+	var defer = libQ.defer();
+	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] detachListener: ');
+	self.handle.kill();
+	defer.resolve();
+	return defer.promise;
+}

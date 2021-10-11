@@ -1,7 +1,7 @@
 {
     "logging": {
         "type": "boolean",
-        "value": false
+        "value": true
     },
     "serialInterfaceDev": {
         "type": "string",
