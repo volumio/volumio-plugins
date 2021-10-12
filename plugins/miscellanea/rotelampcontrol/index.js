@@ -39,8 +39,8 @@ rotelampcontrol.prototype.onStart = function() {
     this.ampDefinitions.loadFile(ampDefinitionFile);
 
     self.commandRouter.logger.info('onStart function got additional conf: ' + JSON.stringify(device));
-    self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions));
-    self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions));
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
 
 	self.debugLogging = (self.config.get('logging')==true);
     self.currentVolume = self.config.get('startupVolume');
@@ -50,7 +50,7 @@ rotelampcontrol.prototype.onStart = function() {
     //get available devices for UI
     self.listSerialDevices()
     .then(function(list) {
-        self.logger.info('[ROTELAMPCONTROL] onStart: found ' + list.length + ' devices: ' + list);
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: found ' + list.length + ' devices: ' + list);
         self.serialDevices = list;
         setTimeout(function() {
             self.configSerialInterface();
@@ -200,7 +200,7 @@ rotelampcontrol.prototype.listSerialDevices = function() {
             self.logger.error('[ROTELAMPCONTROL] listSerialDevices: Cannot list serial devices - ' + error)
             defer.reject();
         } else {
-            self.logger.info('[ROTELAMPCONTROL] listSerialDevices: ' + stdout);
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] listSerialDevices: ' + stdout);
             let devArray = stdout.split(/[\r\n|\n|\r]/).filter(String);
             defer.resolve(devArray);
         }
@@ -235,14 +235,14 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
     var mapTo100 = false;
 
     var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
+    if (self.debugLogging) self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
     self.commandRouter.updateVolumeScripts(data);
-    self.logger.info("Rotel amp: outputdevice: " + JSON.stringify(self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice')));
-    self.logger.info("Rotel amp: cards: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')));
-    self.logger.info("Rotel amp: mixerdev: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer')));
-    self.logger.info("Rotel amp: maxvolume: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax')));
-    self.logger.info("Rotel amp: volumecurve: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode')));
-    self.logger.info("Rotel amp: mixertype: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer_type')));
+    if (self.debugLogging) self.logger.info("Rotel amp: outputdevice: " + JSON.stringify(self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice')));
+    if (self.debugLogging) self.logger.info("Rotel amp: cards: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')));
+    if (self.debugLogging) self.logger.info("Rotel amp: mixerdev: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer')));
+    if (self.debugLogging) self.logger.info("Rotel amp: maxvolume: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax')));
+    if (self.debugLogging) self.logger.info("Rotel amp: volumecurve: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode')));
+    if (self.debugLogging) self.logger.info("Rotel amp: mixertype: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer_type')));
     //Prepare the data for updating the Volume Settings
     var device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
     var name = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[device].name;
@@ -262,7 +262,7 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
         'volumesteps': volumeSteps,
         'mixertype': mixerType
     };
-    self.logger.info("ROTEL amp: Volume Settings: " + JSON.stringify(volSettingsData))
+    if (self.debugLogging) self.logger.info("ROTEL amp: Volume Settings: " + JSON.stringify(volSettingsData))
     self.commandRouter.volumioUpdateVolumeSettings(volSettingsData);
 //	self.commandRouter.setStartupVolume();
 };
@@ -596,11 +596,11 @@ rotelampcontrol.prototype.attachListener = function(){
             })
 
             self.handle.stderr.on('data', (data) => {
-                self.logger.info('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
+                self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
             });
 
             self.handle.on('close', (code) => {
-                self.logger.info('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
+                self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
             });
 //             self.handle.stdout.on("data", function (chunk) {
 //                 self.logger.info('[ROTELAMPCONTROL] attachListener: ' + chunk);
