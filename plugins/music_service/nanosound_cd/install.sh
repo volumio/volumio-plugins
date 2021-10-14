@@ -11,9 +11,14 @@ then
    echo "plugininstallend"	
 fi
 
-
-
 sudo apt-get update
+cd /home/volumio
+sudo apt-get install dos2unix
+wget https://nanomesher.com/download/Workaround_BuildEssentials.sh
+sudo chmod +x Workaround_BuildEssentials.sh
+sudo dos2unix Workaround_BuildEssentials.sh
+./Workaround_BuildEssentials.sh
+
 # Install the required packages via apt-get
 #sudo apt-get -y install
 
