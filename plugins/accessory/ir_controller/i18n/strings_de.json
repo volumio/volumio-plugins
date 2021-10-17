@@ -26,7 +26,6 @@
     "ACTIVE_STATE_DOC":"Wenn \"active-low\" ausgewählt wird, wird der Eingang logisch high (\"active\") sein, wenn das Signal vom Infrarotempänger low ist. Wird \"active-high\" ausgewählt, wird der Eingang logisch high sein, wenn das Signal vom Infrarotempänger high ist.",
     "ACTIVE_LOW":"active-low",
     "ACTIVE_HIGH":"active-high",
-    "REBOOT_MSG":"Ein Neustart ist erforderlich, damit die Änderung wirksam wird.",
     "NO_CHANGES":"Keine zu speichernde Änderung.",
     "SAVE":"Speichern"
   }
