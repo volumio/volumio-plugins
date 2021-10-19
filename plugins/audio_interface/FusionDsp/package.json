@@ -1,6 +1,6 @@
 {
 	"name": "fusiondsp",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"description": "A complete Dsp centre for Volumio3",
 	"main": "index.js",
 	"repository": "https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp",

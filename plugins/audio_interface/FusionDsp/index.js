@@ -145,7 +145,7 @@ FusionDsp.prototype.hwinfo = function () {
   let hwinfo;
   let samplerates;
   try {
-    execSync('/data/plugins/audio_interface/fusiondsp/hw_params volumioDsp >/data/configuration/audio_interface/fusiondsp/hwinfo.json ', {
+    execSync('/data/plugins/audio_interface/fusiondsp/hw_params hw:' + output_device + ' >/data/configuration/audio_interface/fusiondsp/hwinfo.json ', {
       uid: 1000,
       gid: 1000
     });
@@ -1306,6 +1306,7 @@ FusionDsp.prototype.refreshUI = function () {
     respconfig.then(function (config) {
       self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
+    self.commandRouter.closeModals();
   }, 100);
 }
 
@@ -1729,7 +1730,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
       message: self.commandRouter.getI18nString('FILTER_FORMAT_MESS'),
       size: 'lg',
       buttons: [{
-        name: 'Close',
+        name: 'CloseModals',
         class: 'btn btn-warning'
       },]
     };
