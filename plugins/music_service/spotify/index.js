@@ -1786,27 +1786,39 @@ ControllerSpop.prototype.getPlaylistTracks = function (userId, playlistId) {
 
                 var response = [];
 
-                for (var i in results.body.tracks.items) {
-                    var track = results.body.tracks.items[i].track;
-                    try {
-                        var item = {
-                            service: 'spop',
-                            type: 'song',
-                            name: track.name,
-                            title: track.name,
-                            artist: track.artists[0].name,
-                            album: track.album.name,
-                            uri: track.uri,
-                            samplerate: self.samplerate,
-                            bitdepth: '16 bit',
-                            trackType: 'spotify',
-                            albumart: (track.album.hasOwnProperty('images') && track.album.images.length > 0 ? track.album.images[0].url : ''),
-                            duration: Math.trunc(track.duration_ms / 1000)
-                        };
-                        response.push(item);
-                    } catch(e) {}
+                var numTracks = results.body.tracks.total;
+                var requests = [];
+
+                for (var i = 0; i < numTracks / 50; i++) {
+                    var promise = self.spotifyApi.getPlaylistTracks(playlistId, {'offset': i * 50, 'limit': 50});
+                    requests.push(promise);
+
+                    promise.then(function (data) {
+                        for (var track of data.body.items) {
+                            try {
+                                var item = {
+                                    service: 'spop',
+                                    type: 'song',
+                                    name: track.track.name,
+                                    title: track.track.name,
+                                    artist: track.track.artists[0].name,
+                                    album: track.track.album.name,
+                                    uri: track.track.uri,
+                                    samplerate: self.samplerate,
+                                    bitdepth: '16 bit',
+                                    trackType: 'spotify',
+                                    albumart: (track.album.hasOwnProperty('images') && track.album.images.length > 0 ? track.album.images[0].url : ''),
+                                    duration: Math.trunc(track.track.duration_ms / 1000)
+                                };
+                                response.push(item);
+                            } catch(e) {}
+                        }
+                    });
                 }
-                defer.resolve(response);
+                
+                Promise.all(requests).then(function () {
+                    defer.resolve(response);
+                });
             }, function (err) {
                 self.logger.info('An error occurred while exploding listing Spotify playlist tracks ' + err);
             });
