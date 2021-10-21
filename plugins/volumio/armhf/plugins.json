@@ -359,6 +359,24 @@
 						}
 					],
 					"updated": "3-10-2021"
+				},
+				{
+					"prettyName": "Bandcamp Discover",
+					"icon": "fa-lightbulb-o",
+					"name": "bandcamp",
+					"version": "0.1.1",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/music_service/bandcamp/bandcamp.zip",
+					"license": "MIT",
+					"description": "Discover Bandcamp music",
+					"details": "",
+					"author": "Patrick Kan",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "21-10-2021"
 				}
 			]
 		},
