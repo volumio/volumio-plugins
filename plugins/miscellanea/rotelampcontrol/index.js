@@ -15,7 +15,6 @@ function rotelampcontrol(context) {
     this.commandRouter = this.context.coreCommand;
     this.logger = this.context.logger;
     this.configManager = this.context.configManager;
-//        this.volumeControl = this.context.volumeControl;
 
 }
 
@@ -33,37 +32,70 @@ rotelampcontrol.prototype.onVolumioStart = function()
 rotelampcontrol.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
-    var device = self.getAdditionalConf("system_controller", "system", "device");
-    var ampDefinitionFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
-    this.ampDefinitions = new(require('v-conf'))();
-    this.ampDefinitions.loadFile(ampDefinitionFile);
-
-    self.commandRouter.logger.info('onStart function got additional conf: ' + JSON.stringify(device));
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions));
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: loaded AmpDefinitions for ' + self.ampDefinitions.data.amps.length + ' Amplifiers.');
-
+    //set some important parameters
 	self.debugLogging = (self.config.get('logging')==true);
     self.currentVolume = self.config.get('startupVolume');
     self.currentMute = false;
+    self.selectedAmp ={} ;
 	self.loadI18nStrings();
+    //load amp definitions from file
+    self.loadAmpDefinitions()
+    //initialize list of serial devices available to the system
+    .then(_=> self.listSerialDevices())
+    //set the active amp
+    .then(_ => self.setActiveAmp())
+    //configure the serial interface
+    .then(_ => self.configSerialInterface())
+    //attach listener to handle messages from the amp
+    .then(serialDev => self.attachListener(serialDev))
+    // .then(function(){
+    //     //updateVolumeSettings and tell volumio that this is an override plugin
+    // })
+    // .then(function(){
 
-    //get available devices for UI
-    self.listSerialDevices()
-    .then(function(list) {
-        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: found ' + list.length + ' devices: ' + list);
-        self.serialDevices = list;
-        setTimeout(function() {
-            self.configSerialInterface();
+    // })
+    .then(function(){
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStart: successfully started plugin');
             defer.resolve();
-        },2000)
     });
-    //configure interface if amp selected
-    self.attachListener();
-    //update volume settings
-    //install listener to catch info from amp
     
     return defer.promise;
 };
+
+rotelampcontrol.prototype.loadAmpDefinitions = function() {
+    var self = this;
+
+    var ampDefinitionFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
+    self.ampDefinitions = new(require('v-conf'))();
+    self.ampDefinitions.loadFile(ampDefinitionFile);
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] loadAmpDefinitions: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions.data));
+    //Generate list of Amp Names as combination of Vendor + Model
+    self.ampVendorModelList = [];
+    for (var n = 0; n < self.ampDefinitions.data.amps.length; n++)
+    {
+        self.ampVendorModelList.push(self.ampDefinitions.data.amps[n].vendor + ' - ' + self.ampDefinitions.data.amps[n].model);
+    };
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] loadAmpDefinitions: loaded AmpDefinitions for ' + self.ampVendorModelList.length + ' Amplifiers.');
+    return libQ.resolve();
+};
+
+rotelampcontrol.prototype.SerialInterface = function(dev) {
+    this.serialInterfaceDev = "/dev/serial/by-id/" + dev;
+}
+
+rotelampcontrol.prototype.setActiveAmp = function() {
+    var self = this;
+
+    if ((self.config.get('ampType')!==undefined)&&(self.config.get('ampType')!=='...'))  {
+        var selectedAmpIdx = self.ampVendorModelList.indexOf(self.config.get('ampType'));
+        self.selectedAmp = self.ampDefinitions.data.amps[selectedAmpIdx];
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] setActiveAmp: ' + JSON.stringify(self.selectedAmp));
+    } else {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] setActiveAmp: not yet configured');
+        self.selectedAmp = {};
+    }
+    return libQ.resolve();
+}
 
 rotelampcontrol.prototype.getConfigurationFiles = function() {
     return ['config.json','ampCommands.json'];
@@ -123,14 +155,13 @@ rotelampcontrol.prototype.getUIConfig = function() {
             // amp_settings section
             var ampFromConfig = self.config.get('ampType');
             selected = 0;
-            for (var n = 0; n < self.ampDefinitions.data.amps.length; n++)
+            for (var n = 0; n < self.ampVendorModelList.length; n++)
             {
-                lbl = self.ampDefinitions.data.amps[n].vendor + ' - ' + self.ampDefinitions.data.amps[n].model;
                 self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[0].options', {
                     value: n+1,
-                    label: lbl
+                    label: self.ampVendorModelList[n]
                 });
-                if (lbl == ampFromConfig) {
+                if (self.ampVendorModelList[n] == ampFromConfig) {
                     selected = n+1
                 }
             };
@@ -147,6 +178,7 @@ rotelampcontrol.prototype.getUIConfig = function() {
                     });
                 };                
             }
+			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
             // debug_settings section
             defer.resolve(uiconf);
         })
@@ -177,15 +209,25 @@ rotelampcontrol.prototype.configSerialInterface = function (){
     var self = this;
     var defer = libQ.defer();
 
-    exec("/bin/stty -F /dev/ttyUSB0 115200 raw -echo -echoe -echok -echoctl -echoke", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
-        if (error !== null) {
-            self.logger.error('[ROTELAMPCONTROL] configSerialInterface: Error, cannot configure serial interface '+error)
-        } else {
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] configSerialInterface: Serial Interface configured.');
-            //ACHTUNG: Promise handling ist hiernoch nicht clean
-            self.addVolumeScripts();
-        }
-    });
+    if ((self.config.get('serialInterfaceDev')!==undefined) && 
+        (self.config.get('serialInterfaceDev')!=='...') &&
+        (Object.keys(self.selectedAmp).length > 0))  {
+            self.serialInterfaceDev = "/dev/serial/by-id/" + self.config.get('serialInterfaceDev');
+            const cmdString = "/bin/stty -F " + self.serialInterfaceDev + ' ' + self.selectedAmp.baudRate + " raw -echo -echoe -echok -echoctl -echoke";
+            exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+                if (error !== null) {
+                    self.logger.error('[ROTELAMPCONTROL] configSerialInterface: Error, cannot configure serial interface '+error)
+                    defer.reject()
+                } else {
+                    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] configSerialInterface: Serial Interface configured with "' + cmdString +'"');
+                    defer.resolve(self.serialInterfaceDev);
+                }
+            });
+    } else {
+        self.serialInterfaceDev = '';
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] configSerialInterface: Configuration still incomplete. Settings need to be completed.');
+        defer.resolve('');
+    }
     return defer.promise;
 };
 
@@ -201,24 +243,54 @@ rotelampcontrol.prototype.listSerialDevices = function() {
             defer.reject();
         } else {
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] listSerialDevices: ' + stdout);
-            let devArray = stdout.split(/[\r\n|\n|\r]/).filter(String);
-            defer.resolve(devArray);
+            self.serialDevices = stdout.split(/[\r\n|\n|\r]/).filter(String);
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] listSerialDevices: found ' + self.serialDevices.length + ' devices.');
+            defer.resolve();
         }
     });
-
     return defer.promise;
-}
-
-rotelampcontrol.prototype.activateListener = function() {
-    //connect a listener to the port to read data from amp
 }
 
 rotelampcontrol.prototype.sendCommand  = function() {
     //send a command to the amp
 }
 
-rotelampcontrol.prototype.parseResponse = function() {
+rotelampcontrol.prototype.parseResponse = function(response) {
     //interpret and react on messages from amp
+    var match = response.match(new RegExp(self.selectedAmp.responses.respVolume,'i'));
+    if (match !== null) {
+        const vol = match[1];
+        response = 'volume';
+    } else {
+        match = response.match(new RegExp(self.selectedAmp.responses.respSource,'i'));
+        if (match !== null) {
+            const source = match[1];
+            response = 'source';
+        }        
+    }
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: ' + response);
+    switch (response) {
+        case self.selectedAmp.responses.respPowerOn:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
+            break;
+        case self.selectedAmp.responses.respPowerOff:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
+            break;
+        case self.selectedAmp.responses.respMuteOn:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+            break;
+        case self.selectedAmp.responses.respMuteOn:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+            break;
+        case "volume":
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
+            break;
+        case "source":
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
+            break;
+        default:
+            break;
+    }
 }
 
 rotelampcontrol.prototype.addVolumeScripts = function() {
@@ -573,10 +645,9 @@ rotelampcontrol.prototype.loadI18nStrings = function() {
     self.i18nStringsDefaults = fs.readJsonSync(__dirname + '/i18n/strings_en.json');
 };
 
-rotelampcontrol.prototype.attachListener = function(){
+rotelampcontrol.prototype.attachListener = function(devPath){
 	var self = this;
 	var defer = libQ.defer();
-    var devPath = "/dev/serial/by-id/" + self.config.get('serialInterfaceDev');
 
 	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + devPath);
     if (self.config.get('serialInterfaceDev') != "...") {
@@ -585,7 +656,7 @@ rotelampcontrol.prototype.attachListener = function(){
             this.ampResponses = "";
             self.handle.stdout.on('data', function(data){
                 this.ampResponses += data.toString();
-                var responses = this.ampResponses.split('$');
+                var responses = this.ampResponses.split(self.selectedAmp.responses.separator);
                 for (let i = 0; i < responses.length - 1; i++) {
                     if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + responses[i]);
                 }
