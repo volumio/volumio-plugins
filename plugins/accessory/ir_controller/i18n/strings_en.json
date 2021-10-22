@@ -26,7 +26,6 @@
     "ACTIVE_STATE_DOC":"With this option set to \"active-low\" the input will be logically high (\"active\") when the signal from the IR receiver is low. If set to \"active-high\" the input will be logically high when the signal is high.",
     "ACTIVE_LOW":"active-low",
     "ACTIVE_HIGH":"active-high",
-    "REBOOT_MSG":"A reboot is required for the change to take effect.",
     "NO_CHANGES":"No changes to save.",
     "SAVE":"Save"
   }

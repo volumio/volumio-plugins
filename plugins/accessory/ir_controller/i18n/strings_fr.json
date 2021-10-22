@@ -26,7 +26,6 @@
     "ACTIVE_STATE_DOC":"Avec cette option réglée sur \"active-low\" l'entrée sera logiquement high (\"active\") quand le signal du récepteur IR est low. Si réglée sur \"active-high\" l'entrée sera logiquement high quand le signal est high.",
     "ACTIVE_LOW":"active-low",
     "ACTIVE_HIGH":"active-high",
-    "REBOOT_MSG":"Un reboot est nécessaire pour prendre en compte les modifications.",
     "NO_CHANGES":"Pas de changement à sauver.",
     "SAVE": "Sauver"
   }

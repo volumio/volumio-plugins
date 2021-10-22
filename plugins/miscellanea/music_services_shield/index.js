@@ -62,17 +62,19 @@ musicServicesShield.prototype.onVolumioStart = function()
 {
 	var self = this;
 	var defer=libQ.defer();
-	var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
-	self.config = new (require('v-conf'))();
-	self.config.loadFile(configFile);
 
-	self.writeAllConfigParameters();
+	try {
+	        var configFile=self.commandRouter.pluginManager.getConfigurationFile(self.context,'config.json');
 
-	self.executeScriptAsSudo(buildShieldScript).then(function(){
-		defer.resolve();
-	});
+ 		self.config = new (require('v-conf'))();
+		self.config.loadFile(configFile);
+	} catch (e) {
+		self.logger.info('Error executing script', e);
+	}
 
-    return defer.promise;
+	defer.resolve();
+
+	return defer.promise;
 }
 
 musicServicesShield.prototype.onStart = function() {
@@ -82,7 +84,7 @@ musicServicesShield.prototype.onStart = function() {
 	try {
 		self.commandRouter.pushToastMessage('info', 'Attempting to move processes to user CPU set', 'Please wait');
 
-    	self.writeAllConfigParameters();
+		self.writeAllConfigParameters();
 
 		exec(sudoCommand + pluginPath + buildShieldScript, {
 		   uid: 1000,
@@ -259,6 +261,19 @@ musicServicesShield.prototype.getUIConfig = function() {
 			uiconf.sections[0].content[5].value = self.config.get(rtSpotify);
             uiconf.sections[0].content[6].value = findOption(self.config.get(rtPriority), uiconf.sections[0].content[6].options);
 
+            try{
+                // Hide the spotify options if the plugin is not active
+                var spotifyPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'volspotconnect2');
+                if (!spotifyPlugin){
+                    uiconf.sections[0].content[3].value = false;
+                    uiconf.sections[0].content[3].hidden = true;
+                    uiconf.sections[0].content[5].value = false;
+                    uiconf.sections[0].content[5].hidden = true;
+                }
+            } catch(e){
+                self.logger.error('Could not get spotify plugin' + e);
+            }
+
 			defer.resolve(uiconf);
         })
         .fail(function()
@@ -293,6 +308,7 @@ musicServicesShield.prototype.setConf = function(varName, varValue) {
 	self.config = new (require('v-conf'))();
 	self.config.loadFile(configFile);
 };
+
 
 
 

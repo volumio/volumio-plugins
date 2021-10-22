@@ -1,10 +1,8 @@
 [Unit]
 Description=Shield Volumio Music Services in the User CPU Set
 Documentation=https://community.volumio.org/t/plugin-music-services-shield/48519
-Requires=mpd.service
 After=mpd.service
 PartOf=mpd.service
-Requires=volspotconnect2.service
 After=volspotconnect2.service
 PartOf=volspotconnect2.service
 
