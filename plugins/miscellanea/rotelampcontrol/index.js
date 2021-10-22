@@ -103,12 +103,9 @@ rotelampcontrol.prototype.getConfigurationFiles = function() {
 
 rotelampcontrol.prototype.onStop = function() {
     var self = this;
-    var defer=libQ.defer();
 
-    // Once the Plugin has successfull stopped resolve the promise
     self.detachListener();
-    self.removeVolumeScripts();
-    defer.resolve();
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStopped: successfully stopped plugin');
 
     return libQ.resolve();
 };
@@ -208,15 +205,58 @@ rotelampcontrol.prototype.setConf = function(varName, varValue) {
 rotelampcontrol.prototype.configSerialInterface = function (){
     var self = this;
     var defer = libQ.defer();
-
     if ((self.config.get('serialInterfaceDev')!==undefined) && 
         (self.config.get('serialInterfaceDev')!=='...') &&
         (Object.keys(self.selectedAmp).length > 0))  {
+            //define the configuration of the serial interface
+            const bits = parseInt(self.selectedAmp.dataBits);
+            self.serialOptions = ''
+            if ((bits > 4) && (bits <9)) {
+                self.serialOptions = ' cs'+bits;
+            };
+            switch (self.selectedAmp.handshaking) {
+                case 'RTS/CTS':
+                    self.serialOptions = self.serialOptions + ' crtscts';
+                    break;
+                case 'DTR/DSR':
+                    self.serialOptions = self.serialOptions + ' cdtrdsr';
+                    break;
+                default:
+                    break;
+            };
+            switch (parseInt(self.selectedAmp.stopBit)) {
+                case 1:
+                    self.serialOptions = self.serialOptions + ' -cstopb';
+                    break;
+                case 2:
+                    self.serialOptions = self.serialOptions + ' cstopb';
+                    break;
+                default:
+                    break;
+            };
+            switch (self.selectedAmp.parity) {
+                case 'no':
+                    self.serialOptions = self.serialOptions + ' -parenb';
+                    break;
+                case 'odd':
+                    self.serialOptions = self.serialOptions + ' parenb parodd';
+                    break;
+                case 'even':
+                    self.serialOptions = self.serialOptions + ' parenb -parodd';
+                    break;
+                default:
+                    break;
+            }
+            if (self.selectedAmp.ttyOptions != undefined) {
+                self.serialOptions = self.serialOptions + ' ' + self.selectedAmp.ttyOptions;        
+            }
+            //construct the path to the device
             self.serialInterfaceDev = "/dev/serial/by-id/" + self.config.get('serialInterfaceDev');
-            const cmdString = "/bin/stty -F " + self.serialInterfaceDev + ' ' + self.selectedAmp.baudRate + " raw -echo -echoe -echok -echoctl -echoke";
+            //construct the command for configuring the serial interface
+            const cmdString = "/bin/stty -F " + self.serialInterfaceDev + ' ' + self.selectedAmp.baudRate + self.serialOptions;
             exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
                 if (error !== null) {
-                    self.logger.error('[ROTELAMPCONTROL] configSerialInterface: Error, cannot configure serial interface '+error)
+                    self.logger.error('[ROTELAMPCONTROL] configSerialInterface: Error, cannot configure serial interface with "' + cmdString + '" ' + error)
                     defer.reject()
                 } else {
                     if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] configSerialInterface: Serial Interface configured with "' + cmdString +'"');
@@ -255,43 +295,43 @@ rotelampcontrol.prototype.sendCommand  = function() {
     //send a command to the amp
 }
 
-rotelampcontrol.prototype.parseResponse = function(response) {
+rotelampcontrol.prototype.parseResponse = function(data) {
     //interpret and react on messages from amp
-    var match = response.match(new RegExp(self.selectedAmp.responses.respVolume,'i'));
-    if (match !== null) {
-        const vol = match[1];
-        response = 'volume';
-    } else {
-        match = response.match(new RegExp(self.selectedAmp.responses.respSource,'i'));
-        if (match !== null) {
-            const source = match[1];
-            response = 'source';
-        }        
-    }
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: ' + response);
-    switch (response) {
-        case self.selectedAmp.responses.respPowerOn:
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
-            break;
-        case self.selectedAmp.responses.respPowerOff:
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
-            break;
-        case self.selectedAmp.responses.respMuteOn:
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
-            break;
-        case self.selectedAmp.responses.respMuteOn:
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
-            break;
-        case "volume":
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
-            break;
-        case "source":
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
-            break;
-        default:
-            break;
-    }
-}
+    // var match = response.match(new RegExp(self.selectedAmp.responses.respVolume,'i'));
+    // if (match !== null) {
+    //     const vol = match[1];
+    //     response = 'volume';
+    // } else {
+    //     match = response.match(new RegExp(self.selectedAmp.responses.respSource,'i'));
+    //     if (match !== null) {
+    //         const source = match[1];
+    //         response = 'source';
+    //     }        
+    // }
+    // if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: ' + response);
+    // switch (response) {
+    //     case self.selectedAmp.responses.respPowerOn:
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
+    //         break;
+    //     case self.selectedAmp.responses.respPowerOff:
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
+    //         break;
+    //     case self.selectedAmp.responses.respMuteOn:
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+    //         break;
+    //     case self.selectedAmp.responses.respMuteOn:
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+    //         break;
+    //     case "volume":
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
+    //         break;
+    //     case "source":
+    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
+    //         break;
+    //     default:
+    //         break;
+    // }
+};
 
 rotelampcontrol.prototype.addVolumeScripts = function() {
     var self = this;
@@ -653,18 +693,18 @@ rotelampcontrol.prototype.attachListener = function(devPath){
     if (self.config.get('serialInterfaceDev') != "...") {
         try {
             self.handle = spawn("/bin/cat", [devPath]);
-            this.ampResponses = "";
+            self.ampResponses = "";
             self.handle.stdout.on('data', function(data){
-                this.ampResponses += data.toString();
-                var responses = this.ampResponses.split(self.selectedAmp.responses.separator);
+                self.ampResponses += data.toString();
+                var responses = self.ampResponses.split(self.selectedAmp.responses.separator);
                 for (let i = 0; i < responses.length - 1; i++) {
                     if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + responses[i]);
                 }
-                this.ampResponses = responses[responses.length - 1];                
+                self.ampResponses = responses[responses.length - 1];                
             });
             self.handle.stdout.on('end', function(){
                     self.logger.error('[ROTELAMPCONTROL] attachListener: Stream from Serial Interface ended.');
-            })
+            });
 
             self.handle.stderr.on('data', (data) => {
                 self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
@@ -673,14 +713,10 @@ rotelampcontrol.prototype.attachListener = function(devPath){
             self.handle.on('close', (code) => {
                 self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
             });
-//             self.handle.stdout.on("data", function (chunk) {
-//                 self.logger.info('[ROTELAMPCONTROL] attachListener: ' + chunk);
-// //                        self.emitDialCommand(value,rotaryIndex)
-//             });                
         	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: attached and listening');
         	defer.resolve();
         } catch (error) {
-            self.logger.error('[ROTELAMPCONTROL] attachListener: could not connect to device');
+            self.logger.error('[ROTELAMPCONTROL] attachListener: could not connect to device' + error);
             defer.reject();
         }
     }

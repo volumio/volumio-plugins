@@ -12,8 +12,7 @@
             "sources": ["CD","Coax1","Coax2","Opt1","Opt2","Aux1","Aux2","Tuner","Phono","USB","Bluetooth","PC-USB"],
             "sourceCmdPostfix": ["cd","coax1","coax2","opt1","opt2","aux1","aux2","tuner","phono","usb","bluetooth","pcusb"],
             "sourceRespPostfix": ["cd","coax1","coax2","opt1","opt2","aux1","aux2","tuner","phono","usb","bluetooth","pc_usb"],
-            "commands": [
-                {
+            "commands": {
                     "powerOn": "power_on!",
                     "powerToggle": "power_toggle!",
                     "volUp": "vol_up!",
@@ -23,10 +22,8 @@
                     "muteOn": "mute_on!",
                     "muteOff": "mute_off!",
                     "source": "##!"
-                }
-            ],
-            "responses": [
-                {
+                },
+            "responses": {
                     "separator": "$",
                     "respPowerOn":"power=on",
                     "respPowerOff":"power=standby",
@@ -34,17 +31,14 @@
                     "respMuteOn": "mute=on",
                     "respMuteOff": "mute=off",
                     "respSource": "source=([a-z_12]*)"
-                }
-            ],
-            "statusRequests": [
-                {
+                },
+            "statusRequests": {
                     "reqPower":"power?",
                     "reqSource":"source?",
                     "reqVolume":"volume?",
                     "reqMute":"mute?",
                     "reqModel":"model?"
                 }
-            ]
         },
         {
             "vendor": "Rotel",
@@ -57,8 +51,7 @@
             "sources": ["CD","Coax1","Coax2","Opt1","Opt2","Aux1","Aux2","Tuner","Phono","USB","Bluetooth","PC-USB"],
             "sourceCmdPostfix": ["cd","coax1","coax2","opt1","opt2","aux1","aux2","tuner","phono","usb","bluetooth","pcusb"],
             "sourceRespPostfix": ["cd","coax1","coax2","opt1","opt2","aux1","aux2","tuner","phono","usb","bluetooth","pc_usb"],
-            "commands": [
-                {
+            "commands": {
                     "powerOn": "power_on!",
                     "powerToggle": "power_toggle!",
                     "volUp": "vol_up!",
@@ -68,27 +61,23 @@
                     "muteOn": "mute_on!",
                     "muteOff": "mute_off!",
                     "source": "##!"
-                }
-            ],
-            "responses": [
-                {
+                },
+            "responses": {
+                    "separator": "$",
                     "respPowerOn":"power=on$",
                     "respPowerOff":"power=standby$",
                     "respVolume": "volume=([0-9]{2})\\$",
                     "respMuteOn": "mute=on$",
                     "respMuteOff": "mute=off$",
                     "respSource": "source=([a-z_12]*)\\$"
-                }
-            ],
-            "statusRequests": [
-                {
+                },
+            "statusRequests": {
                     "reqPower":"power?",
                     "reqSource":"source?",
                     "reqVolume":"volume?",
                     "reqMute":"mute?",
                     "reqModel":"model?"
                 }
-            ]
         },
         {
             "vendor": "Rotel",
@@ -101,8 +90,7 @@
             "sources": ["CD","Aux1","Tuner","Phono","Bluetooth"],
             "sourceCmdPostfix": ["cd","aux1","tuner","phono","bluetooth"],
             "sourceRespPostfix": ["cd","aux1","tuner","phono","bluetooth"],
-            "commands": [
-                {
+            "commands": {
                     "powerOn": "power_on!",
                     "powerToggle": "power_toggle!",
                     "volUp": "vol_up!",
@@ -112,27 +100,23 @@
                     "muteOn": "mute_on!",
                     "muteOff": "mute_off!",
                     "source": "##!"
-                }
-            ],
-            "responses": [
-                {
+                },
+            "responses": {
+                    "separator": "$",
                     "respPowerOn":"power=on$",
                     "respPowerOff":"power=standby$",
                     "respVolume": "volume=([0-9]{2})\\$",
                     "respMuteOn": "mute=on$",
                     "respMuteOff": "mute=off$",
                     "respSource": "source=([a-z_12]*)\\$"
-                }
-            ],
-            "statusRequests": [
-                {
+                },
+            "statusRequests": {
                     "reqPower":"power?",
                     "reqSource":"source?",
                     "reqVolume":"volume?",
                     "reqMute":"mute?",
                     "reqModel":"model?"
                 }
-            ]
         }
       ]
 }
