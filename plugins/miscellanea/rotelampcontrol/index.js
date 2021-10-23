@@ -6,6 +6,8 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var spawn = require('child_process').spawn;
+const EventEmitter = require('events').EventEmitter;
+var Volume = {};
 
 module.exports = rotelampcontrol;
 function rotelampcontrol(context) {
@@ -25,6 +27,7 @@ rotelampcontrol.prototype.onVolumioStart = function()
     var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
+    this.messageReceived = new EventEmitter();
 
     return libQ.resolve();
 }
@@ -48,6 +51,7 @@ rotelampcontrol.prototype.onStart = function() {
     .then(_ => self.configSerialInterface())
     //attach listener to handle messages from the amp
     .then(serialDev => self.attachListener(serialDev))
+    .then(_ => self.retrievevolume())
     // .then(function(){
     //     //updateVolumeSettings and tell volumio that this is an override plugin
     // })
@@ -166,6 +170,7 @@ rotelampcontrol.prototype.getUIConfig = function() {
                 uiconf.sections[1].content[0].value.value = selected;
                 uiconf.sections[1].content[0].value.label = ampFromConfig;                
             }
+            //populate input selector drop-down
             if (ampFromConfig != "...") {
                 for (var n = 0; n < self.ampDefinitions.data.amps[0].sources.length; n++)
                 {
@@ -174,7 +179,10 @@ rotelampcontrol.prototype.getUIConfig = function() {
                         label: self.ampDefinitions.data.amps[0].sources[n]
                     });
                 };                
+            } else {
+                //deactivieren
             }
+            uiconf.sections[1].content[0].
 			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
             // debug_settings section
             defer.resolve(uiconf);
@@ -328,21 +336,27 @@ rotelampcontrol.prototype.parseResponse = function(data) {
     switch (response) {
         case self.selectedAmp.responses.respPowerOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
+            self.messageReceived.emit('power', true);
             break;
         case self.selectedAmp.responses.respPowerOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
+            self.messageReceived.emit('power', false);
             break;
         case self.selectedAmp.responses.respMuteOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+            self.messageReceived.emit('mute', false);
             break;
         case self.selectedAmp.responses.respMuteOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+            self.messageReceived.emit('mute', true);
             break;
         case 'volumeVal':
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);
+            self.messageReceived.emit('volume', vol);
             break;
         case 'sourceVal':
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
+            self.messageReceived.emit('source', source);
             break;
         default:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: unhandled response "' + response +'"');
@@ -417,6 +431,45 @@ rotelampcontrol.prototype.updateVolumeSettings = function() {
 // 		overridePluginName = 'rotelampcontrol'
 // 	}
 };
+
+rotelampcontrol.prototype.sendStatusRequest = function(messageType) {
+    var self = this;
+    var defer = libQ.defer();
+
+    var cmdString = '/bin/echo -e -n '
+    switch (messageType) {
+        case "reqPower":
+            cmdString = cmdString + self.selectedAmp.statusRequests.reqPower;
+            break;
+        case "reqSource":
+            cmdString = cmdString + self.selectedAmp.statusRequests.reqSource;
+            break;
+        case "reqVolume":
+            cmdString = cmdString + self.selectedAmp.statusRequests.reqVolume;
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] sendStatusRequest: cmdString "' + cmdString +'"');
+            break;
+        case "reqMute":
+            cmdString = cmdString + self.selectedAmp.statusRequests.reqMute;
+            break;
+        case "reqModel":
+            cmdString = cmdString + self.selectedAmp.statusRequests.reqModel;
+            break;    
+        default:
+            break;
+    };
+    cmdString = cmdString + ' > ' + self.serialInterfaceDev;
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] sendStatusRequest: Send "' + cmdString +'"');
+
+    exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+    if (error !== null) {
+        self.logger.error('[ROTELAMPCONTROL] sendStatusRequest: Could not send command to serial interface "' + cmdString + '" ' + error)
+        defer.reject()
+    } else {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] sendStatusRequest: Sent command "' + cmdString +'" received: ' + stdout);
+        defer.resolve();
+    }});
+    return libQ.resolve();
+}
 
 rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
     //override the alsavolume function to send volume commands to the amp
@@ -570,42 +623,30 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
 };
   
 rotelampcontrol.prototype.retrievevolume = function () {
-    // //override the retrievevolume function to read the volume from the amp
-    // var self = this;
-    // var defer = libQ.defer();
-    // //original gibt getVolume fehler oder volume integer an die Cb-funktion zurück
-    // //to do:
-    // //mute abfragen ggf. mute setzten, bei fehler mute= false
-    // //vol abfragen
+    //override the retrievevolume function to read the volume from the amp
+    var self = this;
+    var defer = libQ.defer();    
+    //request current volume
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: start listener Volume');
+    self.messageReceived.once('volume',(vol) => {
+        //check if muted
+        Volume.vol = vol;
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: vol:' + JSON.stringify(Volume));
+        self.messageReceived.once('mute',(muted) => {
+            Volume.mute = muted;
+            Volume.disableVolumeControl = false;
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: returning:' + JSON.stringify(Volume));
+            defer.resolve(Volume)
+            self.commandRouter.volumioupdatevolume(Volume);
+        })
+        self.sendStatusRequest('reqMute')
+    })
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: send request');
+    setTimeout(() => {
+        self.sendStatusRequest('reqVolume');
+    }, 10000);   
 
-
-    // this.getVolume(function (err, vol) {
-    //     if (err) {
-    //     self.logger.error('Cannot get ALSA Volume: ' + err);
-    //     }
-    //     self.getMuted(function (err, mute) {
-    //     if (err) {
-    //         mute = false;
-    //     }
-    //     // Log volume control
-    //     self.logger.info('VolumeController:: Volume=' + vol + ' Mute =' + mute);
-    //     if (!vol) {
-    //         vol = currentvolume;
-    //         mute = currentmute;
-    //     } else {
-    //         currentvolume = vol;
-    //     }
-    //     Volume.vol = vol;
-    //     Volume.mute = mute;
-    //     Volume.disableVolumeControl = false;
-    //     return libQ.resolve(Volume)
-    //         .then(function (Volume) {
-    //         defer.resolve(Volume);
-    //         self.commandRouter.volumioupdatevolume(Volume);
-    //         });
-    //     });
-    // });
-    // return defer.promise;
+    return defer.promise;
 };
   
 rotelampcontrol.prototype.removeVolumeScripts = function() {

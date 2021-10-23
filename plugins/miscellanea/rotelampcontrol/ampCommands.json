@@ -64,12 +64,12 @@
                 },
             "responses": {
                     "separator": "$",
-                    "respPowerOn":"power=on$",
-                    "respPowerOff":"power=standby$",
-                    "respVolume": "volume=([0-9]{2})\\$",
-                    "respMuteOn": "mute=on$",
-                    "respMuteOff": "mute=off$",
-                    "respSource": "source=([a-z_12]*)\\$"
+                    "respPowerOn":"power=on",
+                    "respPowerOff":"power=standby",
+                    "respVolume": "volume=([0-9]{2})\\",
+                    "respMuteOn": "mute=on",
+                    "respMuteOff": "mute=off",
+                    "respSource": "source=([a-z_12]*)\\"
                 },
             "statusRequests": {
                     "reqPower":"power?",
@@ -103,12 +103,12 @@
                 },
             "responses": {
                     "separator": "$",
-                    "respPowerOn":"power=on$",
-                    "respPowerOff":"power=standby$",
-                    "respVolume": "volume=([0-9]{2})\\$",
-                    "respMuteOn": "mute=on$",
-                    "respMuteOff": "mute=off$",
-                    "respSource": "source=([a-z_12]*)\\$"
+                    "respPowerOn":"power=on",
+                    "respPowerOff":"power=standby",
+                    "respVolume": "volume=([0-9]{2})\\",
+                    "respMuteOn": "mute=on",
+                    "respMuteOff": "mute=off",
+                    "respSource": "source=([a-z_12]*)\\"
                 },
             "statusRequests": {
                     "reqPower":"power?",
