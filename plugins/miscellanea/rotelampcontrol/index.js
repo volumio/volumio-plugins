@@ -295,42 +295,59 @@ rotelampcontrol.prototype.sendCommand  = function() {
     //send a command to the amp
 }
 
+rotelampcontrol.prototype.chopResponse = function(data) {
+    //first, chop up responses, if they do not arrive line by line
+    var self = this;
+    self.ampResponses += data.toString();
+    var responses = self.ampResponses.split(self.selectedAmp.responses.separator);
+    for (let i = 0; i < responses.length - 1; i++) {
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] chopResponse: ' + responses[i]);
+        self.parseResponse(responses[i]);
+    }
+    self.ampResponses = responses[responses.length - 1];                
+}
+
 rotelampcontrol.prototype.parseResponse = function(data) {
     //interpret and react on messages from amp
-    // var match = response.match(new RegExp(self.selectedAmp.responses.respVolume,'i'));
-    // if (match !== null) {
-    //     const vol = match[1];
-    //     response = 'volume';
-    // } else {
-    //     match = response.match(new RegExp(self.selectedAmp.responses.respSource,'i'));
-    //     if (match !== null) {
-    //         const source = match[1];
-    //         response = 'source';
-    //     }        
-    // }
-    // if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: ' + response);
-    // switch (response) {
-    //     case self.selectedAmp.responses.respPowerOn:
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
-    //         break;
-    //     case self.selectedAmp.responses.respPowerOff:
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
-    //         break;
-    //     case self.selectedAmp.responses.respMuteOn:
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
-    //         break;
-    //     case self.selectedAmp.responses.respMuteOn:
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
-    //         break;
-    //     case "volume":
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
-    //         break;
-    //     case "source":
-    //         if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
-    //         break;
-    //     default:
-    //         break;
-    // }
+    var self = this;
+    var vol = NaN;
+    var source = NaN;
+    var match = data.match(new RegExp(self.selectedAmp.responses.respVolume,'i'));
+    if (match !== null) {
+        vol = parseInt(match[1]);
+        var response = 'volumeVal';
+    } else {
+        match = data.match(new RegExp(self.selectedAmp.responses.respSource,'i'));
+        if (match !== null) {
+            source = match[1];
+            var response = 'sourceVal';
+        } else {
+            var response = data;
+        }       
+    } 
+    switch (response) {
+        case self.selectedAmp.responses.respPowerOn:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
+            break;
+        case self.selectedAmp.responses.respPowerOff:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
+            break;
+        case self.selectedAmp.responses.respMuteOff:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+            break;
+        case self.selectedAmp.responses.respMuteOn:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+            break;
+        case 'volumeVal':
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);            
+            break;
+        case 'sourceVal':
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
+            break;
+        default:
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: unhandled response "' + response +'"');
+            break;
+    }
 };
 
 rotelampcontrol.prototype.addVolumeScripts = function() {
@@ -695,17 +712,11 @@ rotelampcontrol.prototype.attachListener = function(devPath){
             self.handle = spawn("/bin/cat", [devPath]);
             self.ampResponses = "";
             self.handle.stdout.on('data', function(data){
-                self.ampResponses += data.toString();
-                var responses = self.ampResponses.split(self.selectedAmp.responses.separator);
-                for (let i = 0; i < responses.length - 1; i++) {
-                    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + responses[i]);
-                }
-                self.ampResponses = responses[responses.length - 1];                
+                self.chopResponse(data);
             });
             self.handle.stdout.on('end', function(){
                     self.logger.error('[ROTELAMPCONTROL] attachListener: Stream from Serial Interface ended.');
             });
-
             self.handle.stderr.on('data', (data) => {
                 self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
             });
