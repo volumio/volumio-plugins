@@ -1,4 +1,4 @@
-October 17th 2021
+October 23th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+October 23th 2021
+
+- Fix Q value issue with Highshelf2, Lowshelf2
+- Lowpass label was missing 
 
 October 17th 2021
 

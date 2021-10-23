@@ -276,6 +276,9 @@ FusionDsp.prototype.getUIConfig = function () {
             case ("Lowpass"):
               peqlabel = "Lowpass Hz,Q"
               break;
+            case ("Lowpass2"):
+              peqlabel = "Lowpass Hz,bandwidth Octave"
+              break;
             case ("Highpass"):
               peqlabel = "Highpass Hz,bandwidth Octave"
               break;
@@ -380,7 +383,7 @@ FusionDsp.prototype.getUIConfig = function () {
               "id": "addeq",
               "element": "button",
               "label": self.commandRouter.getI18nString('ADD_EQ'),
-              "description": self.commandRouter.getI18nString('ADD_EQ_DESC'),
+              "doc": self.commandRouter.getI18nString('ADD_EQ_DESC'),
               "onClick": {
                 "type": "plugin",
                 "endpoint": "audio_interface/fusiondsp",
@@ -400,7 +403,7 @@ FusionDsp.prototype.getUIConfig = function () {
               "id": "removeeq",
               "element": "button",
               "label": self.commandRouter.getI18nString("REMOVE_EQ"),
-              "description": self.commandRouter.getI18nString('REMOVE_EQ_DESC'),
+              "doc": self.commandRouter.getI18nString('REMOVE_EQ_DESC'),
               "onClick": {
                 "type": "plugin",
                 "endpoint": "audio_interface/fusiondsp",
@@ -704,7 +707,7 @@ FusionDsp.prototype.getUIConfig = function () {
             "id": "moresettings",
             "element": "button",
             "label": self.commandRouter.getI18nString('MORE_SETTINGS'),
-            "description": self.commandRouter.getI18nString('MORE_SETTINGS_DOC'),
+            "doc": self.commandRouter.getI18nString('MORE_SETTINGS_DOC'),
             "onClick": {
               "type": "plugin",
               "endpoint": "audio_interface/fusiondsp",
@@ -725,7 +728,7 @@ FusionDsp.prototype.getUIConfig = function () {
             "id": "lesssettings",
             "element": "button",
             "label": self.commandRouter.getI18nString('LESS_SETTINGS'),
-            "description": self.commandRouter.getI18nString('LESS_SETTINGS_DOC'),
+            "doc": self.commandRouter.getI18nString('LESS_SETTINGS_DOC'),
             "onClick": {
               "type": "plugin",
               "endpoint": "audio_interface/fusiondsp",
@@ -861,7 +864,7 @@ FusionDsp.prototype.getUIConfig = function () {
             "id": "disableeffect",
             "element": "button",
             "label": self.commandRouter.getI18nString('DISABLE_EFFECT'),
-            "description": self.commandRouter.getI18nString('DISABLE_EFFECT_DESC'),
+            "doc": self.commandRouter.getI18nString('DISABLE_EFFECT_DESC'),
             "onClick": {
               "type": "plugin",
               "endpoint": "audio_interface/fusiondsp",
@@ -877,7 +880,7 @@ FusionDsp.prototype.getUIConfig = function () {
             "id": "enableeffect",
             "element": "button",
             "label": self.commandRouter.getI18nString('ENABLE_EFFECT'),
-            "description": self.commandRouter.getI18nString('ENABLE_EFFECT_DESC'),
+            "doc": self.commandRouter.getI18nString('ENABLE_EFFECT_DESC'),
             "onClick": {
               "type": "plugin",
               "endpoint": "audio_interface/fusiondsp",
@@ -2577,7 +2580,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
           return;
         }
       }
-      if (typer == 'Peaking') {
+      if (typer == 'Peaking' || typer == 'Highshelf2' || typer == 'Lowshelf2') {
 
         var q = Number(eqr[2]);
         if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
@@ -2644,18 +2647,24 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
           return;
         }
       }
-
-      if (typer == 'Highshelf2' || typer == 'Lowshelf2') {
-
-        var s = Number(eqr[2]);
-        if ((Number.isInteger(s)) && (s > 0 && s < 13)) {
-
-        } else {
-          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_SLOPE_RANGE') + eqc)
-          return;
-        }
-      }
-
+      /*
+            if (typer == 'Highshelf2' || typer == 'Lowshelf2') {
+      
+              var s = Number(eqr[2]);
+              if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
+      
+          //    if ((Number.isInteger(s)) && (s > 0 && s < 13)) {
+      
+              } else {
+                self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
+      
+                //self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_SLOPE_RANGE') + eqc)
+                self.commandRouter.pushToastMessage('error', 'pas bon ' + eqc)
+      
+                return;
+              }
+            }
+      */
       if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch' || typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2') {
 
         var q = eqr[2];
