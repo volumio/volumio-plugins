@@ -1789,13 +1789,16 @@ ControllerSpop.prototype.getPlaylistTracks = function (userId, playlistId) {
                 var numTracks = results.body.tracks.total;
                 var requests = [];
 
-                for (var i = 0; i < numTracks / 50; i++) {
-                    var promise = self.spotifyApi.getPlaylistTracks(playlistId, {'offset': i * 50, 'limit': 50});
+                for (var i = 0; i < numTracks / 100; i++) {
+                    var promise = self.spotifyApi.getPlaylistTracks(playlistId, {'offset': i * 100, 'limit': 100});
                     requests.push(promise);
-
-                    promise.then(function (data) {
-                        for (var track of data.body.items) {
+                }
+                
+                Promise.all(requests).then(function (results) {
+                    for (var request of results) {
+                        for (var track of request.body.items) {
                             try {
+                                var album = track.track.album;
                                 var item = {
                                     service: 'spop',
                                     type: 'song',
@@ -1807,16 +1810,14 @@ ControllerSpop.prototype.getPlaylistTracks = function (userId, playlistId) {
                                     samplerate: self.samplerate,
                                     bitdepth: '16 bit',
                                     trackType: 'spotify',
-                                    albumart: (track.album.hasOwnProperty('images') && track.album.images.length > 0 ? track.album.images[0].url : ''),
+                                    albumart: (album.hasOwnProperty('images') && album.images.length > 0 ? album.images[0].url : ''),
                                     duration: Math.trunc(track.track.duration_ms / 1000)
                                 };
                                 response.push(item);
                             } catch(e) {}
                         }
-                    });
-                }
-                
-                Promise.all(requests).then(function () {
+                    }
+
                     defer.resolve(response);
                 });
             }, function (err) {
