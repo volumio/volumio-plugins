@@ -7,7 +7,6 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var spawn = require('child_process').spawn;
 const EventEmitter = require('events').EventEmitter;
-var Volume = {};
 
 module.exports = rotelampcontrol;
 function rotelampcontrol(context) {
@@ -39,8 +38,15 @@ rotelampcontrol.prototype.onStart = function() {
 	self.debugLogging = (self.config.get('logging')==true);
     self.currentVolume = self.config.get('startupVolume');
     self.currentMute = false;
+    self.detectedModel = '';
+    self.currentSource = '';
+    self.currentPower = 'off';   
     self.selectedAmp ={} ;
-	self.loadI18nStrings();
+	self.loadI18nStrings(); 
+    self.objVolume = {};
+    self.objVolume.vol = self.currentVolume;
+    self.objVolume.mute = self.currentMute;
+    self.objVolume.disableVolumeControl = false;
     //load amp definitions from file
     self.loadAmpDefinitions()
     //initialize list of serial devices available to the system
@@ -51,7 +57,8 @@ rotelampcontrol.prototype.onStart = function() {
     .then(_ => self.configSerialInterface())
     //attach listener to handle messages from the amp
     .then(serialDev => self.attachListener(serialDev))
-    .then(_ => self.retrievevolume())
+    //determine the current settings of the amp
+    .then(_ => self.getAmpStatus())
     // .then(function(){
     //     //updateVolumeSettings and tell volumio that this is an override plugin
     // })
@@ -85,6 +92,22 @@ rotelampcontrol.prototype.loadAmpDefinitions = function() {
 
 rotelampcontrol.prototype.SerialInterface = function(dev) {
     this.serialInterfaceDev = "/dev/serial/by-id/" + dev;
+}
+
+rotelampcontrol.prototype.getAmpStatus = function() {
+    var self = this;
+    var defer = libQ.defer();
+
+    //send some requests to determine the current settings of the amp
+    self.sendStatusRequest('reqModel')
+    .then(_ => self.sendStatusRequest('reqPower'))
+    .then(_ => self.sendStatusRequest('reqVolume'))
+    .then(_ => self.sendStatusRequest('reqMute'))
+    .then(_ => self.sendStatusRequest('reqSource'))
+    .then(_ => {
+        defer.resolve();
+    })
+    return defer.promise;
 }
 
 rotelampcontrol.prototype.setActiveAmp = function() {
@@ -210,6 +233,7 @@ rotelampcontrol.prototype.setConf = function(varName, varValue) {
     //Perform your installation tasks here
 };
 
+//configure serial interface according to ampDefinition file
 rotelampcontrol.prototype.configSerialInterface = function (){
     var self = this;
     var defer = libQ.defer();
@@ -279,8 +303,8 @@ rotelampcontrol.prototype.configSerialInterface = function (){
     return defer.promise;
 };
 
+//read and return devices connected to RPi
 rotelampcontrol.prototype.listSerialDevices = function() {
-    //read and return devices connected to RPi
     var self = this;
     var defer = libQ.defer();
 
@@ -299,10 +323,12 @@ rotelampcontrol.prototype.listSerialDevices = function() {
     return defer.promise;
 }
 
+//send commands to the amp
 rotelampcontrol.prototype.sendCommand  = function() {
-    //send a command to the amp
 }
 
+//Rotel amps are not sending EOL characters, so we need to chop up the serial input
+//at every separator and parse the resulting pieces
 rotelampcontrol.prototype.chopResponse = function(data) {
     //first, chop up responses, if they do not arrive line by line
     var self = this;
@@ -315,6 +341,7 @@ rotelampcontrol.prototype.chopResponse = function(data) {
     self.ampResponses = responses[responses.length - 1];                
 }
 
+//interpret the responses received from the amp
 rotelampcontrol.prototype.parseResponse = function(data) {
     //interpret and react on messages from amp
     var self = this;
@@ -336,27 +363,39 @@ rotelampcontrol.prototype.parseResponse = function(data) {
     switch (response) {
         case self.selectedAmp.responses.respPowerOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
-            self.messageReceived.emit('power', true);
+            self.currentPower = 'on';
+            self.messageReceived.emit('power', 'on');
             break;
         case self.selectedAmp.responses.respPowerOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
-            self.messageReceived.emit('power', false);
+            self.currentPower = 'standby';
+            self.messageReceived.emit('power', 'standby');
             break;
         case self.selectedAmp.responses.respMuteOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+            self.currentMute = false;
+            self.objVolume.mute = false;
             self.messageReceived.emit('mute', false);
+            self.commandRouter.volumioupdatevolume(self.objVolume);
             break;
         case self.selectedAmp.responses.respMuteOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+            self.currentMute = true;
+            self.objVolume.mute = true;
             self.messageReceived.emit('mute', true);
+            self.commandRouter.volumioupdatevolume(self.objVolume);
             break;
         case 'volumeVal':
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);
             self.messageReceived.emit('volume', vol);
+            self.currentVolume = vol;
+            self.objVolume.vol = vol;
+            self.commandRouter.volumioupdatevolume(self.objVolume);
             break;
         case 'sourceVal':
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);            
             self.messageReceived.emit('source', source);
+            self.currentSource = source;
             break;
         default:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: unhandled response "' + response +'"');
@@ -364,6 +403,7 @@ rotelampcontrol.prototype.parseResponse = function(data) {
     }
 };
 
+//not needed anymore, delete later
 rotelampcontrol.prototype.addVolumeScripts = function() {
     var self = this;
 
@@ -410,28 +450,30 @@ rotelampcontrol.prototype.addVolumeScripts = function() {
 //	self.commandRouter.setStartupVolume();
 };
 
-rotelampcontrol.prototype.updateVolumeSettings = function() {
 //update the volumio Volume Settings, mainly make this an Override plugin
-// 	var self = this;
+rotelampcontrol.prototype.updateVolumeSettings = function(data) {
+	var self = this;
 
-// 	var data = {
-// 		device = '',
-// 		mixer = '',
-// 		maxvolume = '50',
-// 		volumecurve = '',
-// 		volumesteps = '50',
-// 		currentvolume = '',
-// 		hasHWMute = false,
-// 		currentmute = false,
-// 		premutevolume = '0',
-// 		mixertype = 'Hardware',
-// 		devicename = 'Rotel A12',
-// 		volumeOverride = true,
-// 		overridePluginType = 'miscellanea',
-// 		overridePluginName = 'rotelampcontrol'
-// 	}
+	// var data = {
+	// 	device = '',
+	// 	mixer = '',
+	// 	maxvolume = '50',
+	// 	volumecurve = '',
+	// 	volumesteps = '1',
+	// 	currentvolume = '',
+	// 	hasHWMute = false,
+	// 	currentmute = false,
+	// 	premutevolume = '0',
+	// 	// mixertype = '',
+	// 	devicename = 'Rotel A12',
+	// 	volumeOverride = true,
+	// 	overridePluginType = 'miscellanea',
+	// 	overridePluginName = 'rotelampcontrol'
+	// }
+    // //self.commandRouter.volumioUpdateVolumeSettings(data);
 };
 
+//used to send status requests to the amp.
 rotelampcontrol.prototype.sendStatusRequest = function(messageType) {
     var self = this;
     var defer = libQ.defer();
@@ -446,7 +488,6 @@ rotelampcontrol.prototype.sendStatusRequest = function(messageType) {
             break;
         case "reqVolume":
             cmdString = cmdString + self.selectedAmp.statusRequests.reqVolume;
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] sendStatusRequest: cmdString "' + cmdString +'"');
             break;
         case "reqMute":
             cmdString = cmdString + self.selectedAmp.statusRequests.reqMute;
@@ -465,14 +506,13 @@ rotelampcontrol.prototype.sendStatusRequest = function(messageType) {
         self.logger.error('[ROTELAMPCONTROL] sendStatusRequest: Could not send command to serial interface "' + cmdString + '" ' + error)
         defer.reject()
     } else {
-        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] sendStatusRequest: Sent command "' + cmdString +'" received: ' + stdout);
         defer.resolve();
     }});
     return libQ.resolve();
 }
 
+//override the alsavolume function to send volume commands to the amp
 rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
-    //override the alsavolume function to send volume commands to the amp
 // 	var self = this;
   
 // 	//   var defer = libQ.defer();
@@ -621,13 +661,17 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
 // 	//   }
 // 	  return defer.promise;
 };
-  
+
+//overwrites the retrievevolume function, basically reads the current volume 
+//from the amp and passes it back in an object together with mute info and
+//boolean enable flag for vol control
+//Other than original it does not call updateVolumeSettings, because that is already called from the
+//response parsing function
 rotelampcontrol.prototype.retrievevolume = function () {
     //override the retrievevolume function to read the volume from the amp
     var self = this;
     var defer = libQ.defer();    
     //request current volume
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: start listener Volume');
     self.messageReceived.once('volume',(vol) => {
         //check if muted
         Volume.vol = vol;
@@ -636,35 +680,15 @@ rotelampcontrol.prototype.retrievevolume = function () {
             Volume.mute = muted;
             Volume.disableVolumeControl = false;
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: returning:' + JSON.stringify(Volume));
-            defer.resolve(Volume)
-            self.commandRouter.volumioupdatevolume(Volume);
+            defer.resolve(Volume);
         })
-        self.sendStatusRequest('reqMute')
-    })
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: send request');
-    setTimeout(() => {
-        self.sendStatusRequest('reqVolume');
-    }, 10000);   
-
+        self.sendStatusRequest('reqMute');
+    });
+    self.sendStatusRequest('reqVolume');
     return defer.promise;
 };
-  
-rotelampcontrol.prototype.removeVolumeScripts = function() {
-    var self = this;
 
-    var enabled = false;
-    var setVolumeScript = '';
-    var getVolumeScript = '';
-    var setMuteScript = '';
-    var getMuteScript = '';
-    var minVol = 0;
-    var maxVol = 100;
-    var mapTo100 = false;
-
-    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    self.commandRouter.updateVolumeScripts(data);
-};
-
+//get some additional parameters from Volumio 
 rotelampcontrol.prototype.getAdditionalConf = function (type, controller, data) {
     var self = this;
     var confs = self.commandRouter.executeOnPlugin(type, controller, 'getConfigParam', data);
@@ -710,8 +734,6 @@ rotelampcontrol.prototype.updateAmpSettings = function (data) {
     self.commandRouter.pushToastMessage('success', self.getI18nString('TOAST_SAVE_SUCCESS'), self.getI18nString('TOAST_AMP_SAVE'));
     return defer.promise;
 };
-
-
 
 // Retrieve a string
 rotelampcontrol.prototype.getI18nString = function (key) {
