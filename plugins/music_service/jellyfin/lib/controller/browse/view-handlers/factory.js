@@ -5,13 +5,15 @@ const jellyfin = require(jellyfinPluginLibRoot + '/jellyfin');
 
 const RootViewHandler = require(__dirname + '/root');
 const UserViewViewHandler = require(__dirname + '/userview');
-const CollectionViewHandler = require(__dirname + '/collection');
+const LibraryViewHandler = require(__dirname + '/library');
 const AlbumViewHandler = require(__dirname + '/album');
 const ArtistViewHandler = require(__dirname + '/artist');
 const AlbumArtistViewHandler = require(__dirname + '/album-artist');
 const PlaylistViewHandler = require(__dirname + '/playlist');
 const GenreViewHandler = require(__dirname + '/genre');
 const SongViewHandler = require(__dirname + '/song');
+const CollectionsViewHandler = require(__dirname + '/collections');
+const CollectionViewHandler = require(__dirname + '/collection');
 const AZFilterViewHandler = require(__dirname + '/filter/az');
 const GenreFilterViewHandler = require(__dirname + '/filter/genre');
 const YearFilterViewHandler = require(__dirname + '/filter/year');
@@ -140,7 +142,7 @@ class ViewHandlerFactory {
 ViewHandlerFactory._viewToClass = {
     'root': RootViewHandler,
     'userViews': UserViewViewHandler,
-    'collection': CollectionViewHandler,
+    'library': LibraryViewHandler,
     'albums': AlbumViewHandler,
     'albumArtists': AlbumArtistViewHandler,
     'artists': ArtistViewHandler,
@@ -148,6 +150,8 @@ ViewHandlerFactory._viewToClass = {
     'genres': GenreViewHandler,
     'songs': SongViewHandler,
     'song': SongViewHandler,
+    'collections': CollectionsViewHandler,
+    'collection': CollectionViewHandler,
     'filter.az': AZFilterViewHandler,
     'filter.genre': GenreFilterViewHandler,
     'filter.year': YearFilterViewHandler,

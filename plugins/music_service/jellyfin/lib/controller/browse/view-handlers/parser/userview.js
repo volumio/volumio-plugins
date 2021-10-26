@@ -8,12 +8,16 @@ class UserViewParser extends BaseParser {
         let baseUri = this.getUri();
 
         let uri, type;
-        if (userView.Type === 'UserView' && userView.CollectionType === 'playlists') {
+        if (userView.Type === 'CollectionFolder' && userView.CollectionType === 'boxsets') {
+            uri = baseUri + '/collections@parentId=' + userView.Id;
+            type = 'streaming-category';
+        }
+        else if (userView.Type === 'UserView' && userView.CollectionType === 'playlists') {
             uri = baseUri + '/playlists';
             type = 'streaming-category';
         }
         else if (userView.Type === 'CollectionFolder' && userView.CollectionType === 'music') {
-            uri = baseUri + '/collection@parentId=' + userView.Id;
+            uri = baseUri + '/library@parentId=' + userView.Id;
             type = 'folder';
         }
 

@@ -5,16 +5,16 @@ const BaseParser = require(__dirname + '/base');
 
 class ArtistParser extends BaseParser {
 
-    parseToListItem(artist) {
+    parseToListItem(artist, noParent = false) {
         let baseUri = this.getUri();
-        let parentId = this.getCurrentView().parentId;
+        let parentId = noParent ? null : this.getCurrentView().parentId;
         
         let data = {
             'service': 'jellyfin',
             'type': 'folder',
             'title': artist.Name,
             'albumart': this.getAlbumArt(artist),
-            'uri': baseUri + '/albums@parentId=' + parentId + '@' + this._getArtistType() + 'Id=' + artist.Id
+            'uri': `${ baseUri }/albums${ noParent ? '' : '@parentId=' + parentId }@${ this._getArtistType() }Id=${ artist.Id }`
         }
         return data;
     }

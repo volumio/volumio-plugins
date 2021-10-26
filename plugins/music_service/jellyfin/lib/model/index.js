@@ -7,6 +7,7 @@ const ArtistModel = require(__dirname + '/artist');
 const AlbumArtistModel = require(__dirname + '/album-artist');
 const GenreModel = require(__dirname + '/genre');
 const SongModel = require(__dirname + '/song');
+const CollectionModel = require(__dirname + '/collection');
 const AZFilterModel = require(__dirname + '/filter/az');
 const GenreFilterModel = require(__dirname + '/filter/genre');
 const YearFilterModel = require(__dirname + '/filter/year');
@@ -21,6 +22,7 @@ let typeToClass = {
     albumArtist: AlbumArtistModel,
     genre: GenreModel,
     song: SongModel,
+    collection: CollectionModel,
     'filter.az': AZFilterModel,
     'filter.genre': GenreFilterModel,
     'filter.year': YearFilterModel,

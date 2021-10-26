@@ -22,8 +22,8 @@ class AlbumArtHandler {
         if (item.Type === 'UserView' && item.CollectionType && item.CollectionType === 'playlists') {
             defaultImg = 'playlist.png';
         }
-        // Collection
-        else if (item.Type === 'CollectionFolder') {
+        // Library
+        else if (item.Type === 'CollectionFolder' && item.CollectionType === 'music') {
             defaultImg = 'album.png';
         }
         // Music albums - fetch from web if possible (using AlbumArt plugin)
