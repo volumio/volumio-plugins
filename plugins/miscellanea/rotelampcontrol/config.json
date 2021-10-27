@@ -15,9 +15,13 @@
         "type": "string",
         "value": "..."
     },
+    "minVolume": {
+        "type": "number",
+        "value": 0
+    },
     "maxVolume": {
         "type": "number",
-        "value": 15
+        "value": 35
     },
     "startupVolume": {
         "type": "number",
@@ -26,6 +30,10 @@
     "volumeSteps": {
         "type": "number",
         "value": 1
+    },
+    "mapTo100": {
+        "type": "boolean",
+        "value": true
     },
     "pauseWhenMuted": {
         "type": "boolean",

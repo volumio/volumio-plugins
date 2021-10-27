@@ -12,6 +12,8 @@
   "VOLUMIO_INPUT":"Volumio's Input",
   "PAUSE_WHEN_MUTED":"Pause when Muted",
   "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted.",
+  "MIN_VOLUME":"Minimum Volume",
+  "D_MIN_VOLUME":"The minimum Volume of the Amplifier that can be set from Volumio. You can always override this with the controls of the Amp directly.",
   "MAX_VOLUME":"Maximum Volume",
   "D_MAX_VOLUME":"The maximum Volume of the Amplifier that can be set from Volumio. You can always override this with the controls of the Amp directly.",
   "VOLUME_STEPS":"Volume Steps per Click",
@@ -23,5 +25,7 @@
   "TOAST_SAVE_SUCCESS":"Successfully saved",
   "TOAST_DEBUG_SAVE":"Debug Settings",
   "TOAST_SERIAL_SAVE":"Serial Interface Settings",
-  "TOAST_AMP_SAVE":"Amplifier Settings"
+  "TOAST_AMP_SAVE":"Amplifier Settings",
+  "MAP_TO_100": "Map volume to 0-100",
+  "D_MAP_TO_100": "Map min and max Volume to range from 0 to 100"
 }

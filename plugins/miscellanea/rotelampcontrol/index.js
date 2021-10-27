@@ -36,16 +36,21 @@ rotelampcontrol.prototype.onStart = function() {
     var defer=libQ.defer();
     //set some important parameters
 	self.debugLogging = (self.config.get('logging')==true);
-    self.currentVolume = self.config.get('startupVolume');
-    self.currentMute = false;
     self.detectedModel = '';
     self.currentSource = '';
     self.currentPower = 'off';   
     self.selectedAmp ={} ;
 	self.loadI18nStrings(); 
     self.objVolume = {};
-    self.objVolume.vol = self.currentVolume;
-    self.objVolume.mute = self.currentMute;
+    self.ampVolume = self.config.get('startupVolume');
+    if (self.config.get('mapTo100')) {
+        //calculate the equivalent volume on a 0...100 scale
+        self.objVolume.vol = parseInt((self.config.get('startupVolume')-self.config.get('minVolume')/(self.config.get('maxVolume')-self.config.get('minVolume'))*100))
+    } else {
+        self.objVolume.vol = self.config.get('startupVolume');        
+    }
+    self.objVolume.mute = false;
+    self.objVolume.premutevolume = self.objVolume.vol;
     self.objVolume.disableVolumeControl = false;
     //load amp definitions from file
     self.loadAmpDefinitions()
@@ -59,9 +64,7 @@ rotelampcontrol.prototype.onStart = function() {
     .then(serialDev => self.attachListener(serialDev))
     //determine the current settings of the amp
     .then(_ => self.getAmpStatus())
-    // .then(function(){
-    //     //updateVolumeSettings and tell volumio that this is an override plugin
-    // })
+    .then(_ => self.updateVolumeSettings())
     // .then(function(){
 
     // })
@@ -90,15 +93,12 @@ rotelampcontrol.prototype.loadAmpDefinitions = function() {
     return libQ.resolve();
 };
 
-rotelampcontrol.prototype.SerialInterface = function(dev) {
-    this.serialInterfaceDev = "/dev/serial/by-id/" + dev;
-}
-
 rotelampcontrol.prototype.getAmpStatus = function() {
     var self = this;
     var defer = libQ.defer();
 
     //send some requests to determine the current settings of the amp
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] getAmpStatus: sending status requests to Amp');
     self.sendStatusRequest('reqModel')
     .then(_ => self.sendStatusRequest('reqPower'))
     .then(_ => self.sendStatusRequest('reqVolume'))
@@ -132,7 +132,7 @@ rotelampcontrol.prototype.onStop = function() {
     var self = this;
 
     self.detachListener();
-    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStopped: successfully stopped plugin');
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStop: successfully stopped plugin');
 
     return libQ.resolve();
 };
@@ -203,15 +203,16 @@ rotelampcontrol.prototype.getUIConfig = function() {
                     });
                 };                
             } else {
-                //deactivieren
+                //deactivate
             }
-            uiconf.sections[1].content[0].
+            // uiconf.sections[1].content[2].
 			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
             // debug_settings section
             defer.resolve(uiconf);
         })
         .fail(function()
         {
+            self.logger.error('[ROTELAMPCONTROL] getUIConfig: failed');
             defer.reject(new Error());
         });
 
@@ -324,7 +325,10 @@ rotelampcontrol.prototype.listSerialDevices = function() {
 }
 
 //send commands to the amp
-rotelampcontrol.prototype.sendCommand  = function() {
+rotelampcontrol.prototype.sendCommand  = function(cmd) {
+    self = this;
+    if (self.debugLogging) self.logger.info("[ROTELAMPCONTORL] sendCommand: send " + cmd + " [" + JSON.stringify(self.objVolume) + "]");
+    return libQ.resolve();
 }
 
 //Rotel amps are not sending EOL characters, so we need to chop up the serial input
@@ -380,7 +384,6 @@ rotelampcontrol.prototype.parseResponse = function(data) {
             break;
         case self.selectedAmp.responses.respMuteOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
-            self.currentMute = true;
             self.objVolume.mute = true;
             self.messageReceived.emit('mute', true);
             self.commandRouter.volumioupdatevolume(self.objVolume);
@@ -388,8 +391,13 @@ rotelampcontrol.prototype.parseResponse = function(data) {
         case 'volumeVal':
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled volume is ' + vol);
             self.messageReceived.emit('volume', vol);
-            self.currentVolume = vol;
-            self.objVolume.vol = vol;
+            self.ampVolume = parseInt(vol);
+            if (self.config.get('mapTo100')) {
+                //calculate the equivalent volume on a 0...100 scale
+                self.objVolume.vol = parseInt((vol-self.config.get('minVolume')/(self.config.get('maxVolume')-self.config.get('minVolume'))*100))
+            } else {
+                self.objVolume.vol = vol;        
+            }
             self.commandRouter.volumioupdatevolume(self.objVolume);
             break;
         case 'sourceVal':
@@ -403,74 +411,29 @@ rotelampcontrol.prototype.parseResponse = function(data) {
     }
 };
 
-//not needed anymore, delete later
-rotelampcontrol.prototype.addVolumeScripts = function() {
-    var self = this;
-
-    var enabled = true;
-    var setVolumeScript = '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/setvolume.sh /dev/ttyUSB0 ';
-    var getVolumeScript = '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/getvolume.sh /dev/ttyUSB0';
-    var setMuteScript = '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/setmute.sh /dev/ttyUSB0 ';
-    var getMuteScript = '/data/plugins/miscellanea/rotelampcontrol/rotelscripts/getmute.sh /dev/ttyUSB0';
-    var minVol = 0;
-    var maxVol = 50;
-//    var mapTo100 = self.config.get('map_to_100', false);
-    var mapTo100 = false;
-
-    var data = {'enabled': enabled, 'setvolumescript': setVolumeScript, 'getvolumescript': getVolumeScript, 'setmutescript': setMuteScript,'getmutescript': getMuteScript, 'minVol': minVol, 'maxVol': maxVol, 'mapTo100': mapTo100};
-    if (self.debugLogging) self.logger.info('Adding Rotel Axx parameters: '+ JSON.stringify(data))
-    self.commandRouter.updateVolumeScripts(data);
-    if (self.debugLogging) self.logger.info("Rotel amp: outputdevice: " + JSON.stringify(self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice')));
-    if (self.debugLogging) self.logger.info("Rotel amp: cards: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')));
-    if (self.debugLogging) self.logger.info("Rotel amp: mixerdev: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer')));
-    if (self.debugLogging) self.logger.info("Rotel amp: maxvolume: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax')));
-    if (self.debugLogging) self.logger.info("Rotel amp: volumecurve: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode')));
-    if (self.debugLogging) self.logger.info("Rotel amp: mixertype: " + JSON.stringify(this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'mixer_type')));
-    //Prepare the data for updating the Volume Settings
-    var device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
-    var name = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[device].name;
-    var mixer = 'ROTEL A12';
-    // var maxVolume = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumemax');
-    var maxVolume = "50";
-    var volumeCurve = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumecurvemode');
-    // var volumeSteps = this.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'volumesteps');
-    var volumeSteps = "1";
-    var mixerType = 'Software';
-    var volSettingsData = {
-        'device': device,
-        'name': name,
-        'mixer': mixer,
-        'maxvolume': maxVolume,
-        'volumecurve': '', //volumeCurve,
-        'volumesteps': volumeSteps,
-        'mixertype': mixerType
-    };
-    if (self.debugLogging) self.logger.info("ROTEL amp: Volume Settings: " + JSON.stringify(volSettingsData))
-    self.commandRouter.volumioUpdateVolumeSettings(volSettingsData);
-//	self.commandRouter.setStartupVolume();
-};
-
 //update the volumio Volume Settings, mainly make this an Override plugin
-rotelampcontrol.prototype.updateVolumeSettings = function(data) {
+rotelampcontrol.prototype.updateVolumeSettings = function() {
 	var self = this;
 
-	// var data = {
-	// 	device = '',
-	// 	mixer = '',
-	// 	maxvolume = '50',
-	// 	volumecurve = '',
-	// 	volumesteps = '1',
-	// 	currentvolume = '',
-	// 	hasHWMute = false,
-	// 	currentmute = false,
-	// 	premutevolume = '0',
-	// 	// mixertype = '',
-	// 	devicename = 'Rotel A12',
-	// 	volumeOverride = true,
-	// 	overridePluginType = 'miscellanea',
-	// 	overridePluginName = 'rotelampcontrol'
-	// }
-    // //self.commandRouter.volumioUpdateVolumeSettings(data);
+    //Prepare the data for updating the Volume Settings
+    //first read the audio-device information, since we won't configure this 
+    if (self.debugLogging) self.logger.info("[ROTELAMPCONTORL] updateVolumeSettings: Starting");
+    var volSettingsData = {
+	    'devicename': 'Rotel A12',
+		'pluginType': 'miscellanea',
+		'pluginName': 'rotelampcontrol',
+        'volumeOverride': true
+    };
+    volSettingsData.device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
+    volSettingsData.name = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[volSettingsData.device].name;
+    volSettingsData.mixer = self.config.get('ampType');
+    volSettingsData.maxvolume = self.config.get('maxVolume');
+    volSettingsData.volumecurve = '';
+    volSettingsData.volumesteps = self.config.get('volumeSteps');
+    volSettingsData.currentmute = self.objVolume.mute;
+    if (self.debugLogging) self.logger.info("[ROTELAMPCONTORL] updateVolumeSettings: " + JSON.stringify(volSettingsData));
+    self.commandRouter.volumioUpdateVolumeSettings(volSettingsData);
+    return libQ.resolve();
 };
 
 //used to send status requests to the amp.
@@ -508,158 +471,153 @@ rotelampcontrol.prototype.sendStatusRequest = function(messageType) {
     } else {
         defer.resolve();
     }});
-    return libQ.resolve();
+    return defer.promise;
 }
 
 //override the alsavolume function to send volume commands to the amp
 rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
-// 	var self = this;
-  
-// 	//   var defer = libQ.defer();
-// 	//   self.logger.info('VolumeController::SetAlsaVolume' + VolumeInteger);
-// 	//   if (mixertype === 'None') {
-// 	// 	Volume.vol = 100;
-// 	// 	Volume.mute = false;
-// 	// 	Volume.disableVolumeControl = true;
-// 	// 	defer.resolve(Volume);
-// 	//   } else {
-// 	// 	switch (VolumeInteger) {
-// 	// 	  case 'mute':
-// 	// 		// Mute
-// 	// 		self.getVolume(function (err, vol) {
-// 	// 		  if (err) {
-// 	// 			self.logger.error('Cannot get ALSA Volume: ' + err);
-// 	// 		  }
-// 	// 		  if (!vol) {
-// 	// 			vol = currentvolume;
-// 	// 		  }
-// 	// 		  currentmute = true;
-// 	// 		  premutevolume = vol;
-// 	// 		  if (mixertype === 'Software') {
-// 	// 			Volume.vol = currentvolume;
-// 	// 			Volume.mute = true;
-// 	// 			Volume.disableVolumeControl = false;
-// 	// 			defer.resolve(Volume);
-// 	// 			self.setVolume(0, function (err) {
-// 	// 			  if (err) {
-// 	// 				self.logger.error('Cannot set ALSA Volume: ' + err);
-// 	// 			  }
-// 	// 			});
-// 	// 		  } else {
-// 	// 			Volume.vol = premutevolume;
-// 	// 			Volume.mute = true;
-// 	// 			Volume.disableVolumeControl = false;
-// 	// 			defer.resolve(Volume);
-// 	// 			self.setMuted(true, function (err) {
-// 	// 			  if (err) {
-// 	// 				self.logger.error('Cannot set mute ALSA: ' + err);
-// 	// 			  }
-// 	// 			});
-// 	// 		  }
-// 	// 		});
-// 	// 		break;
-// 	// 	  case 'unmute':
-// 	// 		// Unmute
-// 	// 		currentmute = false;
-// 	// 		// Log Volume Control
-// 	// 		Volume.vol = premutevolume;
-// 	// 		Volume.mute = false;
-// 	// 		Volume.disableVolumeControl = false;
-// 	// 		currentvolume = premutevolume;
-// 	// 		defer.resolve(Volume);
-// 	// 		self.setVolume(premutevolume, function (err) {
-// 	// 		  if (err) {
-// 	// 			self.logger.error('Cannot set ALSA Volume: ' + err);
-// 	// 		  }
-// 	// 		});
-// 	// 		break;
-// 	// 	  case 'toggle':
-// 	// 		// Mute or unmute, depending on current state
-// 	// 		if (Volume.mute) {
-// 	// 		  defer.resolve(self.alsavolume('unmute'));
-// 	// 		} else {
-// 	// 		  defer.resolve(self.alsavolume('mute'));
-// 	// 		}
-// 	// 		break;
-// 	// 	  case '+':
-// 	// 		self.getVolume(function (err, vol) {
-// 	// 		  if (err) {
-// 	// 			self.logger.error('Cannot get ALSA Volume: ' + err);
-// 	// 		  }
-// 	// 		  if (!vol || currentmute) {
-// 	// 			vol = currentvolume;
-// 	// 		  }
-// 	// 		  VolumeInteger = Number(vol) + Number(volumesteps);
-// 	// 		  if (VolumeInteger > 100) {
-// 	// 			VolumeInteger = 100;
-// 	// 		  }
-// 	// 		  if (VolumeInteger > maxvolume) {
-// 	// 			VolumeInteger = maxvolume;
-// 	// 		  }
-// 	// 		  currentvolume = VolumeInteger;
-// 	// 		  Volume.vol = VolumeInteger;
-// 	// 		  Volume.mute = false;
-// 	// 		  Volume.disableVolumeControl = false;
-// 	// 		  defer.resolve(Volume);
-// 	// 		  self.setVolume(VolumeInteger, function (err) {
-// 	// 			if (err) {
-// 	// 			  self.logger.error('Cannot set ALSA Volume: ' + err);
-// 	// 			}
-// 	// 		  });
-// 	// 		});
-// 	// 		break;
-// 	// 	  case '-':
-// 	// 		// Decrease volume by one (TEST ONLY FUNCTION - IN PRODUCTION USE A NUMERIC VALUE INSTEAD)
-// 	// 		self.getVolume(function (err, vol) {
-// 	// 		  if (err) {
-// 	// 			self.logger.error('Cannot get ALSA Volume: ' + err);
-// 	// 		  }
-// 	// 		  if (!vol || currentmute) {
-// 	// 			vol = currentvolume;
-// 	// 		  }
-// 	// 		  VolumeInteger = Number(vol) - Number(volumesteps);
-// 	// 		  if (VolumeInteger < 0) {
-// 	// 			VolumeInteger = 0;
-// 	// 		  }
-// 	// 		  if (VolumeInteger > maxvolume) {
-// 	// 			VolumeInteger = maxvolume;
-// 	// 		  }
-// 	// 		  currentvolume = VolumeInteger;
-// 	// 		  Volume.vol = VolumeInteger;
-// 	// 		  Volume.mute = false;
-// 	// 		  Volume.disableVolumeControl = false;
-// 	// 		  defer.resolve(Volume);
-// 	// 		  self.setVolume(VolumeInteger, function (err) {
-// 	// 			if (err) {
-// 	// 			  self.logger.error('Cannot set ALSA Volume: ' + err);
-// 	// 			}
-// 	// 		  });
-// 	// 		});
-// 	// 		break;
-// 	// 	  default:
-// 	// 		// Set the volume with numeric value 0-100
-// 	// 		if (VolumeInteger < 0) {
-// 	// 		  VolumeInteger = 0;
-// 	// 		}
-// 	// 		if (VolumeInteger > 100) {
-// 	// 		  VolumeInteger = 100;
-// 	// 		}
-// 	// 		if (VolumeInteger > maxvolume) {
-// 	// 		  VolumeInteger = maxvolume;
-// 	// 		}
-// 	// 		currentvolume = VolumeInteger;
-// 	// 		Volume.vol = VolumeInteger;
-// 	// 		Volume.mute = false;
-// 	// 		Volume.disableVolumeControl = false;
-// 	// 		defer.resolve(Volume);
-// 	// 		self.setVolume(VolumeInteger, function (err) {
-// 	// 		  if (err) {
-// 	// 			self.logger.error('Cannot set ALSA Volume: ' + err);
-// 	// 		  }
-// 	// 		});
-// 	// 	}
-// 	//   }
-// 	  return defer.promise;
+	var self = this;
+    var defer = libQ.defer();
+    
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: Set volume "' + VolumeInteger + '"')
+
+    self.retrievevolume()
+    .then(Volume => {
+        switch (VolumeInteger) {
+        case 'mute':
+        // Mute
+            if (self.selectedAmp.muteOn != undefined) {
+                //amp supports dedicated mute on command
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOn.');
+                self.sendCommand('muteOn')
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            } else if (self.selectedAmp.mute != undefined) {
+                //amp only supports toggle mute command
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
+                if (!Volume.mute) {
+                    self.sendCommand('mute')
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))                    
+                }
+            } else {
+                //amp supports no mute command so we just put volume to defined min Vol
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send Volume=0 to mute.');
+                self.objVolume.premutevolume = self.objVolume.vol;
+                self.sendCommand('volValue',self.config.get('minVolume'))
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            }
+            break;
+        case 'unmute':
+        // Unmute (inverse of mute)
+            if (self.selectedAmp.muteOn != undefined) {
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOff.');
+                self.sendCommand('muteOff')
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            } else if (self.selectedAmp.mute != undefined) {
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
+                if (Volume.mute) {
+                    self.sendCommand('mute')
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))
+                }
+            } else {
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: set Volume to premute value.');
+                self.objVolume.vol = self.objVolume.premutevolume;
+                if (self.config.get('mapTo100')) {
+                    //calculate the equivalent volume on a 0...100 scale
+                    self.ampVolume = parseInt(self.objVolume.vol * (self.config.get('maxVolume')-self.config.get('minVolume'))/100+self.config.get('minVolume'));
+                } else {
+                    self.ampVolume = self.objVolume.vol;
+                }
+                self.sendCommand('volValue',self.ampVolume)
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            }
+            break;
+        case 'toggle':
+        // Toggle mute
+            if (self.selectedAmp.mute != undefined) {
+                //amp supports toggle function
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
+                self.sendCommand('mute')
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            } else if (self.selectedAmp.muteOn != undefined) {
+                //amp only supports dedicated mute and off functions
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOn/Off base on current state.');
+                if (Volume.mute) {
+                    self.sendCommand('muteOff')
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))
+                } else {
+                    self.sendCommand('muteOn')
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))
+                }
+            } else {
+                //amp supports no mute function
+                if (Volume.mute) {
+                    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: set volume to 0 or premute value, depending on state.');
+                    self.objVolume.vol = self.objVolume.premutevolume;
+                    if (self.config.get('mapTo100')) {
+                        //calculate the equivalent volume on a 0...100 scale
+                        self.ampVolume = parseInt(self.objVolume.vol * (self.config.get('maxVolume')-self.config.get('minVolume'))/100+self.config.get('minVolume'));
+                    } else {
+                        self.ampVolume = self.objVolume.vol;
+                    }
+                    self.sendCommand('volValue',self.ampVolume)
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))
+                } else {
+                    self.objVolume.premutevolume = self.objVolume.vol;
+                    self.sendCommand('volValue',self.config.get('minVolume'))
+                    .then(_ => retrievevolume())
+                    .then(Volume => defer.resolve(Volume))
+                }
+            }
+            break;
+        case '+':
+        //increase volume by 1 step
+            if (self.selectedAmp.volUp != undefined) {
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: increase volume by single step.');
+                //amp supports stepwise volume increase
+                self.sendCommand('volUp')
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            } else {
+                // if (self.config.get('mapTo100')) {
+                //     //calculate the equivalent volume on a 0...100 scale
+                //     self.ampVolume = parseInt(self.objVolume.vol * (self.config.get('maxVolume')-self.config.get('minVolume'))/100+self.config.get('minVolume'));
+                // } else {
+                //     self.ampVolume = self.objVolume.vol;
+                // }
+                // self.sendCommand('volValue',)
+            }
+            break;
+        case '-':
+        // decrease volume by 1 step
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: decrease volume by single step.');
+            if (self.selectedAmp.volDown != undefined) {
+                //amp supports stepwise volume increase
+                self.sendCommand('volUp')
+                .then(_ => retrievevolume())
+                .then(Volume => defer.resolve(Volume))
+            } else {
+            }
+           break;
+        default:
+        //set volume to integer
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: set volume to integer value.');
+            self.sendCommand('a')
+            .then(_ => retrievevolume())
+            .then(Volume => defer.resolve(Volume))
+            break;   
+    }})
+    return defer.promise;
+
 };
 
 //overwrites the retrievevolume function, basically reads the current volume 
@@ -674,13 +632,13 @@ rotelampcontrol.prototype.retrievevolume = function () {
     //request current volume
     self.messageReceived.once('volume',(vol) => {
         //check if muted
-        Volume.vol = vol;
-        if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: vol:' + JSON.stringify(Volume));
+        self.objVolume.vol = vol;
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: vol:' + JSON.stringify(self.objVolume));
         self.messageReceived.once('mute',(muted) => {
-            Volume.mute = muted;
-            Volume.disableVolumeControl = false;
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: returning:' + JSON.stringify(Volume));
-            defer.resolve(Volume);
+            self.objVolume.mute = muted;
+            self.objVolume.disableVolumeControl = false;
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] retrievevolume: returning:' + JSON.stringify(self.objVolume));
+            defer.resolve(self.objVolume);
         })
         self.sendStatusRequest('reqMute');
     });
@@ -725,9 +683,11 @@ rotelampcontrol.prototype.updateAmpSettings = function (data) {
     if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] updateAmpSettings: Saving Amplifier Settings:' + JSON.stringify(data));
     self.config.set('ampType', data['amp_type'].label);
     self.config.set('volumioInput', data['volumio_input'].label);
+    self.config.set('minVolume', parseInt(data['min_volume']));
     self.config.set('maxVolume', parseInt(data['max_volume']));
     self.config.set('startupVolume',  parseInt(data['startup_volume']));
     self.config.set('volumeSteps', parseInt(data['volume_steps']));
+    self.config.set('mapTo100', (data['map_to_100']));
     self.config.set('pauseWhenMuted', (data['pause_when_muted']));
     self.config.set('pauseWhenInputChanged', (data['pause_when_input_changed']));
     defer.resolve();
@@ -778,14 +738,14 @@ rotelampcontrol.prototype.attachListener = function(devPath){
                 self.chopResponse(data);
             });
             self.handle.stdout.on('end', function(){
-                    self.logger.error('[ROTELAMPCONTROL] attachListener: Stream from Serial Interface ended.');
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: Stream from Serial Interface ended.');
             });
             self.handle.stderr.on('data', (data) => {
                 self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `stderr: ${data}`);
             });
 
             self.handle.on('close', (code) => {
-                self.logger.error('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
+                if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: ' + `child process exited with code ${code}`);
             });
         	if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] attachListener: attached and listening');
         	defer.resolve();

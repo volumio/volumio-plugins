@@ -47,9 +47,11 @@
         "data": [
           "amp_type",
           "volumio_input",
+          "min_volume",
           "max_volume",
           "startup_volume",
           "volume_steps",
+          "map_to_100",
           "pause_when_muted",
           "pause_when_input_changed"
         ]
@@ -80,6 +82,14 @@
           ]          
         },
         {
+          "id": "min_volume",
+          "type":"number",
+          "element": "input",
+          "doc": "TRANSLATE.D_MIN_VOLUME",
+          "label": "TRANSLATE.MIN_VOLUME",
+          "value": "0"
+        },
+        {
           "id": "max_volume",
           "type":"number",
           "element": "input",
@@ -102,6 +112,13 @@
           "doc": "TRANSLATE.D_VOLUME_STEPS",
           "label": "TRANSLATE.VOLUME_STEPS",
           "value": "1"
+        },
+        {
+          "id":"map_to_100",
+          "element":"switch",
+          "label": "TRANSLATE.MAP_TO_100",
+          "doc": "TRANSLATE.D_MAP_TO_100",
+          "value": true
         },
         {
           "id":"pause_when_muted",

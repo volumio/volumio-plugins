@@ -12,8 +12,10 @@
   "VOLUMIO_INPUT":"Volumio Eingang",
   "PAUSE_WHEN_MUTED":"Pausieren bei 'Stumm'",
   "D_PAUSE_WHEN_MUTED": "Pausiert die Wiedergabe in Volumio, wenn der Verstärker 'Stumm' geschaltet wird.",
+  "MIN_VOLUME":"Minimale Lautstärke",
+  "D_MIN_VOLUME":"Die minimale Lautstärke die von Volumio aus eingestellt werden kann. Über die Bedienelemente des Verstärkers läßt sich weiterhin jede Lautstärke einstellen.",
   "MAX_VOLUME":"Maximale Lautstärke",
-  "D_MAX_VOLUME":"Die maximale Lautstärke die von Volumio aus eingestellt werden kann. Über die Bedienelemente des Verstärkers läßt sich weiterhin eine höhere Lautstärke einstellen.",
+  "D_MAX_VOLUME":"Die maximale Lautstärke die von Volumio aus eingestellt werden kann. Über die Bedienelemente des Verstärkers läßt sich weiterhin jede Lautstärke einstellen.",
   "VOLUME_STEPS":"Lautstärke-Schritte pro Klick",
   "D_VOLUME_STEPS":"Die Anzah der Schritte, um die die Lautstärke beim Betätigen der +/- Tasten in Volumio erhöht/vermindert wird.",
   "PAUSE_WHEN_INPUT_CHANGED":"Pausieren bei Wechsel des Eingangs",
@@ -23,5 +25,7 @@
   "TOAST_SAVE_SUCCESS":"Speichern erfolgreich",
   "TOAST_DEBUG_SAVE":"Fehlerprotokoll Einstellungen",
   "TOAST_SERIAL_SAVE":"Einstellungen Serielle Schnittstelle",
-  "TOAST_AMP_SAVE":"Einstellungen Verstärker"
+  "TOAST_AMP_SAVE":"Einstellungen Verstärker",
+  "MAP_TO_100": "Lautstärke umrechnen auf 0-100",
+  "D_MAP_TO_100": "Rechnet die Lautstärke-Werte am Verstärker auf 0-100 in Volumio um."
 }
