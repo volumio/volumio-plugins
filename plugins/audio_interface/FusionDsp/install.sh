@@ -99,6 +99,18 @@ rm /tmp/camilladsp-linux-amd64.tar.gz
 sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
 sudo cp $LIB/c/hw_params_amd64 $LIB/hw_params
 sudo chmod +x $LIB/hw_params
+elif [ $cpu = "armv6l" ]
+cd /tmp
+wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-armv6l.tar.gz
+tar -xvf camilladsp-linux-armv6l.tar.gz -C /tmp
+sudo chown volumio camilladsp
+sudo chgrp volumio camilladsp
+sudo chmod +x camilladsp
+mv /tmp/camilladsp $LIB/
+rm /tmp/camilladsp-linux-armv6l.tar.gz
+sudo mv $LIB/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+sudo cp $LIB/c/hw_params_armv6l $LIB/hw_params
+sudo chmod +x $LIB/hw_params
 else
     echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."
