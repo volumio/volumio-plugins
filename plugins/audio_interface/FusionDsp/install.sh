@@ -100,6 +100,7 @@ sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/al
 sudo cp $LIB/c/hw_params_amd64 $LIB/hw_params
 sudo chmod +x $LIB/hw_params
 elif [ $cpu = "armv6l" ]
+then
 cd /tmp
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-armv6l.tar.gz
 tar -xvf camilladsp-linux-armv6l.tar.gz -C /tmp
