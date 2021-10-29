@@ -325,10 +325,52 @@ rotelampcontrol.prototype.listSerialDevices = function() {
 }
 
 //send commands to the amp
-rotelampcontrol.prototype.sendCommand  = function(cmd) {
-    self = this;
-    if (self.debugLogging) self.logger.info("[ROTELAMPCONTORL] sendCommand: send " + cmd + " [" + JSON.stringify(self.objVolume) + "]");
-    return libQ.resolve();
+rotelampcontrol.prototype.sendCommand  = function(...cmd) {
+    var self = this;
+    var defer = libQ.defer();
+
+    if (self.debugLogging) self.logger.info("[ROTELAMPCONTORL] sendCommand: send " + cmd);
+    var cmdString = "/bin/echo -e -n ";
+    switch (cmd[0]) {
+        case  "powerOn": 
+            break;
+        case  "powerToggle": 
+            break;
+        case  "volUp": 
+            cmdString = cmdString + self.selectedAmp.commands.volUp;
+            break;
+        case  "volDown": 
+            cmdString = cmdString + self.selectedAmp.commands.volDown;
+            break;
+        case  "volValue": 
+            cmdString = cmdString + self.selectedAmp.commands.volValue;
+            //replace ##
+            break;
+        case  "mute": 
+            cmdString = cmdString + self.selectedAmp.commands.mute;
+            break;
+        case  "muteOn": 
+            cmdString = cmdString + self.selectedAmp.commands.muteOn;
+            break;
+        case  "muteOff": 
+            cmdString = cmdString + self.selectedAmp.commands.muteOff;
+            break;
+        case  "source": 
+            break;
+        default:
+            break;
+    }
+    cmdString = cmdString + ' > ' + self.serialInterfaceDev;    
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTORL] sendCommand: Send "' + cmdString +'"');
+    exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+    if (error !== null) {
+        self.logger.error('[ROTELAMPCONTROL] sendCommand: Could not send command to serial interface "' + cmdString + '" ' + error)
+        defer.reject()
+    } else {
+        defer.resolve();
+    }});
+
+    return defer.promise;
 }
 
 //Rotel amps are not sending EOL characters, so we need to chop up the serial input
@@ -480,19 +522,20 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
     var defer = libQ.defer();
     
     if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: Set volume "' + VolumeInteger + '"')
+    if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: selectedAmp' + JSON.stringify(self.selectedAmp));
 
     self.retrievevolume()
     .then(Volume => {
         switch (VolumeInteger) {
         case 'mute':
         // Mute
-            if (self.selectedAmp.muteOn != undefined) {
+        if (self.selectedAmp.commands.muteOn != undefined) {
                 //amp supports dedicated mute on command
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOn.');
                 self.sendCommand('muteOn')
                 .then(_ => retrievevolume())
                 .then(Volume => defer.resolve(Volume))
-            } else if (self.selectedAmp.mute != undefined) {
+            } else if (self.selectedAmp.commands.mute != undefined) {
                 //amp only supports toggle mute command
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
                 if (!Volume.mute) {
@@ -511,12 +554,12 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
             break;
         case 'unmute':
         // Unmute (inverse of mute)
-            if (self.selectedAmp.muteOn != undefined) {
+            if (self.selectedAmp.commands.muteOn != undefined) {
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOff.');
                 self.sendCommand('muteOff')
                 .then(_ => retrievevolume())
                 .then(Volume => defer.resolve(Volume))
-            } else if (self.selectedAmp.mute != undefined) {
+            } else if (self.selectedAmp.commands.mute != undefined) {
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
                 if (Volume.mute) {
                     self.sendCommand('mute')
@@ -539,13 +582,13 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
             break;
         case 'toggle':
         // Toggle mute
-            if (self.selectedAmp.mute != undefined) {
+            if (self.selectedAmp.commands.mute != undefined) {
                 //amp supports toggle function
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send toggle mute.');
                 self.sendCommand('mute')
                 .then(_ => retrievevolume())
                 .then(Volume => defer.resolve(Volume))
-            } else if (self.selectedAmp.muteOn != undefined) {
+            } else if (self.selectedAmp.commands.muteOn != undefined) {
                 //amp only supports dedicated mute and off functions
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: send dedicated muteOn/Off base on current state.');
                 if (Volume.mute) {
@@ -581,7 +624,7 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
             break;
         case '+':
         //increase volume by 1 step
-            if (self.selectedAmp.volUp != undefined) {
+            if (self.selectedAmp.commands.volUp != undefined) {
                 if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: increase volume by single step.');
                 //amp supports stepwise volume increase
                 self.sendCommand('volUp')
@@ -600,7 +643,7 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
         case '-':
         // decrease volume by 1 step
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: decrease volume by single step.');
-            if (self.selectedAmp.volDown != undefined) {
+            if (self.selectedAmp.commands.volDown != undefined) {
                 //amp supports stepwise volume increase
                 self.sendCommand('volUp')
                 .then(_ => retrievevolume())
