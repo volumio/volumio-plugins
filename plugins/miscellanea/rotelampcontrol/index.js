@@ -344,7 +344,14 @@ rotelampcontrol.prototype.sendCommand  = function(...cmd) {
             break;
         case  "volValue": 
             cmdString = cmdString + self.selectedAmp.commands.volValue;
-            //replace ##
+            var count = (cmdString.match(/#/g) || []).length;
+            if (count > 0) {
+                var re = new RegExp("#".repeat(count));
+                cmdString.replace(re,cmd[1].toString().padStart(count,"0"));
+            } else {
+                self.logger.error('[ROTELAMPCONTROL] sendCommand: volValue command string has no ## characters. Do not know how to send volume value.')
+                defer.reject()
+            }
             break;
         case  "mute": 
             cmdString = cmdString + self.selectedAmp.commands.mute;
