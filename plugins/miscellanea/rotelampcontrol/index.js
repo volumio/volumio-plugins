@@ -1,3 +1,14 @@
+//to do:
+//- check if less requests necessary, because we receive events from amp anyway
+//- implement volume mapto100
+//- implementation for amps with less commands (e.g. missing mute)
+//- saving of options
+//- switching of input
+//- pause on input change
+//- pause on mute
+//- powerdown on volumio shutdown
+//- powerdown after time stopped
+
 'use strict';
 
 var libQ = require('kew');
@@ -347,7 +358,7 @@ rotelampcontrol.prototype.sendCommand  = function(...cmd) {
             var count = (cmdString.match(/#/g) || []).length;
             if (count > 0) {
                 var re = new RegExp("#".repeat(count));
-                cmdString.replace(re,cmd[1].toString().padStart(count,"0"));
+                cmdString = cmdString.replace(re,cmd[1].toString().padStart(count,"0"));
             } else {
                 self.logger.error('[ROTELAMPCONTROL] sendCommand: volValue command string has no ## characters. Do not know how to send volume value.')
                 defer.reject()
@@ -652,7 +663,7 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: decrease volume by single step.');
             if (self.selectedAmp.commands.volDown != undefined) {
                 //amp supports stepwise volume increase
-                self.sendCommand('volUp')
+                self.sendCommand('volDown')
                 .then(_ => retrievevolume())
                 .then(Volume => defer.resolve(Volume))
             } else {
@@ -661,7 +672,7 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
         default:
         //set volume to integer
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: set volume to integer value.');
-            self.sendCommand('a')
+            self.sendCommand('volValue',VolumeInteger)
             .then(_ => retrievevolume())
             .then(Volume => defer.resolve(Volume))
             break;   
