@@ -12,10 +12,12 @@ class FilterViewHandler extends BaseViewHandler {
 
         let prevUri = self.constructPrevUri();
         let prevViews = self.getPreviousViews();
-        let view = prevViews[prevViews.length - 1];
+        let lastView = prevViews[prevViews.length - 1];
+        let filterView = JSON.parse(decodeURIComponent(self.getCurrentView().filterView));
+        let combinedView = Object.assign({}, lastView, filterView);
         let model = self.getModel(`filter.${self.getType()}`);
 
-        model.getFilter(view).then( filter => {
+        model.getFilter(combinedView).then( filter => {
             if (filter.subfilters) {
                 let sublists = filter.subfilters.map( f => self._getFilterOptionsList(f) );
                 let lists = [];

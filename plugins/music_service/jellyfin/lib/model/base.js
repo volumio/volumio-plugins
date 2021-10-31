@@ -103,6 +103,10 @@ class BaseModel {
             queryOptions.SortOrder = options.sortOrder;
         }
 
+        if (options.recursive != undefined) {
+            queryOptions.Recursive = options.recursive ? true : false;
+        }
+
         if (options.artistId != undefined) {
             queryOptions.ArtistIds = options.artistId;
         }

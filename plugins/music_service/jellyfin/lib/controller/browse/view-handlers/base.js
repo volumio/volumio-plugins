@@ -154,6 +154,7 @@ class BaseViewHandler {
             'limit',
             'sortBy',
             'sortOrder',
+            'recursive',
             'includeMediaSources',
             'parentId',
             'artistId',
@@ -278,7 +279,7 @@ class BaseViewHandler {
                     type: 'jellyfinFilter',
                     title,
                     icon: filter.icon,
-                    uri: baseUri + `/filter.${filter.type}`
+                    uri: baseUri + `/filter.${filter.type}@filterView=${ encodeURIComponent(JSON.stringify(filterView)) }`
                 });
             });
             let list = [
@@ -315,11 +316,6 @@ class BaseViewHandler {
             return `<a href="#" onclick="${ onclick }">${ data.text }</a>`;
         };
 
-        let serverLink = getLink({
-            uri: `jellyfin/${ view.serverId }`,
-            text: self.getApiClient().serverInfo().Name
-        });
-
         let itemText;
         // If first list already has a title, use that. Otherwise, deduce from view.
         if (nav.lists[0].title != undefined) {
@@ -353,36 +349,107 @@ class BaseViewHandler {
             itemText = jellyfin.getI18n(`JELLYFIN_${view.name.toUpperCase()}`);
         }
 
-        let parentTextPromise;
-        if (view.parentId) {
-            let model = self.getModel('userView');
-            parentTextPromise = model.getUserView(view.parentId).then( 
-                userView => userView.Name
-            )
-            .fail( error => '' );
+        // Crumb links
+        let serverLinkData = {
+            uriSegment: `jellyfin/${ view.serverId }`,
+            text: self.getApiClient().serverInfo().Name
+        };
+        let allViews = self.getPreviousViews().concat([ view ]);
+        // For 'Latest Albums in <library>' referred directly from 'My Media'
+        if (view.name === 'albums' && view.parentId) {
+            allViews.push({
+                name: 'library',
+                parentId: view.parentId
+            });
         }
-        else {
-            parentTextPromise = libQ.resolve('');
+        let processedViews = [];
+        // First is always server link
+        let linkPromises = [ libQ.resolve(serverLinkData) ];
+        // Subsequent links
+        for (let i = 2; i < allViews.length; i++) {
+            let pv = allViews[i];
+            if (!processedViews.includes(pv.name)) {
+                if (pv.name === 'collections') {
+                    let model = self.getModel('userView');
+                    let linkDataFetch = model.getUserView(pv.parentId)
+                        .then( userView => {
+                            return {
+                                uriSegment: `collections@parentId=${ pv.parentId }`,
+                                text: userView.Name
+                            };
+                        });
+                    linkPromises.push(linkDataFetch);
+                }
+                else if (pv.name === 'collection') {
+                    let model = self.getModel('collection');
+                    let linkDataFetch = model.getCollection(pv.parentId)
+                        .then( collection => {
+                            return {
+                                uriSegment: `collection@parentId=${ pv.parentId }`,
+                                text: collection.Name
+                            };
+                        });
+                    linkPromises.push(linkDataFetch);
+                }
+                else if (pv.name === 'playlists') {
+                    linkPromises.push(libQ.resolve({
+                        uriSegment: 'playlists',
+                        text: jellyfin.getI18n('JELLYFIN_PLAYLISTS')
+                    }));
+                }
+                else if (pv.name === 'library') {
+                    let model = self.getModel('userView');
+                    let linkDataFetch = model.getUserView(pv.parentId)
+                        .then( userView => {
+                            return {
+                                uriSegment: `library@parentId=${ pv.parentId }`,
+                                text: userView.Name
+                            };
+                        });
+                    linkPromises.push(linkDataFetch);
+                }
+                processedViews.push(pv.name);
+            }
         }
+        let crumbLinks = libQ.all(linkPromises).then( linkResults => {
+            let lastLinkUri;
+            let links = [];
+            linkResults.forEach( linkData => {
+                let linkUri;
+                if (lastLinkUri) {
+                    linkUri = `${ lastLinkUri }/${ linkData.uriSegment }`;
+                }
+                else {
+                    linkUri = linkData.uriSegment;
+                }
+                lastLinkUri = linkUri;
+                links.push({
+                    uri: linkUri,
+                    text: linkData.text
+                });
+            })
+            return links;
+        });
 
-        parentTextPromise.then( parentText => {
-            if (itemText) {
-                let parentLink = parentText ? getLink({
-                    uri: `jellyfin/${ view.serverId }/collection@parentId=${ view.parentId }`,
-                    text: parentText
-                }) : '';
-
+        crumbLinks.then( links => {
+            if (itemText || links.length > 0) {
+                let jointLinks = [];
+                links.forEach( (link, i) => {
+                    if (jointLinks.length > 0) {
+                        jointLinks += '<i class="fa fa-angle-right" style="margin: 0px 10px;"></i>';
+                    }
+                    jointLinks += `<span${ i > 0 && i === links.length - 1 ? ' style="font-size: 18px;"' : ''}>${ getLink(link) }</span>`;
+                });
                 nav.lists[0].title = `
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center; font-size: 14px; border-bottom: 1px dotted; border-color: #666; padding-bottom: 10px;">
-                        <img src="/albumart?sourceicon=${ encodeURIComponent('music_service/jellyfin/assets/images/jellyfin.svg') }" style="width: 18px; height: 18px; margin-right: 8px;">${ serverLink }
-                        ${ parentLink ? `<i class="fa fa-angle-right" style="margin: 0px 10px;"></i><span style="font-size: 18px;">${ parentLink }</span>` : ''}
+                        <img src="/albumart?sourceicon=${ encodeURIComponent('music_service/jellyfin/assets/images/jellyfin.svg') }" style="width: 18px; height: 18px; margin-right: 8px;">${ jointLinks }
                     </div>
-                    ${ itemText != parentText ? `<div style="margin-top: 25px;">${ itemText }</div>` : ''}
+                    ${ itemText && itemText != links[links.length - 1].text ? `<div style="margin-top: 25px;">${ itemText }</div>` : ''}
                 </div>`;
             }
             defer.resolve(nav);
-        });
+        })
 
         return defer.promise;
     }
