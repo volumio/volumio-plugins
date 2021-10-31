@@ -36,7 +36,7 @@ ControllerJellyfin.prototype.getUIConfig = function() {
         let browseSettingsUIConf = uiconf.sections[2];
         let playAddUIConf = uiconf.sections[3];
         let searchSettingsUIConf = uiconf.sections[4];
-        let myMediaCollectionUIConf = uiconf.sections[5];
+        let myMediaLibraryUIConf = uiconf.sections[5];
 
         // Remove Server section
         let servers = self.getServerSettingsFromConfig();
@@ -83,7 +83,7 @@ ControllerJellyfin.prototype.getUIConfig = function() {
         searchSettingsUIConf.content[4].value = searchSongs;
         searchSettingsUIConf.content[5].value = searchSongsResultCount;
 
-        // My Media / Collection
+        // My Media / Library
         let showLatestMusicSection = jellyfin.getConfigValue('showLatestMusicSection', true);
         let latestMusicSectionItems = jellyfin.getConfigValue('latestMusicSectionItems', 11);
         let showRecentlyPlayedSection = jellyfin.getConfigValue('showRecentlyPlayedSection', true);
@@ -96,18 +96,20 @@ ControllerJellyfin.prototype.getUIConfig = function() {
         let favoriteAlbumsSectionItems = jellyfin.getConfigValue('favoriteAlbumsSectionItems', 5);
         let showFavoriteSongsSection = jellyfin.getConfigValue('showFavoriteSongsSection', true);
         let favoriteSongsSectionItems = jellyfin.getConfigValue('favoriteSongsSectionItems', 5);
-        myMediaCollectionUIConf.content[0].value = showLatestMusicSection;
-        myMediaCollectionUIConf.content[1].value = latestMusicSectionItems;
-        myMediaCollectionUIConf.content[2].value = showRecentlyPlayedSection;
-        myMediaCollectionUIConf.content[3].value = recentlyPlayedSectionItems;
-        myMediaCollectionUIConf.content[4].value = showFrequentlyPlayedSection;
-        myMediaCollectionUIConf.content[5].value = frequentlyPlayedSectionItems;
-        myMediaCollectionUIConf.content[6].value = showFavoriteArtistsSection;
-        myMediaCollectionUIConf.content[7].value = favoriteArtistsSectionItems;
-        myMediaCollectionUIConf.content[8].value = showFavoriteAlbumsSection;
-        myMediaCollectionUIConf.content[9].value = favoriteAlbumsSectionItems;
-        myMediaCollectionUIConf.content[10].value = showFavoriteSongsSection;
-        myMediaCollectionUIConf.content[11].value = favoriteSongsSectionItems;
+        let collectionInSectionItems = jellyfin.getConfigValue('collectionInSectionItems', 11);
+        myMediaLibraryUIConf.content[0].value = showLatestMusicSection;
+        myMediaLibraryUIConf.content[1].value = latestMusicSectionItems;
+        myMediaLibraryUIConf.content[2].value = showRecentlyPlayedSection;
+        myMediaLibraryUIConf.content[3].value = recentlyPlayedSectionItems;
+        myMediaLibraryUIConf.content[4].value = showFrequentlyPlayedSection;
+        myMediaLibraryUIConf.content[5].value = frequentlyPlayedSectionItems;
+        myMediaLibraryUIConf.content[6].value = showFavoriteArtistsSection;
+        myMediaLibraryUIConf.content[7].value = favoriteArtistsSectionItems;
+        myMediaLibraryUIConf.content[8].value = showFavoriteAlbumsSection;
+        myMediaLibraryUIConf.content[9].value = favoriteAlbumsSectionItems;
+        myMediaLibraryUIConf.content[10].value = showFavoriteSongsSection;
+        myMediaLibraryUIConf.content[11].value = favoriteSongsSectionItems;
+        myMediaLibraryUIConf.content[12].value = collectionInSectionItems;
 
         defer.resolve(uiconf);
     })
@@ -257,7 +259,7 @@ ControllerJellyfin.prototype.saveSearchSettings = function(data) {
     }
 }
 
-ControllerJellyfin.prototype.saveMyMediaCollectionSettings = function(data) {
+ControllerJellyfin.prototype.saveMyMediaLibrarySettings = function(data) {
     let self = this;
 
     let showKeys = [
@@ -278,7 +280,8 @@ ControllerJellyfin.prototype.saveMyMediaCollectionSettings = function(data) {
         'frequentlyPlayedSectionItems',
         'favoriteArtistsSectionItems',
         'favoriteAlbumsSectionItems',
-        'favoriteSongsSectionItems'
+        'favoriteSongsSectionItems',
+        'collectionInSectionItems'
     ];
     let hasInvalidItemsValue = false;
     itemsKeys.forEach(( key) => {

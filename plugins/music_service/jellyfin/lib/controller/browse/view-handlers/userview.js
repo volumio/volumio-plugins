@@ -19,12 +19,12 @@ class UserViewViewHandler extends BaseViewHandler {
             userViews.items.forEach( (userView) => {
                 let parsed = parser.parseToListItem(userView);
                 if (parsed) {
-                    if (userView.Type === 'CollectionFolder') {
-                        parsed.isCollection = true;
-                        parsed.collectionId = userView.Id;
+                    if (userView.Type === 'CollectionFolder' && userView.CollectionType === 'music') {
+                        parsed.isLibrary = true;
+                        parsed.libraryId = userView.Id;
                     }
                     else {
-                        parsed.isCollection = false;
+                        parsed.isLibrary = false;
                     }
                     myMediaItems.push(parsed);
                 }
@@ -38,11 +38,11 @@ class UserViewViewHandler extends BaseViewHandler {
             let latestDefer = libQ.defer();
 
             if (jellyfin.getConfigValue('showLatestMusicSection', true)) {
-                let collections = myMediaItemsList.items.filter( userView => userView.isCollection );
+                let libraries = myMediaItemsList.items.filter( userView => userView.isLibrary );
                 
                 let latest = [];
-                collections.forEach( (collection, index) => {
-                    latest.push(self._getLatestAlbumsInCollection(collection, index));
+                libraries.forEach( (library, index) => {
+                    latest.push(self._getLatestAlbumsInLibrary(library, index));
                 });
 
                 let lists = [myMediaItemsList];
@@ -87,16 +87,16 @@ class UserViewViewHandler extends BaseViewHandler {
         return defer.promise;
     }
 
-    _getLatestAlbumsInCollection(collection) {
+    _getLatestAlbumsInLibrary(library) {
     	let self = this;
     	let defer = libQ.defer();
         
-        let moreUri = self.getUri() + '/albums@parentId=' + collection.collectionId + '@sortBy=DateCreated,SortName@sortOrder=Descending,Ascending@fixedView=latest';
+        let moreUri = self.getUri() + '/albums@parentId=' + library.libraryId + '@sortBy=DateCreated,SortName@sortOrder=Descending,Ascending@fixedView=latest';
 
         let model = self.getModel('album');
         let parser = self.getParser('album');
 		let options = self.getModelOptions({
-			parentId: collection.collectionId,
+			parentId: library.libraryId,
 			sortBy: 'DateCreated,SortName',
 			sortOrder: 'Descending,Ascending',
 			limit: jellyfin.getConfigValue('latestMusicSectionItems', 11)
@@ -114,7 +114,7 @@ class UserViewViewHandler extends BaseViewHandler {
             }
 
             defer.resolve({
-                title: jellyfin.getI18n('JELLYFIN_LATEST_IN', collection.title),//'Latest in ' + collection.title
+                title: jellyfin.getI18n('JELLYFIN_LATEST_IN', library.title),//'Latest in ' + library.title
                 availableListViews: ['list', 'grid'],
             	items: items
             });

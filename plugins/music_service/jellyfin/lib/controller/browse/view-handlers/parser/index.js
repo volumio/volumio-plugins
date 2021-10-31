@@ -7,6 +7,7 @@ const ArtistParser = require(__dirname + '/artist');
 const AlbumArtistParser = require(__dirname + '/album-artist');
 const GenreParser = require(__dirname + '/genre');
 const SongParser = require(__dirname + '/song');
+const CollectionParser = require(__dirname + '/collection');
 const ServerParser = require(__dirname + '/server');
 
 let typeToClass = {
@@ -17,6 +18,7 @@ let typeToClass = {
     albumArtist: AlbumArtistParser,
     genre: GenreParser,
     song: SongParser,
+    collection: CollectionParser,
     server: ServerParser
 };
 

@@ -40,6 +40,11 @@ Volumio restarted
 
 #### Changelog
 
+0.1.3-a:
+- [Added] Collections support
+- [Fixed] Wrong selections showing in filter views
+- [Changed] Minor UI changes
+
 0.1.2-a:
 - [Added] 'Random' sort option in All Songs
 - [Changed] Apply filters when playing top-level folders (e.g. clicking Play button on 'Albums' and 'All Songs')

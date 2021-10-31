@@ -12,7 +12,7 @@ class BrowseController {
      * - The next segment that follows is 'serverId', i.e. 'jellyfin/{serverId}'. If there are no further segments, the view would be 'userViews' (shows user views for the server specified by serverId)
      * 
      * After 'jellyfin/{serverId}', the uri consists of segments representing the following views:
-     * - collection[@parentId=...]: shows 'Albums', 'Artists'...for the specified collection
+     * - library[@parentId=...]: shows 'Albums', 'Artists'...for the specified library
      * - albums[@parentId=...][@artistId=...| @albumArtistId=...| @genreId=...][@startIndex=...][@viewType=latest|favorite][@search=...]: shows albums under the item specified by parentId, optionally filtered by artistId, albumArtistId, genreId...
      * - artists[@parentId=...][@startIndex=...][@viewType=favorite][@search=...]
      * - albumArtists[@parentId=...][@startIndex=...][@viewType=favorite]
