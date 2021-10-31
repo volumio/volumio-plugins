@@ -1,0 +1,598 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Volumio - Now Playing</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/lib/jquery-3.6.0.min.js"></script>
+  <script src="/lib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="/lib/socket.io.min.js"></script>
+  <script src="/lib/common.js"></script>
+
+  <!-- https://github.com/mattbryson/TouchSwipe-Jquery-Plugin -->
+  <script src="/lib/jquery.touchSwipe.min.js"></script>
+
+  <!-- https://github.com/RWAP/jquery-ui-touch-punch -->
+  <script src="/lib/jquery.ui.touch-punch.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?Noto+Sans+Display:wght@100;700&family=Roboto:wght@700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/jquery-ui-1.12.1/jquery-ui.min.css">
+  <link rel="stylesheet" href="/stylesheets/main.css">
+
+  <style id="legacy-default-sizes">
+
+  </style>
+
+  <style id="custom-styles">
+    <%- include('styles.ejs', { styles: styles, host: host }); %>
+  </style>
+
+</head>
+
+<body>
+  <div id="top-bar">
+    <i class="fa fa-angle-down expand"></i>
+  </div>
+  <div id="wrapper">
+    <div id="bg"></div>
+    <div id="contents">
+      <div id="albumart"></div>
+      <div id="track-info">
+        <span class="title"></span>
+        <span class="artist"></span>
+        <span class="album"></span>
+        <div class="media-info"><img class="format-icon" /><span class="quality"></span></div>
+        <div id="controls">
+          <button class="repeat"><i class="fa fa-repeat"></i></button>
+          <button class="previous"><i class="fa fa-step-backward"></i></button>
+          <button class="play"><i class="fa fa-play"></i></button>
+          <button class="next"><i class="fa fa-step-forward"></i></button>
+          <button class="random"><i class="fa fa-random"></i></button>
+        </div>
+        <div id="seekbar-wrapper">
+          <div id="seekbar"></div>
+          <span class="seek"></span><span class="duration"></span>
+        </div>
+      </div>
+    </div>
+    <div id="disconnected-overlay"><i class="fa fa-spinner fa-spin"></i></div>
+  </div>
+
+  <div id="top-bar-popup">
+    <div id="volume">
+      <i id="volume-mute" class="fa fa-volume-off"></i>
+      <div id="volume-slider-wrapper">       
+        <div id="volume-slider"></div>
+      </div>
+      <i id="volume-max" class="fa fa-volume-up"></i>
+    </div>
+    <div id="actions-wrapper">
+      <div><span class="action refresh"><i class="fa fa-refresh"></i> <%= i18n('NOW_PLAYING_REFRESH') %></span></div>
+      <div><span class="action switch"><%= i18n('NOW_PLAYING_SWITCH_TO_VOLUMIO') %> <i class="fa fa-arrow-right"></i></span class="action switch"></div>
+    </div>
+  </div>
+</body>
+
+<script>
+  // Track timer for incrementing seekbar position at 1s interval
+  let trackTimer = null;
+
+  function startTrackTimer() {
+    if (trackTimer) {
+      return;
+    }
+    else {
+      let seekbar = $('#seekbar');
+      trackTimer = setInterval(() => {
+        let seek = seekbar.slider('option', 'value') + 1000;
+        $('#seekbar-wrapper .seek').text(timeToString(seek));
+        seekbar.slider('option', 'value', seek);
+      }, 1000);
+    }
+  }
+
+  function stopTrackTimer() {
+    if (trackTimer) {
+      clearInterval(trackTimer);
+      trackTimer = null;
+    }
+  }
+
+  // Util functions / class
+  function timeToString(ms) {
+    let mm = Math.trunc(ms / 1000 / 60);
+    let ss = `${Math.trunc((ms / 1000) % 60)}`;
+    if (ss.length == 1) {
+      ss = '0' + ss;
+    }
+    return `${mm}:${ss}`;
+  }
+
+  class ImageLoader {
+    constructor() {
+      this.handles = {};
+      this.handleCount = 0;
+    }
+
+    load(src, onload, onerror, fallback = true, handle) {
+      this.handleCount++;
+      if (!handle) {
+        handle = {
+          id: 'il' + this.handleCount
+        };
+      }
+      this.handles[handle.id] = handle;
+      let img = new Image();
+      img.onload = () => {
+        if (!this.isCancelled(handle)) {
+          delete this.handles[handle.id];
+          if (onload) {
+            onload(src);
+          }
+        }
+      }
+      img.onerror = () => {
+        if (!this.isCancelled(handle)) {
+          if (fallback) {
+            this.load('<%- host %>/albumart', onload, onerror, false, handle);
+          }
+          else {
+            delete this.handles[handle.id];
+            if (onerror) {
+              onerror(src);
+            }
+          }
+        }
+      }
+      img.src = src;
+
+      return handle;
+    }
+
+    cancel(handle) {
+      delete this.handles[handle.id];
+    }
+
+    isCancelled(handle) {
+      return this.handles[handle.id] ? false : true;
+    }
+  }
+
+  function switchToVolumioInterface() {
+    window.location.href = '/volumio';
+  }
+
+  // https://github.com/volumio/Volumio2-UI/blob/master/src/app/services/player.service.js
+  function getMediaFormatIcon(trackType) {
+    if (!trackType) {
+      return null;
+    }
+    let url;
+    switch (trackType) {
+      case 'dff':
+      case 'dsf':
+        url = 'dsd';
+        break;
+      case 'ogg':
+      case 'oga':
+        url = 'ogg';
+        break;
+      case 'wv':
+        url = 'wavpack'
+        break;
+      case 'aac':
+      case 'aiff':
+      case 'alac':
+      case 'dsd':
+      case 'dts':
+      case 'flac':
+      case 'm4a':
+      case 'mp3':
+      case 'mp4':
+      case 'opus':
+      case 'spotify':
+      case 'wav':
+      case 'wawpack':
+      case 'airplay':
+      case 'YouTube':
+      case 'rr':
+      case 'bt':
+      case 'cd':
+      case 'tidal':
+      case 'qobuz':
+      case 'mg':
+      case 'mb':
+      case 'wma':
+      case 'qobuz':
+      case 'tidal':
+        url = trackType
+        break;
+      default:
+        url = null;
+    }
+    if (url) {
+      return `<%- host %>/app/assets-common/format-icons/${ url }.svg`;
+    }
+    else {
+      return null;
+    }
+  }
+
+  // Functions for refreshing UI components
+  albumartLoader = new ImageLoader();
+  albumartHandle = null;
+  function refreshTrackInfo(state) {
+    if (albumartHandle) {
+      albumartLoader.cancel(albumartHandle);
+    }
+    let albumartUrl = state.albumart;
+    if (albumartUrl.startsWith('/')) {
+      albumartUrl = '<%- host %>' + albumartUrl;
+    }
+    // load img into cache first to reduce flicker
+    albumartHandle = albumartLoader.load(albumartUrl, (src) => { 
+      $('#bg').css('background-image', `url("${ src }")`);
+      $('#albumart').html(`<img src="${ src }"/>`);
+    });
+    let trackInfo = $('#track-info');
+    $('.title', trackInfo).text(state.title || '');
+    $('.artist', trackInfo).text(state.artist || '');
+    $('.album', trackInfo).text(state.album || '');
+
+    let mediaInfoText;
+    if (state.trackType == 'webradio') {
+      mediaInfoText = state.bitrate || '';
+    }
+    else {
+      let mediaInfoValues = [];
+      ['bitdepth', 'samplerate'].forEach( prop => {
+        if (state[prop]) {
+          mediaInfoValues.push(state[prop]);
+        }
+      });
+      mediaInfoText = mediaInfoValues.join(' ');
+    }
+    $('.media-info .quality', trackInfo).text(mediaInfoText);
+
+    let mediaFormatIcon = getMediaFormatIcon(state.trackType);
+    if (mediaFormatIcon) {
+      $('.media-info .format-icon').attr('src', mediaFormatIcon);
+      $('.media-info .format-icon').show();
+    }
+    else {
+      $('.media-info .format-icon').hide();
+    }
+  }
+
+  function refreshSeekbar(state) {
+    stopTrackTimer();
+
+    if (state.duration == 0 || state.status == 'stop') {
+      $('#seekbar-wrapper').css('visibility', 'hidden');
+      return;
+    }
+    else {
+      $('#seekbar-wrapper').css('visibility', 'visible');
+    }
+
+    let duration = (state.duration || 0) * 1000;
+    let seek = state.seek || 0;
+    let seekbar = $('#seekbar');
+    seekbar.slider('option', 'max', duration);
+    seekbar.slider('option', 'value', seek);
+
+    $('#seekbar-wrapper .seek').text(timeToString(seek));
+    $('#seekbar-wrapper .duration').text(timeToString(duration));
+
+    if (state.status == 'play') {
+      startTrackTimer();
+    }
+  }
+
+  function refreshControls(state) {
+    if (state.status == 'play') {
+      let i = state.duration ? 'fa fa-pause' : 'fa fa-stop';
+      $('#controls button.play').html(`<i class="${i}"></i>`);
+    }
+    else {
+      $('#controls button.play').html('<i class="fa fa-play"></i>');
+    }
+
+    let repeatEl = $('#controls button.repeat');
+    if (state.repeat) {
+      repeatEl.addClass('active');
+      $('i', repeatEl).html(state.repeatSingle ? '1' : '');
+    }
+    else {
+      repeatEl.removeClass('active');
+      $('i', repeatEl).html('');
+    }
+
+    let randomEl = $('#controls button.random');
+    if (state.random) {
+      randomEl.addClass('active');
+    }
+    else {
+      randomEl.removeClass('active');
+    }
+  }
+
+  function refreshVolume(state) {
+    if (!$('#volume-slider').data('sliding')) {
+      $('#volume-slider').slider('option', 'value', state.volume);
+    }
+    if (state.disableVolumeControl) {
+      $('#volume').addClass('disabled');
+    }
+    else {
+      $('#volume').removeClass('disabled');
+    }
+    if (state.mute) {
+      $('#volume-mute').addClass('active');
+      $('#volume-slider').addClass('muted');
+    }
+    else {
+      $('#volume-mute').removeClass('active');
+      $('#volume-slider').removeClass('muted');
+    }
+  }
+
+  // Handle seekbar events
+  function seekTo(event, ui) {
+    if (!event.originalEvent) { // No original event if programatically changed value
+      return;
+    }
+    stopTrackTimer();
+    socket.emit('seek', (ui.value / 1000));
+  }
+
+  function seeking(event, ui) {
+    stopTrackTimer();
+    let seek = ui.value;
+    $('#seekbar-wrapper .seek').text(timeToString(seek));
+  }
+
+  // Handle volume events
+  function setVolume(event, ui) {
+    if (!event.originalEvent) { // No original event if programatically changed value
+      return;
+    }
+    socket.emit('volume', (ui.value));
+  }
+
+  let slideVolumeTimer = null;
+  let slideVolumeValue = 0;
+
+  function slideVolume(event, ui) {
+    slideVolumeValue = ui.value;
+  }
+
+  function beginSlideVolume(event, ui) {
+    if (slideVolumeTimer) {
+      clearInterval(slideVolumeTimer);
+    }
+    slideVolumeValue = ui.value;
+    slideVolumeTimer = setInterval(() => {
+      socket.emit('volume', slideVolumeValue);
+    }, 300);
+    $('#volume-slider').data('sliding', true);
+  }
+
+  function endSlideVolume(event, ui) {
+    if (slideVolumeTimer) {
+      clearInterval(slideVolumeTimer);
+    }
+    $('#volume-slider').data('sliding', false);
+  }
+
+  // Obtain socket and handle socket events
+  let socket = getSocket('<%- host %>', {
+    pluginVersion: '<%- pluginVersion %>',
+    appPort: '<%- appPort %>'
+  });
+
+  socket.on('connect', () => {
+    $('#wrapper').removeClass('disconnected');
+    socket.emit('getState');
+  });
+
+  socket.on('disconnect', () => {
+    $('#wrapper').addClass('disconnected');
+    stopTrackTimer();
+  });
+
+  let currentState = null;
+  socket.on('pushState', state => {
+    // console.log(state);
+
+    if ( (state.title == undefined || state.title === '') &&
+        (state.artist == undefined || state.artist === '') &&
+        (state.album == undefined || state.album === '') ) {
+      $('#track-info').addClass('controls-only');
+    }
+    else {
+      $('#track-info').removeClass('controls-only');
+    }
+
+    refreshTrackInfo(state);
+    refreshSeekbar(state);
+    refreshControls(state);
+    refreshVolume(state);
+
+    currentState = state;
+  });
+
+  socket.on('nowPlayingSetCustomCSS', css => {
+    $('#custom-styles').html(css.replace(/\${ host }/gm, '<%- host %>'));
+  });
+
+  // UI function due to legacy Chromium on Volumio 2.x
+  function setDefaultSizes() {
+    /**
+     * Legacy Chromium on Volumio 2.x doesn't support min() css.
+     * Need to use JS to find out the default dimensions for
+     * - #albumart img
+     * - #track-info
+     */
+    let vw = $(window).width();
+    let vh = $(window).height();
+    let orientation = vw > vh ? 'landscape' : 'portrait';
+    let css;
+
+    if (orientation == 'landscape') {
+      let s = Math.min(0.4 * vw, 0.8 * vh);
+      css = `
+        #albumart img {
+          width: ${s}px;
+          height: ${s}px;
+        }
+        #track-info {
+          height: ${s}px;
+          min-height: ${s}px;
+        }
+      `;
+    }
+    else {
+      let s = Math.min(0.4 * vh, 0.8 * vw);
+      css = `
+        #albumart img {
+          width: ${s}px;
+          height: ${s}px;
+        }
+        #track-info {
+          width: 80vw;
+          min-width: 80vw;
+          max-width: 100vw;
+        }
+      `;
+    }
+
+    $('#legacy-default-sizes').html(css);
+  }
+
+  // Init UI components on document ready and connect socket
+  $(document).ready( () => {
+    $('#seekbar').slider({
+      orientation: 'horizontal',
+      range: 'min',
+      change: seekTo,
+      slide: seeking
+    });
+
+    $('#controls .repeat').on('click', () => {
+      if (!currentState) {
+        return;
+      }
+      let repeat = currentState.repeat ? (currentState.repeatSingle ? false : true) : true;
+      let repeatSingle = repeat && currentState.repeat;
+      socket.emit('setRepeat', { value: repeat, repeatSingle });
+    });
+
+    $('#controls .random').on('click', () => {
+      if (!currentState) {
+        return;
+      }
+      socket.emit('setRandom', { value: !currentState.random });
+    });
+
+    $('#controls .previous').on('click', () => {
+      socket.emit('prev');
+    });
+
+    $('#controls .play').on('click', () => {
+      socket.emit('toggle');
+    });
+
+    $('#controls .next').on('click', () => {
+      socket.emit('next');
+    });
+
+    $('#top-bar-popup').dialog({
+      classes: {
+        'ui-dialog': 'top-bar-popup-container'
+      },
+      autoOpen: false,
+      width: '80%',
+      modal: true,
+      resizable: false,
+      draggable: false,
+      position: {
+        my: 'center top',
+        at: 'center top',
+      },
+      show: {
+        effect: 'drop',
+        direction: 'up',
+        duration: 100
+      },
+      hide: {
+        effect: 'drop',
+        direction: 'up',
+        duration: 100
+      },
+      open: () => { 
+        // close popup when tapped outside
+        $('.ui-widget-overlay').on('click', () => {
+          $('#top-bar-popup').dialog('close');
+        });
+      },
+
+    });
+
+    $('#top-bar .expand').on('click', () => {
+      $( "#top-bar-popup" ).dialog('open');
+    });
+
+    $('#top-bar').swipe({
+      swipeDown: () => {
+        $( "#top-bar-popup" ).dialog('open');
+      }
+    });
+
+    $('#volume-slider').slider({
+      orientation: 'horizontal',
+      range: 'min',
+      min: 0,
+      max: 100,
+      start: beginSlideVolume,
+      stop: endSlideVolume,
+      change: setVolume,
+      slide: slideVolume
+    });
+
+    $('#volume-max').on('click', () => {
+      socket.emit('volume', 100);
+    });
+
+    $('#volume-mute').on('click', function() {
+      if ($(this).hasClass('active')) {
+        socket.emit('unmute');
+      }
+      else {
+        socket.emit('mute');
+      }
+    });
+
+    $('#actions-wrapper .action.refresh').on('click', function() {
+      refresh();
+    });
+
+    $('#actions-wrapper .action.switch').on('click', function() {
+      switchToVolumioInterface();
+    });
+   
+    socket.connect();
+
+    // Calling this due to legacy Chromium on Volumio 2.x
+    setDefaultSizes();
+    $(window).on('resize', () => { // Necessary for preview
+      setDefaultSizes();
+    });
+
+  });
+</script>
+
+</html>

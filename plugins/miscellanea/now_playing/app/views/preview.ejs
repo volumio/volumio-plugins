@@ -1,0 +1,120 @@
+<html>
+
+<head>
+  <title>Volumio - Now Playing (Preview)</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/lib/jquery-3.6.0.min.js"></script>
+  <script src="/lib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="/lib/socket.io.min.js"></script>
+  <script src="/lib/common.js"></script>
+  <link href="https://fonts.googleapis.com/css2?Noto+Sans+Display:wght@100;700&family=Roboto:wght@700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/jquery-ui-1.12.1/jquery-ui.min.css">
+  <link rel="stylesheet" href="/stylesheets/preview.css">
+</head>
+
+<body>
+  <div id="header">
+    <%= i18n('NOW_PLAYING_PREVIEW_TITLE') %>: 
+    <div id="size-presets">
+      <span class="current-width">480</span> x <span class="current-height">320</span>px
+      <span><i class="fa fa-caret-down"></i></span>
+      <div class="choices"></div>
+    </div>
+    <div id="rotate">
+      <i class="fa fa-rotate-left"></i>
+    </div>
+  </div>
+  <div id="contents">
+    <div id="preview-window">
+      <iframe src="<%- nowPlayingUrl %>"></iframe>
+    </div>
+  </div>
+</body>
+
+<script>
+  const SIZE_PRESETS = [
+    [320, 240],
+    [480, 320],
+    [640, 480],
+    [800, 480],
+    [1024, 600],
+    [1280, 400],
+    [1280, 720],
+    [1920, 1080]
+  ];
+
+  let socket = getSocket('<%- host %>', {
+    pluginVersion: '<%- pluginVersion %>',
+    appPort: '<%- appPort %>'
+  }); 
+
+  $(document).ready(() => {
+    // Populate size presets menu
+    let ul = $('<ul>');
+    for (const [w, h] of SIZE_PRESETS) {
+      let li = $('<li>', {
+        'data-width': w,
+        'data-height': h
+      });
+      li.html(`${ w } x ${ h }px`);
+      ul.append(li);
+    }
+    $('#size-presets .choices').append(ul);
+
+    // Handle click event on size preset
+    $('#size-presets .choices ul li').on('click', function() {
+      let presetEl = $(this);
+      let w = presetEl.data('width');
+      let h = presetEl.data('height');
+      $('#preview-window, #preview-window iframe').width(w).height(h);
+      $('#header .current-width').html(w);
+      $('#header .current-height').html(h);
+    });
+
+    // Handle click event on rotate
+    $('#rotate i').on('click', () => {
+      let iframe = $('#preview-window, #preview-window iframe');
+      let h = iframe.width();
+      let w = iframe.height();
+      iframe.width(w).height(h);
+      $('#header .current-width').html(w);
+      $('#header .current-height').html(h);
+    });
+
+    // Make iframe wrapper resizable
+    $('#preview-window').resizable(
+      {
+        // need iframe-barrier to stop iframe from capturing the drag events:
+        // https://stackoverflow.com/questions/8117761/how-can-i-make-an-iframe-resizable
+        start: function (event, ui) {
+          ui.element.append($('<div/>', {
+            id: 'iframe-barrier',
+            css: {
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              'z-index': 10
+            }
+          }));
+        },
+        stop: function (event, ui) {
+          $('#iframe-barrier', ui.element).remove();
+        },
+        resize: function (event, ui) {
+          $('iframe', ui.element).width(ui.size.width).height(ui.size.height);
+          $('#header .current-width').html(ui.size.width);
+          $('#header .current-height').html(ui.size.height);
+        }
+      }
+    );
+
+    socket.connect();
+  });
+</script>
+
+</html>
