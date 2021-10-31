@@ -1,0 +1,731 @@
+body {
+    font-size: 10px;
+    font-family: 'Roboto', sans-serif;
+    background: #000;
+    overflow: hidden;
+}
+
+#top-bar {
+    width: 100%;
+    font-size: 1.5em;
+    position: absolute; 
+    top: 0;
+    left: 0; 
+    text-align: center;
+    color: #ccc;
+    opacity: 0.5;
+    z-index: 10;
+}
+
+#top-bar .expand:hover {
+    color: #24a4f3;
+    cursor: pointer;
+}
+
+.top-bar-popup-container {
+    filter: drop-shadow(0 0 8px #00000080);
+    margin-top: 2em;
+}
+
+#top-bar-popup {
+    min-height: 0px !important;
+}
+
+.top-bar-popup-container .ui-dialog-titlebar {
+    display: none;
+}
+
+.top-bar-popup-container.ui-widget-content,
+.top-bar-popup-container .ui-dialog-content {
+    background: #303030;
+    color: #ccc;
+    border: none !important;
+    border-radius: 0px;
+}
+
+#volume {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 2em 0;
+}
+
+#volume.disabled:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+#volume-slider-wrapper {
+    flex-grow: 1;
+    border-radius: 1em;
+    overflow: hidden;
+    position: relative;
+}
+
+#volume.disabled #volume-slider-wrapper:after {
+    content: '\f05e';
+    font-family: 'FontAwesome';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    text-align: center;
+    line-height: 1.5em;
+    color: #fff;
+}
+
+#volume-mute,
+#volume-max {
+    font-size: 1.3em;
+    line-height: 1.5em;
+}
+
+#volume-mute {
+    margin-right: 10px;
+}
+
+#volume-mute.active {
+    color: #24a4f3;
+}
+
+#volume-max {
+    margin-left: 10px;
+}
+
+#volume-slider.ui-widget-content {
+    background: #ccc;
+}
+#volume-slider.ui-slider-horizontal {
+    height: 1.5em !important;
+    border: none;
+}
+#volume-slider .ui-slider-range {
+    background: #24a4f3;
+    border-radius: 0px;
+}
+#volume-slider .ui-slider-handle {
+    visibility: hidden;
+}
+#volume-slider.muted .ui-slider-range {
+    background: #aaa;
+}
+
+.ui-widget-overlay {
+    background: #000 !important;
+    opacity: 0.7 !important;
+}
+
+#actions-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.9em 0px;
+    font-size: 0.9em;
+}
+
+#actions-wrapper .action.refresh i {
+    margin-right: 5px;
+}
+
+#actions-wrapper .action.switch i {
+    margin-left: 5px;
+}
+
+#actions-wrapper .action {
+    color: #a9a9a9;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#actions-wrapper .action:hover {
+    color: #24a4f3;
+}
+
+#wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    box-sizing: border-box;
+    background-size: 100% 100%;
+}
+
+#bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-filter: blur(50px);
+    -moz-filter: blur(50px);
+    -o-filter: blur(50px);
+    -ms-filter: blur(50px);
+    filter: blur(50px);
+    transform: scale(1.5);
+    background-size: cover;
+    background-position: center;
+    transition: background-image 1s ease-in-out;
+}
+
+#bg:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.5;
+}
+
+#disconnected-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255,255,255,0.7);
+    font-size: 3em;
+}
+
+#wrapper.disconnected #disconnected-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+}
+
+#contents {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+#albumart {
+    z-index: 1;
+    margin-right: 12px;
+}
+
+#albumart img {
+    /**
+     * Commenting out following since legacy Chromium on Volumio 2.x
+     * doesn't support min()
+    width: min(40vw, 80vh);
+    height: min(40vw, 80vh);
+    */
+    filter: drop-shadow(0 0 8px #00000080);
+    object-fit: cover;
+}
+
+#track-info {
+    z-index: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    color: #ccc;
+    font-weight: 700;
+}
+
+#track-info .title {
+    display: -webkit-box;
+    color: #fff;
+    font-family: 'Noto Sans Display', sans-serif;
+    font-size: 1.5em;
+    margin-bottom: 0.2em;
+    line-height: 1.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .artist {
+    display: -webkit-box;
+    font-size: 1em;
+    line-height: 1.4em;
+    max-height: 1.4em;
+    overflow: hidden;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .album {
+    display: -webkit-box;
+    font-size: 0.8em;
+    line-height: 1.2em;
+    max-height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .media-info {
+    margin-top: 0.8em;
+}
+
+#track-info .media-info .format-icon {
+    height: 0.8em;
+    margin-right: 5px;
+}
+
+#track-info .media-info .quality {
+    font-size: 0.7em;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+
+#controls {
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 1em;
+}
+
+#controls button {
+    font-size: 1em;
+    width: 2em;
+    height: 2.5em;
+    margin: 0px 4px;
+    border: none;
+    background: none;
+    color: #ccc;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#controls button.repeat,
+#controls button.random {
+    display: none;
+}
+
+#controls button.repeat.active,
+#controls button.random.active {
+    color: #24a4f3;
+}
+
+#controls button.play {
+    width: 2.5em;
+    margin: 0px 8px;
+    border: 2px solid #24a4f3;
+    border-radius: 1.25em;
+    color: #24a4f3;
+}
+
+#controls button.previous:hover,
+#controls button.next:hover {
+    color: #24a4f3;
+}
+
+#controls button:focus {
+    outline: none;
+}
+
+#controls button.play:hover {
+    background: #24a4f394;
+    color: #fff;
+}
+
+#controls button.play i.fa-play {
+    margin-left: 0.25em;
+}
+
+#seekbar-wrapper {
+    padding: 0px 0.6em
+}
+
+#seekbar-wrapper .seek,
+#seekbar-wrapper .duration {
+    display: inline-block;
+    width: 50%;
+    font-family: 'Noto Sans Display', sans-serif;
+    font-size: 0.8em;
+    font-weight: 100;
+    margin-top: 0.5em;
+}
+
+#seekbar-wrapper .seek {
+    position: relative;
+    left: -0.6em;
+    text-align: left;
+}
+
+#seekbar-wrapper .duration {
+    position: relative;
+    right: -0.6em;
+    text-align: right;
+}
+
+#seekbar.ui-widget-content {
+    background: #ccc;
+}
+#seekbar.ui-slider-horizontal {
+    height: 5px !important;
+    border: none;
+    margin-bottom: 3px;
+}
+#seekbar .ui-slider-range {
+    height: 5px;
+    background: #24a4f3;
+}
+#seekbar .ui-slider-handle,
+#seekbar .ui-slider-handle.ui-state-focus,
+#seekbar .ui-slider-handle.ui-state-active {
+    top: -0.5em;
+    border: none;
+    background: #24a4f3;
+    border-radius: 1.2em;
+    outline: none;
+}
+/* https://stackoverflow.com/questions/35475360/how-do-i-stop-the-jquery-ui-slider-from-sliding-beyond-the-container */
+#seekbar.ui-slider:before,
+#seekbar.ui-slider:after {
+  content: '';
+  border: inherit;
+  border-radius: inherit;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+#seekbar.ui-slider:before {
+    left: -0.6em; /* Half of the handle width */
+    background: #24a4f3;
+    width: 0.8em;
+}
+#seekbar.ui-slider:after {
+    right: -0.6em;
+    background: inherit;
+    width: 0.8em;
+}
+
+#track-info.controls-only .title,
+#track-info.controls-only .artist,
+#track-info.controls-only .album,
+#track-info.controls-only .media-info,
+#track-info.controls-only #seekbar-wrapper {
+    display: none;
+}
+
+#track-info.controls-only #controls {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/**
+* Landscape Orientation
+*/
+
+@media all {
+    @media (orientation: landscape) {
+        @media (min-height: 240px) {
+            @media (min-width: 400px) {
+                body {
+                    font-size: 12px;
+                }
+            }
+            @media (min-width: 480px) {
+                body {
+                    font-size: 15px;
+                }
+            }
+        }
+        @media (min-height: 320px) {
+            @media (min-width: 640px) {
+                body {
+                    font-size: 16px;
+                }
+            }
+        }
+        @media (min-height: 400px) {
+            @media (min-width: 720px) {
+                body {
+                    font-size: 18px;
+                }
+            }
+            @media (min-width: 800px) {
+                body {
+                    font-size: 20px;
+                }
+            }
+        }
+        @media (min-height: 480px) {
+            @media (min-width: 960px) {
+                body {
+                    font-size: 23px;
+                }
+            }
+        }
+        @media (min-height: 600px) {
+            @media (min-width: 1280px) {
+                body {
+                    font-size: 28px;
+                }
+            }
+        }
+        @media (min-height: 900px) {
+            @media (min-width: 1400px) {
+                body {
+                    font-size: 30px;
+                }
+            }
+            @media (min-width: 1600px) {
+                body {
+                    font-size: 32px;
+                }
+            }
+        }
+        @media (min-height: 1080px) {
+            @media (min-width: 1680px) {
+                body {
+                    font-size: 34px;
+                }
+            }
+            @media (min-width: 1800px) {
+                body {
+                    font-size: 38px;
+                }
+            }
+        }
+    }
+}
+
+@media all {
+    @media (orientation: landscape) {
+        @media (min-width: 600px) and (min-height: 320px) {
+            #controls {
+                margin-bottom: 1.5em;
+            }
+        }
+        @media (min-width: 580px) and (min-height: 320px) {
+            #track-info .title {
+                -webkit-line-clamp: 2;
+            }
+        }
+        
+        @media (min-width: 480px) {
+            #controls button.repeat,
+            #controls button.random {
+                display: inline-block;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #controls button {
+                margin: 0px 12px;
+            }
+        }
+    }
+}
+
+@media all {
+    @media (orientation: landscape) {
+        #track-info {
+            /* Set to same height as #albumart img */
+            /**
+             * Commenting out following since legacy Chromium on Volumio 2.x
+             * doesn't support min()
+            height: min(40vw, 80vh);
+            min-height: min(40vw, 80vh);
+            */
+            max-height: 100vh;
+        }
+    }
+}
+
+/**
+ *  Portrait Orientation
+ */
+@media all {
+    @media (orientation: portrait) {
+        body {
+            font-size: 10px;
+        }
+        #wrapper {
+            padding: 1.6em 40px;
+        }
+        #contents {
+            flex-direction: column;
+        }
+        #albumart {
+            margin-right: 0px;
+            margin-bottom: 12px;
+        }
+        #albumart img {
+            /**
+             * Commenting out following since legacy Chromium on Volumio 2.x
+             * doesn't support min()
+            width: min(80vw, 40vh);
+            height: min(80vw, 40vh);
+            */
+        }
+        #track-info {
+            width: 80vw;
+            min-width: 80vw;
+            max-width: 100vw;
+        }
+        #controls {
+            margin-bottom: 2em;
+        }
+    }
+}
+
+@media all {
+    @media (orientation: portrait) {
+        @media (min-width: 240px) {
+            @media (min-height: 400px) {
+                body {
+                    font-size: 12px;
+                }
+                #track-info .title {
+                    -webkit-line-clamp: 2;
+                }
+                #controls button.repeat,
+                #controls button.random {
+                    display: inline-block;
+                }
+            }
+            @media (min-height: 480px) {
+                body {
+                    font-size: 14px;
+                }
+            }
+        }
+        @media (min-width: 320px) {
+            @media (min-height: 640px) {
+                body {
+                    font-size: 16px;
+                }
+                /*#controls {
+                    margin-bottom: 1.6em;
+                }*/
+            }
+        }
+        @media (min-width: 400px) {
+            @media (min-height: 720px) {
+                body {
+                    font-size: 18px;
+                }
+            }
+            @media (min-height: 800px) {
+                body {
+                    font-size: 20px;
+                }
+            }
+            @media (min-height: 900px) {
+                body {
+                    font-size: 24px;
+                }
+            }
+        }
+        @media (min-width: 480px) {
+            @media (min-height: 960px) {
+                body {
+                    font-size: 22px;
+                }
+            }
+        }
+        @media (min-width: 600px) {
+            @media (min-height: 1280px) {
+                body {
+                    font-size: 28px;
+                }
+            }
+        }
+        @media (min-width: 900px) {
+            @media (min-height: 1400px) {
+                body {
+                    font-size: 32px;
+                }
+            }
+            @media (min-height: 1600px) {
+                body {
+                    font-size: 36px;
+                }
+            }
+        }
+        @media (min-width: 1080px) {
+            @media (min-height: 1680px) {
+                body {
+                    font-size: 40px;
+                }
+            }
+            @media (min-height: 1800px) {
+                body {
+                    font-size: 44px;
+                }
+            }
+        }
+    }
+}
+
+
+@media all {
+    @media (orientation: portrait) {
+        @media (min-width: 240px) and (max-width: 279px) {
+            #controls button {
+                font-size: 12px;
+            }
+            #controls button.repeat,
+            #controls button.random {
+                display: inline-block;
+            }
+        }
+        @media (min-width: 320px) {
+            #controls button {
+                font-size: 0.7em;
+            }
+        }
+        @media (min-width: 380px) {
+            #controls button {
+                font-size: 0.9em;
+            }
+        }
+        @media (max-width: 529px) {
+            #actions-wrapper {
+                flex-direction: column;
+                /*font-size: 24px;*/
+            }
+            #actions-wrapper div:not(:first-of-type) {
+                margin-top: 18px;
+            }
+        } 
+        @media (min-width: 530px) {
+            #actions-wrapper {
+                font-size: 16px;
+            }
+        }
+        @media (min-width: 550px)/* and (max-width: 679px)*/ {
+            #actions-wrapper {
+                font-size: 18px;
+            }
+        }
+        /*@media (min-width: 680px) and (max-width: 749px) {
+            #actions-wrapper {
+                font-size: 24px;
+            }   
+        }
+        @media (min-width: 750px) {
+            #actions-wrapper {
+                font-size: 26px;
+            }   
+        }*/
+    }
+}
