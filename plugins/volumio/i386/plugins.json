@@ -472,6 +472,24 @@
 						}
 					],
 					"updated": "7-10-2021"
+				},
+				{
+					"prettyName": "Now Playing",
+					"icon": "fa-lightbulb-o",
+					"name": "now_playing",
+					"version": "0.1.0",
+					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/miscellanea/now_playing/now_playing.zip",
+					"license": "MIT",
+					"description": "Provides a 'Now Playing' screen for your Volumio device.",
+					"details": "",
+					"author": "Patrick Kan",
+					"screenshots": [
+						{
+							"image": "",
+							"thumb": ""
+						}
+					],
+					"updated": "31-10-2021"
 				}
 			]
 		}
