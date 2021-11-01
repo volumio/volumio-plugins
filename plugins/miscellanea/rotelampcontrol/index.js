@@ -197,7 +197,7 @@ rotelampcontrol.prototype.getUIConfig = function() {
                     label: self.ampVendorModelList[n]
                 });
                 if (self.ampVendorModelList[n] == ampFromConfig) {
-                    selected = n+1
+                    selected = n+1;
                 }
             };
             if (selected > 0) {
@@ -206,17 +206,34 @@ rotelampcontrol.prototype.getUIConfig = function() {
             }
             //populate input selector drop-down
             if (ampFromConfig != "...") {
-                for (var n = 0; n < self.ampDefinitions.data.amps[0].sources.length; n++)
+                selected = 0;
+                for (var n = 0; n < self.selectedAmp.sources.length; n++)
                 {
                     self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
                         value: n+1,
-                        label: self.ampDefinitions.data.amps[0].sources[n]
+                        label: self.selectedAmp.sources[n]
                     });
-                };                
+                    if (self.config.get('volumioInput')==self.selectedAmp.sources[n]) {
+                        selected = n+1;
+                    }
+                };       
+                if (selected > 0) {
+                    uiconf.sections[1].content[1].value.value = selected;
+                    uiconf.sections[1].content[1].value.label = self.config.get('volumioInput');                
+                }
             } else {
                 //deactivate
             }
-            // uiconf.sections[1].content[2].
+            //min, max and start volume
+			uiconf.sections[1].content[2].value = (self.config.get('minVolume'));
+			uiconf.sections[1].content[3].value = (self.config.get('maxVolume'));
+			uiconf.sections[1].content[4].value = (self.config.get('startupVolume'));
+			uiconf.sections[1].content[5].value = (self.config.get('volumeSteps'));
+			uiconf.sections[1].content[6].value = (self.config.get('mapTo100')==true);
+			uiconf.sections[1].content[7].value = (self.config.get('pauseWhenMuted')==true);
+			uiconf.sections[1].content[8].value = (self.config.get('pauseWhenInputChanged')==true);
+
+             // uiconf.sections[1].content[2].
 			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
             // debug_settings section
             defer.resolve(uiconf);
@@ -320,7 +337,6 @@ rotelampcontrol.prototype.listSerialDevices = function() {
     var self = this;
     var defer = libQ.defer();
 
-    self.commandRouter.logger.info('[ROTELAMPCONTROL] listSerialDevices');
     exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
         if (error !== null) {
             self.logger.error('[ROTELAMPCONTROL] listSerialDevices: Cannot list serial devices - ' + error)
@@ -672,6 +688,8 @@ rotelampcontrol.prototype.alsavolume = function (VolumeInteger) {
         default:
         //set volume to integer
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] alsavolume: set volume to integer value.');
+            VolumeInteger = Math.min(VolumeInteger,self.config.get('maxVolume'));
+            VolumeInteger = Math.max(VolumeInteger,self.config.get('minVolume'));
             self.sendCommand('volValue',VolumeInteger)
             .then(_ => retrievevolume())
             .then(Volume => defer.resolve(Volume))
@@ -751,7 +769,12 @@ rotelampcontrol.prototype.updateAmpSettings = function (data) {
     self.config.set('mapTo100', (data['map_to_100']));
     self.config.set('pauseWhenMuted', (data['pause_when_muted']));
     self.config.set('pauseWhenInputChanged', (data['pause_when_input_changed']));
-    defer.resolve();
+    self.setActiveAmp()
+    .then(_=> self.commandRouter.getUIConfigOnPlugin('miscellanea', 'rotelampcontrol', {}))
+    .then(config => self.commandRouter.broadcastMessage('pushUiConfig', config))
+    .then(_=>{
+        defer.resolve();        
+    })  
     self.commandRouter.pushToastMessage('success', self.getI18nString('TOAST_SAVE_SUCCESS'), self.getI18nString('TOAST_AMP_SAVE'));
     return defer.promise;
 };
