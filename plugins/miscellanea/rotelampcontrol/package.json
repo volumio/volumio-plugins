@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "RotelAmpControl",
-		"icon": "fa-lightbulb-o",
+		"icon": "fa-volume-up",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {

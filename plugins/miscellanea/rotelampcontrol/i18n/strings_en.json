@@ -17,7 +17,7 @@
   "MAX_VOLUME":"Maximum Volume",
   "D_MAX_VOLUME":"The maximum Volume of the Amplifier that can be set from Volumio. You can always override this with the controls of the Amp directly.",
   "VOLUME_STEPS":"Volume Steps per Click",
-  "D_VOLUME_STEPS":"The number of steps the volume gets incremented/decremented by if you press the +/- Volume buttons in Volumio.",
+  "D_VOLUME_STEPS":"The number of steps the volume gets incremented/decremented by if you press the +/- Volume buttons in Volumio. Only works for Amplifiers, which do not support dedicated volume up/down commands.",
   "PAUSE_WHEN_INPUT_CHANGED":"Pause when Input changed",
   "D_PAUSE_WHEN_INPUT_CHANGED":"Pauses Volumio Playback when Audio-Input of Amplifier is changed.",
   "STARTUP_VOLUME":"Startup Volume",
