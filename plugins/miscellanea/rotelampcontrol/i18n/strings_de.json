@@ -20,6 +20,8 @@
   "D_VOLUME_STEPS":"Die Anzah der Schritte, um die die Lautstärke beim Betätigen der +/- Tasten in Volumio erhöht/vermindert wird. Dies funktioniert nur für Verstärker, die keine dedizierten Kommandos für Lautstärke +/- unterstützen.",
   "PAUSE_WHEN_INPUT_CHANGED":"Pausieren bei Wechsel des Eingangs",
   "D_PAUSE_WHEN_INPUT_CHANGED":"Pausiert die Wiedergabe in Volumio, wenn am Verstärker der Audio-Eingang gewechselt wird.",
+  "SWITCH_INPUT_AT_PLAY":"Verstärkereingang bei Wiedergabe aktivieren",
+  "D_SWITCH_INPUT_AT_PLAY":"Aktiviert den Eingang des Verstärkers, an den Volumio angeschlossen ist.",
   "STARTUP_VOLUME":"Start-Lautstärke",
   "D_STARTUP_VOLUME":"Anfangslautstärke beim Start von Volumio und bei der Rückkehr des Verstärkers aus dem Ruhemodus.",
   "TOAST_SAVE_SUCCESS":"Speichern erfolgreich",

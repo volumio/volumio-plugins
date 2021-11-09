@@ -18,7 +18,9 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var spawn = require('child_process').spawn;
+
 const EventEmitter = require('events').EventEmitter;
+const io = require('socket.io-client');
 
 module.exports = rotelampcontrol;
 function rotelampcontrol(context) {
@@ -50,6 +52,20 @@ rotelampcontrol.prototype.onStart = function() {
 	self.debugLogging = (self.config.get('logging')==true);
     self.selectedAmp ={} ;
 	self.loadI18nStrings(); 
+    //activate websocket
+    self.socket = io.connect('http://localhost:3000');
+	self.socket.emit('getState');
+	self.socket.on('pushState',function(data){
+        if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] on.pushState: ' + JSON.stringify(self.status) + ' - ' + data.status);
+        if ((self.status == undefined || self.status.status == 'stop' || self.status.status == 'pause' ) && data.status=='play') {
+            //status changed to play
+            if (self.config.get('switchInputAtPlay')) {
+                self.sendCommand('source',self.config.get('volumioInput'));
+            }            
+        }
+		self.status = data;
+	})
+
     self.volume = {}; //global Volume-object for exchanging data with volumio
     self.ampStatus = {}; //global Object for storing the status of the amp
     self.ampStatus.volume = self.config.get('startupVolume');        
@@ -134,7 +150,11 @@ rotelampcontrol.prototype.getConfigurationFiles = function() {
 rotelampcontrol.prototype.onStop = function() {
     var self = this;
 
-    self.detachListener();
+    self.detachListener()
+	.then(_=> {
+		self.socket.off('pushState');
+		self.socket.disconnect();
+	})
     if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] onStop: successfully stopped plugin');
 
     return libQ.resolve();
@@ -224,6 +244,7 @@ rotelampcontrol.prototype.getUIConfig = function() {
 			uiconf.sections[1].content[6].value = (self.config.get('mapTo100')==true);
 			uiconf.sections[1].content[7].value = (self.config.get('pauseWhenMuted')==true);
 			uiconf.sections[1].content[8].value = (self.config.get('pauseWhenInputChanged')==true);
+			uiconf.sections[1].content[9].value = (self.config.get('switchInputAtPlay')==true);
 
              // uiconf.sections[1].content[2].
 			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
@@ -382,6 +403,16 @@ rotelampcontrol.prototype.sendCommand  = function(...cmd) {
             cmdString = cmdString + self.selectedAmp.commands.muteOff;
             break;
         case  "source": 
+            cmdString = cmdString + self.selectedAmp.commands.source;
+            var count = (cmdString.match(/#/g) || []).length;
+            if (count == 2) {
+                var re = new RegExp("##");
+                var postfix = self.selectedAmp.sourceCmdPostfix[self.selectedAmp.sources.indexOf(cmd[1])];
+                cmdString = cmdString.replace(re,postfix);
+            } else {
+                self.logger.error('[ROTELAMPCONTROL] sendCommand: source command string has no ## characters. Do not know how to send source value.')
+                defer.reject()
+            }
             break;
         default:
             break;
@@ -804,6 +835,7 @@ rotelampcontrol.prototype.updateAmpSettings = function (data) {
     self.config.set('mapTo100', (data['map_to_100']));
     self.config.set('pauseWhenMuted', (data['pause_when_muted']));
     self.config.set('pauseWhenInputChanged', (data['pause_when_input_changed']));
+    self.config.set('switchInputAtPlay', (data['switch_input_at_play']));
     self.setActiveAmp()
     .then(_=> self.commandRouter.getUIConfigOnPlugin('miscellanea', 'rotelampcontrol', {}))
     .then(config => self.commandRouter.broadcastMessage('pushUiConfig', config))

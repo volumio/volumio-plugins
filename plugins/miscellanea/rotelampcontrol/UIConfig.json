@@ -53,7 +53,8 @@
           "volume_steps",
           "map_to_100",
           "pause_when_muted",
-          "pause_when_input_changed"
+          "pause_when_input_changed",
+          "switch_input_at_play"
         ]
       },
       "content":[
@@ -132,6 +133,13 @@
           "element":"switch",
           "label": "TRANSLATE.PAUSE_WHEN_INPUT_CHANGED",
           "doc": "TRANSLATE.D_PAUSE_WHEN_INPUT_CHANGED",
+          "value": false
+        },
+        {
+          "id":"switch_input_at_play",
+          "element":"switch",
+          "label": "TRANSLATE.SWITCH_INPUT_AT_PLAY",
+          "doc": "TRANSLATE.D_SWITCH_INPUT_AT_PLAY",
           "value": false
         }
       ]
