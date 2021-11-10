@@ -11,7 +11,7 @@
   "AMP_TYPE":"Brand/Type",
   "VOLUMIO_INPUT":"Volumio's Input",
   "PAUSE_WHEN_MUTED":"Pause when Muted",
-  "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted.",
+  "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted. Resumes Playback when Amplifier is unmuted.",
   "MIN_VOLUME":"Minimum Volume",
   "D_MIN_VOLUME":"The minimum Volume of the Amplifier that can be set from Volumio. You can always override this with the controls of the Amp directly.",
   "MAX_VOLUME":"Maximum Volume",
@@ -19,7 +19,7 @@
   "VOLUME_STEPS":"Volume Steps per Click",
   "D_VOLUME_STEPS":"The number of steps the volume gets incremented/decremented by if you press the +/- Volume buttons in Volumio. Only works for Amplifiers, which do not support dedicated volume up/down commands.",
   "PAUSE_WHEN_INPUT_CHANGED":"Pause when Input changed",
-  "D_PAUSE_WHEN_INPUT_CHANGED":"Pauses Volumio Playback when Audio-Input of Amplifier is changed.",
+  "D_PAUSE_WHEN_INPUT_CHANGED":"Pauses Volumio Playback when Audio-Input of Amplifier is changed. Resumes Playback when Input is switched to the selected Volumio-Input.",
   "SWITCH_INPUT_AT_PLAY":"Switch Input at Play",
   "D_SWITCH_INPUT_AT_PLAY":"Activate the ampliefier input connected to Volumio when play is pressed.",
   "STARTUP_VOLUME":"Startup Volume",
@@ -29,5 +29,7 @@
   "TOAST_SERIAL_SAVE":"Serial Interface Settings",
   "TOAST_AMP_SAVE":"Amplifier Settings",
   "MAP_TO_100": "Map volume to 0-100",
-  "D_MAP_TO_100": "Map min and max Volume to range from 0 to 100"
+  "D_MAP_TO_100": "Map min and max Volume to range from 0 to 100",
+  "START_AT_POWERUP":"Start on Powerup",
+  "D_START_AT_POWERUP":"Switches Amplifier Input to Volumio and starts playback when Amplifier is powered up."
 }

@@ -245,6 +245,7 @@ rotelampcontrol.prototype.getUIConfig = function() {
 			uiconf.sections[1].content[7].value = (self.config.get('pauseWhenMuted')==true);
 			uiconf.sections[1].content[8].value = (self.config.get('pauseWhenInputChanged')==true);
 			uiconf.sections[1].content[9].value = (self.config.get('switchInputAtPlay')==true);
+			uiconf.sections[1].content[10].value = (self.config.get('startAtPowerup')==true);
 
              // uiconf.sections[1].content[2].
 			uiconf.sections[2].content[0].value = (self.config.get('logging')==true)
@@ -466,23 +467,34 @@ rotelampcontrol.prototype.parseResponse = function(data) {
     switch (response) {
         case self.selectedAmp.responses.respPowerOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOn');
+            if (self.config.get('startAtPowerup')) {
+                self.sendCommand('source',self.config.get('volumioInput'));
+                self.socket.emit('play');
+            }
             self.messageReceived.emit('power', 'on');
             self.ampStatus.power='on';
             //hier noch den Amp Status abfragen und ggf. GUI initialisieren
             break;
         case self.selectedAmp.responses.respPowerOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled PowerOff');            
+            self.socket.emit('pause'); //stops volumio if amp is powered down
             self.messageReceived.emit('power', 'standby');
             self.ampStatus.power='standby';
             break;
         case self.selectedAmp.responses.respMuteOff:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOff');            
+            if (self.config.get('pauseWhenMuted')) {
+                self.socket.emit('play');
+            }
             self.ampStatus.mute = false;
             self.commandRouter.volumioupdatevolume(self.getVolumeObject());
             self.messageReceived.emit('mute', false);
             break;
         case self.selectedAmp.responses.respMuteOn:
             if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled MuteOn');            
+            if (self.config.get('pauseWhenMuted')) {
+                self.socket.emit('pause');
+            }
             self.ampStatus.mute = true;
             self.commandRouter.volumioupdatevolume(self.getVolumeObject());
             self.messageReceived.emit('mute', true);
@@ -494,7 +506,15 @@ rotelampcontrol.prototype.parseResponse = function(data) {
             self.messageReceived.emit('volume', vol);
             break;
         case 'sourceVal':
-            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);   
+            if (self.debugLogging) self.logger.info('[ROTELAMPCONTROL] parseResponse: Amp signaled source is ' + source);
+            if (self.config.get('pauseWhenInputChanged')) {
+                var idx = self.selectedAmp.sources.indexOf(self.config.get('volumioInput'));
+                if (self.selectedAmp.sourceRespPostfix[idx] == source) {
+                    self.socket.emit('play');
+                } else {
+                    self.socket.emit('pause');
+                }
+            }
             self.ampStatus.source = source;         
             self.messageReceived.emit('source', source);
             break;
@@ -836,6 +856,7 @@ rotelampcontrol.prototype.updateAmpSettings = function (data) {
     self.config.set('pauseWhenMuted', (data['pause_when_muted']));
     self.config.set('pauseWhenInputChanged', (data['pause_when_input_changed']));
     self.config.set('switchInputAtPlay', (data['switch_input_at_play']));
+    self.config.set('startAtPowerup', (data['start_at_powerup']));
     self.setActiveAmp()
     .then(_=> self.commandRouter.getUIConfigOnPlugin('miscellanea', 'rotelampcontrol', {}))
     .then(config => self.commandRouter.broadcastMessage('pushUiConfig', config))

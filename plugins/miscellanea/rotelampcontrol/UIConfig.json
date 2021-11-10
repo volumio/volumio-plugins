@@ -54,7 +54,8 @@
           "map_to_100",
           "pause_when_muted",
           "pause_when_input_changed",
-          "switch_input_at_play"
+          "switch_input_at_play",
+          "start_at_powerup"
         ]
       },
       "content":[
@@ -140,6 +141,13 @@
           "element":"switch",
           "label": "TRANSLATE.SWITCH_INPUT_AT_PLAY",
           "doc": "TRANSLATE.D_SWITCH_INPUT_AT_PLAY",
+          "value": false
+        },
+        {
+          "id":"start_at_powerup",
+          "element":"switch",
+          "label": "TRANSLATE.START_AT_POWERUP",
+          "doc": "TRANSLATE.D_START_AT_POWERUP",
           "value": false
         }
       ]
