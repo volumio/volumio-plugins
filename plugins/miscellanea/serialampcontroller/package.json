@@ -1,7 +1,7 @@
 {
-	"name": "rotelampcontrol",
+	"name": "serialampcontroller",
 	"version": "1.0.0",
-	"description": "Control functions of Rotel Axx Amplifiers",
+	"description": "Control connected Amplifiers that support it via a serial interface. Currently supports ROTEL A-11/12/14, other brands can be supported via ampCommands.json.",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
 	"author": "7h0mas-R",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "RotelAmpControl",
+		"prettyName": "SerialAmpControl",
 		"icon": "fa-volume-up",
 		"plugin_type": "miscellanea"
 	},

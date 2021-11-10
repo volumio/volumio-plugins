@@ -10,7 +10,7 @@
       "icon": "fa-plug",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/rotelampcontrol",
+        "endpoint": "miscellanea/serialampcontroller",
         "method": "updateSerialSettings"
       },
       "saveButton": {
@@ -39,7 +39,7 @@
       "icon": "fa-volume-up",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/rotelampcontrol",
+        "endpoint": "miscellanea/serialampcontroller",
         "method": "updateAmpSettings"
       },
       "saveButton": {
@@ -160,7 +160,7 @@
       "icon": "fa-bug",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/rotelampcontrol",
+        "endpoint": "miscellanea/serialampcontroller",
         "method": "updateDebugSettings"
       },
       "saveButton": {
