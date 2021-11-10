@@ -1,0 +1,54 @@
+{
+    "logging": {
+        "type": "boolean",
+        "value": false
+    },
+    "serialInterfaceDev": {
+        "type": "string",
+        "value": "..."
+    },
+    "ampType": {
+        "type": "string",
+        "value": "..."
+    },
+    "volumioInput": {
+        "type": "string",
+        "value": "..."
+    },
+    "minVolume": {
+        "type": "number",
+        "value": 0
+    },
+    "maxVolume": {
+        "type": "number",
+        "value": 35
+    },
+    "startupVolume": {
+        "type": "number",
+        "value": 5
+    },
+    "volumeSteps": {
+        "type": "number",
+        "value": 1
+    },
+    "mapTo100": {
+        "type": "boolean",
+        "value": false
+    },
+    "pauseWhenMuted": {
+        "type": "boolean",
+        "value": false
+    },
+    "pauseWhenInputChanged": {
+        "type": "boolean",
+        "value": false
+    },
+    "switchInputAtPlay": {
+        "type": "boolean",
+        "value": false
+    },
+    "startAtPowerup": {
+        "type": "boolean",
+        "value": false
+    }
+}

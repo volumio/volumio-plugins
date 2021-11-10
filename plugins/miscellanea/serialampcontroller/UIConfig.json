@@ -1,0 +1,183 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "serial_interface",
+      "element": "section",
+      "label": "TRANSLATE.SERIAL_INTERFACE",
+      "icon": "fa-plug",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateSerialSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": ["serial_interface_dev"]
+      },
+      "content":[
+        {
+          "id": "serial_interface_dev",
+          "element": "select",
+          "label": "TRANSLATE.SERIAL_INTERFACE_DEVICE",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            }
+          ]          
+        }
+      ]
+    },
+    {
+      "id": "amp_settings",
+      "element": "section",
+      "label": "TRANSLATE.AMP_SETTINGS",
+      "icon": "fa-volume-up",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateAmpSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "amp_type",
+          "volumio_input",
+          "min_volume",
+          "max_volume",
+          "startup_volume",
+          "volume_steps",
+          "map_to_100",
+          "pause_when_muted",
+          "pause_when_input_changed",
+          "switch_input_at_play",
+          "start_at_powerup"
+        ]
+      },
+      "content":[
+        {
+          "id": "amp_type",
+          "element": "select",
+          "label": "TRANSLATE.AMP_TYPE",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            }
+          ]          
+        },
+        {
+          "id": "volumio_input",
+          "element": "select",
+          "label": "TRANSLATE.VOLUMIO_INPUT",
+          "value": {"value": 0 ,"label": "..."},
+          "options": [
+            {
+              "value": 0,
+              "label": "..."
+            }
+          ]          
+        },
+        {
+          "id": "min_volume",
+          "type":"number",
+          "element": "input",
+          "doc": "TRANSLATE.D_MIN_VOLUME",
+          "label": "TRANSLATE.MIN_VOLUME",
+          "value": "0"
+        },
+        {
+          "id": "max_volume",
+          "type":"number",
+          "element": "input",
+          "doc": "TRANSLATE.D_MAX_VOLUME",
+          "label": "TRANSLATE.MAX_VOLUME",
+          "value": "30"
+        },
+        {
+          "id": "startup_volume",
+          "type":"number",
+          "element": "input",
+          "doc": "TRANSLATE.D_STARTUP_VOLUME",
+          "label": "TRANSLATE.STARTUP_VOLUME",
+          "value": "1"
+        },
+        {
+          "id": "volume_steps",
+          "type":"number",
+          "element": "input",
+          "doc": "TRANSLATE.D_VOLUME_STEPS",
+          "label": "TRANSLATE.VOLUME_STEPS",
+          "value": "1"
+        },
+        {
+          "id":"map_to_100",
+          "element":"switch",
+          "label": "TRANSLATE.MAP_TO_100",
+          "doc": "TRANSLATE.D_MAP_TO_100",
+          "value": true
+        },
+        {
+          "id":"pause_when_muted",
+          "element":"switch",
+          "label": "TRANSLATE.PAUSE_WHEN_MUTED",
+          "doc": "TRANSLATE.D_PAUSE_WHEN_MUTED",
+          "value": false
+        },
+        {
+          "id":"pause_when_input_changed",
+          "element":"switch",
+          "label": "TRANSLATE.PAUSE_WHEN_INPUT_CHANGED",
+          "doc": "TRANSLATE.D_PAUSE_WHEN_INPUT_CHANGED",
+          "value": false
+        },
+        {
+          "id":"switch_input_at_play",
+          "element":"switch",
+          "label": "TRANSLATE.SWITCH_INPUT_AT_PLAY",
+          "doc": "TRANSLATE.D_SWITCH_INPUT_AT_PLAY",
+          "value": false
+        },
+        {
+          "id":"start_at_powerup",
+          "element":"switch",
+          "label": "TRANSLATE.START_AT_POWERUP",
+          "doc": "TRANSLATE.D_START_AT_POWERUP",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "debug_settings",
+      "element": "section",
+      "label": "TRANSLATE.SET_DEBUG",
+      "description": "TRANSLATE.D_SET_DEBUG",
+      "icon": "fa-bug",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/rotelampcontrol",
+        "method": "updateDebugSettings"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "logging"
+        ]
+      },
+      "content": [
+        {
+          "id":"logging",
+          "element":"switch",
+          "label": "TRANSLATE.LOGGING",
+          "doc": "TRANSLATE.D_LOGGING",
+          "value": false
+        }
+      ]
+    }    
+  ]
+}
