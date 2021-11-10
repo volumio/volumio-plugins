@@ -1,4 +1,4 @@
-October 29th 2021
+November 10th 2021
 
 
 ##  For Volumio3
@@ -134,6 +134,9 @@ nearly everythings ;-)
 
 ### 4. Last changes
 
+November 10th 2021
+
+- code cleaning
 
 October 29th 2021
 

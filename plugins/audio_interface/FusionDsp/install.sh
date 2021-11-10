@@ -13,9 +13,9 @@ mkdir -m 777 $opath/target-curves
 mkdir -m 777 $opath/peq
 mkdir -m 777 $opath/tools
 
-sudo chmod -R 777 $opath
-sudo chown -R volumio $opath
-sudo chgrp -R volumio $opath
+chmod -R 777 $opath
+chown -R volumio $opath
+chgrp -R volumio $opath
 echo "copying demo flters"
 cp $LIB/*EQ.txt $opath/peq/
 cp $LIB/mpdignore $opath/.mpdignore
@@ -28,7 +28,7 @@ rm -Rf $LIB/target-curves
 rm -Rf $LIB/filters-sources
 		
 echo "copying hw detection script"
-
+#for future use.....
 #cd $LIB
 #mv cgui.zip.ren cgui.zip
 #miniunzip cgui.zip
@@ -56,15 +56,15 @@ echo "copying hw detection script"
 #pip3 install .
 cd $LIB
 
-
-echo "remove previous configuration"
-if [ ! -f "/data/configuration/audio_interface/fusiondsp/config.json" ];
-	then
-		echo "file doesn't exist, nothing to do"
-	else
-		echo "File exists removing it"
-		sudo rm -Rf /data/configuration/audio_interface/fusiondsp
-fi
+#
+#echo "remove previous configuration"
+#if [ ! -f "/data/configuration/audio_interface/fusiondsp/config.json" ];
+#	then
+#		echo "file doesn't exist, nothing to do"
+#	else
+#		echo "File exists removing it"
+#		sudo rm -Rf /data/configuration/audio_interface/fusiondsp
+#fi
 
 		
 echo "copying hw detection script"
@@ -77,12 +77,12 @@ cd /tmp
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.6.3/camilladsp-linux-armv7.tar.gz
 #wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
-sudo chown volumio camilladsp
-sudo chgrp volumio camilladsp
-sudo chmod +x camilladsp
+chown volumio camilladsp
+chgrp volumio camilladsp
+chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
-sudo mv $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+ln -s  $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 sudo cp $LIB/c/hw_params_arm $LIB/hw_params
 sudo chmod +x $LIB/hw_params
 elif [ $cpu = "x86_64" ]
@@ -91,27 +91,27 @@ cd /tmp
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-amd64.tar.gz
 #wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.2/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
-sudo chown volumio camilladsp
-sudo chgrp volumio camilladsp
-sudo chmod +x camilladsp
+chown volumio camilladsp
+chgrp volumio camilladsp
+chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-amd64.tar.gz
-sudo mv $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
-sudo cp $LIB/c/hw_params_amd64 $LIB/hw_params
-sudo chmod +x $LIB/hw_params
+ln -s $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
+cp $LIB/c/hw_params_amd64 $LIB/hw_params
+chmod +x $LIB/hw_params
 elif [ $cpu = "armv6l" ]
 then
 cd /tmp
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-armv6l.tar.gz
 tar -xvf camilladsp-linux-armv6l.tar.gz -C /tmp
-sudo chown volumio camilladsp
-sudo chgrp volumio camilladsp
-sudo chmod +x camilladsp
+chown volumio camilladsp
+chgrp volumio camilladsp
+chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv6l.tar.gz
-sudo mv $LIB/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
-sudo cp $LIB/c/hw_params_armv6l $LIB/hw_params
-sudo chmod +x $LIB/hw_params
+ln -s $LIB/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+cp $LIB/c/hw_params_armv6l $LIB/hw_params
+chmod +x $LIB/hw_params
 else
     echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."

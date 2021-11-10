@@ -179,12 +179,12 @@ FusionDsp.prototype.hwinfo = function () {
             }
             */
     } catch (err) {
-      self.logger.info('Error reading hwinfo.json, detection failed :', err);
+      self.logger.error('Error reading hwinfo.json, detection failed :', err);
     }
 
     defer.resolve();
   } catch (err) {
-    self.logger.info('----Hw detection failed :' + err);
+    self.logger.error('----Hw detection failed :' + err);
     defer.reject(err);
   }
 };
@@ -1119,7 +1119,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
 
       } catch (err) {
-        self.logger.info('failed to read downloadedlist.txt' + err);
+        self.logger.('failed to read downloadedlist.txt' + err);
       }
 
       //----------section 5------------
@@ -1147,7 +1147,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
         });
       } catch (err) {
-        self.logger.info('failed to read local file' + err);
+        self.logger.error('failed to read local file' + err);
       }
 
       value = self.config.get('localscope');
@@ -1468,11 +1468,11 @@ FusionDsp.prototype.sendCommandToCamilla = function () {
   }
 
   connection.onerror = (error) => {
-    console.log(`WebSocket error: ${error}`)
+    self.logger.error(`WebSocket error: ${error}`)
   }
 
   connection.onmessage = (e) => {
-    console.log(e.data)
+    self.logger.info(e.data)
     // self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('CONFIG_UPDATED'));
   }
 };
@@ -1499,7 +1499,7 @@ FusionDsp.prototype.areSampleswitch = function () {
   let leftResult = isFilterSwappable(leftFilter1, '44100');
   let rightResult = isFilterSwappable(rightFilter1, '44100');
 
-  console.log(leftResult + ' + ' + rightResult);
+  self.logger.info(leftResult + ' + ' + rightResult);
 
   // check if secoond filter with 96000 in name
   const isFileExist = (filterName, swapWord) => {
@@ -1521,7 +1521,7 @@ FusionDsp.prototype.areSampleswitch = function () {
 
   // if conditions are true, switching possible
   if (leftResult & rightResult & leftResultExist[0] & rightResultExist[0]) {
-    console.log('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     self.config.set('leftfilter', toSaveLeftResult);
     self.config.set('rightfilter', toSaveRightResult);
     self.config.set('autoswitchsamplerate', true);
@@ -1576,7 +1576,7 @@ FusionDsp.prototype.testclipping = function () {
       }, 50);
       // socket.emit('unmute', '')
     } catch (e) {
-      console.log(cmd);
+      self.logger.error(cmd);
     };
   }, 500);
 
@@ -1651,7 +1651,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername, 'utf8').slice(0, -1) / 4);
       self.logger.info('filelength ' + filelength)
     } catch (err) {
-      self.logger.info('An error occurs while reading file');
+      self.logger.error('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
     auto_filter_format = 'FLOAT32LE';
@@ -1661,7 +1661,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
     try {
       filelength = execSync('/bin/cat ' + filterfolder + filtername + ' |wc -l').slice(0, -1);
     } catch (err) {
-      self.logger.info('An error occurs while reading file');
+      self.logger.error('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
     auto_filter_format = 'TEXT';
@@ -1672,7 +1672,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
     try {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 4);
     } catch (err) {
-      self.logger.info('An error occurs while reading file');
+      self.logger.error('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
     auto_filter_format = 'FLOAT32LE';
@@ -1681,7 +1681,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
     try {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername).slice(0, -1) / 8);
     } catch (err) {
-      self.logger.info('An error occurs while reading file');
+      self.logger.error('An error occurs while reading file');
     }
     self.config.set('filter_size', filelength);
     auto_filter_format = 'FLOAT64LE';
@@ -1791,7 +1791,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
       if (err) {
         defer.reject(new Error(err));
-        return console.log(err);
+        return self.logger.error(err);
       }
       var pipeliner, pipelines, pipelinelr, pipelinerr = '';
       var eqo, eqc, eqv, eqa
@@ -2040,7 +2040,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
 
           typer = typec//self.config.get(typec);
           if (eqa == undefined) {
-            self.logger.info('Error in eqv! Cannot split values!')
+            self.logger.error('Error in eqv! Cannot split values!')
             return;
           }
           eqv = eqa.split(',');
@@ -2785,7 +2785,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
             self.commandRouter.pushToastMessage('success', 'Wav file converted in raw. Please select it now to use it')
 
           } catch (e) {
-            self.logger.info('input file does not exist ' + e);
+            self.logger.error('input file does not exist ' + e);
             self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
           };
           self.config.set(list[i], filtername.slice(0, -3) + "raw");
@@ -2965,7 +2965,7 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
 
   } else if (selectedsp == 'convfir') {
 
-    self.logger.info('aaaaaaaaaaaaaaaaaa nothing to do!')
+    self.logger.info('Nothing to do!')
   }
   self.config.set('state4preset' + renprestr, state4preset)
   self.logger.info('State for preset' + renprestr + ' = ' + state4preset)
@@ -3131,7 +3131,7 @@ FusionDsp.prototype.importeq = function (data) {
     });
     defer.resolve();
   } catch (err) {
-    self.logger.info('failed to download Eq' + err);
+    self.logger.error('failed to download Eq' + err);
   }
   self.config.set('eqfrom', 'autoeq');
 
@@ -3231,7 +3231,7 @@ FusionDsp.prototype.convertimportedeq = function () {
     self.config.set('savednbreq', nbreq - 1)
     self.config.set('savedmergedeq', test)
   } catch (err) {
-    self.logger.info('failed to read EQ file ' + err);
+    self.logger.error('failed to read EQ file ' + err);
   }
   return defer.promise;
 };
@@ -3256,7 +3256,7 @@ FusionDsp.prototype.updatelist = function (data) {
   } catch (err) {
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('LIST_FAIL_UPDATE'))
 
-    self.logger.info('failed to  download file ' + err);
+    self.logger.error('failed to  download file ' + err);
   }
 
   return defer.promise;
@@ -3360,7 +3360,7 @@ FusionDsp.prototype.convert = function (data) {
           execSync(cmdsox);
           self.logger.info(cmdsox);
         } catch (e) {
-          self.logger.info('input file does not exist ' + e);
+          self.logger.error('input file does not exist ' + e);
           self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
         };
         try {
@@ -3386,7 +3386,7 @@ FusionDsp.prototype.convert = function (data) {
           self.refreshUI()
           // return self.commandRouter.reloadUi();
         } catch (e) {
-          self.logger.info('drc fails to create filter ' + e);
+          self.logger.error('drc fails to create filter ' + e);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL') + e);
         };
       } else {
@@ -3429,7 +3429,7 @@ FusionDsp.prototype.installtools = function (data) {
 
 
     } catch (err) {
-      self.logger.info('An error occurs while downloading or installing tools');
+      self.logger.error('An error occurs while downloading or installing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while downloading or installing tools');
     }
 
@@ -3447,7 +3447,7 @@ FusionDsp.prototype.removetools = function (data) {
 
       let cp6 = execSync('/bin/rm /data/' + toolspath + "/*");
     } catch (err) {
-      self.logger.info('An error occurs while removing tools');
+      self.logger.error('An error occurs while removing tools');
       self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
     }
     resolve();
