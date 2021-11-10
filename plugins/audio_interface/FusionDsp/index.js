@@ -1119,7 +1119,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
 
       } catch (err) {
-        self.logger.('failed to read downloadedlist.txt' + err);
+        self.logger.error('failed to read downloadedlist.txt' + err);
       }
 
       //----------section 5------------
