@@ -9,6 +9,7 @@
   "D_LOGGING":"Switch the output of log messages on or off. Error messages are always logged.",
   "AMP_SETTINGS":"Amplifier Settings",
   "AMP_TYPE":"Brand/Type",
+  "D_AMP_TYPE":"After selecting press SAVE to populate the options drop-downs.",
   "VOLUMIO_INPUT":"Volumio's Input",
   "PAUSE_WHEN_MUTED":"Pause when Muted",
   "D_PAUSE_WHEN_MUTED": "Pauses Volumio Playback when Amplifier is muted. Resumes Playback when Amplifier is unmuted.",

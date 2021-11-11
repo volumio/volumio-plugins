@@ -511,8 +511,8 @@ serialampcontroller.prototype.parseResponse = function(data) {
             if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] parseResponse: Amp signaled source is ' + source);
             if (self.config.get('pauseWhenInputChanged')) {
                 var idx = self.selectedAmp.sources.indexOf(self.config.get('volumioInput'));
-                if (self.selectedAmp.sourceRespPostfix[idx] == source) {
-                    self.socket.emit('play');
+                if ((self.selectedAmp.sourceRespPostfix[idx] == source)) {
+                    if (self.ampStatus.source!=source) self.socket.emit('play');
                 } else {
                     self.socket.emit('pause');
                 }

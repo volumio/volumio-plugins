@@ -62,6 +62,7 @@
         {
           "id": "amp_type",
           "element": "select",
+          "doc":"TRANSLATE.D_AMP_TYPE",
           "label": "TRANSLATE.AMP_TYPE",
           "value": {"value": 0 ,"label": "..."},
           "options": [
