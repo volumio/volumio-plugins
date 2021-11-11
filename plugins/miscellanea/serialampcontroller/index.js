@@ -1,5 +1,7 @@
 //to do:
 //- test implementation for amps with less commands (e.g. missing mute)
+//- test and debug listener, after fresh install, it seems not to smoothly respond
+//      mute and source select does not alway pause, volume display not always refreshed on iPad
 
 'use strict';
 
@@ -549,7 +551,7 @@ serialampcontroller.prototype.updateVolumeSettings = function() {
         self.commandRouter.volumioUpdateVolumeSettings(volSettingsData)
         .then(resp => {
             if (self.debugLogging) self.logger.info("[SERIALAMPCONTROLLER] updateVolumeSettings: " + JSON.stringify(volSettingsData));
-            defer.resolve;
+            defer.resolve();
         })
         .fail(err => {
             self.logger.error("[SERIALAMPCONTROLLER] updateVolumeSettings: volumioUpdateVolumeSettings failed" );
@@ -557,6 +559,7 @@ serialampcontroller.prototype.updateVolumeSettings = function() {
         })
     } else {
         if (self.debugLogging) self.logger.info("[SERIALAMPCONTROLLER] updateVolumeSettings: Amp, serial Interface not yet set or listener not yet active.");
+        defer.resolve();
     }
     return defer.promise;
 };
@@ -888,6 +891,7 @@ serialampcontroller.prototype.updateAmpSettings = function (data) {
     .then(_=> self.configSerialInterface())
     .then(serialDev => {self.attachListener(serialDev)})
     .then(_=> self.updateVolumeSettings())
+    .then(_=> self.volumioupdatevolume())
     .then(_=> {
         defer.resolve();        
     })  
@@ -931,28 +935,31 @@ serialampcontroller.prototype.attachListener = function(devPath){
 
 	if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: ' + devPath);
     if (devPath!=undefined && devPath!="") {
-        try {
-            self.handle = spawn("/bin/cat", [devPath]);
-            self.ampResponses = "";
-            self.handle.stdout.on('data', function(data){
-                self.chopResponse(data);
-            });
-            self.handle.stdout.on('end', function(){
-                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: Stream from Serial Interface ended.');
-            });
-            self.handle.stderr.on('data', (data) => {
-                self.logger.error('[SERIALAMPCONTROLLER] attachListener: ' + `stderr: ${data}`);
-            });
+        self.detachListener()
+        .then(_=>{
+            try {
+                self.handle = spawn("/bin/cat", [devPath]);
+                self.ampResponses = "";
+                self.handle.stdout.on('data', function(data){
+                    self.chopResponse(data);
+                });
+                self.handle.stdout.on('end', function(){
+                    if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: Stream from Serial Interface ended.');
+                });
+                self.handle.stderr.on('data', (data) => {
+                    self.logger.error('[SERIALAMPCONTROLLER] attachListener: ' + `stderr: ${data}`);
+                });
 
-            self.handle.on('close', (code) => {
-                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: ' + `child process exited with code ${code}`);
-            });
-        	if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: attached and listening');
-        	defer.resolve();
-        } catch (error) {
-            self.logger.error('[SERIALAMPCONTROLLER] attachListener: could not connect to device' + error);
-            defer.reject();
-        }
+                self.handle.on('close', (code) => {
+                    if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: ' + `child process exited with code ${code} ` + "handle: " + self.handle);
+                });
+                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: attached and listening');
+                defer.resolve();
+            } catch (error) {
+                self.logger.error('[SERIALAMPCONTROLLER] attachListener: could not connect to device' + error);
+                defer.reject();
+            }
+        })
     } else {
         	if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] attachListener: settings not yet defined');
         	defer.resolve();
@@ -963,11 +970,20 @@ serialampcontroller.prototype.attachListener = function(devPath){
 serialampcontroller.prototype.detachListener = function (){
 	var self = this;
 	var defer = libQ.defer();
-	if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] detachListener: ');
     if (self.handle!=undefined) {
-	    self.handle.kill();        
+	    if (self.handle.kill()) {
+        	if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] detachListener: successfully killed handler process');
+            self.handle = undefined;
+        	defer.resolve();
+        } else {
+            self.logger.error('[SERIALAMPCONTROLLER] detachListener: could not kill handler process');
+            defer.reject();
+        }
+
+    } else {
+        if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] detachListener: no handler process to kill');
+        defer.resolve();
     }
-	defer.resolve();
 	return defer.promise;
 }
 
