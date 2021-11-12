@@ -1,7 +1,7 @@
 {
 	"name": "serialampcontroller",
 	"version": "1.0.0",
-	"description": "Control connected Amplifiers that support it via a serial interface. Currently supports ROTEL A-11/12/14, other brands can be supported via ampCommands.json.",
+	"description": "Control connected Amplifiers with serial interface from Volumio. Currently supports ROTEL A-11/12/14, other brands can be supported via ampCommands.json.",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
