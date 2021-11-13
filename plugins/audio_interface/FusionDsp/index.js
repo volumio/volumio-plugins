@@ -1833,7 +1833,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composeout += '    type: File' + '\n';
         composeout += '    channels: 2' + '\n';
         composeout += '    filename: "/dev/null"' + '\n';
-        composeout += '    format: S24LE3' + '\n';
+        composeout += '    format: S32LE' + '\n';
 
       } else if (testclipping == false) {
         var composeout = ''
@@ -1841,7 +1841,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composeout += '    type: Alsa' + '\n';
         composeout += '    channels: 2' + '\n';
         composeout += '    device: "fromDsp1"' + '\n';
-        composeout += '    format: S24LE3' + '\n';
+        composeout += '    format: S32LE' + '\n';
       }
       //------resampling section-----
       var composeddevice = '';

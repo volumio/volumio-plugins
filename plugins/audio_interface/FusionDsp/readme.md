@@ -1,4 +1,4 @@
-November 10th 2021
+November 13th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+November 13th 2021
+
+- Output is now S32LE instead of S24LE3 to support Allo kali reclocker
 
 November 10th 2021
 
