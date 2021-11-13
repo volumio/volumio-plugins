@@ -352,18 +352,24 @@ serialampcontroller.prototype.configSerialInterface = function (){
 serialampcontroller.prototype.listSerialDevices = function() {
     var self = this;
     var defer = libQ.defer();
-
-    exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
-        if (error !== null) {
-            self.logger.error('[SERIALAMPCONTROLLER] listSerialDevices: Cannot list serial devices - ' + error)
-            defer.reject();
-        } else {
-            if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: ' + stdout);
-            self.serialDevices = stdout.split(/[\r\n|\n|\r]/).filter(String);
-            if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found ' + self.serialDevices.length + ' devices.');
-            defer.resolve();
-        }
-    });
+    
+    if (fs.exists('/dev/serial/by-id')) {
+        exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+            if (error !== null) {
+                self.logger.error('[SERIALAMPCONTROLLER] listSerialDevices: Cannot list serial devices - ' + error)
+                defer.reject();
+            } else {
+                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: ' + stdout);
+                self.serialDevices = stdout.split(/[\r\n|\n|\r]/).filter(String);
+                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found ' + self.serialDevices.length + ' devices.');
+                defer.resolve();
+            }
+        });
+    } else {
+        self.serialDevices = {};
+        if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found no serial devices.');
+        defer.resolve();
+    }
     return defer.promise;
 }
 
