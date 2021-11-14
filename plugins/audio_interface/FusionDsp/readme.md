@@ -1,4 +1,4 @@
-November 13th 2021
+November 14th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,12 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+November 14th 2021
+
+- tools album art
+- mpdignore peq
+- tools source path
 
 November 13th 2021
 
