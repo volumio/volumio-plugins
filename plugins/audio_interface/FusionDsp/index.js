@@ -3417,7 +3417,7 @@ FusionDsp.prototype.installtools = function (data) {
       self.commandRouter.broadcastMessage("openModal", modalData);
 
       // let cpz = execSync('/bin/rm /tmp/tools.tar.xz');
-      let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp/tools/tools.tar.xz');
+      let cp3 = execSync('/usr/bin/wget -P /tmp https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/tools/tools.tar.xz');
       //  let cp4 = execSync('/bin/mkdir ' + toolspath);
       let cp5 = execSync('tar -xvf /tmp/tools.tar.xz -C /data/' + toolspath);
       let cp6 = execSync('/bin/rm /tmp/tools.tar.xz*');
