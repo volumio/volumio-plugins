@@ -21,6 +21,9 @@ class SearchModel extends BaseModel {
             page,
             query: options.query
         };       
+        if (options.itemType) {
+            queryParams.itemType = options.itemType;
+        }
         return bandcamp.getCache().cacheOrPromise(self.getCacheKeyForFetch('search', queryParams), () => {
             return bcfetch.limiter.search(queryParams, {
                 albumImageFormat: self.getAlbumImageFormat(),

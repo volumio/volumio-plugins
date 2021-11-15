@@ -13,7 +13,7 @@ class BrowseController {
      * After 'bandcamp/', the uri consists of segments representing the following views:
      * - discover[@genre=...][@subgenre=...][@sortBy=...][@artistRecommendationType=...][@location=...][@format=...][@time=...][@pageRef=...]
      * - album[@albumUrl=...]
-     * - search[@query=...][@pageRef=...]
+     * - search[@query=...][@itemType=...][@pageRef=...]
      * - label[@labelUrl=...][@view=artists|discography][@pageRef=...]
      * - artist[@artistUrl=...][@pageRef=...]
      * - track[@trackUrl=...]

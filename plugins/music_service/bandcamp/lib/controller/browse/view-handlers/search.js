@@ -29,6 +29,10 @@ class SearchViewHandler extends BaseViewHandler {
         if (view.query) {
             options.query = decodeURIComponent(view.query);
         }
+
+        if (view.itemType) {
+            options.itemType = view.itemType;
+        }
         
         model.getSearchResults(options).then( (results) => {
             let items = [];
@@ -47,12 +51,30 @@ class SearchViewHandler extends BaseViewHandler {
                 },
                 lists: [
                     {
-                        title: UIHelper.addBandcampIconToListTitle(bandcamp.getI18n('BANDCAMP_SEARCH_TITLE')),
                         availableListViews: ['list', 'grid'],
                         items: items
                     }
                 ]
             };
+
+            let titleKey;
+            switch(options.itemType) {
+                case 'artistsAndLabels':
+                    titleKey = 'BANDCAMP_SEARCH_ARTISTS_AND_LABELS_TITLE';
+                    break;
+                case 'albums':
+                    titleKey = 'BANDCAMP_SEARCH_ALBUMS_TITLE';
+                    break;
+                case 'tracks':
+                    titleKey = 'BANDCAMP_SEARCH_TRACKS_TITLE';
+                    break;
+                default:
+                    titleKey = 'BANDCAMP_SEARCH_TITLE';
+            }
+            if (!view.combinedSearch) {
+                titleKey += '_FULL';
+            }
+            nav.lists[0].title = UIHelper.addBandcampIconToListTitle(bandcamp.getI18n(titleKey, options.query));
 
             defer.resolve({
                 navigation: nav

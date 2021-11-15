@@ -110,8 +110,12 @@ class BandcampContext {
         } else {
             if (this._i18n[key] !== undefined) {
                 str = this._i18n[key];
-            } else {
+            } 
+            else if (this._i18nDefaults[key] !== undefined) {
                 str = this._i18nDefaults[key];
+            }
+            else {
+                str = key;
             }
         }
 
@@ -127,14 +131,19 @@ class BandcampContext {
 
         if (self._pluginContext) {
             let i18nPath = __dirname + '/../i18n';
+            
+            try {
+                self._i18nDefaults = fs.readJsonSync(i18nPath + '/strings_en.json');
+            } catch (e) {
+                self._i18nDefaults = {};
+            }
+            
             try {
                 let language_code = self._pluginContext.coreCommand.sharedVars.get('language_code');
                 self._i18n = fs.readJsonSync(i18nPath + '/strings_' + language_code + ".json");
             } catch(e) {
-                self._i18n = fs.readJsonSync(i18nPath + '/strings_en.json');
-            }
-
-            self._i18nDefaults = fs.readJsonSync(i18nPath + '/strings_en.json');
+                self._i18n = self._i18nDefaults;
+            }            
         }
     }
 

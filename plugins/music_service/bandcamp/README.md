@@ -4,9 +4,16 @@ Volumio plugin for discovering Bandcamp music.
 
 *This plugin is not affiliated with Bandcamp whatsoever.*
 
-## Installation
+This repository has two branches:
 
-If you see the Bandcamp Discover plugin in the Volumio plugin store (under 'Music Services'), you may install or update it from there. If you do not find it in the store or would like to manually install or update the plugin, you may follow the instructions below.
+1. The `master` branch is targeted towards Volumio 3.
+2. The `volumio-2.x` branch is targeted towards Volumio 2.x.
+
+The focus is on the `master` branch. The `volumio-2.x` branch will only be maintained if it is practically feasible and still worthwhile to do so.
+
+## Getting Started
+
+As at the time of this readme, the plugin can be installed from the plugin store of Volumio 2.x. This may no longer be the case when Volumio 3 completely replaces Volumio 2. You can still manually install and update the plugin on Volumio 2.x by following the steps below.
 
 ### Manual Installation
 
@@ -20,6 +27,7 @@ volumio:~$ mkdir bandcamp-plugin
 volumio:~$ cd bandcamp-plugin
 volumio:~/bandcamp-plugin$ git clone https://github.com/patrickkfkan/volumio-bandcamp.git
 volumio:~/bandcamp-plugin$ cd volumio-bandcamp
+volumio:~/bandcamp-plugin/volumio-bandcamp$ git checkout volumio-2.x
 volumio:~/bandcamp-plugin/volumio-bandcamp$ volumio plugin install
 
 ...
@@ -42,6 +50,8 @@ Assuming you have manually installed the plugin with the instructions above, and
 
 volumio:~$ cd ~/bandcamp-plugin/volumio-bandcamp/
 volumio:~/bandcamp-plugin/volumio-bandcamp$ rm -rf node_modules
+volumio:~/bandcamp-plugin/volumio-bandcamp$ git pull
+volumio:~/bandcamp-plugin/volumio-bandcamp$ git checkout volumio-2.x
 volumio:~/bandcamp-plugin/volumio-bandcamp$ git pull
 ...
 volumio:~/bandcamp-plugin/volumio-bandcamp$ volumio plugin update
@@ -66,6 +76,13 @@ volumio:~/bandcamp-plugin/volumio-bandcamp$ systemctl restart volumio
 As the name implies, the purpose of this plugin is to allow you to discover music and artists on Bandcamp through Volumio. If you come across something you like, consider purchasing it on the Bandcamp website. To this end, the plugin displays links for accessing albums, artists and labels on Bandcamp. You can also access the album or artist of a currently playing Bandcamp track through the menu in Volumio's player view (click the ellipsis icon to bring up the menu).
 
 ## Changelog
+
+0.1.2
+- Display search results by item type (configurable in plugin settings)
+
+0.1.1
+- Minor change to loading of translations
+- Update readme after branching from `master` for Volumio 2.x
 
 0.1.1-b.20211021
 - Prepare plugin for Volumio plugin store
