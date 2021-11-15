@@ -35,6 +35,7 @@ ControllerBandcamp.prototype.getUIConfig = function() {
         // General   
         generalUIConf.content[0].value = bandcamp.getConfigValue('itemsPerPage', 47);
         generalUIConf.content[1].value = bandcamp.getConfigValue('combinedSearchResults', 17);
+        generalUIConf.content[2].value = bandcamp.getConfigValue('searchByItemType', true);
 
         // Cache
         let cacheMaxEntries = bandcamp.getConfigValue('cacheMaxEntries', 5000);
@@ -69,6 +70,7 @@ ControllerBandcamp.prototype.configSaveGeneralSettings = function(data) {
 
     this.config.set('itemsPerPage', itemsPerPage);
     this.config.set('combinedSearchResults', combinedSearchResults);
+    this.config.set('searchByItemType', data.searchByItemType);
     
     bandcamp.toast('success', bandcamp.getI18n('BANDCAMP_SETTINGS_SAVED'));   
 }

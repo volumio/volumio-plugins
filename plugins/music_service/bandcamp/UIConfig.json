@@ -17,7 +17,8 @@
           "label": "TRANSLATE.BANDCAMP_SAVE",
           "data": [
             "itemsPerPage",
-            "combinedSearchResults"
+            "combinedSearchResults",
+            "searchByItemType"
           ]
         },
         "content": [
@@ -34,6 +35,12 @@
             "element": "input",
             "label": "TRANSLATE.BANDCAMP_COMBINED_SEARCH_RESULTS",
             "value": 17
+          },
+          {
+            "id": "searchByItemType",
+            "element": "switch",
+            "label": "TRANSLATE.BANDCAMP_SEARCH_BY_ITEM_TYPE",
+            "value": true
           }
         ]
       },
