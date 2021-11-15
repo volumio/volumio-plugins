@@ -807,7 +807,7 @@
 					"prettyName": "Now Playing",
 					"icon": "fa-lightbulb-o",
 					"name": "now_playing",
-					"version": "0.1.0",
+					"version": "0.1.3",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/armhf/miscellanea/now_playing/now_playing.zip",
 					"license": "MIT",
 					"description": "Provides a 'Now Playing' screen for your Volumio device.",
@@ -819,7 +819,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "31-10-2021"
+					"updated": "15-11-2021"
 				}
 			]
 		},
