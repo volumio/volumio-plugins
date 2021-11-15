@@ -14,7 +14,7 @@
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
-		"fs-extra": "^0.28.0",
+		"fs-extra": "^5.0.0",
 		"kew": "^0.7.0",
 		"socket.io-client": "^2.3.1",
 		"v-conf": "^1.4.0"

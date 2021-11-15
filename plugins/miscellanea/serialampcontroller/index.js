@@ -331,15 +331,23 @@ serialampcontroller.prototype.configSerialInterface = function (){
             self.serialInterfaceDev = "/dev/serial/by-id/" + self.config.get('serialInterfaceDev');
             //construct the command for configuring the serial interface
             const cmdString = "/bin/stty -F " + self.serialInterfaceDev + ' ' + self.selectedAmp.baudRate + self.serialOptions;
-            exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
-                if (error !== null) {
-                    self.logger.error('[SERIALAMPCONTROLLER] configSerialInterface: Error, cannot configure serial interface with "' + cmdString + '" ' + error)
-                    defer.reject()
+            fs.pathExists('/dev/serial/by-id/')
+            .then(exists=>{
+                if (exists) {
+                    exec(cmdString, {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+                        if (error !== null) {
+                            self.logger.error('[SERIALAMPCONTROLLER] configSerialInterface: Error, cannot configure serial interface with "' + cmdString + '" ' + error)
+                            defer.reject()
+                        } else {
+                            if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] configSerialInterface: Serial Interface configured with "' + cmdString +'"');
+                            defer.resolve(self.serialInterfaceDev);
+                        }
+                    });                    
                 } else {
-                    if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] configSerialInterface: Serial Interface configured with "' + cmdString +'"');
-                    defer.resolve(self.serialInterfaceDev);
+                            self.logger.error('[SERIALAMPCONTROLLER] configSerialInterface: Device "' + self.serialInterfaceDev + '" does no longer exist. Maybe you unplugged it?')
+                            defer.resolve('')                    
                 }
-            });
+            })
     } else {
         self.serialInterfaceDev = '';
         if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] configSerialInterface: Configuration still incomplete. Settings need to be completed.');
@@ -352,24 +360,28 @@ serialampcontroller.prototype.configSerialInterface = function (){
 serialampcontroller.prototype.listSerialDevices = function() {
     var self = this;
     var defer = libQ.defer();
-    
-    if (fs.exists('/dev/serial/by-id')) {
-        exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
-            if (error !== null) {
-                self.logger.error('[SERIALAMPCONTROLLER] listSerialDevices: Cannot list serial devices - ' + error)
-                defer.reject();
-            } else {
-                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: ' + stdout);
-                self.serialDevices = stdout.split(/[\r\n|\n|\r]/).filter(String);
-                if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found ' + self.serialDevices.length + ' devices.');
-                defer.resolve();
-            }
-        });
-    } else {
-        self.serialDevices = {};
-        if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found no serial devices.');
-        defer.resolve();
-    }
+
+    fs.pathExists('/dev/serial/by-id/')
+    .then(exists => {
+        if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: pathExists=' + exists);
+        if (exists){
+            exec("/bin/ls /dev/serial/by-id", {uid: 1000, gid: 1000}, function (error, stdout, stderr) {
+                if (error !== null) {
+                    self.logger.error('[SERIALAMPCONTROLLER] listSerialDevices: Cannot list serial devices - ' + error)
+                    defer.reject();
+                } else {
+                    if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: ' + stdout);
+                    self.serialDevices = stdout.split(/[\r\n|\n|\r]/).filter(String);
+                    if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found ' + self.serialDevices.length + ' devices.');
+                    defer.resolve();
+                }
+            });
+        } else {
+            self.serialDevices = {};
+            if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] listSerialDevices: found no serial devices.');
+            defer.resolve();
+        }
+    });
     return defer.promise;
 }
 
