@@ -75,7 +75,17 @@
           "artistFontColor",
           "albumFontColor",
           "mediaInfoFontColor",
-          "textAlignment"
+          "textMargins",
+          "titleMargin",
+          "artistMargin",
+          "albumMargin",
+          "mediaInfoMargin",
+          "textAlignmentH",
+          "textAlignmentV",
+          "maxLines",
+          "maxTitleLines",
+          "maxArtistLines",
+          "maxAlbumLines"
         ]
       },
       "content": [
@@ -170,7 +180,7 @@
         },
         {
           "id": "titleFontColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_TITLE",
@@ -182,7 +192,7 @@
         },
         {
           "id": "artistFontColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_ARTIST",
@@ -194,7 +204,7 @@
         },
         {
           "id": "albumFontColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_ALBUM",
@@ -206,7 +216,7 @@
         },
         {
           "id": "mediaInfoFontColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_MEDIA_INFO",
@@ -217,9 +227,79 @@
           }
         },
         {
-          "id": "textAlignment",
+          "id": "textMargins",
           "element": "select",
-          "label": "TRANSLATE.NOW_PLAYING_ALIGNMENT",
+          "label": "TRANSLATE.NOW_PLAYING_MARGINS",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "titleMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "artistMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "mediaInfoMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_MEDIA_INFO",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "textAlignmentH",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALIGNMENT_H",
           "value": {
             "value": "left", 
             "label": "TRANSLATE.NOW_PLAYING_POSITION_LEFT"
@@ -238,6 +318,86 @@
               "label": "TRANSLATE.NOW_PLAYING_POSITION_RIGHT"
             }
           ]
+        },
+        {
+          "id": "textAlignmentV",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALIGNMENT_V",
+          "value": {
+            "value": "flex-start", 
+            "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+          },
+          "options": [
+            {
+              "value": "flex-start", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+            },
+            {
+              "value": "center", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+            },
+            {
+              "value": "flex-end", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_BOTTOM"
+            },
+            {
+              "value": "space-between", 
+              "label": "TRANSLATE.NOW_PLAYING_SPREAD"
+            }
+          ]
+        },
+        {
+          "id": "maxLines",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_MAX_LINES",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_MAX_LINES",
+          "value": {
+            "value": "auto",
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "maxTitleLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "maxArtistLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "maxAlbumLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
         }
       ]
     },
@@ -261,7 +421,10 @@
           "playbackButtonsVisibility",
           "seekbarVisibility",
           "playbackButtonSizeType",
-          "playbackButtonSize"
+          "playbackButtonSize",
+          "widgetMargins",
+          "playbackButtonsMargin",
+          "seekbarMargin"
         ]
       },
       "content": [
@@ -286,7 +449,7 @@
         },
         {
           "id": "widgetPrimaryColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_PRIMARY",
@@ -298,7 +461,7 @@
         },
         {
           "id": "widgetHighlightColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_HIGHLIGHT",
@@ -382,6 +545,49 @@
             "field": "playbackButtonSizeType",
             "value": "custom"
           }
+        },
+        {
+          "id": "widgetMargins",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_MARGINS",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "playbackButtonsMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_PLAYBACK_BUTTONS",
+          "value": "",
+          "visibleIf": {
+            "field": "widgetMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "seekbarMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_SEEK_BAR",
+          "value": "",
+          "visibleIf": {
+            "field": "widgetMargins",
+            "value": "custom"
+          }
         }
       ]
     },
@@ -398,6 +604,7 @@
       "saveButton": {
         "label": "TRANSLATE.NOW_PLAYING_SAVE",
         "data": [
+          "albumartVisibility",
           "albumartSize",
           "albumartWidth",
           "albumartHeight",
@@ -406,6 +613,13 @@
         ]
       },
       "content": [
+        {
+          "id": "albumartVisibility",
+          "element": "switch",
+          "doc": "",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART_VISIBILITY",
+          "value": true
+        },
         {
           "id": "albumartSize",
           "element": "select",
@@ -544,7 +758,7 @@
         },
         {
           "id": "backgroundColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BG_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_COLOR",
@@ -770,7 +984,7 @@
         },
         {
           "id": "backgroundOverlayColor",
-          "type": "text",
+          "type": "color",
           "element": "input",
           "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BG_COLOR",
           "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_COLOR",

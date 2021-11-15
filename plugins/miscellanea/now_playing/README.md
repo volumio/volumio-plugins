@@ -2,6 +2,69 @@
 
 This plugin provides a 'Now Playing' screen for your Volumio device. It is intended for displays that are mainly used to show what Volumio is playing, as opposed to doing things such as browsing media. This makes the plugin suitable for embedded displays that are generally limited in screen estate.
 
+This repository has two branches:
+
+1. The `master` branch is targeted towards Volumio 3.
+2. The `volumio-2.x` branch is targeted towards Volumio 2.x.
+
+The focus is on the `master` branch. The `volumio-2.x` branch will only be maintained if it is practically feasible and still worthwhile to do so.
+
+## Getting Started
+
+As at the time of this readme, the plugin can be installed from the plugin store of Volumio 2.x. This may no longer be the case when Volumio 3 completely replaces Volumio 2. You can still manually install and update the plugin on Volumio 2.x by following the steps below.
+
+### Manual Installation
+
+To manually install the Now Playing plugin, first make sure you have [enabled SSH access](https://volumio.github.io/docs/User_Manual/SSH.html) on your Volumio device. Then, in a terminal:
+
+```
+$ ssh volumio@<your_Volumio_address>
+
+// You can copy and paste each line after the $ sign
+
+volumio:~$ mkdir now-playing-plugin
+volumio:~$ cd now-playing-plugin
+volumio:~/now-playing-plugin$ git clone https://github.com/patrickkfkan/volumio-now-playing.git
+volumio:~/now-playing-plugin$ cd volumio-now-playing
+volumio:~/now-playing-plugin/volumio-now-playing$ git checkout volumio-2.x
+volumio:~/now-playing-plugin/volumio-now-playing$ volumio plugin install
+
+...
+Progress: 100
+Status :Now Playing Successfully Installed, Do you want to enable the plugin now?
+...
+
+// If the process appears to hang at this point, just press Ctrl-C to return to the terminal.
+```
+
+Now access Volumio in a web browser. Go to ``Plugins -> Installed plugins`` and enable the plugin by activating the switch next to it.
+
+### Manual Update
+
+When a new version of the plugin becomes available, you can ssh into your Volumio device and update as follows (assuming you have not deleted the directory which you cloned from this repo):
+
+```
+// You can copy and paste each line after the $ sign
+
+volumio:~$ cd ~/now-playing-plugin/volumio-now-playing/
+volumio:~/now-playing-plugin/volumio-now-playing$ rm -rf node_modules
+volumio:~/now-playing-plugin/volumio-now-playing$ git pull
+volumio:~/now-playing-plugin/volumio-now-playing$ git checkout volumio-2.x
+volumio:~/now-playing-plugin/volumio-now-playing$ git pull
+...
+volumio:~/now-playing-plugin/volumio-now-playing$ volumio plugin update
+
+This command will update the plugin on your device
+...
+Progress: 100
+Status :Successfully updated plugin
+
+// If the process appears to hang at this point, just press Ctrl-C to return to the terminal.
+
+volumio:~/now-playing-plugin/volumio-now-playing$ systemctl restart volumio
+```
+## Q&A
+
 ### How do I show the Now Playing screen on my device's display?
 
 First, you need to make sure that your display is able to show Volumio's default interface. This plugin does not deal with the hardware setup part.
@@ -36,6 +99,20 @@ The 'Preview URL' points to the preview page. Click the 'Open Preview' button to
 To change the volume, tap the down arrow at the top of the screen (or swipe down from the top) to reveal the pop-up panel. You will see the volume slider there.
 
 ## Changelog
+
+0.1.3
+- Add widget margins setting
+- Code changes relating to use of CSS variables
+
+0.1.2
+- Use colorpicker for color settings
+- Add "Show Album Art" option to Album Art settings
+- Add "Margins", "Alignment (Vertical)" and "Max Lines" options to Text Style settings
+- Add external volume change indicator 
+
+0.1.1
+- Update readme after branching from `master` for Volumio 2.x
+- Some minor code changes
 
 0.1.0
 - Add 'View Readme' button to plugin settings

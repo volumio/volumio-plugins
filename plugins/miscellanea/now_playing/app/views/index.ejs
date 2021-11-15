@@ -9,6 +9,7 @@
   <script src="/lib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
   <script src="/lib/socket.io.min.js"></script>
   <script src="/lib/common.js"></script>
+  <Script src="/lib/settings.js"></Script>
 
   <!-- https://github.com/mattbryson/TouchSwipe-Jquery-Plugin -->
   <script src="/lib/jquery.touchSwipe.min.js"></script>
@@ -21,15 +22,6 @@
   <link rel="stylesheet" href="/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/lib/jquery-ui-1.12.1/jquery-ui.min.css">
   <link rel="stylesheet" href="/stylesheets/main.css">
-
-  <style id="legacy-default-sizes">
-
-  </style>
-
-  <style id="custom-styles">
-    <%- include('styles.ejs', { styles: styles, host: host }); %>
-  </style>
-
 </head>
 
 <body>
@@ -41,10 +33,12 @@
     <div id="contents">
       <div id="albumart"></div>
       <div id="track-info">
-        <span class="title"></span>
-        <span class="artist"></span>
-        <span class="album"></span>
-        <div class="media-info"><img class="format-icon" /><span class="quality"></span></div>
+        <div class="text">
+          <span class="title"></span>
+          <span class="artist"></span>
+          <span class="album"></span>
+          <div class="media-info"><img class="format-icon" /><span class="quality"></span></div>
+        </div>
         <div id="controls">
           <button class="repeat"><i class="fa fa-repeat"></i></button>
           <button class="previous"><i class="fa fa-step-backward"></i></button>
@@ -72,6 +66,17 @@
     <div id="actions-wrapper">
       <div><span class="action refresh"><i class="fa fa-refresh"></i> <%= i18n('NOW_PLAYING_REFRESH') %></span></div>
       <div><span class="action switch"><%= i18n('NOW_PLAYING_SWITCH_TO_VOLUMIO') %> <i class="fa fa-arrow-right"></i></span class="action switch"></div>
+    </div>
+  </div>
+  
+  <div id="volume-indicator" style="display: none;">
+    <div class="circle-wrapper">
+      <svg>
+        <circle class="primary" cx="50%" cy="50%" r="3.5em"></circle>
+        <circle class="highlight" cx="50%" cy="50%" r="3.5em" pathLength="100"></circle>
+      </svg>
+    </div>
+    <div class="level-text">
     </div>
   </div>
 </body>
@@ -221,6 +226,14 @@
     }
   }
 
+  function getHost() {
+    return '<%- host %>';
+  }
+
+  function setCSSVariable(varName, value) {
+    document.documentElement.style.setProperty(varName, value);
+  }
+
   // Functions for refreshing UI components
   albumartLoader = new ImageLoader();
   albumartHandle = null;
@@ -234,7 +247,7 @@
     }
     // load img into cache first to reduce flicker
     albumartHandle = albumartLoader.load(albumartUrl, (src) => { 
-      $('#bg').css('background-image', `url("${ src }")`);
+      setCSSVariable('--default-background-image', `url("${ src }")`);
       $('#albumart').html(`<img src="${ src }"/>`);
     });
     let trackInfo = $('#track-info');
@@ -338,6 +351,51 @@
       $('#volume-mute').removeClass('active');
       $('#volume-slider').removeClass('muted');
     }
+
+    updateVolumeIndicator(state);
+  }
+
+  let oldVolume = null;
+  function updateVolumeIndicator(state) {
+    if ($('#top-bar-popup').dialog('isOpen')) {
+      return;
+    }
+    let volumeChanged = oldVolume ? (oldVolume.level !== state.volume || oldVolume.mute !== state.mute) : true;
+    if (volumeChanged) {
+      setCSSVariable('--volume-level', state.volume);
+      let levelText;
+      if (state.mute) {
+        levelText = `<i class="fa fa-volume-off"></i>`;
+        $('#volume-indicator').addClass('muted');
+      }
+      else {
+        levelText = `<i class="fa fa-volume-up"></i> ${ state.volume }%`;
+        $('#volume-indicator').removeClass('muted');
+      }
+      $('#volume-indicator .level-text').html(levelText);
+      if (oldVolume) {
+        showVolumeIndicator();
+      }
+      oldVolume = {
+        level: state.volume,
+        mute: state.mute
+      };
+    }
+  }
+
+  let volumeIndicatorAutoHide = null;;
+  function showVolumeIndicator() {
+    if (volumeIndicatorAutoHide) {
+      clearTimeout(volumeIndicatorAutoHide);
+      volumeIndicatorAutoHide = null;
+    }
+    else {
+      $('#volume-indicator').fadeIn(200);
+    }
+    volumeIndicatorAutoHide = setTimeout( () => {
+      $('#volume-indicator').fadeOut(200);
+      volumeIndicatorAutoHide = null;
+    }, 1500);
   }
 
   // Handle seekbar events
@@ -426,7 +484,7 @@
   });
 
   socket.on('nowPlayingSetCustomCSS', css => {
-    $('#custom-styles').html(css.replace(/\${ host }/gm, '<%- host %>'));
+    applyCustomStyles(css);
   });
 
   // UI function due to legacy Chromium on Volumio 2.x
@@ -435,46 +493,27 @@
      * Legacy Chromium on Volumio 2.x doesn't support min() css.
      * Need to use JS to find out the default dimensions for
      * - #albumart img
-     * - #track-info
      */
     let vw = $(window).width();
     let vh = $(window).height();
     let orientation = vw > vh ? 'landscape' : 'portrait';
-    let css;
+    let albumartSize;
 
     if (orientation == 'landscape') {
-      let s = Math.min(0.4 * vw, 0.8 * vh);
-      css = `
-        #albumart img {
-          width: ${s}px;
-          height: ${s}px;
-        }
-        #track-info {
-          height: ${s}px;
-          min-height: ${s}px;
-        }
-      `;
+      albumartSize = Math.min(0.4 * vw, 0.8 * vh) + 'px';
     }
     else {
-      let s = Math.min(0.4 * vh, 0.8 * vw);
-      css = `
-        #albumart img {
-          width: ${s}px;
-          height: ${s}px;
-        }
-        #track-info {
-          width: 80vw;
-          min-width: 80vw;
-          max-width: 100vw;
-        }
-      `;
+      albumartSize = Math.min(0.4 * vh, 0.8 * vw) + 'px';
     }
 
-    $('#legacy-default-sizes').html(css);
+    setCSSVariable('--default-albumart-width', albumartSize);
+    setCSSVariable('--default-albumart-height', albumartSize);
   }
 
   // Init UI components on document ready and connect socket
   $(document).ready( () => {
+    applyCustomStyles(<%- JSON.stringify(styles || {}) %>);
+    
     $('#seekbar').slider({
       orientation: 'horizontal',
       range: 'min',
@@ -582,6 +621,14 @@
 
     $('#actions-wrapper .action.switch').on('click', function() {
       switchToVolumioInterface();
+    });
+
+    $('#volume-indicator').on('click', function() {
+      if (volumeIndicatorAutoHide) {
+        clearTimeout(volumeIndicatorAutoHide);
+        volumeIndicatorAutoHide = null;
+      }
+      $(this).fadeOut(100);
     });
    
     socket.connect();

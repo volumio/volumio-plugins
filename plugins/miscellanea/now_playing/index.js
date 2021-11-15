@@ -72,24 +72,62 @@ ControllerNowPlaying.prototype.getUIConfig = function() {
             value: fontColors,
             label: fontColors == 'default' ? np.getI18n('NOW_PLAYING_DEFAULT') : np.getI18n('NOW_PLAYING_CUSTOM')
         };
-        textStylesUIConf.content[6].value = styles.titleFontColor || '';
-        textStylesUIConf.content[7].value = styles.artistFontColor || '';
-        textStylesUIConf.content[8].value = styles.albumFontColor || '';
-        textStylesUIConf.content[9].value = styles.mediaInfoFontColor || '';
-        let textAlignment = styles.textAlignment || 'left';
+        textStylesUIConf.content[6].value = styles.titleFontColor || '#FFFFFF';
+        textStylesUIConf.content[7].value = styles.artistFontColor || '#CCCCCC';
+        textStylesUIConf.content[8].value = styles.albumFontColor || '#CCCCCC';
+        textStylesUIConf.content[9].value = styles.mediaInfoFontColor || '#CCCCCC';
+
+        let textMargins = styles.textMargins || 'auto';
         textStylesUIConf.content[10].value = {
-            value: textAlignment
+            value: textMargins,
+            label: textMargins == 'auto' ? np.getI18n('NOW_PLAYING_AUTO') : np.getI18n('NOW_PLAYING_CUSTOM')
         };
-        switch (textAlignment) {
+        textStylesUIConf.content[11].value = styles.titleMargin || '';
+        textStylesUIConf.content[12].value = styles.artistMargin || '';
+        textStylesUIConf.content[13].value = styles.albumMargin || '';
+        textStylesUIConf.content[14].value = styles.mediaInfoMargin || '';
+
+        let textAlignmentH = styles.textAlignmentH || 'left';
+        textStylesUIConf.content[15].value = {
+            value: textAlignmentH
+        };
+        switch (textAlignmentH) {
             case 'center':
-                textStylesUIConf.content[10].value.label = np.getI18n('NOW_PLAYING_POSITION_CENTER');
+                textStylesUIConf.content[15].value.label = np.getI18n('NOW_PLAYING_POSITION_CENTER');
                 break;
             case 'right':
-                textStylesUIConf.content[10].value.label = np.getI18n('NOW_PLAYING_POSITION_RIGHT');
+                textStylesUIConf.content[15].value.label = np.getI18n('NOW_PLAYING_POSITION_RIGHT');
                 break;
             default: 
-                textStylesUIConf.content[10].value.label = np.getI18n('NOW_PLAYING_POSITION_LEFT');
+                textStylesUIConf.content[15].value.label = np.getI18n('NOW_PLAYING_POSITION_LEFT');
         }
+
+        let textAlignmentV = styles.textAlignmentV || 'flex-start';
+        textStylesUIConf.content[16].value = {
+            value: textAlignmentV
+        };
+        switch (textAlignmentV) {
+            case 'center':
+                textStylesUIConf.content[16].value.label = np.getI18n('NOW_PLAYING_POSITION_CENTER');
+                break;
+            case 'flex-end':
+                textStylesUIConf.content[16].value.label = np.getI18n('NOW_PLAYING_POSITION_BOTTOM');
+                break;
+            case 'space-between':
+                textStylesUIConf.content[16].value.label = np.getI18n('NOW_PLAYING_SPREAD');
+                break;
+            default: 
+                textStylesUIConf.content[16].value.label = np.getI18n('NOW_PLAYING_POSITION_TOP');
+        }
+
+        let maxLines = styles.maxLines || 'auto';
+        textStylesUIConf.content[17].value = {
+            value: maxLines,
+            label: maxLines == 'auto' ? np.getI18n('NOW_PLAYING_AUTO') : np.getI18n('NOW_PLAYING_CUSTOM')
+        };
+        textStylesUIConf.content[18].value = styles.maxTitleLines || '';
+        textStylesUIConf.content[19].value = styles.maxArtistLines || '';
+        textStylesUIConf.content[20].value = styles.maxAlbumLines || '';
         
         /**
          * Widget Styles conf
@@ -99,8 +137,8 @@ ControllerNowPlaying.prototype.getUIConfig = function() {
             value: widgetColors,
             label: widgetColors == 'default' ? np.getI18n('NOW_PLAYING_DEFAULT') : np.getI18n('NOW_PLAYING_CUSTOM')
         };
-        widgetStylesUIConf.content[1].value = styles.widgetPrimaryColor || '';
-        widgetStylesUIConf.content[2].value = styles.widgetHighlightColor || '';
+        widgetStylesUIConf.content[1].value = styles.widgetPrimaryColor || '#CCCCCC';
+        widgetStylesUIConf.content[2].value = styles.widgetHighlightColor || '#24A4F3';
 
         let widgetVisibility = styles.widgetVisibility || 'default';
         widgetStylesUIConf.content[3].value = {
@@ -118,32 +156,46 @@ ControllerNowPlaying.prototype.getUIConfig = function() {
         };
         widgetStylesUIConf.content[7].value = styles.playbackButtonSize || '';
 
+        let widgetMargins = styles.widgetMargins || 'auto';
+        widgetStylesUIConf.content[8].value = {
+            value: widgetMargins,
+            label: widgetMargins == 'auto' ? np.getI18n('NOW_PLAYING_AUTO') : np.getI18n('NOW_PLAYING_CUSTOM')
+        };
+        widgetStylesUIConf.content[9].value = styles.playbackButtonsMargin || '';
+        widgetStylesUIConf.content[10].value = styles.seekbarMargin || '';
+
         /**
          * Albumart Styles conf
          */
+        let albumartVisibility = styles.albumartVisibility == undefined ? true : styles.albumartVisibility;
+        albumartStylesUIConf.content[0].value = albumartVisibility ? true : false;
         let albumartSize = styles.albumartSize || 'auto';
-        albumartStylesUIConf.content[0].value = {
+        albumartStylesUIConf.content[1].value = {
             value: albumartSize,
             label: albumartSize == 'auto' ? np.getI18n('NOW_PLAYING_AUTO') : np.getI18n('NOW_PLAYING_CUSTOM')
         };
-        albumartStylesUIConf.content[1].value = styles.albumartWidth || '';
-        albumartStylesUIConf.content[2].value = styles.albumartHeight || '';
+        albumartStylesUIConf.content[2].value = styles.albumartWidth || '';
+        albumartStylesUIConf.content[3].value = styles.albumartHeight || '';
 
         let albumartFit = styles.albumartFit || 'cover';
-        albumartStylesUIConf.content[3].value = {
+        albumartStylesUIConf.content[4].value = {
             value: albumartFit
         };
         switch (albumartFit) {
             case 'contain':
-                albumartStylesUIConf.content[3].value.label = np.getI18n('NOW_PLAYING_FIT_CONTAIN');
+                albumartStylesUIConf.content[4].value.label = np.getI18n('NOW_PLAYING_FIT_CONTAIN');
                 break;
             case 'fill': 
-                albumartStylesUIConf.content[3].value.label = np.getI18n('NOW_PLAYING_FIT_FILL');
+                albumartStylesUIConf.content[4].value.label = np.getI18n('NOW_PLAYING_FIT_FILL');
                 break;
             default: 
-                albumartStylesUIConf.content[3].value.label = np.getI18n('NOW_PLAYING_FIT_COVER');
+                albumartStylesUIConf.content[4].value.label = np.getI18n('NOW_PLAYING_FIT_COVER');
         }
-        albumartStylesUIConf.content[4].value = styles.albumartBorderRadius || '';
+        albumartStylesUIConf.content[5].value = styles.albumartBorderRadius || '';
+        if (!albumartVisibility) {
+            albumartStylesUIConf.content = [ albumartStylesUIConf.content[0] ];
+            albumartStylesUIConf.saveButton.data = [ 'albumartVisibility' ];
+        }
 
         /**
          * Background Styles Conf
@@ -166,7 +218,7 @@ ControllerNowPlaying.prototype.getUIConfig = function() {
                 backgroundStylesUIConf.content[0].value.label = np.getI18n('NOW_PLAYING_DEFAULT');
         }
 
-        backgroundStylesUIConf.content[1].value = styles.backgroundColor || '';
+        backgroundStylesUIConf.content[1].value = styles.backgroundColor || '#000000';
 
         let albumartBackgroundFit = styles.albumartBackgroundFit || 'cover';
         backgroundStylesUIConf.content[2].value = {
@@ -272,7 +324,7 @@ ControllerNowPlaying.prototype.getUIConfig = function() {
             default: 
                 backgroundStylesUIConf.content[11].value.label = np.getI18n('NOW_PLAYING_DEFAULT');
         }
-        backgroundStylesUIConf.content[12].value = styles.backgroundOverlayColor || '';
+        backgroundStylesUIConf.content[12].value = styles.backgroundOverlayColor || '#000000';
         backgroundStylesUIConf.content[13].value = styles.backgroundOverlayOpacity || '';
 
         /**
@@ -420,6 +472,9 @@ ControllerNowPlaying.prototype.configConfirmSaveDaemon = function(data) {
 }
 
 ControllerNowPlaying.prototype.configSaveTextStyles = function(data) {
+    let maxTitleLines = data.maxTitleLines ? parseInt(data.maxTitleLines, 10) : '';
+    let maxArtistLines = data.maxArtistLines ? parseInt(data.maxArtistLines, 10) : '';
+    let maxAlbumLines = data.maxAlbumLines ? parseInt(data.maxAlbumLines, 10) : '';
     let styles = {
         fontSizes: data.fontSizes.value,
         titleFontSize: data.titleFontSize,
@@ -431,16 +486,24 @@ ControllerNowPlaying.prototype.configSaveTextStyles = function(data) {
         artistFontColor: data.artistFontColor,
         albumFontColor: data.albumFontColor,
         mediaInfoFontColor: data.mediaInfoFontColor,
-        textAlignment: data.textAlignment.value
+        textAlignmentH: data.textAlignmentH.value,
+        textAlignmentV: data.textAlignmentV.value,
+        textMargins: data.textMargins.value,
+        titleMargin: data.titleMargin,
+        artistMargin: data.artistMargin,
+        albumMargin: data.albumMargin,
+        mediaInfoMargin: data.mediaInfoMargin,
+        maxLines: data.maxLines.value,
+        maxTitleLines,
+        maxArtistLines,
+        maxAlbumLines
     };
     let currentStyles = np.getConfigValue('styles', {}, true);
     let updatedStyles = Object.assign(currentStyles, styles);
     this.config.set('styles', JSON.stringify(updatedStyles));
     np.toast('success', np.getI18n('NOW_PLAYING_SETTINGS_SAVED'));
 
-    util.renderStylesheet(updatedStyles).then( css => {
-        np.broadcastMessage('nowPlayingSetCustomCSS', css);
-    });
+    np.broadcastMessage('nowPlayingSetCustomCSS', updatedStyles);
 }
 
 ControllerNowPlaying.prototype.configSaveWidgetStyles = function(data) {
@@ -452,34 +515,49 @@ ControllerNowPlaying.prototype.configSaveWidgetStyles = function(data) {
         playbackButtonsVisibility: data.playbackButtonsVisibility,
         seekbarVisibility: data.seekbarVisibility,
         playbackButtonSizeType: data.playbackButtonSizeType.value,
-        playbackButtonSize: data.playbackButtonSize
+        playbackButtonSize: data.playbackButtonSize,
+        widgetMargins: data.widgetMargins.value,
+        playbackButtonsMargin: data.playbackButtonsMargin,
+        seekbarMargin: data.seekbarMargin
     };
     let currentStyles = np.getConfigValue('styles', {}, true);
     let updatedStyles = Object.assign(currentStyles, styles);
     this.config.set('styles', JSON.stringify(updatedStyles));
     np.toast('success', np.getI18n('NOW_PLAYING_SETTINGS_SAVED'));
 
-    util.renderStylesheet(updatedStyles).then( css => {
-        np.broadcastMessage('nowPlayingSetCustomCSS', css);
-    });
+    np.broadcastMessage('nowPlayingSetCustomCSS', updatedStyles);
 }
 
 ControllerNowPlaying.prototype.configSaveAlbumartStyles = function(data) {
-    let styles = {
+    let styles = {};
+    for (const [key, value] of Object.entries(data)) {
+        if (typeof value === 'object' && value.value !== undefined) {
+            styles[key] = value.value;
+        }
+        else {
+            styles[key] = value;
+        }
+    }
+    /*let styles = {
+        albumartVisibility: data.albumartVisibility,
         albumartSize: data.albumartSize.value,
         albumartWidth: data.albumartWidth,
         albumartHeight: data.albumartHeight,
         albumartFit: data.albumartFit.value,
         albumartBorderRadius: data.albumartBorderRadius
-    };
+    };*/
     let currentStyles = np.getConfigValue('styles', {}, true);
+    let currentAlbumartVisibility = (currentStyles.albumartVisibility == undefined ? true : currentStyles.albumartVisibility) ? true : false;
+    let refresh = currentAlbumartVisibility !== styles.albumartVisibility;
     let updatedStyles = Object.assign(currentStyles, styles);
     this.config.set('styles', JSON.stringify(updatedStyles));
     np.toast('success', np.getI18n('NOW_PLAYING_SETTINGS_SAVED'));
 
-    util.renderStylesheet(updatedStyles).then( css => {
-        np.broadcastMessage('nowPlayingSetCustomCSS', css);
-    });
+    np.broadcastMessage('nowPlayingSetCustomCSS', updatedStyles);
+
+    if (refresh) {
+        this.refreshUIConfig();
+    }
 }
 
 ControllerNowPlaying.prototype.configSaveBackgroundStyles = function(data) {
@@ -504,9 +582,7 @@ ControllerNowPlaying.prototype.configSaveBackgroundStyles = function(data) {
     this.config.set('styles', JSON.stringify(updatedStyles));
     np.toast('success', np.getI18n('NOW_PLAYING_SETTINGS_SAVED'));
 
-    util.renderStylesheet(updatedStyles).then( css => {
-        np.broadcastMessage('nowPlayingSetCustomCSS', css);
-    });
+    np.broadcastMessage('nowPlayingSetCustomCSS', updatedStyles);
 }
 
 ControllerNowPlaying.prototype.configureVolumioKiosk = function(data) {
