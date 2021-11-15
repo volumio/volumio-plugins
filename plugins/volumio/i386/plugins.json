@@ -281,7 +281,7 @@
 					"prettyName": "Bandcamp Discover",
 					"icon": "fa-lightbulb-o",
 					"name": "bandcamp",
-					"version": "0.1.1",
+					"version": "0.1.2",
 					"url": "http://volumio.github.io/volumio-plugins/plugins/volumio/i386/music_service/bandcamp/bandcamp.zip",
 					"license": "MIT",
 					"description": "Discover Bandcamp music",
@@ -293,7 +293,7 @@
 							"thumb": ""
 						}
 					],
-					"updated": "21-10-2021"
+					"updated": "15-11-2021"
 				}
 			]
 		},
