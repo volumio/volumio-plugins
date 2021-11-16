@@ -95,7 +95,7 @@ serialampcontroller.prototype.onStart = function() {
 serialampcontroller.prototype.loadAmpDefinitions = function() {
     var self = this;
 
-    var ampDefinitionFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json')
+    var ampDefinitionFile = this.commandRouter.pluginManager.getConfigurationFile(this.context,'ampCommands.json');
     self.ampDefinitions = new(require('v-conf'))();
     self.ampDefinitions.loadFile(ampDefinitionFile);
     if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] loadAmpDefinitions: loaded AmpDefinitions: ' + JSON.stringify(self.ampDefinitions.data));
@@ -157,6 +157,21 @@ serialampcontroller.prototype.onStop = function() {
 		self.socket.off('pushState');
 		self.socket.disconnect();
 	})
+    var volSettingsData = {
+        'volumeOverride': false,
+        'currentmute' : false,
+        'mixer':'', 
+        'mixertype' : 'None',
+        'maxvolume':'',
+        'volumecurve':'',
+        'volumesteps':'',
+        'currentvolume':100
+    };
+    volSettingsData.device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
+    volSettingsData.name = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[volSettingsData.device].name;
+    
+
+    self.commandRouter.volumioUpdateVolumeSettings(volSettingsData)    
     if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] onStop: successfully stopped plugin');
 
     return libQ.resolve();
@@ -491,9 +506,14 @@ serialampcontroller.prototype.parseResponse = function(data) {
                 self.sendCommand('source',self.config.get('volumioInput'));
                 self.socket.emit('play');
             }
+            //no need to request status, since ROTEL amps send status at power up, may need change later for other brands? If needed at some
+            //point, make this configurable in AmpCommands.json to prevent too much communication in Rotel case
+            if (self.ampStatus.power = 'off') {
+                self.alsavolume(this.config.get('startupVolume')) 
+                .then(_ => self.updateVolumeSettings())                
+            }
             self.messageReceived.emit('power', 'on');
             self.ampStatus.power='on';
-            //hier noch den Amp Status abfragen und ggf. GUI initialisieren
             break;
         case self.selectedAmp.responses.respPowerOff:
             if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] parseResponse: Amp signaled PowerOff');            
@@ -568,7 +588,7 @@ serialampcontroller.prototype.updateVolumeSettings = function() {
         volSettingsData.currentmute = self.volume.mute;
         self.commandRouter.volumioUpdateVolumeSettings(volSettingsData)
         .then(resp => {
-            if (self.debugLogging) self.logger.info("[SERIALAMPCONTROLLER] updateVolumeSettings: " + JSON.stringify(volSettingsData));
+            if (self.debugLogging) self.logger.info("[SERIALAMPCONTROLLER] updateVolumeSettings: " + JSON.stringify(volSettingsData + ' ' + resp));
             defer.resolve();
         })
         .fail(err => {
@@ -818,10 +838,11 @@ serialampcontroller.prototype.alsavolume = function (VolumeInteger) {
                     VolumeInteger = Math.min(VolumeInteger,self.config.get('maxVolume'));
                     VolumeInteger = Math.max(VolumeInteger,self.config.get('minVolume'));
                 }
-                self.messageReceived.once('volume',(vol) => {
-                    defer.resolve(self.getVolumeObject())
-                });
-                self.sendCommand('volValue',VolumeInteger)
+                // self.messageReceived.once('volume',(vol) => {
+                //     defer.resolve(self.getVolumeObject())
+                // });
+                self.sendCommand('volValue',VolumeInteger);
+                defer.resolve(self.getVolumeObject());
                 break;   
         };
         
@@ -909,7 +930,7 @@ serialampcontroller.prototype.updateAmpSettings = function (data) {
     .then(_=> self.configSerialInterface())
     .then(serialDev => {self.attachListener(serialDev)})
     .then(_=> self.updateVolumeSettings())
-    .then(_=> self.volumioupdatevolume())
+    .then(_=> self.volumioupdatevolume(self.getVolumeObject()))
     .then(_=> {
         defer.resolve();        
     })  
