@@ -1,4 +1,4 @@
-November 14th 2021
+November 17th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+November 17th 2021
+
+- max frequuency is now 22049Hz
 
 November 14th 2021
 

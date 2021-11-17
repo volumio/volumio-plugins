@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze August 2021
+FusionDsp plugin for volumio3. By balbuze November 2021
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -2570,7 +2570,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       if (typer !== 'None' && typer !== 'Remove') {
         self.logger.info('Type is ' + typer)
 
-        if (Number.parseFloat(veq) && (veq > 0 && veq < 20001)) {
+        if (Number.parseFloat(veq) && (veq > 0 && veq < 22050)) {
           self.logger.info('value ok ')
 
         } else {
@@ -3192,8 +3192,12 @@ FusionDsp.prototype.convertimportedeq = function () {
           //  self.logger.info('filter in line ' + o + lresult)
           var eqv = (lresult);
           var param = eqv.split(',')
-          // console.log(param)
-          var eqs = (param[1] + ',' + param[2] + ',' + param[3])
+          var correctedfreq = param[1]
+          if (correctedfreq >= 22050) {
+            correctedfreq = 22049
+          }
+                    // console.log(param)
+          var eqs = (correctedfreq + ',' + param[2] + ',' + param[3])
           var typec = 'type' + nbreq;
           var scopec = 'scope' + nbreq;
           var eqc = 'eq' + nbreq;

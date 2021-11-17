@@ -32,7 +32,7 @@
   "RENAME_PRESET_SW_DOC": "Give a name for the preset",
   "NO_PRESET_USED": "NO preset used",
   "CONFIG_UPDATED": "The configuration has been successfully updated",
-  "FREQUENCY_RANGE": "Frequency Hz must be a float [10-20000] in ",
+  "FREQUENCY_RANGE": "Frequency Hz must be a float [10-22049] in ",
   "GAIN_RANGE": "Gain must be a float [-20-20] in ",
   "Q_RANGE": "Coefficient Q must be a float [0.1-15] in ",
   "BANDWIDTH_RANGE":"Missing Bandwidth in Octave ",

@@ -93,7 +93,7 @@
   "DRC_SAMPLE_RATE": "Drc sample rate",
   "FILE_TO_CONVERT": "Fichier Impulse à convertir",
   "FILTER_CREATION": "DRC-FIR Création de filtre",
-  "FREQUENCY_RANGE": "Frequence Hz doit être un nombre décimal [10-20000] dans ",
+  "FREQUENCY_RANGE": "Frequence Hz doit être un nombre décimal [10-22049] dans ",
   "RESAMPLINGQ_DOC": "Qualité du rééchantillonnage. Plus haute égale plus de ressources CPU. Conseillé ++",
   "RESAMPLING_RATE": "Fréquence cible",
   "RIGHTLEVEL_DESC": "Ajoute un gain spécifique pour ce canal",
