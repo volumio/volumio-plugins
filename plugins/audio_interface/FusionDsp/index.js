@@ -2812,34 +2812,34 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
 
-        setTimeout(function () {
+      // setTimeout(function () {
 
-          //  self.refreshUI();
-          self.logger.info('For detection attenuation set to ' + self.config.get('attenuationl'))
-          var responseData = {
-            title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
-            message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
-            size: 'lg',
-            buttons: [
-              {
-                name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
-                class: 'btn btn-cancel',
-                emit: 'closeModals',
-                payload: ''
-              },
-              {
-                name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
-                class: 'btn btn-info',
-                emit: 'callMethod',
-                payload: { 'endpoint': 'audio_interface/fusiondsp', 'method': 'testclipping', 'data': '' },
-                //     emit: 'closeModals'
+      //   //  self.refreshUI();
+      //   self.logger.info('For detection attenuation set to ' + self.config.get('attenuationl'))
+      //   var responseData = {
+      //     title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
+      //     message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
+      //     size: 'lg',
+      //     buttons: [
+      //       {
+      //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
+      //         class: 'btn btn-cancel',
+      //         emit: 'closeModals',
+      //         payload: ''
+      //       },
+      //       {
+      //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
+      //         class: 'btn btn-info',
+      //         emit: 'callMethod',
+      //         payload: { 'endpoint': 'audio_interface/fusiondsp', 'method': 'testclipping', 'data': '' },
+      //         //     emit: 'closeModals'
 
-              }
-            ]
-          }
-          self.commandRouter.broadcastMessage("openModal", responseData);
-        }, 1000);
-
+      //       }
+      //     ]
+      //   }
+      //   self.commandRouter.broadcastMessage("openModal", responseData);
+      // }, 1000);
+self.testclipping()
       }
       setTimeout(function () {
 

@@ -2,6 +2,10 @@
 LIB=/data/plugins/audio_interface/fusiondsp
 TARGET = $libasound_module_pcm_cdsp
 opath=/data/INTERNAL/FusionDsp
+
+sudo apt-get update
+sudo apt-get -y install drc
+
 echo "creating filters folder and copying demo filters"
 
 

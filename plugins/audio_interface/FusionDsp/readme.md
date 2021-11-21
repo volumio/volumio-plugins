@@ -1,4 +1,4 @@
-November 17th 2021
+November 21th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,12 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+November 21th 2021
+
+- fix drc-fir install
+- fix for variable sample rate FIR filter
+- fix clipping detection
 
 November 17th 2021
 
