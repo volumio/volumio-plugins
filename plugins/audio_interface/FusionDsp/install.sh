@@ -86,7 +86,7 @@ chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
-ln -s  $LIB/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+ln -s  $LIB/lib/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 sudo cp $LIB/c/hw_params_arm $LIB/hw_params
 sudo chmod +x $LIB/hw_params
 elif [ $cpu = "x86_64" ]
@@ -100,7 +100,7 @@ chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-amd64.tar.gz
-ln -s $LIB/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
+ln -s $LIB/lib/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
 cp $LIB/c/hw_params_amd64 $LIB/hw_params
 chmod +x $LIB/hw_params
 elif [ $cpu = "armv6l" ]
@@ -113,7 +113,7 @@ chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv6l.tar.gz
-ln -s $LIB/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
+ln -s $LIB/lib/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 cp $LIB/c/hw_params_armv6l $LIB/hw_params
 chmod +x $LIB/hw_params
 else

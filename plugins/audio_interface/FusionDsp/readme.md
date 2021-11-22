@@ -134,6 +134,10 @@ nearly everythings ;-)
 
 ### 4. Last changes
 
+November 22nd 2021
+
+- fix armv6l install
+
 November 21th 2021
 
 - fix drc-fir install
