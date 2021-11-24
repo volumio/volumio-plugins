@@ -14,20 +14,19 @@
 		"icon": "fa-volume-up",
 		"plugin_type": "miscellanea",
 		"architectures": [
-            "armhf"
-        ],
+			"armhf"
+		],
 		"os": [
-            "buster"
-        ],
-        "has_alsa_contribution": false,
-        "details": "Supports control of Amplifiers with Serial Interface from Volumio. Currently supports ROTEL A12, A11 and A14. Support for other Amplifier Brands and Models can easily be added by modifying the 'ampCommands.json' file. Tested with a cheap USB-2-serial converter connected to ROTEL A12 on RaspberryPi 3 with HifiBerry Digi HAT connected via SP/DIF. Details here: <u>https://community.volumio.org/t/plugin-serialampcontroller-control-amplifiers-with-serial-interface-from-volumio-e-g-rotel-a12-a11-a14/50928</u>",
-        "changelog": "Intial version, tested with Rotel A12"
- 
+			"buster"
+		],
+		"has_alsa_contribution": false,
+		"details": "Supports control of Amplifiers with Serial Interface from Volumio. Currently supports ROTEL A12, A11 and A14. Support for other Amplifier Brands and Models can easily be added by modifying the 'ampCommands.json' file. Tested with a cheap USB-2-serial converter connected to ROTEL A12 on RaspberryPi 3 with HifiBerry Digi HAT connected via SP/DIF. Details here: <u>https://community.volumio.org/t/plugin-serialampcontroller-control-amplifiers-with-serial-interface-from-volumio-e-g-rotel-a12-a11-a14/50928</u>",
+		"changelog": "Intial version, tested with Rotel A12"
 	},
-    "engines": {
-        "node": ">=8",
-        "volumio": ">=2" 
-    },
+	"engines": {
+		"node": ">=8",
+		"volumio": ">=2"
+	},
 	"dependencies": {
 		"fs-extra": "^5.0.0",
 		"kew": "^0.7.0",
