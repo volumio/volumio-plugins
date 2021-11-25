@@ -151,6 +151,7 @@ serialampcontroller.prototype.getConfigurationFiles = function() {
 
 serialampcontroller.prototype.onStop = function() {
     var self = this;
+    var cards = [];
 
     self.detachListener()
 	.then(_=> {
@@ -168,9 +169,12 @@ serialampcontroller.prototype.onStop = function() {
         'currentvolume':100
     };
     volSettingsData.device = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getConfigParam', 'outputdevice');
-    volSettingsData.name = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '')[volSettingsData.device].name;
-    
-
+    cards = self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'getAlsaCards', '');
+    if ([volSettingsData.device] in cards) {
+        volSettingsData.name = cards[volSettingsData.device].name;    
+    } else {
+        self.logger.error('[SERIALAMPCONTROLLER] onStop: trying to enable a non-existent AlsaCard - did you remove it and not change settings?');
+    }
     self.commandRouter.volumioUpdateVolumeSettings(volSettingsData)    
     if (self.debugLogging) self.logger.info('[SERIALAMPCONTROLLER] onStop: successfully stopped plugin');
 
