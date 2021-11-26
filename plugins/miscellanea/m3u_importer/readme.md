@@ -19,7 +19,7 @@ for more information.
 
 3. Download and install the plugin by running the following commands:
 ```
-wget https://github.com/skiphansen/volumio-plugins/tree/m3u_importer/plugins/miscellanea/m3u_importer/m3u_importer.zip
+wget https://github.com/skiphansen/volumio-plugins/raw/master/plugins/miscellanea/m3u_importer/m3u_importer.zip
 mkdir m3u_importer
 cd m3u_importer
 miniunzip ../m3u_importer.zip
