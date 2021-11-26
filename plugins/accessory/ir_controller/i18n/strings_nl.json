@@ -26,7 +26,6 @@
     "ACTIVE_STATE_DOC":"Met deze optie ingesteld op \"activ-low\" zal de ingang logisch hoog zijn (\"active\") wanneer het signaal van de IR ontvanger laag is. Als deze optie is ingesteld op \"activ-high\" zal de ingang logisch hoog zijn als het signaal hoog is.",
     "ACTIVE_LOW":"active-low",
     "ACTIVE_HIGH":"active-high",
-    "REBOOT_MSG":"Een herstart is vereist om de wijziging te effectueren.",
     "NO_CHANGES":"Geen veranderingen om op te slaan.",
     "SAVE":"Opslaan"
   }
