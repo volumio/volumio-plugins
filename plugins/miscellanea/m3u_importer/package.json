@@ -1,21 +1,21 @@
 {
-        "name": "m3u_importer",
-        "version": "0.0.2",
-        "description": "Import .m3u playlists into Volumio",
-        "main": "index.js",
-        "scripts": {
-                "test": "echo \"Error: no test specified\" && exit 1"
-        },
-        "author": "Skip Hansen",
-        "license": "ISC",
-        "volumio_info": {
-                "prettyName": "Import M3U Playlists",
-                "icon": "fa-download",
-                "plugin_type": "miscellanea"
-        },
-        "dependencies": {
-                "fs-extra": "^0.28.0",
-                "kew": "^0.7.0",
-                "v-conf": "^1.4.0"
-        }
+	"name": "m3u_importer",
+	"version": "0.0.2",
+	"description": "Import .m3u playlists into Volumio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Skip Hansen",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Import M3U Playlists",
+		"icon": "fa-download",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
 }
