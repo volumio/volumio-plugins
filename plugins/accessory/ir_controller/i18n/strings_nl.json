@@ -7,6 +7,7 @@
     "ERR_REMOVE_OVERLAY":"Fout bij het verwijderen van de IR overlay: ",
     "ERR_GPIO_OCCUPIED":"De geselecteerde GPIO-ingang is al in gebruik.",
     "GENERIC_FAILED":"Gefaald: ",
+    "PLUGIN_CONFIGURATION":"IR Controller configuratie",
     "IR_CONFIGURATION":"IR afstandsbediening configuratie",
     "PROFILE_SELECTOR":"Selecteer profiel",
     "PROFILE_SELECTOR_DOC":"Selecteer de juiste configuratie voor uw afstandsbediening uit de beschikbare profielen.<br /><br />Gebruikersspecifieke configuraties voor afstandsbedieningen kunnen worden opgeslagen in de map \"/data/INTERNAL/ir_controller/configurations\". Daartoe moet in de bovengenoemde directory voor elke afstandsbediening een submap worden aangemaakt, waarin de LIRC-bestanden \"lircrc\" en \"lirc.conf\" voor de afstandsbediening worden opgeslagen. De naam van de submap verschijnt in de lijst van selecteerbare afstandsbedieningen. Indien deze naam ook wordt gebruikt voor een van de reeds geleverde configuraties van de afstandsbediening, heeft de configuratie van de gebruiker met dezelfde naam voorrang.<br /><br />OPMERKING: Een update van de plug-in heeft geen invloed op de door de gebruiker gedefinieerde configuraties. Bij het verwijderen van de plug-in wordt echter de directory \"/data/INTERNAL/ir_controller\" verwijderd met alle submappen en bestanden die zich daarin bevinden.",

@@ -71,8 +71,7 @@ rotaryencoder2.prototype.onVolumioStart = function()
 rotaryencoder2.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
-	var activate = [];
-
+	
 	self.debugLogging = (self.config.get('logging')==true);
 	self.handles=[].fill(null,0,maxRotaries);
 	self.buttons=[].fill(null,0,maxRotaries);
@@ -81,11 +80,6 @@ rotaryencoder2.prototype.onStart = function() {
 	self.loadI18nStrings();
 
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onStart: Config loaded: ' + JSON.stringify(self.config));
-	for (let i = 0; i < maxRotaries; i++) {
-		if (self.config.get('enabled'+i)) {
-			activate.push(i);
-		}	
-	}
 
 	self.socket = io.connect('http://localhost:3000');
 	self.socket.emit('getState');
@@ -95,9 +89,9 @@ rotaryencoder2.prototype.onStart = function() {
 		// if (self.debugLogging) self.logger.info('[ROTARYENCODER2] received Websock Status: ' + JSON.stringify(self.status));
 	})
 
-	self.activateRotaries(activate)
+	self.activateRotaries([...Array(maxRotaries).keys()])
 	.then(_=>{
-		return self.activateButtons(activate)
+		return self.activateButtons([...Array(maxRotaries).keys()])
 	})
 	.then(_=> {
 		self.commandRouter.pushToastMessage('success',"Rotary Encoder II - successfully loaded")
@@ -116,18 +110,12 @@ rotaryencoder2.prototype.onStart = function() {
 rotaryencoder2.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
-	var deactivate=[];
 
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onStop: Stopping Plugin.');
-	for (let i = 0; i < maxRotaries; i++) {
-		if (self.config.get('enabled'+i)) {
-			deactivate.push(i);
-		}	
-	}
 
-	self.deactivateRotaries(deactivate)
+	self.deactivateRotaries([...Array(maxRotaries).keys()])
 	.then(_=>{
-		return self.deactivateButtons(deactivate)
+		return self.deactivateButtons([...Array(maxRotaries).keys()])
 	})
 	.then(_=> {
 		self.socket.off('pushState');
@@ -151,11 +139,6 @@ rotaryencoder2.prototype.onRestart = function() {
     var defer=libQ.defer();
 
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] onRestart: free resources');
-	// this.onStop()
-	// .then(result=> defer.resolve(result))
-	// .fail(err => defer.reject(err))
-
-	// return defer.promise;
 };
 
 
@@ -225,21 +208,19 @@ rotaryencoder2.prototype.updateEncoder = function(data){
 	var self = this;
 	var defer = libQ.defer();
 	var dataString = JSON.stringify(data);
-	var overlayToRemove = -1
 
 	var rotaryIndex = parseInt(dataString.match(/rotaryType([0-9])/)[1]);
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] updateEncoder: Rotary'+(rotaryIndex + 1)+' with:' + JSON.stringify(data));
 
 	self.sanityCheckSettings(rotaryIndex, data)
 	.then(_ => {
-		if (self.config.get('enabled'+rotaryIndex)){
-			return self.deactivateRotaries([rotaryIndex])
-			.then(_=>{
-				return self.deactivateButtons([rotaryIndex])
-			})
-		} else {
-			return defer.resolve;
-		}
+		//disable all rotaries before we make changes
+		//this is necessary, since there seems to be an issue in the Kernel, that breaks the 
+		//eventHandlers if a dtoverlay with low index is removed and others with higher index exist
+		return self.deactivateRotaries([...Array(maxRotaries).keys()])
+		.then(_=>{
+			return self.deactivateButtons([...Array(maxRotaries).keys()])
+		})
 	})
 	.then(_ => {
 		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] updateEncoder: Changing Encoder '+(rotaryIndex + 1)+' Settings to new values');
@@ -262,14 +243,13 @@ rotaryencoder2.prototype.updateEncoder = function(data){
 			self.config.set('socketCmdLongPush'+rotaryIndex, (data['socketCmdLongPush'+rotaryIndex]));
 			self.config.set('socketDataLongPush'+rotaryIndex, (data['socketDataLongPush'+rotaryIndex]));
 			self.config.set('enabled'+rotaryIndex, true);	
-			return self.activateRotaries([rotaryIndex])
-			.then(_=>{
-				return self.activateButtons([rotaryIndex])
-			})
 		} else {
 			self.config.set('enabled'+rotaryIndex, false);
-			return defer.resolve;	
 		}
+		return self.activateRotaries([...Array(maxRotaries).keys()])
+		.then(_=>{
+			return self.activateButtons([...Array(maxRotaries).keys()])
+		})
 	})
 	.then(_ => {
 		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] updateEncoder: SUCCESS with Toast: '+self.getI18nString('ROTARYENCODER2.TOAST_SAVE_SUCCESS')+' ' +self.getI18nString('ROTARYENCODER2.TOAST_MSG_SAVE')+ (rotaryIndex + 1));
@@ -393,18 +373,19 @@ rotaryencoder2.prototype.activateRotaries = function (rotaryIndexArray) {
 	if (Array.isArray(rotaryIndexArray)){
 		if (rotaryIndexArray.length > 0) {
 			rotaryIndex = rotaryIndexArray[rotaryIndexArray.length - 1];
-			self.activateRotaries(rotaryIndexArray.slice(0,rotaryIndexArray.length - 1))
+			return self.activateRotaries(rotaryIndexArray.slice(0,rotaryIndexArray.length - 1))
 			.then(_=> {
-				return self.addOverlay(self.config.get('pinA'+rotaryIndex),self.config.get('pinB'+rotaryIndex),self.config.get('rotaryType'+rotaryIndex))
-				.then(_=>{
-					return self.attachListener(self.config.get('pinA'+rotaryIndex));
-				})
-				.then(handle => {
-					self.addEventHandle(handle, rotaryIndex)
-				})		
-			})
-			.then(_=>{
-				defer.resolve();
+				if (self.config.get('enabled'+rotaryIndex)) {
+					return self.addOverlay(self.config.get('pinA'+rotaryIndex),self.config.get('pinB'+rotaryIndex),self.config.get('rotaryType'+rotaryIndex))
+					.then(_=>{
+						return self.attachListener(self.config.get('pinA'+rotaryIndex));
+					})
+					.then(handle => {
+						return self.addEventHandle(handle, rotaryIndex)
+					})								
+				} else {
+					return defer.resolve();
+				}
 			})
 		} else {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateRotaries: end of recursion.');
@@ -414,7 +395,6 @@ rotaryencoder2.prototype.activateRotaries = function (rotaryIndexArray) {
 		self.logger.error('[ROTARYENCODER2] activateRotaries: rotaryIndexArray must be an Array');
 		defer.reject('rotaryIndexArray must be an Array of integers')
 	} 
-
 	return defer.promise;
 }
 
@@ -430,19 +410,25 @@ rotaryencoder2.prototype.deactivateRotaries = function (rotaryIndexArray) {
 		if (rotaryIndexArray.length > 0) {
 			rotaryIndex = rotaryIndexArray[0];
 			self.deactivateRotaries(rotaryIndexArray.slice(1,rotaryIndexArray.length))
-			.then(_=> {return self.detachListener(self.handles[rotaryIndex])})
-			.then(_=>{ return self.checkOverlayExists(rotaryIndex)})
-			.then(idx=>{if (idx > -1) return self.removeOverlay(idx)})
-			.then(_=>{
-				if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateRotaries: deactivated rotary' + (rotaryIndex + 1));
-				defer.resolve();
+			.then(_=> {
+				if (self.config.get('enabled'+rotaryIndex)) {
+					return self.detachListener(self.handles[rotaryIndex])
+					.then(_=>{ return self.checkOverlayExists(rotaryIndex)})
+					.then(idx=>{if (idx > -1) return self.removeOverlay(idx)})
+					.then(_=>{
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateRotaries: deactivated rotary' + (rotaryIndex + 1));
+						return defer.resolve();
+					})												
+				} else {
+					return defer.resolve()
+				}
 			})
 		} else {
 			if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateRotaries: end of recursion.');
 			defer.resolve();
 		}
 	} else {
-		self.logger.error('[ROTARYENCODER2] deactivateRotaries: rotaryIndexArray must be an Array');
+		self.logger.error('[ROTARYENCODER2] deactivateRotaries: rotaryIndexArray must be an Array: ' + rotaryIndexArray);
 		defer.reject('rotaryIndexArray must be an Array of integers')
 	} 
 	return defer.promise;
@@ -460,46 +446,50 @@ rotaryencoder2.prototype.activateButtons = function (rotaryIndexArray) {
 			rotaryIndex = rotaryIndexArray[rotaryIndexArray.length - 1];
 			self.activateButtons(rotaryIndexArray.slice(0,rotaryIndexArray.length - 1))
 			.then(_=> {
-				var gpio = self.config.get('pinPush'+rotaryIndex);
-				//configure pushButton if not disabled
-				if (Number.isInteger(gpio) && (gpio > 0)) {
-					gpio = parseInt(gpio);
-					var debounce = self.config.get('pinPushDebounce'+rotaryIndex);
-					if (!Number.isInteger(debounce)){
-						debounce = 0
+				if (self.config.get('enabled'+rotaryIndex)) {
+					var gpio = self.config.get('pinPush'+rotaryIndex);
+					//configure pushButton if not disabled
+					if (Number.isInteger(gpio) && (gpio > 0)) {
+						gpio = parseInt(gpio);
+						var debounce = self.config.get('pinPushDebounce'+rotaryIndex);
+						if (!Number.isInteger(debounce)){
+							debounce = 0
+						} else {
+							debounce = parseInt(debounce);
+						};
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: Now assign push button: ' + (rotaryIndex + 1));
+						self.buttons[rotaryIndex] = new Gpio(gpio, 'in', 'both', {debounceTimeout: debounce});
+						self.buttons[rotaryIndex].watch((err,value) => {
+							if (err) {
+								return self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
+							}
+							switch (value==self.config.get('pushState'+rotaryIndex)) {
+								case true: //(falling edge & active_high) or (rising edge and active low) = released
+									var pushTime = Date.now() - self.pushDownTime[rotaryIndex]
+									if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' released after '+pushTime+'ms.');
+									if (pushTime > 1500) {
+										self.emitPushCommand(true, rotaryIndex)
+									} else {
+										self.emitPushCommand(false, rotaryIndex)
+									}
+									break;
+							
+								case false: //(falling edge & active low) or (rising edge and active high) = pressed
+									if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
+									self.pushDownTime[rotaryIndex] = Date.now();						
+									break;
+							
+								default:
+									break;
+							}
+						})
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' now resolving.');
+						return defer.resolve();	
 					} else {
-						debounce = parseInt(debounce);
-					};
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] activateButtons: Now assign push button: ' + (rotaryIndex + 1));
-					self.buttons[rotaryIndex] = new Gpio(gpio, 'in', 'both', {debounceTimeout: debounce});
-					self.buttons[rotaryIndex].watch((err,value) => {
-						if (err) {
-							return self.logger.error('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' caused an error.')
-						}
-						switch (value==self.config.get('pushState'+rotaryIndex)) {
-							case true: //(falling edge & active_high) or (rising edge and active low) = released
-								var pushTime = Date.now() - self.pushDownTime[rotaryIndex]
-								if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' released after '+pushTime+'ms.');
-								if (pushTime > 1500) {
-									self.emitPushCommand(true, rotaryIndex)
-								} else {
-									self.emitPushCommand(false, rotaryIndex)
-								}
-								break;
-						
-							case false: //(falling edge & active low) or (rising edge and active high) = pressed
-								if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' pressed.');
-								self.pushDownTime[rotaryIndex] = Date.now();						
-								break;
-						
-							default:
-								break;
-						}
-					})
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' now resolving.');
-					return defer.resolve();	
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' is disabled (no Gpio).');
+						return defer.resolve();	
+					}						
 				} else {
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] Push Button '+(rotaryIndex+1)+' is disabled (no Gpio).');
 					return defer.resolve();	
 				}
 			})
@@ -528,14 +518,18 @@ rotaryencoder2.prototype.deactivateButtons = function (rotaryIndexArray) {
 			rotaryIndex = rotaryIndexArray[0];
 			self.deactivateButtons(rotaryIndexArray.slice(1,rotaryIndexArray.length))
 			.then(_=>{
-				if (self.config.get('pinPush1'+rotaryIndex)>0) {
-					self.buttons[rotaryIndex].unwatchAll();
-					self.buttons[rotaryIndex].unexport();
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: deactivated button ' + (rotaryIndex + 1));
-					defer.resolve();	
+				if (self.config.get('enabled'+rotaryIndex)) {
+					if (self.config.get('pinPush1'+rotaryIndex)>0) {
+						self.buttons[rotaryIndex].unwatchAll();
+						self.buttons[rotaryIndex].unexport();
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: deactivated button ' + (rotaryIndex + 1));
+						defer.resolve();	
+					} else {
+						if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: button ' + (rotaryIndex + 1) + ' is disabled.');
+						defer.resolve();	
+					}						
 				} else {
-					if (self.debugLogging) self.logger.info('[ROTARYENCODER2] deactivateButtons: button ' + (rotaryIndex + 1) + ' is disabled.');
-					defer.resolve();	
+					defer.resolve();
 				}
 
 			})

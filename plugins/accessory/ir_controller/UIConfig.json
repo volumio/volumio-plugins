@@ -1,6 +1,6 @@
 {
   "page": {
-          "label": "TRANSLATE.IRCONTROLLER.IR_CONFIGURATION"
+          "label": "TRANSLATE.IRCONTROLLER.PLUGIN_CONFIGURATION"
           },
   "sections": [
                 {
@@ -49,7 +49,7 @@
                 "content": [
                              {
                              "id": "header40_gpio_in_pin",
-                             "element" : "select",
+                             "element": "select",
                              "doc": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN_DOC",
                              "label": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN",
                              "value": {},
@@ -170,7 +170,7 @@
                              },
                              {
                              "id": "header34_gpio_in_pin",
-                             "element" : "select",
+                             "element": "select",
                              "doc": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN_DOC",
                              "label": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN",
                              "value": {},
@@ -263,7 +263,7 @@
                              },
                              {
                              "id": "header26_gpio_in_pin",
-                             "element" : "select",
+                             "element": "select",
                              "doc": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN_DOC",
                              "label": "TRANSLATE.IRCONTROLLER.GPIO_IN_PIN",
                              "value": {},
@@ -340,7 +340,7 @@
                              },
                              {
                              "id": "gpio_pull",
-                             "element" : "select",
+                             "element": "select",
                              "doc": "TRANSLATE.IRCONTROLLER.GPIO_PULL_DOC",
                              "label": "TRANSLATE.IRCONTROLLER.GPIO_PULL",
                              "value": {"value": "up", "label": "TRANSLATE.IRCONTROLLER.GPIO_PULL_UP"},
@@ -368,7 +368,7 @@
                               },
                               {
                               "id": "activeState",
-                              "element" : "select",
+                              "element": "select",
                               "doc": "TRANSLATE.IRCONTROLLER.ACTIVE_STATE_DOC",
                               "label": "TRANSLATE.IRCONTROLLER.ACTIVE_STATE",
                               "visibleIf": {"field": "forceActiveState", "value": true},

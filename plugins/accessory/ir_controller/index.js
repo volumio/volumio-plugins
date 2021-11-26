@@ -38,11 +38,14 @@ IrController.prototype.onStart = function () {
   const defer = libQ.defer();
 
   self.commandRouter.loadI18nStrings();
-  device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
+  self.commandRouter.executeOnPlugin('system_controller', 'system', 'getSystemVersion', '')
+    .then(function (infos) {
+      device = infos.hardware;
+    });
   self.prepareLirc()
     .then(function () {
       self.saveIROptions({ ir_profile: { value: self.config.get('ir_profile', 'JustBoom IR Remote') }, notify: false });
-      if (device === 'Raspberry PI') {
+      if (device === 'pi') {
         if (!fs.existsSync('/sys/firmware/devicetree/base/lirc_rpi') && fs.readdirSync('/sys/firmware/devicetree/base').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
           if (overlay === 'gpio-ir') {
             self.logger.info(id + 'HAT did not load /proc/device-tree/ir_receiver!');
@@ -115,7 +118,7 @@ IrController.prototype.onStop = function () {
 
   self.systemctl('stop ' + lircService + '.service')
     .fin(function () {
-      if (device === 'Raspberry PI') {
+      if (device === 'pi') {
         let gpioPin = ' gpio_pin=' + self.config.get('gpio_in_pin');
         let activeState = (self.config.get('forceActiveState')) ? ' invert=' + self.config.get('activeState') : '';
         if (overlay === 'lirc-rpi') {
@@ -349,10 +352,15 @@ IrController.prototype.prepareLirc = function () {
             data = data.replace(new RegExp('^#? *LIRCD_ARGS=".*"$', 'm'), 'LIRCD_ARGS="--uinput"')
               .replace(new RegExp('^#? *DRIVER=".*"$', 'm'), 'DRIVER="default"')
               .replace(new RegExp('^#? *DEVICE=".*"$', 'm'), 'DEVICE="/dev/lirc0"');
-            if (device === 'Odroid-C') {
-              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES="meson-ir"');
-            } else {
-              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES=' + ((overlay === 'gpio-ir') ? '"gpio_ir_recv"' : '"lirc_rpi"'));
+            switch (device) {
+              case 'odroidc1':
+              case 'odroidc2':
+              case 'odroidc4':
+              case 'odroidn2':
+                data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES="meson-ir"');
+                break;
+              case 'pi':
+                data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES=' + ((overlay === 'gpio-ir') ? '"gpio_ir_recv"' : '"lirc_rpi"'));
             }
           } else {
             data = data.replace(new RegExp('^#? *driver *=.*$', 'm'), 'driver          = default')
