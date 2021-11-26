@@ -1,0 +1,214 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+      {
+      "id": "playlist",
+      "element": "section",
+      "label": "PIR settings",
+      "icon": "fa-camera",
+      "onSave": { "type": "controller", "endpoint": "system_controller/pir_motion_detection_autoplay", "method": "saveConfig" },
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "gpio_pir",
+          "playlist_mode",
+          "playlist",
+          "random",
+          "duration",
+          "enable_switch",
+          "gpio_switch",
+          "enable_led",
+          "gpio_led",
+          "enable_timeframe",
+          "timeframe_start_hour",
+          "timeframe_end_hour"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpio_pir",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.GPIO_PIR_LABEL",
+          "doc": "TRANSLATE.GPIO_PIR_DOC",
+          "min": 1,
+          "max": 27,
+          "value": 23
+        },
+        {
+          "id": "pirtest",
+          "element": "button",
+          "label": "TRANSLATE.PIR_TEST_LABEL",
+          "doc": "TRANSLATE.PIR_TEST_DOC",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "data":{
+              "endpoint": "system_controller/pir_motion_detection_autoplay",
+              "method": "pirTest",
+              "data": ""
+            }
+          }
+        },
+        {
+          "id":"playlist_mode",
+          "element": "switch",
+          "visibleIf": {"field": "enable_switch", "value": true},
+          "label": "TRANSLATE.PLAYLIST_MODE_LABEL",
+          "doc": "TRANSLATE.PLAYLIST_MODE_DOC",
+          "value": false
+        },
+        {
+          "id": "playlist",
+          "type": "text",
+          "element": "input",
+          "visibleIf": {"field": "playlist_mode", "value": true},
+          "label": "TRANSLATE.PLAYLIST_LABEL",
+          "doc": "TRANSLATE.PLAYLIST_DOC",
+          "value": ""
+        },
+        {
+          "id":"random",
+          "element": "switch",
+          "visibleIf": {"field": "playlist_mode", "value": true},
+          "label": "TRANSLATE.RANDOM_LABEL",
+          "doc": "TRANSLATE.RANDOM_DOC",
+          "value": false
+        },
+        {
+          "id": "duration",
+          "element": "equalizer",
+          "visibleIf": {"field": "playlist_mode", "value": true},
+          "label": "TRANSLATE.DURATION_LABEL",
+          "description": "TRANSLATE.DURATION_DOC",
+          "config": {
+            "orientation": "horizontal",
+            "bars": [
+              {
+                "min": 10,
+                "max": 180,
+                "step": 10,
+                "value": 20,
+                "tooltip": "always"
+              }
+            ]
+          }
+        },
+        {
+          "id":"enable_switch",
+          "element": "switch",
+          "label": "TRANSLATE.ENABLE_SWITCH_LABEL",
+          "doc": "TRANSLATE.ENABLE_SWITCH_DOC",
+          "value": false
+        },
+        {
+          "id": "gpio_switch",
+          "type": "number",
+          "element": "input",
+          "visibleIf": {"field": "enable_switch", "value": true},
+          "label": "TRANSLATE.GPIO_SWITCH_LABEL",
+          "doc": "TRANSLATE.GPIO_SWITCH_DOC",
+          "value": ""
+        },
+        {
+          "id":"enable_led",
+          "element": "switch",
+          "label": "TRANSLATE.ENABLE_LED_LABEL",
+          "doc": "TRANSLATE.ENABLE_LED_DOC",
+          "value": false
+        },
+        {
+          "id": "gpio_led",
+          "type": "number",
+          "element": "input",
+          "visibleIf": {"field": "enable_led", "value": true},
+          "label": "TRANSLATE.GPIO_LED_LABEL",
+          "doc": "TRANSLATE.GPIO_LED_DOC",
+          "value": ""
+        },
+        {
+          "id":"enable_timeframe",
+          "element": "switch",
+          "label": "TRANSLATE.ENABLE_TIMEFRAME_LABEL",
+          "doc": "TRANSLATE.ENABLE_TIMEFRAME_DOC",
+          "value": false
+        },
+        {
+        "id": "timeframe_start_hour",
+        "element": "select",
+        "type": "number",
+        "visibleIf": {"field": "enable_timeframe", "value": true},
+        "label": "TRANSLATE.TIMEFRAME_START_HOUR_LABEL",
+        "doc": "TRANSLATE.TIMEFRAME_START_HOUR_DOC",
+        "value": {
+          "value": 9,
+          "label": "TRANSLATE.TIMEFRAME_HOUR_9"
+        },
+        "options": [
+          { "value": 1, "label": "TRANSLATE.TIMEFRAME_HOUR_1" },
+          { "value": 2, "label": "TRANSLATE.TIMEFRAME_HOUR_2" },
+          { "value": 3, "label": "TRANSLATE.TIMEFRAME_HOUR_3" },
+          { "value": 4, "label": "TRANSLATE.TIMEFRAME_HOUR_4" },
+          { "value": 5, "label": "TRANSLATE.TIMEFRAME_HOUR_5" },
+          { "value": 6, "label": "TRANSLATE.TIMEFRAME_HOUR_6" },
+          { "value": 7, "label": "TRANSLATE.TIMEFRAME_HOUR_7" },
+          { "value": 8, "label": "TRANSLATE.TIMEFRAME_HOUR_8" },
+          { "value": 9, "label": "TRANSLATE.TIMEFRAME_HOUR_9" },
+          { "value": 10, "label": "TRANSLATE.TIMEFRAME_HOUR_10" },
+          { "value": 11, "label": "TRANSLATE.TIMEFRAME_HOUR_11" },
+          { "value": 12, "label": "TRANSLATE.TIMEFRAME_HOUR_12" },
+          { "value": 13, "label": "TRANSLATE.TIMEFRAME_HOUR_13" },
+          { "value": 14, "label": "TRANSLATE.TIMEFRAME_HOUR_14" },
+          { "value": 15, "label": "TRANSLATE.TIMEFRAME_HOUR_15" },
+          { "value": 16, "label": "TRANSLATE.TIMEFRAME_HOUR_16" },
+          { "value": 17, "label": "TRANSLATE.TIMEFRAME_HOUR_17" },
+          { "value": 18, "label": "TRANSLATE.TIMEFRAME_HOUR_18" },
+          { "value": 19, "label": "TRANSLATE.TIMEFRAME_HOUR_19" },
+          { "value": 20, "label": "TRANSLATE.TIMEFRAME_HOUR_20" },
+          { "value": 21, "label": "TRANSLATE.TIMEFRAME_HOUR_21" },
+          { "value": 22, "label": "TRANSLATE.TIMEFRAME_HOUR_22" },
+          { "value": 23, "label": "TRANSLATE.TIMEFRAME_HOUR_23" },
+          { "value": 0, "label": "TRANSLATE.TIMEFRAME_HOUR_0" }
+        ]},
+        {
+        "id": "timeframe_end_hour",
+        "element": "select",
+        "visibleIf": {"field": "enable_timeframe", "value": true},
+        "label": "TRANSLATE.TIMEFRAME_END_HOUR_LABEL",
+        "doc": "TRANSLATE.TIMEFRAME_END_HOUR_DOC",
+        "value": {
+          "value": 23,
+          "label": "TRANSLATE.TIMEFRAME_HOUR_23"
+        },
+        "options": [
+          { "value": 1, "label": "TRANSLATE.TIMEFRAME_HOUR_1" },
+          { "value": 2, "label": "TRANSLATE.TIMEFRAME_HOUR_2" },
+          { "value": 3, "label": "TRANSLATE.TIMEFRAME_HOUR_3" },
+          { "value": 4, "label": "TRANSLATE.TIMEFRAME_HOUR_4" },
+          { "value": 5, "label": "TRANSLATE.TIMEFRAME_HOUR_5" },
+          { "value": 6, "label": "TRANSLATE.TIMEFRAME_HOUR_6" },
+          { "value": 7, "label": "TRANSLATE.TIMEFRAME_HOUR_7" },
+          { "value": 8, "label": "TRANSLATE.TIMEFRAME_HOUR_8" },
+          { "value": 9, "label": "TRANSLATE.TIMEFRAME_HOUR_9" },
+          { "value": 10, "label": "TRANSLATE.TIMEFRAME_HOUR_10" },
+          { "value": 11, "label": "TRANSLATE.TIMEFRAME_HOUR_11" },
+          { "value": 12, "label": "TRANSLATE.TIMEFRAME_HOUR_12" },
+          { "value": 13, "label": "TRANSLATE.TIMEFRAME_HOUR_13" },
+          { "value": 14, "label": "TRANSLATE.TIMEFRAME_HOUR_14" },
+          { "value": 15, "label": "TRANSLATE.TIMEFRAME_HOUR_15" },
+          { "value": 16, "label": "TRANSLATE.TIMEFRAME_HOUR_16" },
+          { "value": 17, "label": "TRANSLATE.TIMEFRAME_HOUR_17" },
+          { "value": 18, "label": "TRANSLATE.TIMEFRAME_HOUR_18" },
+          { "value": 19, "label": "TRANSLATE.TIMEFRAME_HOUR_19" },
+          { "value": 20, "label": "TRANSLATE.TIMEFRAME_HOUR_20" },
+          { "value": 21, "label": "TRANSLATE.TIMEFRAME_HOUR_21" },
+          { "value": 22, "label": "TRANSLATE.TIMEFRAME_HOUR_22" },
+          { "value": 23, "label": "TRANSLATE.TIMEFRAME_HOUR_23" },
+          { "value": 0, "label": "TRANSLATE.TIMEFRAME_HOUR_0" }
+        ]}
+      ]
+    }
+  ]
+}
