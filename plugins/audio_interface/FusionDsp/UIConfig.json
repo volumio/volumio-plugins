@@ -29,24 +29,7 @@
             "value": "EQ15",
             "label": "15 bands graphic EQ"
           },
-          "options": [
-            {
-              "value": "EQ15",
-              "label": "15 bands graphic EQ"
-            },
-            {
-              "value": "2XEQ15",
-              "label": "2x15 bands graphic EQ"
-            },
-            {
-              "value": "PEQ",
-              "label": "Parametric EQ"
-            },
-            {
-              "value": "convfir",
-              "label": "FIR filters"
-            }
-          ]
+          "options": []
         }
       ]
     },
@@ -244,11 +227,10 @@
           "element": "select",
           "doc": "TRANSLATE.CHOOSE_EQ_DOC",
           "label": "TRANSLATE.CHOOSE_EQ",
-         
-        "value":{
-          "value": "",
-          "label":""
-        },
+          "value": {
+            "value": "",
+            "label": ""
+          },
           "options": []
         },
         {

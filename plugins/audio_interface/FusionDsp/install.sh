@@ -116,6 +116,7 @@ rm /tmp/camilladsp-linux-armv6l.tar.gz
 ln -s $LIB/lib/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 cp $LIB/c/hw_params_armv6l $LIB/hw_params
 chmod +x $LIB/hw_params
+touch /data/plugins/audio_interface/fusiondsp/cpuarmv6l
 else
     echo "Sorry, cpu is $cpu and your device is not yet supported !"
 	echo "exit now..."

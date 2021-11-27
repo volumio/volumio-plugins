@@ -1,4 +1,4 @@
-November 21th 2021
+November 27th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,11 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+November 27th 2021
+
+- disable convolution for cpu armv6l
+- translation
 
 November 22nd 2021
 

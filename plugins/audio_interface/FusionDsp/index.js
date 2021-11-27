@@ -208,11 +208,86 @@ FusionDsp.prototype.getUIConfig = function () {
       value = self.config.get('eqpresetsaved');
 
       //--------section 0-------------------
-
+      //let dspoptions
       let selectedsp = self.config.get('selectedsp');
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
-      self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', self.getLabelForSelect(self.configManager.getValue(uiconf, 'sections[0].content[0].options'), selectedsp));
+      switch (selectedsp) {
+        case ("EQ15"):
+          var dsplabel = self.commandRouter.getI18nString('EQ15_LABEL')
+          break;
+        case ("2XEQ15"):
+          var dsplabel = self.commandRouter.getI18nString('2XEQ15_LABEL')
+          break;
+        case ("PEQ"):
+          var dsplabel = self.commandRouter.getI18nString('PEQ_LABEL')
+          break;
+        case ("convfir"):
+          var dsplabel = self.commandRouter.getI18nString('CONV_LABEL')
+          break;
+        default: "EQ15"
+      }
+// No convolution if cpu is armv6l
+      fs.access("/data/plugins/audio_interface/fusiondsp/cpuarmv6l", fs.F_OK, (err) => {
+        if (err) {
+          self.logger.error('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<file does not exist!');
+          var dspoptions = [{
+            "value": "EQ15",
+            "label": self.commandRouter.getI18nString('EQ15_LABEL')
+          },
+          {
+            "value": "2XEQ15",
+            "label": self.commandRouter.getI18nString('2XEQ15_LABEL')
+          },
+          {
+            "value": "PEQ",
+            "label": self.commandRouter.getI18nString('PEQ_LABEL')
+          },
+          {
+            "value": "convfir",
+            "label": self.commandRouter.getI18nString('CONV_LABEL')
+          }]
+          self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
+          self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', dsplabel);
 
+          for (let c in dspoptions) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+              value: dspoptions[c].value,
+              label: dspoptions[c].label
+            }
+            )
+          };
+        } else {
+          self.logger.info('>>>>>>>>>>>>> armv6l')
+          self.logger.info('Convolution disabled for cpu armv6l !');
+          var dspoptions = [{
+            "value": "EQ15",
+            "label": self.commandRouter.getI18nString('EQ15_LABEL')
+          },
+          {
+            "value": "2XEQ15",
+            "label": self.commandRouter.getI18nString('2XEQ15_LABEL')
+          },
+          {
+            "value": "PEQ",
+            "label": self.commandRouter.getI18nString('PEQ_LABEL')
+          }]
+          self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
+          self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', dsplabel);
+
+          for (let c in dspoptions) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+              value: dspoptions[c].value,
+              label: dspoptions[c].label
+            }
+            )
+          };
+          //file exists
+        }
+
+        //  if (fs.exists("/data/plugins/audio_interface/fusiondsp/cpuarmv6l")) {
+
+
+
+      })
       //-------------section 1----------
       if (selectedsp == 'nothing') {
         //just to debug....
@@ -837,7 +912,7 @@ FusionDsp.prototype.getUIConfig = function () {
       //------------experimental
       /*
      var devicename = self.commandRouter.sharedVars.get('system.name');
- 
+     
       {
         "id": "camillagui",
         "element": "button",
@@ -1548,7 +1623,7 @@ FusionDsp.prototype.testclipping = function () {
   let defer = libQ.defer();
 
   //socket.emit('mute', '');
-  self.commandRouter.closeModals();
+  //self.commandRouter.closeModals();
   let messageDisplayed;
   socket.emit('stop');
   let arrreduced;
@@ -2812,34 +2887,34 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
 
-      // setTimeout(function () {
+        setTimeout(function () {
 
-      //   //  self.refreshUI();
-      //   self.logger.info('For detection attenuation set to ' + self.config.get('attenuationl'))
-      //   var responseData = {
-      //     title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
-      //     message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
-      //     size: 'lg',
-      //     buttons: [
-      //       {
-      //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
-      //         class: 'btn btn-cancel',
-      //         emit: 'closeModals',
-      //         payload: ''
-      //       },
-      //       {
-      //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
-      //         class: 'btn btn-info',
-      //         emit: 'callMethod',
-      //         payload: { 'endpoint': 'audio_interface/fusiondsp', 'method': 'testclipping', 'data': '' },
-      //         //     emit: 'closeModals'
+          //  self.refreshUI();
+          self.logger.info('For detection attenuation set to ' + self.config.get('attenuationl'))
+          var responseData = {
+            title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
+            message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
+            size: 'lg',
+            buttons: [
+              {
+                name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
+                class: 'btn btn-cancel',
+                emit: 'closeModals',
+                payload: ''
+              },
+              {
+                name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
+                class: 'btn btn-info',
+                emit: 'callMethod',
+                payload: { 'endpoint': 'audio_interface/fusiondsp', 'method': 'testclipping', 'data': '' },
+                //     emit: 'closeModals'
 
-      //       }
-      //     ]
-      //   }
-      //   self.commandRouter.broadcastMessage("openModal", responseData);
-      // }, 1000);
-self.testclipping()
+              }
+            ]
+          }
+          self.commandRouter.broadcastMessage("openModal", responseData);
+        }, 1000);
+
       }
       setTimeout(function () {
 
@@ -3196,7 +3271,7 @@ FusionDsp.prototype.convertimportedeq = function () {
           if (correctedfreq >= 22050) {
             correctedfreq = 22049
           }
-                    // console.log(param)
+          // console.log(param)
           var eqs = (correctedfreq + ',' + param[2] + ',' + param[3])
           var typec = 'type' + nbreq;
           var scopec = 'scope' + nbreq;
