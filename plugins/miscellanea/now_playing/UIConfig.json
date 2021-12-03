@@ -1,0 +1,1049 @@
+{
+  "page": {
+    "label": "TRANSLATE.NOW_PLAYING_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_daemon",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_DAEMON",
+      "icon": "fa-server",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/now_playing",
+        "method": "configSaveDaemon"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.NOW_PLAYING_SAVE",
+        "data": [
+          "port"
+        ]
+      },
+      "content": [
+        {
+          "id": "port",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_PORT",
+          "doc": "TRANSLATE.NOW_PLAYING_PORT_DESC",
+          "value": "4004"
+        },
+        {
+          "id": "url",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_URL",
+          "doc": "TRANSLATE.NOW_PLAYING_URL_DESC"
+        },
+        {
+          "id": "previewUrl",
+          "type": "text",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_PREVIEW_URL",
+          "doc": "TRANSLATE.NOW_PLAYING_PREVIEW_URL_DESC"
+        },
+        {
+          "id": "openPreview",
+          "element": "button",
+          "label": "TRANSLATE.NOW_PLAYING_OPEN_PREVIEW",
+          "onClick": {
+              "type": "openUrl"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_text_styles",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_TEXT_STYLES",
+      "icon": "fa-css3",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/now_playing",
+        "method": "configSaveTextStyles"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.NOW_PLAYING_SAVE",
+        "data": [
+          "fontSizes",
+          "titleFontSize",
+          "artistFontSize",
+          "albumFontSize",
+          "mediaInfoFontSize",
+          "fontColors",
+          "titleFontColor",
+          "artistFontColor",
+          "albumFontColor",
+          "mediaInfoFontColor",
+          "textMargins",
+          "titleMargin",
+          "artistMargin",
+          "albumMargin",
+          "mediaInfoMargin",
+          "textAlignmentH",
+          "textAlignmentV",
+          "maxLines",
+          "maxTitleLines",
+          "maxArtistLines",
+          "maxAlbumLines"
+        ]
+      },
+      "content": [
+        {
+          "id": "fontSizes",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_FONT_SIZES",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "titleFontSize",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_FONT_SIZE",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "fontSizes",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "artistFontSize",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_FONT_SIZE",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "fontSizes",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumFontSize",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_FONT_SIZE",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "fontSizes",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "mediaInfoFontSize",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_FONT_SIZE",
+          "label": "TRANSLATE.NOW_PLAYING_MEDIA_INFO",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "fontSizes",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "fontColors",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_FONT_COLORS",
+          "value": {
+            "value": "default", 
+            "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+          },
+          "options": [
+            {
+              "value": "default",
+              "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "titleFontColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "fontColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "artistFontColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "fontColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumFontColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "fontColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "mediaInfoFontColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_MEDIA_INFO",
+          "value": "",
+          "visibleIf": {
+            "field": "fontColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "textMargins",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_MARGINS",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "titleMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "artistMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "mediaInfoMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_MEDIA_INFO",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "textMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "textAlignmentH",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALIGNMENT_H",
+          "value": {
+            "value": "left", 
+            "label": "TRANSLATE.NOW_PLAYING_POSITION_LEFT"
+          },
+          "options": [
+            {
+              "value": "left", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_LEFT"
+            },
+            {
+              "value": "center", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+            },
+            {
+              "value": "right", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_RIGHT"
+            }
+          ]
+        },
+        {
+          "id": "textAlignmentV",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALIGNMENT_V",
+          "value": {
+            "value": "flex-start", 
+            "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+          },
+          "options": [
+            {
+              "value": "flex-start", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+            },
+            {
+              "value": "center", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+            },
+            {
+              "value": "flex-end", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_BOTTOM"
+            },
+            {
+              "value": "space-between", 
+              "label": "TRANSLATE.NOW_PLAYING_SPREAD"
+            }
+          ]
+        },
+        {
+          "id": "maxLines",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_MAX_LINES",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_MAX_LINES",
+          "value": {
+            "value": "auto",
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "maxTitleLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_TITLE",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "maxArtistLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_ARTIST",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "maxAlbumLines",
+          "type": "number",
+          "element": "input",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM",
+          "value": "",
+          "visibleIf": {
+            "field": "maxLines",
+            "value": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_widget_styles",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_WIDGET_STYLES",
+      "icon": "fa-css3",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/now_playing",
+        "method": "configSaveWidgetStyles"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.NOW_PLAYING_SAVE",
+        "data": [
+          "widgetColors",
+          "widgetPrimaryColor",
+          "widgetHighlightColor",
+          "widgetVisibility",
+          "playbackButtonsVisibility",
+          "seekbarVisibility",
+          "playbackButtonSizeType",
+          "playbackButtonSize",
+          "widgetMargins",
+          "playbackButtonsMargin",
+          "seekbarMargin"
+        ]
+      },
+      "content": [
+        {
+          "id": "widgetColors",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_WIDGET_COLORS",
+          "value": {
+            "value": "default", 
+            "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+          },
+          "options": [
+            {
+              "value": "default",
+              "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "widgetPrimaryColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_PRIMARY",
+          "value": "",
+          "visibleIf": {
+            "field": "widgetColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "widgetHighlightColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_HIGHLIGHT",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "widgetColors",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "widgetVisibility",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_WIDGET_VISIBILITY",
+          "value": {
+            "value": "default", 
+            "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+          },
+          "options": [
+            {
+              "value": "default",
+              "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "playbackButtonsVisibility",
+          "element": "switch",
+          "doc": "",
+          "label": "TRANSLATE.NOW_PLAYING_PLAYBACK_BUTTONS",
+          "value": true,
+          "visibleIf": {
+            "field": "widgetVisibility",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "seekbarVisibility",
+          "element": "switch",
+          "doc": "",
+          "label": "TRANSLATE.NOW_PLAYING_SEEK_BAR",
+          "value": true,
+          "visibleIf": {
+            "field": "widgetVisibility",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "playbackButtonSizeType",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_PLAYBACK_BUTTON_SIZE",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "playbackButtonSize",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_SIZE",
+          "label": "TRANSLATE.NOW_PLAYING_SIZE",
+          "value": "",
+          "visibleIf": {
+            "field": "playbackButtonSizeType",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "widgetMargins",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_MARGINS",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "playbackButtonsMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_PLAYBACK_BUTTONS",
+          "value": "",
+          "visibleIf": {
+            "field": "widgetMargins",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "seekbarMargin",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_MARGIN",
+          "label": "TRANSLATE.NOW_PLAYING_SEEK_BAR",
+          "value": "",
+          "visibleIf": {
+            "field": "widgetMargins",
+            "value": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_album_art_style",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART_STYLES",
+      "icon": "fa-css3",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/now_playing",
+        "method": "configSaveAlbumartStyles"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.NOW_PLAYING_SAVE",
+        "data": [
+          "albumartVisibility",
+          "albumartSize",
+          "albumartWidth",
+          "albumartHeight",
+          "albumartFit",
+          "albumartBorderRadius"
+        ]
+      },
+      "content": [
+        {
+          "id": "albumartVisibility",
+          "element": "switch",
+          "doc": "",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART_VISIBILITY",
+          "value": true
+        },
+        {
+          "id": "albumartSize",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART_SIZE",
+          "value": {
+            "value": "auto", 
+            "label": "TRANSLATE.NOW_PLAYING_AUTO"
+          },
+          "options": [
+            {
+              "value": "auto",
+              "label": "TRANSLATE.NOW_PLAYING_AUTO"
+            },
+            {
+              "value": "custom",
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            }
+          ]
+        },
+        {
+          "id": "albumartWidth",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_WIDTH",
+          "label": "TRANSLATE.NOW_PLAYING_WIDTH",
+          "value": "",
+          "visibleIf": {
+            "field": "albumartSize",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumartHeight",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_HEIGHT",
+          "label": "TRANSLATE.NOW_PLAYING_HEIGHT",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "albumartSize",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "albumartFit",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART_FIT",
+          "value": {
+            "value": "cover", 
+            "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+          },
+          "options": [
+            {
+              "value": "cover", 
+              "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+            },
+            {
+              "value": "contain",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_CONTAIN"
+            },
+            {
+              "value": "fill",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_FILL"
+            }
+          ]
+        },
+        {
+          "id": "albumartBorderRadius",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BORDER_RADIUS",
+          "label": "TRANSLATE.NOW_PLAYING_BORDER_RADIUS",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_background_style",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_STYLES",
+      "icon": "fa-css3",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "miscellanea/now_playing",
+        "method": "configSaveBackgroundStyles"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.NOW_PLAYING_SAVE",
+        "data": [
+          "backgroundType",
+          "backgroundColor",
+          "albumartBackgroundFit",
+          "albumartBackgroundPosition",
+          "albumartBackgroundBlur",
+          "albumartBackgroundScale",
+          "volumioBackgroundImage",
+          "volumioBackgroundFit",
+          "volumioBackgroundPosition",
+          "volumioBackgroundBlur",
+          "volumioBackgroundScale",
+          "backgroundOverlay",
+          "backgroundOverlayColor",
+          "backgroundOverlayOpacity"
+        ]
+      },
+      "content": [
+        {
+          "id": "backgroundType",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_TYPE",
+          "value": {
+            "value": "default", 
+            "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+          },
+          "options": [
+            {
+              "value": "default",
+              "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+            },
+            {
+              "value": "albumart", 
+              "label": "TRANSLATE.NOW_PLAYING_ALBUM_ART"
+            },
+            {
+              "value": "color",
+              "label": "TRANSLATE.NOW_PLAYING_COLOR"
+            },
+            {
+              "value": "volumioBackground",
+              "label": "TRANSLATE.NOW_PLAYING_VOLUMIO_BACKGROUND"
+            }
+          ]
+        },
+        {
+          "id": "backgroundColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BG_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_COLOR",
+          "value": "",
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "color"
+          }
+        },
+        {
+          "id": "albumartBackgroundFit",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_FIT",
+          "value": {
+            "value": "cover", 
+            "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+          },
+          "options": [
+            {
+              "value": "cover", 
+              "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+            },
+            {
+              "value": "contain",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_CONTAIN"
+            },
+            {
+              "value": "fill",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_FILL"
+            }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "albumart"
+          }
+        },
+        {
+          "id": "albumartBackgroundPosition",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_POSITION",
+          "value": {
+            "value": "center", 
+            "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+          },
+          "options": [
+            {
+              "value": "center", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+            },
+            {
+              "value": "top", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+            },
+            {
+              "value": "left", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_LEFT"
+            },
+            {
+              "value": "bottom", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_BOTTOM"
+            },
+            {
+              "value": "right", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_RIGHT"
+            }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "albumart"
+          }
+        },
+        {
+          "id": "albumartBackgroundBlur",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BLUR",
+          "label": "TRANSLATE.NOW_PLAYING_BLUR_RADIUS",
+          "value": "",
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "albumart"
+          }
+        },
+        {
+          "id": "albumartBackgroundScale",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_SCALE",
+          "label": "TRANSLATE.NOW_PLAYING_SCALE",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "albumart"
+          }
+        },
+        {
+          "id": "volumioBackgroundImage",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_IMAGE",
+          "value": {
+            "value": "", 
+            "label": ""
+          },
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "volumioBackground"
+          }
+        },
+        {
+          "id": "volumioBackgroundFit",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_FIT",
+          "value": {
+            "value": "cover", 
+            "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+          },
+          "options": [
+            {
+              "value": "cover", 
+              "label": "TRANSLATE.NOW_PLAYING_FIT_COVER"
+            },
+            {
+              "value": "contain",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_CONTAIN"
+            },
+            {
+              "value": "fill",
+              "label": "TRANSLATE.NOW_PLAYING_FIT_FILL"
+            }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "volumioBackground"
+          }
+        },
+        {
+          "id": "volumioBackgroundPosition",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_POSITION",
+          "value": {
+            "value": "center", 
+            "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+          },
+          "options": [
+            {
+              "value": "center", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_CENTER"
+            },
+            {
+              "value": "top", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_TOP"
+            },
+            {
+              "value": "left", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_LEFT"
+            },
+            {
+              "value": "bottom", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_BOTTOM"
+            },
+            {
+              "value": "right", 
+              "label": "TRANSLATE.NOW_PLAYING_POSITION_RIGHT"
+            }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "volumioBackground"
+          }
+        },
+        {
+          "id": "volumioBackgroundBlur",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BLUR",
+          "label": "TRANSLATE.NOW_PLAYING_BLUR_RADIUS",
+          "value": "",
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "volumioBackground"
+          }
+        },
+        {
+          "id": "volumioBackgroundScale",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_SCALE",
+          "label": "TRANSLATE.NOW_PLAYING_SCALE",
+          "value": "",
+          "attributes": [
+            { "style": "margin-bottom: 32px;" }
+          ],
+          "visibleIf": {
+            "field": "backgroundType",
+            "value": "volumioBackground"
+          }
+        },
+        {
+          "id": "backgroundOverlay",
+          "element": "select",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_OVERLAY",
+          "value": {
+            "value": "default", 
+            "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+          },
+          "options": [
+            {
+              "value": "default", 
+              "label": "TRANSLATE.NOW_PLAYING_DEFAULT"
+            },
+            {
+              "value": "custom", 
+              "label": "TRANSLATE.NOW_PLAYING_CUSTOM"
+            },
+            {
+              "value": "none", 
+              "label": "TRANSLATE.NOW_PLAYING_NONE"
+            }
+          ]
+        },
+        {
+          "id": "backgroundOverlayColor",
+          "type": "color",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_BG_COLOR",
+          "label": "TRANSLATE.NOW_PLAYING_BACKGROUND_COLOR",
+          "value": "",
+          "visibleIf": {
+            "field": "backgroundOverlay",
+            "value": "custom"
+          }
+        },
+        {
+          "id": "backgroundOverlayOpacity",
+          "type": "text",
+          "element": "input",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_CSS_OPACITY",
+          "label": "TRANSLATE.NOW_PLAYING_OPACITY",
+          "value": "",
+          "visibleIf": {
+            "field": "backgroundOverlay",
+            "value": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "id": "section_kiosk",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_KIOSK",
+      "icon": "fa-television"
+    },
+    {
+      "id": "section_other",
+      "element": "section",
+      "label": "TRANSLATE.NOW_PLAYING_OTHER",
+      "icon": "fa-cog",
+      "content": [
+        {
+          "id": "broadcastRefresh",
+          "element": "button",
+          "label": "TRANSLATE.NOW_PLAYING_BROADCAST_REFRESH",
+          "doc": "TRANSLATE.NOW_PLAYING_DOC_BROADCAST_REFRESH",
+          "onClick": {
+            "type": "emit",
+            "message": "callMethod",
+            "data": {
+                "endpoint": "miscellanea/now_playing",
+                "method": "broadcastRefresh"
+            }
+          }
+        },
+        {
+          "id": "viewReadme",
+          "element": "button",
+          "label": "TRANSLATE.NOW_PLAYING_VIEW_README",
+          "onClick": {
+              "type": "openUrl",
+              "url": "https://github.com/patrickkfkan/volumio-now-playing#readme"
+          }
+        }
+      ]
+    }
+  ]
+}

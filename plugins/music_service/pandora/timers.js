@@ -2,132 +2,218 @@
 'use strict';
 
 var libQ = require('kew');
+const { serviceName } = require('./common');
+const {PUtil} = require('./helpers');
 
 class Timer {
-    constructor(self) {
-        this.self = self;
-        this.logger = msg => {
-            self.logInfo(this.className + msg);
-        };
+    constructor(context) {
+        this.context = context;
+        this.logger = context.logger;
+        this.commandRouter = context.commandRouter;
+        this.timerID = null; // may not be needed
+        this.delayStart = false;
+        this.active = false;
     }
 
     init() {
-        const that = this;
+        const self = this;
+        const fnName = 'init';
+        
+        self.active = true;
+        self.pUtil = new PUtil(this, this.className);
 
-        this.timerID = setInterval(() => {
-            that.fn(that.self, that.className);
-            if (that.announcement) that.self.announceFn(that.announcement);
-        }, that.interval);
-        this.logger('::init interval set to ' + this.interval + ' ms');
+        // Nested setTimeout for setInterval
+        let interval_loop = () => {
+            self.pUtil.siesta(
+                function call_siesta() {
+                    return self.fn()
+                        .fail(err => self.pUtil.generalReject(
+                            self.className + ' fn()', err
+                        ))
+                        .then(() => self.pUtil.siesta(
+                            call_siesta, self.className, [], self.interval
+                        ))
+                        .then(timerID => {
+                            self.timerID = timerID;
+                            return libQ.resolve();
+                        });
+            }, self.className, [], self.interval)
+                .then(timerID => {
+                    self.timerID = timerID;
+                    self.pUtil.logInfo(fnName, 'Timer loaded');
+                    self.pUtil.logInfo(fnName, 'Interval set to ' + self.interval + ' ms');            
+                    return libQ.resolve();
+                });
+        };
+
+        if (!self.delayStart) {
+            self.fn()
+                .then(interval_loop());
+        }
+        else interval_loop();
+
         return libQ.resolve();
     }
 
     stop() {
-        this.logger(' stopping.');
-        clearInterval(this.timerID);
+        const self = this;
+        const fnName = 'stop';
+
+        if (self.active) {
+            self.pUtil.logInfo(fnName, 'Stopping.');
+            clearTimeout(self.timerID);
+        }
+        self.active = false;
+
         return libQ.resolve();
     }
 }
 
 class ExpireOldTracks extends Timer {
-    constructor(self) {
-        super(self);
+    constructor(context) {
+        super(context);
 
         this.interval = 5 * 60 * 1000; // 5 minutes
         this.className = 'ExpireOldTracks';
-        this.announcement = this.className + '::reaper';
-        this.init();
+        this.delayStart = true;
     }
-        
 
-    fn(self) {
-        const that = this;
-        const mins_45 = 45 * 60 * 1000;
-        const fnName = '::reaper';
+    fn() {
+        const self = this;
+
+        const lifetime = 45 * 60 * 1000; // 45 minutes
+        const interval = 10 * 1000; // 10 seconds
         const timeNow = Date.now();
 
-        function hangman() {
-            setTimeout(() => {
-                let Q = self.getQueue();
-                let curTrack = self.getQueueTrack();
-                let curUri = null;
-                let found = false;
+        const Q = self.context.getQueue();
+        const curTrack = self.context.getQueueTrack();
+        const curUri = (curTrack) ? curTrack.uri : null;
+        let victims = Q.filter(
+            item => item.service === serviceName &&
+            timeNow - item.fetchTime > lifetime &&
+            item.uri !== curUri
+        );
+        const victimsLen = victims.length;
+        const fnName = 'reaper';
+        const vhFnName = fnName + '::voorhees';
 
-                if (curTrack) { curUri = curTrack.uri; }
+        self.pUtil.announceFn(fnName);
 
-                if (Q) {
-                    for (let i = 0; i < Q.length; i++) {
-                        let item = Q[i];
-                        if (item.service === self.serviceName &&
-                            (timeNow - item.fetchTime) > mins_45 &&
-                            item.uri !== curUri) { // string him up!
-                            self.removeTrack(item.uri);
-                            that.logger(fnName + ' expired ' +
-                                item.title + ' by ' + item.artist);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found === true) { hangman(); }
-                }
-            }, 10000);
+        let voorhees = () => {
+            // https://en.wikipedia.org/wiki/Jason_Voorhees
+            let victim = victims.shift();
+            self.context.removeTrack(victim.uri);
+            self.pUtil.logInfo(
+                vhFnName,
+                'Expired ' + victim.title +
+                ' by ' + victim.artist
+            );
+            return libQ.resolve();
+        };
+
+        if (victims.length > 0) {
+            self.pUtil.logInfo(fnName, 'Expiring ' + victimsLen +
+                ' tracks every ' + interval / 1000 + ' seconds');
+            for (let i = 0; i < victimsLen; i++) {
+                self.pUtil.siesta(
+                    voorhees, vhFnName,
+                    [], interval * (i + 1)
+                );
+            }
+        }
+        else {
+            self.pUtil.logInfo(fnName,
+                'No victims found: ' +
+                'Expiring zero tracks.  ' + 
+                'Don\'t worry -- Jason will return.');
         }
 
-        hangman();
+        return libQ.resolve();
     }
-    
 }
 
 class StreamLifeChecker extends Timer {
-    constructor(self) {
-        super(self);
+    constructor(context) {
+        super(context);
 
-        this.interval = 5000;
+        this.interval = 5000; // 5 seconds
         this.className = 'StreamLifeChecker';
     }
 
-    fn(self) {
-        const that = this;
-        const fnName = '::heartMonitor';
+    fn() {
+        const self = this;
+        const fnName = 'heartMonitor';
 
-        self.mpdPlugin.getState()
+        self.pUtil.announceFn(fnName);
+
+        return self.context.mpdPlugin.getState()
             .then(state => {
                 if (state.status !== 'pause') {
                     if (state.seek == this.lastSeek) {
-                        let track = self.getQueueTrack();
+                        let track = self.context.getQueueTrack();
                         let msg = track.name + ' by ' + track.artist +
                             ' timed out.  Advancing track';
                         self.commandRouter.pushToastMessage('info', 'Pandora', msg);
-                        that.logger(fnName + ': ' + msg);
-                        return self.goPreviousNext('skip')
-                            .then(() => self.removeTrack(track.uri))
-                            .then(() => that.stop());
+                        self.pUtil.logInfo(fnName, msg);
+                        return self.context.goPreviousNext('skip')
+                            .then(() => self.context.removeTrack(track.uri));
                     }
                 }
                 this.lastSeek = state.seek;
+
+                return libQ.resolve();
             });
     }
 }
 
 class PreventAuthTimeout extends Timer {
-    constructor(self) {
-        super(self);
+    constructor(context) {
+        super(context);
 
         this.interval = 3 * 60 * 60 * 1000; // 3 hours
         this.className = 'PreventAuthTimeout';
-        this.fn(self);
-        this.init();
     }
 
-    fn(self) {
-        const that = this;
-        
-        return self.pandoraHandler.pandoraLoginAndGetStations()
-            .then(() => self.pandoraHandler.fillStationData())
-            .then(() => that.logger(': Refreshed Pandora authorization'));
+    // restart() {
+    //     const self = this;
+
+    //     self.pUtil.logInfo(self.className, 'Restarting interval timer');
+
+    //     return self.stop()
+    //         .then(() => self.init());
+    // }
+
+    fn() {
+        const self = this;
+
+        self.pUtil.announceFn('fn');
+
+        return self.context.pandoraHandler.pandoraLoginAndGetStations()
+            .fail(err => self.pUtil.generalReject('pandoraLoginAndGetStations', err))
+            .then(() => self.context.pandoraHandler.fillStationData());
     }
 }
+
+class StationDataPublisher extends Timer {
+    constructor(context) {
+        super(context);
+
+        this.interval = 60000; // 1 minute
+        this.className = 'StationDataPublisher';
+    }
+
+    fn() {
+        const self = this;
+
+        self.pUtil.announceFn('fn');
+
+        return self.context.pandoraHandler.publishStationData()
+            .fail(err => self.pUtil.generalReject('publishStationData', err));
+    }
+}
+
 
 module.exports.ExpireOldTracks = ExpireOldTracks;
 module.exports.StreamLifeChecker = StreamLifeChecker;
 module.exports.PreventAuthTimeout = PreventAuthTimeout;
+module.exports.StationDataPublisher = StationDataPublisher;

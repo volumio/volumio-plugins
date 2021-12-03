@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <title>Volumio</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/lib/jquery-3.6.0.min.js"></script>
+  <script src="/lib/socket.io.min.js"></script>
+  <script src="/lib/common.js"></script>
+  <link href="https://fonts.googleapis.com/css2?Noto+Sans+Display:wght@100;700&family=Roboto:wght@700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/jquery-ui-1.12.1/jquery-ui.min.css">
+  <link rel="stylesheet" href="/stylesheets/volumio.css">
+</head>
+
+<body>
+  <div id="header">
+    <a href="<%- nowPlayingUrl %>"><%= i18n('NOW_PLAYING_SWITCH_TO_NP') %> <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <div id="volumio-wrapper">
+    <iframe src="<%- host %>"></iframe>
+  </div>
+</body>
+
+<script>
+  let socket = getSocket('<%- host %>', {
+    pluginVersion: '<%- pluginVersion %>',
+    appPort: '<%- appPort %>'
+  });
+
+  socket.on('connect', () => {
+    $('#header').show();
+  });
+
+  socket.on('disconnect', () => {
+    $('#header').hide();
+  });
+
+  socket.connect();
+</script>
+
+</html>

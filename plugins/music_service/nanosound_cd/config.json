@@ -30,6 +30,10 @@
     "savefolderformat": {
       "type": "string",
       "value": "%artist%-%album%"
+    },
+    "autoeject": {
+      "type": "string",
+      "value": "2"
     }
 }
    

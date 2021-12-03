@@ -2,7 +2,7 @@
 
 const libQ = require('kew');
 const fs = require('fs-extra');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const path = require('path');
 const os = require('os');
 const net = require('net');
@@ -17,7 +17,7 @@ const id = 'touch_display: ';
 var rpiScreen = false;
 var rpiBacklight = false;
 var maxBrightness = 255;
-var alsProgression = [];
+const alsProgression = [];
 var autoBrTimeoutCleared = false;
 var currentlyAdjusting = false;
 var uiNeedsUpdate = false;
@@ -76,16 +76,19 @@ TouchDisplay.prototype.onStart = function () {
       self.logger.info(id + 'Volumio Kiosk started');
       device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
       if (device === 'Raspberry PI') {
-        // detect Raspberry Pi Foundation original touch screen
-        exec('/bin/grep "^rpi_ft5406\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-          if (error !== null) {
-            self.logger.info(id + 'No Raspberry Pi Foundation touch screen detected.');
+        fs.readFile('/proc/modules', 'utf8', function (err, data) {
+          if (err) {
+            self.logger.error(id + 'Error reading /proc/modules: ' + err);
+            self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_READ') + '/proc/modules: ' + err);
           } else {
-            rpiScreen = true;
-            self.logger.info(id + 'Raspberry Pi Foundation touch screen detected.');
-            // check for backlight module of Raspberry Pi Foundation original touch screen
-            exec('/bin/grep "^rpi_backlight\\>" /proc/modules', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
-              if (error !== null) {
+            // detect Raspberry Pi Foundation original touch screen
+            if (data.match(/^rpi_ft5406\b/gm) === null && data.match(/^raspberrypi_ts\b/gm) === null) {
+              self.logger.info(id + 'No Raspberry Pi Foundation touch screen detected.');
+            } else {
+              rpiScreen = true;
+              self.logger.info(id + 'Raspberry Pi Foundation touch screen detected.');
+              // check for backlight module of Raspberry Pi Foundation original touch screen
+              if (data.match(/^rpi_backlight\b/gm) === null) {
                 self.logger.info(id + 'No backlight module of a Raspberry Pi Foundation touch screen detected.');
               } else {
                 rpiBacklight = true;
@@ -116,7 +119,7 @@ TouchDisplay.prototype.onStart = function () {
                   }
                 });
               }
-            });
+            }
           }
           // screen orientation
           self.setOrientation(self.config.get('angle'));
@@ -210,12 +213,8 @@ TouchDisplay.prototype.onStop = function () {
     }
   }
   self.systemctl('stop volumio-kiosk.service')
-    .then(function () {
-      self.logger.info(id + 'Volumio Kiosk stopped');
+    .fin(function () {
       defer.resolve();
-    })
-    .fail(function () {
-      defer.reject(new Error());
     });
   return defer.promise;
 };
@@ -327,9 +326,20 @@ TouchDisplay.prototype.getUIConfig = function () {
       }
       uiconf.sections[4].hidden = false;
       uiconf.sections[4].content[0].value = self.config.get('showPointer');
+      uiconf.sections[5].hidden = false;
+      uiconf.sections[5].content[0].value = self.config.get('scale');
+      uiconf.sections[5].content[0].attributes = [
+        {
+          placeholder: 100,
+          maxlength: 3,
+          min: 10,
+          max: 200
+        }
+      ];
       defer.resolve(uiconf);
     })
-    .fail(function () {
+    .fail(function (e) {
+      self.logger.error(id + 'Could not fetch UI configuration: ' + e);
       defer.reject(new Error());
     });
   return defer.promise;
@@ -337,7 +347,6 @@ TouchDisplay.prototype.getUIConfig = function () {
 
 TouchDisplay.prototype.updateUIConfig = function () {
   const self = this;
-  const defer = libQ.defer();
 
   self.commandRouter.getUIConfigOnPlugin('miscellanea', 'touch_display', {})
     .then(function (uiconf) {
@@ -345,7 +354,6 @@ TouchDisplay.prototype.updateUIConfig = function () {
     });
   self.commandRouter.broadcastMessage('pushUiConfig');
   uiNeedsUpdate = false;
-  return defer.promise;
 };
 
 TouchDisplay.prototype.getConfigurationFiles = function () {
@@ -725,6 +733,63 @@ TouchDisplay.prototype.savePointerConf = function (confData) {
     });
   } else {
     self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
+  }
+  return defer.promise;
+};
+
+TouchDisplay.prototype.saveScaleConf = function (confData) {
+  const self = this;
+  const defer = libQ.defer();
+
+  if (Number.isNaN(parseInt(confData.scale, 10)) || !isFinite(confData.scale)) {
+    uiNeedsUpdate = true;
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.SCALE') + self.commandRouter.getI18nString('TOUCH_DISPLAY.NAN'));
+  } else {
+    confData.scale = self.checkLimits('scale', confData.scale, 10, 200);
+    if (self.config.get('scale') !== confData.scale) {
+      fs.stat('/tmp/.X11-unix/X' + displayNumber, function (err, stats) {
+        if (err !== null || !stats.isSocket()) {
+          self.updateUIConfig();
+          self.logger.error(id + 'Scale config cannot be applied: ' + err); // this can happen if the user applies a scale setting which leads to a restart of the Xserver and then fastly (before the Xserver has completed its start) tries to apply a new scale config
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_SET_SCALE') + err);
+          defer.reject(err);
+        } else {
+          self.config.set('scale', confData.scale);
+          exec('/usr/bin/chromium-browser -version', { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+            if (error !== null) {
+              self.logger.error(id + 'Error requesting browser version.');
+            } else {
+              if (confData.scale < 100 && stdout.match(/\d*\./).toString().slice(0, -1) < 57) {
+                self.commandRouter.pushToastMessage('warning', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.SCALE_WARN'));
+              }
+              exec("/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -e 's/factor=.* /factor=" + confData.scale / 100 + " /' /opt/volumiokiosk.sh", { uid: 1000, gid: 1000 }, function (error, stdout, stderr) {
+                if (error !== null) {
+                  self.logger.error(id + 'Error modifying /opt/volumiokiosk.sh: ' + error);
+                  self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.ERR_MOD') + '/opt/volumiokiosk.sh: ' + error);
+                  defer.reject(error);
+                } else {
+                  self.systemctl('daemon-reload')
+                    .then(self.onStop.bind(self))
+                    .then(self.onStart.bind(self))
+                    .then(function () {
+                      self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('COMMON.SETTINGS_SAVED_SUCCESSFULLY'));
+                      defer.resolve();
+                    })
+                    .fail(function () {
+                      defer.reject(new Error());
+                    });
+                }
+              });
+            }
+          });
+        }
+      });
+    } else {
+      self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOUCH_DISPLAY.PLUGIN_NAME'), self.commandRouter.getI18nString('TOUCH_DISPLAY.NO_CHANGES'));
+    }
+  }
+  if (uiNeedsUpdate) {
+    self.updateUIConfig();
   }
   return defer.promise;
 };

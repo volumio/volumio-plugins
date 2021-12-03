@@ -91,8 +91,10 @@ nanosoundCd.prototype.saveConfig = function(data) {
 	}
 	self.config.set('extractformat', data['extractformat'].value);
 	self.config.set('prestart', data['prestart']);
-	self.config.set('savefolderformat', data['savefolderformat']);
+	self.config.set('savefolderformat', data['savefolderformat']);	
 	self.config.set('loadalbumart', data['loadalbumart'].value);
+	self.config.set('autoeject', data['autoeject'].value);
+
 
 	self.commandRouter.pushToastMessage('success', "NanoSound CD", "NanoSound CD settings saved");
 
@@ -331,6 +333,17 @@ nanosoundCd.prototype.getUIConfig = function() {
 			{
 				self.config.set('loadalbumart',"1");
 				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[4].value.label', "No");
+			}
+
+			if(self.config.has('autoeject'))
+			{
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.value', self.config.get('autoeject'));
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label',  uiconf.sections[0].content[6].options[self.config.get('autoeject')-1].label);
+			}
+			else
+			{
+				self.config.set('autoeject',"2");
+				self.configManager.setUIConfigParam(uiconf, 'sections[0].content[6].value.label', "Yes");
 			}
 
 			self.configManager.setUIConfigParam(uiconf, 'sections[0].content[5].value', self.config.get('savefolderformat'));

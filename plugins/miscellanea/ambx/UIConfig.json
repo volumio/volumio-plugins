@@ -1,0 +1,130 @@
+{
+  "page": {
+    "label": "amBX Color Picker"
+  },
+  "sections": [
+    {
+      "id": "sectionColorpicker",
+      "element": "section",
+      "label": "Color Picker",
+      "icon": "fa-lightbulb",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/ambx", "method":"setColor"},
+      "saveButton": {
+        "label": "Change color",
+        "data": [
+          "sync",
+          "colorLeft",
+          "colorLeftCenter",
+          "colorCenter",
+          "colorRightCenter",
+          "colorRight",
+          "colorMain"
+        ]
+      },
+      "content": [
+        {
+          "id": "sync",
+          "element": "switch",
+          "doc": "Sync all lights to one color",
+          "label": "Sync lights",
+          "value": true
+        },
+        {
+          "id": "colorLeft",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color of the left speaker",
+          "label": "Left color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": false}
+        },
+        {
+          "id": "colorLeftCenter",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color of the center unit left",
+          "label": "Center left color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": false}
+        },
+        {
+          "id": "colorCenter",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color of the center unit center",
+          "label": "Center color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": false}
+        },
+        {
+          "id": "colorRightCenter",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color of the center unit right",
+          "label": "Center right color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": false}
+        },
+        {
+          "id": "colorRight",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color of the right speaker",
+          "label": "Right color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": false}
+        },
+        {
+          "id": "colorMain",
+          "type":"color",
+          "element": "input",
+          "doc": "Pick the amBX color for all bulbs",
+          "label": "Color",
+          "value": "#FFCC00",
+          "visibleIf": {"field": "sync", "value": true}
+        }
+      ]
+    },
+    {
+      "id": "sectionFanspeed",
+      "element": "section",
+      "label": "Fan speed",
+      "icon": "fa-fan",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/ambx", "method":"setFanSpeed"},
+      "saveButton": {
+        "label": "Change fan speed",
+        "data": [
+          "fanSpeed"
+        ]
+      },
+      "content": [
+        {
+          "id": "fanSpeed",
+          "element": "equalizer",
+          "doc": "Adjust left and right fan speeds",
+          "config": {
+            "orientation": "vertical",
+            "bars": [
+              {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 0,
+                "ticksLabels": ["Left"],
+                "tooltip": "show"
+              },
+              {
+                "min": 0,
+                "max": 255,
+                "step": 1,
+                "value": 0,
+                "ticksLabels": ["Right"],
+                "tooltip": "show"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

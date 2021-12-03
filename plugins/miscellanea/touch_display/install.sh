@@ -1,9 +1,8 @@
 #!/bin/bash
 
-HW=$(awk '/VOLUMIO_HARDWARE=/' /etc/*-release | sed 's/VOLUMIO_HARDWARE=//' | sed 's/\"//g')
 ID=$(awk '/VERSION_ID=/' /etc/*-release | sed 's/VERSION_ID=//' | sed 's/\"//g')
 
-if [ "$HW" = "pi" ]; then # on Raspberry Pi hardware
+if grep -q Raspberry /proc/cpuinfo; then # on Raspberry Pi hardware
   echo "Installing fake packages for kernel, bootloader and pi lib"
   wget https://repo.volumio.org/Volumio2/Binaries/arm/libraspberrypi0_0.0.1_all.deb
   wget https://repo.volumio.org/Volumio2/Binaries/arm/raspberrypi-bootloader_0.0.1_all.deb
@@ -78,10 +77,14 @@ sudo echo "#!/bin/bash
 while true; do timeout 3 bash -c \"</dev/tcp/127.0.0.1/3000\" >/dev/null 2>&1 && break; done
 sed -i 's/\"exited_cleanly\":false/\"exited_cleanly\":true/' /data/volumiokiosk/Default/Preferences
 sed -i 's/\"exit_type\":\"Crashed\"/\"exit_type\":\"None\"/' /data/volumiokiosk/Default/Preferences
+if [ -L /data/volumiokiosk/SingletonCookie ]; then
+  rm -rf /data/volumiokiosk/Singleton*
+fi
 openbox-session &
 while true; do
   /usr/bin/chromium-browser \\
     --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT' \\
+    --force-device-scale-factor=1 \\
     --disable-pinch \\
     --kiosk \\
     --no-first-run \\

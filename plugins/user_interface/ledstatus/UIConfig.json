@@ -1,0 +1,41 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+ {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"user_interface/ledstatus", "method":"saveSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "gpionum",
+          "intmilisec"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpionum",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.GPIONUM_DOC",
+          "label": "TRANSLATE.GPIONUM_LBL",
+          "attributes": [ {"placeholder": "12"} ],
+          "value": ""
+        },
+        {
+          "id": "intmilisec",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.INTMILISEC_DOC",
+          "label": "TRANSLATE.INTMILISEC_LBL",
+          "attributes": [ {"placeholder": "800"} ],
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

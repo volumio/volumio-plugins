@@ -33,6 +33,7 @@
 	"UPGRADE":"Aggiornamento versione",
 	"SHOWALBUMART":"Mostra copertina dell'album",
 	"EJECT":"Espelli CD",
+	"AUTO_EJECT":"Espelli il CD dopo l'estrazione",
 	"SAVE_FOLDER_FORMAT_DOC":"Il formato della cartella di salvataggio. Se lasciato vuoto, sarà aaaa-MM-gg_hhmm per impostazione predefinita. Puoi usare %artist% per il nome del cantante e %album% per il nome dell'album",
-	"SAVE_FOLDER_FORMAT":"Salva formato cartella"
+	"SAVE_FOLDER_FORMAT":"Salva formato cartella"	
 }

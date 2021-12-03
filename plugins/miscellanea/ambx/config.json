@@ -1,0 +1,47 @@
+{
+ "sync":
+ {
+  "type": "boolean",
+  "value": true
+ },
+ "colorLeft":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "colorLeftCenter":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "colorCenter":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "colorRightCenter":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "colorRight":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "colorMain":
+ {
+   "type": "string",
+   "value": "#FFCC00"
+ },
+ "fanLeft":
+ {
+   "type": "integer",
+   "value": 0
+ },
+ "fanRight":
+ {
+   "type": "integer",
+   "value": 0
+ }
+}

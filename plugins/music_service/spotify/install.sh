@@ -17,6 +17,8 @@ sudo tar xvf /tmp/spop-${DPKG_ARCH}.tar.gz -C /
 rm /tmp/spop-${DPKG_ARCH}.tar.gz
 
 sudo chmod 777 /etc/spopd.conf
+echo "Linking libsox if required"
+[ ! -e /usr/lib/arm-linux-gnueabihf/libsox.so.2 ] && ln -s /usr/lib/arm-linux-gnueabihf/libsox.so /usr/local/lib/libsox.so.2
 
 #requred to end the plugin install
 echo "plugininstallend"

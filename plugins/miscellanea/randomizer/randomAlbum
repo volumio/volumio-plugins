@@ -1,0 +1,14 @@
+//randomAlbum
+
+const io = require('socket.io-client');
+const socket = io.connect('http://localhost:3000');
+
+// Call the endpoint
+const endPoint = { 'type':'plugin', 'endpoint': 'miscellanea/randomizer', 'method': 'randomAlbum' };
+socket.emit('callMethod', endPoint);
+
+// Sleep and exit.
+setTimeout(() => process.exit(0), 250);
+
+
+

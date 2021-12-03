@@ -33,6 +33,7 @@
 	"UPGRADE":"소프트웨어 업그레이드",
 	"SHOWALBUMART":"앨범 표지보기",
 	"EJECT":"CD 꺼내기",
+	"AUTO_EJECT":"추출 후 CD 꺼내기",
 	"SAVE_FOLDER_FORMAT_DOC":"저장 폴더의 형식입니다. 공백으로두면 기본적으로 yyyy-MM-dd_hhmm이됩니다. 가수 이름에는 %artist% 를, 앨범 이름에는 %album%을 사용할 수 있습니다.",
-	"SAVE_FOLDER_FORMAT":"저장 폴더 형식"
+	"SAVE_FOLDER_FORMAT":"저장 폴더 형식"	
 }

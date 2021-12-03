@@ -1,0 +1,83 @@
+begin
+prog = irexec
+button = KEY_TIME
+config = /usr/local/bin/node /data/plugins/accessory/ir_controller/configurations/Philips\ 723-CDR/lib2queue
+end
+begin
+prog = irexec
+button = KEY_POWER
+config = /sbin/shutdown -h now
+end
+begin
+prog = irexec
+button = KEY_PROGRAM
+config = /usr/local/bin/volumio clear
+end
+begin
+prog = irexec
+button = KEY_SHUFFLE
+config = /usr/local/bin/volumio random
+delay=2
+repeat=3
+end
+begin
+prog = irexec
+button = KEY_INFO
+config = /usr/local/bin/volumio status
+delay=2
+repeat=3
+end
+begin
+prog = irexec
+button = KEY_MEDIA_REPEAT
+config = /usr/local/bin/volumio repeat
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+delay=2
+repeat=3
+end
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+delay=2
+repeat=3
+end
+begin
+prog = irexec
+button = KEY_PLAY
+config = /usr/local/bin/volumio play
+end
+begin
+prog = irexec
+button = KEY_STOP
+config = /usr/local/bin/volumio stop
+end
+begin
+prog = irexec
+button = KEY_PREVIOUS
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_NEXT
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_REWIND
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_PAUSE
+config = /usr/local/bin/volumio pause
+end
+begin
+prog = irexec
+button = KEY_PAUSE
+config = /usr/local/bin/volumio seek plus
+end

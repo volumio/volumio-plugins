@@ -1,0 +1,20 @@
+{
+  "MSS_CONFIGURATION":"Music Services Shield Plugin Configuration",
+  "MSS_SAVE":"Save",
+  "MSS_TITLE":"Music Services Shield",
+  "MSS_LISTTASKS":"Shows the status of the process shield and the tasks running under 'user'",
+  "MSS_LISTTASKS_LABEL":"Show Status",
+  "MSS_USERCPUSPEC":"Choose the CPUs that will be allocated to the 'user' group for music processes",
+  "MSS_USERCPUSPEC_LABEL":"User Group CPUs",
+  "MSS_USERINCLUDEMPD":"Shield Music Player Daemon (MPD) in the User group",
+  "MSS_USERINCLUDEMPD_LABEL":"Shield MPD",
+  "MSS_USERINCLUDESPOTIFY":"Shield Spotify Connect in the User group",
+  "MSS_USERINCLUDESPOTIFY_LABEL":"Shield Spotify Connect",
+  "MSS_RTINCLUDEMPD":"Assign Music Player Daemon (MPD) Priority",
+  "MSS_RTINCLUDEMPD_LABEL":"Set MPD Priority",
+  "MSS_RTINCLUDESPOTIFY":"Assign Spotify Connect Priority",
+  "MSS_RTINCLUDESPOTIFY_LABEL":"Set Spotify Priority",
+  "MSS_RTPRIORITY":"The priority value to assign to the selected processes. Max is 99",
+  "MSS_RTPRIORITY_LABEL":"Process Priority"
+}
+

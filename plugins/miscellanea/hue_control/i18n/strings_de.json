@@ -1,0 +1,18 @@
+{
+  "HUE_PLUGIN_CONFIGURATION": "Hue Control Plugin Konfiguration",
+  "HUE_CONNECTION_CONFIG": "Hue Bridge Verbindung",
+  "HUE_CONNECTION_CONFIG_DESC": "Geben Sie die IP-Adresse oder den Hostnamen der Hue Bridge ein, drücken Sie die Link-Taste auf der Bridge und drücken Sie >Verbinden< innerhalb von 30 Sekunden.",
+  "HUE_UNPAIR_CONFIG": "Hue Bridge Verbindung trennen",
+  "HUE_UNPAIR_CONFIG_DESC": "Drücken Sie >Trennen<, um Volumio von der Hue Bridge zu trennen.",
+  "HUE_PAIR_BTN":"Verbinden",
+  "HUE_UNPAIR_BTN":"Trennen",
+  "HUE_BRIDGE_ADDRESS": "Hue Bridge Adresse",
+  "HUE_BRIDGE_ADDRESS_DOC": "Die IP-Adresse oder der Hostname der Hue Bridge.",
+  "HUE_SETTINGS": "Einstellungen",
+  "HUE_SETTINGS_DESC": "Die Einstellungen für das Hue Control Plugin",
+  "HUE_SWITCH_OFF_DELAY_DOC": "Die Anzahl der Sekunden, die gewartet werden soll, bevor die Hue-Geräte ausgeschaltet werden, nachdem die Wiedergabe gestoppt wurde.",
+  "HUE_SWITCH_OFF_DELAY": "Ausschaltverzögerung",
+  "HUE_DEVICE_DOC": "Hue-Birne oder intelligente Steckdose zum Steuern",
+  "HUE_DEVICE": "Gerät",
+  "SAVE":"Speichern"
+}

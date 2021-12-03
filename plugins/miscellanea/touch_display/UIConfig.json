@@ -309,6 +309,37 @@
                              "value": false
                              }
                            ]
+                },
+                {
+                "id": "scale",
+                "element": "section",
+                "label": "TRANSLATE.TOUCH_DISPLAY.SCALE_CONF",
+                "description": "TRANSLATE.TOUCH_DISPLAY.SCALE_DESC",
+                "icon": "fa-expand",
+                "hidden": "false",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/touch_display", "method":"saveScaleConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.TOUCH_DISPLAY.APPLY",
+                              "data": [
+                                      "scale"
+                                      ]
+                              },
+                "content": [
+                             {
+                             "id": "scale",
+                             "element": "input",
+                             "type": "number",
+                             "doc": "TRANSLATE.TOUCH_DISPLAY.SCALE_DOC",
+                             "label": "TRANSLATE.TOUCH_DISPLAY.SCALE",
+                             "value": 100,
+                             "attributes": [
+                                             {"placeholder": {}},
+                                             {"maxlength": {}},
+                                             {"min": {}},
+                                             {"max": {}}
+                                           ]
+                             }
+                           ]
                 }
               ]
 }

@@ -1,6 +1,32 @@
 {
-  "IR_CONFIGURATION":"IR Remote Configuration",
-  "SAVE": "Save",
-  "PROFILE_SELECTOR": "Select profile",
-  "PROFILE_SELECTOR_DOC": "Select the appropriate configuration for your remote from the available profiles"
+  "IRCONTROLLER":{
+    "PLUGIN_NAME":"IR Controller",
+    "ERR_WRITE":"Error writing ",
+    "ERR_READ":"Error reading ",
+    "ERR_LOAD_OVERLAY":"Error loading IR overlay: ",
+    "ERR_REMOVE_OVERLAY":"Error removing IR overlay: ",
+    "ERR_GPIO_OCCUPIED":"The selected GPIO input is already in use.",
+    "GENERIC_FAILED":"Failed: ",
+    "PLUGIN_CONFIGURATION":"IR Controller Configuration",
+    "IR_CONFIGURATION":"IR Remote Configuration",
+    "PROFILE_SELECTOR":"Select profile",
+    "PROFILE_SELECTOR_DOC":"Select the appropriate configuration for your remote from the available profiles.<br /><br />User-specific configurations for remote controls can be stored in the \"/data/INTERNAL/ir_controller/configurations\" folder. For this purpose, a subfolder must be created in the aforementioned directory for each remote control, in which the LIRC files \"lircrc\" and \"lirc.conf\" are stored for the remote control. The name of the subfolder appears in the list of selectable remote controls. If this name is also used for one of the remote control configurations already supplied, the user's own configuration with the same name takes precedence.<br /><br />NOTE: Updating the plugin does not affect the user-defined configurations. However, when the plugin is uninstalled, the \"/data/INTERNAL/ir_controller\" directory is deleted along with all the subfolders and files it contains.",
+    "GPIO_CONFIGURATION":"GPIO Configuration",
+    "GPIO_DESC":"The Plugin does not check, if the GPIO numbers in the select list are already in use for different purposes. Therefore before chosing a GPIO number it is crucial to ensure that it is actually available.",
+    "GPIO_IN_PIN":"Select GPIO of the IR receiver",
+    "GPIO_IN_PIN_DOC":"GPIO number used by the IR sensors signal line.<br /><br />NOTE: This is not the number of the physical pin the IR receiver is connected to, but the Broadcom pin number (BCM), cf. https://pinout.xyz/#.",
+    "GPIO_PULL":"Select \"pull-up/down\" setting",
+    "GPIO_PULL_DOC":"When set to \"up\" the input will read a \"high\" state, when set to \"down\" the input will read a \"low\" state when there is no signal from the IR receiver. When set to \"off\" the input will be floating when there is no signal from the IR receiver. Default value is \"up\".",
+    "GPIO_PULL_OFF":"off",
+    "GPIO_PULL_DOWN":"down",
+    "GPIO_PULL_UP":"up",
+    "FORCE_ACTIVE_STATE":"Configure \"active state\" of the input",
+    "FORCE_ACTIVE_STATE_DOC":"With this option enabled the GPIO input the IR receiver is connected to can be configured as \"active-high\" or \"active-low\".",
+    "ACTIVE_STATE":"Select \"active-high/-low\" logic",
+    "ACTIVE_STATE_DOC":"With this option set to \"active-low\" the input will be logically high (\"active\") when the signal from the IR receiver is low. If set to \"active-high\" the input will be logically high when the signal is high.",
+    "ACTIVE_LOW":"active-low",
+    "ACTIVE_HIGH":"active-high",
+    "NO_CHANGES":"No changes to save.",
+    "SAVE":"Save"
+  }
 }

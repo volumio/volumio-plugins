@@ -1,4 +1,12 @@
 {
+  "email": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
   "isPandoraOne": {
     "type": "boolean",
     "value": false
@@ -15,7 +23,7 @@
     "type": "boolean",
     "value": false
   },
-  "maxStationQ": {
+  "maxStationTracks": {
     "type": "number",
     "value": 16
   },
@@ -23,11 +31,27 @@
     "type": "boolean",
     "value": false
   },
-  "email": {
+  "bandFilter": {
     "type": "string",
     "value": ""
   },
-  "password": {
+  "mqttEnabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "mqttHost": {
+    "type": "string",
+    "value": ""
+  },
+  "mqttPort": {
+    "type": "number",
+    "value": 1883
+  },
+  "mqttUsername": {
+    "type": "string",
+    "value": ""
+  },
+  "mqttPassword": {
     "type": "string",
     "value": ""
   }

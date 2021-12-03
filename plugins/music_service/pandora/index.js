@@ -2,24 +2,13 @@
 'use strict';
 
 var libQ = require('kew');
-var fs = require('fs-extra');
-var config = new (require('v-conf'))();
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
 
 var dnsSync = require('dns-sync');
-var timers = require('./timers');
-var handler = require('./handler');
-
-const { defer, setNextTickFunction } = require('kew');
-const { REFUSED, SERVFAIL } = require('dns');
-const { get } = require('https');
-const { setFlagsFromString } = require('v8');
-const { readSync } = require('fs-extra');
-const { pseudoRandomBytes } = require('crypto');
-const { stat } = require('fs');
-const { allowedNodeEnvironmentFlags } = require('process');
-
+const { serviceName, uriParts, uriPrefix, uriStaRE } = require('./common');
+const { PUtil } = require('./helpers');
+const { ExpireOldTracks, PreventAuthTimeout, StreamLifeChecker, StationDataPublisher } = require('./timers');
+const { PandoraHandler } = require('./pandora_handler');
+var mqtt_handler = require('./mqtt_handler');
 
 module.exports = ControllerPandora;
 function ControllerPandora(context) {
@@ -30,10 +19,13 @@ function ControllerPandora(context) {
     this.logger = this.context.logger;
     this.configManager = this.context.configManager;
 
-    self.serviceName = 'pandora';
+    this.pUtil = new PUtil(this);
+
+    self.stationData = {};
     self.currStation = {};
     self.lastUri = null;
-    self.lastPress = Date.now();
+    // self.lastPress = Date.now();
+    self.lastStationUpdate = Date.now();
     self.cameFromMenu = false;
     self.state = {};
 }
@@ -51,23 +43,32 @@ ControllerPandora.prototype.onVolumioStart = function () {
 ControllerPandora.prototype.onStart = function () {
     var self = this;
 
-    const options = {
-        email: self.config.get('email'),
-        password: self.config.get('password'),
-        isPandoraOne: self.config.get('isPandoraOne'),
-        maxStationQ: self.validateMaxStationQ(self.config.get('maxStationQ')),
-        bandFilter: self.validateBandFilter(self.config.get('bandFilter'))
+    self.mqttEnabled = self.config.get('mqttEnabled', false);
+
+    const pandoraHandlerOptions = {
+        email: self.config.get('email', ''),
+        password: self.config.get('password', ''),
+        isPandoraOne: self.config.get('isPandoraOne', false),
     };
 
-    self.useCurl302WorkAround = self.config.get('useCurl302WorkAround');
-    self.nextIsThumbsDown = self.config.get('nextIsThumbsDown');
-    self.flushThem = self.config.get('flushThem');
+    const mqttOptions = {
+        mqttEnabled: self.mqttEnabled,
+        mqttHost: self.config.get('mqttHost', ''),
+        mqttPort: self.config.get('mqttPort', ''),
+        mqttUsername: self.config.get('mqttUsername', ''),
+        mqttPassword: self.config.get('mqttPassword', '')
+    };
+
+    self.useCurl302WorkAround = self.config.get('useCurl302WorkAround', false);
+    self.nextIsThumbsDown = self.config.get('nextIsThumbsDown', false);
+    self.flushThem = self.config.get('flushThem', false);
 
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin('music_service', 'mpd');
 
-    return self.checkConfValidity(options)
-        .then(() => self.initialSetup(options))
-        .then(() => self.addToBrowseSources());
+    self.addToBrowseSources();
+
+    return self.initializeMQTT(mqttOptions)
+        .then(() => self.validateAndSetAccountOptions(pandoraHandlerOptions));
 };
 
 ControllerPandora.prototype.onStop = function () {
@@ -77,11 +78,15 @@ ControllerPandora.prototype.onStop = function () {
     if (typeof(self.expireHandler) !== 'undefined') self.expireHandler.stop();
     if (typeof(self.streamLifeChecker) !== 'undefined') self.streamLifeChecker.stop();
     if (typeof(self.preventAuthTimeout)  !== 'undefined') self.preventAuthTimeout.stop();
+    if (typeof(self.stationDataHandler) !== 'undefined') self.stationDataHandler.stop();
+    if (typeof(self.mqttHandler) !== 'undefined') self.mqttHandler.disconnect();
 
     return self.flushPandora()
         .then(() => self.stop())
-        .then(() => self.mpdPlugin.clear())
-        .then(() => self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio'));
+        .then(() => {
+            self.commandRouter.volumioRemoveToBrowseSources('Pandora Radio');
+            return libQ.resolve();
+        });
 };
 
 ControllerPandora.prototype.onRestart = function () {
@@ -93,34 +98,52 @@ ControllerPandora.prototype.onRestart = function () {
 
 ControllerPandora.prototype.flushPandora = function () {
     var self = this;
+    const fnName = 'flushPandora';
 
-    self.announceFn('flushPandora');
+    self.pUtil.announceFn(fnName);
 
-    const newQ = self.getQueue().filter(item => item.service !== self.serviceName);
+    const newQ = self.getQueue().filter(item => item.service !== serviceName);
 
     if (newQ.length > 0) {
         self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
     }
     else {
         self.commandRouter.stateMachine.playQueue.clearPlayQueue();
+        // self.pUtil.logInfo(fnName, 'running clearQueue()');
+        // self.commandRouter.stateMachine.clearQueue();
     }
     return libQ.resolve();
 };
 
-ControllerPandora.prototype.initialSetup = function (options) {
+ControllerPandora.prototype.initialSetup = function (email, password, isPandoraOne) {
     var self = this;
 
-    self.announceFn('initialSetup');
+    self.pUtil.announceFn('initialSetup');
 
-    if (self.pandoraHandler === undefined) {
-        self.pandoraHandler = new handler(self, options);
-    }
+    self.pandoraHandler = new PandoraHandler(self);
+    self.stationDataHandler = new StationDataPublisher(self);
 
-    self.expireHandler = new timers.ExpireOldTracks(self);
-    self.streamLifeChecker = new timers.StreamLifeChecker(self);
-    self.preventAuthTimeout = new timers.PreventAuthTimeout(self);
+    return self.pandoraHandler.init()
+        .then(() => self.pandoraHandler.setMQTTEnabled(self.mqttEnabled))
+        .then(() => {
+            const maxStationTracks = self.config.get('maxStationTracks', '16');
+            const bandFilter = self.config.get('bandFilter', '');
+            return self.pandoraHandler.setMaxStationTracks(maxStationTracks)
+                .then(() => self.pandoraHandler.setBandFilter(bandFilter));
+        })
+        .then(() => self.pandoraHandler.setAccountOptions(email, password, isPandoraOne))
+        .then(() => {
+            self.preventAuthTimeout = new PreventAuthTimeout(self);
+            return self.preventAuthTimeout.init();
+        })
 
-    return self.flushPandora();
+        .then(() => {
+            self.expireHandler = new ExpireOldTracks(self);
+            self.streamLifeChecker = new StreamLifeChecker(self);
+
+            return self.expireHandler.init();
+        })
+        .then(() => self.flushPandora());
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -135,16 +158,35 @@ ControllerPandora.prototype.getUIConfig = function () {
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(uiconf => {
-            uiconf.sections[0].content[0].value = self.config.get('email', '');
-            uiconf.sections[0].content[1].value = self.config.get('password', '');
-            uiconf.sections[0].content[2].value = self.config.get('isPandoraOne', '');
-            uiconf.sections[0].content[3].value = self.config.get('useCurl302WorkAround', '');
-            uiconf.sections[0].content[4].value = self.config.get('nextIsThumbsDown', '');
-            uiconf.sections[0].content[5].value = self.config.get('superPrevious', '');
-            uiconf.sections[0].content[6].value = self.config.get('maxStationQ', '');
-            uiconf.sections[0].content[7].value = self.config.get('flushThem', '');
-            uiconf.sections[0].content[8].value = self.config.get('bandFilter', '');
-            self.config.get();
+            const opts = [
+                [
+                    'email',
+                    'password',
+                    'isPandoraOne'
+                ],
+                [
+                    'useCurl302WorkAround',
+                    'nextIsThumbsDown',
+                    'superPrevious',
+                    'maxStationTracks',
+                    'flushThem',
+                    'bandFilter'
+                ],
+                [
+                    'mqttEnabled',
+                    'mqttHost',
+                    'mqttPort',
+                    'mqttUsername',
+                    'mqttPassword'
+                ]
+            ];
+
+            for (let s = 0; s < opts.length; s++) {
+                for (let c = 0; c < opts[s].length; c++) {
+                    const value = self.config.get(opts[s][c], '');
+                    uiconf.sections[s].content[c].value = value;
+                }
+            }
 
             defer.resolve(uiconf);
         })
@@ -169,86 +211,158 @@ ControllerPandora.prototype.getConf = function (varName) {
     //Perform your installation tasks here
 };
 
-ControllerPandora.prototype.setOptionsConf = function (options) {
+ControllerPandora.prototype.setAccountOptionsConf = function (accountOptions) {
     var self = this;
 
-    self.config.set('email', options.email);
-    self.config.set('password', options.password);
-    self.config.set('isPandoraOne', options.isPandoraOne);
+    const propNames = [
+        'email',
+        'password',
+        'isPandoraOne'
+    ];
+    propNames.forEach(item => {
+        self.config.set(item, accountOptions[item]);
+    });
 
-    self.config.set('useCurl302WorkAround', options.useCurl302WorkAround);
-    self.useCurl302WorkAround = options.useCurl302WorkAround;
-    self.config.set('nextIsThumbsDown', options.nextIsThumbsDown);
-    self.nextIsThumbsDown = options.nextIsThumbsDown;
-    self.config.set('superPrevious', options.superPrevious);
-    self.superPrevious = options.superPrevious;
-    self.config.set('flushThem', options.flushThem);
-    self.flushThem = options.flushThem;
-    self.config.set('bandFilter', options.bandFilter);
-    let validMaxStaQ = self.validateMaxStationQ(options.maxStationQ);
-    self.config.set('maxStationQ', validMaxStaQ);
-    self.logInfo('typeof(self.pandoraHandler): ' + typeof(self.pandoraHandler));
-    self.pandoraHandler.setBandFilter(self.validateBandFilter(options.bandFilter));
-    self.pandoraHandler.setMaxStationTracks(validMaxStaQ);
+    self.isPandoraOne = accountOptions.isPandoraOne;
 
-    return self.checkConfValidity(options)
-        .then(() => self.commandRouter.pushToastMessage('success', 'Pandora Options',
-            'Login info saved.\nIf already logged in, restart plugin.'))
-        .fail(err => self.generalReject('setAccountConf', err));
+    self.commandRouter.pushToastMessage(
+        'info', 'Pandora Options', 'Account Options Saved'
+    );
+
+    return self.validateAndSetAccountOptions(accountOptions)
+        .then(() => self.pUtil.timeOutToast('validateAndSetAccountOptions', 'success',
+            'Pandora Options', 'Account Options Validated', 5000));
 };
 
-ControllerPandora.prototype.validateMaxStationQ = function (mq) {
+ControllerPandora.prototype.setPlaybackOptionsConf = function (playbackOptions) {
     var self = this;
-    const maxStationQDefault = 16;
-    const maxStationQMin = 8;
+
+    const propNames = [
+        'useCurl302WorkAround',
+        'nextIsThumbsDown',
+        'superPrevious',
+        'flushThem'
+    ];
+    propNames.forEach(item => {
+        self.config.set(item, playbackOptions[item]);
+        self[item] = playbackOptions[item];
+    });
+
+    self.config.set('bandFilter', playbackOptions.bandFilter);
+
+    return self.validateMaxStationTracks(playbackOptions.maxStationTracks)
+        .then(maxStationTracks => {
+            self.config.set('maxStationTracks', maxStationTracks);
+
+            if (typeof(self.pandoraHandler) !== 'undefined') {
+                return self.pandoraHandler.setMaxStationTracks(maxStationTracks)
+                    .then(() => self.pandoraHandler.setBandFilter(
+                        playbackOptions.bandFilter));
+            }
+            return libQ.resolve();
+        })
+        .then(() => self.pUtil.timeOutToast(
+            'setPlaybackOptionsConf', 'info', 'Pandora Options',
+            'Playback Options Saved', 0));
+};
+
+ControllerPandora.prototype.setMQTTOptionsConf = function (mqttOptions) {
+    var self = this;
+    const fnName = 'setMQTTOptionsConf';
+
+    self.pUtil.announceFn(fnName);
+
+    const propNames = [
+        'mqttEnabled',
+        'mqttHost',
+        'mqttPort',
+        'mqttUsername',
+        'mqttPassword'
+    ];
+    propNames.forEach(item => {
+        self.config.set(item, mqttOptions[item]);
+    });
+
+    self.mqttEnabled = mqttOptions.mqttEnabled;
+
+    self.commandRouter.pushToastMessage(
+        'info', 'Pandora Options', 'MQTT Options Saved'
+    );
+
+    return self.initializeMQTT(mqttOptions);
+};
+
+ControllerPandora.prototype.validateMaxStationTracks = function (maxTracks) {
+    var self = this;
+    const maxStationTracksDefault = 16;
+    const maxStationTracksMin = 8;
 
     const head = 'Invalid Song Maximum!\n';
-    const middle = 'Should be more than ' + maxStationQMin + '\n';
-    const tail = 'Setting to default (' + maxStationQDefault + ').';
+    const middle = 'Should be at least ' + maxStationTracksMin + '\n';
+    const tail = 'Setting to default (' + maxStationTracksDefault + ').';
 
-    let mqParsed = parseInt(mq);
+    let mqParsed = parseInt(maxTracks);
     let msg = isNaN(mqParsed) ? head + tail : head + middle + tail;
 
-    if (mqParsed >= maxStationQMin) {
-        return mqParsed;
+    let result = maxStationTracksDefault;
+    if (mqParsed >= maxStationTracksMin) {
+        result = mqParsed;
     }
     else {
-        self.commandRouter.pushToastMessage('info', 'Pandora Options', msg);
-        return maxStationQDefault;
+        self.commandRouter.pushToastMessage('warning', 'Pandora Options', msg);
     }
+
+    return libQ.resolve(result);
 };
 
-ControllerPandora.prototype.validateBandFilter = function (bf) {
+ControllerPandora.prototype.initializeMQTT = function (options) {
     var self = this;
+    const fnName = 'initializeMQTT';
 
-    if (!bf) return [];
-    try {
-        return bf.split('%');
-    } catch (err) {
-        setTimeout(() => {
-            self.commandRouter.pushToastMessage('info', 'Pandora Options',
-                'Invalid Band Filter!\nShould look like: Kanye%Vanilla Ice\nLeaving blank for now.');
-            return [];
-        }, 5000);
+    self.pUtil.announceFn(fnName);
+
+    if (options.mqttEnabled === true) {
+        if (typeof(self.mqttHandler) === 'undefined') {
+            self.mqttHandler = new mqtt_handler.MQTTHandler(self);
+        }
+        if (!options.mqttPort) options.mqttPort = 1883;
+
+        return self.mqttHandler.init(options)
+            .then(() => self.mqttHandler.connect());
     }
-};
-
-// checks Pandora plugin configuration validity
-ControllerPandora.prototype.checkConfValidity = function (options) {
-    var self = this;
-
-    self.announceFn('checkConfValidity');
-
-    if (!options.email || !options.password) { // not configured
-        self.logError('Missing email or password');
-        self.commandRouter.pushToastMessage('error',
-                            'Pandora',
-                            'Need email address and password. See plugin settings.');
-
-        return libQ.reject(new Error('[Pandora] Need both email and password.'));
-    }
+    self.pUtil.logInfo(fnName, 'MQTT is not enabled in Plugin Configuration');
 
     return libQ.resolve();
+};
+
+// validates Pandora login credentials
+ControllerPandora.prototype.validateAndSetAccountOptions = function (rawOptions) {
+    var self = this;
+    const fnName = 'validateAndSetAccountOptions';
+
+    self.pUtil.announceFn(fnName);
+
+    const email = rawOptions.email;
+    const password = rawOptions.password;
+    const isPandoraOne = rawOptions.isPandoraOne;
+
+    if ((typeof(email) === 'undefined' || typeof(password) === 'undefined') ||
+        (!email || !password)) {
+
+        const msg = 'Need email address and password.  See plugin settings.';
+
+        self.pUtil.timeOutToast(fnName, 'warning', 'Pandora Options', msg, 5000);
+        self.pUtil.logError(fnName, msg);
+
+        return libQ.resolve();
+    }
+    if (typeof(self.pandoraHandler) === 'undefined') { // let's go!
+        return self.initialSetup(email, password, isPandoraOne);
+    }
+    else { // set new credentials, restart auth timer
+        return self.pandoraHandler.setAccountOptions(email, password, isPandoraOne)
+            .then(() => self.preventAuthTimeout.fn());
+    }
 };
 
 // Playback Controls ---------------------------------------------------------------------------------------
@@ -270,13 +384,11 @@ ControllerPandora.prototype.addToBrowseSources = function () {
 
 ControllerPandora.prototype.handleBrowseUri = function (curUri) {
     var self = this;
-    const staRe = new RegExp(/\/pandora\/station_id=(\d+)$/);
-    const stationData = self.pandoraHandler.getStationData();
     const fnName = 'handleBrowseUri';
 
     var response = {
         navigation: {
-            'prev': { uri: '/pandora' },
+            'prev': { uri: uriParts.keys[0] },
             'lists': [
                 {
                     'availableListViews': ['list'],
@@ -286,77 +398,92 @@ ControllerPandora.prototype.handleBrowseUri = function (curUri) {
         }
     };
 
-    function checkForStationChange(newStationId) {
-        let stationChanged = (self.currStation.id !== newStationId);
+    function checkForStationChange(newStationToken) {
+        const stationChanged = (self.currStation.stationToken !== newStationToken);
 
-        self.currStation.id = newStationId;
-        self.currStation.name = stationData[newStationId].name;
-        if (stationChanged && self.flushThem) {
-            return self.flushPandora();
+        if (!Object.keys(self.stationData).includes(newStationToken)) {
+            const subFnName = fnName + '::checkForStationChange';
+            const errMsg = 'newStationToken not found in self.stationData';
+            self.commandRouter.pushToastMessage('error', 'Pandora', errMsg);
+
+            return self.pUtil.generalReject(subFnName, errMsg);
         }
-
-        return libQ.resolve();
-    }
-
-    self.announceFn(fnName);
-
-    if (curUri === '/pandora') {
-        for (let i = 0; i < stationData.length; i++) {
-            response.navigation.lists[0].items.push({
-                service: self.serviceName,
-                type: 'station',
-                artist: '',
-                title: stationData[i].name,
-                name: stationData[i].name,
-                album: '',
-                albumart: stationData[i].albumart,
-                icon: 'fa fa-folder-open-o',
-                uri: '/pandora/station_id=' + i
-            });
-        }
-
-        return libQ.resolve(response);
-    }
-    else if (curUri.match(staRe) !== null) {
-        return checkForStationChange(curUri.match(staRe)[1])
-            .then(() => self.pandoraHandler.fetchTracks())
+        return self.setCurrStationInfo(newStationToken)
             .then(() => {
-                self.lastUri = null;
-                self.cameFromMenu = true;
-
-                let newTracks = self.pandoraHandler.getNewTracks();
-
-                if (newTracks.length > 0) {
-                    return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
-                        .then(() => self.getQueueIndex(newTracks[0].uri))
-                        .then(index => {
-                            self.setCurrQueuePos(index);
-                            return self.commandRouter.stateMachine.play(index);
-                        });
+                if (stationChanged && self.flushThem) {
+                    return self.flushPandora();
                 }
-                self.commandRouter.pushToastMessage('error', 'Pandora',
-                    'Failed to load tracks from ' + self.currStation.name);
-
-                return self.generalReject(fnName, 'failed to load tracks from ' +
-                    self.currStation.name);
             });
     }
-    else {
-        return self.generalReject('handleBrowseUri', 'failed to match uri: ' + curUri);
-    }
+
+    self.pUtil.announceFn(fnName);
+
+    return self.checkForExpiredStations() // SHOULD 'RETURN' BE REMOVED?
+        .then(() => self.pandoraHandler.getStationData())
+        .then(result => {
+            self.stationData = result; // this looks good here
+
+            const sortFn = {
+                alphaFwd: (a, b) => (a[1].name < b[1].name) ? 1 : -1,
+                alphaRev: (a, b) => (a[1].name > b[1].name) ? 1 : -1,
+                // ageOld: (a, b) => (parseInt(a[1].id) > parseInt(b[1].id)) ? 1 : -1,
+                // ageNew: (a, b) => (parseInt(a[1].id) < parseInt(b[1].id)) ? 1 : -1,
+                ageOld: (a, b) => (parseInt(a[0]) > parseInt(b[0])) ? 1 : -1,
+                ageNew: (a, b) => (parseInt(a[0]) < parseInt(b[0])) ? 1 : -1,
+            };
+
+            if (curUri === '/pandora') {
+                const entries = Object.entries(self.stationData).sort(sortFn.ageNew);
+                entries.forEach(pair => { // [key, value]
+                    response.navigation.lists[0].items.push({
+                        service: serviceName,
+                        type: 'station',
+                        artist: pair[1].artist,
+                        title: pair[1].name,
+                        name: pair[1].name,
+                        album: pair[1].album,
+                        albumart: pair[1].albumart,
+                        icon: 'fa fa-folder-open-o',
+                        uri: uriPrefix + pair[0]
+                    });
+                });
+
+                return libQ.resolve(response);
+            }
+            else if (curUri.match(uriStaRE) !== null) {
+                const stationToken = curUri.match(uriStaRE)[1];
+
+                return checkForStationChange(stationToken)
+                    .then(() => self.pandoraHandler.fetchTracks())
+                    .then(() => {
+                        self.lastUri = null;
+                        self.cameFromMenu = true;
+
+                        return self.pandoraHandler.getNewTracks()
+                            .then(newTracks => {
+                                if (newTracks.length > 0) {
+                                    return self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks)
+                                        .then(() => self.getQueueIndex(newTracks[0].uri))
+                                        .then(index => {
+                                            self.setCurrQueuePos(index);
+                                            return self.commandRouter.stateMachine.play(index);
+                                        });
+                                }
+
+                                self.commandRouter.pushToastMessage('error', 'Pandora',
+                                'Failed to load tracks from ' + self.currStation.name);
+    
+                                return self.pUtil.generalReject(fnName, 'Failed to load tracks from ' +
+                                    self.currStation.name);
+                            });
+
+                    });
+            }
+            else {
+                return self.pUtil.generalReject(fnName, 'Failed to match uri: ' + curUri);
+            }
+        });
 };
-
-// // Removes Pandora tracks from other stations from Volumio queue.
-// // Promotes current Pandora station tracks.
-// // Keeps queue items from other services.
-// ControllerPandora.prototype.pruneOtherStations = function () {
-//     var self = this;
-//     let newQ = self.getCurrStationTracks()
-//                 .concat(self.getQueue().filter(item=> item.service !== self.serviceName));
-
-//     if (newQ.length > 0) return self.commandRouter.stateMachine.playQueue.clearAddPlayQueue(newQ);
-//     return self.commandRouter.stateMachine.playQueue.clearQueue();
-// };
 
 // add tags to newTracks and add to mpd queue
 ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
@@ -364,7 +491,7 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
     var defer = libQ.defer();
 
     const fnName = 'appendTracksToMpd';
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
     // resolve address to numeric IP by DNS lookup
     function resolveTrackUri (uri) {
@@ -376,9 +503,9 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
             let host = uri.substr(start, uri.indexOf('/', start) - start);
             result = uri.replace(host, dnsSync.resolve(host));
 
-            self.logInfo(subFnName + ': ' + uri + ' => ' + result);
+            self.pUtil.logInfo(subFnName, uri + ' => ' + result);
         } catch (err) {
-            self.logError(subFnName + ': error resolving ' + uri, err);
+            self.pUtil.logError(subFnName, 'Error resolving ' + uri, err);
             self.commandRouter.pushToastMessage('error', 'Pandora',
                 subFnName + ' error');
             result = uri;
@@ -405,18 +532,36 @@ ControllerPandora.prototype.appendTracksToMpd = function (newTracks) {
 
     let promises = [];
     newTracks.forEach(item => promises.push(setTrackTags(item)));
-    self.logInfo('appendTracksToMpd added ' +
-                  newTracks.length +
-                 ' track(s) to mpd');
+    self.pUtil.logInfo(fnName, 'Added ' + newTracks.length + ' track(s) to mpd');
 
     libQ.all(promises)
-        .then(() => defer.resolve())
         .fail(err => {
-            self.logError('Error in ' + fnName, err);
+            self.pUtil.logError(fnName, ' Error in setTrackTags()', err);
             defer.reject(self.pandoraPrefix() + fnName + ' error: ' + err);
-        });
+        })
+        .then(defer.resolve());
 
     return defer.promise;
+};
+
+ControllerPandora.prototype.setCurrStationInfo = function (stationToken) {
+    var self = this;
+
+    self.currStation = {
+        name: self.stationData[stationToken].name,
+        stationToken: stationToken
+    };
+
+    if (self.mqttEnabled) {
+        const stationNameObj = {
+            stationName: self.currStation.name
+        };
+        return self.mqttHandler.publishData(
+            stationNameObj,
+            'stationName'
+        );
+    }
+    return libQ.resolve();
 };
 
 ControllerPandora.prototype.getQueueIndex = function (uri) {
@@ -444,14 +589,14 @@ ControllerPandora.prototype.getQueueTrack = function (pos=this.getCurrQueuePos()
     return self.commandRouter.stateMachine.getTrack(pos);
 };
 
-ControllerPandora.prototype.getCurrStationTracks = function () {
+ControllerPandora.prototype.getStationTracks = function (stationToken) {
     var self = this;
 
-    self.announceFn('getCurrStationTracks');
+    self.pUtil.announceFn('getStationTracks');
 
     return libQ.resolve(self.getQueue().filter(item =>
-        item.service === self.serviceName &&
-        item.stationId == self.currStation.id));
+        item.service === serviceName && // short-circuit test
+        item.stationToken == stationToken));
 };
 
 ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=false) {
@@ -466,17 +611,46 @@ ControllerPandora.prototype.removeTrack = function (trackUri, justOldTracks=fals
         test = (test && beforeQPos);
     }
 
-    self.announceFn(fnName + ': ' + trackUri);
+    self.pUtil.announceFn(fnName);
 
     if (test) {
         self.commandRouter.stateMachine.removeQueueItem({value: index});
+        self.pUtil.logInfo(fnName, 'Removed track with uri: ' +
+            trackUri + ' at queue index: ' + index);
         return self.mpdPlugin.getState()
             .then(state => self.pushState(state));
     }
     else {
-        return self.logInfo(fnName + ': '+ 'Not removing ' +
+        self.pUtil.logInfo(fnName, 'Not removing track with uri: ' +
             trackUri + ' at queue index: ' + index);
+        return libQ.resolve();
     }
+};
+
+ControllerPandora.prototype.removeStationTracks = function (stationToken, limit) {
+    var self = this;
+    const fnName = 'removeStationTracks';
+    let promises = [];
+
+    self.pUtil.announceFn(fnName);
+
+    return self.getStationTracks(stationToken)
+        .then(stationQ => {
+            const num = limit ? limit : stationQ.length;
+
+            for (let i = 0; i < num; i++) {
+                promises.push(self.pUtil.siesta(
+                    self.removeTrack.bind(self),
+                    fnName,
+                    [stationQ[i].uri, true],
+                    10000 * (i + 1)
+                ));
+            }
+            libQ.all(promises)
+                .fail(err => self.pUtil.generalReject(fnName, err))
+                .then(() => self.pUtil.logInfo(fnName, 'Removing ' +
+                    num + ' tracks from queue'));
+    });
 };
 
 // Remove oldest Pandora tracks from queue to make room for new ones
@@ -485,15 +659,9 @@ ControllerPandora.prototype.removeOldTrackBlock = function (pQPos, diff) {
     const fnName = 'removeOldTrackBlock';
     const limit = Math.min(pQPos, diff);
 
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
-    return self.getCurrStationTracks()
-        .then(pandoraQ => {
-            for (let i = 0; i < limit; i++) {
-                setTimeout(self.removeTrack.bind(self), 10000 * (i + 1), pandoraQ[i].uri, true);
-            }
-            return self.logInfo(fnName + ': Removing ' + limit + ' tracks');
-        });
+    return self.removeStationTracks(self.currStation.stationToken, limit);
 };
 
 ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
@@ -501,9 +669,9 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
     const fnName = 'fetchAndAddTracks';
 
     function getSQInfo() {
-        self.announceFn(fnName + '::getSqInfo');
+        self.pUtil.announceFn(fnName + '::getSqInfo');
 
-        return self.getCurrStationTracks()
+        return self.getStationTracks(self.currStation.stationToken)
             .then(stationQ => { // stationQ: current station tracks
                 const Q = self.getQueue();
                 const qLen = Q.length;
@@ -518,106 +686,96 @@ ControllerPandora.prototype.fetchAndAddTracks = function (curUri) {
             });
     }
 
-    function moveStationTracks(from, to, count, cameFromMenu) {
-        const subFnName = fnName + '::addNewTracks::moveStationTracks';
-        let msg = subFnName + ': Moved tracks [';
+    function moveStationTracks(tracks) {
+        const subFnName = fnName + '::moveStationTracks';
+        const trackLen = tracks.length;
+        const qLen = self.getQueue().length;
+        let msg = 'Moved tracks [';
         let finalPos;
 
-        self.cameFromMenu = false;
+        self.pUtil.announceFn(subFnName);
 
-        function moveTrackLoop() {
-            for (let num = 0; num < count; num++) {
-                self.commandRouter.stateMachine.moveQueueItem(from, to);
-                msg += (num < count - 1) ? num + ', ' :
-                    num + '] from ' + from + ' to ' + to;
-            }
-            self.logInfo(msg);
-            return libQ.resolve(); // just 'return logInfo()' halts chain
+        let to = self.oldQLen - 1;
+        if (!self.cameFromMenu) {
+            self.oldQLen = qLen;
+            to = qLen - 1;
         }
 
-        return moveTrackLoop() // must call return here
-            .then(() => {
-                self.logInfo('cameFromMenu: ' + cameFromMenu);  // DEBUG
-                if (!cameFromMenu) {  // set proper queue position
-                    getSQInfo()
-                        .then(sqInfo => libQ.resolve(sqInfo.sQPos))
-                        .then(sQPos => {
-                            finalPos = to - count + sQPos + 1;
-                            self.setCurrQueuePos(finalPos);
-                            self.mpdPlugin.getState()
-                                .then(state => {
-                                    self.logInfo(subFnName +
-                                        ': Set new Queue Position to ' +
-                                        finalPos);
-                                    return self.pushState(state);
-                                });
-                        });
-                }
-                return libQ.resolve();
-            });
-    }
+        for (let i = 0; i < trackLen; i++) {
+            let trackToMove = tracks.shift();
+            let from = self.getQueueIndex(trackToMove.uri);
+            self.commandRouter.stateMachine.moveQueueItem(from, to);
+            msg += (i < tracks.length - 1) ? i + ', ' :
+                i + '] from ' + from + ' to ' + to;
+        }
+        self.pUtil.logInfo(subFnName, msg);
 
-    function checkIfMovingTracks(isSQLast) {
-        if (!self.flushThem) { // multiple stations in queue
-            const Q = self.getQueue();
-            const qLen = Q.length;
-            let i = 0;
-
-            while (Q[i].stationId != self.currStation.id) {
-                i++;
-            }
-            const stPos = i; // start pos of currStationId tracks
-
-            if (!isSQLast) {
-                while (i < qLen && Q[i].stationId == self.currStation.id) {
-                    i++;
-                }
-
-                const count = i - stPos; // if changing the station from menu
-                let from = stPos;
-                let to = self.oldQLen - 1;
-                if (!self.cameFromMenu) {
-                    self.oldQLen = qLen;
-                    to = qLen - 1;
-                }
-
-                return moveStationTracks(from, to, count, self.cameFromMenu);
-            }
-            self.cameFromMenu = false;
+        if (!self.cameFromMenu) { // set new Qpos
+            getSQInfo()
+                .then(sqInfo => libQ.resolve(sqInfo.sQPos))
+                .then(sQPos => {
+                    finalPos = to - trackLen + sQPos + 1;
+                    self.setCurrQueuePos(finalPos);
+                    self.pUtil.logInfo(subFnName,
+                        'Set new Queue Position to ' +
+                        finalPos);
+                    self.mpdPlugin.getState()
+                        .then(state => self.pushState(state));
+                });
         }
         return libQ.resolve();
     }
 
-    self.announceFn(fnName);
+    function checkIfMovingTracks(isSQLast) {
+        if (!self.flushThem) { // multiple stations in queue
+            if (!isSQLast) {
+                return self.getStationTracks(self.currStation.stationToken)
+                    .then(stationTracks => moveStationTracks(stationTracks));
+            }
+            self.cameFromMenu = false; // *** WHAT'S GOING ON WITH THIS BOOLEAN?
+        }
+
+        return libQ.resolve();
+    }
+
+    self.pUtil.announceFn(fnName);
 
     if (self.state.artist && self.state.title) {
         return self.pandoraHandler.getSongMaxDiff()
             .then(diff1 => {
                 return getSQInfo()
                     .then(sQInfo1 => {
-                        self.logInfo(fnName + '=> diff1: ' + diff1 + ' sQPos1: ' + sQInfo1.sQPos);
-                        if (sQInfo1.sQPos != 0 || diff1 < 0) {
-                            let deferFetchTracks = self.pandoraHandler.fetchTracks();
-                            deferFetchTracks.then(() => {
-                                let newTracks = self.pandoraHandler.getNewTracks();
-                                if (newTracks) {
-                                    // don't add tracks twice (WILL REVISIT)
-                                    // let Q = self.getQueue();
-                                    // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
-                                    return checkIfMovingTracks(sQInfo1.isSQLast)
-                                        .then(() => self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks))
-                                        .then(() => self.pandoraHandler.getSongMaxDiff())
-                                        .then(diff2 => {
-                                            if (diff2 > 0) {
-                                                return getSQInfo()
-                                                    .then(sQInfo2 => {
-                                                        self.logInfo(fnName + '=> diff2 > 0: ' + diff2 + ' sQPos2: ' + sQInfo2.sQPos);
-                                                        return self.removeOldTrackBlock(sQInfo2.sQPos, diff2);
-                                                    });
-                                            }
-                                        });
-                                }
-                            });
+                        self.pUtil.logInfo(fnName, 'diff1: ' + diff1 +
+                            ' sQPos1: ' + sQInfo1.sQPos);
+                        if (sQInfo1.sQPos != 0 || diff1 < 0) { // will fetch tracks
+                            self.pUtil.logInfo(fnName, 'Fetching tracks');
+                            self.pandoraHandler.fetchTracks()
+                                .then(() => self.pandoraHandler.getNewTracks())
+                                .then(newTracks => {
+                                    if (newTracks) {
+                                        // don't add tracks twice (WILL REVISIT)
+                                        // let Q = self.getQueue();
+                                        // if (!newTracks.map(i => i.uri).some(uri => Q.map(j => j.uri).includes(uri))) {
+                                        return checkIfMovingTracks(sQInfo1.isSQLast)
+                                            .then(() => self.commandRouter.stateMachine.playQueue.addQueueItems(newTracks))
+                                            .then(() => self.pandoraHandler.getSongMaxDiff())
+                                            .then(diff2 => {
+                                                if (diff2 > 0) {
+                                                    return getSQInfo()
+                                                        .then(sQInfo2 => {
+                                                            self.pUtil.logInfo(fnName, 'diff2 > 0: ' + diff2 +
+                                                                ' sQPos2: ' + sQInfo2.sQPos);
+                                                            return self.removeOldTrackBlock(sQInfo2.sQPos, diff2);
+                                                        });
+                                                }
+                                            });
+
+                                    }
+                                });
+                        }
+                        else { // no fetch
+                            self.pUtil.logInfo(fnName, 'Not fetching tracks: qPos == 0 && diff1 >= 0');
+                            return checkIfMovingTracks(sQInfo1.isSQLast);
                         }
                     });
             });
@@ -630,20 +788,37 @@ ControllerPandora.prototype.pandoraListener = function () {
     var self = this;
     const fnName = 'pandoraListener';
 
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
     self.mpdPlugin.getState()
         .then(state => {
             let nextTrack = self.getQueueTrack();
 
-            if (nextTrack.service && nextTrack.service === self.serviceName) {
+            if (nextTrack.service && nextTrack.service === serviceName) {
                 self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
                 return self.pushState(state);
             }
             else {
-                self.logInfo(fnName + ': Removing pandoraListener');
+                self.pUtil.logInfo(fnName, 'Removing pandoraListener');
             }
         });
+};
+
+ControllerPandora.prototype.checkForExpiredStations = function () {
+    var self = this;
+    const fnName = 'checkForExpiredStations';
+    const interval = 5 * 60 * 1000; // 5 minutes
+    const stationsExpired = (Date.now() - self.lastStationUpdate >= interval) ? true : false;
+
+    self.pUtil.announceFn(fnName);
+
+    if (stationsExpired) {
+        self.lastStationUpdate = Date.now();
+
+        self.pUtil.logInfo(fnName, 'Stations expired');
+        return self.pandoraHandler.fillStationData();
+    }
+    return libQ.resolve();
 };
 
 // Define a method to clear, add, and play an array of tracks
@@ -651,21 +826,20 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
     var self = this;
     const fnName = 'clearAddPlayTrack';
 
-    self.announceFn(fnName);
-
-    self.currStation.id = track.stationId;
-    self.currStation.name = self.pandoraHandler.getStationData()[track.stationId].name;
+    self.pUtil.announceFn(fnName);
 
     // Here we go! (¡Juana's Adicción!)
     return self.mpdPlugin.clear()
         .then(() => self.streamLifeChecker.stop())
+        .then(() => self.checkForExpiredStations())
         .then(() => {
-            if (self.lastUri !== track.uri) {
+            if (self.lastUri !== track.uri && self.currStation.stationToken == track.stationToken) {
                 self.removeTrack(self.lastUri);
             }
             self.lastUri = track.uri;
 
-            return self.appendTracksToMpd([track]);
+            return self.setCurrStationInfo(track.stationToken) // may be redundant -- investigate!
+                .then(() => self.appendTracksToMpd([track]));
         })
         .then(() => {
             self.mpdPlugin.clientMpd.removeAllListeners('system-player');
@@ -683,7 +857,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
         })
         .then(() => self.fetchAndAddTracks(track.uri))
         .fail(err => {
-            self.logError(fnName + ' error: ' + err);
+            self.pUtil.logError(fnName, 'Error', err);
             return self.goPreviousNext('skip');
         });
 };
@@ -691,7 +865,7 @@ ControllerPandora.prototype.clearAddPlayTrack = function (track) {
 // ControllerPandora.prototype.seek = function (position) {
 //     var self = this;
 
-//     // self.announceFn('seek to ' + position);
+//     // self.pUtil.announceFn('seek to ' + position);
 
 //     // return self.mpdPlugin.seek(position);
 // };
@@ -703,7 +877,7 @@ ControllerPandora.prototype.stop = function () {
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.lastUri = null;
 
-    self.announceFn('stop');
+    self.pUtil.announceFn('stop');
 
     return self.mpdPlugin.stop()
         .then(() => {
@@ -716,7 +890,7 @@ ControllerPandora.prototype.stop = function () {
 ControllerPandora.prototype.pause = function () {
     var self = this;
 
-    self.announceFn('pause');
+    self.pUtil.announceFn('pause');
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
 
@@ -733,7 +907,7 @@ ControllerPandora.prototype.pause = function () {
 ControllerPandora.prototype.resume = function () {
     var self = this;
 
-    self.announceFn('resume');
+    self.pUtil.announceFn('resume');
 
     self.mpdPlugin.clientMpd.removeAllListeners('system-player');
     self.mpdPlugin.clientMpd.once('system-player', self.pandoraListener.bind(self));
@@ -756,9 +930,12 @@ ControllerPandora.prototype.handleMediaButton = function (mediaFn) {
     let result = mediaFn;
 
     if (timeDiffMs < spazPressMs) { // jumpy user
-        self.logInfo(fnName + ': User called ' + mediaFn + ' too rapidly');
-        self.commandRouter.pushToastMessage('info', 'Pandora',
-            'Where\'s the fire? Slow down!');
+        // self.pUtil.logInfo(fnName, 'User called ' + mediaFn + ' too rapidly' +
+        //     '');
+        // self.commandRouter.pushToastMessage('info', 'Pandora',
+        //     'Where\'s the fire? Slow down!');
+        self.pUtil.logInfo(fnName, 'Media track skipped in less than ' +
+            spazPressMs + 'ms.');
         result = 'spaz';
     }
     else if (timeDiffMs > prevPressMs &&
@@ -767,7 +944,7 @@ ControllerPandora.prototype.handleMediaButton = function (mediaFn) {
         result = 'replay';
     }
 
-    self.logInfo(fnName + ': User chose "' + result + '" function');
+    self.pUtil.logInfo(fnName, 'User chose "' + result + '" function');
     self.lastPress = timeNow;
 
     return libQ.resolve(result);
@@ -818,7 +995,7 @@ ControllerPandora.prototype.previous = function () {
     var self = this;
     const fnName = 'previous';
 
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
     return self.goPreviousNext(fnName);
 };
@@ -827,7 +1004,7 @@ ControllerPandora.prototype.next = function () {
     var self = this;
     const fnName = 'next';
 
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
     if (self.nextIsThumbsDown) {
         self.pandoraHandler.thumbsDownTrack(self.getQueueTrack());
@@ -836,10 +1013,31 @@ ControllerPandora.prototype.next = function () {
     return self.goPreviousNext(fnName);
 };
 
+ControllerPandora.prototype.clearAndPlayStation = function (stationJSON) {
+    var self = this;
+    const fnName = 'clearAndPlayStation';
+    const stationName = JSON.parse(stationJSON).stationName;
+
+    self.pUtil.announceFn(fnName);
+
+    // stationName has ' Radio' stripped from end
+    const stationToken = Object.keys(self.stationData)
+        .find(key => self.stationData[key].name.startsWith(stationName));
+
+    if (typeof(stationToken) === 'undefined') {
+        self.pUtil.logError(fnName, 'Station ' + stationName + ' not found!');
+        return libQ.resolve();
+    }
+    const uri = uriPrefix + stationToken;
+
+    return self.flushPandora()
+        .then(() => self.handleBrowseUri(uri));
+};
+
 ControllerPandora.prototype.parseState = function (state) {
     // var self = this;
 
-    const strip = ({ // remove extra keys
+    const strip = ({ // remove extra keys **DO WE NEED THEM? 11/11/2020
         fetchTime,
         station,
         stationToken,
@@ -856,12 +1054,12 @@ ControllerPandora.prototype.parseState = function (state) {
 ControllerPandora.prototype.pushState = function (state) {
     var self = this;
 
-    self.announceFn('pushState');
+    self.pUtil.announceFn('pushState');
 
     state.trackType = 'mp3';
     state.bitdepth = '16 bit';
     state.samplerate = '44.1 KHz';
-    self.commandRouter.servicePushState(state, self.serviceName);
+    self.commandRouter.servicePushState(state, serviceName);
 
     return self.commandRouter.stateMachine.setConsumeUpdateService('pandora');
 };
@@ -870,30 +1068,32 @@ ControllerPandora.prototype.explodeUri = function (uri) {
     // Mandatory: retrieve all info for a given URI
     var self = this;
     const fnName = 'explodeUri';
-    const uriMatch = uri.match(/\/pandora\/station_id=(\d+)\/track_id=\d+/);
 
-    self.announceFn(fnName);
+    self.pUtil.announceFn(fnName);
 
-    if (uriMatch !== null) {
-        const newStationId = uriMatch[1];
+    if (uriStaRE !== null) {
+        const newStationToken = uriStaRE[1];
 
-        if (self.currStation.id != newStationId) { // for checkIfMovingTracks()
+        if (self.currStation.stationToken != newStationToken) { // for checkIfMovingTracks()
             self.oldQ = self.getQueue();
             self.oldQLen = self.oldQ.length;
         }
 
         // return a one elememnt track object array
-        const Q = self.getQueue();
-        const tracks = Q.concat(self.pandoraHandler.getNewTracks());
-        const response = tracks.filter(item => item.uri === uri).slice(0, 1);
+        return self.pandoraHandler.getNewTracks()
+            .then(tracks => {
+                const Q = self.getQueue();
+                Q.concat(tracks);
+                const response = tracks.filter(item => item.uri == uri).slice(0, 1);
 
-        return libQ.resolve(response);
+                return libQ.resolve(response);
+            });
     }
 
-    let errMsg = 'explodeUri could not resolve uri: ' + uri;
+    let errMsg = 'Could not resolve uri: ' + uri;
     self.commandRouter.pushToastMessage('error', 'Pandora', errMsg);
 
-    return self.generalReject(errMsg);
+    return self.pUtil.generalReject(fnName, errMsg);
 };
 
 ControllerPandora.prototype.search = function (query) {
@@ -920,44 +1120,19 @@ ControllerPandora.prototype._searchTracks = function (results) {
 
 };
 
-// Logging helper functions --------------------------------------------------------------------------------
+// NOTES:
 
-ControllerPandora.prototype.pandoraPrefix = function() {
-    var self = this;
-    return self.datePrefix() +  '[Pandora] ';
-};
+// We will make an object with the stationToken as the primary key.  *** DONE ***
+// When the pandoraHandler fetches new tracks, it will grab a new stationList and check it.
+// Alternatively, it could just try to grab a track and handle an error from the API -- *** DO THIS ***
 
-ControllerPandora.prototype.datePrefix = function() {
-    // var self = this;
-    return '[' + Date.now() + '] ';
-};
+// That code is: *** [1006] STATION_DOES_NOT_EXIST. Station does not exist. ***
 
-ControllerPandora.prototype.logInfo = function (msg) {
-    var self = this;
-    return self.logger.info(self.pandoraPrefix() + msg);
-};
+// What about clearAddPlayTrack?  it should play the track from a deleted station
+// but we need to find out at some point!  we will know when new tracks are fetched
 
-ControllerPandora.prototype.logError = function (msg, err) {
-    var self = this;
+// So if no station, toast a message to that effect, and log the error.
+// I'm pretty sure if the station is deleted and an old track is played, it will still play.  *** TEST THIS ***
+// That's all I have at 5:35 AM 11/10/2020
 
-    let errMsg = self.pandoraPrefix() + msg;
-    if (err !== undefined) {
-        errMsg += ': ' + err;
-    }
-    return self.logger.error(errMsg);
-};
-
-ControllerPandora.prototype.generalReject = function (msg, err) {
-    var self = this;
-
-    if (err !== undefined) {
-        msg += ' error: ' + err;
-    }
-    let rejection = self.pandoraPrefix() + msg;
-    return libQ.reject(new Error(rejection));
-};
-
-ControllerPandora.prototype.announceFn = function(fnName) {
-    var self = this;
-    return self.commandRouter.pushConsoleMessage(self.datePrefix() + 'ControllerPandora::' + fnName);
-};
+// TO DO ALSO:  add sorting option by date created or alphabetical

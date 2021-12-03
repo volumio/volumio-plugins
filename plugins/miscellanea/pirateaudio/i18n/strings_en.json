@@ -1,0 +1,22 @@
+{
+  "PLUGIN_CONFIGURATION":"Pirate Audio Plugin Configuration",
+  "CONFIG": {
+    "TITLE": "Pirate Audio Configuration",
+    "LISTMAX": "How many entries should be maximum displayed on a list view?",
+    "GPIOYBUTTON": "Which GPIO pin is used by your pirate audio hat and revision for the Y button?",
+    "SLEEPTIMER": "After how many minutes should sleeptimer shut down volumio? ",
+    "SAVE":"Save"
+  },
+  "DISPLAY": {
+    "MUSICSELECTION": "Music selection",
+    "SHUTDOWN": "Shutdown?",
+    "REBOOT": "Reboot Pi?",
+    "LOSTCONNECTION": "Lost connection",
+    "EMPTY": "empty",
+    "WAIT": "please wait",
+    "NOTSUPPORTED": "not supported by plugin",
+    "SEEK": "Seek",
+    "PREVNEXT": "previous / next Song",
+    "SETSLEEPTIMER": "set sleeptimer"
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_main_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_MAIN_SECTION_TITLE",
+      "icon": "fa-wrench",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveMainSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "gpionum",
+          "debounceTimeout",
+          "activeLow",
+          "edge",
+          "clicktimeout"
+        ]
+      },
+      "content": [
+        {
+          "id": "gpionum",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.GPIONUM_DOC",
+          "label": "TRANSLATE.GPIONUM_LBL",
+          "attributes": [ {"placeholder": "3"} ],
+          "value": ""
+        },
+         {
+          "id": "debounceTimeout",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.DEBOUNCE_DOC",
+          "label": "TRANSLATE.DEBOUNCE_LBL",
+          "attributes": [ {"placeholder": "5"} ],
+          "value": ""
+        },
+        {
+          "id": "activeLow",
+          "element": "select",
+          "doc": "TRANSLATE.ACTIVELOW_DOC",
+          "label": "TRANSLATE.ACTIVELOW_LBL",
+          "value": {"value": 1,
+                    "label": "true"
+          },
+          
+           "options": [
+            { 
+              "value": 0,
+              "label": "false"
+            },
+            {
+              "value": 1,
+              "label": "true"
+            }
+                      ]
+        },
+        {
+          "id": "edge",
+          "element": "select",
+          "doc": "TRANSLATE.EDGE_DOC",
+          "label": "TRANSLATE.EDGE_LBL",
+          "value": {"value": 0,
+                    "label": "falling"
+          },
+           "options": [
+            { 
+              "value": 0,
+              "label": "falling"
+            },
+            { 
+              "value": 1,
+              "label": "rising"
+            },
+            { 
+              "value": 2,
+              "label": "both"
+            },
+            {
+              "value": 3,
+              "label": "none"
+            }
+                      ]
+        },
+        {
+          "id": "clicktimeout",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.CLICKTIMEOUT_DOC",
+          "label": "TRANSLATE.CLICKTIMEOUT_LBL",
+          "attributes": [ {"placeholder": "800"} ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_action_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_ACTION_SECTION_TITLE",
+      "icon": "fa-toggle-on",
+      "onSave": {"type":"controller", "endpoint":"user_interface/gpiorandom", "method":"saveActionSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "nbsongs",
+          "singleclick",
+          "singleclickAction",
+          "singleuri",
+          "singleradio",
+          "doubleclick",
+          "doubleclickAction",
+          "doubleuri",
+          "doubleradio",
+          "tripleclick",
+          "tripleclickAction",
+          "tripleuri",
+          "tripleradio"
+        ]
+      },
+      "content": [
+        {
+          "id": "nbsongs",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.NBSONGS_DOC",
+          "label": "TRANSLATE.NBSONGS_LBL",
+          "attributes": [ {"placeholder": "20"} ],
+          "value": ""
+        },
+        {
+          "id": "singleclick",
+          "element": "switch",
+          "doc": "TRANSLATE.SINGLECLICK_DOC",
+          "label": "TRANSLATE.SINGLECLICK_LBL",
+          "value": false
+        },
+        {
+          "id": "singleclickAction",
+          "element": "select",
+          "doc": "TRANSLATE.SINGLECLICKACTION_DOC",
+          "label": "TRANSLATE.SINGLECLICKACTION_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_RANDOM_LBL"
+          },
+
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_RANDOM_LBL"
+            },
+            {
+              "value": 1,
+              "label": "TRANSLATE.OPTION_PLAYPAUSE_LBL"
+            },
+            {
+              "value": 2,
+              "label": "TRANSLATE.OPTION_PLAYURI_LBL"
+            },
+            {
+              "value": 3,
+              "label": "TRANSLATE.OPTION_PLAY_RADIO_LBL"
+            }
+                    ],
+            
+          "visibleIf": {
+            "field": "singleclick",
+            "value": true
+          }
+        },
+        {
+          "id": "singleuri",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.URI_DOC",
+          "label": "TRANSLATE.URI_LBL",
+          "attributes": [ {"placeholder": "https://scdn.nrjaudio.fm/adwz1/fr/30621/mp3_128.mp3?origine=tune-in-radio"} ],
+          "value": "",
+          
+          "visibleIf": {
+            "field": "singleclickAction",
+            "value": 2
+          }
+        },
+        {
+          "id": "singleradio",
+          "element": "select",
+          "doc": "TRANSLATE.RADIO_DOC",
+          "label": "TRANSLATE.RADIO_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_LOADING"
+          },
+          
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_LOADING"
+            }
+                    ],
+          
+          "visibleIf": {
+            "field": "singleclickAction",
+            "value": 3
+          }
+        },
+        {
+          "id": "doubleclick",
+          "element": "switch",
+          "doc": "TRANSLATE.DOUBLECLICK_DOC",
+          "label": "TRANSLATE.DOUBLECLICK_LBL",
+          "value": false
+        },
+        {
+          "id": "doubleclickAction",
+          "element": "select",
+          "doc": "TRANSLATE.DOUBLECLICKACTION_DOC",
+          "label": "TRANSLATE.DOUBLECLICKACTION_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_RANDOM_LBL"
+          },
+
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_RANDOM_LBL"
+            },
+            {
+              "value": 1,
+              "label": "TRANSLATE.OPTION_PLAYPAUSE_LBL"
+            },
+            {
+              "value": 2,
+              "label": "TRANSLATE.OPTION_PLAYURI_LBL"
+            },
+            {
+              "value": 3,
+              "label": "TRANSLATE.OPTION_PLAY_RADIO_LBL"
+            }          ],
+            
+          "visibleIf": {
+            "field": "doubleclick",
+            "value": true
+          }
+        },
+        {
+          "id": "doubleuri",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.URI_DOC",
+          "label": "TRANSLATE.URI_LBL",
+          "attributes": [ {"placeholder": "https://scdn.nrjaudio.fm/adwz1/fr/30621/mp3_128.mp3?origine=tune-in-radio"} ],
+          "value": "",
+          
+          "visibleIf": {
+            "field": "doubleclickAction",
+            "value": 2
+          }
+        },
+        {
+          "id": "doubleradio",
+          "element": "select",
+          "doc": "TRANSLATE.RADIO_DOC",
+          "label": "TRANSLATE.RADIO_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_LOADING"
+          },
+          
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_LOADING"
+            }
+                    ],
+          
+          "visibleIf": {
+            "field": "doubleclickAction",
+            "value": 3
+          }
+        },
+        {
+          "id": "tripleclick",
+          "element": "switch",
+          "doc": "TRANSLATE.TRIPLECLICK_DOC",
+          "label": "TRANSLATE.TRIPLECLICK_LBL",
+          "value": false
+        },
+        {
+          "id": "tripleclickAction",
+          "element": "select",
+          "doc": "TRANSLATE.TRIPLECLICKACTION_DOC",
+          "label": "TRANSLATE.TRIPLECLICKACTION_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_RANDOM_LBL"
+          },
+
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_RANDOM_LBL"
+            },
+            {
+              "value": 1,
+              "label": "TRANSLATE.OPTION_PLAYPAUSE_LBL"
+            },
+            {
+              "value": 2,
+              "label": "TRANSLATE.OPTION_PLAYURI_LBL"
+            },
+            {
+              "value": 3,
+              "label": "TRANSLATE.OPTION_PLAY_RADIO_LBL"
+            }          ],
+            
+          "visibleIf": {
+            "field": "tripleclick",
+            "value": true
+          }
+        },
+        {
+          "id": "tripleuri",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.URI_DOC",
+          "label": "TRANSLATE.URI_LBL",
+          "attributes": [ {"placeholder": "https://scdn.nrjaudio.fm/adwz1/fr/30621/mp3_128.mp3?origine=tune-in-radio"} ],
+          "value": "",
+          
+          "visibleIf": {
+            "field": "tripleclickAction",
+            "value": 2
+          }
+        },
+        {
+          "id": "tripleradio",
+          "element": "select",
+          "doc": "TRANSLATE.RADIO_DOC",
+          "label": "TRANSLATE.RADIO_LBL",
+          "value": {"value": 0,
+                    "label": "TRANSLATE.OPTION_LOADING"
+          },
+          
+          "options": [
+            { 
+              "value": 0,
+              "label": "TRANSLATE.OPTION_LOADING"
+            }
+                    ],
+          
+          "visibleIf": {
+            "field": "tripleclickAction",
+            "value": 3
+          }
+        }
+      ]
+    }
+  ]
+}

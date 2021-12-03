@@ -1,0 +1,21 @@
+{
+  "PLUGIN_CONFIGURATION":"Réglages du plugin",
+  "PLUGIN_SECTION_TITLE":"Réglages de Status2Mqtt",
+  "MQTT_USERNAME_LBL":"Nom d'utilisateur",
+  "MQTT_USERNAME_DOC":"Utilisateur pour la connexion mqtt (peut être vide)",
+  "MQTT_PASSWORD_LBL":"Mot de passe",
+  "MQTT_PASSWORD_DOC":"Mot de passe pour la connexion mqtt (peut être vide)",
+  "MQTT_SERVER_LBL":"Serveur",
+  "MQTT_SERVER_DOC":"Adresse du serveur mqtt (adresse ip ou nom complet)",
+  "MQTT_TOPIC_LBL":"Topic",
+  "MQTT_TOPIC_DOC":"le 'Topic' mqtt sur lequel les messages sont publiés",
+  "MQTT_CLIENTID_LBL":"ID client",
+  "MQTT_CLIENTID_DOC":"ID du client qui envoie les messages",
+  "SAVE":"Enregistrer",
+  "ERROR_SERVER_EMTPY_TITLE":"Le champ serveur est vide",
+  "ERROR_SERVER_EMTPY_MESSAGE":"Impossible de fair quoi que ce soit si le serveur n'est pas renseigné",
+  "ERROR_SERVER_INVALID_TITLE":"Serveur invalide",
+  "ERROR_SERVER_INVALID_MESSAGE":"Le serveur doit commencer par mqtt:// ou mqtts://",
+  "SUCCESS_TITLE":"Paramètres enregistrés",
+  "SUCCESS_MESSAGE":"Paramètres enregistrés avec succès"
+}

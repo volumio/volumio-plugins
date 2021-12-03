@@ -1,0 +1,66 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+   {
+      "id": "randomizer",
+      "element": "section",
+      "label": "Randomizer",
+      "icon": "fa-random",
+      "onSave": {"type":"controller", "endpoint":"miscellanea/randomizer", "method":"saveSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "tracks"
+        ]
+      },
+      "content": [
+        {
+          "id": "tracks",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.TRACKS_DOC",
+          "label": "TRANSLATE.TRACKS_LBL",
+          "attributes": [ {"placeholder": "25"} ],
+          "value": ""
+        },
+        {
+          "id": "randomtracks",
+          "element": "button",
+          "doc": "TRANSLATE.RANDOMTRACKS_DOC",
+          "label": "TRANSLATE.RANDOMTRACKS_LBL",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "miscellanea/randomizer",
+            "method": "randomTracks"
+            }
+          },
+          {
+          "id": "randomalbum",
+          "element": "button",
+          "doc": "TRANSLATE.RANDOMALBUM_DOC",
+          "label": "TRANSLATE.RANDOMALBUM_LBL",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "miscellanea/randomizer",
+            "method": "randomAlbum"
+            }
+          },        
+          {
+          "id": "tracktoalbum",
+          "element": "button",
+          "doc": "TRANSLATE.TRACKTOALBUM_DOC",
+          "label": "TRANSLATE.TRACKTOALBUM_LBL",
+          "onClick": {
+            "type": "plugin",
+            "endpoint": "miscellanea/randomizer",
+            "method": "trackToAlbum"
+            }
+          }
+      ]
+   }
+  ]
+}
+
+
