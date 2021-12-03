@@ -87,7 +87,9 @@
 				"pushToastOnScrobble",
 				"scrobbleFromStream",
 				"supportedStreamingServices",
-				"streamScrobbleThreshold"
+				"streamScrobbleThreshold",
+				"titleSeparator",
+				"artistFirst"
 			]
 		},
 		"content": [
@@ -109,7 +111,18 @@
 					"value": 75,
 					"label": "75% of the song"
 				},
-				"options": []
+				"options": [
+					{"label":"50% of the song","value":50},
+					{"label":"55% of the song","value":55},
+					{"label":"60% of the song","value":60},
+					{"label":"65% of the song","value":65},
+					{"label":"70% of the song","value":70},
+					{"label":"75% of the song","value":75},
+					{"label":"80% of the song","value":80},
+					{"label":"85% of the song","value":85},
+					{"label":"90% of the song","value":90},
+					{"label":"95% of the song","value":95},
+					{"label":"99% of the song","value":99}]
 			},
 			{
 			  "id":"pushToastOnScrobble",
@@ -147,6 +160,29 @@
 				"visibleIf": {
 					"field": "scrobbleFromStream",
 					"value": true
+				}
+			},
+			{
+			  "id":"titleSeparator",
+			  "element": "input",
+			  "label": "TRANSLATE.LASTFM.COMPOSITE_TITLE_SEPARATOR",
+			  "doc": "TRANSLATE.LASTFM.D_COMPOSITE_TITLE_SEPARATOR",
+			  "description": "TRANSLATE.LASTFM.DD_COMPOSITE_TITLE_SEPARATOR",
+			  "value": " - ",
+			  "visibleIf": {
+					"field": "scrobbleFromStream",
+					"value": true
+			  }
+			},
+			{
+			  "id":"artistFirst",
+			  "element": "switch",
+			  "label": "TRANSLATE.LASTFM.COMPOSITE_TITLE_ARTISTFIRST",
+			  "doc": "TRANSLATE.LASTFM.D_COMPOSITE_TITLE_ARTISTFIRST",
+			  "value": false,
+			  "visibleIf": {
+				"field": "scrobbleFromStream",
+				"value": true
 				}
 			}
 		]
