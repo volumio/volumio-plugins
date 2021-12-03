@@ -1,0 +1,18 @@
+{
+	"name": "ambx",
+	"version": "1.0.2",
+	"description": "A rudimentary controller for the Philips amBX sound system.",
+	"main": "index.js",
+	"author": "Jan Siegmund",
+	"license": "BSD-3-Clause",
+	"volumio_info": {
+		"prettyName": "Philips amBX",
+		"icon": "fa-cogs",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

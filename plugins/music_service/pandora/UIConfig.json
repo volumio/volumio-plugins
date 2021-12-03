@@ -1,0 +1,191 @@
+{
+  "page": {
+    "label": "TRANSLATE.CONFIGURATION.PANDORA_CONFIGURATION_LABEL"
+  },
+  "sections": [
+    {
+      "id": "section_account_options",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.PANDORA_ACCOUNT_OPTIONS_LABEL",
+      "icon": "fa-key",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setAccountOptionsConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
+        "data": [
+          "email",
+          "password",
+          "isPandoraOne"
+        ]
+      },
+      "content": [
+        {
+          "id": "email",
+          "type": "string",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_EMAIL_LABEL",
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_PASSWORD_LABEL",
+          "value": ""
+        },
+        {
+          "id": "isPandoraOne",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_ONE_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_ONE_LABEL",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "section_playback_options",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.PANDORA_PLAYBACK_OPTIONS_LABEL",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setPlaybackOptionsConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
+        "data": [
+          "useCurl302WorkAround",
+          "nextIsThumbsDown",
+          "superPrevious",
+          "maxStationTracks",
+          "flushThem",
+          "bandFilter"
+        ]
+      },
+      "content": [
+        {
+          "id": "useCurl302WorkAround",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_USE_CURL_302_WORKAROUND_LABEL",
+          "value": false
+        },
+        {
+          "id": "nextIsThumbsDown",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_NEXT_IS_THUMBS_DOWN_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_NEXT_IS_THUMBS_DOWN_LABEL",
+          "value": false
+        },
+        {
+          "id": "superPrevious",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_DUAL_PREVIOUS_FUNCTION_LABEL",
+          "value": false
+        },
+        {
+          "id": "maxStationTracks",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_TRACKS_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MAX_STATION_TRACKS_LABEL",
+          "value": 16
+        },
+        {
+          "id": "flushThem",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_FLUSH_ON_STATION_CHANGE_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_FLUSH_ON_STATION_CHANGE_LABEL",
+          "value": false
+        },
+        {
+          "id": "bandFilter",
+          "type": "string",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_BAND_FILTER_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_BAND_FILTER_LABEL",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "section_mqtt_options",
+      "element": "section",
+      "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_OPTIONS_LABEL",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"music_service/pandora", "method":"setMQTTOptionsConf"},
+      "saveButton": {
+        "label": "TRANSLATE.CONFIGURATION.PANDORA_SAVE_LABEL",
+        "data": [
+          "mqttEnabled",
+          "mqttHost",
+          "mqttPort",
+          "mqttUsername",
+          "mqttPassword"
+        ]
+      },
+      "content": [
+        {
+          "id": "mqttEnabled",
+          "type": "boolean",
+          "element": "switch",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_ENABLED_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_ENABLED_LABEL",
+          "value": false
+        },
+        {
+          "id": "mqttHost",
+          "type": "string",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_HOST_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_HOST_LABEL",
+          "value": "",
+          "visibleIf": {
+            "field": "mqttEnabled",
+            "value": true
+          }
+        },
+        {
+          "id": "mqttPort",
+          "type": "number",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_PORT_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_PORT_LABEL",
+          "value": 1883,
+          "visibleIf": {
+            "field": "mqttEnabled",
+            "value": true
+          }
+        },
+        {
+          "id": "mqttUsername",
+          "type": "string",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_USERNAME_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_USERNAME_LABEL",
+          "value": "",
+          "visibleIf": {
+            "field": "mqttEnabled",
+            "value": true
+          }
+        },
+        {
+          "id": "mqttPassword",
+          "type": "password",
+          "element": "input",
+          "doc": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_PASSWORD_DOC",
+          "label": "TRANSLATE.CONFIGURATION.PANDORA_MQTT_PASSWORD_LABEL",
+          "value": "",
+          "visibleIf": {
+            "field": "mqttEnabled",
+            "value": true
+          }
+        }
+      ]
+    }
+  ]
+}

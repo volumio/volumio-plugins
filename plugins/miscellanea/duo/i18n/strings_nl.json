@@ -1,0 +1,27 @@
+{
+	"DUO":{
+	"DUOCONF":"DUO Configuratie",
+	"GENERAL":"Integratie Instellingen",
+	"DD_GENERAL":"Configureer de DUO integratie; een foutieve configuratie zorgt ervoor dat DUO niet gebruikt wordt (fail-open).",
+		"ENABLE_DUO":"Schakel DUO in voor SSH-sessies",
+		"D_ENABLE_DUO":"Schakel de DUO PAM in of uit voor SSH authenticatie",
+		"DD_ENABLE_DUO":"Toggles the DUO PAM; disabling it bypasses DUO",
+		"DD_ENABLE_DUO":"Schakelt de DUO PAM in of uit; uitschakelen betekent DUO niet gebruiken",
+		"INTEGRATION_KEY":"Integratiesleutel (Integration key)",
+		"D_INTEGRATION_KEY":"De integratiesleutel is in het DUO-adminportaal te vinden in het applicatie-configuratiescherm",
+		"DD_INTEGRATION_KEY":"DUO integratiesleutel",
+		"SECRET_KEY":"Geheime sleutel (Secret key)",
+		"D_SECRET_KEY":"De geheime sleutel is in het DUO-adminportaal te vinden in het applicatie-configuratiescherm",
+		"DD_SECRET_KEY":"DUO geheime sleutel",
+		"API_HOST":"API enpoint (API hostname)",
+		"D_API_HOST":"Het API endpoint is in het DUO-adminportaal te vinden in het applicatie-configuratiescherm",
+		"DD_API_HOST":"DUO API endpoint",
+		"FAIL_MODE":"Failmode",
+		"D_FAIL_MODE":"De waarde die bepaalt wat er moet gebeuren bij errors in de DUO PAM; safe (toegang toestaan) of secure (toegang weigeren). De standaardwaarde is safe.",
+		"DD_FAIL_MODE":"Als je twijfelt, laat hem dan op safe staat",
+		"DISABLE_PASSWORD":"Schakel wachtwoord uit",
+		"D_DISABLE_PASSWORD":"Om geen wachtwoord in te hoeven vullen voor SSH-sessies (is toch algemeen bekend), moet deze optie ingeschakeld worden. Inloggen blijft mogelijk door gebruik te maken van DUO authenticatie.",
+		"DD_DISABLE_PASSWORD":"Schakelt de wachtwoordvraag uit voor SSH-sessies",
+	"SAVE": "Opslaan"
+	}
+}

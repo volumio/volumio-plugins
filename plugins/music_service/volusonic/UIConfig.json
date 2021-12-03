@@ -1,0 +1,228 @@
+{
+	"page": {
+		"label": "TRANSLATE.PLUGIN_CONFIGURATION"
+	},
+	"sections": [{
+			"id": "connect",
+			"element": "section",
+			"label": "TRANSLATE.PLUGIN_CRED_DESC",
+			"icon": "fa-plug",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/volusonic",
+				"method": "savePluginCredentials"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SAVE_CREDS",
+				"data": [
+					"server",
+					"username",
+					"auth",
+					"salt"
+				]
+			},
+			"content": [{
+					"id": "server",
+					"type": "text",
+					"element": "input",
+					"doc": "TRANSLATE.SERVER_DOC",
+					"label": "TRANSLATE.SERVER",
+					"value": ""
+				},
+				{
+					"id": "username",
+					"type": "text",
+					"element": "input",
+					"doc": "TRANSLATE.USERNAME_DOC",
+					"label": "TRANSLATE.USERNAME",
+					"value": ""
+				},
+				{
+					"id": "auth",
+					"type": "password",
+					"element": "input",
+					"doc": "TRANSLATE.PASSWORD_DOC",
+					"label": "TRANSLATE.PASSWORD",
+					"value": ""
+				},
+				{
+					"id": "salt",
+					"doc": "TRANSLATE.SALT_DOC",
+					"label": "TRANSLATE.SALT",
+					"element": "switch",
+					"value": true
+				}
+			]
+		},
+		{
+			"id": "options",
+			"element": "section",
+			"label": "TRANSLATE.PLUGIN_OPTS_DESC",
+			"icon": "fa-wrench",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "music_service/volusonic",
+				"method": "savePluginOptions"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SAVE",
+				"data": [
+					"transcode",
+					"listsSize",
+					"artSize",
+					"timeOut",
+					"ID3",
+					"metas",
+					"path"
+				]
+			},
+			"content": [{
+					"id": "transcode",
+					"doc": "TRANSLATE.TRANSCODE_DOC",
+					"label": "TRANSLATE.TRANSCODE",
+					"element": "select",
+					"value": {
+						"value": 1,
+						"label": "TRANSLATE.RAW"
+					},
+					"options": [{
+							"value": 0,
+							"label": "TRANSLATE.RAW"
+						},
+						{
+							"value": 1,
+							"label": "MP3 320kbps"
+						},
+						{
+							"value": 2,
+							"label": "MP3 256kbps"
+						},
+						{
+							"value": 3,
+							"label": "MP3 128kbps"
+						},
+						{
+							"value": 4,
+							"label": "MP3 64kbps"
+						}
+					]
+				},
+				{
+					"id": "listsSize",
+					"doc": "TRANSLATE.LISTS_DOC",
+					"label": "TRANSLATE.LISTS",
+					"element": "select",
+					"value": {
+						"value": 3,
+						"label": "200"
+					},
+					"options": [{
+							"value": 0,
+							"label": "500"
+						},
+						{
+							"value": 1,
+							"label": "200"
+						},
+						{
+							"value": 2,
+							"label": "100"
+						},
+						{
+							"value": 3,
+							"label": "50"
+						}
+					]
+				},
+				{
+					"id": "artSize",
+					"doc": "TRANSLATE.ART_SIZE_DOC",
+					"label": "TRANSLATE.ART_SIZE",
+					"element": "select",
+					"value": {
+						"value": 2,
+						"label": "800"
+					},
+					"options": [{
+							"value": 0,
+							"label": "1200"
+						},
+						{
+							"value": 1,
+							"label": "800"
+						},
+						{
+							"value": 2,
+							"label": "600"
+						},
+						{
+							"value": 3,
+							"label": "400"
+						},
+						{
+							"value": 4,
+							"label": "200"
+						}
+					]
+				},
+				{
+					"id": "timeOut",
+					"doc": "TRANSLATE.TIME_OUT_DOC",
+					"label": "TRANSLATE.TIME_OUT",
+					"element": "select",
+					"value": {
+						"value": 600,
+						"label": "10mn"
+					},
+					"options": [{
+							"value": 300,
+							"label": "5mn"
+						},
+						{
+							"value": 600,
+							"label": "10mn"
+						},
+						{
+							"value": 1200,
+							"label": "20mn"
+						},
+						{
+							"value": 3600,
+							"label": "1h"
+						},
+						{
+							"value": 7200,
+							"label": "2h"
+						},
+						{
+							"value": 14400,
+							"label": "4h"
+						}
+					]
+				},
+				{
+					"id": "ID3",
+					"doc": "TRANSLATE.ID3",
+					"label": "ID3",
+					"element": "switch",
+					"value": true
+				},
+				{
+					"id": "metas",
+					"doc": "TRANSLATE.METAS",
+					"label": "Metadatas",
+					"element": "switch",
+					"value": true
+				},
+				{
+					"id": "path",
+					"doc": "TRANSLATE.PATH_DOC",
+					"label": "TRANSLATE.PATH",
+					"element": "switch",
+					"value": true
+				}
+			]
+		}
+
+	]
+}

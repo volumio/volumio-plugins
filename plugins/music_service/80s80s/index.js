@@ -11,8 +11,8 @@ var apiUrl;
 var timeOffset = 32000;
 var currentChannel;
 var currentChannelCover;
-var timeUrl = 'http://ntp-a4.nict.go.jp/cgi-bin/json';
-
+//var timeUrl = 'http://ntp-a4.nict.go.jp/cgi-bin/json'; EOL: March 31, 2022 see here https://jjy.nict.go.jp/news/index-e.html
+// modifications in playNextTrack line 625
 module.exports = Controller80s80s;
 
 function Controller80s80s(context) {
@@ -275,10 +275,15 @@ Controller80s80s.prototype.clearAddPlayTrack = function (track) {
     return self.setSongs(apiUrl + '&count=2')
         .then(function (result) {
             songs = result;
+        })
+        .then(function() {
             return self.mpdPlugin.sendMpdCommand('stop', []);
         })
         .then(function () {
             return self.mpdPlugin.sendMpdCommand('clear', []);
+        })
+        .then(function () {
+            return self.mpdPlugin.sendMpdCommand('consume 1', []);
         })
         .then(function () {
             self.logger.info('[' + Date.now() + '] ' + '[80s80s] adding url: ' + track.uri);
@@ -470,28 +475,32 @@ Controller80s80s.prototype.getContentOfUrl = function (url) {
     var self = this;
     self.logger.info('[' + Date.now() + '] ' + '[80s80s] getContentOfUrl started with url ' + url);
     var defer = libQ.defer();    
-    
+ 
     http.get(url, (resp) => {
     	if (resp.statusCode < 200 || resp.statusCode > 299) {
         	self.logger.info('[' + Date.now() + '] ' + '[80s80s] Failed to query api, status code: ' + resp.statusCode);
-        	defer.resolve(null);
-        	self.errorToast(station, 'ERROR_STREAM_SERVER');
-		}
-  		let data = '';
-  
-  		// A chunk of data has been recieved.
-  		resp.on('data', (chunk) => {
-    		data += chunk;
-  		});
-  
-  		// The whole response has been received.
-  		resp.on('end', () => {
-    		defer.resolve(data);
-  		});
+	    //self.errorToast('web', 'ERROR_STREAM_SERVER');
+            // get fake data with duration = 15s
+            let data = '';
+            data = fs.readFileSync(__dirname + '/fake-data.json');
+            defer.resolve(data);
+	} else {
+            let data = '';
+    
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+    
+            // The whole response has been received.
+            resp.on('end', () => {
+                defer.resolve(data);
+            });
+        }
 	}).on("error", (err) => {
 		self.logger.info('[' + Date.now() + '] ' + '[80s80s] Error: ' + err.message);
   		defer.resolve(null);
-        self.errorToast(station, 'ERROR_STREAM_SERVER');
+        self.errorToast('web', 'ERROR_STREAM_SERVER');
 	});
     
     return defer.promise;
@@ -517,6 +526,7 @@ Controller80s80s.prototype.search = function (query) {
 };
 
 Controller80s80s.prototype.errorToast = function (station, msg) {
+    var self = this;
     var errorMessage = self.getRadioI18nString(msg);
     errorMessage.replace('{0}', station.toUpperCase());
     self.commandRouter.pushToastMessage('error',
@@ -630,9 +640,9 @@ Controller80s80s.prototype.playNextTrack = function (songsArray) {
         return libQ.resolve(self.pushSongState(songsArray[1]))
         .then(function () {
             //get now and calculate the difference
-            self.getContentOfUrl(timeUrl).then(function (currentTime) {
+            //self.getContentOfUrl(timeUrl).then(function (currentTime) {
                 var next = songsArray[0].airtime;
-                var now = currentTime.st;      
+                var now = Math.floor(Date.now()); //var now = currentTime.st;
                 self.logger.info('[' + Date.now() + '] ' + '[80s80s] PlayNextTrack API delay: ' + self.apiDelay);
                 if(self.apiDelay) {
                     timeOffset = self.apiDelay * 1000;
@@ -641,11 +651,12 @@ Controller80s80s.prototype.playNextTrack = function (songsArray) {
                 if(duration < 5000) {
                     duration = songsArray[1].duration * 1000;
                 }
-                self.logger.info('[' + Date.now() + '] ' + '[80s80s] Setting timer to: ' + duration + ' milliseconds.');
+                duration = parseInt(duration);
                 var nextSongArray = [];
                 nextSongArray.push(songsArray[0]);
+                self.logger.info('[' + Date.now() + '] ' + '[80s80s] Setting timer to: ' + duration + ' milliseconds.');
                 self.timer = new RPTimer(self.playNextTrack.bind(self), [nextSongArray], duration);
-            });
+            //});
         });
     } else {
         // play track and get next one
@@ -656,10 +667,10 @@ Controller80s80s.prototype.playNextTrack = function (songsArray) {
             // get next
             self.setSongs(apiUrl + '&count=1').then(function(nextSong) {
                 nextSongArray = nextSong;
-                self.getContentOfUrl(timeUrl).then(function (currentTime) {
+                //self.getContentOfUrl(timeUrl).then(function (currentTime) {
                     // calculate time
                     var next = nextSongArray[0].airtime;
-                    var now = currentTime.st;
+                    var now = Math.floor(Date.now()); //var now = currentTime.st;
                     self.logger.info('[' + Date.now() + '] ' + '[80s80s] PlayNextTrack API delay: ' + self.apiDelay);
                     if(self.apiDelay) {
                         timeOffset = self.apiDelay * 1000;
@@ -668,9 +679,10 @@ Controller80s80s.prototype.playNextTrack = function (songsArray) {
                     if(duration < 5000) {
                         duration = songsArray[0].duration * 1000;
                     }
+                    duration = parseInt(duration);
                     self.logger.info('[' + Date.now() + '] ' + '[80s80s] Setting timer to: ' + duration + ' milliseconds.');
                     self.timer = new RPTimer(self.playNextTrack.bind(self), [nextSongArray], duration);
-                });
+                //});
             });
         });
     }

@@ -1,0 +1,22 @@
+{
+	"name": "music_services_shield",
+	"version": "1.2.2",
+	"description": "Separates music processes from other processes, allocates them to their own CPU and assigns them real time priority.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Pete Callaghan",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Music Services Shield",
+		"icon": "fa-shield",
+		"plugin_type": "miscellanea",
+		"boot_priority": 10
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}

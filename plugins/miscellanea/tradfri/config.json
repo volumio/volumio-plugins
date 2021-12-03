@@ -1,0 +1,22 @@
+{
+    "tradfri": {
+      "device_or_group": {
+        "type": "string",
+        "value": ""
+      },
+      "switch_off_delay": {
+        "type": "number",
+        "value": 60
+      },
+      "gateway": {
+        "identity": {
+          "type": "string",
+          "value": ""
+        },
+        "psk": {
+          "type": "string",
+          "value": ""
+        }
+      }
+    }
+}

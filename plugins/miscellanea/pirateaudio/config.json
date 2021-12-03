@@ -1,0 +1,18 @@
+{
+    "enabled": {
+        "type": "boolean",
+        "value": false
+    },
+    "listmax": {
+        "type": "number",
+        "value": 5
+    },
+    "gpio_ybutton": {
+        "type": "number",
+        "value": 20
+    },
+    "sleeptimer": {
+        "type": "number",
+        "value": 15
+    }
+}

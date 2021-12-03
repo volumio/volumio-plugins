@@ -1,0 +1,22 @@
+{
+	"name": "virtual_keyboard",
+	"version": "1.0.4",
+	"description": "The plugin installs a virtual keyboard. It requires the Touch Display plugin to be installed.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "gvolt",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Virtual Keyboard",
+		"icon": "fa-keyboard-o",
+		"plugin_type": "miscellanea",
+		"boot_priority": 5
+	},
+	"dependencies": {
+		"fs-extra": "^8.1.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.2"
+	}
+}

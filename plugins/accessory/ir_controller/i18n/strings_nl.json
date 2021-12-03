@@ -1,0 +1,32 @@
+{
+  "IRCONTROLLER":{
+    "PLUGIN_NAME":"IR Controller",
+    "ERR_WRITE":"Fout bij het schrijven van ",
+    "ERR_READ":"Fout bij het lezen van ",
+    "ERR_LOAD_OVERLAY":"Fout bij het laden van de IR overlay: ",
+    "ERR_REMOVE_OVERLAY":"Fout bij het verwijderen van de IR overlay: ",
+    "ERR_GPIO_OCCUPIED":"De geselecteerde GPIO-ingang is al in gebruik.",
+    "GENERIC_FAILED":"Gefaald: ",
+    "PLUGIN_CONFIGURATION":"IR Controller configuratie",
+    "IR_CONFIGURATION":"IR afstandsbediening configuratie",
+    "PROFILE_SELECTOR":"Selecteer profiel",
+    "PROFILE_SELECTOR_DOC":"Selecteer de juiste configuratie voor uw afstandsbediening uit de beschikbare profielen.<br /><br />Gebruikersspecifieke configuraties voor afstandsbedieningen kunnen worden opgeslagen in de map \"/data/INTERNAL/ir_controller/configurations\". Daartoe moet in de bovengenoemde directory voor elke afstandsbediening een submap worden aangemaakt, waarin de LIRC-bestanden \"lircrc\" en \"lirc.conf\" voor de afstandsbediening worden opgeslagen. De naam van de submap verschijnt in de lijst van selecteerbare afstandsbedieningen. Indien deze naam ook wordt gebruikt voor een van de reeds geleverde configuraties van de afstandsbediening, heeft de configuratie van de gebruiker met dezelfde naam voorrang.<br /><br />OPMERKING: Een update van de plug-in heeft geen invloed op de door de gebruiker gedefinieerde configuraties. Bij het verwijderen van de plug-in wordt echter de directory \"/data/INTERNAL/ir_controller\" verwijderd met alle submappen en bestanden die zich daarin bevinden.",
+    "GPIO_CONFIGURATION":"GPIO configuratie",
+    "GPIO_DESC":"De plugin controleert niet of de GPIO nummers in de keuzelijst al in gebruik zijn voor andere doeleinden. Daarom is het belangrijk om voor het kiezen van een GPIO nummer te controleren of deze daadwerkelijk beschikbaar is.",
+    "GPIO_IN_PIN":"Selecteer GPIO van de IR ontvanger",
+    "GPIO_IN_PIN_DOC":"GPIO-nummer dat wordt gebruikt door de signaallijn van de IR-sensor.<br /><br />NOOT: Dit is niet het nummer van de fysieke pin waarop de IR-ontvanger is aangesloten, maar het Broadcom-pin-nummer (BCM), cf. https://pinout.xyz/#.",
+    "GPIO_PULL":"Selecteer \"pull-up/down\" instelling",
+    "GPIO_PULL_DOC":"Wanneer deze is ingesteld op \"up\" zal de ingang een \"high\" status lezen, wanneer deze is ingesteld op \"down\" zal de ingang een \"low\" status lezen wanneer er geen signaal is van de IR ontvanger. Als de waarde is ingesteld op \"uit\" zal de ingang zweven als er geen signaal is van de IR ontvanger. De standaardwaarde is \"up\".",
+    "GPIO_PULL_OFF":"uit",
+    "GPIO_PULL_DOWN":"down",
+    "GPIO_PULL_UP":"up",
+    "FORCE_ACTIVE_STATE":"Configureer de \"active state\" van de ingang.",
+    "FORCE_ACTIVE_STATE_DOC":"Met deze optie ingeschakeld kan de GPIO-ingang waarop de IR-ontvanger is aangesloten, worden geconfigureerd als \"active-high\" of \"active-low\".",
+    "ACTIVE_STATE":"Selecteer \"active-high/-low\" logica",
+    "ACTIVE_STATE_DOC":"Met deze optie ingesteld op \"activ-low\" zal de ingang logisch hoog zijn (\"active\") wanneer het signaal van de IR ontvanger laag is. Als deze optie is ingesteld op \"activ-high\" zal de ingang logisch hoog zijn als het signaal hoog is.",
+    "ACTIVE_LOW":"active-low",
+    "ACTIVE_HIGH":"active-high",
+    "NO_CHANGES":"Geen veranderingen om op te slaan.",
+    "SAVE":"Opslaan"
+  }
+}

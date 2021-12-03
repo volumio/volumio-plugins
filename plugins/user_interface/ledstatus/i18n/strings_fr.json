@@ -1,0 +1,15 @@
+{
+  "PLUGIN_CONFIGURATION":"configuration de LedStatus",
+  "PLUGIN_SECTION_TITLE":"Paramètres de LedStatus",
+  "SAVE":"Enregistrer",
+  "SUCCESS_TITLE":"Paramètres enregistrés",
+  "SUCCESS_MESSAGE":"Enregistrement réussi !",
+  
+  "GPIONUM_DOC":"Saisir le numréro de GPIO sur lequel la la pin positive de la led est branchée. (ne pas oublier d'utiliser une résistance)",
+  "GPIONUM_LBL": "Numéro GPIO",
+  "INTMILISEC_DOC":"Saisir le nombre de milisecondes entre les changements d'états de la led",
+  "INTMILISEC_LBL":"Interval de clignotement",
+  
+  "ERROR_NOT_A_NUMBER_TITLE":"Nombre obligatoire!",
+  "ERROR_NOT_A_NUMBER_MESSAGE":"Tous les champs doivent contenir un nombre supérieur à 0"
+}

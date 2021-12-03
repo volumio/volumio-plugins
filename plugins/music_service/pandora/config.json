@@ -1,0 +1,58 @@
+{
+  "email": {
+    "type": "string",
+    "value": ""
+  },
+  "password": {
+    "type": "string",
+    "value": ""
+  },
+  "isPandoraOne": {
+    "type": "boolean",
+    "value": false
+  },
+  "useCurl302WorkAround": {
+    "type": "boolean",
+    "value": false
+  },
+  "nextIsThumbsDown": {
+    "type": "boolean",
+    "value": false
+  },
+  "superPrevious": {
+    "type": "boolean",
+    "value": false
+  },
+  "maxStationTracks": {
+    "type": "number",
+    "value": 16
+  },
+  "flushThem": {
+    "type": "boolean",
+    "value": false
+  },
+  "bandFilter": {
+    "type": "string",
+    "value": ""
+  },
+  "mqttEnabled": {
+    "type": "boolean",
+    "value": false
+  },
+  "mqttHost": {
+    "type": "string",
+    "value": ""
+  },
+  "mqttPort": {
+    "type": "number",
+    "value": 1883
+  },
+  "mqttUsername": {
+    "type": "string",
+    "value": ""
+  },
+  "mqttPassword": {
+    "type": "string",
+    "value": ""
+  }
+}

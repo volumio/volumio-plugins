@@ -1,0 +1,34 @@
+{
+  "page": {
+          "label": "TRANSLATE.VKBD.PLUGIN_CONFIGURATION"
+          },
+  "sections": [
+                {
+                "id": "vkbd_conf",
+                "element": "section",
+                "label": "TRANSLATE.VKBD.VKBD_CONF",
+                "icon": "fa-language",
+                "onSave": {"type":"controller", "endpoint":"miscellanea/virtual_keyboard", "method":"saveConf"},
+                "saveButton": {
+                              "label": "TRANSLATE.VKBD.SAVE",
+                              "data": [
+                                      "layout"
+                                      ]
+                              },
+                              "value": {
+                                       },
+                "content": [
+                             {
+                             "id": "layout",
+                             "element": "select",
+                             "doc": "TRANSLATE.VKBD.LAYOUT_SELECTOR_DOC",
+                             "label": "TRANSLATE.VKBD.LAYOUT_SELECTOR",
+                             "value": {
+                                      },
+                             "options": [
+                                        ]
+                             }
+                          ]
+                }
+              ]
+}

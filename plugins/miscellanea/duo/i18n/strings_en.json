@@ -1,0 +1,26 @@
+{
+	"DUO":{
+	"DUOCONF":"DUO Configuration",
+	"GENERAL":"Integration Settings",
+	"DD_GENERAL":"Configure the DUO integration settings, note that enabling DUO with a faulty configuration will bypass DUO (fail-open).",
+		"ENABLE_DUO":"Enable DUO for SSH",
+		"D_ENABLE_DUO":"En- or disable the DUO PAM for the SSH authentication flow",
+		"DD_ENABLE_DUO":"Toggles the DUO PAM; disabling it bypasses DUO",
+		"INTEGRATION_KEY":"Integration key",
+		"D_INTEGRATION_KEY":"You can find the integration key in the DUO application configuration screen",
+		"DD_INTEGRATION_KEY":"The DUO integration key",
+		"SECRET_KEY":"Secret key",
+		"D_SECRET_KEY":"You can find the secret key in the DUO application configuration screen",
+		"DD_SECRET_KEY":"The DUO secret key",
+		"API_HOST":"API hostname",
+		"D_API_HOST":"You can find the API hostname in the DUO application configuration screen",
+		"DD_API_HOST":"The DUO endpoint",
+		"FAIL_MODE":"Failmode",
+		"D_FAIL_MODE":"On service or configuration errors that prevent Duo authentication, fail safe (allow access) or secure (deny access). The default is safe.",
+		"DD_FAIL_MODE":"If you're unsure, leave it to safe",
+		"DISABLE_PASSWORD":"Disable password",
+		"D_DISABLE_PASSWORD":"If you don't want to be prompted for the password when connecting over SSH, set this value to true. You will be able to login, using only DUO authentication.",
+		"DD_DISABLE_PASSWORD":"Disables password prompt for SSH connections",
+	"SAVE": "Save"
+	}
+}

@@ -1,0 +1,27 @@
+{
+  "COMMON":{
+    "USERNAME":"Username",
+    "PASSWORD":"Password",
+    "CONFIG_SECTION_TITLE":"hotelradio.fm plugin configuration",
+    "LOGIN":"Login",
+    "LOGOUT":"Logout",
+    "LOGGED_IN":"Logged in to hotelradio.fm",
+    "LOGGED_OUT":"Logged out from hotelradio.fm",
+    "ERROR_LOGGING_IN":"An error occurred trying to log in into hotelradio.fm",
+    "ERROR_LOGGING_OUT":"An error occurred trying to log out from hotelradio.fm"
+  },
+  "HOTELRADIO":{
+    "GROUPS":"Groups",
+    "CHANNELS":"Channels",
+    "SECTION_ACCOUNT":"hotelradio.fm account credentials",
+    "ACCOUNT_LOGIN_DESC":"Login to start streaming wonderful webradios",
+    "USERNAME_DOC":"Username used during registration",
+    "PASSWORD_DOC":"Password used during registration",
+    "FREE_TRIAL_DESCR":"14 days free trial",
+    "FREE_TRIAL":"Free trial",
+    "RESET_PASSWORD":"Reset",
+    "RESET_PASSWORD_DESCR":"Reset your account password",
+    "FREE_TRIAL_ACTIVE":"Free trial is active",
+    "LOGGED_IN_EMAIL":"Logged in as "
+  }
+}

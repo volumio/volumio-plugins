@@ -1,8 +1,7 @@
 #!/bin/bash
 
 echo "Installing volsimpleequal dependencies"
-echo "unload Loopback module if exists"
-sudo rmmod snd_aloop
+
 echo "remove previous configuration"
 if [ ! -f "/data/configuration/audio_interface/volsimpleequal/config.json" ];
 	then
@@ -11,17 +10,19 @@ if [ ! -f "/data/configuration/audio_interface/volsimpleequal/config.json" ];
 		echo "File exists removing it"
 		sudo rm /data/configuration/audio_interface/volsimpleequal/config.json
 fi
-if [ ! -f "/home/volumio/.alsaequal.bin" ];
+
+if [ ! -f "/data/configuration/audio_interface/volsimpleequal/.alsaequal.bin" ];
 	then
 		echo "file doesn't exist, nothing to do"
 	else
 		echo "File exists removing it"
-		sudo rm /home/volumio/.alsaequal.bin
+		sudo rm /data/configuration/audio_interface/volsimpleequal/.alsaequal.bin
 fi
 
 
 sudo apt-get update
-sudo apt-get -y install libasound2-plugin-equal 
+sudo apt-get -y install libasound2-plugin-equal swh-plugins
+
 echo "Checking if volsimpleequal services exist"
 if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
 	then
@@ -39,5 +40,6 @@ if [ ! -f "/etc/systemd/system/volsimpleequal.service" ];
 		rm /volsimpleequal.tar.gz
 fi
 sudo systemctl daemon-reload
+
 #required to end the plugin install
 echo "plugininstallend"

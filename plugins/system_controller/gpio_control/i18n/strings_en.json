@@ -1,0 +1,22 @@
+{
+	"ON": "On",
+	"OFF": "Off",
+	"PLUGIN_CONFIGURATION": "GPIO Control Configuration",
+	"PLUGIN_DESCRIPTION": "Control GPIO With Volumio Events",
+	"SAVE": "Save",
+	"SYSTEM_STARTUP": "System Startup Event",
+	"SYSTEM_STARTUP_DOC": "Set the state of a GPIO pin when Volumio starts",
+	"SYSTEM_SHUTDOWN": "System Shutdown Event",
+	"SYSTEM_SHUTDOWN_DOC": "Set the state of a GPIO pin when Volumio shuts down",
+	"MUSIC_PLAY": "Music Play Event",
+	"MUSIC_PLAY_DOC": "Set the state of a GPIO pin when music plays",
+	"MUSIC_PAUSE": "Music Pause Event",
+	"MUSIC_PAUSE_DOC": "Set the state of a GPIO pin when music pauses",
+	"MUSIC_STOP": "Music Stop Event",
+	"MUSIC_STOP_DOC": "Set the state of a GPIO pin when the music stops",
+	"GPIO_PIN": "GPIO Pin",
+	"GPIO_PIN_DOC": "The GPIO pin you wish to control",
+	"GPIO_STATE": "GPIO State",
+	"GPIO_STATE_DOC": "The state you wish to set the GPIO pin",
+	"SETTINGS_SAVED": "GPIO settings have been saved"
+}

@@ -13,6 +13,6 @@
     },
     "autostartDelay": { 
       "type": "number",
-      "value": 10000
+      "value": 20000
     }
 }

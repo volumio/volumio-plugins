@@ -1,0 +1,32 @@
+{
+  "IRCONTROLLER":{
+    "PLUGIN_NAME":"Contrôleur Infra-Rouge",
+    "ERR_WRITE":"Erreur d'écriture ",
+    "ERR_READ":"Erreur de lecture ",
+    "ERR_LOAD_OVERLAY":"Erreur en chargeant IR overlay: ",
+    "ERR_REMOVE_OVERLAY":"Erreur en supprimant IR overlay: ",
+    "ERR_GPIO_OCCUPIED":"Le GPIO est déjà utilisé.",
+    "GENERIC_FAILED":"Échec: ",
+    "PLUGIN_CONFIGURATION":"Configuration de IR Controller",
+    "IR_CONFIGURATION":"Configuration télécommande IR",
+    "PROFILE_SELECTOR": "Choisir un modèle",
+    "PROFILE_SELECTOR_DOC": "Choisissez le modèle de télécommande que vous voulez utiliser.<br /><br />Les configurations spécifiques à l'utilisateur pour les télécommandes peuvent être stockés dans le dossier \"/data/INTERNAL/ir_controller/configurations\". Pour ce faire, il faut créer dans le répertoire susmentionné un sous-dossier pour chaque télécommande, dans lequel sont stockés les fichiers LIRC \"lircrc\" et \"lirc.conf\" pour la télécommande. Le nom du sous-dossier apparaît dans la liste des télécommandes sélectionnables. Si ce nom est également utilisé pour l'une des configurations de télécommande déjà fournies, la configuration de l'utilisateur portant le même nom est prioritaire.<br /><br />NOTE : Une mise à jour du plug-in n'affecte pas les configurations définies par l'utilisateur. Cependant, lors de la désinstallation du plug-in, le répertoire \"/data/INTERNAL/ir_controller\" est supprimé avec tous les sous-dossiers et fichiers qu'il contient.",
+    "GPIO_CONFIGURATION":"Configuration GPIO",
+    "GPIO_DESC":"Le Plugin ne vérifie pas si le numéro GPIO dans la liste de sélection est déja utilisé par d'autres programmes. Donc, avant de sélectionner un numéro de GPIO, il est primordial de s'assurer qu'il est disponible.",
+    "GPIO_IN_PIN":"Sélectionnez le GPIO pour le récepteur IR",
+    "GPIO_IN_PIN_DOC":"Numéro du GPIO utilisé pour le récepteur IR.<br /><br />NOTE: Ce n’est pas le numéro du contact physique sur lequel le récepteur est connecté, mais le numéro \"Broadcom pin number\"  (BCM), cf. https://pinout.xyz/#.",
+    "GPIO_PULL":"Sélectionnez le réglage \"pull-up/down\" ",
+    "GPIO_PULL_DOC":"Quand règlé sur \"up\" l'entrée lira un état \"high\", avec \"down\" un état \"low\" quand il n'y a pas de signal du récepteur. Quand réglé sur \"off\" l'entrée sera flottante quand il n'y a pas de signal du récepteur. Le défaut est \"up\".",
+    "GPIO_PULL_OFF":"off",
+    "GPIO_PULL_DOWN":"down",
+    "GPIO_PULL_UP":"up",
+    "FORCE_ACTIVE_STATE":"Configurez \"active state\" de l'entrée",
+    "FORCE_ACTIVE_STATE_DOC":"Avec cette option activée, l'entrée GPIO du récepteur IR peut être configurée comme \"active-high\" ou \"active-low\".",
+    "ACTIVE_STATE":"Sélectionnez \"active-high/-low\" ",
+    "ACTIVE_STATE_DOC":"Avec cette option réglée sur \"active-low\" l'entrée sera logiquement high (\"active\") quand le signal du récepteur IR est low. Si réglée sur \"active-high\" l'entrée sera logiquement high quand le signal est high.",
+    "ACTIVE_LOW":"active-low",
+    "ACTIVE_HIGH":"active-high",
+    "NO_CHANGES":"Pas de changement à sauver.",
+    "SAVE": "Sauver"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "Nuimo",
+  "description": "Wirething module for interacting with Nuimo devices.",
+  "author": "Nathan Kunicki <me@nathankunicki.com>",
+  "main": "./nuimo.js",
+  "devices": [
+    {
+      "name": "Nuimo",
+      "type": "nuimo",
+      "outputs": [
+        {"name": "Press", "event": "press"},
+        {"name": "Release", "event": "release"},
+        {"name": "Swipe Left", "event": "swipeLeft"},
+        {"name": "Swipe Right", "event": "swipeRight"},
+        {"name": "Swipe Up", "event": "swipeUp"},
+        {"name": "Swipe Down", "event": "swipeDown"},
+        {"name": "Rotate", "event": "rotate", "params": [
+          {"name": "Rotation Amount", "param": "amount", "type": "Number"}
+        ]},
+        {"name": "Fly Left", "event": "flyLeft", "params": [
+          {"name": "Speed", "param": "speed", "type": "Number"}
+        ]},
+        {"name": "Fly Right", "event": "flyRight", "params": [
+          {"name": "Speed", "param": "speed", "type": "Number"}
+        ]},
+        {"name": "Detect Hand", "event": "detect", "params": [
+          {"name": "Distance", "param": "distance", "type": "Number"}
+        ]}
+      ],
+      "inputs": [
+        {"name": "LED Matrix", "function": "setLEDMatrix", "params": [
+          {"name": "Pattern", "param": "matrixData", "type": "JSON"},
+          {"name": "Brightness", "param": "brightness", "type": "Number", "default": 255, "description": "Brightness between 0-255"},
+          {"name": "Timeout", "param": "timeout", "type": "Number", "default": 2000, "description": "Timeout in milliseconds (Between 0-25500)"}
+        ]}
+      ]
+    }
+  ]
+}

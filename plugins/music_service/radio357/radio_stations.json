@@ -1,0 +1,25 @@
+{
+  "baseNavigation": {
+    "navigation": {
+      "lists": [
+        {
+          "availableListViews": [
+            "list"
+          ],
+          "items": [
+          ]
+        }
+      ]
+    }
+  },
+
+  "stations": {
+    "rad357pl": [
+      {
+        "title": "Radio357 (128K)",
+        "uri": "webrns/0",
+        "url": "http://stream.rcs.revma.com/ye5kghkgcm0uv"
+      }
+    ]
+  }
+}

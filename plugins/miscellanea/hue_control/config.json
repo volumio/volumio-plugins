@@ -1,0 +1,18 @@
+{
+    "hue_bridge_address": {
+        "type": "string",
+        "value": ""
+    },
+    "switch_off_delay": {
+        "type": "number",
+        "value": 60
+    },
+    "hue_device" : {
+        "type": "number",
+        "value": null
+    },
+    "hue_api_username": {
+        "type": "string",
+        "value": null
+    }
+}
