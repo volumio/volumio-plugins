@@ -194,7 +194,7 @@
     },
     "renpreset": {
         "type": "string",
-        "value": "choose a name"
+        "value": ""
     },
     "importeq": {
         "type": "string",
