@@ -154,7 +154,7 @@
       ]
     },
     {
-      "id": "advanced",
+      "id": "savepreset",
       "element": "section",
       "label": "TRANSLATE.SAVEPRESET",
       "icon": "fa-download",
@@ -198,6 +198,8 @@
             "value": "",
             "label": ""
           },
+          "options": [],
+
           "visibleIf": {
             "field": "hideren",
             "value": true

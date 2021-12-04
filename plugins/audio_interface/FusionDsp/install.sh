@@ -3,8 +3,6 @@ LIB=/data/plugins/audio_interface/fusiondsp
 TARGET = $libasound_module_pcm_cdsp
 opath=/data/INTERNAL/FusionDsp
 
-sudo apt-get update
-sudo apt-get -y install drc
 
 echo "creating filters folder and copying demo filters"
 
@@ -89,6 +87,10 @@ rm /tmp/camilladsp-linux-armv7.tar.gz
 ln -s  $LIB/lib/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 sudo cp $LIB/c/hw_params_arm $LIB/hw_params
 sudo chmod +x $LIB/hw_params
+
+sudo apt-get update
+sudo apt-get -y install drc
+
 elif [ $cpu = "x86_64" ]
 then
 cd /tmp
@@ -103,6 +105,10 @@ rm /tmp/camilladsp-linux-amd64.tar.gz
 ln -s $LIB/lib/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
 cp $LIB/c/hw_params_amd64 $LIB/hw_params
 chmod +x $LIB/hw_params
+
+sudo apt-get update
+sudo apt-get -y install drc
+
 elif [ $cpu = "armv6l" ]
 then
 cd /tmp

@@ -1,4 +1,4 @@
-November 27th 2021
+December 4th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,13 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+December 4th 2021
+
+- better translation
+- save preset management
+- variable chunksize
+- convolution filter handling when $samplerate
 
 November 27th 2021
 

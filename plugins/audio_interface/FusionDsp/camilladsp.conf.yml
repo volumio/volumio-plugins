@@ -1,7 +1,7 @@
 
 devices:
   samplerate: ${capturesamplerate}
-  chunksize: 4096
+  chunksize: ${chunksize}
   silence_threshold: -60
   silence_timeout: 3.0
   queuelimit: 1

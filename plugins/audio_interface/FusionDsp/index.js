@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze November 2021
+FusionDsp plugin for volumio3. By balbuze December 2021
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -28,7 +28,6 @@ const toolspath = "INTERNAL/FusionDsp/tools/";
 const wavfolder = "/data/INTERNAL/FusionDsp/wavfiles/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
 const coefQ = 1.85//Q for graphic EQ
-
 
 // Define the Parameq class
 module.exports = FusionDsp;
@@ -537,7 +536,7 @@ FusionDsp.prototype.getUIConfig = function () {
               "element": "equalizer",
               "label": neq,
               "description": "",
-              "doc": "Create your own equalizer",
+              "doc": self.commandRouter.getI18nString('DOCEQ'),
               "visibleIf": {
                 "field": "showeq",
                 "value": true
@@ -715,7 +714,7 @@ FusionDsp.prototype.getUIConfig = function () {
         valuestoredl = self.config.get('leftfilter');
         var valuestoredllabel = valuestoredl.replace("$samplerate$", "variable samplerate")
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', valuestoredl);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestoredllabel);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestoredl);
 
         value = self.config.get('attenuationl');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
@@ -724,7 +723,7 @@ FusionDsp.prototype.getUIConfig = function () {
         valuestoredr = self.config.get('rightfilter');
         var valuestoredrlabel = valuestoredr.replace("$samplerate$", "variable samplerate")
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.value', valuestoredr);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestoredrlabel);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestoredr);
         value = self.config.get('attenuationr');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', value);
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', value);
@@ -1144,7 +1143,8 @@ FusionDsp.prototype.getUIConfig = function () {
 
       //-------------section 3-----------
       let savepresetlist = ('mypreset1,mypreset2,mypreset3').split(',')
-
+      //  self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', self.commandRouter.getI18nString('NO_PRESET_USED'));
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', self.commandRouter.getI18nString('CHOOSE_PRESET'));
       for (let y in savepresetlist) {
         switch (savepresetlist[y]) {
           case ("mypreset1"):
@@ -1163,6 +1163,7 @@ FusionDsp.prototype.getUIConfig = function () {
           label: plabel
         });
       }
+      self.configManager.setUIConfigParam(uiconf, 'sections[3].content[2].value.label', self.commandRouter.getI18nString('CHOOSE_PRESET'));
 
       uiconf.sections[3].content[2].value = self.config.get('renpreset');
 
@@ -1395,14 +1396,17 @@ FusionDsp.prototype.choosedsp = function (data) {
     self.config.set('nbreq', 15)
     self.config.set('mergedeq', self.config.get('savedmergedgeq15'))
     self.config.set('geq15', self.config.get('savedgeq15'))
+
   } else if (selectedsp === '2XEQ15') {
     self.config.set('nbreq', 30)
     self.config.set('geq15', self.config.get('savedx2geq15l'))
     self.config.set('mergedeq', self.config.get('savedmergedeqx2geq15'))
     self.config.set('x2geq15', self.config.get('savedx2geq15r'))
+
   } else if (selectedsp === 'PEQ') {
     self.config.set('nbreq', self.config.get('savednbreq'))
     self.config.set('mergedeq', self.config.get('savedmergedeq'))
+
   } else if (selectedsp === 'convfir') {
     self.config.set('nbreq', 2),
       self.config.set('mergedeq', self.config.get('savedmergedeqfir'))
@@ -1874,6 +1878,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       var result = '';
       var gainmaxused = [];
       let scopec, scoper;
+      var selectedsp = self.config.get('selectedsp')
       var nbreq = (self.config.get('nbreq'))
       var effect = self.config.get('effect')
       var leftlevel = self.config.get('leftlevel')
@@ -2594,10 +2599,17 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedpipeline += '\n'
       }
 
+      var chunksize
+      if (selectedsp === "convfir") {
+        chunksize = 4096
+      } else {
+        chunksize = 1024
+      }
 
       //self.logger.info('gain applied left ' + leftgain + ' right ' + rightgain)
 
       let conf = data.replace("${resulteq}", result)
+        .replace("${chunksize}", (chunksize))
         .replace("${resampling}", (composeddevice))
         .replace("${capturesamplerate}", (capturesamplerate))
 
@@ -3006,19 +3018,19 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   //if (rpreset != 'choose a name') {
   switch (preset) {
     case ("mypreset1"):
-      var spreset = 'p1'
+      var spreset = self.config.get('renpreset1')
       var renprestr = '1'
       break;
     case ("mypreset2"):
-      var spreset = 'p2'
+      var spreset = self.config.get('renpreset2')
       var renprestr = '2'
       break;
     case ("mypreset3"):
-      var spreset = 'p3'
+      var spreset = self.config.get('renpreset3')
       var renprestr = '3'
       break;
   }
-  if (rpreset == 'choose a name') {
+  if (rpreset == '') {
     self.logger.info('No change in name !')
   } else {
     self.config.set("renpreset" + renprestr, (data['renpreset']));
@@ -3045,7 +3057,13 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   }
   self.config.set('state4preset' + renprestr, state4preset)
   self.logger.info('State for preset' + renprestr + ' = ' + state4preset)
-  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spreset)
+  let presetmessage
+  if ((data['renpreset']) == '') {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString("RENAME_PRESET_SW_DOC"))
+
+    return
+  }
+  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + (data['renpreset']))
 
   self.refreshUI();
 
