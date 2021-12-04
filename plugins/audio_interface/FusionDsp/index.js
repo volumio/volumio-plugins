@@ -3018,15 +3018,18 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   //if (rpreset != 'choose a name') {
   switch (preset) {
     case ("mypreset1"):
-      var spreset = self.config.get('renpreset1')
+      var spreset = 'p1'
+      var mspreset = self.config.get('renpreset1')
       var renprestr = '1'
       break;
     case ("mypreset2"):
-      var spreset = self.config.get('renpreset2')
+      var spreset = 'p2'
+      var spresetm = self.config.get('renpreset2')
       var renprestr = '2'
       break;
     case ("mypreset3"):
-      var spreset = self.config.get('renpreset3')
+      var spreset = 'p3'
+      var spresetm = self.config.get('renpreset3')
       var renprestr = '3'
       break;
   }
@@ -3058,7 +3061,8 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   self.config.set('state4preset' + renprestr, state4preset)
   self.logger.info('State for preset' + renprestr + ' = ' + state4preset)
   let presetmessage
-  if ((data['renpreset']) == '') {
+  self.logger.info((data['hideren'])+'>---------------------------')
+  if (((data['renpreset']) == '') && ((data['hideren']) == true)) {
     self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString("RENAME_PRESET_SW_DOC"))
 
     return

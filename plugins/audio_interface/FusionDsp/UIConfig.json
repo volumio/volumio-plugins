@@ -167,7 +167,8 @@
         "label": "TRANSLATE.SAVE",
         "data": [
           "eqpresetsaved",
-          "renpreset"
+          "renpreset",
+          "hideren"
         ]
       },
       "content": [
