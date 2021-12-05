@@ -519,10 +519,6 @@ FusionDsp.prototype.getUIConfig = function () {
         } if (selectedsp == '2XEQ15') {
           listeq = ['geq15', 'x2geq15']
           eqtext = (self.commandRouter.getI18nString('LEFTCHAN') + ',' + self.commandRouter.getI18nString('RIGHTCHAN'))
-          //i = 2
-          //     self.logger.info('listeq ' + self.config.get('x2geq15') + self.config.get('geq15'))
-
-
         }
 
         for (var i in listeq) {
@@ -3019,7 +3015,7 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   switch (preset) {
     case ("mypreset1"):
       var spreset = 'p1'
-      var mspreset = self.config.get('renpreset1')
+      var spresetm = self.config.get('renpreset1')
       var renprestr = '1'
       break;
     case ("mypreset2"):
@@ -3051,7 +3047,7 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
 
   } else if (selectedsp == '2XEQ15') {
     self.config.set("x2geq15" + renprestr, self.config.get('x2geq15'));
-    self.config.set("geq15" + renprestr, self.config.get('eq15'));
+    self.config.set("geq15" + renprestr, self.config.get('geq15'));
 
 
   } else if (selectedsp == 'convfir') {
@@ -3061,13 +3057,22 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
   self.config.set('state4preset' + renprestr, state4preset)
   self.logger.info('State for preset' + renprestr + ' = ' + state4preset)
   let presetmessage
-  self.logger.info((data['hideren'])+'>---------------------------')
-  if (((data['renpreset']) == '') && ((data['hideren']) == true)) {
-    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString("RENAME_PRESET_SW_DOC"))
+  self.logger.info((data['hideren']) + '>---------------------------')
+  if (spresetm == undefined) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CHOOSE_PRESET'))
 
     return
   }
-  self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + (data['renpreset']))
+  if (((data['renpreset']) == '') && ((data['hideren']) == true)) {
+    self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString("RENAME_PRESET_SW_DOC"))
+    return
+  }
+  if ((data['hideren']) == false) {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + spresetm)
+  }
+  if (((data['renpreset']) != '') && ((data['hideren']) == true)) {
+    self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_PRESET') + (data['renpreset']))
+  }
 
   self.refreshUI();
 
@@ -3087,16 +3092,19 @@ FusionDsp.prototype.usethispreset = function (data) {
   switch (preset) {
     case ("mypreset1"):
       var spreset = '1'
+      var spresetm = self.config.get('renpreset1')
       var eqspreset = 'geq151'
       var reqspreset = 'x2geq151'
       break;
     case ("mypreset2"):
       var spreset = '2'
+      var spresetm = self.config.get('renpreset2')
       var eqspreset = 'geq152'
       var reqspreset = 'x2geq152'
       break;
     case ("mypreset3"):
       var spreset = '3'
+      var spresetm = self.config.get('renpreset3')
       var eqspreset = 'geq153'
       var reqspreset = 'x2geq153'
       break;
@@ -3191,22 +3199,24 @@ FusionDsp.prototype.usethispreset = function (data) {
   if (preset == "mypreset1" || preset == "mypreset2" || preset == "mypreset3") {
     let state4preset = self.config.get('state4preset' + spreset)
 
-    self.logger.info('state4preset ' + state4preset)
+    self.logger.info('value state4preset ' + state4preset)
     self.config.set('crossfeed', state4preset[0])
     self.config.set('monooutput', state4preset[1])
     self.config.set('loudness', state4preset[2])
     self.config.set('loudnessthreshold', state4preset[3])
     self.config.set('leftlevel', state4preset[4])
     self.config.set('rightlevel', state4preset[5])
+    self.commandRouter.pushToastMessage('info', spresetm + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
+  } else {
+    self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
   }
 
-  self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
 
-  setTimeout(function () {
-    self.refreshUI();
-    self.createCamilladspfile()
-  }, 500);
-  return defer.promise;
+setTimeout(function () {
+  self.refreshUI();
+  self.createCamilladspfile()
+}, 500);
+return defer.promise;
 
 };
 
