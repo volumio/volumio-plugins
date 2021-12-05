@@ -227,7 +227,7 @@ FusionDsp.prototype.getUIConfig = function () {
       // No convolution if cpu is armv6l
       fs.access("/data/plugins/audio_interface/fusiondsp/cpuarmv6l", fs.F_OK, (err) => {
         if (err) {
-          self.logger.error('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<file does not exist!');
+          self.logger.info('<< convolution filters enabled');
           var dspoptions = [{
             "value": "EQ15",
             "label": self.commandRouter.getI18nString('EQ15_LABEL')

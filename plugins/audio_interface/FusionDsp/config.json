@@ -145,15 +145,36 @@
     },
     "state4preset1": {
         "type": "text",
-        "value": "None,false,false,50,0,0"
+        "value": [
+            "None",
+            false,
+            false,
+            50,
+            0,
+            0
+        ]
     },
     "state4preset2": {
         "type": "text",
-        "value": "None,false,false,50,0,0"
+        "value": [
+            "None",
+            false,
+            false,
+            50,
+            0,
+            0
+        ]
     },
     "state4preset3": {
         "type": "text",
-        "value": "None,false,false,50,0,0"
+        "value": [
+            "None",
+            false,
+            false,
+            50,
+            0,
+            0
+        ]
     },
     "availablefilters": {
         "type": "text",
