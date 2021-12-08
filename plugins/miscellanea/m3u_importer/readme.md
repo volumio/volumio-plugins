@@ -88,11 +88,6 @@ I have only tested this plugin on a Rpi4, but since it's 100% Javascript and
 has no hardware dependencies I would expect it to run on other platforms 
 without a problem.
 
-Plugins are not officially supported on 3.x yet, but I was able to get the m3u 
-importer plugin to work after mounting my USB flash drive manually.  
-
-I expect this plugin to be as compatible with 3.x as it is with other 2.x plugins.
-
 ## Support
 
 Please feel free to create a new [issue](https://github.com/skiphansen/volumio-plugins/issues)
