@@ -14,3 +14,4 @@ plugins/music_service/.DS_Store
 **/.com.apple.timemachine*
 plugins/user_interface/rotaryencoder2/._.DS_Store
 plugins/miscellanea/rotelampcontrol/testLibQ.js
+plugins/user_interface/rotaryencoder2/tests/*

@@ -99,7 +99,7 @@ rotaryencoder2.prototype.onStart = function() {
 		defer.resolve();				
 	})
 	.fail(error => {
-		self.commandRouter.pushToastMessage('error',"Rotary Encoder II", self.getI18nString('ROTARYENCODER2.TOAST_STOP_FAIL'))
+		self.commandRouter.pushToastMessage('error',"Rotary Encoder II", self.getI18nString('ROTARYENCODER2.TOAST_START_FAIL'))
 		self.logger.error('[ROTARYENCODER2] onStart: Rotarys not initialized: '+error);
 		defer.reject();
 	});
@@ -548,7 +548,6 @@ rotaryencoder2.prototype.addEventHandle = function (handle, rotaryIndex) {
 	var self = this; 
 
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] addEventHandle for rotary: ' + (rotaryIndex + 1));
-
 	self.handles[rotaryIndex]=handle;
 	self.handles[rotaryIndex].stdout.on("data", function (chunk) {
 		var i=0;
@@ -561,6 +560,15 @@ rotaryencoder2.prototype.addEventHandle = function (handle, rotaryIndex) {
 				self.emitDialCommand(value,rotaryIndex)
 			} 
 		}
+	});
+	self.handles[rotaryIndex].stdout.on('end', function(){
+		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] addEventHandle: Stream from rotary encoder ended.');
+	});
+	self.handles[rotaryIndex].stderr.on('data', (data) => {
+		self.logger.error('[ROTARYENCODER2] addEventHandle: ' + `stderr: ${data}`);
+	});
+	self.handles[rotaryIndex].on('close', (code) => {
+		if (self.debugLogging) self.logger.info('[ROTARYENCODER2] addEventHandle: ' + `child process exited with code ${code} `);
 	});
 
 }
@@ -728,7 +736,14 @@ rotaryencoder2.prototype.addOverlay = function (pinA, pinB, stepsPerPeriod) {
 			self.logger.error('[ROTARYENCODER2] addOverlay: ' + stderr);
 			defer.reject(stderr);
 		} else {
-			defer.resolve(stdout);
+			if (self.debugLogging) {
+				exec('/bin/ls -R /dev/input', {uid: 1000, gid: 1000}, function (err, stdout, stderr) {
+					self.logger.info(stdout)
+				})
+			}
+			setTimeout(() => {
+				defer.resolve(stdout);
+			}, 1000);
 		}
 	})           
 	return defer.promise;
@@ -807,8 +822,9 @@ rotaryencoder2.prototype.attachListener = function (pinA){
 	var defer = libQ.defer();
 	var pinHex = Number(pinA).toString(16);
 
-	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] attachListener: ' + "/dev/input/by-path/platform-rotary\@"+pinHex+"-event");
-	var handle = spawn("cat", ["/dev/input/by-path/platform-rotary\@"+pinHex+"-event"]);
+	var path = "/dev/input/by-path/platform-rotary\@"+pinHex+"-event";
+	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] attachListener: ' + path);
+	var handle = spawn("/bin/cat", [path],{uid: 1000, gid: 1000});	
 	defer.resolve(handle);
 	return defer.promise;
 }
@@ -817,8 +833,19 @@ rotaryencoder2.prototype.detachListener = function (handle){
 	var self = this;
 	var defer = libQ.defer();
 	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] detachListener: ' + handle);
-	handle.kill();
-	defer.resolve();
+    if (handle!=undefined) {
+	    if (handle.kill()) {
+        	if (self.debugLogging) self.logger.info('[ROTARYENCODER2] detachListener: successfully killed handler process');
+        	defer.resolve();
+        } else {
+            self.logger.error('[ROTARYENCODER2] detachListener: could not kill handler process');
+            defer.reject();
+        }
+
+    } else {
+        if (self.debugLogging) self.logger.info('[ROTARYENCODER2] detachListener: no handler process to kill');
+        defer.resolve();
+    }
 	return defer.promise;
 }
 
