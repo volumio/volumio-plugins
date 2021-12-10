@@ -17,7 +17,6 @@
 			"armhf"
 		],
 		"os": [
-			"jessie",
 			"buster"
 		],
 		"has_alsa_contribution": false,
