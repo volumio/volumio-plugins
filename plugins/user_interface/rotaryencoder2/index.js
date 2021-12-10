@@ -86,7 +86,6 @@ rotaryencoder2.prototype.onStart = function() {
 	self.socket.on('pushState',function(data){
 		self.status = data;
 		self.lastTime = data.seek - Date.now();
-		// if (self.debugLogging) self.logger.info('[ROTARYENCODER2] received Websock Status: ' + JSON.stringify(self.status));
 	})
 
 	self.activateRotaries([...Array(maxRotaries).keys()])
