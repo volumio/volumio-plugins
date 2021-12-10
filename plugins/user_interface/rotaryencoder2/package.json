@@ -23,10 +23,10 @@
 		"details": "Use up to 3 rotary encoders connected to the GPIOs of a Volumio system. Uses Linux kernel level drivers based on 'dtoverlay'.<br>Also provides a function to send commands via Websock.<br>Help and hardware tipps in the <a href=\"https://volumio.github.io/docs/Plugins_User_Manuals/rotaryencoder2/Rotary_Encoder_II.html\"><u>Documentation</u></a>",
 		"changelog": "First working beta for Volumio 3 (also working on Volumio 2)"
 	},
-    "engines": {
-        "node": ">=8",
-        "volumio": ">=2"
-    },
+	"engines": {
+		"node": ">=8",
+		"volumio": ">=2"
+	},
 	"dependencies": {
 		"fs-extra": "^5.0.0",
 		"kew": "^0.7.0",
