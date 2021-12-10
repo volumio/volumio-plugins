@@ -1,6 +1,6 @@
 {
 	"name": "gpio_control",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "GPIO output control plugin for Volumio",
 	"main": "index.js",
 	"scripts": {
@@ -18,9 +18,9 @@
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
 		"v-conf": "^1.4.0",
-		"onoff": "^1.1.1",
+		"onoff": "^6.0.0",
 		"socket.io-client": "^1.4.5",
-		"sleep": "^5.1.1",
+		"sleep": "^6.2.0",
 		"child_process": ""
 	}
 }
