@@ -1916,7 +1916,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composeout += '  playback:' + '\n';
         composeout += '    type: Alsa' + '\n';
         composeout += '    channels: 2' + '\n';
-        composeout += '    device: "fromDsp1"' + '\n';
+        composeout += '    device: "postDsp"' + '\n';
         composeout += '    format: S32LE' + '\n';
       }
       //------resampling section-----

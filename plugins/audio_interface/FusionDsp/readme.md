@@ -1,4 +1,4 @@
-December 5th 2021
+December 11th 2021
 
 
 ##  For Volumio3
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+December 11th 2021
+
+- asound cleaning
 
 December 5th 2021
 
