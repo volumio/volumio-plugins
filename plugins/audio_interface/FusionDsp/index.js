@@ -368,6 +368,9 @@ FusionDsp.prototype.getUIConfig = function () {
             case ("Notch2"):
               peqlabel = "Notch Hz,bandwidth Octave"
               break;
+            case ("LinkwitzTransform"):
+              peqlabel = "LinkwitzTransform Fa Hz,Qa,FT Hz,Qt"
+              break;
             default: "None"
           }
           //}
@@ -398,6 +401,7 @@ FusionDsp.prototype.getUIConfig = function () {
           { "value": "Lowpass2", "label": "Lowpass Hz,bandwidth Octave" },
           { "value": "HighpassFO", "label": "HighpassFO Hz" },
           { "value": "LowpassFO", "label": "LowpassFO Hz" },
+          { "value": "LinkwitzTransform", "label": "Linkwitz Transform Fa Hz,Qa,FT Hz,Qt" },
           { "value": "Remove", "label": "Remove" }]
 
           uiconf.sections[1].content.push(
@@ -2300,6 +2304,29 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
               pipelineR = '      - ' + eqc + '\n';
 
             }
+          } else if (typer == 'LinkwitzTransform') {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: Biquad' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer + '\n';
+            composedeq += '      freq_act: ' + eqv[0] + '\n';
+            composedeq += '      q_act: ' + eqv[1] + '\n';
+            composedeq += '      freq_target: ' + eqv[2] + '\n';
+            composedeq += '      q_target: ' + eqv[3] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + 0
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+
+            }
 
           } else if (typer == 'None') {
 
@@ -2694,6 +2721,25 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
         } else {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
+          return;
+        }
+
+      }
+      if (typer == 'LinkwitzTransform') {
+
+        var qa = Number(eqr[1])
+        var qt = Number(eqr[3])
+        if ((Number.parseFloat(qa)) && (qa > 0 && qa < 25.1) && (Number.parseFloat(qt)) && (qt > 0 && qt < 25.1)) {
+
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
+          return;
+        }
+        var ft = Number(eqr[2]);
+        if (Number.parseFloat(veq) && (veq > 0 && veq < 22050)) {
+
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
           return;
         }
 
@@ -3212,11 +3258,11 @@ FusionDsp.prototype.usethispreset = function (data) {
   }
 
 
-setTimeout(function () {
-  self.refreshUI();
-  self.createCamilladspfile()
-}, 500);
-return defer.promise;
+  setTimeout(function () {
+    self.refreshUI();
+    self.createCamilladspfile()
+  }, 500);
+  return defer.promise;
 
 };
 

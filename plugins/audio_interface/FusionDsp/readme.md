@@ -1,4 +1,4 @@
-December 11th 2021
+December 12th 2021
 
 
 ##  For Volumio3
@@ -11,7 +11,7 @@ Provides
 - A 15 bands graphic equalizer
 - Or a 2x15 bands graphic equalizer
 - Or a Parametric equalizer with :
-    - Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch)
+    - Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch, Linkwitz)
     - Equalizer scope for each band (L, R, L+R)
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAL/FusionDsp/peq/)
@@ -133,6 +133,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+December 12th 2021 v0.1.15
+
+- add linkwitz transform filter
 
 December 11th 2021
 

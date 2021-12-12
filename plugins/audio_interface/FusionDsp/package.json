@@ -1,40 +1,41 @@
 {
-	"name": "fusiondsp",
-	"version": "0.1.14",
-	"description": "A complete Dsp centre for Volumio3",
-	"main": "index.js",
-	"repository": "https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "Balbuze",
-	"license": "GPL 3.0",
-	"volumio_info": {
-		"prettyName": "FusionDsp",
-		"icon": "fa-sliders fa-rotate-90",
-		"plugin_type": "audio_interface",
-		"os": [
-			"buster"
-		],
-		"changelog": "asound cleaning",
-		"details": "Multimode Dsp, with graphic equalizer, parametric equalizer, FIR filters, Loudness, AutoEq profile for headphone and more",
-		"architectures": [
-			"armhf",
-			"amd64"
-		],
-		"has_alsa_contribution": true
-	},
-	"dependencies": {
-		"child_process": "",
-		"fs-extra": "^4.0.2",
-		"journalctl": "",
-		"kew": "",
-		"socket.io-client": "2.4.0",
-		"v-conf": "",
-		"ws": "^7.4.3"
-	},
-	"engines": {
-		"node": ">=8",
-		"volumio": ">=3"
-	}
+  "name": "fusiondsp",
+  "version": "0.1.15",
+  "description": "A complete Dsp centre for Volumio3",
+  "main": "index.js",
+  "repository": "https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Balbuze",
+  "license": "GPL 3.0",
+  "volumio_info": {
+    "prettyName": "FusionDsp",
+    "icon": "fa-sliders fa-rotate-90",
+    "plugin_type": "audio_interface",
+    "os": [
+      "buster"
+    ],
+    "changelog": "LinkwitzTransform filter",
+    "details": "Multimode Dsp, with graphic equalizer, parametric equalizer, FIR filters, Loudness, AutoEq profile for headphone and more",
+    "architectures": [
+      "armhf",
+      "amd64"
+    ],
+    "has_alsa_contribution": true,
+    "manually_installed": true
+  },
+  "dependencies": {
+    "child_process": "",
+    "fs-extra": "^4.0.2",
+    "journalctl": "",
+    "kew": "",
+    "socket.io-client": "2.4.0",
+    "v-conf": "",
+    "ws": "^7.4.3"
+  },
+  "engines": {
+    "node": ">=8",
+    "volumio": ">=3"
+  }
 }
