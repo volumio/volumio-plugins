@@ -1,4 +1,4 @@
-December 12th 2021
+December 17th 2021
 
 
 ##  For Volumio3
@@ -26,6 +26,7 @@ For all
 - Separate volume level for left an right
 - 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
 - Mono / stereo toggle
+- Delay
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
 
@@ -133,6 +134,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+December 17th 2021 v0.1.16
+
+- add delay feature
 
 December 12th 2021 v0.1.15
 

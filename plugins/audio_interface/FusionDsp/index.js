@@ -1016,8 +1016,39 @@ FusionDsp.prototype.getUIConfig = function () {
                 }
               ]
             }
-          }
+          },
 
+          {
+            "id": "delayscope",
+            "element": "select",
+            "doc": self.commandRouter.getI18nString('DELAY_SCOPE_DOC'),
+            "label": self.commandRouter.getI18nString('DELAY_SCOPE'),
+            "value": { "value": self.config.get("delayscope"), "label": self.config.get("delayscope") },
+            "options": [{ "value": "None", "label": "None" }, { "value": "L", "label": "L" }, { "value": "R", "label": "R" }, { "value": "L+R", "label": "L+R" }],
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
+          },
+          {
+            "id": "delay",
+            "element": "input",
+            "type": "number",
+            "label": self.commandRouter.getI18nString('DELAY_VALUE'),
+            "doc": self.commandRouter.getI18nString("DELAY_VALUE_DOC"),
+            "attributes": [
+              { "placeholder": "0ms" },
+              { "maxlength": 4 },
+              { "min": 0 },
+              { "max": 1000.1 },
+              { "step": 0.1 }
+            ],
+            "value": self.config.get("delay"),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
+          }
         )
       }
 
@@ -1037,6 +1068,9 @@ FusionDsp.prototype.getUIConfig = function () {
       //}
       uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('monooutput');
+      uiconf.sections[1].saveButton.data.push('delay');
+      uiconf.sections[1].saveButton.data.push('delayscope');
+
       if (self.config.get('showloudness')) {
         uiconf.sections[1].saveButton.data.push('loudness');
         uiconf.sections[1].saveButton.data.push('loudnessthreshold');
@@ -2011,6 +2045,25 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       }
 
       //------end crossfeed section
+
+      //------delay
+      let delayscope = self.config.get('delayscope')
+      if (delayscope != 'None') {
+        var composedeq = '';
+        var pipelineL = '';
+        var pipelineR = '';
+        composedeq += '  delay' + ':\n';
+        composedeq += '    type: Delay' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      delay: ' + self.config.get("delay") + '\n';
+        composedeq += '      unit: ms' + '\n';
+        composedeq += '      subsample: false' + '\n';
+        composedeq += '' + '\n';
+        result += composedeq
+
+      }
+      //-----end delay
+
       //------volume loudness section---
 
       let loudness = self.config.get('loudness')
@@ -2366,10 +2419,26 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             pipelinerr += '      - lowshelf\n';
             //    self.logger.info('loudness pipeline set')
           }
+          if (delayscope != 'None') {
+            if (delayscope == 'L') {
+              pipelinelr += '' + '\n';
 
+              pipelinelr += '      - delay' + '\n';
+
+            } else if (delayscope == 'R') {
+              pipelinelr += '' + '\n';
+              pipelinerr += '      - delay' + '\n';
+
+            } else if (delayscope == 'L+R') {
+              pipelinelr += '' + '\n';
+              pipelinelr += '      - delay' + '\n';
+              pipelinelr += '' + '\n';
+              pipelinerr += '      - delay' + '\n';
+            }
+
+          }
 
         };
-
 
       };
 
@@ -2489,6 +2558,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           composedpipeline += '      - ' + pipelinerr + '\n'
           composedpipeline += '\n'
         }
+
       } else if ((crossconfig != 'None') && (effect)) {
         // -- if a crossfeed is used
         composedmixer += 'mixers:\n'
@@ -2621,6 +2691,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedpipeline += '      - ' + pipelinerr + '\n'
         composedpipeline += '\n'
       }
+
 
       var chunksize
       if (selectedsp === "convfir") {
@@ -2776,6 +2847,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
           return;
         }
       }
+
       /*
             if (typer == 'Highshelf2' || typer == 'Lowshelf2') {
       
@@ -2820,6 +2892,9 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         self.logger.info('nothing todo');
       }
     }
+
+
+
     let skipeqn = 0;
     for (var xo = 1; xo < (nbreq + 1); xo++) {
       var o = xo
@@ -2998,8 +3073,22 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
     }
   }
+
+
   if (self.config.get('moresettings')) {
 
+    if ((data['delayscope'].value) != 'None') {
+      var value = data['delay']
+      if ((Number.parseFloat(value)) && (value >= 0 && value < 1000)) {
+        self.config.set('delay', data["delay"]);
+        self.logger.info('value delay ------- ' + value + ' scope ' + (data['delayscope'].value))
+
+      } else {
+        self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DELAY_ERROR'))
+
+        return;
+      }
+    }
     let monooutput = data["monooutput"]
     if (monooutput) {
       self.config.set('crossfeed', 'None');
@@ -3015,6 +3104,8 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
     self.config.set('monooutput', data["monooutput"]);
+    self.config.set('delayscope', (data["delayscope"].value));
+
     if (self.config.get('showloudness')) {
 
       self.config.set('loudness', loudness);
@@ -3046,7 +3137,9 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
     self.config.get('loudness'),
     self.config.get('loudnessthreshold'),
     self.config.get('leftlevel'),
-    self.config.get('rightlevel')
+    self.config.get('rightlevel'),
+    self.config.get('delay'),
+    self.config.get('delayscope')
   ]
 
   let preset = (data['eqpresetsaved'].value);
@@ -3252,6 +3345,10 @@ FusionDsp.prototype.usethispreset = function (data) {
     self.config.set('loudnessthreshold', state4preset[3])
     self.config.set('leftlevel', state4preset[4])
     self.config.set('rightlevel', state4preset[5])
+    self.config.set('delay', state4preset[6])
+    self.config.set('delayscope', state4preset[7])
+
+
     self.commandRouter.pushToastMessage('info', spresetm + self.commandRouter.getI18nString('PRESET_LOADED_USED'))
   } else {
     self.commandRouter.pushToastMessage('info', spreset + self.commandRouter.getI18nString('PRESET_LOADED_USED'))

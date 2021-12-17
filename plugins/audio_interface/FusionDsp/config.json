@@ -151,7 +151,9 @@
             false,
             50,
             0,
-            0
+            0,
+            0,
+            "None"
         ]
     },
     "state4preset2": {
@@ -162,7 +164,9 @@
             false,
             50,
             0,
-            0
+            0,
+            0,
+            "None"
         ]
     },
     "state4preset3": {
@@ -173,7 +177,9 @@
             false,
             50,
             0,
-            0
+            0,
+            0,
+            "None"
         ]
     },
     "availablefilters": {
@@ -208,6 +214,14 @@
     "showloudness": {
         "type": "boolean",
         "value": true
+    },
+    "delayscope": {
+        "type": "string",
+        "value": "None"
+    },
+    "delay": {
+        "type":"number",
+        "value":0
     },
     "eqfrom": {
         "type": "string",

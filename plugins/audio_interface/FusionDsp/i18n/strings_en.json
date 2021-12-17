@@ -14,6 +14,7 @@
   "TYPEEQ_DOC": "Choose the type of effect you want. Available PEAKING, LOWSHELF, HIGHSHELF, HIGHPASS, LOWPASS, NOTCH",
   "GAIN_EQUALIZER": "Equalizer",
   "DOCEQ": "Set the value for each frequency band (dB)",
+  "DELAY_ERROR": "Delay must be a number [0-999] !",
   "ADVEQSET": "Advanced equalizer preset",
   "PRESSETTING": "Preset settings",
   "DOCPRESETTINGS": "Here you define your 3 presets",
@@ -166,5 +167,9 @@
   "TOOLS_FILE_TO_PLAY": "File to play",
   "TOOLS_CHOOSE_FILE": "Choose a file",
   "TOOLS_NO_FILE":"No file found",
-  "CHOOSE_TOOLS_FILE": "Select a file"
+  "CHOOSE_TOOLS_FILE": "Select a file",
+  "DELAY_VALUE": "Delay value (ms)",
+  "DELAY_VALUE_DOC":"Give value for delai (ms)",
+  "DELAY_SCOPE":"Delay on channel",
+  "DELAY_SCOPE_DOC":"Enter on which channel apply the delay"
 }
