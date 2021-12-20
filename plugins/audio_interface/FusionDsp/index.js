@@ -2032,7 +2032,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '  delay:\n'
         composedeq += '    type: Delay\n'
         composedeq += '    parameters:\n'
-        composedeq += '      delay: 0.5\n'
+        composedeq += '      delay: 0.32\n'
         composedeq += '      unit: ms\n'
         composedeq += '      subsample: false\n'
         composedeq += '      \n'
@@ -2052,7 +2052,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         var composedeq = '';
         var pipelineL = '';
         var pipelineR = '';
-        composedeq += '  delay' + ':\n';
+        composedeq += '  delayG' + ':\n';
         composedeq += '    type: Delay' + '\n';
         composedeq += '    parameters:' + '\n';
         composedeq += '      delay: ' + self.config.get("delay") + '\n';
@@ -2423,17 +2423,17 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             if (delayscope == 'L') {
               pipelinelr += '' + '\n';
 
-              pipelinelr += '      - delay' + '\n';
+              pipelinelr += '      - delayG' + '\n';
 
             } else if (delayscope == 'R') {
-              pipelinelr += '' + '\n';
-              pipelinerr += '      - delay' + '\n';
+              pipelinerr += '' + '\n';
+              pipelinerr += '      - delayG' + '\n';
 
             } else if (delayscope == 'L+R') {
               pipelinelr += '' + '\n';
-              pipelinelr += '      - delay' + '\n';
-              pipelinelr += '' + '\n';
-              pipelinerr += '      - delay' + '\n';
+              pipelinelr += '      - delayG' + '\n';
+              pipelinerr += '' + '\n';
+              pipelinerr += '      - delayG' + '\n';
             }
 
           }

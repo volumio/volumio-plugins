@@ -1,4 +1,4 @@
-December 17th 2021
+December 20th 2021
 
 
 ##  For Volumio3
@@ -134,6 +134,10 @@ nearly everythings ;-)
 - 
 
 ### 4. Last changes
+
+December 17th 2021 v0.1.16
+
+- fix for delay
 
 December 17th 2021 v0.1.16
 
