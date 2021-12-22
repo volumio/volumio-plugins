@@ -1,6 +1,7 @@
-## Squeezelite installation script
+ ## Squeezelite installation script
 echo "Installing Squeezelite and its dependencies..."
 INSTALLING="/home/volumio/squeezelite-plugin.installing"
+ARCH=$(cat /etc/os-release | grep ^VOLUMIO_ARCH | tr -d 'VOLUMIO_ARCH="')
 
 if [ ! -f $INSTALLING ]; then
 
@@ -10,7 +11,7 @@ if [ ! -f $INSTALLING ]; then
 	then 
 		# Download latest squeezelite executable
 		echo "Downloading squeezelite..."
-		wget -O /opt/squeezelite https://github.com/Saiyato/volumio-squeezelite-plugin/raw/master/known_working_versions/squeezelite-armv6hf-volumio
+		wget -O /opt/squeezelite https://github.com/volumio/squeezelite-binaries/raw/master/squeezelite-$ARCH
 				
 		# Fix executable rights
 		chown volumio:volumio /opt/squeezelite
@@ -18,7 +19,7 @@ if [ ! -f $INSTALLING ]; then
 		
 		# Download and activate default unit
 		TMPUNIT="/data/plugins/music_service/squeezelite/squeezelite.service"
-		wget -O $TMPUNIT https://raw.githubusercontent.com/Saiyato/volumio-squeezelite-plugin/master/unit/squeezelite.unit-template
+		wget -O $TMPUNIT https://raw.githubusercontent.com/volumio/squeezelite-binaries/master/squeezelite.unit-template
 		chown volumio $TMPUNIT
 		
 		sed 's|${NAME}|-n Volumio|g' -i $TMPUNIT
