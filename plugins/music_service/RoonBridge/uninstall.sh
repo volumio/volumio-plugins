@@ -7,10 +7,10 @@ PLUGIN_CATEGORY=$(cat "$PLUGIN_DIR"/package.json | jq -r ".volumio_info.plugin_t
 PACKAGE_NAME=$(cat "$PLUGIN_DIR"/package.json | jq -r ".name")
 PACKAGE_NAME_LOWER=`echo "$PACKAGE_NAME" | tr "[A-Z]" "[a-z]"`
 
-rm -Rf "/data/configuration/$PLUGIN_CATEGORY/$PACKAGE_NAME"
-rm "/lib/systemd/system/$PACKAGE_NAME_LOWER.service"
+#rm -Rf "/data/configuration/$PLUGIN_CATEGORY/$PACKAGE_NAME"
+#rm "/lib/systemd/system/$PACKAGE_NAME_LOWER.service"
 
-systemctl daemon-reload
+#systemctl daemon-reload
 
 echo "Done"
 echo "pluginuninstallend"
