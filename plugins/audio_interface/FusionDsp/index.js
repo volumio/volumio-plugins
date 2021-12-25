@@ -28,6 +28,7 @@ const toolspath = "INTERNAL/FusionDsp/tools/";
 const wavfolder = "/data/INTERNAL/FusionDsp/wavfiles/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
 const coefQ = 1.85//Q for graphic EQ
+const sv = 34300 // sound velocity cm/s
 
 // Define the Parameq class
 module.exports = FusionDsp;
@@ -819,6 +820,7 @@ FusionDsp.prototype.getUIConfig = function () {
 
       if (moresettings) {
 
+
         //-----------------crossfeed -------------
         var crossconfig = self.config.get('crossfeed')
         switch (crossconfig) {
@@ -907,6 +909,123 @@ FusionDsp.prototype.getUIConfig = function () {
             }
           )
         }
+        if (self.config.get('manualdelay') == false) {
+
+          uiconf.sections[1].content.push(
+            {
+              "id": "manualdelay",
+              "element": "button",
+              "label": self.commandRouter.getI18nString('DELAY_MANUAL'),
+              "doc": self.commandRouter.getI18nString('DELAY_MANUAL_DOC'),
+              "onClick": {
+                "type": "plugin",
+                "endpoint": "audio_interface/fusiondsp",
+                "method": "manualdelay",
+                "data": []
+              },
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            },
+            {
+              "id": "ldistance",
+              "element": "input",
+              "type": "number",
+              "label": self.commandRouter.getI18nString('DELAY_LEFT_SPEAKER_DIST'),
+              "doc": self.commandRouter.getI18nString('DELAY_LEFT_SPEAKER_DIST_DOC'),
+              "attributes": [
+                { "placeholder": "0 centimeter" },
+                { "maxlength": 5 },
+                { "min": 0 },
+                { "step": 1 }
+              ],
+              "value": self.config.get("ldistance"),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            },
+            {
+              "id": "rdistance",
+              "element": "input",
+              "type": "number",
+              "label": self.commandRouter.getI18nString('DELAY_RIGHT_SPEAKER_DIST'),
+              "doc": self.commandRouter.getI18nString('DELAY_RIGHT_SPEAKER_DIST_DOC'),
+              "attributes": [
+                { "placeholder": "0 centimeter" },
+                { "maxlength": 5 },
+                { "min": 0 },
+                { "step": 1 }
+              ],
+              "value": self.config.get("rdistance"),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            }
+          )
+          uiconf.sections[1].saveButton.data.push('ldistance');
+          uiconf.sections[1].saveButton.data.push('rdistance');
+        }
+
+        // uiconf.sections[nsections].content[(+ncontent * 3)].hidden = false;
+        //  } else if (effect == false) {
+        if (self.config.get('manualdelay')) {
+          uiconf.sections[1].content.push(
+
+            {
+              "id": "speakerdistance",
+              "element": "button",
+              "label": self.commandRouter.getI18nString('DELAY_AUTO'),
+              "doc": self.commandRouter.getI18nString('DELAY_AUTO_DOC'),
+              "onClick": {
+                "type": "plugin",
+                "endpoint": "audio_interface/fusiondsp",
+                "method": "speakerdistance",
+                "data": []
+              },
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            },
+            {
+              "id": "delayscope",
+              "element": "select",
+              "doc": self.commandRouter.getI18nString('DELAY_SCOPE_DOC'),
+              "label": self.commandRouter.getI18nString('DELAY_SCOPE'),
+              "value": { "value": self.config.get("delayscope"), "label": self.config.get("delayscope") },
+              "options": [{ "value": "None", "label": "None" }, { "value": "L", "label": "L" }, { "value": "R", "label": "R" }, { "value": "L+R", "label": "L+R" }],
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            },
+            {
+              "id": "delay",
+              "element": "input",
+              "type": "number",
+              "label": self.commandRouter.getI18nString('DELAY_VALUE'),
+              "doc": self.commandRouter.getI18nString("DELAY_VALUE_DOC"),
+              "attributes": [
+                { "placeholder": "0ms" },
+                { "maxlength": 4 },
+                { "min": 0 },
+                { "max": 1000.1 },
+                { "step": 0.1 }
+              ],
+              "value": self.config.get("delay"),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
+            }
+          )
+        }
+        uiconf.sections[1].saveButton.data.push('delay');
+        uiconf.sections[1].saveButton.data.push('delayscope');
+
       }
       //------------experimental
       /*
@@ -1016,42 +1135,9 @@ FusionDsp.prototype.getUIConfig = function () {
                 }
               ]
             }
-          },
-
-          {
-            "id": "delayscope",
-            "element": "select",
-            "doc": self.commandRouter.getI18nString('DELAY_SCOPE_DOC'),
-            "label": self.commandRouter.getI18nString('DELAY_SCOPE'),
-            "value": { "value": self.config.get("delayscope"), "label": self.config.get("delayscope") },
-            "options": [{ "value": "None", "label": "None" }, { "value": "L", "label": "L" }, { "value": "R", "label": "R" }, { "value": "L+R", "label": "L+R" }],
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
-            }
-          },
-          {
-            "id": "delay",
-            "element": "input",
-            "type": "number",
-            "label": self.commandRouter.getI18nString('DELAY_VALUE'),
-            "doc": self.commandRouter.getI18nString("DELAY_VALUE_DOC"),
-            "attributes": [
-              { "placeholder": "0ms" },
-              { "maxlength": 4 },
-              { "min": 0 },
-              { "max": 1000.1 },
-              { "step": 0.1 }
-            ],
-            "value": self.config.get("delay"),
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
-            }
           }
         )
       }
-
       uiconf.sections[1].content.push(
         {
           "id": "showeq",
@@ -1062,14 +1148,13 @@ FusionDsp.prototype.getUIConfig = function () {
         }
       )
 
-      // if (moresettings) {
       uiconf.sections[1].saveButton.data.push('leftlevel');
       uiconf.sections[1].saveButton.data.push('rightlevel');
-      //}
       uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('monooutput');
-      uiconf.sections[1].saveButton.data.push('delay');
-      uiconf.sections[1].saveButton.data.push('delayscope');
+
+
+
 
       if (self.config.get('showloudness')) {
         uiconf.sections[1].saveButton.data.push('loudness');
@@ -1078,7 +1163,6 @@ FusionDsp.prototype.getUIConfig = function () {
       // }
       uiconf.sections[1].saveButton.data.push('showeq');
 
-      // uiconf.sections[1].saveButton.data.push('moresettings');
 
       self.logger.info(' Dsp mode set is ' + selectedsp)
 
@@ -1117,8 +1201,6 @@ FusionDsp.prototype.getUIConfig = function () {
         default: plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
       }
 
-      //  self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.value', value);
-      //self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', plabel);
       self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.value', value);
       self.configManager.setUIConfigParam(uiconf, 'sections[2].content[0].value.label', plabel);
 
@@ -1532,6 +1614,88 @@ FusionDsp.prototype.disableeffect = function () {
     self.createCamilladspfile()
   }, 100);
   self.refreshUI();
+
+};
+
+FusionDsp.prototype.speakerdistance = function () {
+  const self = this;
+  self.config.set('manualdelay', false)
+  /* setTimeout(function () {
+     self.createCamilladspfile()
+   }, 100);*/
+  self.refreshUI();
+
+};
+
+FusionDsp.prototype.manualdelay = function () {
+  const self = this;
+  self.config.set('manualdelay', true)
+  /*setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);*/
+  self.refreshUI();
+
+};
+
+FusionDsp.prototype.autocalculdelay = function () {
+  const self = this;
+  let delay
+  let sldistance = self.config.get('ldistance');
+  let srdistance = self.config.get('rdistance');
+  let diff;
+  let cdelay;
+  // let sample_rate = self.config.get('smpl_rate');
+  let sv = 34300; // sound velocity cm/s
+
+  if (sldistance > srdistance) {
+    diff = sldistance - srdistance
+    cdelay = (diff * 1000 / sv).toFixed(4)
+    delay = ('0,' + cdelay)
+    self.logger.info('l>r ' + delay)
+    self.config.set('delayscope', 'R')
+    self.config.set('delay', cdelay)
+
+  }
+  if (sldistance < srdistance) {
+    diff = srdistance - sldistance
+    cdelay = (diff * 1000 / sv).toFixed(4)
+    delay = (cdelay + ',0')
+    self.logger.info('l<r ' + delay)
+    self.config.set('delayscope', 'L')
+    self.config.set('delay', cdelay)
+  }
+  if (sldistance == srdistance) {
+    self.logger.info('no delay needed');
+    delay = ('0,0')
+    self.config.set('delayscope', 'None')
+    self.config.set('delay', 0)
+    self.config.set('ldistance', 0)
+    self.config.set('rdistance', 0)
+  }
+
+};
+
+FusionDsp.prototype.autocaldistancedelay = function () {
+  const self = this;
+  let delays = self.config.get('delay');
+  let delayscopes = self.config.get('delayscope');
+  let cdistance
+  
+
+  if (delayscopes == "R") {
+    cdistance = (delays * 1000000 / sv).toFixed(0)
+    self.config.set('ldistance', cdistance)
+    self.config.set('rdistance', 0)
+  }
+  if (delayscopes == "L") {
+    cdistance = (delays * 1000000 / sv).toFixed(0)
+    self.config.set('rdistance', cdistance)
+    self.config.set('ldistance', 0)
+  }
+  if (delayscopes == "None") {
+    self.config.set('ldistance', 0)
+    self.config.set('rdistance', 0)
+  }
 
 };
 
@@ -3076,19 +3240,43 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
 
   if (self.config.get('moresettings')) {
+    let delaymode = self.config.get('manualdelay')
 
-    if ((data['delayscope'].value) != 'None') {
+    //if (((data['delayscope'].value) != 'None') && (delaymode == true)) {
+    if (delaymode == true) {
+
       var value = data['delay']
       if ((Number.parseFloat(value)) && (value >= 0 && value < 1000)) {
         self.config.set('delay', data["delay"]);
-        self.logger.info('value delay ------- ' + value + ' scope ' + (data['delayscope'].value))
+        self.config.set('delayscope', (data["delayscope"].value));
 
+        self.logger.info('value delay ------- ' + value + ' scope ' + (data['delayscope'].value))
+        self.autocaldistancedelay()
       } else {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('DELAY_ERROR'))
 
         return;
       }
     }
+    //}
+
+    if (delaymode == false) {
+      var valuel = data['ldistance']
+      var valuer = data['rdistance']
+
+      // if (((Number.parseFloat(valuel)) && (valuel >= 0 && valuel < 2500)) || ((Number.parseFloat(valuer)) && (valuer >= 0 && valuer < 2500))) {
+      if ((valuel >= 0 && valuel < 2500) && (valuer >= 0 && valuer < 2500)) {
+
+        self.config.set('ldistance', valuel);
+        self.config.set('rdistance', valuer);
+        self.logger.info('value distance L------- ' + valuel + ' R ' + valuer);
+        self.autocalculdelay()
+      } else {
+        self.commandRouter.pushToastMessage('error', 'DELAY_ERROR')
+        return;
+      }
+    }
+
     let monooutput = data["monooutput"]
     if (monooutput) {
       self.config.set('crossfeed', 'None');
@@ -3104,7 +3292,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
     self.config.set('monooutput', data["monooutput"]);
-    self.config.set('delayscope', (data["delayscope"].value));
+    //self.config.set('delayscope', (data["delayscope"].value));
 
     if (self.config.get('showloudness')) {
 

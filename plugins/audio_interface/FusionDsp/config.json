@@ -223,6 +223,18 @@
         "type":"number",
         "value":0
     },
+    "manualdelay": {
+        "type": "boolean",
+        "value": false
+    },
+    "ldistance": {
+        "type":"number",
+        "value":0
+    }, 
+     "rdistance": {
+        "type":"number",
+        "value":0
+    },
     "eqfrom": {
         "type": "string",
         "value": "local"
