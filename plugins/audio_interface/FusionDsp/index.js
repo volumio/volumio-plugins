@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze December 2021
+FusionDsp plugin for volumio3. By balbuze January 2022
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -57,6 +57,7 @@ FusionDsp.prototype.onStart = function () {
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
+  self.loadalsastuff();
   self.hwinfo();
 
   /*-----------Experimental CamillaGui
@@ -131,6 +132,29 @@ FusionDsp.prototype.getI18nFile = function (langCode) {
   return path.join(__dirname, 'i18n', 'strings_en.json');
 }
 
+FusionDsp.prototype.loadalsastuff = function () {
+  const self = this;
+  var defer = libQ.defer();
+  try {
+    exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
+      uid: 1000,
+      gid: 1000
+    })
+  } catch (err) {
+    self.logger.error('----snd_aloop fails to load :' + err);
+    defer.reject(err);
+  }
+  try {
+    
+   exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 100000 -w 100 -f S32_LE -n -v -S0 -A0 -U", {
+     uid: 1000,
+     gid: 1000
+    })
+  } catch (err) {
+    self.logger.error('----alsaloop fails to load :' + err);
+    defer.reject(err);
+  }
+};
 
 //------------------Hw detection--------------------
 
@@ -1680,7 +1704,7 @@ FusionDsp.prototype.autocaldistancedelay = function () {
   let delays = self.config.get('delay');
   let delayscopes = self.config.get('delayscope');
   let cdistance
-  
+
 
   if (delayscopes == "R") {
     cdistance = (delays * 1000000 / sv).toFixed(0)
@@ -3308,7 +3332,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
   setTimeout(function () {
     self.refreshUI();
-
     self.createCamilladspfile()
   }, 800);
 

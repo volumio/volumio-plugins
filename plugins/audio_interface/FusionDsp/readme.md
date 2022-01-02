@@ -1,4 +1,4 @@
-December 25th 2021
+January 2nd 2022
 
 
 ##  For Volumio3
@@ -134,6 +134,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+January 2nd 2021 v0.1.19
+
+- tempoaray workaround for mpd issue
 
 December 25th 2021 v0.1.18
 
