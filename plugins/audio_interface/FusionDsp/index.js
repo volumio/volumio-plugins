@@ -145,10 +145,10 @@ FusionDsp.prototype.loadalsastuff = function () {
     defer.reject(err);
   }
   try {
-    
-   exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 100000 -w 100 -f S32_LE -n -v -S0 -A0 -U", {
-     uid: 1000,
-     gid: 1000
+
+    exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 80000 -w 500 -f S32_LE -n -v -S0 -A0 -U", {
+      uid: 1000,
+      gid: 1000
     })
   } catch (err) {
     self.logger.error('----alsaloop fails to load :' + err);
@@ -396,6 +396,12 @@ FusionDsp.prototype.getUIConfig = function () {
             case ("LinkwitzTransform"):
               peqlabel = "LinkwitzTransform Fa Hz,Qa,FT Hz,Qt"
               break;
+            case ("ButterworthHighpass"):
+              peqlabel = "ButterworthHighpass Hz, order"
+              break;
+            case ("ButterworthLowpass"):
+              peqlabel = "ButterworthLowpass Hz, order"
+              break;
             default: "None"
           }
           //}
@@ -427,6 +433,8 @@ FusionDsp.prototype.getUIConfig = function () {
           { "value": "HighpassFO", "label": "HighpassFO Hz" },
           { "value": "LowpassFO", "label": "LowpassFO Hz" },
           { "value": "LinkwitzTransform", "label": "Linkwitz Transform Fa Hz,Qa,FT Hz,Qt" },
+          { "value": "ButterworthHighpass", "label": "ButterworthHighpass Hz, order" },
+          { "value": "ButterworthLowpass", "label": "ButterworthLowpass Hz, order" },
           { "value": "Remove", "label": "Remove" }]
 
           uiconf.sections[1].content.push(
@@ -2569,6 +2577,28 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
 
             }
 
+          } else if (typer == 'ButterworthHighpass' || typer == 'ButterworthLowpass') {
+
+            composedeq += '  ' + eqc + ':\n';
+            composedeq += '    type: BiquadCombo' + '\n';
+            composedeq += '    parameters:' + '\n';
+            composedeq += '      type: ' + typer + '\n';
+            composedeq += '      freq: ' + eqv[0] + '\n';
+            composedeq += '      order: ' + eqv[1] + '\n';
+            composedeq += '' + '\n';
+            gainmax = ',' + 0
+            if (scoper == 'L') {
+              pipelineL = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'R') {
+              pipelineR = '      - ' + eqc + '\n';
+
+            } else if (scoper == 'L+R') {
+              pipelineL = '      - ' + eqc + '\n';
+              pipelineR = '      - ' + eqc + '\n';
+
+            }
+
           } else if (typer == 'None') {
 
             composedeq = ''
@@ -2952,7 +2982,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       if (typer == 'Peaking' || typer == 'Highshelf2' || typer == 'Lowshelf2') {
 
         var q = Number(eqr[2]);
-        if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
+        if ((Number.parseFloat(q)) && (q > 0 && q < 40.1)) {
 
         } else {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
@@ -2976,7 +3006,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch') {
 
         var q = Number(eqr[1]);
-        if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
+        if ((Number.parseFloat(q)) && (q > 0 && q < 40.1)) {
 
         } else {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
@@ -2988,7 +3018,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
         var qa = Number(eqr[1])
         var qt = Number(eqr[3])
-        if ((Number.parseFloat(qa)) && (qa > 0 && qa < 25.1) && (Number.parseFloat(qt)) && (qt > 0 && qt < 25.1)) {
+        if ((Number.parseFloat(qa)) && (qa > 0 && qa < 40.1) && (Number.parseFloat(qt)) && (qt > 0 && qt < 40.1)) {
 
         } else {
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
@@ -3003,6 +3033,19 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         }
 
       }
+
+      if (typer == 'ButterworthHighpass' || typer == 'ButterworthLowpass') {
+        var order = Number(eqr[1]);
+        var arr = [2, 4, 6, 8];
+        if (arr.indexOf(order) > -1) {
+        } else {
+          self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BIQUAD_COMBO_ORDER') + eqc)
+          return;
+
+        }
+
+      }
+
       if (typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2') {
 
         var q = Number(eqr[1]);
@@ -3054,11 +3097,12 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
               }
             }
       */
-      if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch' || typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2') {
+      if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch' || typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2' || typer == 'ButterworthHighpass' || typer == 'ButterworthLowpass') {
 
         var q = eqr[2];
-        self.logger.info('last value ' + q)
         if (q != undefined) {
+          self.logger.info('last value ' + q)
+
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('NO_THIRDCOEFF') + eqc)
           return;
         } else {

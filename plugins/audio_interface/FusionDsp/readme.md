@@ -1,4 +1,4 @@
-January 2nd 2022
+January 4th 2022
 
 
 ##  For Volumio3
@@ -11,7 +11,7 @@ Provides
 - A 15 bands graphic equalizer
 - Or a 2x15 bands graphic equalizer
 - Or a Parametric equalizer with :
-    - Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch, Linkwitz)
+    - Up to 50 bands (peaking, lowshelf, highshelf, lowpass, highpass, notch, Linkwitz, ButterworthHighpass & ButterworthLowpass)
     - Equalizer scope for each band (L, R, L+R)
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAL/FusionDsp/peq/)
@@ -135,7 +135,13 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
-January 2nd 2021 v0.1.19
+January 4th 2022 v0.1.20
+
+- Q range is now [0.1-40]
+- New filters ButterworthHighpass & ButterworthLowpass
+- Some adjustements in alsaloop
+
+January 2nd 2022 v0.1.19
 
 - tempoaray workaround for mpd issue
 
