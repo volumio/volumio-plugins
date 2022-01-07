@@ -146,7 +146,7 @@ FusionDsp.prototype.loadalsastuff = function () {
   }
   try {
 
-    exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 80000 -w 500 -f S32_LE -n -v -S0 -A0 -U", {
+    exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 100000 -f S32_LE -S 0", {
       uid: 1000,
       gid: 1000
     })
