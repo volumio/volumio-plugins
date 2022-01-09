@@ -57,7 +57,10 @@ FusionDsp.prototype.onStart = function () {
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
+  //----- alsa temporary workaround--------
   self.loadalsastuff();
+  //---------------------------------------
+
   self.hwinfo();
 
   /*-----------Experimental CamillaGui
