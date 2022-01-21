@@ -19,9 +19,9 @@
     "type": "string",
     "value": ""
   },
-  "supportedSongServices": {
+  "blacklistedServices": {
     "type": "string",
-    "value": "mpd,airplay_emulation,volspotconnect,volspotconnect2,spop"
+    "value": ""
   },  
   "scrobbleThreshold": {
     "type": "int",
@@ -34,10 +34,6 @@
   "scrobbleFromStream": {
     "type": "boolean",
     "value": true
-  },
-  "supportedStreamingServices": {
-    "type": "string",
-    "value": "webradio,radio_paradise,80s80s"
   },
   "streamScrobbleThreshold": {
     "type": "string",
