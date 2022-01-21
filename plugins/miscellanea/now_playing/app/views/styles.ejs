@@ -1,0 +1,214 @@
+<% if (styles.fontSizes == 'custom') { %>
+  <% if (styles.titleFontSize) { %>
+    #track-info .title {
+      font-size: <%- styles.titleFontSize %>;
+    }
+  <% } %>
+  <% if (styles.artistFontSize) { %>
+    #track-info .artist {
+      font-size: <%- styles.artistFontSize %>;
+    }
+  <% } %>
+  <% if (styles.albumFontSize) { %>
+    #track-info .album {
+      font-size: <%- styles.albumFontSize %>;
+    }
+  <% } %>
+  <% if (styles.mediaInfoFontSize) { %>
+    #track-info .media-info .quality {
+      font-size: <%- styles.mediaInfoFontSize %>;
+    }
+    #track-info .media-info .format-icon {
+      height: <%- styles.mediaInfoFontSize %>;
+    }
+  <% } %>
+<% } %> 
+
+<% if (styles.fontColors == 'custom') { %>
+  <% if (styles.titleFontColor) { %>
+    #track-info .title {
+      color: <%- styles.titleFontColor %>;
+    }
+  <% } %>
+  <% if (styles.artistFontColor) { %>
+    #track-info .artist {
+      color: <%- styles.artistFontColor %>;
+    }
+  <% } %>
+  <% if (styles.albumFontColor) { %>
+    #track-info .album {
+      color: <%- styles.albumFontColor %>;
+    }
+  <% } %>
+  <% if (styles.mediaInfoFontColor) { %>
+    #track-info .media-info .quality {
+      color: <%- styles.mediaInfoFontColor %>;
+    }
+  <% } %>
+<% } %>
+
+<% if (styles.textAlignment) { %>
+  #track-info {
+    text-align: <%- styles.textAlignment %>;
+  }
+<% } %>
+
+<% if (styles.widgetColors == 'custom') { %>
+  <% if (styles.widgetPrimaryColor) { %>
+    #controls button {
+      color: <%- styles.widgetPrimaryColor %>;
+    }
+    #controls button.play:hover {
+      color: <%- styles.widgetPrimaryColor %>;
+    }
+    #seekbar.ui-widget-content {
+      background: <%- styles.widgetPrimaryColor %>;
+    }
+  <% } %>
+  <% if (styles.widgetHighlightColor) { %>
+    #controls button.repeat.active,
+    #controls button.random.active {
+        color: <%- styles.widgetHighlightColor %>;
+    }
+    #controls button.play {
+      border-color: <%- styles.widgetHighlightColor %>;
+      color: <%- styles.widgetHighlightColor %>;
+    }
+    #controls button.previous:hover,
+    #controls button.next:hover {
+        color: <%- styles.widgetHighlightColor %>;
+    }
+    #controls button.play:hover {
+      background: <%- styles.widgetHighlightColor %>;
+    }
+    #seekbar .ui-slider-range {
+      background: <%- styles.widgetHighlightColor %>;
+    }
+    #seekbar .ui-slider-handle,
+    #seekbar .ui-slider-handle.ui-state-focus,
+    #seekbar .ui-slider-handle.ui-state-active {
+      background: <%- styles.widgetHighlightColor %>;
+    }
+    #seekbar.ui-slider:before {
+      background: <%- styles.widgetHighlightColor %>;
+    }
+  <% } %>
+<% } %>
+
+<% if (styles.widgetVisibility == 'custom') { %>
+  <% if (!styles.playbackButtonsVisibility) { %>
+    #controls {
+      display: none !important;
+    }
+    #seekbar-wrapper {
+      margin-top: auto;
+    }
+  <% } %>
+  <% if (!styles.seekbarVisibility) { %>
+    #seekbar-wrapper {
+      display: none !important;
+    }
+  <% } %>
+<% } %>
+
+<% if (styles.playbackButtonSizeType == 'custom') { %>
+  <% if (styles.playbackButtonSize) { %>
+    #controls {
+      font-size: <%- styles.playbackButtonSize %>;
+    }
+    #controls button {
+      font-size: 1em !important;
+    }
+  <% } %>
+<% } %>
+
+<% if (styles.albumartSize == 'custom') { %>
+  <% if (styles.albumartWidth) { %>
+    #albumart img {
+      width: <%- styles.albumartWidth %>;
+    }
+    @media (orientation: portrait) {
+      #track-info {
+        width: <%- styles.albumartWidth %>;
+      }
+    }
+  <% } %>
+  <% if (styles.albumartHeight) { %>
+    #albumart img {
+      height: <%- styles.albumartHeight %>;
+    }
+    @media (orientation: landscape) {
+      #track-info {
+        height: <%- styles.albumartHeight %>;
+      }
+    }
+  <% } %>
+<% } %>
+
+<% if (styles.albumartFit) { %>
+  #albumart img {
+    object-fit: <%- styles.albumartFit %>;
+  }
+<% } %>
+
+<% if (styles.albumartBorderRadius) { %>
+  #albumart img {
+    border-radius: <%- styles.albumartBorderRadius %>;
+  }
+<% } %>
+
+<% if (styles.backgroundType == 'albumart') { %>
+  <% let albumartBackgroundFit = styles.albumartBackgroundFit || 'cover'; %>
+  <% let backgroundSize = styles.albumartBackgroundFit == 'fill' ? '100% 100%' : styles.albumartBackgroundFit; %>
+  <% let albumartBackgroundPosition = styles.albumartBackgroundPosition || 'center'; %>
+  <% let albumartBackgroundBlur = styles.albumartBackgroundBlur || '0px'; %>
+  <% let albumartBackgroundScale = styles.albumartBackgroundScale || '1'; %>
+  #bg {
+    background-size: <%- backgroundSize %>;
+    background-position: <%- albumartBackgroundPosition %>;
+    -webkit-filter: blur(<%- albumartBackgroundBlur %>);
+    -moz-filter: blur(<%- albumartBackgroundBlur %>);
+    -o-filter: blur(<%- albumartBackgroundBlur %>);
+    -ms-filter: blur(<%- albumartBackgroundBlur %>);
+    filter: blur(<%- albumartBackgroundBlur %>);
+    transform: scale(<%- albumartBackgroundScale %>);
+  }
+<% } else if (styles.backgroundType == 'volumioBackground' && styles.volumioBackgroundImage !== '') { %>
+  <% let volumioBackgroundFit = styles.volumioBackgroundFit || 'cover'; %>
+  <% let backgroundSize = styles.volumioBackgroundFit == 'fill' ? '100% 100%' : styles.volumioBackgroundFit; %>
+  <% let volumioBackgroundPosition = styles.volumioBackgroundPosition || 'center'; %>
+  <% let volumioBackgroundBlur = styles.volumioBackgroundBlur || '0px'; %>
+  <% let volumioBackgroundScale = styles.volumioBackgroundScale || '1'; %>
+  #bg {
+    background-image: url("<%- host  %>/backgrounds/<%- styles.volumioBackgroundImage %>") !important;
+    background-size: <%- backgroundSize %>;
+    background-position: <%- volumioBackgroundPosition %>;
+    -webkit-filter: blur(<%- volumioBackgroundBlur %>);
+    -moz-filter: blur(<%- volumioBackgroundBlur %>);
+    -o-filter: blur(<%- volumioBackgroundBlur %>);
+    -ms-filter: blur(<%- volumioBackgroundBlur %>);
+    filter: blur(<%- volumioBackgroundBlur %>);
+    transform: scale(<%- volumioBackgroundScale %>);
+  }
+<% } else if (styles.backgroundType == 'color') { %>
+  #bg {
+    background-image: none !important;
+    background-color: <%- styles.backgroundColor || '#000' %>;
+  }
+<% } %>
+
+<% if (styles.backgroundOverlay == 'custom') { %>
+  #bg:before {
+    <% if (styles.backgroundOverlayColor) { %>
+      background-color: <%- styles.backgroundOverlayColor %>;
+    <% } %>
+    <% if (styles.backgroundOverlayOpacity !== undefined && 
+        styles.backgroundOverlayOpacity.trim() !== '') { %>
+      opacity: <%- styles.backgroundOverlayOpacity %>;
+    <% } %>
+  }
+<% } else if (styles.backgroundOverlay == 'none') { %>
+  #bg:before {
+    display: none;
+  }
+<% } %>

@@ -134,6 +134,7 @@ ControllerSqueezelite.prototype.getUIConfig = function() {
 		}
 	}
 	//self.logger.info('Cards: ' + JSON.stringify(cards));
+	var seconds = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
 	self.commandRouter.i18nJson(__dirname+'/i18n/strings_' + lang_code + '.json',
 		__dirname + '/i18n/strings_en.json',
@@ -163,8 +164,22 @@ ControllerSqueezelite.prototype.getUIConfig = function() {
 				uiconf.sections[1].content[0].value.label = oLabel;
 			}
 		}
-		uiconf.sections[1].content[1].value = self.config.get('alsa_params');
-		uiconf.sections[1].content[2].value = self.config.get('extra_params');
+		
+		for (var s in seconds)
+		{
+			self.configManager.pushUIConfigParam(uiconf, 'sections[1].content[1].options', {
+				value: s,
+				label: s
+			});
+			
+			if(self.config.get('soundcard_timeout') == s)
+			{
+				uiconf.sections[1].content[1].value.value = self.config.get('soundcard_timeout');
+				uiconf.sections[1].content[1].value.label = self.config.get('soundcard_timeout');
+			}
+		}		
+		uiconf.sections[1].content[2].value = self.config.get('alsa_params');
+		uiconf.sections[1].content[3].value = self.config.get('extra_params');
 		self.logger.info("2/2 Squeezelite settings sections loaded");
 
 		self.logger.info("Populated config screen.");
@@ -203,7 +218,7 @@ ControllerSqueezelite.prototype.setConf = function(conf) {
 
 // Public Methods ---------------------------------------------------------------------------------------
 
-ControllerSqueezelite.prototype.updateSqueezeliteServerConfig = function (data)
+ControllerSqueezelite.prototype.updateSqueezeliteServiceConfig = function (data)
 {
 	var self = this;
 	var defer = libQ.defer();
@@ -211,7 +226,7 @@ ControllerSqueezelite.prototype.updateSqueezeliteServerConfig = function (data)
 	self.config.set('enabled', data['enabled']);
 	self.config.set('name', data['name']);
 	
-	self.logger.info("Successfully updated Squeezelite server configuration");
+	self.logger.info("Successfully updated Squeezelite service configuration");
 
 	self.constructUnit(__dirname + "/unit/squeezelite.unit-template", __dirname + "/unit/squeezelite.service")
 	.then(function(stopIfNeeded){
@@ -239,12 +254,13 @@ ControllerSqueezelite.prototype.updateSqueezeliteAudioConfig = function (data)
 	var defer = libQ.defer();
 	
 	self.config.set('output_device', data['output_device'].value);
+	self.config.set('soundcard_timeout', data['soundcard_timeout'].value);
 	self.config.set('alsa_params', data['alsa_params']);
 	self.config.set('extra_params', data['extra_params']);
 	
 	self.logger.info("Successfully updated Squeezelite audio configuration");
 
-	self.constructUnit(__dirname + "/unit/squeezelite.unit-template", __dirname + "/unit/squeezelite.service")
+	self.constructUnit(__dirname + "/unit/squeezelite.unit-template", __dirname + "/squeezelite.service")
 	.then(function(stopIfNeeded){
 		if(self.config.get('enabled') != true)
 		{
@@ -264,26 +280,48 @@ ControllerSqueezelite.prototype.updateSqueezeliteAudioConfig = function (data)
 	return defer.promise;
 };
 
-ControllerSqueezelite.prototype.moveAndReloadService = function (unitTemplate, unitFile, serviceName)
+ControllerSqueezelite.prototype.restartService = function (serviceName, boot)
 {
 	var self = this;
 	var defer = libQ.defer();
 
-	var command = "/bin/echo volumio | /usr/bin/sudo -S /bin/cp " + unitTemplate + " " + unitFile;
-	
-	exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
-		if (error !== null) {
-			self.commandRouter.pushConsoleMessage('The following error occurred while moving ' + serviceName + ': ' + error);
-			self.commandRouter.pushToastMessage('error', "Moving service failed", "Stopping " + serviceName + " failed with error: " + error);
-			defer.reject();
-		}
-		else {
-			self.commandRouter.pushConsoleMessage(serviceName + ' moved');
-			self.commandRouter.pushToastMessage('success', "Moved", "Moved " + serviceName + ".");
-		}
-	});
+	if(self.config.get('enabled'))
+	{
+		var command = "/usr/bin/sudo /bin/systemctl restart " + serviceName;
 		
-	command = "/bin/echo volumio | /usr/bin/sudo -S systemctl daemon-reload";
+		self.reloadService(serviceName)
+		.then(function(restart){
+			exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
+				if (error !== null) {
+					self.commandRouter.pushConsoleMessage('The following error occurred while starting ' + serviceName + ': ' + error);
+					self.commandRouter.pushToastMessage('error', "Restart failed", "Restarting " + serviceName + " failed with error: " + error);
+					defer.reject();
+				}
+				else {
+					self.commandRouter.pushConsoleMessage(serviceName + ' started');
+					if(boot == false)
+						self.commandRouter.pushToastMessage('success', "Restarted " + serviceName, "Restarted " + serviceName + " for the changes to take effect.");
+					
+					defer.resolve();
+				}
+			});
+		});
+	}
+	else
+	{
+		self.logger.info("Not starting " + serviceName + "; it's not enabled.");
+		defer.resolve();
+	}
+
+	return defer.promise;
+};
+
+ControllerSqueezelite.prototype.reloadService = function (serviceName)
+{
+	var self = this;
+	var defer = libQ.defer();
+
+	var command = "/usr/bin/sudo /bin/systemctl daemon-reload";
 	exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
 			self.commandRouter.pushConsoleMessage('The following error occurred while reloading ' + serviceName + ': ' + error);
@@ -296,41 +334,7 @@ ControllerSqueezelite.prototype.moveAndReloadService = function (unitTemplate, u
 			defer.resolve();
 		}
 	});
-			
-
-	return defer.promise;
-};
-
-ControllerSqueezelite.prototype.restartService = function (serviceName, boot)
-{
-	var self = this;
-	var defer = libQ.defer();
-
-	if(self.config.get('enabled'))
-	{
-		var command = "/bin/echo volumio | /usr/bin/sudo -S /bin/systemctl restart " + serviceName;
 		
-		exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
-			if (error !== null) {
-				self.commandRouter.pushConsoleMessage('The following error occurred while starting ' + serviceName + ': ' + error);
-				self.commandRouter.pushToastMessage('error', "Restart failed", "Restarting " + serviceName + " failed with error: " + error);
-				defer.reject();
-			}
-			else {
-				self.commandRouter.pushConsoleMessage(serviceName + ' started');
-				if(boot == false)
-					self.commandRouter.pushToastMessage('success', "Restarted " + serviceName, "Restarted " + serviceName + " for the changes to take effect.");
-				
-				defer.resolve();
-			}
-		});
-	}
-	else
-	{
-		self.logger.info("Not starting " + serviceName + "; it's not enabled.");
-		defer.resolve();
-	}
-
 	return defer.promise;
 };
 
@@ -339,7 +343,7 @@ ControllerSqueezelite.prototype.stopService = function (serviceName)
 	var self = this;
 	var defer = libQ.defer();
 
-	var command = "/bin/echo volumio | /usr/bin/sudo -S /bin/systemctl stop " + serviceName;
+	var command = "/usr/bin/sudo /bin/systemctl stop " + serviceName;
 	
 	exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
 		if (error !== null) {
@@ -365,6 +369,7 @@ ControllerSqueezelite.prototype.constructUnit = function(unitTemplate, unitFile)
 	var replacementDictionary = [
 		{ placeholder: "${NAME}", replacement: self.config.get('name') },
 		{ placeholder: "${OUTPUT_DEVICE}", replacement: self.config.get('output_device') },
+		{ placeholder: "${SOUNDCARD_TIMEOUT}", replacement: self.config.get('soundcard_timeout') },
 		{ placeholder: "${ALSA_PARAMS}", replacement: self.config.get('alsa_params') },
 		{ placeholder: "${EXTRA_PARAMS}", replacement: self.config.get('extra_params') }
 	];
@@ -384,18 +389,14 @@ ControllerSqueezelite.prototype.constructUnit = function(unitTemplate, unitFile)
 				else
 					replacementDictionary[rep].replacement = "-o default";
 			}
+			else if (replacementDictionary[rep].placeholder == "${SOUNDCARD_TIMEOUT}")
+				replacementDictionary[rep].replacement = "-C " + replacementDictionary[rep].replacement;
 			else if (replacementDictionary[rep].placeholder == "${ALSA_PARAMS}" && self.config.get('alsa_params') != '')
 				replacementDictionary[rep].replacement = "-a " + replacementDictionary[rep].replacement;
 		}
 	}
 	
-	//self.logger.info('### Replacement dictionary: ' + JSON.stringify(replacementDictionary));
-	
 	self.replaceStringsInFile(unitTemplate, unitFile, replacementDictionary)
-	.then(function(activate)
-	{
-		self.moveAndReloadService(unitFile, '/etc/systemd/system/squeezelite.service', 'Squeezelite');
-	})
 	.then(function(resolve){
 		self.restartService('squeezelite', false);
 		defer.resolve();

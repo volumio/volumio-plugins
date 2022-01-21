@@ -7,6 +7,7 @@ var fs = require('fs-extra');
 var config = require('v-conf');
 var unirest = require('unirest');
 var crypto = require('crypto');
+var cryptoJs = require('crypto-js/sha256');
 
 module.exports = ControllerPersonalRadio;
 
@@ -350,30 +351,30 @@ ControllerPersonalRadio.prototype.explodeUri = function (uri) {
 
   switch (uris[0]) {
     case 'webkbs':
-      var userId = Math.random().toString(36).substring(2, 6) +
-          Math.random().toString(36).substring(2, 6);
-      query = {
-        id: userId,
-        channel: channel+1
-      };
-      self.getStreamUrl(station, self.baseKbsStreamUrl, query)
-      .then(function (responseUrl) {
-        if (responseUrl  !== null) {
-          var result = responseUrl.split("\n");
-          var retCode = parseInt(result[0]);
-          var streamUrl;
-          if (retCode === 0)
-            streamUrl = result[1];
-          else {
-            streamUrl = null;
-            self.errorToast(station, 'INCORRECT_RESPONSE');
-          }
+      var radioChannel = self.radioStations.kbs[channel].channel;
+      self.getStreamUrl(station, self.baseKbsTs, "")
+      .then(function (reqTs) {
+        var _0x4ca7=['base64','baseKbsParam','toString','toUpperCase','from','&reqts=','&authcode='];
+        (function(_0x3f1f48,_0x3bdff5)
+            {
+              var _0x3973a0=function(_0x5ae60c){while(--_0x5ae60c){_0x3f1f48['push'](_0x3f1f48['shift']());}};_0x3973a0(++_0x3bdff5);
+            }(_0x4ca7,0xef)
+        );
+        var _0x40e8=function(_0x25d929,_0x53be57){_0x25d929=_0x25d929-0x0;var _0xdd2eb7=_0x4ca7[_0x25d929];return _0xdd2eb7;};
+        var paramApi=self[_0x40e8('0x0')]+radioChannel;
+        var authCode=cryptoJs(self['basekbsAgent']+reqTs+paramApi)[_0x40e8('0x1')]()[_0x40e8('0x2')]();
+        var apiUrl=Buffer[_0x40e8('0x3')](paramApi+_0x40e8('0x4')+reqTs+_0x40e8('0x5')+authCode)[_0x40e8('0x1')](_0x40e8('0x6'))['replace'](/=/gi,'');
 
-          response["uri"] = streamUrl;
-          response["name"] = self.radioStations.kbs[channel].title;
-          response["title"] = self.radioStations.kbs[channel].title;
-        }
-        defer.resolve(response);
+        self.getStreamUrl(station, self.baseKbsStreamUrl + apiUrl, "")
+        .then(function (responseUrl) {
+          if (responseUrl !== null) {
+            response["uri"] = JSON.parse(responseUrl).real_service_url;
+            response["name"] = self.radioStations.kbs[channel].title;
+            response["title"] = self.radioStations.kbs[channel].title;
+
+            defer.resolve(response);
+          }
+        });
       });
       break;
 
@@ -419,14 +420,7 @@ ControllerPersonalRadio.prototype.explodeUri = function (uri) {
       self.getStreamUrl(station, self.baseMbcStreamUrl, query)
       .then(function (responseUrl) {
         if (responseUrl  !== null) {
-          var result = JSON.parse(responseUrl.replace(/\(|\)|\;/g, ''));
-          var streamUrl = result.AACLiveURL;
-          if (streamUrl === undefined) {
-            streamUrl = null;
-            self.errorToast(station, 'INCORRECT_RESPONSE');
-          }
-
-          response["uri"] = streamUrl;
+          response["uri"] = responseUrl;
           response["name"] = self.radioStations.mbc[channel].title;
           response["title"] = self.radioStations.mbc[channel].title;
         }
@@ -517,13 +511,12 @@ ControllerPersonalRadio.prototype.addRadioResource = function() {
   self.radioStations.kbs[2].title =  self.getRadioI18nString('KBS1_RADIO');
   self.radioStations.kbs[3].title =  self.getRadioI18nString('KBS2_RADIO');
   self.radioStations.kbs[4].title =  self.getRadioI18nString('KBS3_RADIO');
-  self.radioStations.kbs[6].title =  self.getRadioI18nString('KBS_UNION');
-  self.radioStations.kbs[7].title =  self.getRadioI18nString('KBS_WORLD');
+  self.radioStations.kbs[5].title =  self.getRadioI18nString('KBS_WORLD');
   self.radioStations.mbc[0].title =  self.getRadioI18nString('MBC_STANDARD');
   self.radioStations.mbc[1].title =  self.getRadioI18nString('MBC_FM4U');
   self.radioStations.mbc[2].title =  self.getRadioI18nString('MBC_CHANNEL_M');
-  self.radioStations.sbs[0].title =  self.getRadioI18nString('SBS_POWER_FM');
-  self.radioStations.sbs[1].title =  self.getRadioI18nString('SBS_LOVE_FM');
+  self.radioStations.sbs[0].title =  self.getRadioI18nString('SBS_LOVE_FM');
+  self.radioStations.sbs[1].title =  self.getRadioI18nString('SBS_POWER_FM');
   self.radioStations.sbs[2].title =  self.getRadioI18nString('SBS_INTERNET_RADIO');
 
   // Korean radio streaming server preparing
@@ -533,6 +526,13 @@ ControllerPersonalRadio.prototype.addRadioResource = function() {
     self.sbsKey = (new Buffer(response.stationKey, 'base64')).toString('ascii');
     self.sbsAlgorithm = response.algorithm2;
 
+    self.baseKbsStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.kbs);
+    self.baseMbcStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.mbc);
+    self.baseSbsStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.sbs);
+
+    self.basekbsAgent = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.kbsAgent);
+    self.baseKbsTs = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.kbsTs);
+    self.baseKbsParam = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.kbsParam);
     self.baseKbsStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.kbs);
     self.baseMbcStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.mbc);
     self.baseSbsStreamUrl = self.decodeStreamUrl(algorithm, secretKey, radioResource.encodedRadio.sbs);

@@ -1,0 +1,15 @@
+{
+  "PLUGIN_CONFIGURATION":"configuration de 'Command on event'",
+  "PLUGIN_SECTION_TITLE":"Paramètres de 'Command on event'",
+  "SAVE":"Enregistrer",
+  "SUCCESS_TITLE":"Paramètres enregistrés",
+  "SUCCESS_MESSAGE":"Enregistrement réussi !",
+  
+  "STOP_DOC":"Saisir une commande ou un script shell a executer lors de l'évènement STOP. La commande recevra le statut de volumio en paramètre",
+  "STOP_LBL": "Evenement stop",
+  "PLAY_DOC":"Saisir une commande ou un script shell a executer lors de l'évènement PLAY. La commande recevra le statut de volumio en paramètre",
+  "PLAY_LBL": "Evenement play",
+  "PAUSE_DOC":"Saisir une commande ou un script shell a executer lors de l'évènement PAUSE. La commande recevra le statut de volumio en paramètre",
+  "PAUSE_LBL": "Evenement pause"
+
+}

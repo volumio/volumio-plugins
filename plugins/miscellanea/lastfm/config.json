@@ -19,21 +19,29 @@
     "type": "string",
     "value": ""
   },
+  "supportedSongServices": {
+    "type": "string",
+    "value": "mpd,airplay,volspotconnect,volspotconnect2,spop"
+  },  
   "scrobbleThreshold": {
     "type": "int",
-    "value": 75
+    "value": "75"
   },
   "pushToastOnScrobble": {
     "type": "boolean",
     "value": true
   },
-  "tryScrobbleWebradio": {
+  "scrobbleFromStream": {
     "type": "boolean",
-    "value": false
+    "value": true
   },
-  "webradioScrobbleThreshold": {
+  "supportedStreamingServices": {
     "type": "string",
-    "value": "30"
+    "value": "webradio,radio_paradise,80s80s"
+  },
+  "streamScrobbleThreshold": {
+    "type": "string",
+    "value": "120"
   },
   "enable_debug_logging": {
     "type": "boolean",

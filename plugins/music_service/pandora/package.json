@@ -1,0 +1,24 @@
+{
+	"name": "pandora",
+	"version": "2.9.2",
+	"description": "A plugin to access Pandora Web Radio",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "truckershitch",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "pandora",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"anesidora": "https://github.com/truckershitch/anesidora.git",
+		"dns-sync": "^0.1.3",
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"mqtt": "3.0.0"
+	}
+}

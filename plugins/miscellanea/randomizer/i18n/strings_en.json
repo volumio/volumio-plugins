@@ -1,0 +1,22 @@
+{
+  "PLUGIN_CONFIGURATION":"Randomizer Action Buttons",
+  "SAVE":"Save",
+  "SUCCESS_TITLE":"Saved settings",
+  "SUCCESS_MESSAGE":"Successfully saved settings",
+  "ERROR_NUMBER_PLEASE_TITLE":"Must be a number.",
+  "ERROR_NUMBER_PLEASE_MESSAGE":"Please enter a number.",
+  "ERROR_QUEUE_EMPTY_TITLE":"Queue is empty...",
+  "ERROR_QUEUE_EMPTY_MESSAGE":"   ..cannot load an album.",
+  "NO_CHANGE_TITLE":"Tracks number is unchanged",
+  "NO_CHANGE_MESSAGE":"Nothing to save..",
+  "TRACKTOALBUM_DOC":"Play the album of the currently playing track. To use with lircrc add config = node /data/plugins/miscellanea/randomizer/trackToAlbum",
+  "TRACKTOALBUM_LBL":"Track to Album",
+  "RANDOMALBUM_DOC":"Load and play a random Album. To use with lircrc add config = node /data/plugins/miscellanea/randomizer/randomAlbum",
+  "RANDOMALBUM_LBL":"Random Album",
+  "RANDOMTRACKS_DOC":"Load and play random tracks. To use with lircrc add config = node /data/plugins/miscellanea/randomizer/randomTracks",
+  "RANDOMTRACKS_LBL":"Random Tracks",
+  "TRACKS_DOC":"Select the number of random tracks to load -the  default is 25",
+  "TRACKS_LBL":"Number of Random Tracks"
+}
+
+

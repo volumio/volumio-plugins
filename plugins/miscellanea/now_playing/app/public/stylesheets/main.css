@@ -1,0 +1,922 @@
+:root {
+    --volume-level: 0;
+
+    /* Default styles */
+    --default-title-font-size: 1.5em;
+    --default-artist-font-size: 1em;
+    --default-album-font-size: 0.8em;
+    --default-media-info-font-size: 0.7em;
+    --default-title-font-color: #fff;
+    --default-artist-font-color: #ccc;
+    --default-album-font-color: #ccc;
+    --default-media-info-font-color: #ccc;
+    --default-text-alignment-h: unset;
+    --default-text-alignment-v: unset;
+    --default-title-margin: 0px 0px 0.2em 0px;
+    --default-artist-margin: unset;
+    --default-album-margin: unset;
+    --default-media-info-margin: 0.8em 0px 0px 0px;
+    --default-max-title-lines: 1;
+    --default-max-artist-lines: 1;
+    --default-max-album-lines: 1;
+    --default-widget-primary-color: #ccc;
+    --default-widget-highlight-color: #24a4f3;
+    --default-playback-buttons-visibility: inherit;
+    --default-seekbar-visibility: inherit;
+    --default-playback-buttons-size: 1em;
+    --default-playback-buttons-margin: 1em 0px;
+    --default-seekbar-margin: unset;
+    --default-albumart-visibility: inherit;
+    --default-albumart-width: 0px; /* To be determined in JS */
+    --default-albumart-height: 0px; /* To be determined in JS */
+    --default-albumart-fit: cover;
+    --default-albumart-border-radius: 0px;
+    --default-background-size: cover;
+    --default-background-position: center;
+    --default-background-blur: 50px;
+    --default-background-scale: 1.5;
+    --default-background-image: none;
+    --default-background-color: #000;
+    --default-background-overlay-color: #000;
+    --default-background-overlay-opacity: 0.5;
+    --default-background-overlay-display: inherit;
+    --default-track-info-width: auto;
+    --default-track-info-height: auto;
+    --default-track-info-min-width: auto;
+    --default-track-info-min-height: auto;
+    --default-track-info-max-width: auto;
+    --default-track-info-max-height: auto;
+
+    --title-font-size: var(--default-title-font-size);
+    --artist-font-size: var(--default-artist-font-size);
+    --album-font-size: var(--default-album-font-size);
+    --media-info-font-size: var(--default-media-info-font-size);
+    --title-font-color: var(--default-title-font-color);
+    --artist-font-color: var(--default-artist-font-color);
+    --album-font-color: var(--default-album-font-color);
+    --media-info-font-color: var(--default-media-info-font-color);
+    --text-alignment-h: var(--default-text-alignment-h);
+    --text-alignment-v: var(--default-text-alignment-v);
+    --title-margin: var(--default-title-margin);
+    --artist-margin: var(--default-artist-margin);
+    --album-margin: var(--default-album-margin);
+    --media-info-margin: var(--default-media-info-margin);
+    --max-title-lines: var(--default-max-title-lines);
+    --max-artist-lines: var(--default-max-artist-lines);
+    --max-album-lines: var(--default-max-album-lines);
+    --widget-primary-color: var(--default-widget-primary-color);
+    --widget-highlight-color: var(--default-widget-highlight-color);
+    --playback-buttons-visibility: var(--default-playback-buttons-visibility);
+    --seekbar-visibility: var(--default-seekbar-visibility);
+    --playback-buttons-size: var(--default-playback-buttons-size);
+    --playback-buttons-margin: var(--default-playback-buttons-margin);
+    --seekbar-margin: var(--default-seekbar-margin);
+    --albumart-visibility: var(--default-albumart-visibility);
+    --albumart-width: var(--default-albumart-width);
+    --albumart-height: var(--default-albumart-height);
+    --albumart-fit: var(--default-albumart-fit);
+    --albumart-border-radius: var(--default-albumart-border-radius);
+    --background-size: var(--default-background-size);
+    --background-position: var(--default-background-position);
+    --background-blur: var(--default-background-blur);
+    --background-scale: var(--default-background-scale);
+    --background-image: var(--default-background-image);
+    --background-color: var(--default-background-color);
+    --background-overlay-color: var(--default-background-overlay-color);
+    --background-overlay-opacity: var(--default-background-overlay-opacity);
+    --background-overlay-display: var(--default-background-overlay-display);
+    --track-info-width: var(--default-track-info-width);
+    --track-info-height: var(--default-track-info-height);
+    --track-info-min-width: var(--default-track-info-min-width);
+    --track-info-min-height: var(--default-track-info-min-height);
+    --track-info-max-width: var(--default-track-info-max-width);
+    --track-info-max-height: var(--default-track-info-max-height);
+}
+
+body {
+    font-size: 10px;
+    font-family: 'Roboto', sans-serif;
+    background: #000;
+    overflow: hidden;
+}
+
+#top-bar {
+    width: 100%;
+    font-size: 1.5em;
+    position: absolute; 
+    top: 0;
+    left: 0; 
+    text-align: center;
+    color: #ccc;
+    opacity: 0.5;
+    z-index: 10;
+}
+
+#top-bar .expand:hover {
+    color: #24a4f3;
+    cursor: pointer;
+}
+
+.top-bar-popup-container {
+    filter: drop-shadow(0 0 8px #00000080);
+    margin-top: 2em;
+}
+
+#top-bar-popup {
+    min-height: 0px !important;
+}
+
+.top-bar-popup-container .ui-dialog-titlebar {
+    display: none;
+}
+
+.top-bar-popup-container.ui-widget-content,
+.top-bar-popup-container .ui-dialog-content {
+    background: #303030;
+    color: #ccc;
+    border: none !important;
+    border-radius: 0px;
+}
+
+#volume {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 2em 0;
+}
+
+#volume.disabled:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+#volume-slider-wrapper {
+    flex-grow: 1;
+    border-radius: 1em;
+    overflow: hidden;
+    position: relative;
+}
+
+#volume.disabled #volume-slider-wrapper:after {
+    content: '\f05e';
+    font-family: 'FontAwesome';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    text-align: center;
+    line-height: 1.5em;
+    color: #fff;
+}
+
+#volume-mute,
+#volume-max {
+    font-size: 1.3em;
+    line-height: 1.5em;
+}
+
+#volume-mute {
+    margin-right: 10px;
+}
+
+#volume-mute.active {
+    color: #24a4f3;
+}
+
+#volume-max {
+    margin-left: 10px;
+}
+
+#volume-slider.ui-widget-content {
+    background: #ccc;
+}
+#volume-slider.ui-slider-horizontal {
+    height: 1.5em !important;
+    border: none;
+}
+#volume-slider .ui-slider-range {
+    background: #24a4f3;
+    border-radius: 0px;
+}
+#volume-slider .ui-slider-handle {
+    visibility: hidden;
+}
+#volume-slider.muted .ui-slider-range {
+    background: #aaa;
+}
+
+.ui-widget-overlay {
+    background: #000 !important;
+    opacity: 0.7 !important;
+}
+
+#actions-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.9em 0px;
+    font-size: 0.9em;
+}
+
+#actions-wrapper .action.refresh i {
+    margin-right: 5px;
+}
+
+#actions-wrapper .action.switch i {
+    margin-left: 5px;
+}
+
+#actions-wrapper .action {
+    color: #a9a9a9;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#actions-wrapper .action:hover {
+    color: #24a4f3;
+}
+
+#wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    box-sizing: border-box;
+    background-size: 100% 100%;
+}
+
+#bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--background-image);
+    background-color: var(--background-color);
+    -webkit-filter: blur(var(--background-blur));
+    -moz-filter: blur(var(--background-blur));
+    -o-filter: blur(var(--background-blur));
+    -ms-filter: blur(var(--background-blur));
+    filter: blur(var(--background-blur));
+    transform: scale(var(--background-scale));
+    background-size: var(--background-size);
+    background-position: var(--background-position);
+    transition: background-image 1s ease-in-out;
+}
+
+#bg:before {
+    content: '';
+    display: var(--background-overlay-display);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-overlay-color);
+    opacity: var(--background-overlay-opacity);
+}
+
+#disconnected-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255,255,255,0.7);
+    font-size: 3em;
+}
+
+#wrapper.disconnected #disconnected-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;   
+}
+
+#contents {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+#albumart {
+    display: var(--albumart-visibility);
+    z-index: 1;
+    margin-right: 12px;
+}
+
+#albumart img {
+    /**
+     * Commenting out following since legacy Chromium on Volumio 2.x
+     * doesn't support min()
+    width: min(40vw, 80vh);
+    height: min(40vw, 80vh);
+    */
+    filter: drop-shadow(0 0 8px #00000080);
+    object-fit: var(--albumart-fit);
+    display: block; /* https://stackoverflow.com/questions/5804256/image-inside-div-has-extra-space-below-the-image */
+    width: var(--albumart-width);
+    height: var(--albumart-height);
+    border-radius: var(--albumart-border-radius);
+}
+
+#track-info {
+    z-index: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    color: #ccc;
+    font-weight: 700;
+    text-align: var(--text-alignment-h);
+    width: var(--track-info-width);
+    height: var(--track-info-height);
+    min-width: var(--track-info-min-width);
+    min-height: var(--track-info-min-height);
+    max-width: var(--track-info-max-width);
+    max-height: var(--track-info-max-height);
+}
+
+#track-info .text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: var(--text-alignment-v);
+}
+
+#track-info .text .title {
+    display: -webkit-box;
+    color: var(--title-font-color);
+    font-family: 'Noto Sans Display', sans-serif;
+    font-size: var(--title-font-size);
+    margin: var(--title-margin);
+    line-height: 1.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: var(--max-title-lines);
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .text .artist {
+    display: -webkit-box;
+    color: var(--artist-font-color);
+    font-size: var(--artist-font-size);
+    margin: var(--artist-margin);
+    line-height: 1.4em;
+    max-height: 1.4em;
+    overflow: hidden;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: var(--max-artist-lines);
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .text .album {
+    display: -webkit-box;
+    color: var(--album-font-color);
+    font-size: var(--album-font-size);
+    margin: var(--album-margin);
+    line-height: 1.2em;
+    max-height: 1.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: var(--max-album-lines);
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+#track-info .text .media-info {
+    margin: var(--media-info-margin);
+}
+
+#track-info .text .media-info .format-icon {
+    height: var(--media-info-font-size);
+    margin-right: 5px;
+}
+
+#track-info .text .media-info .quality {
+    font-size: var(--media-info-font-size);
+    color: var(--media-info-font-color);
+    font-weight: normal;
+    font-family: sans-serif;
+}
+
+#controls {
+    display: var(--playback-buttons-visibility);
+    text-align: center;
+    margin: var(--playback-buttons-margin);
+}
+
+#controls button {
+    font-size: var(--playback-buttons-size);
+    width: 2em;
+    height: 2.5em;
+    margin: 0px 4px;
+    border: none;
+    background: none;
+    color: var(--widget-primary-color);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#controls button.repeat,
+#controls button.random {
+    display: none;
+}
+
+#controls button.repeat.active,
+#controls button.random.active {
+    color: var(--widget-highlight-color);
+}
+
+#controls button.play {
+    width: 2.5em;
+    margin: 0px 8px;
+    border: 2px solid var(--widget-highlight-color);
+    border-radius: 1.25em;
+    color: var(--widget-highlight-color);
+}
+
+#controls button.previous:hover,
+#controls button.next:hover {
+    color: var(--widget-highlight-color);
+}
+
+#controls button:focus {
+    outline: none;
+}
+
+#controls button.play:hover {
+    background: var(--widget-highlight-color);
+    color: #fff;
+}
+
+#controls button.play i.fa-play {
+    margin-left: 0.25em;
+}
+
+#seekbar-wrapper {
+    display: var(--seekbar-visibility);
+    padding: 0px 0.6em;
+    margin: var(--seekbar-margin);
+}
+
+#seekbar-wrapper .seek,
+#seekbar-wrapper .duration {
+    display: inline-block;
+    width: 50%;
+    font-family: 'Noto Sans Display', sans-serif;
+    font-size: 0.8em;
+    font-weight: 100;
+    margin-top: 0.5em;
+}
+
+#seekbar-wrapper .seek {
+    position: relative;
+    left: -0.6em;
+    text-align: left;
+}
+
+#seekbar-wrapper .duration {
+    position: relative;
+    right: -0.6em;
+    text-align: right;
+}
+
+#seekbar.ui-widget-content {
+    background: var(--widget-primary-color);
+}
+#seekbar.ui-slider-horizontal {
+    height: 5px !important;
+    border: none;
+    margin-bottom: 3px;
+}
+#seekbar .ui-slider-range {
+    height: 5px;
+    background: var(--widget-highlight-color);
+}
+#seekbar .ui-slider-handle,
+#seekbar .ui-slider-handle.ui-state-focus,
+#seekbar .ui-slider-handle.ui-state-active {
+    top: -0.5em;
+    border: none;
+    background: var(--widget-highlight-color);
+    border-radius: 1.2em;
+    outline: none;
+}
+/* https://stackoverflow.com/questions/35475360/how-do-i-stop-the-jquery-ui-slider-from-sliding-beyond-the-container */
+#seekbar.ui-slider:before,
+#seekbar.ui-slider:after {
+  content: '';
+  border: inherit;
+  border-radius: inherit;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+#seekbar.ui-slider:before {
+    left: -0.6em; /* Half of the handle width */
+    background: var(--widget-highlight-color);
+    width: 0.8em;
+}
+#seekbar.ui-slider:after {
+    right: -0.6em;
+    background: inherit;
+    width: 0.8em;
+}
+
+#track-info.controls-only .text,
+#track-info.controls-only #seekbar-wrapper {
+    display: none;
+}
+
+#track-info.controls-only #controls {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+}
+
+#volume-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+  }
+
+  #volume-indicator .circle-wrapper {
+    width: 11em;
+    height: 11em;
+    background: rgba(0,0,0,0.8);
+    border-radius: 50%;
+  }
+
+  /* Use backdrop-filter if supported */
+  @supports (backdrop-filter: none) {
+    #volume-indicator .circle-wrapper {
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+    }
+  }
+
+  #volume-indicator .circle-wrapper svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  #volume-indicator .circle-wrapper svg circle {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 0.7em;
+    stroke-linecap: round;
+  }
+
+  #volume-indicator .circle-wrapper svg circle.primary {
+    stroke: #ccc;
+  }
+
+  #volume-indicator .circle-wrapper svg circle.highlight {
+    stroke-dasharray: 100;
+    stroke-dashoffset: calc(100 - var(--volume-level));
+    stroke: #24a4f3;
+  }
+
+  #volume-indicator.muted .circle-wrapper svg circle.highlight {
+    stroke: #aaa;
+  }
+
+  #volume-indicator .level-text {
+    position: absolute;
+    color: #ccc;
+    font-size: 1.4em;
+  }
+
+  #volume-indicator.muted .level-text {
+    font-size: 1.8em;
+  }
+
+/**
+* Landscape Orientation
+*/
+
+@media all {
+    @media (orientation: landscape) {
+        @media (min-height: 240px) {
+            @media (min-width: 400px) {
+                body {
+                    font-size: 12px;
+                }
+            }
+            @media (min-width: 480px) {
+                body {
+                    font-size: 15px;
+                }
+            }
+        }
+        @media (min-height: 320px) {
+            @media (min-width: 640px) {
+                body {
+                    font-size: 16px;
+                }
+            }
+        }
+        @media (max-height: 320px) {
+            :root {
+                --default-media-info-margin: 0.2em 0px 0px 0px;
+            }
+        }
+        @media (min-height: 400px) {
+            @media (min-width: 720px) {
+                body {
+                    font-size: 18px;
+                }
+            }
+            @media (min-width: 800px) {
+                body {
+                    font-size: 20px;
+                }
+            }
+        }
+        @media (min-height: 480px) {
+            @media (min-width: 960px) {
+                body {
+                    font-size: 23px;
+                }
+            }
+        }
+        @media (min-height: 600px) {
+            @media (min-width: 1280px) {
+                body {
+                    font-size: 28px;
+                }
+            }
+        }
+        @media (min-height: 900px) {
+            @media (min-width: 1400px) {
+                body {
+                    font-size: 30px;
+                }
+            }
+            @media (min-width: 1600px) {
+                body {
+                    font-size: 32px;
+                }
+            }
+        }
+        @media (min-height: 1080px) {
+            @media (min-width: 1680px) {
+                body {
+                    font-size: 34px;
+                }
+            }
+            @media (min-width: 1800px) {
+                body {
+                    font-size: 38px;
+                }
+            }
+        }
+    }
+}
+
+@media all {
+    @media (orientation: landscape) {
+        @media (min-width: 600px) and (min-height: 320px) {
+            :root {
+                --default-playback-buttons-margin: 1em 0px 1.5em 0px;
+            }
+        }
+        @media (min-width: 580px) and (min-height: 320px) {
+            :root {
+                --default-max-title-lines: 2;
+            }
+        }
+        
+        @media (min-width: 480px) {
+            #controls button.repeat,
+            #controls button.random {
+                display: inline-block;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #controls button {
+                margin: 0px 12px;
+            }
+        }
+    }
+}
+
+@media all {
+    @media (orientation: landscape) {
+        #track-info {
+            /* Set to same height as #albumart img */
+            /**
+             * Commenting out following since legacy Chromium on Volumio 2.x
+             * doesn't support min()
+            height: min(40vw, 80vh);
+            min-height: min(40vw, 80vh);
+            */
+        }
+        :root {
+            --default-track-info-min-height: var(--default-albumart-height);
+            --default-track-info-max-height: 100vh;
+        }
+    }
+}
+
+/**
+ *  Portrait Orientation
+ */
+@media all {
+    @media (orientation: portrait) {
+        body {
+            font-size: 10px;
+        }
+        #wrapper {
+            padding: 1.6em 40px;
+        }
+        #contents {
+            flex-direction: column;
+        }
+        #albumart {
+            margin-right: 0px;
+            margin-bottom: 12px;
+        }
+        #albumart img {
+            /**
+             * Commenting out following since legacy Chromium on Volumio 2.x
+             * doesn't support min()
+            width: min(80vw, 40vh);
+            height: min(80vw, 40vh);
+            */
+        }
+        :root {
+            --default-track-info-width: 80vw;
+            --default-track-info-min-width: 80vw;
+            --default-track-info-max-width: 100vw;
+            --default-playback-buttons-margin: 1em 0px 2em 0px;
+        }
+    }
+}
+
+@media all {
+    @media (orientation: portrait) {
+        @media (min-width: 240px) {
+            @media (min-height: 400px) {
+                body {
+                    font-size: 12px;
+                }
+                :root {
+                    --default-max-title-lines: 2;
+                }
+                #controls button.repeat,
+                #controls button.random {
+                    display: inline-block;
+                }
+            }
+            @media (min-height: 480px) {
+                body {
+                    font-size: 14px;
+                }
+            }
+        }
+        @media (min-width: 320px) {
+            @media (min-height: 640px) {
+                body {
+                    font-size: 16px;
+                }
+                /*#controls {
+                    margin-bottom: 1.6em;
+                }*/
+            }
+        }
+        @media (min-width: 400px) {
+            @media (min-height: 720px) {
+                body {
+                    font-size: 18px;
+                }
+            }
+            @media (min-height: 800px) {
+                body {
+                    font-size: 20px;
+                }
+            }
+            @media (min-height: 900px) {
+                body {
+                    font-size: 24px;
+                }
+            }
+        }
+        @media (min-width: 480px) {
+            @media (min-height: 960px) {
+                body {
+                    font-size: 22px;
+                }
+            }
+        }
+        @media (min-width: 600px) {
+            @media (min-height: 1280px) {
+                body {
+                    font-size: 28px;
+                }
+            }
+        }
+        @media (min-width: 900px) {
+            @media (min-height: 1400px) {
+                body {
+                    font-size: 32px;
+                }
+            }
+            @media (min-height: 1600px) {
+                body {
+                    font-size: 36px;
+                }
+            }
+        }
+        @media (min-width: 1080px) {
+            @media (min-height: 1680px) {
+                body {
+                    font-size: 40px;
+                }
+            }
+            @media (min-height: 1800px) {
+                body {
+                    font-size: 44px;
+                }
+            }
+        }
+    }
+}
+
+
+@media all {
+    @media (orientation: portrait) {
+        @media (min-width: 240px) and (max-width: 279px) {
+            :root {
+                --default-playback-buttons-size: 12px;
+            }
+            #controls button.repeat,
+            #controls button.random {
+                display: inline-block;
+            }
+        }
+        @media (min-width: 320px) {
+            :root {
+                --default-playback-buttons-size: 0.7em;
+            }
+        }
+        @media (min-width: 380px) {
+            :root {
+                --default-playback-buttons-size: 0.9em;
+            }
+        }
+        @media (max-width: 529px) {
+            #actions-wrapper {
+                flex-direction: column;
+                /*font-size: 24px;*/
+            }
+            #actions-wrapper div:not(:first-of-type) {
+                margin-top: 18px;
+            }
+        } 
+        @media (min-width: 530px) {
+            #actions-wrapper {
+                font-size: 16px;
+            }
+        }
+        @media (min-width: 550px)/* and (max-width: 679px)*/ {
+            #actions-wrapper {
+                font-size: 18px;
+            }
+        }
+        /*@media (min-width: 680px) and (max-width: 749px) {
+            #actions-wrapper {
+                font-size: 24px;
+            }   
+        }
+        @media (min-width: 750px) {
+            #actions-wrapper {
+                font-size: 26px;
+            }   
+        }*/
+    }
+}

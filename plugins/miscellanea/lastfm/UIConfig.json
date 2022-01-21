@@ -30,6 +30,7 @@
 				"element": "input",
 				"label": "TRANSLATE.LASTFM.API_KEY",
 				"doc": "TRANSLATE.LASTFM.D_API_KEY",
+				"description": "TRANSLATE.LASTFM.DD_API_KEY",
 				"value": ""
 			},
 			{
@@ -81,13 +82,24 @@
 		"saveButton": {
 			"label": "TRANSLATE.LASTFM.SAVE",
 			"data": [
+				"supportedSongServices",
 				"scrobbleThreshold",
 				"pushToastOnScrobble",
-				"tryScrobbleWebradio",
-				"webradioScrobbleThreshold"
+				"scrobbleFromStream",
+				"supportedStreamingServices",
+				"streamScrobbleThreshold"
 			]
 		},
 		"content": [
+			{
+			  "id":"supportedSongServices",
+			  "element": "input",
+			  "type":"text",
+			  "label": "TRANSLATE.LASTFM.SUPPORTED_SONG_SERVICES",
+			  "doc": "TRANSLATE.LASTFM.D_SUPPORTED_SONG_SERVICES",
+			  "description": "TRANSLATE.LASTFM.DD_SUPPORTED_SONG_SERVICES",
+			  "value": "mpd, airplay, volspotconnect, volspotconnect2, spop, radio_paradise, 80s80s"
+			},
 			{
 				"id": "scrobbleThreshold",
 				"element": "select",
@@ -107,21 +119,33 @@
 			  "value": true
 			},
 			{
-			  "id":"tryScrobbleWebradio",
+			  "id":"scrobbleFromStream",
 			  "element": "switch",
-			  "label": "TRANSLATE.LASTFM.SCROBBLE_WEBRADIO",
-			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_WEBRADIO",
+			  "label": "TRANSLATE.LASTFM.SCROBBLE_STREAM",
+			  "doc": "TRANSLATE.LASTFM.D_SCROBBLE_STREAM",
 			  "value": false
 			},
 			{
-				"id":"webradioScrobbleThreshold",
-				"type":"text",
+			  "id":"supportedStreamingServices",
+			  "element": "input",
+			  "label": "TRANSLATE.LASTFM.SUPPORTED_STREAMING_SERVICES",
+			  "doc": "TRANSLATE.LASTFM.D_SUPPORTED_STREAMING_SERVICES",
+			  "description": "TRANSLATE.LASTFM.DD_SUPPORTED_STREAMING_SERVICES",
+			  "value": "webradio",
+			  "visibleIf": {
+				"field": "scrobbleFromStream",
+				"value": true
+				}
+			},			
+			{
+				"id":"streamScrobbleThreshold",
 				"element": "input",
-				"label": "TRANSLATE.LASTFM.WEBRADIOSCROBBLETHRESHOLD",
-				"doc": "TRANSLATE.LASTFM.D_WEBRADIOSCROBBLETHRESHOLD",
+				"type":"text",
+				"label": "TRANSLATE.LASTFM.STREAMSCROBBLETHRESHOLD",
+				"doc": "TRANSLATE.LASTFM.D_STREAMSCROBBLETHRESHOLD",
 				"value": "30",
 				"visibleIf": {
-					"field": "tryScrobbleWebradio",
+					"field": "scrobbleFromStream",
 					"value": true
 				}
 			}

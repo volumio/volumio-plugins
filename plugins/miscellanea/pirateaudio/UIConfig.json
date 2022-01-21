@@ -1,0 +1,98 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "variables",
+      "element": "section",
+      "label": "TRANSLATE.CONFIG.TITLE",
+      "icon": "fa-cogs",
+      "onSave": {
+        "type": "plugin",
+        "endpoint": "miscellanea/pirateaudio",
+        "method": "setUIConfig"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.CONFIG.SAVE",
+        "data": [
+          "listmax",
+          "gpio_ybutton",
+          "sleeptimer"
+        ]
+      },
+      "content": [
+        {
+          "id": "listmax",
+          "type": "number",
+          "label": "TRANSLATE.CONFIG.LISTMAX",
+          "element": "select",
+          "value": {
+            "value": 5,
+            "label": "5"
+          },
+          "options": [
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 6,
+              "label": "6"
+            },
+            {
+              "value": 7,
+              "label": "7"
+            },
+            {
+              "value": 8,
+              "label": "8"
+            },
+            {
+              "value": 9,
+              "label": "9"
+            }
+          ]
+        },
+        {
+          "id": "gpio_ybutton",
+          "type": "number",
+          "label": "TRANSLATE.CONFIG.GPIOYBUTTON",
+          "element": "select",
+          "value": {
+            "value": 20,
+            "label": "20"
+          },
+          "options": [
+            {
+              "value": 20,
+              "label": "20"
+            },
+            {
+              "value": 24,
+              "label": "24"
+            }
+          ]
+        },
+        {
+          "id": "sleeptimer",
+          "type": "number",
+          "label": "TRANSLATE.CONFIG.SLEEPTIMER",
+          "element": "input",
+          "value": {
+            "value": 15,
+            "label": "15"
+          }
+        }
+      ]
+    }
+  ]
+}

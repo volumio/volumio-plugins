@@ -1,0 +1,49 @@
+{
+    "page": {
+      "label": "Onedrive Configuration"
+    },
+    "sections": [
+      {
+        "id":"section_getAuthenticationKey",
+        "type": "section",
+          "label": "Step 1: Obtaining the code",
+          "description": "Go to the following link and go through the steps until you reach the final page (don't close it!).",
+          "icon": "fa-key",
+          "content": [      {
+            "id": "AuthCode",
+            "type": "text",
+            "element": "input",
+            "label": "Link (for copy-pasting)",
+            "doc": "Browse to this URL to obtain authorization code",
+            "value": "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=ac1d2a92-fdc1-4d41-ba64-58ff0037a5b2&response_type=code&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf&response_mode=query&scope=openid%20offline_access%20https%3A%2F%2Fgraph.microsoft.com%2Ffiles.read&nonce=678910"
+          }]
+        },
+        {
+      "id": "section_credentials",
+      "element": "section",
+      "label": "Authentication",
+      "description": "Step 2: The previous step should have brought you to a (blank) page with an url similar to this one: \"https://login.live.com/oauth20_desktop.srf?code={authorization-code}&lc=1033\". Fill in the {authorization-code} part from the URL in the box below and click authenticate.",
+      "icon": "fa-sign-in",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/onedrive_music_library",
+        "method": "updateCredentials"
+      },
+      "saveButton": {
+        "label": "Authenticate",
+        "data": [
+          "AuthCode"
+        ]
+      },
+      "content": [
+        {
+          "id": "AuthCode",
+          "type": "text",
+          "element": "input",
+          "label": "Authentication Code:",
+          "doc": "Fill in the obtained Authentication code",
+          "value": ""
+        }
+      ]
+    }]
+  }

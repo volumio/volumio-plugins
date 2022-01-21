@@ -1,0 +1,19 @@
+{
+  "PLUGIN_CONFIGURATION":"Kies Back-up of Herstellen",
+  "BACKUP_LABEL":"Back-up opties",
+  "BACKUP_DESC":"volumio_data.tgz bestand wordt aangemaakt in root van SMB Share: u mag het naar een ander apparaat kopiëren op dezelfde locatie. WAARSCHUWING: Nieuwe back-up zal het vorige wissen.",
+  "BACKUP_DO":"Back-up",
+  "RESTORE_LABEL":"Herstellen",
+  "RESTORE_DESC":"volumio_data.tgz bestand van root van SMB Share wordt gebruikt om instellingen te herstellen: zorg ervoor dat het bestand aanwezig is! Reboot geadviseerd na het herstellen",
+  "RESTORE_DO":"Herstellen",
+  "QUEUE":"Wachtrij",
+  "QUEUE_DOC":"Selecteer of u een back-up van de huidige afspeelwachtrij wilt maken",
+  "PLAYLIST":"Afspeellijst",
+  "PLAYLIST_DOC":"Selecteer of u een back-up van afspeellijsten wilt maken",
+  "FAVOURITES":"Favorieten",
+  "FAVOURITES_DOC":"Selecteer of u een back-up van Favorieten wilt maken (inclusief mijn Webradio's, enz...)",
+  "CONFIGURATION":"Configuratie",
+  "CONFIGURATION_DOC":"Selecteer of u een back-up van alle instellingen wilt maken. Hiermee worden ook de instellingen voor plug-ins opgeslagen. Bij het herstellen van een nieuwe image moeten de daadwerkelijke plug-ins opnieuw worden geïnstalleerd, maar de instellingen worden bewaard. Sommige instellingen moeten mogelijk opnieuw worden toegepast via de gebruikersinterface om te worden geactiveerd.",
+  "ALBUMART":"Albumillustraties",
+  "ALBUMART_DOC":"Selecteer of u een back-up van de albumillustraties wilt maken"
+}

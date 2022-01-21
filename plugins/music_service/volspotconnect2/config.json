@@ -1,22 +1,42 @@
 {
- "initvol": {
-      "type": "string",
-      "value": "33"
-},
-"normalvolume": {
+  "initvol": {
+    "type": "string",
+    "value": "33"
+  },
+  "normalvolume": {
     "type": "boolean",
     "value": false
   },
-    "shareddevice": {
+  "bitrate": {
+    "type": "number",
+    "value": 320
+  },
+  "shareddevice": {
     "type": "boolean",
     "value": true
   },
-    "username": {
-      "type": "string",
-      "value": ""
+  "gapless": {
+    "type": "boolean",
+    "value": true
+  },
+  "autoplay": {
+    "type": "boolean",
+    "value": true
+  },
+  "username": {
+    "type": "string",
+    "value": ""
   },
   "password": {
     "type": "string",
     "value": ""
+  },
+  "volume_ctrl": {
+    "type": "string",
+    "value": "fixed"
+  },
+  "debug": {
+    "type": "boolean",
+    "value": false
   }
 }

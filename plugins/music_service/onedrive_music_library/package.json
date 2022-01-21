@@ -1,0 +1,26 @@
+{
+	"name": "onedrive_music_library",
+	"version": "1.0.3",
+	"description": "Allows to play music stored on Onedrive cloud storage service. Note that this is a beta version with limited functionality. Most prominently this version does not yet support adding music files to playlists or queue.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Elmar Jansen",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Onedrive Music Library",
+		"icon": "fa-cloud",
+		"plugin_type": "music_service"
+	},
+	"dependencies": {
+		"@microsoft/microsoft-graph-client": "^1.0.0",
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"request": "^2.83.0",
+		"v-conf": "^1.4.0"
+	},
+	"devDependencies": {
+		"@microsoft/microsoft-graph-types": "^1.1.0"
+	}
+}

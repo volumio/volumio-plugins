@@ -1,9 +1,10 @@
 {
 	"name": "youtube",
-	"version": "0.0.9",
+	"version": "1.0.1",
 	"description": "Youtube playback and public sharing for the Volumio",
 	"main": "index.js",
 	"scripts": {
+		"deploy": "scp -r ./ volumio@volumio.local:/data/plugins/music_service/youtube",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Cris Pintea <cris@pintea.net>, Stefan Laesser <sla89@gmx-topmail.de>",
@@ -15,10 +16,14 @@
 		"boot_priority": 10
 	},
 	"dependencies": {
-		"ytdl-core": "^0.20.1",
-		"kew": "0.7.0",
 		"googleapis": "19.0.0",
 		"iso8601-duration": "1.0.6",
-		"v-conf": "^1.4.0"
+		"kew": "0.7.0",
+		"superagent": "^5.1.3",
+		"v-conf": "^1.4.0",
+		"ytdl-core": "^1.0.7"
+	},
+	"devDependencies": {
+		"eslint": "^6.8.0"
 	}
 }

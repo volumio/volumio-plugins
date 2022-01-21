@@ -1,0 +1,5 @@
+{"codecs":[
+  {"name":"PCM (lossless uncompressed)","extension":"pcm"},
+  {"name":"Flac (lossless compressed [default])","extension":"flac"},
+  {"name":"OGG Vorbis","extension":"ogg"}
+]}

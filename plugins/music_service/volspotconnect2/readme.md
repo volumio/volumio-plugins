@@ -1,8 +1,8 @@
-23th may 2018
+October 07th 2020
 #	VOLUMIO SPOTIFY CONNECT 2 PLUGIN
 
-This new version is based  on [`librespot`](https://github.com/librespot-org/librespot)
-and the great addition from @ashthespy https://github.com/ashthespy for metadata integration in volumio!
+This new version is based  on [`vollibrespot`](https://github.com/ashthespy) based on [`librespot`](https://github.com/librespot-org/librespot)
+
 
 It is still in dev and some features are missing.
 
@@ -25,19 +25,12 @@ Tested on :
 ## To install
 Before intalling the dev version, REMOVE, if exists, the plugin from your system using the webUI plugins page.
 
-Due to a [Volumio decision](https://volumio.org/forum/require-plugins-uploaded-plugins-repo-t8116-10.html), now third party or dev plugin can only be install through SSH. Here is how:
 
 ### 1. Enable SSH and connect to Volumio
 
-For security reasons, SSH is disabled by default on all versions after 2.199 (except first boot). It can be however enabled very easily.
+To do that, have a look here :
 
-Navigate to the DEV ui by pointing your browser to http://VOLUMIOIP/DEV or http://volumio.local/DEV . Find the SSH section, and click enable. From now on your SSH will be permanently enabled.
-
-Now you can connect to Volumio with username `volumio` and password `volumio`.
-
-```
-ssh volumio@volumio.local (if you changed the name of your device, replace the second volumio by it or use its IP address.
-```
+https://volumio.github.io/docs/User_Manual/SSH.html
 
 ### 2. Download and install the plugin
 
@@ -49,17 +42,168 @@ mkdir ./volspotconnect2
 miniunzip volspotconnect2.zip -d ./volspotconnect2
 cd ./volspotconnect2
 volumio plugin install
+cd ..
+rm -Rf volspotconnect*
 ```
-## Save setting of the plugin even if you change nothing to generate correct config file.
+
+### 3.Enable the plugin
+
+In volumio webUI, go in plugin section, installed plugin.You should see volspotconnect2 now ! Enable it and play ! You can go in the plugin settings to tweak some details.
+Enjoy !
 
 
 ## Issues
 
 Time is reset when changing volume in UI
-UI may hangs sometimes when pressing buttons.
+UI may hangs sometimes when pressing buttons to fast.
+A delay, somtimes up to 10sec after play is pressed, before the sound comes...
 
 
 ## Last changes
+
+October 7th 2020
+
+new vollibrespot ['@ash'](https://github.com/ashthespy) 
+- Fix Android/iOS track skipping display issues
+- Set an explicit period size to reduce CUP load
+
+August 2nd 2020
+
+- better handling volume mixer with index diff from zero with loopback device
+
+May 18th 2020
+
+- fix when output is set to Loopback
+
+-  Add in some device/card mixer/index parsing logic
+-  Tweak stopping volatile service
+-  Add (initial) support for shuffle and repeat
+-  Don't await deactivation, clean up last selfs
+-  Refactor self to this
+-  Refactor event notification
+-  Add bitrate info to sate
+-  Allow WebUI to resume playback if device is available
+
+
+April 23th 2020
+
+- fix saved option
+
+April 20th 2020
+
+- fix for aarch64
+
+April 17th 2020
+
+- vls 0.2.0 ['@ash'](https://github.com/ashthespy) 
+- autoplay selector
+- Use a toml based configuration file 
+- Enabled gapless playback as default 
+- Handle reconnects more gracefully
+
+November 9th 2019
+
+- vls 0.1.9 ['@ash'](https://github.com/ashthespy) 
+
+    * Tweak Discovery with more logging
+    * Exit on Session errors
+
+November 7th 2019
+
+- vls 0.1.8 ['@ash'](https://github.com/ashthespy) 
+		
+    * Add support for podcasts
+    * Autoplay similar songs when your music ends
+    * Small performance tweaks
+
+August 10th 2019
+
+- vls 0.1.7 ['@ash'](https://github.com/ashthespy) 
+ 
+    Refine dropped session handling
+    Add a flag (LIBRESPOT_RATE_RESAMPLE) to allow resampling with ALSA
+    Refactor Volume control, allow for a fixed volume option
+
+April 30th 2019
+
+- new vollibrespot ['@ash'](https://github.com/ashthespy) 
+		[0.1.6]
+	-deconnection issue
+
+March 27th 2019
+
+- new vollibrespot ['@ash'](https://github.com/ashthespy) 
+		[0.1.4] - 2019-03-26
+	-Added support for Dailymixes
+	-Faster track changes
+	-Multiple small fixes
+
+March 26th 2019
+
+- add debug toggle ['@ash'](https://github.com/ashthespy) 
+
+March 12th 2019
+
+- configurable bitrate. Thank you ['zewelor'](https://github.com/zewelor)
+
+March 10th 2019
+
+- fix for softvol in Volumio
+
+March 09th 2019
+
+- initial volume case :
+
+none mixer = slider to set it and vollibrespt internal mixer
+hw or sw mixer in volumio = last volume st in volumio or if startup volume set in volumio, this value.
+
+March 08th 2019
+
+- initial volume with mixer 'none' only
+
+March 01st 2019
+
+- possible fix for mixer "none"
+
+Febuary 26th 2019
+
+- fix for mixer set to "none" from @ashthespy
+
+Febuary 25th 2019
+
+- fix from ['@ash'](https://github.com/ashthespy) for the problem of next track due to Spotify change
+
+2nd Febuary 2019
+
+- merged PR from @ashthespy
+
+11th december 2018
+
+- remove bitrate info...
+- support for version info in plugin manager
+
+03rd December 2018
+
+- support alsa hardware mixer! Thanks to ['@ash'](https://github.com/ashthespy)
+- vollibrespot as lib Thanks to ['@ash'](https://github.com/ashthespy)
+- miscellanea fixes
+
+01st August 2018
+
+- correction in install.sh for curl
+
+28th June 2018
+
+- use of curl instead of wget in install.sh (@gkkpch)
+
+21th June 2018
+
+- better complex username handling
+
+09th june 2018
+
+- Expand credentials command parameters (@ash)
+- Update readme
 
 23th may 2018
 

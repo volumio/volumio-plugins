@@ -1,13 +1,11 @@
 'use strict';
 
-var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var fs = require('fs-extra');
 var ifconfig = require('wireless-tools/ifconfig');
 var ip = require('ip');
-var libNet = require('net');
 var libQ = require('kew');
-var net = require('net');
+//var net = require('net');
 var currentIp = '';
 
 // Define the ControllerLMS class
@@ -26,12 +24,7 @@ function ControllerLMS(context)
 
 ControllerLMS.prototype.onVolumioStart = function()
 {
-	var self = this;
-	self.logger.info("LMS initiated");
-	
-	this.configFile = this.commandRouter.pluginManager.getConfigurationFile(this.context, 'config.json');
-	self.getConf(this.configFile);
-	
+	var self = this;	
 	return libQ.resolve();	
 };
 
@@ -121,7 +114,6 @@ ControllerLMS.prototype.getUIConfig = function() {
 	var defer = libQ.defer();    
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-	self.getConf(this.configFile);
 	self.getCurrentIP();
 	self.logger.info("Loaded the previous config.");
 	
@@ -130,16 +122,9 @@ ControllerLMS.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
     .then(function(uiconf)
     {
-		self.logger.info("## populating UI...");
 		var consoleUrl = 'http://' + currentIp + ':9000';
 		
 		uiconf.sections[0].content[0].onClick.url = consoleUrl;
-		uiconf.sections[1].content[0].value = self.config.get('enabled');
-		self.logger.info("2/2 LMS settings loaded");
-		
-		if(self.config.get('enabled') == false)
-			uiconf.sections.splice(0, 1);
-		self.logger.info("Populated config screen.");
 		
 		defer.resolve(uiconf);
 	})
@@ -162,8 +147,6 @@ ControllerLMS.prototype.setUIConfig = function(data) {
 
 ControllerLMS.prototype.getConf = function(configFile) {
 	var self = this;
-	this.config = new (require('v-conf'))()
-	this.config.loadFile(configFile)
 	
 	return libQ.resolve();
 };
@@ -175,73 +158,27 @@ ControllerLMS.prototype.setConf = function(conf) {
 
 // Public Methods ---------------------------------------------------------------------------------------
 
-ControllerLMS.prototype.updateLMSConfiguration = function (data)
-{
-	var self = this;
-	var defer = libQ.defer();
-	
-	self.config.set('enabled', data['enabled']);
-	self.logger.info("Successfully updated LMS configuration");
-
-	if(data['enabled'] == true)
-	{
-		self.restartService("logitechmediaserver", false)
-		.then(function(edefer)
-		{
-			defer.resolve();
-		})
-		.fail(function()
-		{
-			self.commandRouter.pushToastMessage('error', "Restart failed", "Restarting logitechmediaserver failed with error: " + error);
-			defer.reject(new Error());
-		});
-	}
-	else
-	{
-		self.stopService("logitechmediaserver")
-		.then(function(edefer)
-		{
-			defer.resolve();
-		})
-		.fail(function()
-		{
-			self.commandRouter.pushToastMessage('error', "Stopping failed", "Stopping logitechmediaserver failed with error: " + error);
-			defer.reject(new Error());
-		});
-	}
-	
-	return defer.promise;
-};
-
 ControllerLMS.prototype.restartService = function (serviceName, boot)
 {
 	var self = this;
 	var defer=libQ.defer();
 
-	if(self.config.get('enabled'))
-	{
-		var command = "/usr/bin/sudo /bin/systemctl restart " + serviceName;
-		
-		exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
-			if (error !== null) {
-				self.commandRouter.pushConsoleMessage('The following error occurred while starting ' + serviceName + ': ' + error);
-				self.commandRouter.pushToastMessage('error', "Restart failed", "Restarting " + serviceName + " failed with error: " + error);
-				defer.reject();
-			}
-			else {
-				self.commandRouter.pushConsoleMessage(serviceName + ' started');
-				if(boot == false)
-					self.commandRouter.pushToastMessage('success', "Restarted " + serviceName, "Restarted " + serviceName + " for the changes to take effect.");
-				
-				defer.resolve();
-			}
-		});
-	}
-	else
-	{
-		self.logger.info("Not starting " + serviceName + "; it's not enabled.");
-		defer.resolve();
-	}
+	var command = "/usr/bin/sudo /bin/systemctl restart " + serviceName;
+	
+	exec(command, {uid:1000,gid:1000}, function (error, stdout, stderr) {
+		if (error !== null) {
+			self.commandRouter.pushConsoleMessage('The following error occurred while starting ' + serviceName + ': ' + error);
+			self.commandRouter.pushToastMessage('error', "Restart failed", "Restarting " + serviceName + " failed with error: " + error);
+			defer.reject();
+		}
+		else {
+			self.commandRouter.pushConsoleMessage(serviceName + ' started');
+			if(boot == false)
+				self.commandRouter.pushToastMessage('success', "Restarted " + serviceName, "Restarted " + serviceName + " for the changes to take effect.");
+			
+			defer.resolve();
+		}
+	});
 
 	return defer.promise;
 };
@@ -269,29 +206,6 @@ ControllerLMS.prototype.stopService = function (serviceName)
 	return defer.promise;
 };
 
-ControllerLMS.prototype.replaceStringInFile = function (pattern, value, inFile)
-{
-	var self = this;
-	var defer = libQ.defer();
-	var castValue;
-	
-	if(value == true || value == false)
-			castValue = ~~value;
-	else
-		castValue = value;
-
-	var command = "/bin/echo volumio | /usr/bin/sudo -S /bin/sed -i -- 's|" + pattern + ".*|" + castValue + "|g' " + inFile;
-
-	exec(command, {uid:1000, gid:1000}, function (error, stout, stderr) {
-		if(error)
-			console.log(stderr);
-
-		defer.resolve();
-	});
-	
-	return defer.promise;
-};
-
 ControllerLMS.prototype.getCurrentIP = function () {
     var self = this;
     var defer = libQ.defer();
@@ -301,7 +215,8 @@ ControllerLMS.prototype.getCurrentIP = function () {
 	{
         if (status != undefined)
 		{
-            if (status.ipv4_address != undefined) 
+			// Omit the hotspot address
+            if (status.ipv4_address != undefined && status.ipv4_address != '192.168.211.1')
 			{
                 currentIp = status.ipv4_address;
                 defer.resolve(ipaddr);

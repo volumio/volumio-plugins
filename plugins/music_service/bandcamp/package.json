@@ -1,0 +1,29 @@
+{
+	"name": "bandcamp",
+	"version": "0.1.2",
+	"description": "Discover Bandcamp music",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/patrickkfkan/volumio-bandcamp.git"
+	},
+	"author": "Patrick Kan",
+	"license": "MIT",
+	"volumio_info": {
+		"prettyName": "Bandcamp Discover",
+		"plugin_type": "music_service",
+		"icon": "fa-bandcamp",
+		"boot_priority": 10
+	},
+	"dependencies": {
+		"bandcamp-fetch": "0.2.2-b.1",
+		"kew": "^0.7.0",
+		"md5": "^2.3.0",
+		"node-cache": "^5.1.2",
+		"string-format": "^2.0.0",
+		"v-conf": "^1.4.2"
+	}
+}

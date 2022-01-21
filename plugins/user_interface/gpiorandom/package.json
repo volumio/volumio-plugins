@@ -1,0 +1,25 @@
+{
+	"name": "gpiorandom",
+	"version": "2.1.0",
+	"description": "Play a randomized playlist, play a web radio or toggle play / pause uppon single, double and / or triple click on a GPIO wired button",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "jit06",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Gpio Random",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "user_interface"
+	},
+	"dependencies": {
+		"bufferutil": "^4.0.3",
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"onoff": "^6.0.1",
+		"socket.io-client": "^1.7.4",
+		"utf-8-validate": "^5.0.4",
+		"v-conf": "^1.4.2"
+	}
+}

@@ -1,0 +1,15 @@
+{
+  "PLUGIN_CONFIGURATION":"LedStatus configuration",
+  "PLUGIN_SECTION_TITLE":"LedStatus settings",
+  "SAVE":"Save",
+  "SUCCESS_TITLE":"Saved settings",
+  "SUCCESS_MESSAGE":"Successfully saved settings",
+  
+  "GPIONUM_DOC":"Enter the GPIO number on which the positive led's pin is wired. (Don't forget to use a resistor)",
+  "GPIONUM_LBL": "GPIO Number",
+  "INTMILISEC_DOC":"Enter the number of miliseconds between led status switch",
+  "INTMILISEC_LBL":"Blink interval",
+  
+  "ERROR_NOT_A_NUMBER_TITLE":"Number values required !",
+  "ERROR_NOT_A_NUMBER_MESSAGE":"All fields must be filled with a number greater than 0"
+}

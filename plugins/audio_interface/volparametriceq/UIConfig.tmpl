@@ -1,0 +1,501 @@
+{
+	"page": {
+		"label": "TRANSLATE.VOLUMIO_PARAMETRIC"
+	},
+	"sections": [
+		{
+			"id": "section_account",
+			"element": "section",
+			"label": "TRANSLATE.PARAMETRIC_SETTINGS",
+			"icon": "fa-plug",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "audio_interface/volparametriceq",
+				"method": "savevolparametriceq"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.APPLY",
+				"data": [
+					"mg",
+					"p11",
+					"p21",
+					"p31",
+					"p41",
+					"enableeq"
+				]
+			},
+			"content": [
+				{
+					"id": "mg",
+					"element": "equalizer",
+					"label": "TRANSLATE.MG",
+					"description": "TRANSLATE.MG_DESC",
+					"config": {
+						"orientation": "horizontal",
+						"bars": [
+							{
+								"min": "-24",
+								"max": "24",
+								"step": "1",
+								"value": "0",
+								"ticksLabels": [
+									"dB"
+								],
+								"tooltip": "always"
+							}
+						]
+					}
+				},
+				{
+					"id": "p11",
+					"element": "equalizer",
+					"label": "${p11lf}Hz-${p11hf}Hz",
+					"description": "TRANSLATE.P11_DESC",
+					"config": {
+						"orientation": "vertical",
+						"bars": [
+							{
+								"min": "0",
+								"max": "1",
+								"step": "1",
+								"value": "1",
+								"ticksLabels": [
+									"--    0/1"
+								]
+							},
+							{
+								"min": "${p11lf2}",
+								"max": "${p11hf2}",
+								"step": "${p11s}",
+								"value": "30",
+								"ticksLabels": [
+									"--   Hz"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "0.12",
+								"max": "8",
+								"step": "0.03",
+								"value": "0",
+								"ticksLabels": [
+									"--   Q"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "-24",
+								"max": "24",
+								"step": "0.1",
+								"value": "0",
+								"ticksLabels": [
+									"--   dB"
+								],
+								"tooltip": "always"
+							}
+						]
+					}
+				},
+				{
+					"id": "p21",
+					"element": "equalizer",
+					"label": "${p21lf}Hz-${p21hf}Hz",
+					"description": "TRANSLATE.P21_DESC",
+					"config": {
+						"orientation": "vertical",
+						"bars": [
+							{
+								"min": "0",
+								"max": "1",
+								"step": "1",
+								"value": "1",
+								"ticksLabels": [
+									"--    0/1"
+								]
+							},
+							{
+								"min": "${p21lf2}",
+								"max": "${p21hf2}",
+								"step": "${p21s}",
+								"value": "200",
+								"ticksLabels": [
+									"--   Hz"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "0.12",
+								"max": "8",
+								"step": "0.03",
+								"value": "0",
+								"ticksLabels": [
+									"--   Q"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "-24",
+								"max": "24",
+								"step": "0.1",
+								"value": "0",
+								"ticksLabels": [
+									"--   dB"
+								],
+								"tooltip": "always"
+							}
+						]
+					}
+				},
+				{
+					"id": "p31",
+					"element": "equalizer",
+					"label": "${p31lf}Hz-${p31hf}Hz",
+					"description": "TRANSLATE.P31_DESC",
+					"config": {
+						"orientation": "vertical",
+						"bars": [
+							{
+								"min": "0",
+								"max": "1",
+								"step": "1",
+								"value": "1",
+								"ticksLabels": [
+									"--    0/1"
+								]
+							},
+							{
+								"min": "${p31lf2}",
+								"max": "${p31hf2}",
+								"step": "${p31s}",
+								"value": "2000",
+								"ticksLabels": [
+									"--   Hz"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "0.12",
+								"max": "8",
+								"step": "0.03",
+								"value": "0",
+								"ticksLabels": [
+									"--   Q"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "-24",
+								"max": "24",
+								"step": "0.1",
+								"value": "0",
+								"ticksLabels": [
+									"--   dB"
+								],
+								"tooltip": "always"
+							}
+						]
+					}
+				},
+				{
+					"id": "p41",
+					"element": "equalizer",
+					"label": "${p41lf}Hz-${p41hf}Hz",
+					"description": "TRANSLATE.P41_DESC",
+					"config": {
+						"orientation": "vertical",
+						"bars": [
+							{
+								"min": "0",
+								"max": "1",
+								"step": "1",
+								"value": "1",
+								"ticksLabels": [
+									"--    0/1"
+								]
+							},
+							{
+								"min": "${p41lf2}",
+								"max": "${p41hf2}",
+								"step": "${p41s}",
+								"value": "10000",
+								"ticksLabels": [
+									"--   Hz"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "0.12",
+								"max": "8",
+								"step": "0.03",
+								"value": "0",
+								"ticksLabels": [
+									"--   Q"
+								],
+								"tooltip": "always"
+							},
+							{
+								"min": "-24",
+								"max": "24",
+								"step": "0.1",
+								"value": "0",
+								"ticksLabels": [
+									"--   dB"
+								],
+								"tooltip": "always"
+							}
+						]
+					}
+				},
+				{
+					"id": "enableeq",
+					"element": "switch",
+					"label": "TRANSLATE.ENABLEEQ",
+					"value": true
+				}
+			]
+		},
+		{
+			"id": "advanced",
+			"element": "section",
+			"label": "TRANSLATE.PARAMETRIC_ADV",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "audio_interface/volparametriceq",
+				"method": "saveAdvanced"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.SAVE",
+				"data": [
+					"p11lf",
+					"p11hf",
+					"p11s",
+					"p21lf",
+					"p21hf",
+					"p21s",
+					"p31lf",
+					"p31hf",
+					"p31s",
+					"p41lf",
+					"p41hf",
+					"p41s"
+				]
+			},
+			"content": [
+				{
+					"id": "enabled",
+					"element": "switch",
+					"label": "TRANSLATE.ADVANCED_SETTINGS",
+					"value": false
+				},
+				{
+					"id": "p11lf",
+					"element": "input",
+					"doc": "TRANSLATE.LOWFREQDOC",
+					"label": "TRANSLATE.LOWFREQ",
+					"value": {
+						"value": "",
+						"label": "30"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p11hf",
+					"element": "input",
+					"doc": "TRANSLATE.HIGHFREQDOC",
+					"label": "TRANSLATE.HIGHFREQ",
+					"value": {
+						"value": "",
+						"label": "125"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p11s",
+					"element": "input",
+					"doc": "TRANSLATE.STEPDOC",
+					"label": "TRANSLATE.STEP",
+					"value": {
+						"value": "",
+						"label": "1"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p21lf",
+					"element": "input",
+					"doc": "TRANSLATE.LOWFREQDOC2",
+					"label": "TRANSLATE.LOWFREQ2",
+					"value": {
+						"value": "",
+						"label": "200"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p21hf",
+					"element": "input",
+					"doc": "TRANSLATE.HIGHFREQDOC2",
+					"label": "TRANSLATE.HIGHFREQ2",
+					"value": {
+						"value": "",
+						"label": "2000"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p21s",
+					"element": "input",
+					"doc": "TRANSLATE.STEPDOC",
+					"label": "TRANSLATE.STEP",
+					"value": {
+						"value": "",
+						"label": "5"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p31lf",
+					"element": "input",
+					"doc": "TRANSLATE.LOWFREQDOC3",
+					"label": "TRANSLATE.LOWFREQ3",
+					"value": {
+						"value": "",
+						"label": "1500"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p31hf",
+					"element": "input",
+					"doc": "TRANSLATE.HIGHFREQDOC3",
+					"label": "TRANSLATE.HIGHFREQ3",
+					"value": {
+						"value": "",
+						"label": "9000"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p31s",
+					"element": "input",
+					"doc": "TRANSLATE.STEPDOC",
+					"label": "TRANSLATE.STEP",
+					"value": {
+						"value": "",
+						"label": "20"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p41lf",
+					"element": "input",
+					"doc": "TRANSLATE.LOWFREQDOC4",
+					"label": "TRANSLATE.LOWFREQ4",
+					"value": {
+						"value": "",
+						"label": "8000"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p41hf",
+					"element": "input",
+					"doc": "TRANSLATE.HIGHFREQDOC4",
+					"label": "TRANSLATE.HIGHFREQ4",
+					"value": {
+						"value": "",
+						"label": "14000"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				},
+				{
+					"id": "p41s",
+					"element": "input",
+					"doc": "TRANSLATE.STEPDOC",
+					"label": "TRANSLATE.STEP",
+					"value": {
+						"value": "",
+						"label": "50"
+					},
+					"options": [],
+					"visibleIf": {
+						"field": "enabled",
+						"value": true
+					}
+				}
+			]
+		},
+		{
+			"id": "restore",
+			"element": "section",
+			"label": "TRANSLATE.SPECIAL",
+			"icon": "fa-cogs",
+			"onSave": {
+				"type": "plugin",
+				"endpoint": "audio_interface/volparametriceq",
+				"method": "restoredefaultsettings"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.RESTORE",
+				"data": [
+					"restore"
+				]
+			},
+ "content": 
+					[
+					{
+					"id": "",
+					"element": "",
+					"label": "",
+					"value": true
+					}
+						
+					] 
+		}
+	]
+}

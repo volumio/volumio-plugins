@@ -1,0 +1,18 @@
+{
+  "VKBD":{
+    "PLUGIN_NAME":"Clavier virtuel",
+    "PLUGIN_CONFIGURATION":"Configuration du clavier virtuel",
+    "VKBD_CONF":"Réglage du clavier virtuel",
+    "LAYOUT_SELECTOR":"Disposition du clavier",
+    "LAYOUT_SELECTOR_DOC":"Choisir la disposition du clavier.",
+    "TOUCHDISPLAY_MISSING":"L'activation du plugin a échoué car le plugin 'Touch display' n'est pas installé.",
+    "ERR_COPY":"Erreur en copiant",
+    "ERR_MOD":"Erreur en modifiant ",
+    "ERR_RESTART":"Erreur en redémarrant ",
+    "RESTART_VOLUMIOKIOSK_MSG":"L'affichage local va être redémarré pour appliquer les changements.",
+    "NO_CHANGES":"Pas de changement à appliquer.",
+    "YES":"Oui",
+    "NO":"Non",
+    "SAVE":"Appliquer"
+  }
+}

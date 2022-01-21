@@ -1,0 +1,51 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+ {
+      "id": "section_settings",
+      "element": "section",
+      "label": "TRANSLATE.PLUGIN_SECTION_TITLE",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"system_controller/commandOnEvent", "method":"saveSettings"},
+      "saveButton": {
+        "label": "TRANSLATE.SAVE",
+        "data": [
+          "commandstop",
+          "commandpause",
+          "commandplay"
+        ]
+      },
+      "content": [
+        {
+          "id": "commandstop",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.STOP_DOC",
+          "label": "TRANSLATE.STOP_LBL",
+          "attributes": [ {"placeholder": "/opt/myscript.sh"} ],
+          "value": ""
+        },
+        {
+          "id": "commandpause",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.PAUSE_DOC",
+          "label": "TRANSLATE.PAUSE_LBL",
+          "attributes": [ {"placeholder": "/opt/myscript.sh"} ],
+          "value": ""
+        },
+        {
+          "id": "commandplay",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.PLAY_DOC",
+          "label": "TRANSLATE.PLAY_LBL",
+          "attributes": [ {"placeholder": "/opt/myscript.sh"} ],
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

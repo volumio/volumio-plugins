@@ -1,0 +1,26 @@
+{
+    "userCpuSpec": {
+      "type": "string",
+      "value": "0-0"
+    },
+    "userMpd": {
+      "type": "boolean",
+      "value": true
+    },
+    "userSpotify": {
+      "type": "boolean",
+      "value": true
+    },
+    "rtMpd": {
+      "type": "boolean",
+      "value": false
+    },
+    "rtSpotify": {
+      "type": "boolean",
+      "value": false
+    },
+    "rtPriority": {
+      "type": "string",
+      "value": "99"
+    }
+}  

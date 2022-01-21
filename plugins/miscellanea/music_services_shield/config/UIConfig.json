@@ -1,0 +1,129 @@
+{
+	"page": {
+			"label": "TRANSLATE.MSS_CONFIGURATION"
+		},
+	"sections": [
+	{
+		"id": "music_services_shield",
+		"element": "section",
+		"label": "TRANSLATE.MSS_TITLE",
+		"icon": "fa-cog",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "miscellanea/music_services_shield",
+			"method": "saveConfig"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.MSS_SAVE",
+			"data": [
+				"userCpuSpec",
+				"userMpd",
+				"userSpotify",
+				"rtMpd",
+				"rtSpotify",
+				"rtPriority"
+			]
+		},
+		"content": [
+		{
+			"id": "listUserTasks",
+			"element": "button",
+			"doc": "TRANSLATE.MSS_LISTTASKS",
+			"label": "TRANSLATE.MSS_LISTTASKS_LABEL",
+			"onClick": {
+				"type": "plugin",
+				"endpoint": "miscellanea/music_services_shield",
+				"method": "listUserTasks"
+			}
+		},
+		{
+			"id": "userCpuSpec",
+			"element":"select",
+			"doc":"TRANSLATE.MSS_USERCPUSPEC",
+			"label":"TRANSLATE.MSS_USERCPUSPEC_LABEL",
+			"value": {
+				"value":"0-0",
+				"label":"CPU 0 to 0"
+			},
+			"options":[
+OPTIONS
+]},
+		{
+			"id": "userMpd",
+			"element": "switch",
+			"doc": "TRANSLATE.MSS_USERINCLUDEMPD",
+			"label": "TRANSLATE.MSS_USERINCLUDEMPD_LABEL",
+			"value": true
+		},
+		{
+			"id": "userSpotify",
+			"element": "switch",
+			"doc": "TRANSLATE.MSS_USERINCLUDESPOTIFY",
+			"label": "TRANSLATE.MSS_USERINCLUDESPOTIFY_LABEL",
+			"value": true
+		},
+		{
+			"id": "rtMpd",
+			"element": "switch",
+			"doc": "TRANSLATE.MSS_RTINCLUDEMPD",
+			"label": "TRANSLATE.MSS_RTINCLUDEMPD_LABEL",
+			"value": true
+		},
+		{
+			"id": "rtSpotify",
+			"element": "switch",
+			"doc": "TRANSLATE.MSS_RTINCLUDESPOTIFY",
+			"label": "TRANSLATE.MSS_RTINCLUDESPOTIFY_LABEL",
+			"value": true
+		},
+		{
+			"id": "rtPriority",
+			"element": "select",
+			"doc": "TRANSLATE.MSS_RTPRIORITY",
+			"label": "TRANSLATE.MSS_RTPRIORITY_LABEL",
+			"value": {
+			  "value": "99",
+			  "label": "99"
+			},
+			"options": [{
+				"value": "99",
+				"label": "99"
+			  },
+			  {
+				"value": "80",
+				"label": "80"
+			  },
+			  {
+				"value": "70",
+				"label": "70"
+			  },
+			  {
+				"value": "60",
+				"label": "60"
+			  },
+			  {
+				"value": "50",
+				"label": "50"
+			  },
+			  {
+				"value": "40",
+				"label": "40"
+			  },
+			  {
+				"value": "30",
+				"label": "30"
+			  },
+			  {
+				"value": "20",
+				"label": "20"
+			  },
+			  {
+				"value": "10",
+				"label": "10"
+			  }
+			]
+		  }
+		]
+  }]
+}
+

@@ -1,6 +1,6 @@
 {
 	"name": "rotaryencoder",
-	"version": "1.2.2",
+	"version": "1.2.4",
 	"description": "Provides a rotary encoder interface for use in Volumio 2.x",
 	"main": "index.js",
 	"scripts": {
@@ -56,7 +56,7 @@
 		"volumio"
 	],
 	"bugs": {
-	"url": "https://github.com/Saiyato/volumio-rotary-encoder-plugin/issues"
+		"url": "https://github.com/Saiyato/volumio-rotary-encoder-plugin/issues"
 	},
 	"homepage": "https://github.com/Saiyato/volumio-rotary-encoder-plugin#readme"
 }

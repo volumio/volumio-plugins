@@ -1,0 +1,86 @@
+{
+    "gpionum": {
+      "value": "",
+      "type": "number"
+    },
+    "debounceTimeout": {
+      "value": 5,
+      "type": "number"
+    },
+    "nbsongs": {
+      "value": 20,
+      "type": "number"
+    },
+    "clicktimeout": {
+      "value": 800,
+      "type": "number"
+    },
+    "activeLow": {
+      "value": 0,
+      "type": "number"
+    },
+    "edge": {
+      "value": 0,
+      "type": "number"
+    },
+    "singleclick": {
+      "value": "",
+      "type": "number"
+    },
+    "doubleclick": {
+      "value": "",
+      "type": "number"
+    },
+    "tripleclick": {
+      "value": "",
+      "type": "number"
+    },
+    "singleuri": {
+      "value": "",
+      "type": "text"
+    },
+    "doubleuri": {
+      "value": "",
+      "type": "text"
+    },
+    "tripleuri": {
+      "value": "",
+      "type": "text"
+    },
+    "singleradioValue": {
+      "value": "",
+      "type": "text"
+    },
+    "doubleradioValue": {
+      "value": "",
+      "type": "text"
+    },
+    "tripleradioValue": {
+      "value": "",
+      "type": "text"
+    },
+    "singleradioLabel": {
+      "value": "",
+      "type": "text"
+    },
+    "doubleradioLabel": {
+      "value": "",
+      "type": "text"
+    },
+    "tripleradioLabel": {
+      "value": "",
+      "type": "text"
+    },
+    "singleclickAction": {
+      "value": "",
+      "type": "number"
+    },
+    "doubleclickAction": {
+      "value": "",
+      "type": "number"
+    },
+    "tripleclickAction": {
+      "value": "",
+      "type": "number"
+    }
+}
