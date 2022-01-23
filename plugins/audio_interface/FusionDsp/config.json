@@ -3,6 +3,14 @@
         "type": "string",
         "value": "EQ15"
     },
+    "purecgui": {
+        "type": "boolean",
+        "value": false
+    },
+    "address": {
+        "type": "string",
+        "value": "127.0.0.1"
+    },
     "geq15": {
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"

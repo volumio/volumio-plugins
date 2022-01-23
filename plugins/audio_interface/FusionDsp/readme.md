@@ -1,4 +1,4 @@
-January 9th 2022
+January 23th 2022
 
 
 ##  For Volumio3
@@ -134,6 +134,12 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+
+January 9th 2022 v0.1.23
+
+- Loudness fix
+- First work for CamillaDsp GUI integration
 
 January 9th 2022 v0.1.22
 

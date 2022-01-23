@@ -60,22 +60,9 @@ FusionDsp.prototype.onStart = function () {
   //----- alsa temporary workaround--------
   self.loadalsastuff();
   //---------------------------------------
-
   self.hwinfo();
-
-  /*-----------Experimental CamillaGui
-
-  try {
-    exec("/usr/bin/python3 /data/plugins/audio_interface/fusiondsp/cgui/main.py", {
-      uid: 1000,
-      gid: 1000
-    });
-    self.commandRouter.pushConsoleMessage('CamillaGui loaded');
-    defer.resolve();
-  } catch (err) {
-    self.logger.info('failed to load Camilla Gui' + err);
-  }
-*/
+  self.purecamillagui();
+  self.getIP();
 
   // if mixer set to none, do not show loudness settings
   //this.commandRouter.sharedVars.registerCallback('alsa.mixertype',  this.refreshUI.bind(this));
@@ -218,7 +205,7 @@ FusionDsp.prototype.hwinfo = function () {
 
 // Configuration methods------------------------------------------------------------------------
 
-FusionDsp.prototype.getUIConfig = function () {
+FusionDsp.prototype.getUIConfig = function (address) {
   const self = this;
   let defer = libQ.defer();
 
@@ -250,6 +237,9 @@ FusionDsp.prototype.getUIConfig = function () {
         case ("convfir"):
           var dsplabel = self.commandRouter.getI18nString('CONV_LABEL')
           break;
+        //    case ("purecgui"):
+        //    var dsplabel = "Pure CamillaDsp gui"
+        //  break;
         default: "EQ15"
       }
       // No convolution if cpu is armv6l
@@ -272,6 +262,10 @@ FusionDsp.prototype.getUIConfig = function () {
             "value": "convfir",
             "label": self.commandRouter.getI18nString('CONV_LABEL')
           }]
+          // {
+          // "value": "purecgui",
+          // "label": "Pure CamillaDsp Gui"
+          //  }]
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', dsplabel);
 
@@ -806,9 +800,63 @@ FusionDsp.prototype.getUIConfig = function () {
         uiconf.sections[1].saveButton.data.push('rightfilter');
         uiconf.sections[1].saveButton.data.push('attenuationr');
         uiconf.sections[1].saveButton.data.push('enableclipdetect');
+
+        //----------------end of convfir section------------
+
+        //----------------Pure CamillaDsp section------------
+      } else if (selectedsp == "purecgui") {
+        // var devicename = self.commandRouter.sharedVars.get('system.name');
+
+        var IPaddress = self.config.get('address')
+
+        var purecamillainstalled = self.config.get('purecgui')
+        uiconf.sections[1].hidden = true;
+        uiconf.sections[2].hidden = true;
+        uiconf.sections[3].hidden = true;
+        uiconf.sections[4].hidden = true;
+        uiconf.sections[5].hidden = true;
+        uiconf.sections[6].hidden = true;
+        uiconf.sections[7].hidden = true;
+        uiconf.sections[8].hidden = true;
+
+        if (purecamillainstalled == true) {
+
+          //  self.getIP()
+          self.logger.info('IP adress is ---------------------------' + IPaddress)
+          uiconf.sections[9].content.push(
+            {
+              "id": "camillagui",
+              "element": "button",
+              "label": "Access to Camilla Gui",
+              "doc": "CamillaGui",
+              "onClick": {
+                "type": "openUrl",
+                "url": "http://" + IPaddress + ":5011"
+              }
+            }
+          )
+        } else if (purecamillainstalled == false) {
+          uiconf.sections[9].content.push(
+
+            {
+              "id": "installcamillagui",
+              "element": "button",
+              "label": "First use. Install Camilla GUI",
+              "doc": "First use. Install Camilla GUI",
+              "onClick": {
+                "type": "plugin",
+                "endpoint": "audio_interface/fusiondsp",
+                "method": "installcamillagui",
+                "data": [],
+
+              }
+            }
+          )
+        }
       }
 
-      //----------------end of convfir section------------
+
+
       //---------------more settings---------------------
       var moresettings = self.config.get('moresettings')
       if (moresettings == false) {
@@ -1063,24 +1111,9 @@ FusionDsp.prototype.getUIConfig = function () {
 
       }
       //------------experimental
-      /*
-     var devicename = self.commandRouter.sharedVars.get('system.name');
-     
-      {
-        "id": "camillagui",
-        "element": "button",
-        "label": "CamillaGui (experimental)",
-        "doc": "CamillaGui",
-        "onClick": {
-          "type": "openUrl",
-          "url": "http://" + devicename + ".local:5011"
-        },
-        "visibleIf": {
-          "field": "showeq",
-          "value": true
-        },
-      } 
-      */
+
+      var devicename = self.commandRouter.sharedVars.get('system.name');
+
       //-----------------
 
       // }
@@ -1562,6 +1595,9 @@ FusionDsp.prototype.choosedsp = function (data) {
     self.config.set('nbreq', 2),
       self.config.set('mergedeq', self.config.get('savedmergedeqfir'))
 
+  } else if (selectedsp === 'purecgui') {
+    self.logger.info('Launching CamillaDsp GUI')
+    self.purecamillagui()
   }
 
   self.config.set('effect', true)
@@ -1574,6 +1610,70 @@ FusionDsp.prototype.choosedsp = function (data) {
 
   self.refreshUI();
 };
+
+FusionDsp.prototype.getIP = function () {
+  const self = this;
+  var address
+  var iPAddresses = self.commandRouter.executeOnPlugin('system_controller', 'network', 'getCachedIPAddresses', '');
+  if (iPAddresses && iPAddresses.eth0 && iPAddresses.eth0 != '') {
+    address = iPAddresses.eth0;
+  } else if (iPAddresses && iPAddresses.wlan0 && iPAddresses.wlan0 != '' && iPAddresses.wlan0 !== '192.168.211.1') {
+    address = iPAddresses.wlan0;
+  } else {
+    address = '127.0.0.1';
+  }
+  self.config.set('address', address)
+};
+
+FusionDsp.prototype.purecamillagui = function () {
+  const self = this;
+  let defer = libQ.defer();
+
+  //-----------Experimental CamillaGui
+
+  try {
+    exec("/usr/bin/python3 /data/plugins/audio_interface/fusiondsp/cgui/main.py", {
+      uid: 1000,
+      gid: 1000
+    });
+    self.commandRouter.pushConsoleMessage('CamillaGui loaded');
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to load Camilla Gui' + err);
+  }
+
+}
+
+FusionDsp.prototype.installcamillagui = function () {
+  const self = this;
+  let defer = libQ.defer();
+
+  //-----------Experimental CamillaGui
+  self.config.set('purecgui', true)
+
+  try {
+
+    exec('/usr/bin/sudo /usr/bin/apt update', { uid: 1000, gid: 1000, encoding: 'utf8' });
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to apt update' + err);
+  }
+
+  try {
+    self.commandRouter.pushToastMessage('info', 'Takes up to 3 min')
+
+    execSync('/data/plugins/audio_interface/fusiondsp/installcamillagui.sh', {
+      uid: 1000,
+      gid: 1000
+    });
+    self.refreshUI()
+    defer.resolve();
+  } catch (err) {
+    self.logger.info('failed to install Camilla Gui' + err);
+  }
+
+}
+
 
 
 FusionDsp.prototype.addeq = function (data) {
@@ -3356,7 +3456,15 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     }
     let loudness = data["loudness"]
     if (loudness) {
-      self.sendvolumelevel()
+      self.config.set('loudnessthreshold', data.loudnessthreshold)
+      socket.emit('volume', '+')
+      setTimeout(function () {
+
+        self.sendvolumelevel()
+      }, 900);
+
+      socket.emit('volume', '-')
+      self.logger.info('--------xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-------------volume emit')
     } else {
       socket.off()
     }
@@ -3368,7 +3476,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     if (self.config.get('showloudness')) {
 
       self.config.set('loudness', loudness);
-      self.config.set('loudnessthreshold', data.loudnessthreshold)
     }
   }
 
@@ -3615,7 +3722,10 @@ FusionDsp.prototype.usethispreset = function (data) {
 
   setTimeout(function () {
     self.refreshUI();
+
     self.createCamilladspfile()
+
+
   }, 500);
   return defer.promise;
 
@@ -3989,13 +4099,15 @@ FusionDsp.prototype.playToolsFile = function (data) {
 
 FusionDsp.prototype.sendvolumelevel = function () {
   const self = this;
-  let loudnessMaxGain = 15
-  let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
-  let loudnessLowThreshold = 10
-  let loudnessRange = loudnessVolumeThreshold - loudnessLowThreshold
-  let ratio = loudnessMaxGain / loudnessRange
-  let loudnessGain
+
   socket.on('pushState', function (data) {
+    let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
+    let loudnessMaxGain = 15
+    let loudnessLowThreshold = 10
+    let loudnessRange = loudnessVolumeThreshold - loudnessLowThreshold
+    let ratio = loudnessMaxGain / loudnessRange
+    let loudnessGain
+
     if (data.volume > loudnessLowThreshold && data.volume < loudnessVolumeThreshold) {
       loudnessGain = ratio * (loudnessVolumeThreshold - data.volume)
     } else if (data.volume <= loudnessLowThreshold) {

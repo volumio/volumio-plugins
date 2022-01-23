@@ -73,7 +73,7 @@ echo "copying hw detection script"
 # Find arch
 cpu=$(lscpu | awk 'FNR == 1 {print $2}')
 echo "Detected cpu architecture as $cpu"
-if [ $cpu = "armv7l" ] #|| [ $cpu = "aarch64" ] || [ $cpu = "armv6l" ]
+if [ $cpu = "armv7l" ]
 then
 cd /tmp
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.6.3/camilladsp-linux-armv7.tar.gz
