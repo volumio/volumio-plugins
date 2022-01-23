@@ -11,7 +11,7 @@
       "description": "TRANSLATE.HUE_CONNECTION_CONFIG_DESC",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/hue_control",
+        "endpoint": "system_controller/hue_control",
         "method": "pairBridge"
       },
       "saveButton": {
@@ -39,7 +39,7 @@
       "description": "TRANSLATE.HUE_UNPAIR_CONFIG_DESC",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/hue_control",
+        "endpoint": "system_controller/hue_control",
         "method": "unpairBridge"
       },
       "saveButton": {
@@ -69,7 +69,7 @@
       "description": "TRANSLATE.HUE_SETTINGS_DESC",
       "onSave": {
         "type": "controller",
-        "endpoint": "miscellanea/hue_control",
+        "endpoint": "system_controller/hue_control",
         "method": "saveSettings"
       },
       "saveButton": {
