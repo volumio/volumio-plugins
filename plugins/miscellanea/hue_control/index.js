@@ -15,10 +15,11 @@ const v3 = require('node-hue-api').v3
     , discovery = v3.discovery
     , hueApi = v3.api
 ;
-const ApiError = require('node-hue-api').ApiError;
+
+// Should not be necesary with current API
+// const ApiError = require('node-hue-api').ApiError;
 
 const HUE_APP_NAME = 'hue_control';
-const HUE_DEVICE_NAME = 'volumio';
 
 function HueControl(context) {
     const self = this;
@@ -73,7 +74,9 @@ HueControl.prototype.onVolumioStart = function () {
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
 
-    return libQ.resolve();
+    var promise = libQ.nfcall(fs.writeFile, '/tmp/message', 'hue_control started', 'utf8');
+        
+    return promise;
 };
 
 HueControl.prototype.onStart = function () {
@@ -140,22 +143,25 @@ HueControl.prototype.mapDevicesToOptionArray = function (lights) {
 
 HueControl.prototype.pairBridge = function (data) {
     const self = this;
-    self.logger.debug('pairBridge');
+    self.logger.info('pairBridge');
+	self.commandRouter.pushToastMessage('info', "Hue Controller", "Trying to pair to Bridge....");
     if (!data['hue_bridge_address'] || 0 === data['hue_bridge_address'].length) {
         self.logger.error("Empty bridge address passed.");
-        self.commandRouter.pushToastMessage('error', "Connect failed", "Empty bridge address!");
-        return
+		self.commandRouter.pushToastMessage('error', "Connect failed", "Empty bridge address!");
+		return;
     }
     // save ip address into config file
+    self.logger.debug('pairBridge IP set');
     self.config.set("hue_bridge_address", data['hue_bridge_address']);
     self.createUser(data['hue_bridge_address']).then(username => {
         if (username && username.length > 0) {
             self.config.set("hue_api_username", username);
             self.hueUsername = username;
             self.getAllLights().then(lights => {
+				self.logger.info('Lights: ' + lights.toStringDetailed());
                 self.hueDeviceOptionSelection = self.mapDevicesToOptionArray(lights);
             });
-            var respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'hue_control', {});
+            var respconfig = self.commandRouter.getUIConfigOnPlugin('system_controller', 'hue_control', {});
             respconfig.then(function (config) {
                 self.commandRouter.broadcastMessage('pushUiConfig', config);
             });
@@ -165,12 +171,16 @@ HueControl.prototype.pairBridge = function (data) {
 
 HueControl.prototype.unpairBridge = function () {
     const self = this;
-    self.logger.info('Unpair Bridge');
+    var unauthenticatedApi;
+	
+	self.logger.info('Unpair Bridge with Username: ' + self.hueUsername);
+	
+	// Clear pairing data
     self.config.set("hue_api_username", "");
     self.hueUsername = null;
     self.hueDevice = null;
     self.commandRouter.pushToastMessage('success', "Bridge unpaired", `Bridge is now unpaired. Please delete Volumio from App List `);
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'hue_control', {});
+    var respconfig = self.commandRouter.getUIConfigOnPlugin('system_controller', 'hue_control', {});
     respconfig.then(function (config) {
         self.commandRouter.broadcastMessage('pushUiConfig', config);
     });
@@ -178,6 +188,7 @@ HueControl.prototype.unpairBridge = function () {
 
 HueControl.prototype.saveSettings = function (data) {
     const self = this;
+    self.logger.info('saveSettings');
     if (data['hue_device'] && 0 <= data['hue_device'].value) {
         self.config.set("hue_device", data['hue_device'].value);
         self.hueDevice = data['hue_device'].value;
@@ -194,6 +205,7 @@ HueControl.prototype.saveSettings = function (data) {
         self.logger.error("Save failed: Switch off delay has to be a number > 0");
         self.commandRouter.pushToastMessage('error', "Save failed", "Switch off delay has to be a number > 0");
     }
+
     self.commandRouter.pushToastMessage('success', "Settings saved", `Settings successfully saved.`);
 
 };
@@ -203,7 +215,6 @@ HueControl.prototype.saveSettings = function (data) {
 HueControl.prototype.turnHueDeviceOn = async function (deviceId) {
     const self = this;
     return self.controlHueDevice(deviceId, {on: true});
-
 };
 
 HueControl.prototype.turnHueDeviceOff = async function (deviceId) {
@@ -236,6 +247,10 @@ HueControl.prototype.isPaired = function () {
 
 HueControl.prototype.createUser = async function (ipAddress) {
     const self = this;
+
+	// Find the name of the Volumio Installation
+	var volumioName = this.commandRouter.sharedVars.get('system.name');
+
     // Create an unauthenticated instance of the Hue API so that we can create a new user
     var unauthenticatedApi;
     try {
@@ -248,7 +263,7 @@ HueControl.prototype.createUser = async function (ipAddress) {
 
     let createdUser;
     try {
-        createdUser = await unauthenticatedApi.users.createUser(HUE_APP_NAME, HUE_DEVICE_NAME);
+        createdUser = await unauthenticatedApi.users.createUser(HUE_APP_NAME, volumioName);
         self.logger.info('*******************************************************************************\n');
         self.logger.info('User has been created on the Hue Bridge. The following username can be used to\n' +
             'authenticate with the Bridge and provide full local access to the Hue Bridge.\n' +
@@ -261,10 +276,10 @@ HueControl.prototype.createUser = async function (ipAddress) {
         self.hueClient = await hueApi.createLocal(ipAddress).connect(createdUser.username);
 
         // Do something with the authenticated user/api
-        const bridgeConfig = await self.hueClient.configuration.get();
+        const bridgeConfig = await self.hueClient.configuration.getConfiguration();
         self.logger.info(`Connected to Hue Bridge: ${bridgeConfig.name} :: ${bridgeConfig.ipaddress}`);
     } catch (err) {
-        if (err instanceof ApiError && err.getHueErrorType() === 101) {
+        if (err.getHueErrorType() === 101) {
             self.logger.error('The Link button on the bridge was not pressed. Please press the Link button and try again.');
             self.commandRouter.pushToastMessage('error', "Connect failed", "The Link button on the bridge was not pressed. Please press the Link button and try again.");
         } else {
@@ -304,7 +319,7 @@ HueControl.prototype.onVolumioState = function (state) {
                 self.turnHueDeviceOn(self.hueDevice).then(
                     result => {
                         if (result) {
-                            self.logger.info(`Hue device successfully switch on`);
+                            self.logger.info(`Hue device successfully switched on`);
                         } else {
                             self.logger.error(`Unable to switch on hue device`);
                         }
@@ -314,7 +329,7 @@ HueControl.prototype.onVolumioState = function (state) {
             // volumio is not playing
             // start timer if not already started
             if (!self.switchOffTimer) {
-                self.logger.debug(`starting switch off timer`);
+                self.logger.info(`starting switch off timer`);
                 self.switchOffTimer = setTimeout(
                     self.switchOffTimeout.bind(self),
                     self.config.get('switch_off_delay') * 1000
@@ -326,7 +341,7 @@ HueControl.prototype.onVolumioState = function (state) {
 
 HueControl.prototype.switchOffTimeout = function () {
     const self = this;
-
+	
     // timeout expired
     self.switchOffTimer = null;
 
@@ -336,12 +351,12 @@ HueControl.prototype.switchOffTimeout = function () {
         self.turnHueDeviceOff(self.hueDevice).then(
             result => {
                 if (result) {
-                    self.logger.info(`Hue device successfully switch off`);
+                    self.logger.info(`Hue device successfully switched off`);
                 } else {
                     self.logger.error(`Unable to switch off hue device`);
                 }
             });
-    }
+	}
 };
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -352,10 +367,14 @@ HueControl.prototype.getUIConfig = function () {
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 
-    self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
+    self.logger.info(`hue_control getUIConfig executed`);
+	
+	self.commandRouter.i18nJson(__dirname + '/i18n/strings_' + lang_code + '.json',
         __dirname + '/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(function (uiconf) {
+			
+			self.logger.info('Pairing status: ' + ((self.isPaired()) ? 0 : 1) );
 
             // Bridge Address
             uiconf.sections[0].content[0].value = self.config.get('hue_bridge_address');

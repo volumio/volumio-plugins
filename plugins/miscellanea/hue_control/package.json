@@ -19,13 +19,13 @@
 	"volumio_info": {
 		"prettyName": "Philips Hue Control",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "miscellanea"
+		"plugin_type": "system_controller"
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
 		"v-conf": "^1.4.0",
-		"node-hue-api": "^3.4.0",
+		"node-hue-api": "^4.0.1",
 		"socket.io-client": "^2.3.0"
 	}
 }
