@@ -18,7 +18,7 @@
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
 		"v-conf": "^0.10.0",
-		"onoff": "^1.1.1",
-		"socket.io-client": "^1.4.5"
+		"onoff": "^6.0.3",
+		"socket.io-client": "^2.0.0"
 	}
 }

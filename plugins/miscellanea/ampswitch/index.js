@@ -25,7 +25,7 @@ function AmpSwitchController(context) {
 	this.configManager = this.context.configManager;
 
 	// Setup Debugger
-  self.logger.ASdebug = function(data) {
+    self.logger.ASdebug = function(data) {
     self.logger.info('[ASDebug] ' + data);
   };
 
@@ -175,7 +175,9 @@ AmpSwitchController.prototype.parseStatus = function(state) {
 		self.logger.ASdebug('CurState: ' + state.status + ' PrevState: ' + status);
 
 		clearTimeout(self.OffTimerID);
-    if(state.status=='play' && state.status!=status){
+	// Change from checking status = play to status is not paused 
+	// in order to include undefined states due to USB DAC switched off
+    if((state.status!='pause' && state.status!='stop') && state.status!=status){
         status=state.status;
 				self.config.get('latched')? self.pulse(self.config.get('on_pulse_width')) : self.on();
     } else if((state.status=='pause' || state.status=='stop') && (status!='pause' && status!='stop')){
@@ -203,6 +205,8 @@ AmpSwitchController.prototype.on = function() {
 //switch output port off
 AmpSwitchController.prototype.off = function() {
     var self = this;
+
+	// Add check, if player was turned on during wait for timeout
 
 		self.logger.ASdebug('Togle GPIO: OFF');
     if(!self.config.get('inverted')){
