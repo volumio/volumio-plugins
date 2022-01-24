@@ -60,6 +60,9 @@ For FIR, supported filters format
 
 ```
 text- 32/64 bits floats line (.txt) in rephase
+S16_LE- 16 bits LPCM mono (.wav) in rePhase
+S24_LE- 24 bits LPCM mono (.wav) in rePhase
+S24_LE- 32 bits LPCM mono (.wav) in rePhase
 FLOAT_LE- 32 bits floating point (.pcm)
 FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
 Wav Files are automatically converted in RAW format to be used
@@ -136,7 +139,12 @@ everythings it seems ;-)
 ### 4. Last changes
 
 
-January 9th 2022 v0.1.23
+January 24th 2022 v0.1.24
+
+- Reactivate wav files as convolution filters
+
+
+January 22th 2022 v0.1.23
 
 - Loudness fix
 - First work for CamillaDsp GUI integration

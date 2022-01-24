@@ -27,7 +27,7 @@ def analyze_chunk(type, start, length, file, wav_info):
             if wav_info['BitsPerSample'] == 16:
                 sfmt = "S16_LE"
             elif wav_info['BitsPerSample'] == 24 and bytes_per_sample == 3:
-                sfmt = "S24_3LE"
+                sfmt = "S24_LE3"
             elif wav_info['BitsPerSample'] == 24 and bytes_per_sample == 4:
                 sfmt = "S24_LE"
             elif wav_info['BitsPerSample'] == 32:

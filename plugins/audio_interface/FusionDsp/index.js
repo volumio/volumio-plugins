@@ -1979,7 +1979,7 @@ FusionDsp.prototype.testclipping = function () {
 
     let track = '/data/plugins/audio_interface/fusiondsp/testclipping/testclipping.wav';
     try {
-      let cmd = ('/usr/bin/aplay --device=volumioDsp ' + track);
+      let cmd = ('/usr/bin/aplay -c2 --device=volumioDspfx ' + track);
       self.commandRouter.pushToastMessage('info', 'Clipping detection in progress...');
 
       // exec('/usr/bin/killall aplay');
@@ -2103,42 +2103,42 @@ FusionDsp.prototype.dfiltertype = function (data) {
     auto_filter_format = 'TEXT';
   }
   else if (filext == 'wav') {
-
+    let SampleFormat;
     // return;
 
-    /* try {
-       execSync('/usr/bin/python /data/plugins/audio_interface/fusiondsp/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
-       setTimeout(function () {
- 
-         fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
-           if (err) {
-             self.logger.info('Error reading test.result', err);
-           } else {
-             var resultJSON = JSON.parse(result);
-             var DataLength = resultJSON.DataLength;
-             var DataStart = resultJSON.DataStart;
-             var BytesPerFrame = resultJSON.BytesPerFrame;
-             SampleFormat = resultJSON.SampleFormat;
- 
-             filelength = DataLength / BytesPerFrame;
-             skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
- 
-             self.config.set('filter_size', filelength);
-             self.config.set('skipvalue', skipvalue);
-             self.config.set('wavetype', SampleFormat);
- 
-           }
-         });
-       }, 50);
- 
-       auto_filter_format = self.config.get('wavetype').replace('_', '');
-       filelength = self.config.get('filter_size');
-       skipvalue = self.config.get('skipvalue');
- 
-     } catch (e) {
-       self.logger.error('Could not read wav file: ' + e)
-     }
-     */
+    try {
+      execSync('/usr/bin/python /data/plugins/audio_interface/fusiondsp/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
+      setTimeout(function () {
+
+        fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
+          if (err) {
+            self.logger.info('Error reading test.result', err);
+          } else {
+            var resultJSON = JSON.parse(result);
+            var DataLength = resultJSON.DataLength;
+            var DataStart = resultJSON.DataStart;
+            var BytesPerFrame = resultJSON.BytesPerFrame;
+            SampleFormat = resultJSON.SampleFormat;
+
+            filelength = DataLength / BytesPerFrame;
+            skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
+
+            self.config.set('filter_size', filelength);
+            self.config.set('skipvalue', skipvalue);
+            self.config.set('wavetype', SampleFormat);
+
+          }
+        });
+      }, 50);
+
+      auto_filter_format = self.config.get('wavetype').replace('_', '');
+      filelength = self.config.get('filter_size');
+      skipvalue = self.config.get('skipvalue');
+
+    } catch (e) {
+      self.logger.error('Could not read wav file: ' + e)
+    }
+
   } else {
     let modalData = {
       title: self.commandRouter.getI18nString('FILTER_FORMAT_TITLE'),
@@ -2157,7 +2157,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
   self.config.set('filter_format', auto_filter_format);
   self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
   self.logger.info('--------->filter size ' + filelength);
-  // self.logger.info('--------->Skip value for wav :' + skipvalue);
+  self.logger.info('--------->Skip value for wav :' + skipvalue);
 
 
   var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
@@ -3292,6 +3292,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     let attenuationr = (data['attenuationr'].value);
     let leftfilter = (data['leftfilter'].value);
     let rightfilter = (data['rightfilter'].value);
+
     //   self.logger.error('Sxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + leftfilter);
     let filtername //= self.config.get('leftfilterlabel');
     let filext = (data['leftfilter'].value).split('.').pop().toString();
@@ -3309,40 +3310,44 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       return;
 
     } else {
-
-      if (filext == "wav") {
-        let listf = ('leftfilter,rightfilter')
-        let list = listf.split(',')
-        for (i in list) {
-          filtername = (data[list[i]].value)
-          self.commandRouter.pushToastMessage('error', 'Wav file is going to be converted in raw to be use')
-          //sox example.wav --bits 32 example.raw
-          try {
-            let cmdsox = ("/usr/bin/sox " + filterfolder + filtername + " --bits 32 " + filterfolder + filtername.slice(0, -3) + "raw");
-            execSync(cmdsox);
-            self.logger.info(cmdsox);
-            self.commandRouter.pushToastMessage('success', 'Wav file converted in raw. Please select it now to use it')
-
-          } catch (e) {
-            self.logger.error('input file does not exist ' + e);
-            self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
-          };
-          self.config.set(list[i], filtername.slice(0, -3) + "raw");
-          self.config.set('leftfilterlabel', filtername.slice(0, -3) + "raw");
-
-          // self.config.set(list[i] + ',' + filtername.slice(0, -3) + "raw")
-          self.logger.info('filter saved ' + list[i] + ',' + filtername.slice(0, -3) + "raw")
-          // self.refreshUI();
-        }
-      } else {
-        self.config.set('leftfilterlabel', leftfilter);
-        self.config.set('leftfilter', leftfilter);
-        self.config.set('rightfilter', rightfilter);
-      }
+      /*
+      
+            if (filext == "wav") {
+              let listf = ('leftfilter,rightfilter')
+              let list = listf.split(',')
+              for (i in list) {
+                filtername = (data[list[i]].value)
+                self.commandRouter.pushToastMessage('error', 'Wav file is going to be converted in raw to be use')
+                //sox example.wav --bits 32 example.raw
+                try {
+                  let cmdsox = ("/usr/bin/sox " + filterfolder + filtername + " --bits 32 " + filterfolder + filtername.slice(0, -3) + "raw");
+                  execSync(cmdsox);
+                  self.logger.info(cmdsox);
+                  self.commandRouter.pushToastMessage('success', 'Wav file converted in raw. Please select it now to use it')
+      
+                } catch (e) {
+                  self.logger.error('input file does not exist ' + e);
+                  self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
+                };
+                self.config.set(list[i], filtername.slice(0, -3) + "raw");
+                self.config.set('leftfilterlabel', filtername.slice(0, -3) + "raw");
+      
+                // self.config.set(list[i] + ',' + filtername.slice(0, -3) + "raw")
+                self.logger.info('filter saved ' + list[i] + ',' + filtername.slice(0, -3) + "raw")
+                // self.refreshUI();
+              }
+            } else {
+              self.config.set('leftfilterlabel', leftfilter);
+              self.config.set('leftfilter', leftfilter);
+              self.config.set('rightfilter', rightfilter);
+            }*/
       self.dfiltertype(data);
 
       let val = self.dfiltertype(obj);
       let valfound = val.valfound
+      self.config.set('leftfilterlabel', leftfilter);
+      self.config.set('leftfilter', leftfilter);
+      self.config.set('rightfilter', rightfilter);
       let enableclipdetect = data['enableclipdetect'];
       self.config.set('attenuationl', attenuationl);
       self.config.set('attenuationr', attenuationr);
@@ -3381,10 +3386,11 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         self.testclipping()
 
       }
-      setTimeout(function () {
-
-        self.areSampleswitch();
-      }, 1500);
+      /*setTimeout(function () {
+ 
+         self.areSampleswitch();
+       }, 1500);
+       */
       let ltest, rtest, cleftfilter, crightfilter
 
       cleftfilter = filterfolder + leftfilter
