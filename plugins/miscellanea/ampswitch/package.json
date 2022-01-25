@@ -1,6 +1,6 @@
 {
 	"name": "ampswitch",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"description": "Status based power management of external amplifier",
 	"main": "index.js",
 	"scripts": {
