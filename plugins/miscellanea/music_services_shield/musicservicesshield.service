@@ -1,0 +1,21 @@
+[Unit]
+Description=Shield Volumio Music Services in the User CPU Set
+Documentation=https://community.volumio.org/t/plugin-music-services-shield/48519
+After=mpd.service
+PartOf=mpd.service
+After=volspotconnect2.service
+PartOf=volspotconnect2.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/bin/bash /data/plugins/miscellanea/music_services_shield/moveallprocesses.sh
+RemainAfterExit=true
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+
+from ambx.ambx import AMBX, Lights, Fans
+import struct
+import sys
+import argparse
+import syslog
+
+lights = [Lights.LEFT, Lights.WWLEFT, Lights.WWCENTER, Lights.WWRIGHT, Lights.RIGHT]
+fans = [Fans.LEFT, Fans.RIGHT]
+
+dev = None
+try:
+    dev = AMBX(0)
+except IndexError:
+    if dev is None:
+        syslog.syslog(syslog.LOG_ERR, "No AmbX found")
+        sys.exit(69)
+
+def _ambx_exec(func,args):
+    try:
+        func(*args)
+    except IOError:
+        syslog.syslog(syslog.LOG_ERR, "USB Error")
+        sys.exit(74)
+
+def _value_8_bit(x):
+    x = int(x)
+    if x < 0 or x > 255:
+        raise argparse.ArgumentTypeError("Values should be in range 0-255")
+    return x
+
+def set_color(args):
+    if args.light == 0:
+        for light in lights:
+            _ambx_exec(dev.set_color_rgb8,[light, [args.red, args.green, args.blue]])
+    else:
+        _ambx_exec(dev.set_color_rgb8,[lights[args.light-1], [args.red, args.green, args.blue]])
+
+def set_fan_speed(args):
+    if (args.fan == 0):
+        for fan in fans:
+            _ambx_exec(dev.set_fan_speed,[fan,args.speed])
+    else:
+        _ambx_exec(dev.set_fan_speed,[fans[args.fan-1],args.speed])
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Control the Philips amBX sound system')
+    subs = parser.add_subparsers(title='subcommands', help='Choose device')
+    led_parser = subs.add_parser('led',description='Control the LEDs')
+    led_parser.set_defaults(func=set_color)
+    fan_parser = subs.add_parser('fan',description='Control the fans')
+    fan_parser.set_defaults(func=set_fan_speed)
+    led_parser.add_argument('-l', '--light', type=int, choices=range(0,6), default=0, help='One of the 5 LEDs, left to right, 0 means all')
+    led_parser.add_argument('-r', '--red', type=_value_8_bit, default=0, help='Red value')
+    led_parser.add_argument('-g', '--green', type=_value_8_bit, default=0, help='Green value')
+    led_parser.add_argument('-b', '--blue', type=_value_8_bit, default=0, help='Blue value')
+    fan_parser.add_argument('-f', '--fan', type=int, choices=range(0,3), default=0, help='One of the 2 fans, left to right, 0 means all')
+    fan_parser.add_argument('-s', '--speed', type=_value_8_bit, default=0, help='Fan speed 0 to 255')
+    args = parser.parse_args()
+    args.func(args)

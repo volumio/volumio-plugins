@@ -38,11 +38,14 @@ IrController.prototype.onStart = function () {
   const defer = libQ.defer();
 
   self.commandRouter.loadI18nStrings();
-  device = self.commandRouter.executeOnPlugin('system_controller', 'system', 'getConfigParam', 'device');
+  self.commandRouter.executeOnPlugin('system_controller', 'system', 'getSystemVersion', '')
+    .then(function (infos) {
+      device = infos.hardware;
+    });
   self.prepareLirc()
     .then(function () {
       self.saveIROptions({ ir_profile: { value: self.config.get('ir_profile', 'JustBoom IR Remote') }, notify: false });
-      if (device === 'Raspberry PI') {
+      if (device === 'pi') {
         if (!fs.existsSync('/sys/firmware/devicetree/base/lirc_rpi') && fs.readdirSync('/sys/firmware/devicetree/base').find(function (fn) { return fn.startsWith('ir-receiver'); }) === undefined) {
           if (overlay === 'gpio-ir') {
             self.logger.info(id + 'HAT did not load /proc/device-tree/ir_receiver!');
@@ -80,7 +83,15 @@ IrController.prototype.onStart = function () {
                 }
               }
               if (gpioConfigurable) {
-                self.saveGpioOptions({ header40_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header34_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, header26_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) }, gpio_pull: { value: self.config.get('gpio_pull', 'up') }, forceActiveState: self.config.get('forceActiveState', false), activeState: { value: self.config.get('activeState', 1) }, notify: false });
+                self.saveGpioOptions({
+                  header40_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) },
+                  header34_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) },
+                  header26_gpio_in_pin: { value: self.config.get('gpio_in_pin', 25) },
+                  gpio_pull: { value: self.config.get('gpio_pull', 'up') },
+                  forceActiveState: self.config.get('forceActiveState', false),
+                  activeState: { value: self.config.get('activeState', 1) },
+                  notify: false
+                });
               }
             }
           });
@@ -107,7 +118,7 @@ IrController.prototype.onStop = function () {
 
   self.systemctl('stop ' + lircService + '.service')
     .fin(function () {
-      if (device === 'Raspberry PI') {
+      if (device === 'pi') {
         let gpioPin = ' gpio_pin=' + self.config.get('gpio_in_pin');
         let activeState = (self.config.get('forceActiveState')) ? ' invert=' + self.config.get('activeState') : '';
         if (overlay === 'lirc-rpi') {
@@ -150,6 +161,16 @@ IrController.prototype.getUIConfig = function () {
   const langCode = this.commandRouter.sharedVars.get('language_code');
   const dirs = fs.readdirSync(path.join(__dirname, 'configurations'));
 
+  try {
+    fs.readdirSync('/data/INTERNAL/ir_controller/configurations').forEach(function (customDir) {
+      if (dirs.every(function (dir) { return dir !== customDir; })) {
+        dirs.push(customDir);
+      }
+    });
+    dirs.sort();
+  } catch (e) {
+    self.logger.error(id + 'Custom profile folder not accessible: ' + e);
+  }
   self.commandRouter.i18nJson(path.join(__dirname, 'i18n', 'strings_' + langCode + '.json'),
     path.join(__dirname, 'i18n', 'strings_en.json'),
     path.join(__dirname, 'UIConfig.json'))
@@ -230,15 +251,23 @@ IrController.prototype.getI18nFile = function (langCode) {
 
 IrController.prototype.saveIROptions = function (data) {
   const self = this;
+  let profilePathStub = __dirname;
 
   if (self.config.get('ir_profile') !== data.ir_profile.value || data.notify === false) {
     self.config.set('ir_profile', data.ir_profile.value);
     try {
-      const profileFiles = fs.readdirSync(path.join(__dirname, 'configurations', data.ir_profile.value));
+      if (fs.readdirSync('/data/INTERNAL/ir_controller/configurations').some(function (dir) { return dir === data.ir_profile.value; })) {
+        profilePathStub = '/data/INTERNAL/ir_controller';
+      }
+    } catch (e) {
+      self.logger.error(id + 'Custom profile folder not accessible: ' + e);
+    }
+    try {
+      const profileFiles = fs.readdirSync(path.join(profilePathStub, 'configurations', data.ir_profile.value));
       let c = 0;
       profileFiles.forEach(function (profileFile) {
         if (profileFile === 'lircrc' || profileFile === 'lircd.conf') {
-          fs.writeFileSync(path.join('etc', 'lirc', profileFile), fs.readFileSync(path.join(path.join(__dirname, 'configurations', data.ir_profile.value, profileFile)), 'utf8'), 'utf8');
+          fs.writeFileSync(path.join('etc', 'lirc', profileFile), fs.readFileSync(path.join(path.join(profilePathStub, 'configurations', data.ir_profile.value, profileFile)), 'utf8'), 'utf8');
           c++;
         }
       });
@@ -320,17 +349,22 @@ IrController.prototype.prepareLirc = function () {
           defer.reject();
         } else {
           if (lircLegacy) {
-            data = data.replace(new RegExp('^#? *LIRCD_ARGS=".*"$', 'm'), 'LIRCD_ARGS="--uinput"');
-            data = data.replace(new RegExp('^#? *DRIVER=".*"$', 'm'), 'DRIVER="default"');
-            data = data.replace(new RegExp('^#? *DEVICE=".*"$', 'm'), 'DEVICE="/dev/lirc0"');
-            if (device === 'Odroid-C') {
-              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES="meson-ir"');
-            } else {
-              data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES=' + ((overlay === 'gpio-ir') ? '"gpio_ir_recv"' : '"lirc_rpi"'));
+            data = data.replace(new RegExp('^#? *LIRCD_ARGS=".*"$', 'm'), 'LIRCD_ARGS="--uinput"')
+              .replace(new RegExp('^#? *DRIVER=".*"$', 'm'), 'DRIVER="default"')
+              .replace(new RegExp('^#? *DEVICE=".*"$', 'm'), 'DEVICE="/dev/lirc0"');
+            switch (device) {
+              case 'odroidc1':
+              case 'odroidc2':
+              case 'odroidc4':
+              case 'odroidn2':
+                data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES="meson-ir"');
+                break;
+              case 'pi':
+                data = data.replace(new RegExp('^#? *MODULES=".*"$', 'm'), 'MODULES=' + ((overlay === 'gpio-ir') ? '"gpio_ir_recv"' : '"lirc_rpi"'));
             }
           } else {
-            data = data.replace(new RegExp('^#? *driver *=.*$', 'm'), 'driver          = default');
-            data = data.replace(new RegExp('^#? *device *=.*$', 'm'), 'device          = /dev/lirc0');
+            data = data.replace(new RegExp('^#? *driver *=.*$', 'm'), 'driver          = default')
+              .replace(new RegExp('^#? *device *=.*$', 'm'), 'device          = /dev/lirc0');
           }
           fs.writeFile(fn, data, 'utf8', function (err) {
             if (err) {

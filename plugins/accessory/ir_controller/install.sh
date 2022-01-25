@@ -18,5 +18,9 @@ else
   sudo systemctl stop lircd.service
 fi
 
+echo "Creating folder for custom LIRC configurations"
+sudo mkdir -p -m 777 /data/INTERNAL/ir_controller/configurations
+sudo chown volumio:volumio /data/INTERNAL/ir_controller/configurations
+
 #required to end the plugin install
 echo "plugininstallend"

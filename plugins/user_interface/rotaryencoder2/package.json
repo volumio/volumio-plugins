@@ -1,0 +1,24 @@
+{
+	"name": "rotaryencoder2",
+	"version": "1.0.7",
+	"description": "Alternative implementation of Rotary Encoder controls using the Linux Kernel driver for Rotaries.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "7h0mas-R",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "Rotary Encoder II",
+		"icon": "fa-circle-o-notch",
+		"plugin_type": "user_interface"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"onoff": "^6.0.1",
+		"path": "^0.12.7",
+		"socket.io-client": "^2.3.1",
+		"v-conf": "^1.4.0"
+	}
+}

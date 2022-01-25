@@ -134,7 +134,7 @@ TradfriController.prototype.onStart = function() {
 
     if (identity && psk) {
         tradfriLib.discoverGateway()
-        .then(self.onTradfriGatewayDiscovered.bind(self))
+        .then(self.onTradfriGatewayDiscovered.bind(self, ''))
         .catch(self.onTradfriConnectError.bind(self));
     }
 

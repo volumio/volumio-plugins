@@ -1,0 +1,425 @@
+{
+    "page": {
+        "label": "TRANSLATE.JELLYFIN_CONFIGURATION"
+    },
+    "sections": [
+        {
+            "id": "section_add_server",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_ADD_SERVER",
+            "icon": "fa-server",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "configAddServer"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_ADD",
+                "data": [
+                    "host",
+                    "username",
+                    "password"
+                ]
+            },
+            "content": [
+                {
+                    "id": "host",
+                    "type": "text",
+                    "element": "input",
+                    "doc": "",
+                    "label": "TRANSLATE.JELLYFIN_HOST",
+                    "attributes": [
+                        { "placeholder": "E.g. http://www.myjellyfinserver.com:8096" }
+                    ]
+                },
+                {
+                    "id": "username",
+                    "type": "text",
+                    "element": "input",
+                    "doc": "",
+                    "label": "TRANSLATE.JELLYFIN_USERNAME"
+                },
+                {
+                    "id": "password",
+                    "type": "password",
+                    "element": "input",
+                    "doc": "",
+                    "label": "TRANSLATE.JELLYFIN_PASSWORD"
+                }
+            ]
+        },
+        {
+            "id": "section_remove_server",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_REMOVE_SERVER",
+            "icon": "fa-trash",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "configRemoveServer"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_REMOVE",
+                "data": [
+                    "server_entry"
+                ]
+            },
+            "content": [
+                {
+                    "id": "server_entry",
+                    "element": "select",
+                    "doc": "",
+                    "value": {
+                        "value": "",
+                        "label": ""
+                    },
+                    "label": "TRANSLATE.JELLYFIN_SERVER",
+                    "options": []
+                }
+            ]
+        },
+        {
+            "id": "section_browse_settings",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_BROWSE_SETTINGS",
+            "icon": "fa-cog",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "saveBrowseSettings"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_SAVE",
+                "data": [
+                    "itemsPerPage",
+                    "showAllAlbumTracks",
+                    "showAllPlaylistTracks",
+                    "rememberFilters"
+                ]
+            },
+            "content": [
+                {
+                    "id": "itemsPerPage",
+                    "element": "input",
+                    "type": "number",
+                    "value": "47",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS_PER_PAGE"
+                },
+                {
+                    "id": "showAllAlbumTracks",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_ALL_ALBUM_TRACKS"
+                },
+                {
+                    "id": "showAllPlaylistTracks",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_ALL_PLAYLIST_TRACKS"
+                },
+                {
+                    "id": "rememberFilters",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_FILTER_REMEMBER"
+                }
+            ]
+        },
+        {
+            "id": "section_play_add",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_PLAY_ADD",
+            "description": "TRANSLATE.JELLYFIN_PLAY_ADD_DESC",
+            "icon": "fa-play",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "savePlayAddSettings"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_SAVE",
+                "data": [
+                    "maxTracks",
+                    "noMaxTracksSingleAlbum",
+                    "noMaxTracksSinglePlaylist"
+                ]
+            },
+            "content": [
+                {
+                    "id": "maxTracks",
+                    "element": "input",
+                    "type": "number",
+                    "value": "100",
+                    "label": "TRANSLATE.JELLYFIN_MAX_TRACKS"
+                },
+                {
+                    "id": "noMaxTracksSingleAlbum",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_NO_MAX_TRACKS_SINGLE_ALBUM"
+                },
+                {
+                    "id": "noMaxTracksSinglePlaylist",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_NO_MAX_TRACKS_SINGLE_PLAYLIST"
+                }
+            ]
+        },
+        {
+            "id": "section_search_settings",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_SEARCH_SETTINGS",
+            "icon": "fa-search",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "saveSearchSettings"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_SAVE",
+                "data": [
+                    "searchAlbums",
+                    "searchAlbumsResultCount",
+                    "searchArtists",
+                    "searchArtistsResultCount",
+                    "searchSongs",
+                    "searchSongsResultCount"
+                ]
+            },
+            "content": [
+                {
+                    "id": "searchAlbums",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_ALBUMS"
+                },
+                {
+                    "id": "searchAlbumsResultCount",
+                    "element": "input",
+                    "type": "number",
+                    "value": "11",
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_RESULT_COUNT",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "searchAlbums", 
+                        "value": true
+                    }
+                },
+                {
+                    "id": "searchArtists",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_ARTISTS"
+                },
+                {
+                    "id": "searchArtistsResultCount",
+                    "element": "input",
+                    "type": "number",
+                    "value": "11",
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_RESULT_COUNT",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "searchArtists", 
+                        "value": true
+                    }
+                },
+                {
+                    "id": "searchSongs",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_SONGS"
+                },
+                {
+                    "id": "searchSongsResultCount",
+                    "element": "input",
+                    "type": "number",
+                    "value": "11",
+                    "label": "TRANSLATE.JELLYFIN_SEARCH_RESULT_COUNT",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "searchSongs", 
+                        "value": true
+                    }
+                }
+            ]
+        },
+        {
+            "id": "section_my_media_library",
+            "element": "section",
+            "label": "TRANSLATE.JELLYFIN_MY_MEDIA_LIBRARY",
+            "icon": "fa-music",
+            "onSave": {
+                "type": "controller",
+                "endpoint": "music_service/jellyfin",
+                "method": "saveMyMediaLibrarySettings"
+            },
+            "saveButton": {
+                "label": "TRANSLATE.JELLYFIN_SAVE",
+                "data": [
+                    "showLatestMusicSection",
+                    "latestMusicSectionItems",
+
+                    "showRecentlyPlayedSection",
+                    "recentlyPlayedSectionItems",
+
+                    "showFrequentlyPlayedSection",
+                    "frequentlyPlayedSectionItems",
+
+                    "showFavoriteArtistsSection",
+                    "favoriteArtistsSectionItems",
+
+                    "showFavoriteAlbumsSection",
+                    "favoriteAlbumsSectionItems",
+
+                    "showFavoriteSongsSection",
+                    "favoriteSongsSectionItems",
+
+                    "collectionInSectionItems"
+                ]
+            },
+            "content": [
+                {
+                    "id": "showLatestMusicSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_LATEST_MUSIC_SECTION"
+                },
+                {
+                    "id": "latestMusicSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "11",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showLatestMusicSection", 
+                        "value": true
+                    }
+                },
+
+                {
+                    "id": "showRecentlyPlayedSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_RECENTLY_PLAYED_SECTION"
+                },
+                {
+                    "id": "recentlyPlayedSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "4",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showRecentlyPlayedSection",
+                        "value": true
+                    }
+                },
+
+                {
+                    "id": "showFrequentlyPlayedSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_FREQUENTLY_PLAYED_SECTION"
+                },
+                {
+                    "id": "frequentlyPlayedSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "4",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showFrequentlyPlayedSection", 
+                        "value": true
+                    }
+                },
+
+                {
+                    "id": "showFavoriteArtistsSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_FAVORITE_ARTISTS_SECTION"
+                },
+                {
+                    "id": "favoriteArtistsSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "4",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showFavoriteArtistsSection", 
+                        "value": true
+                    }
+                },
+
+                {
+                    "id": "showFavoriteAlbumsSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_FAVORITE_ALBUMS_SECTION"
+                },
+                {
+                    "id": "favoriteAlbumsSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "4",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showFavoriteAlbumsSection", 
+                        "value": true
+                    }
+                },
+
+                {
+                    "id": "showFavoriteSongsSection",
+                    "element": "switch",
+                    "value": true,
+                    "label": "TRANSLATE.JELLYFIN_SHOW_FAVORITE_SONGS_SECTION"
+                },
+                {
+                    "id": "favoriteSongsSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "4",
+                    "label": "TRANSLATE.JELLYFIN_ITEMS",
+                    "attributes": [
+                        { "style": "margin-bottom: 32px;" }
+                    ],
+                    "visibleIf": {
+                        "field": "showFavoriteSongsSection", 
+                        "value": true
+                    }
+                },
+                
+                {
+                    "id": "collectionInSectionItems",
+                    "element": "input",
+                    "type": "number",
+                    "value": "11",
+                    "label": "TRANSLATE.JELLYFIN_COLLECTION_IN_SECTION_ITEMS"
+                }
+            ]
+        }
+    ]
+}
+  

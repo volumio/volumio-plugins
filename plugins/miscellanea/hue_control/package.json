@@ -1,0 +1,31 @@
+{
+	"name": "hue_control",
+	"version": "1.0.0",
+	"description": "Connect with a Philips Hue bridge and control bulbs or smart power outlets based on the Volumio playback status.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://https://github.com/a-i-ks/volumio-plugins.git"
+	},
+	"author": {
+		"name": "André Iske",
+		"email": "andre.iske@mailbox.org",
+		"url": "https://github.com/a-i-ks"
+	},
+	"license": "GPL-3.0-only",
+	"volumio_info": {
+		"prettyName": "Philips Hue Control",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "miscellanea"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0",
+		"node-hue-api": "^3.4.0",
+		"socket.io-client": "^2.3.0"
+	}
+}
