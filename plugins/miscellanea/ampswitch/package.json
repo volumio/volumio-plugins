@@ -11,7 +11,7 @@
 	"volumio_info": {
 		"prettyName": "Amplifier Switch",
 		"icon": "fa-power-off",
-		"plugin_type": "miscellanea",
+		"plugin_type": "system_controller",
 		"boot_priority": 1
 	},
 	"dependencies": {

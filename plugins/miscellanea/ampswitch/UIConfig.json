@@ -8,7 +8,7 @@
                  "element": "section",
                  "label": "TRANSLATE.OUTPUT",
                  "icon": "fa-plug",
-                 "onSave": {"type":"controller", "endpoint":"miscellanea/ampswitch", "method":"saveOptions"},
+                 "onSave": {"type":"controller", "endpoint":"system_controller/ampswitch", "method":"saveOptions"},
                  "saveButton": {
                  "label": "TRANSLATE.SAVE",
                  "data": [
