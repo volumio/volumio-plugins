@@ -11,7 +11,13 @@
 	"volumio_info": {
 		"prettyName": "Gpio Random",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "user_interface"
+		"plugin_type": "user_interface",
+		"os": [
+			"buster"
+		],
+		"details": "Play a randomized playlist, play a web radio or toggle play / pause uppon single, double and / or triple click on a GPIO wired button",
+		"changelog": "",
+		"architectures": []
 	},
 	"dependencies": {
 		"bufferutil": "^4.0.3",
@@ -21,5 +27,10 @@
 		"socket.io-client": "^1.7.4",
 		"utf-8-validate": "^5.0.4",
 		"v-conf": "^1.4.2"
-	}
+	},
+	"engines": {
+		"volumio": ">=3",
+		"node": ">=14.15.4"
+	},
+	"repository": "https://github.com/volumio/volumio-plugins-sources"
 }
