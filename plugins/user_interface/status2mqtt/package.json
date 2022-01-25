@@ -11,7 +11,13 @@
 	"volumio_info": {
 		"prettyName": "Status2mqtt",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "user_interface"
+		"plugin_type": "user_interface",
+		"os": [
+			"buster"
+		],
+		"details": "publish volumio status to an mqtt server",
+		"changelog": "",
+		"architectures": []
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
@@ -21,5 +27,10 @@
 		"utf-8-validate": "^5.0.2",
 		"socket.io-client": "^1.7.4",
 		"v-conf": "^1.4.2"
-	}
+	},
+	"engines": {
+		"volumio": ">=3",
+		"node": ">=14.15.4"
+	},
+	"repository": "https://github.com/volumio/volumio-plugins-sources"
 }
