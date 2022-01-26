@@ -740,11 +740,11 @@ FusionDsp.prototype.getUIConfig = function (address) {
         var valuestored
         let valuestoredl
         let valuestoredr
-
+        
         valuestoredl = self.config.get('leftfilter');
         var valuestoredllabel = valuestoredl.replace("$samplerate$", "variable samplerate")
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', valuestoredl);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestoredl);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.label', valuestoredllabel);
 
         value = self.config.get('attenuationl');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[1].value.value', value);
@@ -753,7 +753,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
         valuestoredr = self.config.get('rightfilter');
         var valuestoredrlabel = valuestoredr.replace("$samplerate$", "variable samplerate")
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.value', valuestoredr);
-        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestoredr);
+        self.configManager.setUIConfigParam(uiconf, 'sections[1].content[2].value.label', valuestoredrlabel);
         value = self.config.get('attenuationr');
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.value', value);
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[3].value.label', value);
@@ -2217,8 +2217,8 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       var leftlevel = self.config.get('leftlevel')
       var rightlevel = self.config.get('rightlevel')
       //----fIr VARIABLES----
-      var filter1 = self.config.get('leftfilter');
-      var filter2 = self.config.get('rightfilter');
+      let filter1 = self.config.get('leftfilter');
+      let filter2 = self.config.get('rightfilter');
       var attenuation = self.config.get('attenuationl');
       var testclipping = self.config.get('testclipping')
       // var smpl_rate = self.config.get('smpl_rate')
@@ -3386,11 +3386,11 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         self.testclipping()
 
       }
-      /*setTimeout(function () {
+      setTimeout(function () {
  
          self.areSampleswitch();
        }, 1500);
-       */
+       
       let ltest, rtest, cleftfilter, crightfilter
 
       cleftfilter = filterfolder + leftfilter

@@ -1,4 +1,4 @@
-January 23th 2022
+January 26th 2022
 
 
 ##  For Volumio3
@@ -138,11 +138,13 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+January 24th 2022 v0.1.25
+
+- Big fix for auto samplerate switch
 
 January 24th 2022 v0.1.24
 
 - Reactivate wav files as convolution filters
-
 
 January 22th 2022 v0.1.23
 
