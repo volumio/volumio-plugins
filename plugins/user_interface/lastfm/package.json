@@ -11,7 +11,21 @@
 	"volumio_info": {
 		"prettyName": "LastFM Scrobbler",
 		"icon": "fa-lastfm",
-		"plugin_type": "miscellanea"
+		"plugin_type": "user_interface",
+		"os": [
+			"buster"
+		],
+		"architectures": [
+			"amd64",
+			"i386",
+			"armhf"
+		],
+		"details": "LastFM scrobbler plugin.",
+		"changelog": "Completely refactored."
+	},
+	"engines": {
+		"node": ">=14.0",
+		"volumio": ">=2.0.0"
 	},
 	"dependencies": {
 		"crypto": "^1.0.1",
@@ -21,11 +35,7 @@
 		"socket.io-client": "^1.4.8",
 		"v-conf": "^0.10.0"
 	},
-	"devDependencies": {},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Saiyato/volumio-lastfm-plugin.git"
-	},
+	"repository": "https://github.com/Saiyato/volumio-lastfm-plugin",
 	"keywords": [	
 		"fm",
 		"lastfm",
@@ -34,9 +44,5 @@
 		"scrobbler",
 		"scrobbling",
 		"volumio"
-	],
-	"bugs": {
-		"url": "https://github.com/Saiyato/volumio-lastfm-plugin/issues"
-	},
-	"homepage": "https://github.com/Saiyato/volumio-lastfm-plugin#readme"
+	]
 }
