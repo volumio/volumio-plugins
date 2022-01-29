@@ -29,8 +29,10 @@ rm -Rf $LIB/filters
 rm -Rf $LIB/target-curves
 rm -Rf $LIB/filters-sources
 		
-echo "copying hw detection script"
-for future use.....
+echo "Installing/fusiondsp dependencies"
+sudo apt update
+sudo apt -y install python3-aiohttp python3-pip
+#for future use.....
 cd $LIB
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/cgui.zip
 #mv cgui.zip.ren cgui.zip
@@ -38,17 +40,13 @@ miniunzip cgui.zip
 sudo chown -R volumio cgui
 sudo chgrp -R volumio cgui
 
-
-echo "Installing/fusiondsp dependencies"
-sudo apt update
-sudo apt -y install python3-aiohttp python3-pip
-
 cd $LIB
 git clone https://github.com/HEnquist/pycamilladsp
 sudo chown -R volumio pycamilladsp
 sudo chgrp -R volumio pycamilladsp
 
 cd $LIB/pycamilladsp
+echo "pycamilladsp pip3 install"
 pip3 install .
 cd $LIB
 git clone https://github.com/HEnquist/pycamilladsp-plot
@@ -56,10 +54,11 @@ sudo chown -R volumio pycamilladsp-plot
 sudo chgrp -R volumio pycamilladsp-plot
 
 cd $LIB/pycamilladsp-plot
+echo "pycamilladsp-plot pip3 install"
+
 pip3 install .
 cd $LIB
 
-#
 #echo "remove previous configuration"
 #if [ ! -f "/data/configuration/audio_interface/fusiondsp/config.json" ];
 #	then
