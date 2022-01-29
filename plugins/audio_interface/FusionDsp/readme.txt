@@ -13,10 +13,13 @@ This folder and sub folders have been created the the plugin.
 
 Place filters you want to use in the plugin for correction.
 supported formats :
-    text- 32/64 bits floats line (.txt) in rephase
-    FLOAT_LE- 32 bits floating point (.pcm)
-    FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
-    .wav files are directly converted in raw format to be used
+	text- 32/64 bits floats line (.txt) in rephase
+	S16_LE- 16 bits LPCM mono (.wav) in rePhase
+	S24_LE- 24 bits LPCM mono (.wav) in rePhase
+	S24_LE- 32 bits LPCM mono (.wav) in rePhase
+	FLOAT_LE- 32 bits floating point (.pcm)
+	FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
+	
 ---------------------------------   
 /filter-sources
 
