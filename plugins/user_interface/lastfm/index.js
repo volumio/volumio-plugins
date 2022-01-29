@@ -182,7 +182,9 @@ ControllerLastFM.prototype.getUIConfig = function() {
 		self.logger.info("3/3 settings loaded");
 		
 		self.logger.info("Populated config screen.");
-				
+		
+		self.logger.info("LFM object: " + self.lfm);
+		
 		defer.resolve(uiconf);
 	})
 	.fail(function()
@@ -386,65 +388,73 @@ ControllerLastFM.prototype.getSimilarTracks = function(uri) {
 	var self = this;
 	var defer = libQ.defer();
   
-	var call = self.apiCall('track.getsimilar', self.scrobbleData);
-	call.then(function(response){
-		
-		var jsonResp = JSON.parse(response);
-
-        //self.logger.info('[LastFM] items: ' + response);
-
-        var artworkSearchedTrack = self.getAlbumArt(self.scrobbleData, undefined, 'fa fa-music');
-
-		var rootTree = 
-		{
-			navigation: {
-				lists: [
-				{
-					availableListViews: [
-						'grid', 'list'
-					],
-					items: []
-				}],
-				prev: {
-					uri: 'lastfm'
-				},
-                info: { 
-                    uri: "search/any/" + self.scrobbleData.title, 
-                    title: 'Similar tracks to ' + self.scrobbleData.title + ' by ' + self.scrobbleData.artist, 
-                    service: 'lastfm', 
-                    type: 'album', 
-                    albumart: artworkSearchedTrack 
-                } 
-			}
-		};
-		
-		if(jsonResp.similartracks.track.length < 1)
-			self.commandRouter.pushToastMessage('info', "No results", "The query yielded no results, no similar track could be found for " + self.scrobbleData.artist + ' - ' + self.scrobbleData.title);
-		
-        var artwork = '';
-        
-		for (var trk in jsonResp.similartracks.track)
-		{	
-			//  Hmm, similarTracks does NOT return an album field; so this does not work so well:
-            artwork = self.getAlbumArt({artist: jsonResp.similartracks.track[trk].artist.name, album: jsonResp.similartracks.track[trk].album}, undefined, 'fa fa-music');
-			rootTree.navigation.lists[0].items.push({
-				service: 'lastfm',
-				type: 'track',
-				title: jsonResp.similartracks.track[trk].name,
-				artist: jsonResp.similartracks.track[trk].artist.name,
-				mbid: jsonResp.similartracks.track[trk].artist.mbid,
-				albumart: artwork,
-				uri: "search/any/" + jsonResp.similartracks.track[trk].name
-			});
-		}
-		
-		self.logger.info('[LastFM] items: ' + JSON.stringify(rootTree.navigation.lists[0].items));
-		defer.resolve(rootTree);
-	})
-	.fail(function()
+	if(self.lfm != null)
 	{
-		defer.reject(new Error('An error occurred while listing playlists'));
-	});
+		var call = self.apiCall('track.getsimilar', self.scrobbleData);
+		call.then(function(response){
+			
+			var jsonResp = JSON.parse(response);
+
+			//self.logger.info('[LastFM] items: ' + response);
+
+			var artworkSearchedTrack = self.getAlbumArt(self.scrobbleData, undefined, 'fa fa-music');
+
+			var rootTree = 
+			{
+				navigation: {
+					lists: [
+					{
+						availableListViews: [
+							'grid', 'list'
+						],
+						items: []
+					}],
+					prev: {
+						uri: 'lastfm'
+					},
+					info: { 
+						uri: "search/any/" + self.scrobbleData.title, 
+						title: 'Similar tracks to ' + self.scrobbleData.title + ' by ' + self.scrobbleData.artist, 
+						service: 'lastfm', 
+						type: 'album', 
+						albumart: artworkSearchedTrack 
+					} 
+				}
+			};
+			
+			if(jsonResp.similartracks.track.length < 1)
+				self.commandRouter.pushToastMessage('info', "No results", "The query yielded no results, no similar track could be found for " + self.scrobbleData.artist + ' - ' + self.scrobbleData.title);
+			
+			var artwork = '';
+			
+			for (var trk in jsonResp.similartracks.track)
+			{	
+				//  Hmm, similarTracks does NOT return an album field; so this does not work so well:
+				artwork = self.getAlbumArt({artist: jsonResp.similartracks.track[trk].artist.name, album: jsonResp.similartracks.track[trk].album}, undefined, 'fa fa-music');
+				rootTree.navigation.lists[0].items.push({
+					service: 'lastfm',
+					type: 'track',
+					title: jsonResp.similartracks.track[trk].name,
+					artist: jsonResp.similartracks.track[trk].artist.name,
+					mbid: jsonResp.similartracks.track[trk].artist.mbid,
+					albumart: artwork,
+					uri: "search/any/" + jsonResp.similartracks.track[trk].name
+				});
+			}
+			
+			self.logger.info('[LastFM] items: ' + JSON.stringify(rootTree.navigation.lists[0].items));
+			defer.resolve(rootTree);
+		})
+		.fail(function()
+		{
+			defer.reject(new Error('An error occurred while listing playlists'));
+		});
+	}
+	else
+	{
+		defer.reject(new Error('No LastFM session key available to use'));
+		self.logger.error("[LastFM] plugin is not authenticated, please retry");
+	}
 	
 	return defer.promise;
 };
@@ -502,7 +512,7 @@ ControllerLastFM.prototype.apiCall = function (method, predicate)
 		else
 		{
 			self.commandRouter.pushToastMessage('error', "Calling LastFM API failed", "Could not reach API, please check your connection and/or log files.");	
-			defer.reject();
+			defer.reject(new Error('Unable to test API availability, please check the log file for more context'));
 		}
 	});
 	
@@ -971,7 +981,7 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
 	if(debugEnabled)
 		self.logger.info('[LastFM] Updating now playing');
 
-    if (self.scrobblableTrack) { 
+    if (self.scrobblableTrack && self.lfm != null) {
         self.updatingNowPlaying = true;
 
         // Try to fetch track info
@@ -1023,6 +1033,11 @@ ControllerLastFM.prototype.updateNowPlaying = function ()
             }
         });
     }
+	else
+	{
+		defer.reject(new Error('No LastFM session key available to use, or track info could not be determined'));
+		self.logger.error("[LastFM] plugin is not authenticated, please retry, or track info could not be determined (very rare)");
+	}
 	return defer.promise;
 };
 
@@ -1037,7 +1052,7 @@ ControllerLastFM.prototype.scrobble = function ()
 		self.logger.info('[LastFM] previous scrobble: ' + JSON.stringify(self.previousScrobble));
 	}
 		
-	if ( self.scrobblableTrack)
+	if (self.scrobblableTrack && self.lfm != null)
 	{					
 		if(debugEnabled)
 			self.logger.info('[LastFM] preparing to scrobble...');
@@ -1071,6 +1086,11 @@ ControllerLastFM.prototype.scrobble = function ()
 		self.previousScrobble.artist = self.scrobbleData.artist;
         self.previousScrobble.title = self.scrobbleData.title;
         self.previousScrobble.scrobbleTime = trackStartTime;
+	}
+	else
+	{
+		defer.reject(new Error('LastFM is not initialized, please retry authenticating'));
+		self.logger.error("[LastFM] plugin is not authenticated, please retry");
 	}
 	return defer.promise;
 };

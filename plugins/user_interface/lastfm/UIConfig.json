@@ -10,7 +10,7 @@
 		"icon": "fa-lastfm",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "miscellanea/lastfm",
+			"endpoint": "user_interface/lastfm",
 			"method": "updateCredentials"
 		},
 		"saveButton": {
@@ -76,7 +76,7 @@
 		"icon": "fa-cogs",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "miscellanea/lastfm",
+			"endpoint": "user_interface/lastfm",
 			"method": "updateScrobbleSettings"
 		},
 		"saveButton": {
@@ -182,7 +182,7 @@
 		"icon": "fa-bug",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "miscellanea/lastfm",
+			"endpoint": "user_interface/lastfm",
 			"method": "updateDebugSettings"
 		},
 		"saveButton": {
