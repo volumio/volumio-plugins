@@ -237,9 +237,9 @@ FusionDsp.prototype.getUIConfig = function (address) {
         case ("convfir"):
           var dsplabel = self.commandRouter.getI18nString('CONV_LABEL')
           break;
-        //    case ("purecgui"):
-        //    var dsplabel = "Pure CamillaDsp gui"
-        //  break;
+        case ("purecgui"):
+          var dsplabel = "Pure CamillaDsp gui"
+          break;
         default: "EQ15"
       }
       // No convolution if cpu is armv6l
@@ -261,11 +261,11 @@ FusionDsp.prototype.getUIConfig = function (address) {
           {
             "value": "convfir",
             "label": self.commandRouter.getI18nString('CONV_LABEL')
-          }]
-          // {
-          // "value": "purecgui",
-          // "label": "Pure CamillaDsp Gui"
-          //  }]
+          },
+           {
+           "value": "purecgui",
+           "label": "Pure CamillaDsp Gui"
+            }]
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', dsplabel);
 
@@ -740,7 +740,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
         var valuestored
         let valuestoredl
         let valuestoredr
-        
+
         valuestoredl = self.config.get('leftfilter');
         var valuestoredllabel = valuestoredl.replace("$samplerate$", "variable samplerate")
         self.configManager.setUIConfigParam(uiconf, 'sections[1].content[0].value.value', valuestoredl);
@@ -2014,7 +2014,7 @@ FusionDsp.prototype.testclipping = function () {
       if (a < b) return -1;
       return 0;
     });
-    let offset = 2;
+    let offset = 3;
     let arrreducedr = ((arr.toString().split(',')).pop());
     arrreduced = +arrreducedr + offset;
   });
@@ -3387,10 +3387,10 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
       }
       setTimeout(function () {
- 
-         self.areSampleswitch();
-       }, 1500);
-       
+
+        self.areSampleswitch();
+      }, 1500);
+
       let ltest, rtest, cleftfilter, crightfilter
 
       cleftfilter = filterfolder + leftfilter
