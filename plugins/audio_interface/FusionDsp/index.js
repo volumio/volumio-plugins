@@ -262,10 +262,10 @@ FusionDsp.prototype.getUIConfig = function (address) {
             "value": "convfir",
             "label": self.commandRouter.getI18nString('CONV_LABEL')
           },
-           {
-           "value": "purecgui",
-           "label": "Pure CamillaDsp Gui"
-            }]
+          {
+            "value": "purecgui",
+            "label": "Pure CamillaDsp Gui"
+          }]
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.value', selectedsp);
           self.configManager.setUIConfigParam(uiconf, 'sections[0].content[0].value.label', dsplabel);
 
@@ -349,7 +349,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
               peqlabel = "Peaking Hz,dB,Q"
               break;
             case ("Peaking2"):
-              peqlabel = "Peaking Hz,dB,Range"
+              peqlabel = "Peaking Hz,dB,bandwidth Octave"
               break;
             case ("Lowshelf"):
               peqlabel = "Lowshelf Hz,dB,slope dB/Octave"
@@ -416,7 +416,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
 
           let options = [{ "value": "None", "label": "None" },
           { "value": "Peaking", "label": "Peaking Hz,dB,Q" },
-          { "value": "Peaking2", "label": "Peaking Hz,dB,Range" },
+          { "value": "Peaking2", "label": "Peaking Hz,dB,bandwidth Octave" },
           { "value": "Lowshelf", "label": "Lowshelf Hz,dB,slope dB/Octave" },
           { "value": "Lowshelf2", "label": "Lowshelf Hz,dB,Q" },
           { "value": "Highshelf", "label": "Highshelf Hz,dB,slope dB/Octave" },
@@ -2198,7 +2198,9 @@ FusionDsp.prototype.dfiltertype = function (data) {
 FusionDsp.prototype.createCamilladspfile = function (obj) {
   const self = this;
   let defer = libQ.defer();
-
+  if (self.config.get('selectedsp') == 'purecgui') {
+    return;
+  }
   try {
     fs.readFile(__dirname + "/camilladsp.conf.yml", 'utf8', function (err, data) {
       if (err) {

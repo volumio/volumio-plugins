@@ -1,4 +1,4 @@
-January 29th 2022
+January 30th 2022
 
 
 ##  For Volumio3
@@ -15,10 +15,10 @@ Provides
     - Equalizer scope for each band (L, R, L+R)
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAL/FusionDsp/peq/)
-- Access to CamillaDsp gui for advanced user
 - 3 preset
 - Or a convolution filters (FIR) with autoswitch samplerate for filters
     - DRC-FIR to create filter with an impulse
+- Access to CamillaDsp gui for advanced user
 
 For all 
 - Progressive Loudness effect with threshold setting - sort of equal loudness curve
@@ -138,6 +138,12 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+
+January 30th 2022 v0.1.27
+
+- CamillaDsp gui settngs were overwritten on restart
+- Peaking Range-> bandwidth
 
 January 29th 2022 v0.1.26
 
