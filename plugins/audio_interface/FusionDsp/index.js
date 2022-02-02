@@ -876,17 +876,17 @@ FusionDsp.prototype.getUIConfig = function () {
             var crosslabel = "Linkwitz 700Hz/2dB"
             break;
           case ("nc_11_30"):
-              var crosslabel = "Natural Crossfeed 1.1, 30 deg"
-              break;
-          case ("nc_11_50"):
-                var crosslabel = "Natural Crossfeed 1.1, 50 deg"
-                break;
-          case ("nc_21_30"):
-            var crosslabel = "Natural Crossfeed 2.1, 30 deg"
+            var crosslabel = "Natural Crossfeed 1.1, 30 deg"
             break;
-          case ("nc_21_50"):
-              var crosslabel = "Natural Crossfeed 2.1, 50 deg"
-              break;
+          case ("nc_11_50"):
+            var crosslabel = "Natural Crossfeed 1.1, 50 deg"
+            break;
+          case ("sadie_d1"):
+            var crosslabel = "SADIE D1 HRTF (KU100 Dummy Head)"
+            break;
+          case ("sadie_h15m"):
+            var crosslabel = "SADIE H15m HRTF (Human Subject)"
+            break;
           default: "None"
         }
 
@@ -898,7 +898,7 @@ FusionDsp.prototype.getUIConfig = function () {
             "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
             "label": self.commandRouter.getI18nString('CROSSFEED'),
             "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
-            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, , { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, , { "value": "nc_21_30", "label": "Natural Crossfeed 2.1, 30 deg" }, { "value": "nc_21_50", "label": "Natural Crossfeed 2.1, 50 deg" }],
+            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, , { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, , { "value": "sadie_d1", "label": "SADIE D1 HRTF (KU100 Dummy Head)" }, { "value": "sadie_h15m", "label": "SADIE H15m HRTF (Human Subject)" }],
             "visibleIf": {
               "field": "showeq",
               "value": true
@@ -2198,7 +2198,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       //------crossfeed section------
 
       var crossconfig = self.config.get('crossfeed')
-      var is_natural = crossconfig.includes("nc_")
+      var is_natural = crossconfig.includes("nc_") || crossconfig.includes("sadie_")
       if ((crossconfig != 'None') && (!is_natural))/* && (effect))*/ {
         var composedeq = '';
 
@@ -2262,20 +2262,20 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         self.logger.info('crossfeed  ' + (self.config.get('crossfeed')))
         switch (crossconfig) {
           case ("nc_11_30"):
-            hrtf_filterl="NC_v11_Left_30deg_44100.wav";
-            hrtf_filterr="NC_v11_Right_30deg_44100.wav";
+            hrtf_filterl="NC_11_30/NC_11_30_Left_$samplerate$.wav";
+            hrtf_filterr="NC_11_30/NC_11_30_Right_$samplerate$.wav";
             break;
           case ("nc_11_50"):
-            hrtf_filterl="NC_v11_Left_50deg_44100.wav";
-            hrtf_filterr="NC_v11_Right_50deg_44100.wav";
+            hrtf_filterl="NC_11_50/NC_11_50_Left_$samplerate$.wav";
+            hrtf_filterr="NC_11_50/NC_11_50_Right_$samplerate$.wav";
             break;
-          case ("nc_21_30"):
-            hrtf_filterl="NC_v21_Left_30deg_44100.wav";
-            hrtf_filterr="NC_v21_Right_30deg_44100.wav";
+          case ("sadie_d1"):
+            hrtf_filterl="SADIE_D1/SADIE_D1_Left_30deg_$samplerate$.wav";
+            hrtf_filterr="SADIE_D1/SADIE_D1_Right_30deg_$samplerate$.wav";
             break;
-          case ("nc_21_50"):
-            hrtf_filterl="NC_v21_Left_50deg_44100.wav";
-            hrtf_filterr="NC_v21_Right_50deg_44100.wav";
+          case ("sadie_h15m"):
+            hrtf_filterl="SADIE_H15/SADIE_H15_mod_Left_30deg_$samplerate$.wav";
+            hrtf_filterr="SADIE_H15/SADIE_H15_mod_Right_30deg_$samplerate$.wav";
             break;
         }
 
