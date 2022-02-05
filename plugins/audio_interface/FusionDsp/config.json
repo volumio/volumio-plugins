@@ -11,6 +11,10 @@
         "type": "string",
         "value": "127.0.0.1"
     },
+    "contype": {
+        "type": "string",
+        "value": "Raw"
+    },
     "geq15": {
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"

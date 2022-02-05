@@ -1,4 +1,4 @@
-January 30th 2022
+Febuary 5th 2022
 
 
 ##  For Volumio3
@@ -25,7 +25,7 @@ For all
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
-- 4 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz)
+- 8 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz, Natural 30deg, atural 50deg, SADIE D1, SADIE H15m)
 - Mono / stereo toggle
 - Delay with automatic calculation
 - High quality resampling
@@ -66,7 +66,6 @@ S24_LE- 24 bits LPCM mono (.wav) in rePhase
 S24_LE- 32 bits LPCM mono (.wav) in rePhase
 FLOAT_LE- 32 bits floating point (.pcm)
 FLOAT64_LE- 64 bits IEEE-754 (.dbl) in rephase
-Wav Files are automatically converted in RAW format to be used
 ```
 
 Some screenshots
@@ -139,6 +138,11 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+
+Febuary 5th 2022 v0.1.28
+
+- Conv filters rework
+- 4 new crossfeed. Thanks to [wbinek](https://github.com/wbinek) for his PR!
 
 January 30th 2022 v0.1.27
 

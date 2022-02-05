@@ -24,7 +24,7 @@ const tnbreq = 50// Nbre total of Eq
 const filterfolder = "/data/INTERNAL/FusionDsp/filters/";
 const filtersource = "/data/INTERNAL/FusionDsp/filter-sources/";
 const tccurvepath = "/data/INTERNAL/FusionDsp/target-curves/";
-const hrtffilterpath = "/data/INTERNAL/FusionDsp/hrtf-filters/";
+const hrtffilterpath = "/data/plugins/audio_interface/fusiondsp/hrtf-filters/";
 const toolspath = "INTERNAL/FusionDsp/tools/";
 const wavfolder = "/data/INTERNAL/FusionDsp/wavfiles/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
@@ -1932,6 +1932,7 @@ FusionDsp.prototype.areSampleswitch = function () {
     let filterNameShort = filterName.slice(0, -9);
     let filterNameForSwapc = filterNameShort + swapWord + fileExt;
     let filterNameForSwap = filterNameShort + "$samplerate$" + fileExt;
+    self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'+ filterNameForSwap )
 
     if (fs.exists(filterfolder + filterNameForSwap)) {
       return [true, filterNameForSwap]
@@ -1952,8 +1953,6 @@ FusionDsp.prototype.areSampleswitch = function () {
     self.config.set('autoswitchsamplerate', true);
   } else {
     self.config.set('autoswitchsamplerate', false);
-
-
   };
   self.refreshUI()
   /*
@@ -2069,7 +2068,8 @@ FusionDsp.prototype.dfiltertype = function (data) {
   var auto_filter_format;
   let filext = self.config.get('leftfilterlabel').split('.').pop().toString();
   var wavetype;
-  let filelength;
+  let filelength
+  let convtype = "Raw"
 
   if (filext == 'pcm') {
     try {
@@ -2116,42 +2116,46 @@ FusionDsp.prototype.dfiltertype = function (data) {
     auto_filter_format = 'TEXT';
   }
   else if (filext == 'wav') {
-    let SampleFormat;
-    // return;
+    convtype = "Wav"
+   // auto_filter_format = '';
 
-    try {
-      execSync('/usr/bin/python /data/plugins/audio_interface/fusiondsp/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
-      setTimeout(function () {
-
-        fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
-          if (err) {
-            self.logger.info('Error reading test.result', err);
-          } else {
-            var resultJSON = JSON.parse(result);
-            var DataLength = resultJSON.DataLength;
-            var DataStart = resultJSON.DataStart;
-            var BytesPerFrame = resultJSON.BytesPerFrame;
-            SampleFormat = resultJSON.SampleFormat;
-
-            filelength = DataLength / BytesPerFrame;
-            skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
-
-            self.config.set('filter_size', filelength);
-            self.config.set('skipvalue', skipvalue);
-            self.config.set('wavetype', SampleFormat);
-
-          }
-        });
-      }, 50);
-
-      auto_filter_format = self.config.get('wavetype').replace('_', '');
-      filelength = self.config.get('filter_size');
-      skipvalue = self.config.get('skipvalue');
-
-    } catch (e) {
-      self.logger.error('Could not read wav file: ' + e)
-    }
-
+    /*
+        let SampleFormat;
+        // return;
+    
+        try {
+          execSync('/usr/bin/python /data/plugins/audio_interface/fusiondsp/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
+          setTimeout(function () {
+    
+            fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
+              if (err) {
+                self.logger.info('Error reading test.result', err);
+              } else {
+                var resultJSON = JSON.parse(result);
+                var DataLength = resultJSON.DataLength;
+                var DataStart = resultJSON.DataStart;
+                var BytesPerFrame = resultJSON.BytesPerFrame;
+                SampleFormat = resultJSON.SampleFormat;
+    
+                filelength = DataLength / BytesPerFrame;
+                skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
+    
+                self.config.set('filter_size', filelength);
+                self.config.set('skipvalue', skipvalue);
+                self.config.set('wavetype', SampleFormat);
+    
+              }
+            });
+          }, 50);
+    
+          auto_filter_format = self.config.get('wavetype').replace('_', '');
+          filelength = self.config.get('filter_size');
+          skipvalue = self.config.get('skipvalue');
+    
+        } catch (e) {
+          self.logger.error('Could not read wav file: ' + e)
+        }
+    */
   } else {
     let modalData = {
       title: self.commandRouter.getI18nString('FILTER_FORMAT_TITLE'),
@@ -2168,9 +2172,11 @@ FusionDsp.prototype.dfiltertype = function (data) {
   filelength = self.config.get('filter_size');
 
   self.config.set('filter_format', auto_filter_format);
+  self.config.set('convtype', convtype);
+
   self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
   self.logger.info('--------->filter size ' + filelength);
-  self.logger.info('--------->Skip value for wav :' + skipvalue);
+  // self.logger.info('--------->Skip value for wav :' + skipvalue);
 
 
   var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
@@ -2354,30 +2360,31 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         result += composedeq
 
 
-      } else if((crossconfig != 'None') && (is_natural)){
+      }
+       if ((crossconfig != 'None') && (is_natural) &&(effect)) {
         var composedeq = '';
 
-        let hrtf_filterl='';
-        let hrtf_filterr='';
+        let hrtf_filterl = '';
+        let hrtf_filterr = '';
         crossatt = 3;
 
         self.logger.info('crossfeed  ' + (self.config.get('crossfeed')))
         switch (crossconfig) {
           case ("nc_11_30"):
-            hrtf_filterl="NC_11_30/NC_11_30_Left_$samplerate$.wav";
-            hrtf_filterr="NC_11_30/NC_11_30_Right_$samplerate$.wav";
+            hrtf_filterl = "NC_11_30/NC_11_30_Left_$samplerate$.wav";
+            hrtf_filterr = "NC_11_30/NC_11_30_Right_$samplerate$.wav";
             break;
           case ("nc_11_50"):
-            hrtf_filterl="NC_11_50/NC_11_50_Left_$samplerate$.wav";
-            hrtf_filterr="NC_11_50/NC_11_50_Right_$samplerate$.wav";
+            hrtf_filterl = "NC_11_50/NC_11_50_Left_$samplerate$.wav";
+            hrtf_filterr = "NC_11_50/NC_11_50_Right_$samplerate$.wav";
             break;
           case ("sadie_d1"):
-            hrtf_filterl="SADIE_D1/SADIE_D1_Left_30deg_$samplerate$.wav";
-            hrtf_filterr="SADIE_D1/SADIE_D1_Right_30deg_$samplerate$.wav";
+            hrtf_filterl = "SADIE_D1/SADIE_D1_Left_30deg_$samplerate$.wav";
+            hrtf_filterr = "SADIE_D1/SADIE_D1_Right_30deg_$samplerate$.wav";
             break;
           case ("sadie_h15m"):
-            hrtf_filterl="SADIE_H15/SADIE_H15_mod_Left_30deg_$samplerate$.wav";
-            hrtf_filterr="SADIE_H15/SADIE_H15_mod_Right_30deg_$samplerate$.wav";
+            hrtf_filterl = "SADIE_H15/SADIE_H15_mod_Left_30deg_$samplerate$.wav";
+            hrtf_filterr = "SADIE_H15/SADIE_H15_mod_Right_30deg_$samplerate$.wav";
             break;
         }
 
@@ -2410,8 +2417,8 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      channel: 1\n';
         composedeq += '      \n'
         result += composedeq
-      
-      }else {
+
+      } else {
         crossatt = 0
         composedeq += ''
       }
@@ -2640,16 +2647,19 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             }
 
           } else if (typer == 'Conv') {
+            var convtype = self.config.get('convtype')
             filterr = eval('filter' + o)
 
             var composedeq = '';
             composedeq += '  conv' + [o] + ':\n';
             composedeq += '    type: Conv' + '\n';
             composedeq += '    parameters:' + '\n';
-            composedeq += '      type: File' + '\n';
+            composedeq += '      type: ' + convtype + '\n';
             composedeq += '      filename: ' + filterfolder + filterr + '\n';
-            composedeq += '      format: ' + filter_format + '\n';
-            composedeq += '      ' + skipval + '\n';
+            if (convtype != 'Wav') {
+              composedeq += '      format: ' + self.config.get("filter_format") + '\n';
+            }
+            //composedeq += '      ' + skipval + '\n';
             composedeq += '' + '\n';
             gainmax = ',' + convatt
 
@@ -3043,89 +3053,89 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedpipeline += '      - ' + pipelinerr + '\n'
 
 
-    } else if ((crossconfig != 'None') && (is_natural) && (effect)) {
-      // -- if a crossfeed is used
-      composedmixer += 'mixers:\n'
-      composedmixer += '  2to4:\n'
-      composedmixer += '    channels:\n'
-      composedmixer += '      in: 2\n'
-      composedmixer += '      out: 4\n'
-      composedmixer += '    mapping:\n'
-      composedmixer += '      - dest: 0\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 0\n'
-      composedmixer += '            gain: ' + leftgain + '\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '      - dest: 1\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 0\n'
-      composedmixer += '            gain: ' + leftgain + '\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '      - dest: 2\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 1\n'
-      composedmixer += '            gain: ' + rightgain + '\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '      - dest: 3\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 1\n'
-      composedmixer += '            gain: ' + rightgain + '\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '  stereo:\n'
-      composedmixer += '    channels:\n'
-      composedmixer += '      in: 4\n'
-      composedmixer += '      out: 2\n'
-      composedmixer += '    mapping:\n'
-      composedmixer += '      - dest: 0\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 0\n'
-      composedmixer += '            gain: 0\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '          - channel: 2\n'
-      composedmixer += '            gain: 0\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '      - dest: 1\n'
-      composedmixer += '        sources:\n'
-      composedmixer += '          - channel: 1\n'
-      composedmixer += '            gain: 0\n'
-      composedmixer += '            inverted: false\n'
-      composedmixer += '          - channel: 3\n'
-      composedmixer += '            gain: 0\n'
-      composedmixer += '            inverted: false\n'
+      } else if ((crossconfig != 'None') && (is_natural) && (effect)) {
+        // -- if a crossfeed is used
+        composedmixer += 'mixers:\n'
+        composedmixer += '  2to4:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 2\n'
+        composedmixer += '      out: 4\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: ' + leftgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 2\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 3\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: ' + rightgain + '\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '  stereo:\n'
+        composedmixer += '    channels:\n'
+        composedmixer += '      in: 4\n'
+        composedmixer += '      out: 2\n'
+        composedmixer += '    mapping:\n'
+        composedmixer += '      - dest: 0\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 0\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '          - channel: 2\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '      - dest: 1\n'
+        composedmixer += '        sources:\n'
+        composedmixer += '          - channel: 1\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
+        composedmixer += '          - channel: 3\n'
+        composedmixer += '            gain: 0\n'
+        composedmixer += '            inverted: false\n'
 
-      composedpipeline += '\n'
-      composedpipeline += 'pipeline:\n'
-      composedpipeline += '   - type: Mixer\n'
-      composedpipeline += '     name: 2to4\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 0\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '       - hrtf_conv_ll\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 1\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '       - hrtf_conv_lr\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 2\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '       - hrtf_conv_rl\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 3\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '       - hrtf_conv_rr\n'
-      composedpipeline += '   - type: Mixer\n'
-      composedpipeline += '     name: stereo\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 0\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '      - ' + pipelinelr + '\n'
-      composedpipeline += '   - type: Filter\n'
-      composedpipeline += '     channel: 1\n'
-      composedpipeline += '     names:\n'
-      composedpipeline += '      - ' + pipelinerr + '\n'
+        composedpipeline += '\n'
+        composedpipeline += 'pipeline:\n'
+        composedpipeline += '   - type: Mixer\n'
+        composedpipeline += '     name: 2to4\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 0\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - hrtf_conv_ll\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 1\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - hrtf_conv_lr\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 2\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - hrtf_conv_rl\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 3\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '       - hrtf_conv_rr\n'
+        composedpipeline += '   - type: Mixer\n'
+        composedpipeline += '     name: stereo\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 0\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '      - ' + pipelinelr + '\n'
+        composedpipeline += '   - type: Filter\n'
+        composedpipeline += '     channel: 1\n'
+        composedpipeline += '     names:\n'
+        composedpipeline += '      - ' + pipelinerr + '\n'
 
 
-    }else if (effect == false) {
+      } else if (effect == false) {
 
         self.logger.info('Effects disabled, Nulleq applied')
         gainresult = 0

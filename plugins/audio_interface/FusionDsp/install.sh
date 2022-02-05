@@ -26,11 +26,11 @@ cp $LIB/readme.txt $opath/readme.txt
 cp $LIB/filters/* $opath/filters/
 cp $LIB/target-curves/* $opath/target-curves/
 cp $LIB/filter-sources/* $opath/filter-sources/
-cp -R $LIB/hrtf-filters/* $opath/hrtf-filters/
+#cp -R $LIB/hrtf-filters/* $opath/hrtf-filters/
 rm -Rf $LIB/filters
 rm -Rf $LIB/target-curves
 rm -Rf $LIB/filters-sources
-rm -Rf $LIB/hrtf-filters
+#rm -Rf $LIB/hrtf-filters
 		
 echo "Installing/fusiondsp dependencies"
 sudo apt update
