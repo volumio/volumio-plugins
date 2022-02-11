@@ -1,17 +1,23 @@
 {
 	"name": "nowyswiat",
 	"version": "1.0.3",
-	"description": "Radio Nowy Swiat",
+	"description": "Radio Nowy Swiat Plugin for Volumio3",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "DJack",
 	"license": "ISC",
+	"repository": "https://github.com/volumio/volumio-plugins/tree/master/plugins/music_service/nowyswiat",
 	"volumio_info": {
 		"prettyName": "Radio Nowy Swiat",
 		"icon": "fa-lightbulb-o",
 		"plugin_type": "music_service"
+		"architectures": [
+			"amd64",
+			"armhf",
+			"i386"
+		],
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
