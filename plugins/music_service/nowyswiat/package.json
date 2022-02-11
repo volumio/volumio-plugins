@@ -12,7 +12,7 @@
 	"volumio_info": {
 		"prettyName": "Radio Nowy Swiat",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "music_service"
+		"plugin_type": "music_service",
 		"architectures": [
 			"amd64",
 			"armhf",
