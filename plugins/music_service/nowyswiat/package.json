@@ -1,7 +1,7 @@
 {
 	"name": "nowyswiat",
-	"version": "1.0.3",
-	"description": "Radio Nowy Swiat Plugin for Volumio3",
+	"version": "1.0.4",
+	"description": "Radio Nowy Swiat Plugin for Volumio2",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +18,15 @@
 			"armhf",
 			"i386"
 		],
+		"os": [
+			"buster"
+		],
+		"details": "Lorem ipsum",
+		"changelog": "Lorem ipsum"
+	},
+	"engines": {
+		"node": ">=8",
+		"volumio": ">=3"
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
