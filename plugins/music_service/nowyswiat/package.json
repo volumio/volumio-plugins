@@ -1,7 +1,7 @@
 {
 	"name": "nowyswiat",
 	"version": "1.0.4",
-	"description": "Radio Nowy Swiat Plugin for Volumio2",
+	"description": "Radio Nowy Swiat Plugin for Volumio3",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
