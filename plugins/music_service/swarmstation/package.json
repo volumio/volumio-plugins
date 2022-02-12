@@ -1,17 +1,32 @@
 {
 	"name": "swarmstation",
-	"version": "1.0.1",
-	"description": "Swarmstation space drone",
+	"version": "1.0.2",
+	"description": "Swarmstation space drone Plugin for Volumio3",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "DJack",
 	"license": "ISC",
+	"repository": "https://github.com/volumio/volumio-plugins/tree/master/plugins/music_service/swarmstation",
 	"volumio_info": {
 		"prettyName": "SWARM Station",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "music_service"
+		"plugin_type": "music_service",
+		"architectures": [
+			"amd64",
+			"armhf",
+			"i386"
+		],
+		"os": [
+			"buster"
+		],
+		"details": "Lorem ipsum",
+		"changelog": "Lorem ipsum"
+	},
+	"engines": {
+		"node": ">=8",
+		"volumio": ">=3"
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",

@@ -11,7 +11,7 @@
         "description": "The API delay for metadata (artist, title) in seconds.",
         "onSave": {
           "type": "controller",
-          "endpoint":"music_service/nowyswiat",
+          "endpoint":"music_service/swarmstation",
           "method":"updateConfig"
         },
         "saveButton": {

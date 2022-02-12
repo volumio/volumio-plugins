@@ -8,10 +8,25 @@
 	},
 	"author": "DJack",
 	"license": "ISC",
+	"repository": "https://github.com/volumio/volumio-plugins/tree/master/plugins/music_service/radio357",
 	"volumio_info": {
 		"prettyName": "RADIO 357",
 		"icon": "fa-lightbulb-o",
-		"plugin_type": "music_service"
+		"plugin_type": "music_service",
+		"architectures": [
+			"amd64",
+			"armhf",
+			"i386"
+		],
+		"os": [
+			"buster"
+		],
+		"details": "Lorem ipsum",
+		"changelog": "Lorem ipsum"
+	},
+	"engines": {
+		"node": ">=8",
+		"volumio": ">=3"
 	},
 	"dependencies": {
 		"fs-extra": "^0.28.0",
