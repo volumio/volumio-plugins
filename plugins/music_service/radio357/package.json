@@ -1,7 +1,7 @@
 {
 	"name": "rad357pl",
-	"version": "1.0.1",
-	"description": "Radio 357",
+	"version": "1.0.2",
+	"description": "Radio 357 Plugin for Volumio3",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
