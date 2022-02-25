@@ -36,6 +36,6 @@
   },
   "engines": {
     "node": ">=8",
-    "volumio": ">=3"
+    "volumio": ">=3.233"
   }
 }

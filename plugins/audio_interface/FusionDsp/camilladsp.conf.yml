@@ -1,3 +1,4 @@
+
 devices:
   samplerate: ${capturesamplerate}
   chunksize: ${chunksize}
@@ -11,7 +12,7 @@ ${resampling}
     type: File
     channels: 2
     format: S32LE
-    filename: "/dev/stdin"
+    filename: "/tmp/volumiofifo"
     extra_samples: 4096
 ${composeout}
 

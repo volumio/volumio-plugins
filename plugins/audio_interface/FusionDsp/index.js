@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze January 2022
+FusionDsp plugin for volumio3. By balbuze Febuary 2022
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -127,7 +127,7 @@ FusionDsp.prototype.loadalsastuff = function () {
   const self = this;
   var defer = libQ.defer();
   try {
-    exec("/usr/bin/sudo /sbin/modprobe snd_aloop index=7 pcm_substreams=2", {
+    exec("/usr/bin/mkfifo /tmp/volumiofifo", {
       uid: 1000,
       gid: 1000
     })
@@ -137,9 +137,10 @@ FusionDsp.prototype.loadalsastuff = function () {
   }
   try {
 
-    exec("/usr/bin/alsaloop -C hw:Loopback,1 -P volumioDspfx -t 100000 -f S32_LE -S 0", {
+    exec("bin/chmod 777 /tmp/volumiofifo", {
       uid: 1000,
       gid: 1000
+      
     })
   } catch (err) {
     self.logger.error('----alsaloop fails to load :' + err);
@@ -302,10 +303,8 @@ FusionDsp.prototype.getUIConfig = function (address) {
             }
             )
           };
-          //file exists
         }
 
-        //  if (fs.exists("/data/plugins/audio_interface/fusiondsp/cpuarmv6l")) {
 
 
 
@@ -324,6 +323,8 @@ FusionDsp.prototype.getUIConfig = function (address) {
         uiconf.sections[1].content[3].hidden = true;
         uiconf.sections[1].content[4].hidden = true;
         uiconf.sections[7].hidden = true;
+        uiconf.sections[9].hidden = true;
+
 
 
         let n = 1
@@ -538,6 +539,8 @@ FusionDsp.prototype.getUIConfig = function (address) {
         uiconf.sections[1].content[2].hidden = true;
         uiconf.sections[1].content[3].hidden = true;
         uiconf.sections[1].content[4].hidden = true;
+        uiconf.sections[9].hidden = true;
+
 
         uiconf.sections[4].hidden = true;
         uiconf.sections[5].hidden = true;
@@ -737,6 +740,8 @@ FusionDsp.prototype.getUIConfig = function (address) {
         uiconf.sections[3].hidden = true;
         uiconf.sections[4].hidden = true;
         uiconf.sections[5].hidden = true;
+        uiconf.sections[9].hidden = true;
+
         var value
         var valuestored
         let valuestoredl
@@ -822,7 +827,6 @@ FusionDsp.prototype.getUIConfig = function (address) {
 
         if (purecamillainstalled == true) {
 
-          //  self.getIP()
           self.logger.info('IP adress is ---------------------------' + IPaddress)
           uiconf.sections[9].content.push(
             {
@@ -946,7 +950,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
             "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
             "label": self.commandRouter.getI18nString('CROSSFEED'),
             "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
-            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, , { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, , { "value": "sadie_d1", "label": "SADIE D1 HRTF (KU100 Dummy Head)" }, { "value": "sadie_h15m", "label": "SADIE H15m HRTF (Human Subject)" }],
+            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, { "value": "sadie_d1", "label": "SADIE D1 HRTF (KU100 Dummy Head)" }, { "value": "sadie_h15m", "label": "SADIE H15m HRTF (Human Subject)" }],
             "visibleIf": {
               "field": "showeq",
               "value": true
@@ -1932,7 +1936,7 @@ FusionDsp.prototype.areSampleswitch = function () {
     let filterNameShort = filterName.slice(0, -9);
     let filterNameForSwapc = filterNameShort + swapWord + fileExt;
     let filterNameForSwap = filterNameShort + "$samplerate$" + fileExt;
-    self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'+ filterNameForSwap )
+    self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' + filterNameForSwap)
 
     if (fs.exists(filterfolder + filterNameForSwap)) {
       return [true, filterNameForSwap]
@@ -2117,45 +2121,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
   }
   else if (filext == 'wav') {
     convtype = "Wav"
-   // auto_filter_format = '';
 
-    /*
-        let SampleFormat;
-        // return;
-    
-        try {
-          execSync('/usr/bin/python /data/plugins/audio_interface/fusiondsp/test.py ' + filterfolder + filtername + ' >/tmp/test.result');
-          setTimeout(function () {
-    
-            fs.readFile('/tmp/test.result', 'utf8', function (err, result) {
-              if (err) {
-                self.logger.info('Error reading test.result', err);
-              } else {
-                var resultJSON = JSON.parse(result);
-                var DataLength = resultJSON.DataLength;
-                var DataStart = resultJSON.DataStart;
-                var BytesPerFrame = resultJSON.BytesPerFrame;
-                SampleFormat = resultJSON.SampleFormat;
-    
-                filelength = DataLength / BytesPerFrame;
-                skipvalue = ('skip_bytes_lines: ' + (8 + (+DataStart)));
-    
-                self.config.set('filter_size', filelength);
-                self.config.set('skipvalue', skipvalue);
-                self.config.set('wavetype', SampleFormat);
-    
-              }
-            });
-          }, 50);
-    
-          auto_filter_format = self.config.get('wavetype').replace('_', '');
-          filelength = self.config.get('filter_size');
-          skipvalue = self.config.get('skipvalue');
-    
-        } catch (e) {
-          self.logger.error('Could not read wav file: ' + e)
-        }
-    */
   } else {
     let modalData = {
       title: self.commandRouter.getI18nString('FILTER_FORMAT_TITLE'),
@@ -2176,7 +2142,6 @@ FusionDsp.prototype.dfiltertype = function (data) {
 
   self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
   self.logger.info('--------->filter size ' + filelength);
-  // self.logger.info('--------->Skip value for wav :' + skipvalue);
 
 
   var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
@@ -2361,7 +2326,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
 
 
       }
-       if ((crossconfig != 'None') && (is_natural) &&(effect)) {
+      if ((crossconfig != 'None') && (is_natural) && (effect)) {
         var composedeq = '';
 
         let hrtf_filterl = '';
@@ -2459,14 +2424,6 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      slope: 12\n'
         composedeq += '      gain: ' + (loudnessGain * 0.65).toFixed(2) + '\n'
         composedeq += '\n'
-        // composedeq += '  lowshelf:\n'
-        // composedeq += '    type: Biquad\n'
-        // composedeq += '    parameters:\n'
-        // composedeq += '      type: Lowshelf\n'
-        // composedeq += '      freq: 70\n'
-        // composedeq += '      slope: 12\n'
-        // composedeq += '      gain: ' + loudnessGain + '\n'
-        // composedeq += '\n'
         composedeq += '  lowshelf:\n';
         composedeq += '    type: Biquad' + '\n';
         composedeq += '    parameters:' + '\n';
@@ -2527,11 +2484,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
-        /* pipeliner = '      - nulleq';
-         result += composedeq
-         pipelinelr = pipeliner.slice(8)
-         pipelinerr = pipeliner.slice(8)
- */
+
         self.logger.info('Effects disabled, Nulleq applied')
         gainresult = 0
         gainclipfree = self.config.get('gainapplied')
@@ -3347,24 +3300,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         }
       }
 
-      /*
-            if (typer == 'Highshelf2' || typer == 'Lowshelf2') {
-      
-              var s = Number(eqr[2]);
-              if ((Number.parseFloat(q)) && (q > 0 && q < 25.1)) {
-      
-          //    if ((Number.isInteger(s)) && (s > 0 && s < 13)) {
-      
-              } else {
-                self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('Q_RANGE') + eqc)
-      
-                //self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('BANDWIDTH_SLOPE_RANGE') + eqc)
-                self.commandRouter.pushToastMessage('error', 'pas bon ' + eqc)
-      
-                return;
-              }
-            }
-      */
       if (typer == 'Highpass' || typer == 'Lowpass' || typer == 'Notch' || typer == 'Highpass2' || typer == 'Lowpass2' || typer == 'Notch2' || typer == 'ButterworthHighpass' || typer == 'ButterworthLowpass') {
 
         var q = eqr[2];
@@ -3475,37 +3410,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       return;
 
     } else {
-      /*
-      
-            if (filext == "wav") {
-              let listf = ('leftfilter,rightfilter')
-              let list = listf.split(',')
-              for (i in list) {
-                filtername = (data[list[i]].value)
-                self.commandRouter.pushToastMessage('error', 'Wav file is going to be converted in raw to be use')
-                //sox example.wav --bits 32 example.raw
-                try {
-                  let cmdsox = ("/usr/bin/sox " + filterfolder + filtername + " --bits 32 " + filterfolder + filtername.slice(0, -3) + "raw");
-                  execSync(cmdsox);
-                  self.logger.info(cmdsox);
-                  self.commandRouter.pushToastMessage('success', 'Wav file converted in raw. Please select it now to use it')
-      
-                } catch (e) {
-                  self.logger.error('input file does not exist ' + e);
-                  self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
-                };
-                self.config.set(list[i], filtername.slice(0, -3) + "raw");
-                self.config.set('leftfilterlabel', filtername.slice(0, -3) + "raw");
-      
-                // self.config.set(list[i] + ',' + filtername.slice(0, -3) + "raw")
-                self.logger.info('filter saved ' + list[i] + ',' + filtername.slice(0, -3) + "raw")
-                // self.refreshUI();
-              }
-            } else {
-              self.config.set('leftfilterlabel', leftfilter);
-              self.config.set('leftfilter', leftfilter);
-              self.config.set('rightfilter', rightfilter);
-            }*/
+
       self.dfiltertype(data);
 
       let val = self.dfiltertype(obj);
@@ -3520,34 +3425,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       // if ((enableclipdetect) && (valfound) && ((rightfilter != 'None') || (leftfilter != 'None'))) {
       if (enableclipdetect && ((rightfilter != 'None') || (leftfilter != 'None'))) {
 
-
-        // setTimeout(function () {
-
-        //   //  self.refreshUI();
-        //   self.logger.info('For detection attenuation set to ' + self.config.get('attenuationl'))
-        //   var responseData = {
-        //     title: self.commandRouter.getI18nString('CLIPPING_DETECT_TITLE'),
-        //     message: self.commandRouter.getI18nString('CLIPPING_DETECT_MESS'),
-        //     size: 'lg',
-        //     buttons: [
-        //       {
-        //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_EXIT'),
-        //         class: 'btn btn-cancel',
-        //         emit: 'closeModals',
-        //         payload: ''
-        //       },
-        //       {
-        //         name: self.commandRouter.getI18nString('CLIPPING_DETECT_TEST'),
-        //         class: 'btn btn-info',
-        //         emit: 'callMethod',
-        //         payload: { 'endpoint': 'audio_interface/fusiondsp', 'method': 'testclipping', 'data': '' },
-        //         //     emit: 'closeModals'
-
-        //       }
-        //     ]
-        //   }
-        //   self.commandRouter.broadcastMessage("openModal", responseData);
-        // }, 1000);
         self.testclipping()
 
       }
@@ -3584,7 +3461,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
   if (self.config.get('moresettings')) {
     let delaymode = self.config.get('manualdelay')
 
-    //if (((data['delayscope'].value) != 'None') && (delaymode == true)) {
     if (delaymode == true) {
 
       var value = data['delay']
@@ -3600,13 +3476,11 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         return;
       }
     }
-    //}
 
     if (delaymode == false) {
       var valuel = data['ldistance']
       var valuer = data['rdistance']
 
-      // if (((Number.parseFloat(valuel)) && (valuel >= 0 && valuel < 2500)) || ((Number.parseFloat(valuer)) && (valuer >= 0 && valuer < 2500))) {
       if ((valuel >= 0 && valuel < 2500) && (valuer >= 0 && valuer < 2500)) {
 
         self.config.set('ldistance', valuel);
@@ -4245,15 +4119,12 @@ FusionDsp.prototype.removetools = function (data) {
       self.commandRouter.pushToastMessage('error', 'An error occurs while removing tools');
     }
     resolve();
-    /*
-    self.commandRouter.pushToastMessage('success', 'Tools succesfully Removed !', 'Refresh the page to see them');
-    */
+
     self.config.set('toolsinstalled', false);
     self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
     self.refreshUI();
     socket.emit('updateDb');
 
-    //   return self.commandRouter.reloadUi();
   });
 };
 //------ actions tools------------
@@ -4292,23 +4163,3 @@ FusionDsp.prototype.sendvolumelevel = function () {
     self.createCamilladspfile()
   })
 }
-/*
-test for future features...
-FusionDsp.prototype.displayfilters = function () {
-  const self = this;
-  const express = require('express');
-  const app = express();
-  const port = 8087;
-
-  // Define the static file path
-  app.use(express.static(__dirname));
-
-  app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/filtersview.html');
-  })
-
-  app.listen(port, () => console.log('The server running on Port ' + port));
-
-  //return defer.promise;
-}
-*/

@@ -1,4 +1,4 @@
-Febuary 5th 2022
+Febuary 25th 2022
 
 
 ##  For Volumio3
@@ -138,6 +138,11 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+Febuary 25th 2022 v0.1.29
+
+- New alsa pipeline using volumio-alsa-hook ! No more dropout
+- code cleaning
+- clean crossfeed list
 
 Febuary 5th 2022 v0.1.28
 
