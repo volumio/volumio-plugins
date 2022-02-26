@@ -127,23 +127,23 @@ FusionDsp.prototype.loadalsastuff = function () {
   const self = this;
   var defer = libQ.defer();
   try {
-    exec("/usr/bin/mkfifo /tmp/volumiofifo", {
+    exec("/usr/bin/mkfifo /tmp/fusiondspfifo", {
       uid: 1000,
       gid: 1000
     })
   } catch (err) {
-    self.logger.error('----snd_aloop fails to load :' + err);
+    self.logger.error('----fails to create fusiondspfifo :' + err);
     defer.reject(err);
   }
   try {
 
-    exec("bin/chmod 777 /tmp/volumiofifo", {
+    exec("bin/chmod 777 /tmp/fusiondspfifo", {
       uid: 1000,
       gid: 1000
       
     })
   } catch (err) {
-    self.logger.error('----alsaloop fails to load :' + err);
+    self.logger.error('----fails to chane permissions for fusiondspfifo :' + err);
     defer.reject(err);
   }
 };
@@ -1995,7 +1995,7 @@ FusionDsp.prototype.testclipping = function () {
 
     let track = '/data/plugins/audio_interface/fusiondsp/testclipping/testclipping.wav';
     try {
-      let cmd = ('/usr/bin/aplay -c2 --device=volumioDspfx ' + track);
+      let cmd = ('/usr/bin/aplay -c2 --device=volumio ' + track);
       self.commandRouter.pushToastMessage('info', 'Clipping detection in progress...');
 
       // exec('/usr/bin/killall aplay');
@@ -3128,7 +3128,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedpipeline += '    channel: 1\n'
         composedpipeline += '    names:\n'
         composedpipeline += '      - ' + pipelinerr + '\n'
-        composedpipeline += '\n'
+     //   composedpipeline += '\n'
       }
 
 

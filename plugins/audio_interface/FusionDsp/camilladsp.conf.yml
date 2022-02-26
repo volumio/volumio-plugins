@@ -12,7 +12,7 @@ ${resampling}
     type: File
     channels: 2
     format: S32LE
-    filename: "/tmp/volumiofifo"
+    filename: "/tmp/fusiondspfifo"
     extra_samples: 4096
 ${composeout}
 
@@ -23,4 +23,3 @@ filters:
 ${resulteq}
 ${mixers}
 ${composedpipeline}
-  
