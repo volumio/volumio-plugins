@@ -125,7 +125,7 @@ FusionDsp.prototype.loadalsastuff = function () {
   const self = this;
   var defer = libQ.defer();
   try {
-    exec("/usr/bin/mkfifo /tmp/fusiondspfifo", {
+    execSync("/usr/bin/mkfifo /tmp/fusiondspfifo", {
       uid: 1000,
       gid: 1000
     })
