@@ -1,4 +1,4 @@
-Febuary 25th 2022
+March 3rd 2022
 
 
 ##  For Volumio3
@@ -137,6 +137,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+March 3rd 2022 v0.1.30
+
+- small adjustements...
 
 Febuary 25th 2022 v0.1.29
 

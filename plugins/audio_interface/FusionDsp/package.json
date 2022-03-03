@@ -1,6 +1,6 @@
 {
   "name": "fusiondsp",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "A complete Dsp centre for Volumio3",
   "main": "index.js",
   "repository": "https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp",
@@ -36,6 +36,6 @@
   },
   "engines": {
     "node": ">=8",
-    "volumio": ">=3.233"
+    "volumio": ">=3.236"
   }
 }
