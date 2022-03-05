@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze Febuary 2022
+FusionDsp plugin for volumio3. By balbuze March 2022
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -1212,6 +1212,12 @@ FusionDsp.prototype.getUIConfig = function (address) {
         case ("mypreset3"):
           plabel = self.config.get('renpreset3')
           break;
+        case ("mypreset4"):
+          plabel = self.config.get('renpreset4')
+          break;
+        case ("mypreset5"):
+          plabel = self.config.get('renpreset5')
+          break;
         case ("flat"):
           plabel = 'flat'
           break;
@@ -1238,12 +1244,12 @@ FusionDsp.prototype.getUIConfig = function (address) {
 
       let presetlist
       if (selectedsp == 'PEQ') {
-        presetlist = ('mypreset1,mypreset2,mypreset3')
+        presetlist = ('mypreset1,mypreset2,mypreset3,mypreset4,mypreset5')
       } else if ((selectedsp == 'EQ15') || (selectedsp == '2XEQ15')) {
-        presetlist = ('mypreset1,mypreset2,mypreset3,flat,rock,voice,classic,bass,soundtrack')
+        presetlist = ('mypreset1,mypreset2,mypreset3,mypreset4,mypreset5,flat,rock,voice,classic,bass,soundtrack')
       } else {
         //     self.logger.info('No preset for FIR')
-        presetlist = ('mypreset1,mypreset2,mypreset3')
+        presetlist = ('mypreset1,mypreset2,mypreset3,mypreset4,mypreset5')
 
       }
 
@@ -1260,6 +1266,12 @@ FusionDsp.prototype.getUIConfig = function (address) {
             break;
           case ("mypreset3"):
             var plabel = self.config.get('renpreset3')
+            break;
+          case ("mypreset4"):
+            var plabel = self.config.get('renpreset4')
+            break;
+          case ("mypreset5"):
+            var plabel = self.config.get('renpreset5')
             break;
           case ("flat"):
             var plabel = 'flat'
@@ -1290,7 +1302,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
 
 
       //-------------section 3-----------
-      let savepresetlist = ('mypreset1,mypreset2,mypreset3').split(',')
+      let savepresetlist = ('mypreset1,mypreset2,mypreset3,mypreset4,mypreset5').split(',')
       self.configManager.setUIConfigParam(uiconf, 'sections[3].content[0].value.label', self.commandRouter.getI18nString('CHOOSE_PRESET'));
       for (let y in savepresetlist) {
         switch (savepresetlist[y]) {
@@ -1302,6 +1314,12 @@ FusionDsp.prototype.getUIConfig = function (address) {
             break;
           case ("mypreset3"):
             var plabel = self.config.get('renpreset3')
+            break;
+          case ("mypreset4"):
+            var plabel = self.config.get('renpreset4')
+            break;
+          case ("mypreset5"):
+            var plabel = self.config.get('renpreset5')
             break;
           default: plabel = self.commandRouter.getI18nString('NO_PRESET_USED')
         }
@@ -3475,6 +3493,16 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
       var spresetm = self.config.get('renpreset3')
       var renprestr = '3'
       break;
+    case ("mypreset4"):
+      var spreset = 'p4'
+      var spresetm = self.config.get('renpreset4')
+      var renprestr = '4'
+      break;
+    case ("mypreset5"):
+      var spreset = 'p5'
+      var spresetm = self.config.get('renpreset5')
+      var renprestr = '5'
+      break;
   }
   if (rpreset == '') {
     self.logger.info('No change in name !')
@@ -3554,6 +3582,18 @@ FusionDsp.prototype.usethispreset = function (data) {
       var spresetm = self.config.get('renpreset3')
       var eqspreset = 'geq153'
       var reqspreset = 'x2geq153'
+      break;
+    case ("mypreset4"):
+      var spreset = '4'
+      var spresetm = self.config.get('renpreset4')
+      var eqspreset = 'geq154'
+      var reqspreset = 'x2geq154'
+      break;
+    case ("mypreset5"):
+      var spreset = '5'
+      var spresetm = self.config.get('renpreset5')
+      var eqspreset = 'geq155'
+      var reqspreset = 'x2geq155'
       break;
     case ("voice"):
       var spreset = 'voice'
@@ -3643,7 +3683,7 @@ FusionDsp.prototype.usethispreset = function (data) {
   } else if (selectedsp == 'convfir') {
     //   self.logger.info('aaaaaaaaaaaaaaaaaa')
   }
-  if (preset == "mypreset1" || preset == "mypreset2" || preset == "mypreset3") {
+  if (preset == "mypreset1" || preset == "mypreset2" || preset == "mypreset3" || preset == "mypreset4" || preset == "mypreset5") {
     let state4preset = self.config.get('state4preset' + spreset)
 
     self.logger.info('value state4preset ' + state4preset)

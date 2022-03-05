@@ -35,6 +35,14 @@
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
     },
+    "geq154": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "geq155": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
     "x2geq151": {
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
@@ -44,6 +52,14 @@
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
     },
     "x2geq153": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq154": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "x2geq155": {
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
     },
@@ -131,6 +147,14 @@
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
     },
+    "mypreset4": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
+    "mypreset5": {
+        "type": "string",
+        "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+    },
     "flat": {
         "type": "string",
         "value": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
@@ -182,6 +206,32 @@
         ]
     },
     "state4preset3": {
+        "type": "text",
+        "value": [
+            "None",
+            false,
+            false,
+            50,
+            0,
+            0,
+            0,
+            "None"
+        ]
+    },
+    "state4preset4": {
+        "type": "text",
+        "value": [
+            "None",
+            false,
+            false,
+            50,
+            0,
+            0,
+            0,
+            "None"
+        ]
+    },
+    "state4preset5": {
         "type": "text",
         "value": [
             "None",
@@ -270,6 +320,14 @@
     "renpreset3": {
         "type": "string",
         "value": "mypreset3"
+    },
+    "renpreset4": {
+        "type": "string",
+        "value": "mypreset4"
+    },
+    "renpreset5": {
+        "type": "string",
+        "value": "mypreset5"
     },
     "leftlevel": {
         "type": "number",

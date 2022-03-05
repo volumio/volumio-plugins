@@ -1,4 +1,4 @@
-March 3rd 2022
+March 5th 2022
 
 
 ##  For Volumio3
@@ -15,7 +15,7 @@ Provides
     - Equalizer scope for each band (L, R, L+R)
     - More than 3800 variant of headphones EQ from AutoEQ ! [AutoEq](https://github.com/jaakkopasanen/AutoEq)
     - import for local EQ file (must be in /data/INTERNAL/FusionDsp/peq/)
-- 3 preset
+- 5 custom preset
 - Or a convolution filters (FIR) with autoswitch samplerate for filters
     - DRC-FIR to create filter with an impulse
 - Access to CamillaDsp gui for advanced user
@@ -137,6 +137,11 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+March 5th 2022 v0.1.31
+
+- 5 preset now!
+- translation grammar
 
 March 3rd 2022 v0.1.30
 
