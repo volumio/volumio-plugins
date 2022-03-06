@@ -130,7 +130,7 @@ FusionDsp.prototype.loadalsastuff = function () {
       gid: 1000
     })
   } catch (err) {
-    self.logger.error('----fails to create fusiondspfifo :' + err);
+    self.logger.error('----failed to create fusiondspfifo :' + err);
     defer.reject(err);
   }
   try {
@@ -141,7 +141,7 @@ FusionDsp.prototype.loadalsastuff = function () {
 
     })
   } catch (err) {
-    self.logger.error('----fails to chane permissions for fusiondspfifo :' + err);
+    self.logger.error('----failed to change permissions for fusiondspfifo :' + err);
     defer.reject(err);
   }
 };
@@ -167,7 +167,8 @@ FusionDsp.prototype.hwinfo = function () {
     try {
       const hwinfoJSON = JSON.parse(hwinfo);
       samplerates = hwinfoJSON.samplerates.value;
-      //  self.logger.info('AAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+       self.logger.info('AAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+       self.config.set('probesmplerate', samplerates);
     } catch (err) {
       self.logger.error('Error reading hwinfo.json, detection failed :', err);
     }
@@ -3967,7 +3968,7 @@ FusionDsp.prototype.convert = function (data) {
           self.logger.info(cmdsox);
         } catch (e) {
           self.logger.error('input file does not exist ' + e);
-          self.commandRouter.pushToastMessage('error', 'Sox fails to convert file' + e);
+          self.commandRouter.pushToastMessage('error', 'Sox failed to convert file' + e);
         };
         try {
           let title = self.commandRouter.getI18nString('FILTER_GENE_TITLE') + destfile;
@@ -3992,7 +3993,7 @@ FusionDsp.prototype.convert = function (data) {
           self.refreshUI()
           // return self.commandRouter.reloadUi();
         } catch (e) {
-          self.logger.error('drc fails to create filter ' + e);
+          self.logger.error('drc failed to create filter ' + e);
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FILTER_GENE_FAIL') + e);
         };
       } else {

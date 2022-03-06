@@ -138,6 +138,11 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+
+March 6th 2022 v0.1.32
+
+- Resampling values were not displayed
+
 March 5th 2022 v0.1.31
 
 - 5 preset now!
