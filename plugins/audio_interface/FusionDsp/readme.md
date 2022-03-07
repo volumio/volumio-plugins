@@ -1,4 +1,4 @@
-March 5th 2022
+March 7th 2022
 
 
 ##  For Volumio3
@@ -138,6 +138,10 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+
+March 6th 2022 v0.1.33
+
+- Install on aarch64
 
 March 6th 2022 v0.1.32
 
