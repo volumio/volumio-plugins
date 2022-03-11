@@ -80,14 +80,12 @@ if [ $cpu = "armv7l" ] || [ $cpu = "aarch64" ]
 then
 cd /tmp
 wget https://github.com/HEnquist/camilladsp/releases/download/v0.6.3/camilladsp-linux-armv7.tar.gz
-#wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.0-s24test/camilladsp-linux-armv7.tar.gz
 tar -xvf camilladsp-linux-armv7.tar.gz -C /tmp
 chown volumio camilladsp
 chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv7.tar.gz
-#ln -s  $LIB/lib/arm/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 sudo cp $LIB/c/hw_params_arm $LIB/hw_params
 sudo chmod +x $LIB/hw_params
 
@@ -98,14 +96,12 @@ elif [ $cpu = "x86_64" ]
 then
 cd /tmp
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/bin/camilladsp-linux-amd64.tar.gz
-#wget https://github.com/HEnquist/camilladsp/releases/download/v0.5.2/camilladsp-linux-amd64.tar.gz
 tar -xvf camilladsp-linux-amd64.tar.gz -C /tmp
 chown volumio camilladsp
 chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-amd64.tar.gz
-#ln -s $LIB/lib/x86_amd64/libasound_module_pcm_cdsp.so /usr/lib/x86_64-linux-gnu/alsa-lib/
 cp $LIB/c/hw_params_amd64 $LIB/hw_params
 chmod +x $LIB/hw_params
 
@@ -122,7 +118,6 @@ chgrp volumio camilladsp
 chmod +x camilladsp
 mv /tmp/camilladsp $LIB/
 rm /tmp/camilladsp-linux-armv6l.tar.gz
-#ln -s $LIB/lib/armv6l/libasound_module_pcm_cdsp.so /usr/lib/arm-linux-gnueabihf/alsa-lib/
 cp $LIB/c/hw_params_armv6l $LIB/hw_params
 chmod +x $LIB/hw_params
 touch /data/plugins/audio_interface/fusiondsp/cpuarmv6l

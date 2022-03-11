@@ -167,8 +167,8 @@ FusionDsp.prototype.hwinfo = function () {
     try {
       const hwinfoJSON = JSON.parse(hwinfo);
       samplerates = hwinfoJSON.samplerates.value;
-       self.logger.info('AAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
-       self.config.set('probesmplerate', samplerates);
+      self.logger.info('AAAAAAAAAAAAAA-> ' + samplerates + ' <-AAAAAAAAAAAAA');
+      self.config.set('probesmplerate', samplerates);
     } catch (err) {
       self.logger.error('Error reading hwinfo.json, detection failed :', err);
     }
@@ -2150,7 +2150,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let enableresampling = self.config.get('enableresampling')
       let resamplingq = self.config.get('resamplingq')
       let resamplingset = self.config.get('resamplingset')
-
+      let allowdownsamplig = true
       //----compose output----
       if (testclipping) {
         var composeout = ''
@@ -2169,6 +2169,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composeout += '    format: S32LE' + '\n';
       }
       //------resampling section-----
+
       var composeddevice = '';
       let capturesamplerate = 44100
       if (enableresampling) {
@@ -2185,15 +2186,30 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             break;
           default: "++"
         }
+        /*-------for future use
+        socket.on('pushState', function (data) {
+          var currentsamplerate = data.samplerate
+          if ((currentsamplerate == undefined) || (currentsamplerate == "")) {
+            currentsamplerate = "48000"
+          }
+          self.logger.info('Detected samplerate ==xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx======== ' + typeof (currentsamplerate))
+          var currentcorrectedsamplerate = currentsamplerate.replace("44.1 kHz", "44100").replace("48 kHz", "48000").replace("88.2 KHz", "88200").replace("96 kHz", "96000").replace("176.4 KHz", "176400").replace("192 KHz", "192000")
+          self.logger.info('Detected corrected samplerate ==xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx======== ' + currentcorrectedsamplerate)
+          if (currentcorrectedsamplerate >= resamplingset ){
+            self.logger.info('Nothing to do with samplerate ==xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx======== ')
+          }
+
+        })
+        */
         capturesamplerate = resamplingset;
         composeddevice += '  enable_resampling: true\n';
         composeddevice += '  resampler_type: ' + type + '\n';
         composeddevice += '  capture_samplerate: ' + resamplingset;
       } else if (enableresampling == false) {
         composeddevice = '\n';
+      
+
       }
-
-
       //------crossfeed section------
 
       var crossconfig = self.config.get('crossfeed')
