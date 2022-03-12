@@ -1,4 +1,4 @@
-March 11th 2022
+March 12th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -138,7 +138,11 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
-March 14th 2022 v1.0.0
+March 12th 2022 v1.0.1
+
+- Translation IT DE NL ES
+
+March 11th 2022 v1.0.0
 
 - first stable version!!!
 
