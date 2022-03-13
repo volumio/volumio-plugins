@@ -180,5 +180,7 @@
   "DELAY_VALUE": "Vertragingswaarde (ms)",
   "DELAY_VALUE_DOC":"Geef waarde voor delai (ms)",
   "DELAY_SCOPE":"Vertraging op kanaal",
-  "DELAY_SCOPE_DOC":"Geef aan op welk kanaal de vertraging moet worden toegepast"
+  "DELAY_SCOPE_DOC":"Geef aan op welk kanaal de vertraging moet worden toegepast",
+  "PERMUT_CHANNEL": "Permut L&R channels",
+  "PERMUT_CHANNEL_DOC":"Permut L&R channels"
 }

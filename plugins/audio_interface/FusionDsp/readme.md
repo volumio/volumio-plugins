@@ -27,6 +27,7 @@ For all
 - Separate volume level for left an right
 - 8 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz, Natural 30deg, atural 50deg, SADIE D1, SADIE H15m)
 - Mono / stereo toggle
+- Channels input permut
 - Delay with automatic calculation
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
@@ -138,8 +139,10 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
-March 13th 2022 v1.0.2
+March 13th 2022 v1.0.3
 
+- New : Permut L&R channels input
+- DE translation correction
 - NL translation correction
 
 March 12th 2022 v1.0.1

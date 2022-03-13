@@ -180,5 +180,7 @@
   "DELAY_VALUE": "Valor de retraso (ms)",
   "DELAY_VALUE_DOC":"Dar valor para retraso (ms)",
   "DELAY_SCOPE":"Retraso en el canal",
-  "DELAY_SCOPE_DOC":"Ingrese en qué canal aplicar el retraso"
+  "DELAY_SCOPE_DOC":"Ingrese en qué canal aplicar el retraso",
+  "PERMUT_CHANNEL": "Permut L&R channels",
+  "PERMUT_CHANNEL_DOC":"Permut L&R channels"
 }

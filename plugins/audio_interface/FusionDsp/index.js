@@ -917,6 +917,17 @@ FusionDsp.prototype.getUIConfig = function (address) {
               "field": "showeq",
               "value": true
             }
+          },
+          {
+            "id": "permutchannel",
+            "element": "switch",
+            "doc": self.commandRouter.getI18nString('PERMUT_CHANNEL_DOC'),
+            "label": self.commandRouter.getI18nString('PERMUT_CHANNEL'),
+            "value": self.config.get('permutchannel'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
           }
         )
         if (self.config.get('showloudness')) {
@@ -1185,6 +1196,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
       uiconf.sections[1].saveButton.data.push('rightlevel');
       uiconf.sections[1].saveButton.data.push('crossfeed');
       uiconf.sections[1].saveButton.data.push('monooutput');
+      uiconf.sections[1].saveButton.data.push('permutchannel');
 
 
 
@@ -2207,7 +2219,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composeddevice += '  capture_samplerate: ' + resamplingset;
       } else if (enableresampling == false) {
         composeddevice = '\n';
-      
+
 
       }
       //------crossfeed section------
@@ -2775,6 +2787,14 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let rightgain = (+gainclipfree + +rightlevel - +crossatt);
       let leftgainmono = (+gainclipfree + +leftlevel - 6)
       let rightgainmono = (+gainclipfree + +rightlevel - 6);
+      let permutchannel = self.config.get('permutchannel')
+      var  c0 = "0"
+      var c1 = "1"
+      if (permutchannel) {
+        c0 = "1"
+        c1 = "0"
+      }
+
       self.logger.info(result)
 
       ///----mixers and pipelines generation
@@ -2829,12 +2849,12 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           composedmixer += '    mapping:\n'
           composedmixer += '      - dest: 0\n'
           composedmixer += '        sources:\n'
-          composedmixer += '          - channel: 0\n'
+          composedmixer += '          - channel: ' + c0 + '\n'
           composedmixer += '            gain: ' + leftgain + '\n'
           composedmixer += '            inverted: false\n'
           composedmixer += '      - dest: 1\n'
           composedmixer += '        sources:\n'
-          composedmixer += '          - channel: 1\n'
+          composedmixer += '          - channel: ' + c1 + '\n'
           composedmixer += '            gain: ' + rightgain + '\n'
           composedmixer += '            inverted: false\n'
           composedmixer += '\n'
@@ -2889,7 +2909,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedmixer += '    mapping:\n'
         composedmixer += '      - dest: 0\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 0\n'
+        composedmixer += '          - channel: ' + c0 + '\n'
         composedmixer += '            gain: 0\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '          - channel: 2\n'
@@ -2897,7 +2917,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedmixer += '            inverted: false\n'
         composedmixer += '      - dest: 1\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 1\n'
+        composedmixer += '          - channel: ' + c1 + '\n'
         composedmixer += '            gain: 0\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '          - channel: 3\n'
@@ -2979,7 +2999,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedmixer += '    mapping:\n'
         composedmixer += '      - dest: 0\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 0\n'
+        composedmixer += '          - channel: ' + c0 + '\n'
         composedmixer += '            gain: 0\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '          - channel: 2\n'
@@ -2987,7 +3007,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedmixer += '            inverted: false\n'
         composedmixer += '      - dest: 1\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 1\n'
+        composedmixer += '          - channel: ' + c1 + '\n'
         composedmixer += '            gain: 0\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '          - channel: 3\n'
@@ -3040,12 +3060,12 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedmixer += '    mapping:\n'
         composedmixer += '      - dest: 0\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 0\n'
+        composedmixer += '          - channel: ' + c0 + '\n'
         composedmixer += '            gain: ' + leftgain + '\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '      - dest: 1\n'
         composedmixer += '        sources:\n'
-        composedmixer += '          - channel: 1\n'
+        composedmixer += '          - channel: ' + c1 + '\n'
         composedmixer += '            gain: ' + rightgain + '\n'
         composedmixer += '            inverted: false\n'
         composedmixer += '\n'
@@ -3456,6 +3476,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       self.config.set('loudness', loudness);
     }
   }
+  self.config.set('permutchannel', data["permutchannel"]);
 
   self.config.set('effect', true);
   self.config.set('showeq', data["showeq"]);

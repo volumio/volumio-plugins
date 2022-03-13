@@ -7,6 +7,10 @@
         "type": "boolean",
         "value": true
     },
+    "permutchannel": {
+        "type": "boolean",
+        "value": false
+    },
     "address": {
         "type": "string",
         "value": "127.0.0.1"
