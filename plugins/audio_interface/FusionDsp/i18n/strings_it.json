@@ -169,7 +169,7 @@
   "INSTALL_TOOLS": "Installa strumenti",
   "DESC_INSTALL_TOOLS": "Installa strumenti per aiutare le misurazioni. PER FAVORE ATTENDERE FINO A QUANDO L'UI NON VIENE AGGIORNATA",
   "TOOLS_INSTALL_TITLE": "Installazione in corso",
-  "TOOLS_INSTALL_WAIT": "Stai per scaricare circa 17 mesi. Attendi fino all'aggiornamento di questa pagina (circa 40 secondi).",
+  "TOOLS_INSTALL_WAIT": "Stai per scaricare circa 17Mo. Attendi fino all'aggiornamento di questa pagina (circa 40 secondi).",
   "TOOLS_REMOVE": "Eliminazione di file",
   "PLAY_SELECTED_FILE": "Riproduci il file selezionato",
   "DOC_TOOLS_FILE_TO_PLAY": "Scegli un file da riprodurre. Deve trovarsi in /INTERNAL/FusionDsp/tools/",
