@@ -27,7 +27,7 @@ For all
 - Separate volume level for left an right
 - 8 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz, Natural 30deg, atural 50deg, SADIE D1, SADIE H15m)
 - Mono / stereo toggle
-- Channels input swap
+- Channels input swap switch
 - Delay with automatic calculation
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
@@ -142,7 +142,7 @@ everythings it seems ;-)
 
 March 13th 2022 v1.0.4
 
-- small correction in different in different translation
+- small corrections in different in different translations
 
 March 13th 2022 v1.0.3
 
