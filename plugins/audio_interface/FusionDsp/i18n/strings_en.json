@@ -181,6 +181,6 @@
   "DELAY_VALUE_DOC":"Give value for delai (ms)",
   "DELAY_SCOPE":"Delay on channel",
   "DELAY_SCOPE_DOC":"Enter on which channel apply the delay",
-  "PERMUT_CHANNEL": "Permut L&R channels",
-  "PERMUT_CHANNEL_DOC":"Permut L&R channels"
+  "PERMUT_CHANNEL": "Swap L&R channels",
+  "PERMUT_CHANNEL_DOC":"Swap L&R channels"
 }

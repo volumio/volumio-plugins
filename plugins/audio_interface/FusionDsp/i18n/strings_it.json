@@ -181,6 +181,6 @@
   "DELAY_VALUE_DOC":"Indica valore per ritardo (ms)",
   "DELAY_SCOPE":"Ritardo sul canale",
   "DELAY_SCOPE_DOC":"Inserisci su quale canale applica il ritardo",
-  "PERMUT_CHANNEL": "Permut L&R channels",
-  "PERMUT_CHANNEL_DOC":"Permut L&R channels"
+  "PERMUT_CHANNEL": "Swap L&R channels",
+  "PERMUT_CHANNEL_DOC":"Swap L&R channels"
 }

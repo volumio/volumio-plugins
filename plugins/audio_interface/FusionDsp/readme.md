@@ -1,4 +1,4 @@
-March 13th 2022
+March 17th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -27,7 +27,7 @@ For all
 - Separate volume level for left an right
 - 8 crossfeed for headphone (Bauer, Chu Moy, Jan Meier, Linkwitz, Natural 30deg, atural 50deg, SADIE D1, SADIE H15m)
 - Mono / stereo toggle
-- Channels input permut
+- Channels input swap
 - Delay with automatic calculation
 - High quality resampling
 - tools to easily plays test files (pink noise, sweep) to help measurments 
@@ -138,6 +138,11 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+
+March 13th 2022 v1.0.4
+
+- small correction in different in different translation
 
 March 13th 2022 v1.0.3
 
