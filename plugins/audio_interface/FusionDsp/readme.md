@@ -1,4 +1,4 @@
-March 17th 2022
+March 20th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -139,6 +139,10 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+
+March 20th 2022 v1.0.5
+
+- Loudness curve adjustement
 
 March 13th 2022 v1.0.4
 
