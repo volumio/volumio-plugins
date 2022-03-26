@@ -2370,6 +2370,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         var composedeq = '';
         var pipelineL = '';
         var pipelineR = '';
+        /*
         composedeq += '  highshelf:\n'
         composedeq += '    type: Biquad\n'
         composedeq += '    parameters:\n'
@@ -2400,6 +2401,38 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         composedeq += '      freq: 13000\n';
         composedeq += '      q: 0.7\n';
         composedeq += '      gain: ' + (loudnessGain * 0.08).toFixed(2) + '\n';
+        */
+        composedeq += '  highshelf:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: Highshelf\n'
+        composedeq += '      freq: 10000\n'
+        composedeq += '      q: 0.8\n'
+        composedeq += '      gain: ' + (loudnessGain * 0.28).toFixed(2) + '\n'
+        composedeq += '\n'
+        composedeq += '  lowshelf:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: LowshelfFO\n';
+        composedeq += '      freq: 75\n';
+        composedeq += '      gain: ' + loudnessGain + '\n';
+        composedeq += '' + '\n';
+        composedeq += '  peakloudness:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 2000\n';
+        composedeq += '      q: 0.4\n';
+        composedeq += '      gain: ' + (loudnessGain * -0.04).toFixed(2) + '\n';
+        composedeq += '' + '\n';
+        composedeq += '  peakloudness2:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 4000\n';
+        composedeq += '      q: 0.8\n';
+        composedeq += '      gain: ' + (loudnessGain * -0.036).toFixed(2) + '\n';
+        composedeq += '' + '\n';
         composedeq += '' + '\n';
         result += composedeq
         //-----loudness pipeline
@@ -2788,7 +2821,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let leftgainmono = (+gainclipfree + +leftlevel - 6)
       let rightgainmono = (+gainclipfree + +rightlevel - 6);
       let permutchannel = self.config.get('permutchannel')
-      var  c0 = "0"
+      var c0 = "0"
       var c1 = "1"
       if (permutchannel) {
         c0 = "1"
@@ -4120,8 +4153,8 @@ FusionDsp.prototype.sendvolumelevel = function () {
 
   socket.on('pushState', function (data) {
     let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
-    let loudnessMaxGain = 15
-    let loudnessLowThreshold = 10
+    let loudnessMaxGain = 23 //15
+    let loudnessLowThreshold = 5 //10
     let loudnessRange = loudnessVolumeThreshold - loudnessLowThreshold
     let ratio = loudnessMaxGain / loudnessRange
     let loudnessGain
