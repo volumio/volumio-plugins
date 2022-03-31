@@ -1,4 +1,4 @@
-March 26th 2022
+March 31th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -21,7 +21,7 @@ Provides
 - Access to CamillaDsp gui for advanced user
 
 For all 
-- Progressive Loudness effect with threshold setting - sort of equal loudness curve
+- Progressive Loudness effect with threshold setting - loudness curve based on ISO 226: 2003 standard
 - Auto gain
 - Toggle with/without effect
 - Separate volume level for left an right
@@ -138,6 +138,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+March 31th 2022 v1.0.7
+
+- New Loudness curve adjustement to match ISO 226: 2003 standard. Thank you Petr_Dudek
 
 March 26th 2022 v1.0.6
 

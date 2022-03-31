@@ -125,23 +125,12 @@ FusionDsp.prototype.loadalsastuff = function () {
   const self = this;
   var defer = libQ.defer();
   try {
-    execSync("/usr/bin/mkfifo /tmp/fusiondspfifo", {
+    execSync("/usr/bin/mkfifo -m 646 /tmp/fusiondspfifo", {
       uid: 1000,
       gid: 1000
     })
   } catch (err) {
     self.logger.error('----failed to create fusiondspfifo :' + err);
-    defer.reject(err);
-  }
-  try {
-
-    exec("bin/chmod 777 /tmp/fusiondspfifo", {
-      uid: 1000,
-      gid: 1000
-
-    })
-  } catch (err) {
-    self.logger.error('----failed to change permissions for fusiondspfifo :' + err);
     defer.reject(err);
   }
 };
@@ -2370,70 +2359,88 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         var composedeq = '';
         var pipelineL = '';
         var pipelineR = '';
-        /*
+/*
         composedeq += '  highshelf:\n'
         composedeq += '    type: Biquad\n'
         composedeq += '    parameters:\n'
         composedeq += '      type: Highshelf\n'
-        composedeq += '      freq: 3600\n'
-        composedeq += '      slope: 12\n'
-        composedeq += '      gain: ' + (loudnessGain * 0.30).toFixed(2) + '\n'
-        composedeq += '\n'
+        composedeq += '      freq: 10620\n'
+        composedeq += '      q: 1.38\n'
+        composedeq += '      gain: ' + ((loudnessGain * 0.2811168954093706) - loudnessGain).toFixed(2) + '\n'
+        composedeq += '' + '\n'
         composedeq += '  lowshelf:\n';
         composedeq += '    type: Biquad' + '\n';
         composedeq += '    parameters:' + '\n';
         composedeq += '      type: LowshelfFO\n';
-        composedeq += '      freq: 65\n';
-        composedeq += '      gain: ' + loudnessGain + '\n';
-        composedeq += '' + '\n';
-        composedeq += '  peakloudness:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: Peaking\n';
-        composedeq += '      freq: 1000\n';
-        composedeq += '      q: 0.9\n';
-        composedeq += '      gain: ' + (loudnessGain * 0.18).toFixed(2) + '\n';
-        composedeq += '' + '\n';
-        composedeq += '  peakloudness2:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: Peaking\n';
-        composedeq += '      freq: 13000\n';
-        composedeq += '      q: 0.7\n';
-        composedeq += '      gain: ' + (loudnessGain * 0.08).toFixed(2) + '\n';
-        */
-        composedeq += '  highshelf:\n'
-        composedeq += '    type: Biquad\n'
-        composedeq += '    parameters:\n'
-        composedeq += '      type: Highshelf\n'
-        composedeq += '      freq: 10000\n'
-        composedeq += '      q: 0.8\n'
-        composedeq += '      gain: ' + (loudnessGain * 0.28).toFixed(2) + '\n'
-        composedeq += '\n'
-        composedeq += '  lowshelf:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: LowshelfFO\n';
-        composedeq += '      freq: 75\n';
-        composedeq += '      gain: ' + loudnessGain + '\n';
-        composedeq += '' + '\n';
+        composedeq += '      freq: 120\n';
+        composedeq += '      gain: ' + -0.1 + '\n';
+        composedeq += '' + '\n'
         composedeq += '  peakloudness:\n';
         composedeq += '    type: Biquad' + '\n';
         composedeq += '    parameters:' + '\n';
         composedeq += '      type: Peaking\n';
         composedeq += '      freq: 2000\n';
-        composedeq += '      q: 0.4\n';
-        composedeq += '      gain: ' + (loudnessGain * -0.04).toFixed(2) + '\n';
-        composedeq += '' + '\n';
+        composedeq += '      q: 0.6\n';
+        composedeq += '      gain: ' + ((loudnessGain * -0.061050638902035) - loudnessGain).toFixed(2) + '\n';
+        composedeq += '' + '\n'
         composedeq += '  peakloudness2:\n';
         composedeq += '    type: Biquad' + '\n';
         composedeq += '    parameters:' + '\n';
         composedeq += '      type: Peaking\n';
         composedeq += '      freq: 4000\n';
         composedeq += '      q: 0.8\n';
-        composedeq += '      gain: ' + (loudnessGain * -0.036).toFixed(2) + '\n';
-        composedeq += '' + '\n';
-        composedeq += '' + '\n';
+        composedeq += '      gain: ' + ((loudnessGain * -0.0274491244675816) - loudnessGain).toFixed(2) + '\n';
+        composedeq += '' + '\n'
+        composedeq += '  peakloudness3:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 8000\n';
+        composedeq += '      q: 2.13\n';
+        composedeq += '      gain: ' + ((loudnessGain * 0.0709891150023663) - loudnessGain).toFixed(2) + '\n';
+        composedeq += '' + '\n'
+*/
+
+        composedeq += '  highshelf:\n'
+        composedeq += '    type: Biquad\n'
+        composedeq += '    parameters:\n'
+        composedeq += '      type: Highshelf\n'
+        composedeq += '      freq: 10620\n'
+        composedeq += '      q: 1.38\n'
+        composedeq += '      gain: ' + ((loudnessGain * 0.2811168954093706)).toFixed(2) + '\n'
+        composedeq += '' + '\n'
+        composedeq += '  lowshelf:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: LowshelfFO\n';
+        composedeq += '      freq: 120\n';
+        composedeq += '      gain: ' + loudnessGain + '\n';
+        composedeq += '' + '\n'
+        composedeq += '  peakloudness:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 2000\n';
+        composedeq += '      q: 0.6\n';
+        composedeq += '      gain: ' + ((loudnessGain * -0.061050638902035)).toFixed(2) + '\n';
+        composedeq += '' + '\n'
+        composedeq += '  peakloudness2:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 4000\n';
+        composedeq += '      q: 0.8\n';
+        composedeq += '      gain: ' + ((loudnessGain * -0.0274491244675816)).toFixed(2) + '\n';
+        composedeq += '' + '\n'
+        composedeq += '  peakloudness3:\n';
+        composedeq += '    type: Biquad' + '\n';
+        composedeq += '    parameters:' + '\n';
+        composedeq += '      type: Peaking\n';
+        composedeq += '      freq: 8000\n';
+        composedeq += '      q: 2.13\n';
+        composedeq += '      gain: ' + ((loudnessGain * 0.0709891150023663)).toFixed(2) + '\n';
+        composedeq += '' + '\n'
+
         result += composedeq
         //-----loudness pipeline
 
