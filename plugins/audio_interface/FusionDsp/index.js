@@ -55,7 +55,6 @@ FusionDsp.prototype.onVolumioStart = function () {
 FusionDsp.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
-  const socket = io.connect('http://localhost:3000');
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
   self.loadalsastuff();
@@ -89,6 +88,7 @@ FusionDsp.prototype.onStart = function () {
 FusionDsp.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
+  var socket = io.connect('http://localhost:3000');
   socket.off()
   self.logger.info("Stopping FusionDsp service");
 
@@ -1926,6 +1926,7 @@ FusionDsp.prototype.testclipping = function () {
   const self = this;
   let defer = libQ.defer();
   let messageDisplayed;
+  var socket = io.connect('http://localhost:3000');
   socket.emit('stop');
   let arrreduced;
   let filelength = self.config.get('filter_size');
@@ -2361,7 +2362,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       //------volume loudness section---
 
       let loudness = self.config.get('loudness')
-      if (loudness) {
+      if ((loudness) && (effect)) {
         self.logger.info('Loudness is ON ' + loudness)
         var composedeq = '';
         var pipelineL = '';
@@ -2764,9 +2765,9 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       gainmaxused += ',0,' + loudnessGain
 
       //-----gain calculation
-    //  self.logger.info('gainmaxused' + gainmaxused)
+      //  self.logger.info('gainmaxused' + gainmaxused)
       //self.logger.info('crossatt ' + crossatt)
-     // self.logger.info('pipelinerr ' + pipelinerr)
+      // self.logger.info('pipelinerr ' + pipelinerr)
 
 
 
@@ -3138,6 +3139,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
   let defer = libQ.defer();
   let test = '';
+  var socket = io.connect('http://localhost:3000');
   let selectedsp = self.config.get('selectedsp')
   if (selectedsp == 'PEQ') {
     var nbreq = self.config.get('nbreq')
@@ -3469,7 +3471,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       }, 900);
 
       socket.emit('volume', '-')
-      self.logger.info('--------xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-------------volume emit')
     } else {
       socket.off()
     }
@@ -4075,7 +4076,7 @@ FusionDsp.prototype.installtools = function (data) {
       self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
       self.config.set('toolsinstalled', true);
       self.refreshUI();
-
+      var socket = io.connect('http://localhost:3000');
       socket.emit('updateDb');
 
 
@@ -4106,6 +4107,7 @@ FusionDsp.prototype.removetools = function (data) {
     self.config.set('toolsinstalled', false);
     self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
     self.refreshUI();
+    var socket = io.connect('http://localhost:3000');
     socket.emit('updateDb');
 
   });
@@ -4124,7 +4126,7 @@ FusionDsp.prototype.playToolsFile = function (data) {
 
 FusionDsp.prototype.sendvolumelevel = function () {
   const self = this;
-
+  var socket = io.connect('http://localhost:3000');
   socket.on('pushState', function (data) {
     let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
     let loudnessMaxGain = 23 //15
