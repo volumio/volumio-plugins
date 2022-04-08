@@ -144,6 +144,7 @@ April 8th 2022 v1.0.8
 - Typo in EN, DE
 - PureCamilla gui as systemd service
 - code cleaning
+- A filter was missing in Loudness pipeline
 
 March 31th 2022 v1.0.7
 
