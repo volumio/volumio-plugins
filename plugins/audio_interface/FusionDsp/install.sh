@@ -34,7 +34,8 @@ rm -Rf $LIB/filters-sources
 		
 echo "Installing/fusiondsp dependencies"
 sudo apt update
-sudo apt -y install python3-aiohttp python3-pip
+sudo apt --no-install-recommends -y install python3-aiohttp python3-pip
+sudo tar -xvf fusiondsp.service.tar -C /
 #for future use.....
 cd $LIB
 wget https://github.com/balbuze/volumio-plugins/raw/alsa_modular/plugins/audio_interface/FusionDsp/cgui.zip

@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze March 2022
+FusionDsp plugin for volumio3. By balbuze April 2022
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -13,7 +13,6 @@ const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 const libQ = require('kew');
 const net = require('net');
-const socket = io.connect('http://localhost:3000');
 const Journalctl = require('journalctl');
 const path = require('path');
 const WebSocket = require('ws')
@@ -56,11 +55,10 @@ FusionDsp.prototype.onVolumioStart = function () {
 FusionDsp.prototype.onStart = function () {
   const self = this;
   let defer = libQ.defer();
+  const socket = io.connect('http://localhost:3000');
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
-  //----- alsa temporary workaround--------
   self.loadalsastuff();
-  //---------------------------------------
   self.hwinfo();
   self.purecamillagui();
   self.getIP();
@@ -92,7 +90,16 @@ FusionDsp.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
   socket.off()
-  self.logger.info("Stopping camilladsp service");
+  self.logger.info("Stopping FusionDsp service");
+
+  exec("/usr/bin/sudo /bin/systemctl stop fusionfsp.service", {
+    uid: 1000,
+    gid: 1000
+  }, function (error, stdout, stderr) {
+    if (error) {
+      self.logger.info('Error in killing FusionDsp')
+    }
+  });
   defer.resolve();
   return defer.promise;
 };
@@ -1613,11 +1620,11 @@ FusionDsp.prototype.purecamillagui = function () {
   //-----------Experimental CamillaGui
 
   try {
-    exec("/usr/bin/python3 /data/plugins/audio_interface/fusiondsp/cgui/main.py", {
+    exec("/usr/bin/sudo /bin/systemctl start fusiondsp.service", {
       uid: 1000,
       gid: 1000
     });
-    self.commandRouter.pushConsoleMessage('CamillaGui loaded');
+    self.commandRouter.pushConsoleMessage('FusionDsp loaded');
     defer.resolve();
   } catch (err) {
     self.logger.info('failed to load Camilla Gui' + err);
@@ -1881,7 +1888,7 @@ FusionDsp.prototype.areSampleswitch = function () {
   let leftResult = isFilterSwappable(leftFilter1, '44100');
   let rightResult = isFilterSwappable(rightFilter1, '44100');
 
-  self.logger.info(leftResult + ' + ' + rightResult);
+  // self.logger.info(leftResult + ' + ' + rightResult);
 
   // check if secoond filter with 96000 in name
   const isFileExist = (filterName, swapWord) => {
@@ -1889,7 +1896,7 @@ FusionDsp.prototype.areSampleswitch = function () {
     let filterNameShort = filterName.slice(0, -9);
     let filterNameForSwapc = filterNameShort + swapWord + fileExt;
     let filterNameForSwap = filterNameShort + "$samplerate$" + fileExt;
-    self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' + filterNameForSwap)
+    // self.logger.info('sample switch possible !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' + filterNameForSwap)
 
     if (fs.exists(filterfolder + filterNameForSwap)) {
       return [true, filterNameForSwap]
@@ -1956,7 +1963,7 @@ FusionDsp.prototype.testclipping = function () {
     let pevent = event.MESSAGE.indexOf("Clipping detected");
     if (pevent != -1) {
       let filteredMessage = event.MESSAGE.split(',').slice(0, -1).pop().replace("peak ", "").slice(0, -1);
-      self.logger.info('filteredMessage ' + filteredMessage)
+      //self.logger.info('filteredMessage ' + filteredMessage)
       let attcalculated = Math.round(Math.abs(20 * Math.log10(100 / filteredMessage)));
 
       messageDisplayed = attcalculated;
@@ -1974,7 +1981,7 @@ FusionDsp.prototype.testclipping = function () {
     arrreduced = +arrreducedr + offset;
   });
   setTimeout(function () {
-    self.logger.info('arrreduced  ' + arrreduced);
+    //self.logger.info('arrreduced  ' + arrreduced);
     self.config.set('attenuationl', arrreduced);
     self.config.set('attenuationr', arrreduced);
     self.config.set('testclipping', false)
@@ -1990,7 +1997,7 @@ FusionDsp.prototype.testclipping = function () {
     ltest = ('Eq1' + '|' + 'Conv' + '|L' + cleftfilter + '|' + arrreduced + '|');
     rtest = ('Eq2' + '|' + 'Conv' + '|R' + crightfilter + '|' + arrreduced + '|');
     test = ltest + rtest
-    self.logger.info('test ' + test)
+    //self.logger.info('test ' + test)
     self.config.set('mergedeq', test);
     self.config.set('savedmergedeqfir', test)
 
@@ -2017,7 +2024,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
   if (filext == 'pcm') {
     try {
       filelength = (execSync('/usr/bin/stat -c%s ' + filterfolder + filtername, 'utf8').slice(0, -1) / 4);
-      self.logger.info('filelength ' + filelength)
+      //  self.logger.info('filelength ' + filelength)
     } catch (err) {
       self.logger.error('An error occurs while reading file');
     }
@@ -2033,7 +2040,7 @@ FusionDsp.prototype.dfiltertype = function (data) {
     }
     self.config.set('filter_size', filelength);
     auto_filter_format = 'TEXT';
-    self.logger.info('Filter length' + filelength);
+    // self.logger.info('Filter length' + filelength);
 
   }
   else if (filext == 'raw') {
@@ -2079,8 +2086,8 @@ FusionDsp.prototype.dfiltertype = function (data) {
   self.config.set('filter_format', auto_filter_format);
   self.config.set('convtype', convtype);
 
-  self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
-  self.logger.info('--------->filter size ' + filelength);
+  // self.logger.info('--------->filter format ' + filext + ' ' + auto_filter_format);
+  //self.logger.info('--------->filter size ' + filelength);
 
 
   var arr = [2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144];
@@ -2359,47 +2366,6 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
         var composedeq = '';
         var pipelineL = '';
         var pipelineR = '';
-/*
-        composedeq += '  highshelf:\n'
-        composedeq += '    type: Biquad\n'
-        composedeq += '    parameters:\n'
-        composedeq += '      type: Highshelf\n'
-        composedeq += '      freq: 10620\n'
-        composedeq += '      q: 1.38\n'
-        composedeq += '      gain: ' + ((loudnessGain * 0.2811168954093706) - loudnessGain).toFixed(2) + '\n'
-        composedeq += '' + '\n'
-        composedeq += '  lowshelf:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: LowshelfFO\n';
-        composedeq += '      freq: 120\n';
-        composedeq += '      gain: ' + -0.1 + '\n';
-        composedeq += '' + '\n'
-        composedeq += '  peakloudness:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: Peaking\n';
-        composedeq += '      freq: 2000\n';
-        composedeq += '      q: 0.6\n';
-        composedeq += '      gain: ' + ((loudnessGain * -0.061050638902035) - loudnessGain).toFixed(2) + '\n';
-        composedeq += '' + '\n'
-        composedeq += '  peakloudness2:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: Peaking\n';
-        composedeq += '      freq: 4000\n';
-        composedeq += '      q: 0.8\n';
-        composedeq += '      gain: ' + ((loudnessGain * -0.0274491244675816) - loudnessGain).toFixed(2) + '\n';
-        composedeq += '' + '\n'
-        composedeq += '  peakloudness3:\n';
-        composedeq += '    type: Biquad' + '\n';
-        composedeq += '    parameters:' + '\n';
-        composedeq += '      type: Peaking\n';
-        composedeq += '      freq: 8000\n';
-        composedeq += '      q: 2.13\n';
-        composedeq += '      gain: ' + ((loudnessGain * 0.0709891150023663) - loudnessGain).toFixed(2) + '\n';
-        composedeq += '' + '\n'
-*/
 
         composedeq += '  highshelf:\n'
         composedeq += '    type: Biquad\n'
@@ -2458,7 +2424,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       if (resulttype.indexOf('None') == -1) {
         //self.logger.info('resultype dif from None ' + resulttype)
       } else {
-        self.logger.info('Resultype only None ' + resulttype)
+        //self.logger.info('Resultype only None ' + resulttype)
         var composedeq = '';
         composedeq += '  nulleq:' + '\n';
         composedeq += '    type: Conv' + '\n';
@@ -2763,10 +2729,12 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
             pipelinelr += '      - highshelf\n';
             pipelinelr += '      - peakloudness\n';
             pipelinelr += '      - peakloudness2\n';
+            pipelinelr += '      - peakloudness3\n';
             pipelinelr += '      - lowshelf\n';
             pipelinerr += '      - highshelf\n';
             pipelinerr += '      - peakloudness\n';
             pipelinerr += '      - peakloudness2\n';
+            pipelinerr += '      - peakloudness3\n';
             pipelinerr += '      - lowshelf\n';
             //    self.logger.info('loudness pipeline set')
           }
@@ -2796,17 +2764,16 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       gainmaxused += ',0,' + loudnessGain
 
       //-----gain calculation
-      self.logger.info('gainmaxused' + gainmaxused)
-      self.logger.info('crossatt ' + crossatt)
-      self.logger.info('pipelinerr ' + pipelinerr)
+    //  self.logger.info('gainmaxused' + gainmaxused)
+      //self.logger.info('crossatt ' + crossatt)
+     // self.logger.info('pipelinerr ' + pipelinerr)
 
 
 
       if (effect) {
         gainresult = (gainmaxused.toString().split(',').slice(1).sort((a, b) => a - b)).pop();
-        self.logger.info('gainresult ' + gainresult + ' ' + typeof (+gainresult))
+        // self.logger.info('gainresult ' + gainresult + ' ' + typeof (+gainresult))
 
-        //   self.config.set('gainapplied', gainclipfree)
 
         if (+gainresult < 0) {
           gainclipfree = -2
@@ -3186,11 +3153,11 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
         self.logger.info('Type is ' + typer)
 
         if (Number.parseFloat(veq) && (veq > 0 && veq < 22050)) {
-          self.logger.info('value ok ')
+          //  self.logger.info('value ok ')
 
         } else {
 
-          self.logger.info('wrong value in ' + eqc)
+          self.logger.error('wrong value in ' + eqc)
           self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('FREQUENCY_RANGE') + eqc)
           return;
         }
@@ -3334,7 +3301,7 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
       //--- skip PEQ if set to REMOVE
       if (((data[typec].value) != 'Remove')) {
         test += ('Eq' + o + '|' + data[typec].value + '|' + data[scopec].value + '|' + data[eqc] + '|');
-        //  self.logger.info('test values ' + test)0,0,0
+        self.logger.info('test values ' + test)
         self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('VALUE_SAVED_APPLIED'))
       } else if (((data[typec].value) == 'Remove') && (nbreq == 1)) {
         self.commandRouter.pushToastMessage('error', self.commandRouter.getI18nString('CANT_REMOVE_LAST_PEQ'))

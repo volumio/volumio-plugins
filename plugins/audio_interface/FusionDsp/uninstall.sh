@@ -4,7 +4,10 @@ echo "Unistalling Brutefir dependencies"
 
 echo "Removing CamillaDsp"
 rm -Rf /data/INTERNAL/FusionDsp
-rm /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_cdsp.so 
+
+systemctl stop fusiondsp
+
+sudo rm /etc/systemd/system/fusiondsp.service
 
 echo "Done"
 echo "pluginuninstallend"
