@@ -92,7 +92,7 @@ FusionDsp.prototype.onStop = function () {
   socket.off()
   self.logger.info("Stopping FusionDsp service");
 
-  exec("/usr/bin/sudo /bin/systemctl stop fusionfsp.service", {
+  exec("/usr/bin/sudo /bin/systemctl stop fusiondsp.service", {
     uid: 1000,
     gid: 1000
   }, function (error, stdout, stderr) {

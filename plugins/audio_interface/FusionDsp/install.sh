@@ -34,7 +34,7 @@ rm -Rf $LIB/filters-sources
 		
 echo "Installing/fusiondsp dependencies"
 sudo apt update
-sudo apt --no-install-recommends -y install python3-aiohttp python3-pip
+sudo apt -y install python3-aiohttp python3-pip
 cd $LIB
 sudo tar -xvf fusiondsp.service.tar -C /
 
