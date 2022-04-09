@@ -1,4 +1,4 @@
-April 06th 2022
+April 96th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -138,6 +138,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+April 9th 2022 v1.0.9
+
+- Graphics eq : new button to reset to 0
 
 April 8th 2022 v1.0.8
 

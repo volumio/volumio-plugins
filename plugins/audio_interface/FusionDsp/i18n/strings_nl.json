@@ -182,5 +182,7 @@
   "DELAY_SCOPE":"Vertraging op kanaal",
   "DELAY_SCOPE_DOC":"Geef aan op welk kanaal de vertraging moet worden toegepast",
   "PERMUT_CHANNEL": "Swap L&R channels",
-  "PERMUT_CHANNEL_DOC":"Swap L&R channels"
+  "PERMUT_CHANNEL_DOC":"Swap L&R channels",
+  "RESETEQ":"Reset all EQ",
+  "RESETEQ_DOC":"Reset all Eq to Zero"
 }

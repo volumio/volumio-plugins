@@ -681,6 +681,19 @@ FusionDsp.prototype.getUIConfig = function (address) {
                   }
                 ]
               }
+            },
+            {
+              "id": "reset",
+              "element": "button",
+              "label": self.commandRouter.getI18nString("RESETEQ"),
+              "doc": self.commandRouter.getI18nString("RESETEQ_DOC"),
+              "onClick": {
+                "type": "plugin",
+                "endpoint": "audio_interface/fusiondsp",
+                "method": "reseteq",
+                "data": [],
+  
+              }
             }
           )
           uiconf.sections[1].saveButton.data.push(listeq[i]);
@@ -1697,6 +1710,21 @@ FusionDsp.prototype.removeeq = function () {
   self.refreshUI();
 };
 
+
+FusionDsp.prototype.reseteq = function () {
+  const self = this;
+  if (selectedsp == 'EQ15') {
+  self.config.set("geq15","0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+  }
+  if (selectedsp == '2XEQ15') {
+    self.config.set("x2geq15","0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    }
+  setTimeout(function () {
+    self.createCamilladspfile()
+    self.refreshUI();
+  }, 100);
+
+};
 
 FusionDsp.prototype.moresettings = function () {
   const self = this;

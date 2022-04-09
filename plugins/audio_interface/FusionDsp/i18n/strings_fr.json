@@ -182,5 +182,7 @@
   "LOUDNESS_THRESHOLD_DOC": "En dessous de ce seuil,un Loudness progressif est appliqué",
   "CLICK_TO_UPDATE_LIST_DESC": "Mettre à jour la listes des casques depuis AutoEq",
   "PERMUT_CHANNEL": "Permuter L&R",
-  "PERMUT_CHANNEL_DOC":"Permuter L&R"
+  "PERMUT_CHANNEL_DOC":"Permuter L&R",
+  "RESETEQ":"Remettre à 0",
+  "RESETEQ_DOC":"Remettre à 0 tous le EQ"
 }

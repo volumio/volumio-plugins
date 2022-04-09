@@ -182,5 +182,7 @@
   "DELAY_SCOPE":"Retraso en el canal",
   "DELAY_SCOPE_DOC":"Ingrese en qué canal aplicar el retraso",
   "PERMUT_CHANNEL": "Swap L&R channels",
-  "PERMUT_CHANNEL_DOC":"Swap L&R channels"
+  "PERMUT_CHANNEL_DOC":"Swap L&R channels",
+  "RESETEQ":"Reset all EQ",
+  "RESETEQ_DOC":"Reset all Eq to Zero"
 }
