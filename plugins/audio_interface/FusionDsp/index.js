@@ -681,24 +681,26 @@ FusionDsp.prototype.getUIConfig = function (address) {
                   }
                 ]
               }
-            },
-            {
-              "id": "reset",
-              "element": "button",
-              "label": self.commandRouter.getI18nString("RESETEQ"),
-              "doc": self.commandRouter.getI18nString("RESETEQ_DOC"),
-              "onClick": {
-                "type": "plugin",
-                "endpoint": "audio_interface/fusiondsp",
-                "method": "reseteq",
-                "data": [],
-  
-              }
             }
+
           )
           uiconf.sections[1].saveButton.data.push(listeq[i]);
         }
+        uiconf.sections[1].content.push(
+          {
+            "id": "reset",
+            "element": "button",
+            "label": self.commandRouter.getI18nString("RESETEQ"),
+            "doc": self.commandRouter.getI18nString("RESETEQ_DOC"),
+            "onClick": {
+              "type": "plugin",
+              "endpoint": "audio_interface/fusiondsp",
+              "method": "reseteq",
+              "data": [],
 
+            }
+          }
+        )
         //----End EQ15-------------
         //----------------------convfir section-------------------
 
@@ -1644,7 +1646,7 @@ FusionDsp.prototype.purecamillagui = function () {
   }
 
 }
-
+/*
 FusionDsp.prototype.installcamillagui = function () {
   const self = this;
   let defer = libQ.defer();
@@ -1674,7 +1676,7 @@ FusionDsp.prototype.installcamillagui = function () {
   }
 
 }
-
+*/
 FusionDsp.prototype.addeq = function (data) {
   const self = this;
   var n = self.config.get('nbreq')
@@ -1713,16 +1715,22 @@ FusionDsp.prototype.removeeq = function () {
 
 FusionDsp.prototype.reseteq = function () {
   const self = this;
-  if (selectedsp == 'EQ15') {
-  self.config.set("geq15","0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+  if (self.config.get("selectedsp") == 'EQ15') {
+    self.config.set("geq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    self.config.set("savedgeq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    self.config.set('nbreq', 15)
+    self.config.set('mergedeq',"Eq0|Peaking|L+R|25,0,1.85|Eq1|Peaking|L+R|40,0,1.85|Eq2|Peaking|L+R|63,0,1.85|Eq3|Peaking|L+R|100,0,1.85|Eq4|Peaking|L+R|160,0,1.85|Eq5|Peaking|L+R|250,0,1.85|Eq6|Peaking|L+R|400,0,1.85|Eq7|Peaking|L+R|630,0,1.85|Eq8|Peaking|L+R|1000,0,1.85|Eq9|Peaking|L+R|1600,0,1.85|Eq10|Peaking|L+R|2500,0,1.85|Eq11|Peaking|L+R|4000,0,1.85|Eq12|Peaking|L+R|6300,0,1.85|Eq13|Peaking|L+R|10000,0,1.85|Eq14|Peaking|L+R|16000,0,1.85|")
   }
-  if (selectedsp == '2XEQ15') {
-    self.config.set("x2geq15","0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
-    }
+  if (self.config.get("selectedsp") == '2XEQ15') {
+    self.config.set("x2geq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    self.config.set("geq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+    self.config.set('nbreq', 30)
+    self.config.set('mergedeq', "Eq0|Peaking|L|25,0,1.85|Eq1|Peaking|L|40,0,1.85|Eq2|Peaking|L|63,0,1.85|Eq3|Peaking|L|100,0,1.85|Eq4|Peaking|L|160,0,1.85|Eq5|Peaking|L|250,0,1.85|Eq6|Peaking|L|400,0,1.85|Eq7|Peaking|L|630,0,1.85|Eq8|Peaking|L|1000,0,1.85|Eq9|Peaking|L|1600,0,1.85|Eq10|Peaking|L|2500,0,1.85|Eq11|Peaking|L|4000,0,1.85|Eq12|Peaking|L|6300,0,1.85|Eq13|Peaking|L|10000,0,1.85|Eq14|Peaking|L|16000,0,1.85|undefinedEq0|Peaking|R|25,0,1.85|Eq1|Peaking|R|40,0,1.85|Eq2|Peaking|R|63,0,1.85|Eq3|Peaking|R|100,0,1.85|Eq4|Peaking|R|160,0,1.85|Eq5|Peaking|R|250,0,1.85|Eq6|Peaking|R|400,0,1.851|Eq7|Peaking|R|630,0,1.85|Eq8|Peaking|R|1000,0,1.85|Eq9|Peaking|R|1600,0,1.85|Eq10|Peaking|R|2500,0,1.85|Eq11|Peaking|R|4000,0,1.85|Eq12|Peaking|R|6300,0,1.85|Eq13|Peaking|R|10000,0,1.85|Eq14|Peaking|R|16000,0,1.85|")
+  }
   setTimeout(function () {
     self.createCamilladspfile()
     self.refreshUI();
-  }, 100);
+  }, 300);
 
 };
 
