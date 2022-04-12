@@ -1,4 +1,4 @@
-April 96th 2022
+April 12th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -138,6 +138,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+April 12th 2022 v1.0.10
+
+- code socket handling
 
 April 9th 2022 v1.0.9
 

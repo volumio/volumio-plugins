@@ -29,7 +29,6 @@ const wavfolder = "/data/INTERNAL/FusionDsp/wavfiles/";
 const eq15range = [25, 40, 63, 100, 160, 250, 400, 630, 1000, 1600, 2500, 4000, 6300, 10000, 16000]
 const coefQ = 1.85//Q for graphic EQ
 const sv = 34300 // sound velocity cm/s
-
 // Define the Parameq class
 module.exports = FusionDsp;
 
@@ -54,6 +53,7 @@ FusionDsp.prototype.onVolumioStart = function () {
 
 FusionDsp.prototype.onStart = function () {
   const self = this;
+  const socket = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
@@ -61,6 +61,7 @@ FusionDsp.prototype.onStart = function () {
   self.hwinfo();
   self.purecamillagui();
   self.getIP();
+  self.socket = io.connect('http://localhost:3000');
 
   // if mixer set to none, do not show loudness settings
   var mixt = this.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
@@ -88,8 +89,7 @@ FusionDsp.prototype.onStart = function () {
 FusionDsp.prototype.onStop = function () {
   const self = this;
   let defer = libQ.defer();
-  var socket = io.connect('http://localhost:3000');
-  socket.off()
+  self.socket.off()
   self.logger.info("Stopping FusionDsp service");
 
   exec("/usr/bin/sudo /bin/systemctl stop fusiondsp.service", {
@@ -1719,7 +1719,7 @@ FusionDsp.prototype.reseteq = function () {
     self.config.set("geq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
     self.config.set("savedgeq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
     self.config.set('nbreq', 15)
-    self.config.set('mergedeq',"Eq0|Peaking|L+R|25,0,1.85|Eq1|Peaking|L+R|40,0,1.85|Eq2|Peaking|L+R|63,0,1.85|Eq3|Peaking|L+R|100,0,1.85|Eq4|Peaking|L+R|160,0,1.85|Eq5|Peaking|L+R|250,0,1.85|Eq6|Peaking|L+R|400,0,1.85|Eq7|Peaking|L+R|630,0,1.85|Eq8|Peaking|L+R|1000,0,1.85|Eq9|Peaking|L+R|1600,0,1.85|Eq10|Peaking|L+R|2500,0,1.85|Eq11|Peaking|L+R|4000,0,1.85|Eq12|Peaking|L+R|6300,0,1.85|Eq13|Peaking|L+R|10000,0,1.85|Eq14|Peaking|L+R|16000,0,1.85|")
+    self.config.set('mergedeq', "Eq0|Peaking|L+R|25,0,1.85|Eq1|Peaking|L+R|40,0,1.85|Eq2|Peaking|L+R|63,0,1.85|Eq3|Peaking|L+R|100,0,1.85|Eq4|Peaking|L+R|160,0,1.85|Eq5|Peaking|L+R|250,0,1.85|Eq6|Peaking|L+R|400,0,1.85|Eq7|Peaking|L+R|630,0,1.85|Eq8|Peaking|L+R|1000,0,1.85|Eq9|Peaking|L+R|1600,0,1.85|Eq10|Peaking|L+R|2500,0,1.85|Eq11|Peaking|L+R|4000,0,1.85|Eq12|Peaking|L+R|6300,0,1.85|Eq13|Peaking|L+R|10000,0,1.85|Eq14|Peaking|L+R|16000,0,1.85|")
   }
   if (self.config.get("selectedsp") == '2XEQ15') {
     self.config.set("x2geq15", "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
@@ -1962,8 +1962,7 @@ FusionDsp.prototype.testclipping = function () {
   const self = this;
   let defer = libQ.defer();
   let messageDisplayed;
-  var socket = io.connect('http://localhost:3000');
-  socket.emit('stop');
+  self.socket.emit('stop');
   let arrreduced;
   let filelength = self.config.get('filter_size');
   setTimeout(function () {
@@ -3175,7 +3174,6 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
 
   let defer = libQ.defer();
   let test = '';
-  var socket = io.connect('http://localhost:3000');
   let selectedsp = self.config.get('selectedsp')
   if (selectedsp == 'PEQ') {
     var nbreq = self.config.get('nbreq')
@@ -3500,15 +3498,15 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     let loudness = data["loudness"]
     if (loudness) {
       self.config.set('loudnessthreshold', data.loudnessthreshold)
-      socket.emit('volume', '+')
+      self.socket.emit('volume', '+')
       setTimeout(function () {
 
         self.sendvolumelevel()
       }, 900);
 
-      socket.emit('volume', '-')
+      self.socket.emit('volume', '-')
     } else {
-      socket.off()
+      //self.socket.off()
     }
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
@@ -4093,7 +4091,6 @@ FusionDsp.prototype.convert = function (data) {
 //here we download and install tools
 FusionDsp.prototype.installtools = function (data) {
   const self = this;
-
   return new Promise(function (resolve, reject) {
     try {
       let modalData = {
@@ -4112,8 +4109,7 @@ FusionDsp.prototype.installtools = function (data) {
       self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_CHOOSE_FILE'));
       self.config.set('toolsinstalled', true);
       self.refreshUI();
-      var socket = io.connect('http://localhost:3000');
-      socket.emit('updateDb');
+      self.socket.emit('updateDb');
 
 
     } catch (err) {
@@ -4128,6 +4124,7 @@ FusionDsp.prototype.installtools = function (data) {
 //here we remove tools
 FusionDsp.prototype.removetools = function (data) {
   const self = this;
+
   self.commandRouter.pushToastMessage('info', self.commandRouter.getI18nString('TOOLS_REMOVE'));
   return new Promise(function (resolve, reject) {
 
@@ -4143,8 +4140,7 @@ FusionDsp.prototype.removetools = function (data) {
     self.config.set('toolsinstalled', false);
     self.config.set('toolsfiletoplay', self.commandRouter.getI18nString('TOOLS_NO_FILE'));
     self.refreshUI();
-    var socket = io.connect('http://localhost:3000');
-    socket.emit('updateDb');
+    self.socket.emit('updateDb');
 
   });
 };
@@ -4162,8 +4158,7 @@ FusionDsp.prototype.playToolsFile = function (data) {
 
 FusionDsp.prototype.sendvolumelevel = function () {
   const self = this;
-  var socket = io.connect('http://localhost:3000');
-  socket.on('pushState', function (data) {
+  self.socket.on('pushState', function (data) {
     let loudnessVolumeThreshold = self.config.get('loudnessthreshold')
     let loudnessMaxGain = 23 //15
     let loudnessLowThreshold = 5 //10
