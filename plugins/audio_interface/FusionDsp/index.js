@@ -53,15 +53,16 @@ FusionDsp.prototype.onVolumioStart = function () {
 
 FusionDsp.prototype.onStart = function () {
   const self = this;
-  const socket = this;
   let defer = libQ.defer();
   self.commandRouter.loadI18nStrings();
   self.commandRouter.executeOnPlugin('audio_interface', 'alsa_controller', 'updateALSAConfigFile');
-  self.loadalsastuff();
-  self.hwinfo();
-  self.purecamillagui();
-  self.getIP();
-  self.socket = io.connect('http://localhost:3000');
+  setTimeout(function () {
+    self.loadalsastuff();
+    self.hwinfo();
+    self.purecamillagui();
+    self.getIP();
+    self.socket = io.connect('http://localhost:3000');
+  }, 2000);
 
   // if mixer set to none, do not show loudness settings
   var mixt = this.getAdditionalConf('audio_interface', 'alsa_controller', 'mixer_type');
@@ -3869,17 +3870,19 @@ FusionDsp.prototype.convertimportedeq = function () {
     var result = (EQfile.split('\n'));
     for (o; o < result.length; o++) {
       if (nbreq < tnbreq) {
-        if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && (result[o].indexOf("PK") != -1) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
-          var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
+        if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && ((result[o].indexOf("PK") != -1) || (result[o].indexOf("LS") != -1) || (result[o].indexOf("HS") != -1)) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
+          var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',Peaking,').replace(/ON LS Fc /g, ',Lowshelf2,').replace(/ON HS Fc /g, ',Highshelf2,').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
           //  self.logger.info('filter in line ' + o + lresult)
           var eqv = (lresult);
           var param = eqv.split(',')
-          var correctedfreq = param[1]
+          var correctedfreq = param[2]
           if (correctedfreq >= 22050) {
             correctedfreq = 22049
           }
           // console.log(param)
-          var eqs = (correctedfreq + ',' + param[2] + ',' + param[3])
+          var eqs = (correctedfreq + ',' + param[3] + ',' + param[4])
+          var typeconv = param[1]
+
           var typec = 'type' + nbreq;
           var scopec = 'scope' + nbreq;
           var eqc = 'eq' + nbreq;
@@ -3889,7 +3892,7 @@ FusionDsp.prototype.convertimportedeq = function () {
           } else {
             localscope = self.config.get('localscope');
           }
-          test += ('Eq' + o + '|Peaking|' + localscope + '|' + eqs + '|');
+          test += ('Eq' + o + '|' + typeconv + '|' + localscope + '|' + eqs + '|');
 
           self.config.set("nbreq", nbreq - 1);
           self.config.set('effect', true)
