@@ -184,5 +184,7 @@
   "PERMUT_CHANNEL": "Permuter L&R",
   "PERMUT_CHANNEL_DOC":"Permuter L&R",
   "RESETEQ":"Remettre à 0",
-  "RESETEQ_DOC":"Remettre à 0 tous le EQ"
+  "RESETEQ_DOC":"Remettre à 0 tous le EQ",
+  "AUTO_ATT":"Pré-amp automatique",
+  "AUTO_ATT_DOC":"Atténuation réglée automatiquement pour éviter le clipping. Si désactivé, appliquez une atténuation manuellement pour les deux canaux"
 }

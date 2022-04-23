@@ -184,5 +184,7 @@
   "PERMUT_CHANNEL": "Swap L&R channels",
   "PERMUT_CHANNEL_DOC":"Swap L&R channels",
   "RESETEQ":"Reset all EQ",
-  "RESETEQ_DOC":"Reset all Eq to Zero"
+  "RESETEQ_DOC":"Reset all Eq to Zero",
+  "AUTO_ATT":"Automatic pre-amp",
+  "AUTO_ATT_DOC":"Automatic pre-amp to avoid clipping. If disabled, you may need to set an attenuation by hand for both channels to avoid clipping"
 }

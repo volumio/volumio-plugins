@@ -7,6 +7,10 @@
         "type": "boolean",
         "value": true
     },
+    "autoatt": {
+        "type": "boolean",
+        "value": true
+    },
     "permutchannel": {
         "type": "boolean",
         "value": false
@@ -193,7 +197,8 @@
             0,
             0,
             0,
-            "None"
+            "None",
+            true
         ]
     },
     "state4preset2": {
@@ -206,7 +211,8 @@
             0,
             0,
             0,
-            "None"
+            "None",
+            true
         ]
     },
     "state4preset3": {
@@ -219,7 +225,8 @@
             0,
             0,
             0,
-            "None"
+            "None",
+            true
         ]
     },
     "state4preset4": {
@@ -232,7 +239,8 @@
             0,
             0,
             0,
-            "None"
+            "None",
+            true
         ]
     },
     "state4preset5": {
@@ -245,7 +253,8 @@
             0,
             0,
             0,
-            "None"
+            "None",
+            true
         ]
     },
     "availablefilters": {

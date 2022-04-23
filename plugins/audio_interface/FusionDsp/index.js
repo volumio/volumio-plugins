@@ -699,6 +699,10 @@ FusionDsp.prototype.getUIConfig = function (address) {
               "method": "reseteq",
               "data": [],
 
+            },
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
             }
           }
         )
@@ -904,21 +908,23 @@ FusionDsp.prototype.getUIConfig = function (address) {
             break;
           default: "None"
         }
-
-
-        uiconf.sections[1].content.push(
-          {
-            "id": "crossfeed",
-            "element": "select",
-            "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
-            "label": self.commandRouter.getI18nString('CROSSFEED'),
-            "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
-            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, { "value": "sadie_d1", "label": "SADIE D1 HRTF (KU100 Dummy Head)" }, { "value": "sadie_h15m", "label": "SADIE H15m HRTF (Human Subject)" }],
-            "visibleIf": {
-              "field": "showeq",
-              "value": true
+        if (selectedsp != "convfir") {
+          uiconf.sections[1].content.push(
+            {
+              "id": "autoatt",
+              "element": "switch",
+              "doc": self.commandRouter.getI18nString('AUTO_ATT_DOC'),
+              "label": self.commandRouter.getI18nString('AUTO_ATT'),
+              "value": self.config.get('autoatt'),
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
             }
-          },
+          )
+        }
+        uiconf.sections[1].content.push(
+
           {
             "id": "monooutput",
             "element": "switch",
@@ -936,6 +942,18 @@ FusionDsp.prototype.getUIConfig = function (address) {
             "doc": self.commandRouter.getI18nString('PERMUT_CHANNEL_DOC'),
             "label": self.commandRouter.getI18nString('PERMUT_CHANNEL'),
             "value": self.config.get('permutchannel'),
+            "visibleIf": {
+              "field": "showeq",
+              "value": true
+            }
+          },
+          {
+            "id": "crossfeed",
+            "element": "select",
+            "doc": self.commandRouter.getI18nString('CROSSFEED_DOC'),
+            "label": self.commandRouter.getI18nString('CROSSFEED'),
+            "value": { "value": self.config.get('crossfeed'), "label": crosslabel },
+            "options": [{ "value": "None", "label": "None" }, { "value": "bauer", "label": "Bauer 700Hz/4.5dB" }, { "value": "chumoy", "label": "Chu Moy 700Hz/6dB" }, { "value": "jameier", "label": "Jan Meier 650Hz/9.5dB" }, { "value": "linkwitz", "label": "Linkwitz 700Hz/2dB" }, { "value": "nc_11_30", "label": "Natural Crossfeed 1.1, 30 deg" }, { "value": "nc_11_50", "label": "Natural Crossfeed 1.1, 50 deg" }, { "value": "sadie_d1", "label": "SADIE D1 HRTF (KU100 Dummy Head)" }, { "value": "sadie_h15m", "label": "SADIE H15m HRTF (Human Subject)" }],
             "visibleIf": {
               "field": "showeq",
               "value": true
@@ -1203,7 +1221,7 @@ FusionDsp.prototype.getUIConfig = function (address) {
           "value": self.config.get('showeq')
         }
       )
-
+      uiconf.sections[1].saveButton.data.push('autoatt');
       uiconf.sections[1].saveButton.data.push('leftlevel');
       uiconf.sections[1].saveButton.data.push('rightlevel');
       uiconf.sections[1].saveButton.data.push('crossfeed');
@@ -2196,6 +2214,7 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
       let resamplingq = self.config.get('resamplingq')
       let resamplingset = self.config.get('resamplingset')
       let allowdownsamplig = true
+      let autoatt = self.config.get('autoatt')
       //----compose output----
       if (testclipping) {
         var composeout = ''
@@ -2817,9 +2836,9 @@ FusionDsp.prototype.createCamilladspfile = function (obj) {
           self.logger.info('else 1  ' + gainclipfree)
         } else {
 
-          gainclipfree = ('-' + (parseInt(gainresult) + 2))
+          gainclipfree = ('-' + (parseInt(gainresult))) //+ 2))
         }
-        if (gainclipfree === undefined) {
+        if ((gainclipfree === undefined) || ((autoatt == false) && (selectedsp != "convfir"))) {
           gainclipfree = 0
         }
         self.config.set('gainapplied', gainclipfree)
@@ -3512,6 +3531,8 @@ FusionDsp.prototype.saveparameq = function (data, obj) {
     self.config.set('leftlevel', data.leftlevel);
     self.config.set('rightlevel', data.rightlevel);
     self.config.set('monooutput', data["monooutput"]);
+    self.config.set('autoatt', data["autoatt"]);
+
     //self.config.set('delayscope', (data["delayscope"].value));
 
     if (self.config.get('showloudness')) {
@@ -3546,7 +3567,8 @@ FusionDsp.prototype.saveequalizerpreset = function (data) {
     self.config.get('leftlevel'),
     self.config.get('rightlevel'),
     self.config.get('delay'),
-    self.config.get('delayscope')
+    self.config.get('delayscope'),
+    self.config.get('autoatt')
   ]
 
   let preset = (data['eqpresetsaved'].value);
@@ -3776,6 +3798,8 @@ FusionDsp.prototype.usethispreset = function (data) {
     self.config.set('rightlevel', state4preset[5])
     self.config.set('delay', state4preset[6])
     self.config.set('delayscope', state4preset[7])
+    self.config.set('autoatt', state4preset[8])
+
 
 
     self.commandRouter.pushToastMessage('info', spresetm + self.commandRouter.getI18nString('PRESET_LOADED_USED'))

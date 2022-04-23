@@ -1,4 +1,4 @@
-April 18th 2022
+April 23th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -139,6 +139,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+April 23th 2022 v1.0.12
+
+- new switch to disable automatic pre-amp
 
 April 18th 2022 v1.0.11
 
