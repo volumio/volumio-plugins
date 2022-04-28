@@ -485,6 +485,22 @@ FusionDsp.prototype.getUIConfig = function (address) {
                 "field": "showeq",
                 "value": true
               }
+            },
+            {
+              "id": "removealleq",
+              "element": "button",
+              "label": self.commandRouter.getI18nString("REMOVEALL_EQ"),
+              "doc": self.commandRouter.getI18nString('REMOVEALL_EQ_DESC'),
+              "onClick": {
+                "type": "plugin",
+                "endpoint": "audio_interface/fusiondsp",
+                "method": "removealleq",
+                "data": []
+              },
+              "visibleIf": {
+                "field": "showeq",
+                "value": true
+              }
             }
           )
         }
@@ -1731,6 +1747,21 @@ FusionDsp.prototype.removeeq = function () {
   self.refreshUI();
 };
 
+FusionDsp.prototype.removealleq = function () {
+  const self = this;
+  
+  self.config.set('effect', true)
+  self.config.set('nbreq', 1)
+  self.config.set('mergedeq', "Eq0|None|L+R|0,0,0|")
+  self.config.set('savedmergedeq', "Eq0|None|L+R|0,0,0|")
+  self.config.set('savednbreq', 1)
+
+
+  setTimeout(function () {
+    self.createCamilladspfile()
+  }, 100);
+  self.refreshUI();
+};
 
 FusionDsp.prototype.reseteq = function () {
   const self = this;

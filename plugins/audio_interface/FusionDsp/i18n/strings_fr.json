@@ -39,6 +39,8 @@
   "LEFTLEVEL": "Gain canal gauche",
   "ONLY_FREQ": "Fréquence uniquement requis dans ",
   "REMOVE_EQ": "Enlever un égaliseur",
+  "REMOVEALL_EQ_DESC": "Attention! Supprime TOUS les EQ en un clic",
+  "REMOVEALL_EQ": "Supprimer tous les EQ",
   "RENPRESET": "Choisissez un nom pour votre pré réglage",
   "RIGHTCHAN": "Canal Droit",
   "EQ_DOC_OLD": "<h4>Valeurs pour égaliseur</h4><br><br>Les valeurs sont séparées par des virgules : \",\"</br>Avec Peaking :<br>Frequence(Hz),gain(dB), Q </li><ul><li>ex 250,-11,2.6</ul></li></br><br>Avec LowShelf et HighShelf :<br>Frequence(Hz), gain(dB), slope(dB/octave) </li><ul><li>ex 1250,12,11</ul></li></br><br>Avec Notch :<br>Frequence(Hz),Q </li><ul><li>ex 1250,5</ul></li></br><br>Avec Lowpass et Highpass :<br>Frequence de coupure(Hz), Q-Value</li><ul><li>ex 12,2</ul></li></br><br>",

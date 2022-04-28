@@ -85,6 +85,8 @@
   "ADD_EQ_DESC": "Voeg een equalizerband toe",
   "REMOVE_EQ": "Verwijder een equalizer",
   "REMOVE_EQ_DESC": "Een band verwijderen",
+  "REMOVEALL_EQ_DESC": "Warning! Remove ALL equalizer in one click",
+  "REMOVEALL_EQ": "Remove all EQ",
   "INSTELLINGEN": "Instellingen",
   "SHOW_SETTINGS": "Toon instellingen",
   "SHOW_SETTINGS_DOC": "Toon instellingen",

@@ -140,6 +140,10 @@ everythings it seems ;-)
 
 ### 4. Last changes
 
+April 28th 2022 v1.0.13
+
+- Button to remove All parametric EQ in one click
+
 April 23th 2022 v1.0.12
 
 - new switch to disable automatic pre-amp

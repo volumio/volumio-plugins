@@ -85,6 +85,8 @@
   "ADD_EQ_DESC": "Equalizer-Band hinzufügen",
   "REMOVE_EQ": "Equalizer entfernen",
   "REMOVE_EQ_DESC": "Band entfernen",
+  "REMOVEALL_EQ_DESC": "Warning! Remove ALL equalizer in one click",
+  "REMOVEALL_EQ": "Remove all EQ",
   "EINSTELLUNGEN": "Einstellungen",
   "SHOW_SETTINGS": "Einstellungen anzeigen",
   "SHOW_SETTINGS_DOC": "Einstellungen anzeigen",
