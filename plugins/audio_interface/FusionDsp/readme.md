@@ -1,4 +1,4 @@
-April 23th 2022
+Mai 14th 2022
 
 
 ##  For Volumio3 => v 3.236
@@ -33,7 +33,7 @@ For all
 - tools to easily plays test files (pink noise, sweep) to help measurments 
 
 For PEQ equalizer, while importing file, you can add or replace values to EQ the setting.
-Supported filtter : PK, HS, LS
+Supported filtter : PK, HS, LS, LPQ, HPQ
 - Select the file for left channel
 - choose the scope L
 - Choose the mode REPLACE
@@ -139,6 +139,10 @@ everythings it seems ;-)
 - 
 
 ### 4. Last changes
+
+May 14th 2022 v1.0.14
+
+- import local now support LPQ and HPQ filter
 
 April 28th 2022 v1.0.13
 

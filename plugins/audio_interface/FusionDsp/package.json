@@ -1,6 +1,6 @@
 {
   "name": "fusiondsp",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A complete Dsp centre for Volumio3",
   "main": "index.js",
   "repository": "https://github.com/balbuze/volumio-plugins/tree/alsa_modular/plugins/audio_interface/FusionDsp",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Balbuze",
-  "license": "GPL 3.0",
+  "license": "GPL-3.0",
   "volumio_info": {
     "prettyName": "FusionDsp",
     "icon": "fa-sliders fa-rotate-90",
@@ -16,7 +16,7 @@
     "os": [
       "buster"
     ],
-    "changelog": "Button to remove All parametric EQ",
+    "changelog": "HPQ and LPQ now supported for EQ import",
     "details": "Multimode Dsp, with graphic equalizer, parametric equalizer, FIR filters, Loudness, AutoEq profile for headphone and more",
     "architectures": [
       "armhf",

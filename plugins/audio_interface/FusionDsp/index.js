@@ -1,5 +1,5 @@
 /*--------------------
-FusionDsp plugin for volumio3. By balbuze April 2022
+FusionDsp plugin for volumio3. By balbuze May 2022
 Multi Dsp features
 Based on CamillaDsp
 ----------------------
@@ -1749,7 +1749,7 @@ FusionDsp.prototype.removeeq = function () {
 
 FusionDsp.prototype.removealleq = function () {
   const self = this;
-  
+
   self.config.set('effect', true)
   self.config.set('nbreq', 1)
   self.config.set('mergedeq', "Eq0|None|L+R|0,0,0|")
@@ -3925,8 +3925,8 @@ FusionDsp.prototype.convertimportedeq = function () {
     var result = (EQfile.split('\n'));
     for (o; o < result.length; o++) {
       if (nbreq < tnbreq) {
-        if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && ((result[o].indexOf("PK") != -1) || (result[o].indexOf("LS") != -1) || (result[o].indexOf("HS") != -1)) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
-          var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',Peaking,').replace(/ON LS Fc /g, ',Lowshelf2,').replace(/ON HS Fc /g, ',Highshelf2,').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ','));
+        if ((result[o].indexOf("Filter") != -1) && (result[o].indexOf("None") == -1) && ((result[o].indexOf("PK") != -1) || (result[o].indexOf("LPQ") != -1) || (result[o].indexOf("HPQ") != -1) || (result[o].indexOf("LS") != -1) || (result[o].indexOf("HS") != -1)) && (result[o].indexOf('Gain   0.00 dB') == -1)) {
+          var lresult = (result[o].replace(/       /g, ' ').replace(/   /g, ' ').replace(/  /g, ' ').replace(/ON PK Fc /g, ',Peaking,').replace(/ON HPQ Fc /g, ',Highpass,').replace(/ON LPQ Fc /g, ',Lowpass,').replace(/ON LS Fc /g, ',Lowshelf2,').replace(/ON HS Fc /g, ',Highshelf2,').replace(/ Hz Gain /g, ',').replace(/ dB Q /g, ',').replace(/ Hz Q /g, ','));
           //  self.logger.info('filter in line ' + o + lresult)
           var eqv = (lresult);
           var param = eqv.split(',')
@@ -3935,9 +3935,13 @@ FusionDsp.prototype.convertimportedeq = function () {
             correctedfreq = 22049
           }
           // console.log(param)
-          var eqs = (correctedfreq + ',' + param[3] + ',' + param[4])
-          var typeconv = param[1]
 
+          var typeconv = param[1]
+          if ((typeconv == "Highpass") || (typeconv == "Lowpass")) {
+            var eqs = (correctedfreq + ',' + param[3])
+          } else {
+            var eqs = (correctedfreq + ',' + param[3] + ',' + param[4])
+          }
           var typec = 'type' + nbreq;
           var scopec = 'scope' + nbreq;
           var eqc = 'eq' + nbreq;
