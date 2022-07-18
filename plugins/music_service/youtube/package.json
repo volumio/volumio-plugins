@@ -16,7 +16,7 @@
 		"boot_priority": 10
 	},
 	"dependencies": {
-		"googleapis": "19.0.0",
+		"googleapis": "59.0.0",
 		"iso8601-duration": "1.0.6",
 		"kew": "0.7.0",
 		"superagent": "^5.1.3",
