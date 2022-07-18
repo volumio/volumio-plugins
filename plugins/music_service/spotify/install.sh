@@ -1,24 +1,62 @@
-#!/bin/bash
-
-echo "Installing Spop Dependencies"
-sudo apt-get update
-sudo apt-get -y install libao-dev libglib2.0-dev libjson-glib-1.0-0 libjson-glib-dev libao-common libreadline-dev libsox-dev libsoup2.4-dev libsoup2.4-1 libdbus-glib-1-dev libnotify-dev --no-install-recommends
+#!/usr/bin/env bash
 
 
+echo "Writing systemd unit"
 
-echo "Installing Spop and libspotify"
+echo "[Unit]
+Description=Volspotconnect2 Daemon
+After=syslog.target
 
-DPKG_ARCH=`dpkg --print-architecture`
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/lib/startconnect.sh
+Restart=always
+RestartSec=2
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=volumio
+User=volumio
+Group=volumio
 
-echo $DPKG_ARCH
-cd /tmp 
-wget http://repo.volumio.org/Packages/Spop/spop-${DPKG_ARCH}.tar.gz
-sudo tar xvf /tmp/spop-${DPKG_ARCH}.tar.gz -C /
-rm /tmp/spop-${DPKG_ARCH}.tar.gz
+[Install]
+WantedBy=multi-user.target" > /lib/systemd/system/volspotconnect.service
 
-sudo chmod 777 /etc/spopd.conf
-echo "Linking libsox if required"
-[ ! -e /usr/lib/arm-linux-gnueabihf/libsox.so.2 ] && ln -s /usr/lib/arm-linux-gnueabihf/libsox.so /usr/local/lib/libsox.so.2
 
-#requred to end the plugin install
+echo "Setting permissions"
+SPOP_PLUGIN_DATA=/data/plugins/music_service/spop/bin/vollibrespot
+if [ -f "$SPOP_PLUGIN_DATA" ]; then
+    chmod a+x $SPOP_PLUGIN_DATA
+fi
+
+SPOP_PLUGIN_VOLUMIO=/volumio/app/plugins/music_service/spop/bin/vollibrespot
+if [ -f "$SPOP_PLUGIN_VOLUMIO" ]; then
+    chmod a+x $SPOP_PLUGIN_VOLUMIO
+fi
+
+SPOP_USR_BIN=/usr/bin/vollibrespot
+if [ -f "$SPOP_USR_BIN" ]; then
+    chmod a+x $SPOP_USR_BIN
+fi
+
+echo "Writing startconnect unit"
+
+echo '#!/usr/bin/env bash
+SPOP_PLUGIN_DATA=/data/plugins/music_service/spop/bin/vollibrespot
+if [ -f "$SPOP_PLUGIN_DATA" ]; then
+    .$SPOP_PLUGIN_DATA -c /tmp/volspotify.toml
+fi
+
+SPOP_PLUGIN_VOLUMIO=/volumio/app/plugins/music_service/spop/bin/vollibrespot
+if [ -f "$SPOP_PLUGIN_VOLUMIO" ]; then
+    .$SPOP_PLUGIN_VOLUMIO -c /tmp/volspotify.toml
+fi
+
+SPOP_USR_BIN=/usr/bin/vollibrespot
+if [ -f "$SPOP_USR_BIN" ]; then
+    .$SPOP_USR_BIN -c /tmp/volspotify.toml
+fi' > /usr/lib/startconnect.sh
+
+chmod a+x /usr/lib/startconnect.sh
+
+#required to end the plugin install
 echo "plugininstallend"

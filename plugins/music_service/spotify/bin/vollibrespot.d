@@ -1,0 +1,1 @@
+/home/volumio/Vollibrespot/target/release/vollibrespot: /home/volumio/Vollibrespot/.git/HEAD /home/volumio/Vollibrespot/.git/refs/heads/master /home/volumio/Vollibrespot/build.rs /home/volumio/Vollibrespot/src/config_parser.rs /home/volumio/Vollibrespot/src/main.rs /home/volumio/Vollibrespot/src/meta_pipe.rs /home/volumio/Vollibrespot/src/version.rs

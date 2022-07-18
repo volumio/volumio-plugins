@@ -3,54 +3,192 @@
     "label": "TRANSLATE.SPOTIFY_CONFIGURATION"
   },
   "sections": [
-   {
-      "id": "section_account",
-      "element": "section",
-      "label": "TRANSLATE.SPOTIFY",
+    {
+    "id": "section_spotify",
+    "type": "section",
+    "label": "Spotify",
       "icon": "fa-spotify",
-      "onSave": {"type":"controller", "endpoint":"music_service/spop", "method":"saveSpotifyAccount"},
+    "content": [
+      {
+        "id": "spotify_use",
+        "description": "TRANSLATE.OPEN_OR_INSTALL_SPOTIFY_DESCRIPTION",
+        "onClick": {"type":"openUrl", "url":"spotify://"}
+      }
+    ]
+  },
+    {
+    "id": "section_account",
+    "element": "section",
+    "label": "TRANSLATE.SPOTIFY_BROWSING",
+    "onSave": {
+      "type": "controller",
+      "endpoint": "music_service/spop",
+      "method": "saveVolspotconnectAccount"
+    },
+    "content": [
+      {
+        "id": "username",
+        "type": "text",
+        "element": "input",
+        "description": "TRANSLATE.LOGIN_TO_ENABLE_BROWSING",
+        "label": "TRANSLATE.USERNAME",
+        "value": "",
+        "options": []
+      },
+      {
+        "id": "password",
+        "type": "password",
+        "element": "input",
+        "doc": "TRANSLATE.TIPSPOTPASSWD",
+        "label": "TRANSLATE.PASSWORD",
+        "value": "",
+        "options": []
+      },
+      {
+        "id":"placeholder",
+        "element": "button",
+        "label": "TRANSLATE.LOGOUT",
+        "description": "TRANSLATE.LOGOUT",
+        "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"music_service/spop","method":"logout","data":""}},
+        "hidden": true
+      },
+      {
+        "id":"logout",
+        "element": "button",
+        "label": "TRANSLATE.LOGOUT",
+        "description": "TRANSLATE.LOGOUT",
+        "onClick": {"type":"emit", "message":"callMethod", "data":{"endpoint":"music_service/spop","method":"logout","data":""}},
+        "hidden": true
+      }
+    ]
+  },
+    {
+      "id": "spotify_settings",
+      "element": "section",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/spop",
+        "method": "saveVolspotconnectSettings"
+      },
       "saveButton": {
-        "label": "TRANSLATE.LOGIN",
+        "label": "TRANSLATE.SAVE",
         "data": [
-          "username",
-          "password",
+          "shareddevice",
+          "initvol",
+          "normalvolume",
           "bitrate",
-	      "refresh_token"
+          "volume_ctrl",
+          "gapless",
+          "autoplay",
+          "debug"
         ]
       },
       "content": [
         {
-          "id": "username",
-          "type":"text",
-          "element": "input",
-          "doc": "This is the username of your Spotify account",
-          "label": "TRANSLATE.USERNAME",
-          "value": ""
-        },
-        {
-          "id": "password",
-          "type":"password",
-          "element": "input",
-          "doc": "This is the password of your Spotify account",
-          "label": "TRANSLATE.PASSWORD",
-          "value": ""
-        },
-        {
-          "id":"bitrate",
+          "id": "shareddevice",
           "element": "switch",
-          "doc": "High bitrate",
-          "label": "TRANSLATE.HIGH_BITRATE",
+          "doc": "If enabled, the device is useable by any user on the network. If disable, a unique user uses it",
+          "label": "TRANSLATE.SHAREDDEVICE",
+          "value": false,
+          "hidden": true
+        },
+        {
+          "id": "initvol",
+          "element": "equalizer",
+          "label": "TRANSLATE.INITVOL",
+          "doc": "TRANSLATE.DESCINITVOL",
+          "hidden": true,
+          "config": {
+            "orientation": "horizontal",
+            "bars": [{
+              "min": "0",
+              "max": "100",
+              "step": "5",
+              "value": "30",
+              "tooltip": "always"
+            }]
+          }
+        },
+        {
+          "id": "normalvolume",
+          "element": "switch",
+          "doc": "TRANSLATE.DESCVOLNORM",
+          "label": "TRANSLATE.VOLNORM",
+          "value": false
+        },
+        {
+          "id": "bitrate",
+          "element": "select",
+          "doc": "Bitrate",
+          "label": "Bitrate",
+          "value": {
+            "value": 320,
+            "label": "320 kbps"
+          },
+          "options": [{
+            "value": 320,
+            "label": "320 kbps"
+          },
+            {
+              "value": 160,
+              "label": "160 kbps"
+            },
+            {
+              "value": 96,
+              "label": "96 kbps"
+            }
+          ]
+        },
+        {
+          "id": "volume_ctrl",
+          "type": "text",
+          "element": "select",
+          "doc": "TRANSLATE.DESCPVOLUMECTRL",
+          "label": "TRANSLATE.VOLUMECTRL",
+          "hidden": true,
+          "value": {
+            "value": "fixed",
+            "label": "TRANSLATE.VOLUMECTRL_FIXED"
+          },
+
+          "options": [{
+            "value": "linear",
+            "label": "TRANSLATE.VOLUMECTRL_LINEAR"
+          },
+            {
+              "value": "log",
+              "label": "TRANSLATE.VOLUMECTRL_LOG"
+            },
+            {
+              "value": "fixed",
+              "label": "TRANSLATE.VOLUMECTRL_FIXED"
+            }
+          ]
+        },
+        {
+          "id": "gapless",
+          "element": "switch",
+          "doc": "TRANSLATE.DESCGAPLESS",
+          "label": "TRANSLATE.GAPLESS",
           "value": true,
           "hidden": true
         },
         {
-          "id":"oauth",
-          "element": "button",
-          "label": "TRANSLATE.AUTHORIZE",
-          "description": "TRANSLATE.AUTHORIZE_PERSONAL_CONTENT",
-          "onClick": {"type":"oauth", "performerUrl":"http://oauth-performer.dfs.volumio.org/spotify","plugin":"music_service/spop", "scopes":[]}
+          "id": "autoplay",
+          "element": "switch",
+          "doc": "TRANSLATE.DESCAUTOPLAY",
+          "label": "TRANSLATE.AUTOPLAY",
+          "value": true,
+          "hidden": true
+        },
+        {
+          "id": "debug",
+          "element": "switch",
+          "doc": "TRANSLATE.DESCDEBUG",
+          "label": "TRANSLATE.DEBUG",
+          "value": false,
+          "hidden": true
         }
       ]
-   }
-  ]
+    }]
 }
