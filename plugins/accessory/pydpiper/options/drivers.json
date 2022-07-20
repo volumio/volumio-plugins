@@ -1,0 +1,6 @@
+{"drivers":[
+  {"name":"HD44780 parallel connection","driver":"hd44780"},
+  {"name":"HD44780 iic (i2c) connection","driver":"hd44780_i2c"},
+  {"name":"SSD1306 iic (i2c) connection","driver":"ssd1306_i2c"},
+  {"name":"Winstar WEH/WEG parallel connection","driver":"winstar_weg"}
+]}

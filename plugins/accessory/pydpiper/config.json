@@ -1,0 +1,82 @@
+{
+  "parallel": {
+    "type": "boolean",
+    "value": true
+  },
+  "driver": {
+    "type": "text",
+    "value": "winstar_weg"
+  },
+  "width": {
+    "type": "int",
+    "value": 80
+  },
+  "height": {
+    "type": "int",
+    "value": 16
+  },
+  "rs": {
+    "type": "int",
+    "value": 7
+  },
+  "e": {
+    "type": "int",
+    "value": 8
+  },
+  "d4": {
+    "type": "int",
+    "value": 25
+  },
+  "d5": {
+    "type": "int",
+    "value": 24
+  },
+  "d6": {
+    "type": "int",
+    "value": 23
+  },
+  "d7": {
+    "type": "int",
+    "value": 27
+  },
+  "i2caddress": {
+    "type": "text",
+    "value": "0x27"
+  },
+  "i2cport": {
+    "type": "int",
+    "value": 1
+  },
+  "timezone": {
+    "type": "text",
+    "value": "Europe/Amsterdam"
+  },
+  "timeformat": {
+    "type": "text",
+    "value": "24H"
+  },
+  "units": {
+    "type": "text",
+    "value": "celsius"
+  },
+  "use_weather": {
+    "type": "boolean",
+    "value": false
+  },
+  "wapi": {
+    "type": "text",
+    "value": ""
+  },
+  "wlocale": {
+    "type": "text",
+    "value": "Netherlands/Amsterdam"
+  },
+  "mount_point": {
+    "type": "text",
+    "value": "docker"
+  },
+  "pages_file": {
+    "type": "text",
+    "value": "pages_weh_80x16.py"
+  }
+}

@@ -1,0 +1,285 @@
+{
+	"page": {
+		"label": "TRANSLATE.PYDPIPER.PYDPIPERCONF"
+	},
+	"sections": [
+		{
+			"id": "section_connection",
+			"element": "section",
+			"label": "TRANSLATE.PYDPIPER.CONNECTIONSETTINGS",
+			"description": "TRANSLATE.PYDPIPER.D_CONNECTIONSETTINGS",
+			"icon": "fa-windows-cogs",
+			"onSave": {
+				"type": "controller",
+				"endpoint": "accessory/pydpiper",
+				"method": "updateConnectionSettings"
+			},
+			"saveButton": {
+				"label": "TRANSLATE.PYDPIPER.SAVE",
+				"data": [
+					"parallel",
+					"driver",
+					"width",
+					"height",
+					"rs",
+					"e",
+					"d4",
+					"d5",
+					"d6",
+					"d7",
+					"i2caddress",
+					"i2cport"
+				]
+			},
+			"content": 
+			[{
+				"id": "parallel",
+				"element": "switch",				
+				"label": "TRANSLATE.PYDPIPER.PARALLEL",
+				"doc": "TRANSLATE.PYDPIPER.D_PARALLEL",
+				"value": true
+			},
+			{
+				"id": "driver",
+				"element": "select",				
+				"label": "TRANSLATE.PYDPIPER.DRIVER",
+				"doc": "TRANSLATE.PYDPIPER.D_DRIVER",
+				"value": {					
+					"label": "Winstar WEH/WEG parallel connection",
+					"value": "winstar_weg"
+				},
+				"options": []
+			},			
+			{
+				"id": "width",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.WIDTH",
+				"doc": "TRANSLATE.PYDPIPER.D_WIDTH",
+				"description": "TRANSLATE.PYDPIPER.DD_WIDTH",
+				"value": 80
+			},
+			{
+				"id": "height",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.HEIGHT",
+				"doc": "TRANSLATE.PYDPIPER.D_HEIGHT",
+				"description": "TRANSLATE.PYDPIPER.DD_HEIGHT",
+				"value": 16
+			},
+			{
+				"id": "rs",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.RS",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_RS",
+				"value": 7,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "e",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.E",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_E",
+				"value": 8,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "d4",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.D4",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_D4",
+				"value": 25,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "d5",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.D5",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_D5",
+				"value": 24,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "d6",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.D6",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_D6",
+				"value": 23,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "d7",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.D7",
+				"doc": "TRANSLATE.PYDPIPER.GPIO_PIN",
+				"description": "TRANSLATE.PYDPIPER.DD_D7",
+				"value": 27,
+				"visibleIf": {
+					"field": "parallel",
+					"value": true
+				}
+			},
+			{
+				"id": "i2caddress",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.I2CADDRESS",
+				"doc": "TRANSLATE.PYDPIPER.D_I2CADDRESS",
+				"description": "TRANSLATE.PYDPIPER.DD_I2CADDRESS",
+				"value": "0x27",
+				"visibleIf": {
+					"field": "parallel",
+					"value": false
+				}
+			},
+			{
+				"id": "i2cport",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.I2CPORT",
+				"doc": "TRANSLATE.PYDPIPER.D_I2CPORT",
+				"value": 1,
+				"visibleIf": {
+					"field": "parallel",
+					"value": false
+				}
+			}]			
+		},
+		{
+		"id": "section_output",
+		"element": "section",
+		"label": "TRANSLATE.PYDPIPER.OUTPUTSETTINGS",
+		"description": "TRANSLATE.PYDPIPER.D_OUTPUTSETTINGS",
+		"icon": "fa-server",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "accessory/pydpiper",
+			"method": "updateOutputSettings"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.PYDPIPER.SAVE",
+			"data": [
+				"timezone",
+				"timeformat",
+				"units",
+				"use_weather",
+				"wapi",
+				"wlocale",
+				"mount_point",
+				"pages_file"
+			]
+		},
+		"content": 
+			[{
+				"id": "timezone",
+				"element": "select",				
+				"label": "TRANSLATE.PYDPIPER.TIMEZONE",
+				"doc": "TRANSLATE.PYDPIPER.D_TIMEZONE",
+				"value": {
+					"value": "Europe/Amsterdam",
+					"label": "Europe/Amsterdam"
+				},
+				"options": []
+			},
+			{
+				"id": "timeformat",
+				"element": "select",				
+				"label": "TRANSLATE.PYDPIPER.TIMEFORMAT",
+				"doc": "TRANSLATE.PYDPIPER.D_TIMEFORMAT",
+				"description": "TRANSLATE.PYDPIPER.DD_TIMEFORMAT",
+				"value": {
+					"value": "24H",
+					"label": "24H"
+				},
+				"options": []
+			},
+			{
+				"id": "units",
+				"element": "select",				
+				"label": "TRANSLATE.PYDPIPER.UNITS",
+				"doc": "TRANSLATE.PYDPIPER.D_UNITS",
+				"value": {
+					"label": "Celsius",
+					"value": "celsius"					
+				},
+				"options": []
+			},
+			{
+				"id": "use_weather",
+				"element": "switch",				
+				"label": "TRANSLATE.PYDPIPER.USE_WEATHER",
+				"doc": "TRANSLATE.PYDPIPER.D_USE_WEATHER",
+				"value": true
+			},
+			{
+				"id": "wapi",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.WAPI",
+				"doc": "TRANSLATE.PYDPIPER.D_WAPI",
+				"value": "",
+				"visibleIf": {
+					"field": "use_weather",
+					"value": true
+				}
+			},
+			{
+				"id": "wlocale",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.WLOCALE",
+				"doc": "TRANSLATE.PYDPIPER.D_WLOCALE",
+				"value": "",
+				"visibleIf": {
+					"field": "use_weather",
+					"value": true
+				}
+			},
+			{
+				"id": "mount_point",
+				"element": "select",				
+				"label": "TRANSLATE.PYDPIPER.MOUNT_POINT",
+				"doc": "TRANSLATE.PYDPIPER.D_MOUNT_POINT",
+				"value": {
+					"label": "Docker container",
+					"value": "docker"
+				},
+				"options": []
+			},
+			{
+				"id": "pages_file",
+				"element": "input",
+				"type": "text",
+				"label": "TRANSLATE.PYDPIPER.PAGES_FILE",
+				"doc": "TRANSLATE.PYDPIPER.D_PAGES_FILE",
+				"value": "pages_weh_80x16.py"
+			}]
+		}]
+}
