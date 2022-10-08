@@ -2,10 +2,19 @@
   "PLUGIN_CONFIGURATION":"AutoStart Plugin Configuration",
   "HEADING": "Enable this plugin in order to play music when volumio starts",
   "SAVE":"Save",
-  "AUTOSTART_SETTINGS":"Autostart Settings",
+  "AUTOSTART_SETTINGS":"AutoStart Settings",
   "AUTOSTART_SETTINGS_DESC":"",
-  "AUTOSTART_SAVEFROMLASTPOS_DOC":"Play from the last position in the queue before Volumio was shutdown, otherwise Autostart will play from the start of the queue",
+  "AUTOSTART_SAVEFROMLASTPOS_DOC":"Play from the last position in the queue before Volumio was shutdown, otherwise AutoStart will play from the start of the queue",
   "AUTOSTART_SAVEFROMLASTPOS": "Play From Last Position",
   "AUTOSTART_DELAY_DOC":"You may need to adjust this depending on how long your device takes to reach a state where music can be played",
-  "AUTOSTART_DELAY":"Delay Before Music Starts (milliseconds)"
+  "AUTOSTART_DELAY":"Delay Before Music Starts (milliseconds)",
+  "AUTOSTART_SELECT_ITEM":"Select AutoStart Item",
+  "AUTOSTART_FROM_QUEUE":"AutoStart from Queue",
+  "AUTOSTART_FROM_SELECTED_ITEM":"AutoStart from Selected Item",
+  "AUTOSTART_SELECTED_ITEM":"Selected AutoStart Item",
+  "AUTOSTART_MODE":"AutoStart Mode",
+  "AUTOSTART_SELECT_ITEM_DESCRIPTION": "Select 'Clear and play' on the context menu of any item in the 'BROWSE' section to configure the AutoStart plugin to play it when Volumio starts. After the item is selected 'Clear and play' will revert to its normal behaviour. Return to AutoStart plugin settings to change item selection.",
+  "AUTOSTART_SELECTION_SUCCESS": "Autostart successfully configured to use ",
+  "AUTOSTART_SELECTION_FAILURE": "Autostart selection failed",
+  "AUTOSTART_SELECT_MODE_ACTIVATED": "Autostart Select Mode activated"
 }
