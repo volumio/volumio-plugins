@@ -58,7 +58,7 @@
 		"sax": "^1.2.4",
 		"simple-lastfm": "https://github.com/Saiyato/simple-lastfm/tarball/f5f1d1010d9e5abfb354d8db623c7d07c34d70db",
 		"socket.io-client": "^1.4.8",
-		"socket.io-parser": "^2.2.6",
+		"socket.io-parser": "^3.3.3",
 		"to-array": "^0.1.4",
 		"ultron": "^1.0.2",
 		"utf8": "^2.1.0",
