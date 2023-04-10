@@ -64,7 +64,7 @@
 		"utf8": "^2.1.0",
 		"v-conf": "^0.10.0",
 		"wrappy": "^1.0.2",
-		"xml2js": "^0.4.19",
+		"xml2js": "^0.5.0",
 		"xmlbuilder": "^9.0.4",
 		"xmlhttprequest-ssl": "^1.5.1",
 		"yeast": "^0.1.2",
